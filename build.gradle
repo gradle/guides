@@ -1,0 +1,22 @@
+plugins {
+    id "org.ajoberstar.github-pages" version "1.4.2"
+    id "org.asciidoctor.gradle.asciidoctor" version "1.5.1"
+}
+
+asciidoctor {
+    backends = ["html5"]
+    attributes "source-highlighter"    : "coderay",
+            "coderay-linenums-mode" : "table",
+            icon                    : "font",
+            linkattrs               : true,
+            doctype                 : "article",
+            encoding                : "utf-8",
+            toc                     : "left"
+}
+
+githubPages {
+    repoUri = "git@github.com:gradle/performance-guide.git"
+    pages {
+        from tasks.asciidoctor
+    }
+}
