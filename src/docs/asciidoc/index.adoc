@@ -61,7 +61,7 @@ This will result in the generation of an HTML report that you can find in the _b
 
 The report itself displays a breakdown of the time taken to run the build for a given set of task arguments. Here’s some sample output so you can see the categories Gradle uses:
 
-[_Add profile report image here_]
+image::gradle-profile-report.png[title="An example profile report", alt="Sample Gradle profile report"]
 
 Each of the main categories - _Configuration_, _Dependency Resolution_, and _Task Execution_ - may reveal different time sinks that you may want to tackle. We’ll go through those categories in later sections, detailing the types of issue you may encounter for each one. Before then, let’s take a look at some of the items in the summary.
 

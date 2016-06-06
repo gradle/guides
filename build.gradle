@@ -3,20 +3,33 @@ plugins {
     id "org.asciidoctor.gradle.asciidoctor" version "1.5.1"
 }
 
+apply plugin: "base"
+
+ext {
+    imagesDir = "images"
+}
+
 asciidoctor {
     backends = ["html5"]
     attributes "source-highlighter"    : "coderay",
             "coderay-linenums-mode" : "table",
             icon                    : "font",
+            imagesdir               : imagesDir,
             linkattrs               : true,
-            doctype                 : "article",
             encoding                : "utf-8",
             toc                     : "left"
 }
 
+task syncImages(type: Sync) {
+    into "${asciidoctor.outputDir}/${asciidoctor.backends[0]}/$imagesDir"
+    from "src/docs/$imagesDir"
+}
+
+assemble.dependsOn "asciidoctor", "syncImages"
+
 githubPages {
     repoUri = "git@github.com:gradle/performance-guide.git"
     pages {
-        from tasks.asciidoctor
+        from "${asciidoctor.outputDir}/${asciidoctor.backends[0]}"
     }
 }
