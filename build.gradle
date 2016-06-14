@@ -13,7 +13,7 @@ asciidoctor {
     backends = ["html5"]
     attributes "source-highlighter"    : "coderay",
             "coderay-linenums-mode" : "table",
-            icon                    : "font",
+            icons                   : "font",
             imagesdir               : imagesDir,
             stylesdir               : "stylesheets",
 //            stylesheet              : "gradle.css",

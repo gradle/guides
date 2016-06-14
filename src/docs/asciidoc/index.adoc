@@ -8,18 +8,19 @@
 This document is currently an early draft and should be treated as such. Most of the recommendations will stay as they are, but those with difficult tradeoffs may see significant changes in the final publication.
 ****
 
-Waiting is a part of life. Whether you’re waiting in line at a cinema or for the release of the latest must-have gadget, it’s something you learn to deal with. In the case of builds, waiting may block you from doing something more productive. Or it may throw a spanner in your development cycle, severely impacting productivity. And since you may be repeatedly running the build many times a day, even small periods of waiting can add up to significant disruption.
+Waiting is a part of life. Whether you’re waiting in line at a cinema or for the release of the latest must-have gadget, it’s something you learn to deal with. The same is often the case for builds and the waiting usually blocks you from doing something more productive. And the longer the build takes to complete, the more chance you'll be distracted by something else in the meantime. On top of that, since you may be repeatedly running the build many times a day, even small periods of waiting can add up to significant disruption.
 
-All this means that it’s worth investing some time and effort into ensuring that your build runs as fast as possible. This guide offers several avenues you can explore to make a build run faster, along with plenty of detail on what sorts of things can adversely affect the performance of a build and why. But first, let’s start with some quick wins.
+All this means that it’s worth investing some time and effort into ensuring that your build runs as fast as possible. This guide offers several avenues you can explore to make a build run faster, along with plenty of detail on what sorts of things can adversely affect the performance of a build and why. Let’s start with some quick wins.
 
 ## Easy improvements
-A guide on performance tuning would normally start with profiling and something about premature optimisation being the root of all evil. We will come to that, but there are some things you can do that will impact all your builds for the better.
+
+A guide on performance tuning would normally start with profiling and something about premature optimisation being the root of all evil, etc., etc. Profiling is definitely important and we discuss it later in the guide, but there are some things you can do that will impact all your builds for the better at the flick of a switch - metaphorically speaking.
 
 ### Enable the daemon
 
-Until the Gradle daemon is enabled by default, which will happen with Gradle 3.0, you will see big improvements in build speed simply by enabling it for all builds. You can learn how to do that https://docs.gradle.org/current/userguide/gradle_daemon.html[in the user guide]. The daemon will result in significantly faster startup, configuration, and overall build execution.
+Until the Gradle daemon is enabled by default, which will happen with Gradle 3.0, you will see big improvements in build speed simply by enabling it for all builds. You can learn how to do that https://docs.gradle.org/current/userguide/gradle_daemon.html[in the user guide]. The daemon significantly improves startup, configuration, and overall build execution times.
 
-The usual recommendation is to enable the daemon for developer machines and disable it for continuous integration servers. This is because the daemon is a background process that may require manual intervention from time to time and that’s not always easy when the process is on a separate machine from where you’re sitting. You also need to factor in whether you run many builds with different VM configurations, which will lead to each build having its own daemon.
+The usual recommendation is to enable the daemon for developer machines and disable it for continuous integration servers. This is because the daemon is a background process that may require manual intervention from time to time and that’s not always easy when the process is on a separate machine from where you’re sitting. You also need to factor in whether you run many builds with different VM configurations, which will lead to each build having its own daemon and a potential sea of daemon processes at any one time.
 
 Nonetheless, if build times on your CI server hurt developer productivity, you should definitely consider enabling the daemon there. From Gradle 3.0 onwards, the recommendation will be to always use the daemon.
 
@@ -27,9 +28,16 @@ Nonetheless, if build times on your CI server hurt developer productivity, you s
 
 The Gradle team works regularly on improving the performance of different aspects of Gradle builds. If you’re using an old version of Gradle, you’re missing out on the benefits of that work. Try upgrading to the latest version of Gradle to see what kind of impact it has. Doing so is low risk because very few things break between minor versions of Gradle.
 
-Going up a major version may be more work as breaking changes are expected, but it’s often worth the effort.
+Going up a major version will probably involve more work as that's when deliberate breaking changes happen. Even so, it’s definitely worth giving it a try, particularly if the release notes for a new version explicitly call out new performance improvements.
 
 ### Parallel builds
+
+[WARNING]
+====
+Both parallel builds and configure on demand are easy to enable, but should not be used unless you're an *expert user*. They can have a really big impact on multi-project build performance, but they are also incubating features - which means they may still have significant bugs - and they require you to avoid certain techniques in your build files to work properly.
+
+Some of the things you need to avoid are documented (follow the "decoupled projects" link in this section), but others are not. So if you have long-running, multi-project builds, certainly give them a try, but understand that the builds may fail for unclear reasons. If that happens, simply stop using these options.
+====
 
 Few non-trivial builds consist of just one project, and yet if you want to run tasks across several subprojects, Gradle will process them sequentially. By using the `--parallel` switch, you can force Gradle to execute independent subprojects - those that have no implicit or explicit project dependencies between one another - in parallel, making the best use of your computer’s resources.
 
@@ -38,6 +46,8 @@ Using the `--parallel` switch is the easy bit, hence why it’s in this section.
 You can learn more about https://docs.gradle.org/current/userguide/multi_project_builds.html#sec:parallel_execution[parallel builds] and https://docs.gradle.org/current/userguide/multi_project_builds.html#sec:decoupled_projects[decoupled projects] in the user guide, but for now, understand that parallel builds are still experimental. However, you may decide that the potential issues are outweighed by real performance gains to a point of always using `--parallel` for your build. It’s ultimately your choice.
 
 ### Configure on demand
+
+WARNING: See the warning in the above parallel builds section to find out why you need to take care with this feature.
 
 Imagine you have 300 subprojects all managed by a single Gradle build. Even if the configuration time for each project is just 5 seconds, that means every build will take at last 300 x 5 = 25 minutes! That’s why it’s particularly crucial to keep a close eye on configuration times for projects that have a lot of modules.
 
