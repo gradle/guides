@@ -17,6 +17,8 @@ asciidoctor {
             imagesdir               : imagesDir,
             stylesdir               : "stylesheets",
 //            stylesheet              : "gradle.css",
+            sectanchors             : true,
+            sectlinks               : true,
             linkattrs               : true,
             encoding                : "utf-8",
             toc                     : "left"
