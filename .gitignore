@@ -1,2 +1,7 @@
 # Vim
 *.sw?
+
+# mr (see .mrconfig)
+architecture
+jigsaw-quick-start
+performance
