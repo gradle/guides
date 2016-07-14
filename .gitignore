@@ -1,5 +1,7 @@
 # Jekyll
 _site
+server.pid
+server.log
 
 # Vim
 *.sw?

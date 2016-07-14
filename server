@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+PORT=$(cat PORT) || exit 255
+URL="http://localhost:$PORT"
+
+function start {
+  if [ -f server.pid ]; then
+      echo "server with pid $(cat server.pid) already started at $URL"
+      echo 'run `./server.sh stop` or `rm ./server.pid` to continue'
+      exit 255
+  fi
+
+  jekyll serve --config _config.yml,_config_loc.yml --port $PORT > server.log &
+  echo $! > server.pid
+  echo "server with pid $(cat server.pid) started at $URL"
+}
+
+function stop {
+  if [ ! -f server.pid ]; then
+      echo server already stopped
+      exit 255
+  fi
+
+  kill -9 $(cat server.pid)
+  rm server.pid
+  echo server stopped
+}
+
+if [ "$1" == "start" ]; then
+    start
+elif [ "$1" == "stop" ]; then
+    stop
+else
+    echo "usage: $0 [start|stop]"
+fi
+
