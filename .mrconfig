@@ -1,3 +1,6 @@
+[DEFAULT]
+skip = [ "$1" == start ] || [ "$1" == stop ]
+
 [_guides/architecture]
 checkout = git clone git@github.com:gradle-guides/architecture.git
 
