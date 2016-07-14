@@ -1,7 +1,8 @@
+# Jekyll
+_site
+
 # Vim
 *.sw?
 
 # mr (see .mrconfig)
-architecture
-jigsaw-quick-start
-performance
+_guides
