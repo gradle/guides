@@ -1,10 +1,5 @@
-# Jekyll
-_site
-server.pid
-server.log
+# myrepos (see .mrconfig)
+guides
 
 # Vim
 *.sw?
-
-# mr (see .mrconfig)
-_guides

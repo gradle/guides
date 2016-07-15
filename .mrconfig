@@ -1,11 +1,8 @@
-[DEFAULT]
-skip = [ "$1" == start ] || [ "$1" == stop ]
-
-[_guides/architecture]
+[guides/architecture]
 checkout = git clone git@github.com:gradle-guides/architecture.git
 
-[_guides/jigsaw-quick-start]
+[guides/jigsaw-quick-start]
 checkout = git clone git@github.com:gradle/jigsaw-quick-start.git
 
-[_guides/performance]
+[guides/performance]
 checkout = git clone git@github.com:gradle-guides/performance.git
