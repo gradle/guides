@@ -1,16 +1,25 @@
+
+#-----------------------------------------------------------------------
 [guides/architecture]
+#-----------------------------------------------------------------------
 checkout = git clone git@github.com:gradle-guides/architecture.git
 
+
+#-----------------------------------------------------------------------
 [guides/jigsaw-quick-start]
+#-----------------------------------------------------------------------
 checkout = git clone git@github.com:gradle/jigsaw-quick-start.git
 
+
+#-----------------------------------------------------------------------
 [guides/performance]
+#-----------------------------------------------------------------------
 checkout = git clone git@github.com:gradle-guides/performance.git
 
-build =
+generate =
     ./gradlew asciidoc
 
-start =
+watch =
     if [ -f gradle.pid ]; then
         echo "gradle is already started (pid: $(cat gradle.pid))"
         exit 1
@@ -19,11 +28,11 @@ start =
     echo $! > gradle.pid
     echo "started gradle (pid: $(cat gradle.pid))"
 
-stop =
+nowatch =
     if [ ! -f gradle.pid ]; then
         echo gradle is not running
         exit 1
     fi
     echo "stopping gradle (pid: $(cat gradle.pid))"
     kill -9 $(cat gradle.pid)
-    rm gradle.pid gradle.log
+    rm gradle.log gradle.pid
