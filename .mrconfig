@@ -6,3 +6,24 @@ checkout = git clone git@github.com:gradle/jigsaw-quick-start.git
 
 [guides/performance]
 checkout = git clone git@github.com:gradle-guides/performance.git
+
+build =
+    ./gradlew asciidoc
+
+start =
+    if [ -f gradle.pid ]; then
+        echo "gradle is already started (pid: $(cat gradle.pid))"
+        exit 1
+    fi
+    ./gradlew -t asciidoc > gradle.log &
+    echo $! > gradle.pid
+    echo "started gradle (pid: $(cat gradle.pid))"
+
+stop =
+    if [ ! -f gradle.pid ]; then
+        echo gradle is not running
+        exit 1
+    fi
+    echo "stopping gradle (pid: $(cat gradle.pid))"
+    kill -9 $(cat gradle.pid)
+    rm gradle.pid gradle.log
