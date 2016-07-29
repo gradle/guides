@@ -114,7 +114,7 @@ The rest of the summary relates to the main categories, which we cover in detail
 
 ## Configuration
 
-As the user guide describes in https://docs.gradle.org/current/userguide/build_lifecycle.html[the build lifecycle chapter], a Gradle build goes through three phases: initialization, configuration, and execution. The important thing to understand here is that in traditional Gradle builds, i.e. those that _don’t_ use the new software model, configuration code always executes regardless of which tasks will run. That means any expensive work performed during configuration will permanently cripple the build, even for such things as `gradle help` and `gradle tasks`.
+As the user guide describes in https://docs.gradle.org/current/userguide/build_lifecycle.html[the build lifecycle chapter], a Gradle build goes through three phases: initialization, configuration, and execution. The important thing to understand here is that in non-native Gradle builds, configuration code always executes regardless of which tasks will run. That means any expensive work performed during configuration will permanently cripple the build, even for such things as `gradle help` and `gradle tasks`.
 
 The profile report will help you identify which projects take the most time to configure, but that’s all. The next few subsections introduce techniques that can help improve the configuration time and explain why they work.
 
@@ -150,20 +150,6 @@ project.tasks.create("copyFiles", Copy) { Task t ->
 You can see how this example uses the `create()` and `getByName()` methods, which are available on all Gradle “domain collections”, like tasks, configurations, dependencies, extensions, etc. Some collections have dedicated types, `TaskContainer` being one of them, that have useful extra methods like the `create()` method above that takes a task type.
 
 If you do decide to use static compilation, we recommend using an IDE as it will quickly show errors due to unrecognised types, properties, and methods. You’ll also get auto-completion, which is always handy.
-
-### The new software model
-
-The Gradle team has recognised for a while that there is a limit to how much extra performance can be eked out of the current configuration model. The fundamental issue will always be that configuration happens for everything in a project, across all subprojects (`--configure-on-demand` notwithstanding) regardless of what gets executed.
-
-The new software model has been created to address this issue. It brings the concept behind incremental build to the configuration phase, ensuring that only those parts of the build required for the execution phase actually get configured. It’s already being used for native and Play framework builds, and there is initial Java library support.
-
-Like several other Gradle features mentioned in this guide, the new software model is incubating. More importantly, the API is subject to change, so if you were to implement your own build logic using the new model, it’s likely you will have to fix a few things when a new Gradle version comes out. You can read more about the new model https://docs.gradle.org/current/userguide/pt06.html[in the user guide].
-
-Should you use the new model? If you’re building native (C, C++, etc) or a Play framework application then the decision has already been made for you. When it comes to Java, the decision is harder. We recommend that you continue to use the standard Java plugin for now as its mature, well-used, and many plugins work with it. It’s really only worth switching to the new jvm-components plugin if the potential savings in configuration time significantly outweigh the incubating nature of the plugin and the inconvenience of poor plugin support.
-
-The ultimate goal is to have all build types and plugins using the new software model. With that in mind, it’s probably worth experimenting with the new model in your own builds and plugins. But until the API has stabilised, we don’t recommend switching over for your main builds.
-
-If you have tried all of the above except for the new software model and your configuration time is still too long, you may want to invest time in traditional profiling techniques to identify hotspots in your configuration code. Or consider investing that time in learning and using the new software model.
 
 ## Dependency resolution
 
@@ -363,8 +349,8 @@ Just be aware that it is still an incubating feature. That said, you can expect 
 
 Performance is a feature and the Gradle team are always attempting to make the Gradle defaults as fast as possible because they know that their users' time is valuable. Even so, Gradle supports a huge variety of builds, which means that the defaults won't always be ideal for _your_ project. That's why we introduced you to some settings and task options that allow you to tweak the behavior of the build in your favor. You should also familiarise yourself with any other available options on your long running tasks and with the generic Gradle build environment settings.
 
-Beyond those settings, remember that the two big contributors to build times are configuration and task execution. You should now have a good idea of the pitfalls you need to avoid with regard to the configuration phase. Going forward, the new software model will remove the big structural costs of configuration and give you much more scope to tweak the performance of this aspect of your builds.
+Beyond those settings, remember that the two big contributors to build times are configuration and task execution, although the base cost of the former drops with almost every major Gradle release. And as far as the configuration phase goes, you should now have a good idea of the pitfalls you need to avoid.
 
-You currently have more control over task execution, since you can avoid running tasks or running them too often, and you can also code your own tasks to be as performant as possible. In the future, Gradle will offer more features to help with execution performance, such as parallel task execution. So you have plenty to look forward to.
+You have more control over task execution, since you can avoid running tasks or running them too often, and you can also code your own tasks to be as performant as possible. In the future, Gradle will offer more features to help with execution performance. Things like parallel task execution. Yyou have plenty to look forward to!
 
 In the meantime, we hope the ideas in this guide help you cut your build times and improve the overall user experience.
