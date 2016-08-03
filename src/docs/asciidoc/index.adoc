@@ -351,6 +351,42 @@ compileJava.options.incremental = true
 
 Just be aware that it is still an incubating feature. That said, you can expect continued improvements in future versions of Gradle.
 
+## Suggestions for Android builds
+
+Everything we have talked about so far applies to Android builds too, since they're based on Gradle. Yet Android also introduces its own performance factors, particularly around the CPU-intensive dexing process. Here we provide some additional ideas for improving Android builds specifically.
+
+### Use the latest Android plugin
+
+The Android plugin is similar to Gradle in that newer versions introduce improved build performance. For example, version 2.10 of the plugin enabled incremental compilation by default and added support for in-process dexing.
+
+### Invest in fast CPUs
+
+Since dexing is CPU-intensive, a significantly faster CPU will deliver a significantly faster build. Also note that dexing uses a significant amount of memory, so you should monitor the heap usage for your build when profiling it. You may find it pays to increase the maximum heap size for Gradle.
+
+### Optimize multidex development builds
+
+Creating multidex output for your project typically adds a significant amount of time to your build due to the merging process, so you should have a development flavor that targets a minimum SDK version of 21. This results in a faster build when working on the project code. Here's an example partial configuration:
+
+[source,groovy]
+----
+android {
+    productFlavors {
+        dev {
+            minSdkVersion 21
+        }
+        prod {
+            minSdkVersion 14
+        }
+    }
+}
+----
+
+You can find out more about this feature in the https://developer.android.com/studio/build/multidex.html#dev-build[Android Studio user guide].
+
+### Use discretion when adding build types and flavors
+
+The more build types and flavors you create, the longer it will take for Gradle to configure your project. So if developers only ever build debug versions of a project, don't add other build types for development. Work out which build types and flavors you really need and configure just those ones.
+
 ## Summary
 
 Performance is a feature and the Gradle team are always attempting to make the Gradle defaults as fast as possible because they know that their users' time is valuable. Even so, Gradle supports a huge variety of builds, which means that the defaults won't always be ideal for _your_ project. That's why we introduced you to some settings and task options that allow you to tweak the behavior of the build in your favor. You should also familiarise yourself with any other available options on your long running tasks and with the generic Gradle build environment settings.
