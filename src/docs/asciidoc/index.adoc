@@ -56,7 +56,7 @@ org.gradle.parallel=true
 
 WARNING: See the warning in the above parallel builds section to find out why you need to take care with this feature.
 
-Imagine you have 300 subprojects all managed by a single Gradle build. Even if the configuration time for each project is just 5 seconds, that means every build will take at last 300 x 5 = 25 minutes! That’s why it’s particularly crucial to keep a close eye on configuration times for projects that have a lot of modules.
+Imagine you have 300 subprojects all managed by a single Gradle build. Even if the configuration time for each project is just 5 seconds, that means every build will take at last 300 x 5s = 25 minutes! That’s why it’s particularly crucial to keep a close eye on configuration times for projects that have a lot of modules.
 
 With that in mind, wouldn’t it be better if Gradle only configured the projects that were actually required to execute the requested task(s)? Of course, and that’s where the `--configure-on-demand` command line option comes in. It avoids a lot of unnecessary configuration at the cost of working out which projects are required. We wouldn’t recommend using it if you only have a small number of quick-to-configure subprojects, but otherwise it may be worth a try.
 
@@ -128,7 +128,7 @@ Ideally, plugins should not incur a significant configuration-time cost. If they
 
 This is fairly obvious based on what we’ve already said about the configuration phase, but it’s not hard to accidentally break this rule. It’s usually clear when you’re encrypting stuff or calling remote services during configuration if that code is in a build file. But logic like this is more often found in plugins and occasionally custom task classes, where it’s easy to forget which phase your code is running in. Things only get harder to track when they're factored into short methods and multiple classes.
 
-This is not an argument for putting all your build logic into build scripts. That’s generally a recipe for unmaintainable builds. However, if your profile report is indicating that the build is spending more time than expected in the configuration phase, you should start looking at your plugins and custom task classes. Tasks should largely be dumb and leave the build script or a plugin to configure their properties. If you're familiar with the principle of Inversion of Control (IoC), that's what you should be aiming for.
+This is not an argument for putting all your build logic into build scripts. That’s generally a recipe for unmaintainable builds. However, if your profile report is indicating that the build is spending more time than expected in the configuration phase, you should start looking at your plugins and custom task classes. A task should generally rely on the build script or plugin that instantiates it to set its properties, rather than performing the configuration itself. If you're familiar with the principle of Inversion of Control (IoC), that's what you should be aiming for.
 
 ### Statically compile tasks and plugins
 
@@ -161,7 +161,7 @@ The general recommendation for Gradle builds is to use fixed versions wherever p
 
 Dynamic versions, such as “2.+”, and snapshot (or changing) versions force Gradle to contact the remote repository to find out whether there’s a new version or snapshot available. By default, Gradle will only perform the check once every 24 hours, but this can be changed. Look out for `cacheDynamicVersionsFor` and `cacheChangingModulesFor` in your build files and initialization scripts in case they are set to very short periods or disabled completely. Otherwise you may be condemning your build users to frequent slow builds rather than a single slow build a day.
 
-So prefer fixed versions, but it you really want to stay up to date with newer versions of dependencies, make sure you tune the cache settings for your needs.
+So prefer fixed versions, but if you really want to stay up to date with newer versions of dependencies, make sure you tune the cache settings for your needs.
 
 ### Favor dependency resolution during execution
 
@@ -325,6 +325,12 @@ The Gradle Java plugin allows you to run the compiler as a separate process by u
 
     <taskname>.options.fork = true
 
+or, more commonly, to apply the configuration to _all_ Java compilation tasks:
+
+    tasks.withType(JavaCompile) {
+        options.fork = true
+    }
+
 This has two benefits:
 
 1. Gradle can handle compilation of very large numbers of source files concurrently without forcing you to increase the heap size of the main Gradle process or daemon.
@@ -351,6 +357,6 @@ Performance is a feature and the Gradle team are always attempting to make the G
 
 Beyond those settings, remember that the two big contributors to build times are configuration and task execution, although the base cost of the former drops with almost every major Gradle release. And as far as the configuration phase goes, you should now have a good idea of the pitfalls you need to avoid.
 
-You have more control over task execution, since you can avoid running tasks or running them too often, and you can also code your own tasks to be as performant as possible. In the future, Gradle will offer more features to help with execution performance. Things like parallel task execution. Yyou have plenty to look forward to!
+You have more control over task execution, since you can avoid running tasks or running them too often, and you can also code your own tasks to be as performant as possible. In the future, Gradle will offer more features to help with execution performance. Things like parallel task execution. You have plenty to look forward to!
 
 In the meantime, we hope the ideas in this guide help you cut your build times and improve the overall user experience.
