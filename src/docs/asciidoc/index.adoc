@@ -197,9 +197,17 @@ A simple way to determine whether you’re resolving dependencies during configu
 
 and look at the time spent on dependency resolution. This should be zero, so if it’s not, you’re resolving dependencies at configuration time. The report will also tell you which configurations are being resolved, which should help in diagnosing the source of the configuration-time resolution.
 
-### Avoid unnecessary dependencies
+### Avoid unnecessary and unused dependencies
 
 You will sometimes encounter situations in which you're only using one or two methods or classes from a third-party library. When that happens, you should seriously consider implementing the required code yourself in the project or copying it from an open source library if that's an option for you. Remember that managing third-party libraries and their transitive dependencies adds a not insignificant cost to project maintenance as well as build times.
+
+Another thing to watch out for is the existence of _unused dependencies_. This can easily happen after code refactoring when a third-party library stops being used but isn't removed from the dependency list. You can use the https://github.com/nebula-plugins/gradle-lint-plugin[Gradle Lint plugin] to identify such dependencies, amongst other things.
+
+### Minimize repository count
+
+When Gradle attempts to resolve a dependency, it searches through each repository in the order that they are declared until it finds that dependency. This generally means that you want to declare the repository hosting the largest number of your dependencies first so that only that repository is searched in the majority of cases. You should also limit the number of declared repositories to the minimum viable number for your build to work.
+
+One technique available if you're using a custom repository server is to create a virtual repository that aggregates several real repositories together. You can then add just that repository to your build file, further reducing the number of HTTP requests that Gradle sends during dependency resolution.
 
 ### Beware third party dependency resolution plugins
 
