@@ -114,7 +114,12 @@ The rest of the summary relates to the main categories, which we cover in detail
 
 ### Using Gradle build scans
 
-Build scans are a feature provided by Gradle Inc. that aggregate information across multiple build runs and make those dianotistics available to you online as a report. <Need more info here on what build scans provide over and above profile reports>.
+Build scans are a feature provided by Gradle Inc. that aggregate information across multiple build runs and make those dianotistics available to you online as a report. These have several benefits over a single build profile report:
+
+* Easily share scans between developers and build masters
+* Track build performance over time
+* More easily identify the source of a problem
+* Identify issues specific to a single developer site
 
 You can learn more about build scans https://gradle.com[at Gradle.com].
 
