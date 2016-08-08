@@ -371,7 +371,11 @@ Since dexing is CPU-intensive, a significantly faster CPU will deliver a signifi
 
 ### Optimize multidex development builds
 
-Creating multidex output for your project typically adds a significant amount of time to your build due to the merging process, so you should have a development flavor that targets a minimum SDK version of 21. This results in a faster build when working on the project code. Here's an example partial configuration:
+Creating multidex output for your project typically adds a significant amount of time to your build due to the merging process. You can mitigate this by setting a minimum SDK version of 21, which allows the Android plugin to perform more efficient dexing.
+
+Of course, in most cases this isn't feasible in general because older versions of Android are still prevalent and many of you will want to support those devices. However, if you don't mind developing and testing against SDK 21+ only, then can set up a development flavor that targets a minimum SDK version of 21, while the production flavor targets an older version. This results in a faster build when working on the project code.
+
+Here's an example partial configuration with the two flavors:
 
 [source,groovy]
 ----
@@ -387,7 +391,7 @@ android {
 }
 ----
 
-You can find out more about this feature in the https://developer.android.com/studio/build/multidex.html#dev-build[Android Studio user guide].
+You can find out more about this feature in the https://developer.android.com/studio/build/multidex.html#dev-build[Android Studio user guide]. Whether you use this approach or not will depend on how you see the trade off between development build speed and consistency in versions between development and production testing.
 
 ### Use discretion when adding build types and flavors
 
