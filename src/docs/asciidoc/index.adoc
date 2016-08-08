@@ -400,7 +400,11 @@ You can find out more about this feature in the https://developer.android.com/st
 
 ### Use discretion when adding build types and flavors
 
-The more build types and flavors you create, the longer it will take for Gradle to configure your project. So if developers only ever build debug versions of a project, don't add other build types for development. Work out which build types and flavors you really need and configure just those ones.
+The more build types and flavors you create, the longer it will take for Gradle to configure your project. So what you can do is wrap flavor and build type declarations in conditions - via `if` statements typically - such that whoever runs the build can switch flavors and build type on or off through project or system properties.
+
+For example, if a developer only ever builds debug versions of a project, they could set a project property that disables the non-debug build types and the non-development flavors. They can still build whatever they need simply by passing different property values, but the default would result in a faster build.
+
+This does make builds less maintainable, though, so you should only use this approach where you get a significant boost in build speed. Conventions in property names can help with the build maintenance too.
 
 ## Summary
 
