@@ -20,17 +20,19 @@ A guide on performance tuning would normally start with profiling and something 
 
 ### Enable the daemon
 
-Until the Gradle daemon is enabled by default, which will happen with Gradle 3.0, you will see big improvements in build speed simply by enabling it for all builds. You can learn how to do that https://docs.gradle.org/current/userguide/gradle_daemon.html[in the user guide]. The daemon significantly improves startup, configuration, and overall build execution times.
+The Gradle daemon is a mechanism for improving the performance of Gradle. As of Gradle 3.0, the daemon is enabled by default but if you are using an older version, you should definitely enable it. You will see big improvements in build speed by doing so. You can learn how to do that https://docs.gradle.org/2.14/userguide/gradle_daemon.html[in the 2.14 user guide].
 
-The usual recommendation is to enable the daemon for developer machines and disable it for continuous integration servers. This is because the daemon is a background process that may require manual intervention from time to time and that’s not always easy when the process is on a separate machine from where you’re sitting. You also need to factor in whether you run many builds with different VM configurations, which will lead to each build having its own daemon and a potential sea of daemon processes at any one time.
+The recommendation for pre-3.0 versions of Gradle is to enable the daemon for developer machines and disable it for continuous integration servers. This is because the daemon is a background process that may require manual intervention from time to time and that’s not always easy when the process is on a separate machine from where you’re sitting. You also need to factor in whether you run many builds with different VM configurations, which will lead to each build having its own daemon and a potential sea of daemon processes at any one time.
 
-Nonetheless, if build times on your CI server hurt developer productivity, you should definitely consider enabling the daemon there. From Gradle 3.0 onwards, the recommendation will be to always use the daemon.
+Nonetheless, if build times on your CI server hurt developer productivity, you should definitely consider enabling the daemon there. Alternatively, upgrade to the latest version of Gradle to benefit from improvements in the robustness of the daemon.
 
-### Use latest Gradle version
+### Use latest Gradle and JVM versions
 
 The Gradle team works regularly on improving the performance of different aspects of Gradle builds. If you’re using an old version of Gradle, you’re missing out on the benefits of that work. Try upgrading to the latest version of Gradle to see what kind of impact it has. Doing so is low risk because very few things break between minor versions of Gradle.
 
 Going up a major version will probably involve more work as that's when deliberate breaking changes happen. Even so, it’s definitely worth giving it a try, particularly if the release notes for a new version explicitly call out new performance improvements.
+
+As Gradle runs on the JVM, improvements in the performance of the latter will often benefit Gradle. You should consider running Gradle with the latest major version of the JVM for that reason.
 
 ### Parallel builds
 
@@ -56,7 +58,7 @@ org.gradle.parallel=true
 
 WARNING: See the warning in the above parallel builds section to find out why you need to take care with this feature.
 
-Imagine you have 300 subprojects all managed by a single Gradle build. Even if the configuration time for each project is just 5 seconds, that means every build will take at last 300 x 5s = 25 minutes! That’s why it’s particularly crucial to keep a close eye on configuration times for projects that have a lot of modules.
+Imagine you have 300 subprojects all managed by a single Gradle build. Even if the configuration time for each project is just half a second, that means every build will take at last 300 x 0.5s = 2.5 minutes! That’s why it’s particularly crucial to keep a close eye on configuration times for projects that have a lot of modules.
 
 With that in mind, wouldn’t it be better if Gradle only configured the projects that were actually required to execute the requested task(s)? Of course, and that’s where the `--configure-on-demand` command line option comes in. It avoids a lot of unnecessary configuration at the cost of working out which projects are required. We wouldn’t recommend using it if you only have a small number of quick-to-configure subprojects, but otherwise it may be worth a try.
 
@@ -114,7 +116,7 @@ The rest of the summary relates to the main categories, which we cover in detail
 
 ### Using Gradle build scans
 
-Build scans are a feature provided by Gradle Inc. that aggregate information across multiple build runs and make those dianotistics available to you online as a report. These have several benefits over a single build profile report:
+Build scans are a feature provided by Gradle Inc. that aggregate information across multiple build runs and make those diagnostics available to you online as a report. These have several benefits over a single build profile report:
 
 * Easily share scans between developers and build masters
 * Track build performance over time
@@ -133,7 +135,7 @@ The profile report will help you identify which projects take the most time to c
 
 Every plugin that you apply to a project adds to the overall configuration time. Some plugins have a greater impact than others. That doesn’t mean you should avoid using plugins, but you should take care to only apply them where they’re needed. For example, it’s easy to apply plugins to all projects via `allprojects {}` or `subprojects {}` even if not every project needs them.
 
-Ideally, plugins should not incur a significant configuration-time cost. If they do, the focus should be on improving the plugin. Nonetheless, in projects with many modules and a significant configuration time, you should spend a little time identifying any plugins that have a notable impact. The only reliable way to do this is by running a build twice: once with the plugin applied and once without
+Ideally, plugins should not incur a significant configuration-time cost. If they do, the focus should be on improving the plugin. Nonetheless, in projects with many modules and a significant configuration time, you should spend a little time identifying any plugins that have a notable impact. The only reliable way to do this is by running a build twice: once with the plugin applied and once without.
 
 ### Avoid expensive or blocking work
 
@@ -158,7 +160,7 @@ project.tasks.create("copyFiles", Copy) { Task t ->
 }
 ----
 
-You can see how this example uses the `create()` and `getByName()` methods, which are available on all Gradle “domain collections”, like tasks, configurations, dependencies, extensions, etc. Some collections have dedicated types, `TaskContainer` being one of them, that have useful extra methods like the `create()` method above that takes a task type.
+You can see how this example uses the `create()` and `getByName()` methods, which are available on all Gradle “domain object containers”, like tasks, configurations, dependencies, extensions, etc. Some collections have dedicated types, `TaskContainer` being one of them, that have useful extra methods like the `create()` method above that takes a task type.
 
 If you do decide to use static compilation, we recommend using an IDE as it will quickly show errors due to unrecognised types, properties, and methods. You’ll also get auto-completion, which is always handy.
 
