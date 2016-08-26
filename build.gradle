@@ -1,0 +1,22 @@
+plugins {
+    id "org.asciidoctor.convert" version "1.5.3"
+}
+apply plugin: "base"
+
+asciidoctor {
+    sourceDir = file("src/docs/asciidoc")
+    outputDir = file("$buildDir/asciidoc")
+    attributes "source-highlighter": "coderay",
+            "coderay-linenums-mode": "table",
+            imagesdir: "images",
+            stylesdir: "stylesheets",
+            // stylesheet: "base.css", //This allows us to omit Asciidoc base styles
+            sectanchors: true,
+            sectlinks: true,
+            linkattrs: true,
+            encoding: "utf-8",
+            toc: "right",
+            docinfo1: "" // Tells asciidoc to include docs/asciidoc/docinfo.html at the top
+}
+
+assemble.dependsOn "asciidoctor"
