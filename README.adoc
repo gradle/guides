@@ -8,17 +8,17 @@
 
 == Get This Template
 
-    git clone https://github.com/gradle-guides/gs-template.git
-    rm -rf getting-started-template/.git
+[source,shell]
+----
+git clone https://github.com/gradle-guides/gs-template.git
+rm -rf getting-started-template/.git
+----
 
 == Making Changes
 
 Use your favorite editor to make changes under src/docs/asciidoc/.
 
 === Building and Testing
-
-[source]
-This is what a source block looks like
 
 == Submitting to Gradle Guides
 
