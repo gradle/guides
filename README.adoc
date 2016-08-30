@@ -137,11 +137,22 @@ At any point in the writing process, you can publish your guide to GitHub Pages 
 https://pages.github.com/[GitHub Pages] provides GitHub users with a free and convienent way to publish static content on the web. You'll find everything you need for publishing your guide in the steps below, but if you'd like more information about GitHub Pages, check out https://help.github.com/categories/github-pages-basics/[GitHub Pages Basics].
 ====
 
+First, open `build.gradle` and change the value assigned to `repoUri` to reflect the URL of your new repository. For example:
+
+[source,groovy]
+.build.gradle
+----
+githubPages {
+    repoUri = "https://github.com/your-github-username/gs-your-guide.git"
+    // ...
+}
+----
+
 To publish your guide, just run:
 
 [source,shell]
 ----
-./gradlew publishGhPages
+./gradlew build publishGhPages
 ----
 
 When complete, an HTML rendering of the latest changes to your guide should be available at http://your-github-username.github.io/gs-your-guide.
