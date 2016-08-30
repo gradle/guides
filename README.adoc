@@ -1,11 +1,13 @@
-= Building Your Own Gradle Guide
+= Writing a Getting Started Guide
 
-== Prerequisites
+== What you'll build
+
+== What you'll need
 
  - Git
  - Java
 
-== Get This Template
+== Create a new repository for your guide
 
 [source,shell]
 ----
@@ -13,15 +15,17 @@ git clone https://github.com/gradle-guides/gs-template.git
 rm -rf gs-template/.git
 ----
 
-== Making Changes
+== Generate and view your guide locally
+
+== Write your guide
 
 Use your favorite editor to make changes to guide content in `README.adoc`.
 
-=== Building and Testing
+== Publish your guide to GitHub Pages
 
-== Submitting to Gradle Guides
+== Request your guide be listed at gradle.org
 
-== Conclusion
+== Summary
 
 Congratulations! You have made a contribution to Gradle and helped millions of engineers like yourself.
 
