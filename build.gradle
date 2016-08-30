@@ -14,6 +14,7 @@ asciidoctor {
     attributes "source-highlighter": "coderay",
             "coderay-linenums-mode": "table",
             imagesdir: "images",
+            icons: "font",
             sectanchors: true,
             sectlinks: true,
             linkattrs: true,
