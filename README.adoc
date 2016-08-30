@@ -15,11 +15,6 @@
 
 Use your favorite editor to make changes under src/docs/asciidoc/.
 
-[WARNING]
-====
-We don't use Asciidoc's default styles. I know, I know, we're control freaks.
-====
-
 === Building and Testing
 
 [source]
