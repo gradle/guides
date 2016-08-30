@@ -17,21 +17,21 @@ Starting from a template project, you'll create a new Git repository for your Ge
 
 == Create a new repository for your guide
 
-The document you are reading right now is itself a Getting Started Guide whose source lives at https://github.com/gradle-guides/gs-template. Follow the steps below to use this repository as a template for creating your own new guide.
+The document you are reading right now is itself a Getting Started Guide whose source lives at https://github.com/gradle-guides/gs-writing-gs-guides. Follow the steps below to use this repository as a template for creating your own new guide.
 
 [source,shell]
 ----
-git clone https://github.com/gradle-guides/gs-template.git gs-your-guide # <1>
+git clone https://github.com/gradle-guides/gs-writing-gs-guides.git gs-your-guide # <1>
 cd gs-your-guide
 rm -rf .git # <2>
 git init    # <3>
 git add .   # <4>
-git commit -m"Initialize repository from gradle-guides/gs-template" # <5>
+git commit -m"Initialize repository from template" # <5>
 ----
-<1> Clone the `gs-template` repository locally, renaming it to `gs-your-guide` in the process. Replace `<your-guide>` with the actual name of your guide. For example, `gs-writing-plugins` would be a good repository name for a guide titled "Getting Started Writing Gradle Plugins". Likewise, `gs-fat-jars` would be a good name for a guide titled "Getting Started Working with Fat JARs".
-<2> Remove the `.git` database for the `gs-template` guide
+<1> Clone the template repository locally, renaming it to `gs-your-guide` in the process. Replace `<your-guide>` with the actual name of your guide. For example, `gs-writing-plugins` would be a suitable repository name for a guide titled "Getting Started Writing Gradle Plugins", and `gs-fat-jars` would work for a guide titled "Getting Started Working with Fat JARs".
+<2> Remove the `.git` database for the template guide
 <3> Initialize a new `.git` database for your guide
-<4> Add all content from `gs-template` as a baseline for your guide
+<4> Add all content from the template as a baseline for your guide
 <5> Commit the template content to your new repository
 
 == Render and view your guide locally
