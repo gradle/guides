@@ -95,6 +95,7 @@ When complete, open or refresh `build/html5/index.html` in your browser and noti
 Tighten the development loop with Gradle's _continuous mode_
 ====
 Making a change to a file and re-running `./gradlew build` to see the results is repetitive and time consuming. Instead, run Gradle in _continuous mode_ to watch for changes to source files and re-generate guide HTML automatically with `./gradlew --continuous build`.
+====
 
 You now have everything you need to write your guide. To get a feel for conventions and best practices, we recommend you read and work through a few of the existing Getting Started Guides at http://grdev.org/guides[gradle.org/guides] if you haven't done so already.
 
