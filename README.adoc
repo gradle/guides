@@ -4,8 +4,11 @@
 
 == What you'll need
 
- - Git
- - Java
+ - About 15 minutes
+ - https://git-scm.org[Git]
+ - A https://github.com[GitHub] account
+ - http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Runtime Environment] version 1.7 or better (to run Gradle)
+ - A text editor
 
 == Create a new repository for your guide
 
