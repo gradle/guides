@@ -1,9 +1,8 @@
 = Building Your Own Gradle Guide
 
-
 == Prerequisites
 
- - git
+ - Git
  - Java
 
 == Get This Template
@@ -11,12 +10,12 @@
 [source,shell]
 ----
 git clone https://github.com/gradle-guides/gs-template.git
-rm -rf getting-started-template/.git
+rm -rf gs-template/.git
 ----
 
 == Making Changes
 
-Use your favorite editor to make changes under src/docs/asciidoc/.
+Use your favorite editor to make changes to guide content in `README.adoc`.
 
 === Building and Testing
 
@@ -26,4 +25,4 @@ Use your favorite editor to make changes under src/docs/asciidoc/.
 
 Congratulations! You have made a contribution to Gradle and helped millions of engineers like yourself.
 
-Thank you very much for you contributions.
+Thank you very much for your contributions.
