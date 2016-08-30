@@ -19,7 +19,8 @@ asciidoctor {
             sectlinks: true,
             linkattrs: true,
             encoding: "utf-8",
-            toc: "right"
+            toc: "right",
+            toclevels: 1
             // docinfo1: "" // Tells asciidoc to include docs/asciidoc/docinfo.html at the top
 }
 

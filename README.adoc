@@ -1,5 +1,4 @@
 = Building Your Own Gradle Guide
-:toclevels: 1
 
 .DRAFT
 ****
