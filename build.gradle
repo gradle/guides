@@ -20,7 +20,6 @@ asciidoctor {
             encoding: "utf-8",
             toc: "right",
             toclevels: 1
-            // docinfo1: "" // Tells asciidoc to include docs/asciidoc/docinfo.html at the top
 }
 
 task copyIndex {
