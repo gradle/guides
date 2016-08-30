@@ -1,0 +1,39 @@
+= Building Your Own Gradle Guide
+:toclevels: 1
+
+.DRAFT
+****
+This document is currently an early draft and should be treated as such. You can help *improve this guide* by submitting issues and pull requests to https://github.com/gradle-guides/getting-started-template/[the GitHub repository].
+****
+
+## Prerequisites
+
+* git
+* Java
+
+## Get This Template
+
+    git clone https://github.com/gradle-guides/gs-template.git
+    rm -rf getting-started-template/.git
+
+## Making Changes
+
+Use your favorite editor to make changes under src/docs/asciidoc/.
+
+[WARNING]
+====
+We don't use Asciidoc's default styles. I know, I know, we're control freaks.
+====
+
+### Building and Testing
+
+[source]
+This is what a source block looks like
+
+## Submitting to Gradle Guides
+
+## Conclusion
+
+Congratulations! You have made a contribution to Gradle and helped millions of engineers like yourself.
+
+Thank you very much for you contributions.
