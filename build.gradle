@@ -14,7 +14,6 @@ asciidoctor {
     attributes "source-highlighter": "coderay",
             "coderay-linenums-mode": "table",
             imagesdir: "images",
-            // stylesheet: "guide.css", //This allows us to omit Asciidoc base styles
             sectanchors: true,
             sectlinks: true,
             linkattrs: true,
