@@ -1,17 +1,17 @@
 = Building Your Own Gradle Guide
 
 
-## Prerequisites
+== Prerequisites
 
 * git
 * Java
 
-## Get This Template
+== Get This Template
 
     git clone https://github.com/gradle-guides/gs-template.git
     rm -rf getting-started-template/.git
 
-## Making Changes
+== Making Changes
 
 Use your favorite editor to make changes under src/docs/asciidoc/.
 
@@ -20,14 +20,14 @@ Use your favorite editor to make changes under src/docs/asciidoc/.
 We don't use Asciidoc's default styles. I know, I know, we're control freaks.
 ====
 
-### Building and Testing
+=== Building and Testing
 
 [source]
 This is what a source block looks like
 
-## Submitting to Gradle Guides
+== Submitting to Gradle Guides
 
-## Conclusion
+== Conclusion
 
 Congratulations! You have made a contribution to Gradle and helped millions of engineers like yourself.
 
