@@ -1,328 +1,151 @@
 = Building a Java Library
 
-Gradle is a flexible tool that allows you to build anything, but it’s early focus was on Java. So it has historically had very strong support for building anything Java-related. This guide will show you how to build a simple Java library, from source code, through testing, to packaging as a JAR file.
+This guide walks you through the process of using Gradle to creating a Java library project that produces a JAR (Java Archive).
 
 == What you’ll build
 
-To keep it simple, you’ll be creating a Java library containing a single class that performs iterative hashing. In this case that means applying the SHA-256 algorithm multiple times to a piece of text, hashing the result of the previous hash on each iteration after the first. This is a technique used sometimes to make the overall hash take a long time via lots of iterations, impeding brute force attacks on username and password combinations.
-
-At the end of the of the guide, you’ll have a packaged JAR file that you can reuse in other projects.
+You'll write a simple Java class and then use Gradle to compile and package it into a new library named `mylib`. The result will be a JAR file containing the compiled class and a default manifest file. Along the way, you'll configure Gradle to express the _version_ of the library in the name of the JAR file. When complete, you'll verify that the library is well-formed by consuming it in a basic command-line application.
 
 == What you’ll need
 
- - About [TODO] minutes
- - A text editor or Java IDE
- - A Java Runtime Environment (JRE) installed, version 1.7 or higher
- - Gradle installed
- - (Optional) The Buildship plugin if you want to work within Eclipse
+ - About 5 minutes
+ - A text editor
+ - The http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK), version 1.7 or better
+ - Gradle version 3.0 or better
 
-Note that IntelliJ has built-in support for Gradle, so you don’t need anything extra.
+== Create a new Java library project
 
-== Creating the project
+Create a new project directory named `mylib` and initialize the directory structure that will hold your library classes.
 
-It's easy to add a Gradle build to an existing Java project or create a new Gradle-based Java project with your IDE. But for this tutorial, we want as few prerequisites as possible so you’ll be using Gradle’s Java library project template to get started and then manually add some code.
+[source,shell]
+----
+mkdir mylib
+cd mylib
+mkdir -p src/main/java/org/example/mylib
+----
 
-=== Generating the skeleton project
+Now create `MyClass`.
 
-Start by creating a new directory for your project, switching to that directory, and then running
+[source,java]
+.src/main/java/org/example/mylib/MyClass.java
+----
+package org.example.mylib;
 
-    gradle init --type java-library
+public class MyClass {
+}
+----
 
-This will do several important things:
+Create `build.gradle` and apply Gradle's built-in `java` plugin.
 
- - Create a build file, _build.gradle_, describing how to build the project
- - Create a _settings.gradle_ file that configures the project name
- - Set up the {user-manual}gradle_wrapper.html[Gradle wrapper] so other users don’t need Gradle installed to run the build
- - Create the standard directory structure for a Java project, which matches the Apache Maven convention, i.e. _src/main/java_ etc.
+[source,gradle]
+.build.gradle
+----
+apply plugin: 'java'
+----
 
-You will also find _src/main/java/Library.java_ and _src/test/java/LibraryTest.java_ files. You should delete these now as you won’t be using them.
 
-NOTE: This is the first and last time you need to use the installed version of Gradle. From here, you'll be using the Gradle wrapper instead.
-
-=== Building the project
-
-The next step is to find out what things you can do with the build. You have a choice at this point: use an IDE or work with a text editor and the command line. If you want to use an IDE, import the project as a Gradle project, configuring it to use the Gradle wrapper. The rest of this guide will assume you are using a text editor and the command line.
-
-To get Gradle to build stuff, you execute what are known as tasks. You won’t always know what tasks are available, though, so the best option is to run the `tasks` command like so:
-
-    ./gradlew tasks
-
-The first time you run this, Gradle will download and cache the appropriate version of Gradle. So you need to be online and it will take a little extra time. You might also see the first line of the command's output saying that Gradle is starting the {user-manual}gradle_daemon.html[Gradle Daemon]: this is perfectly normal, so just ignore it.
-
-[NOTE]
+[TIP]
 ====
-If you’re using Windows, then don’t include the `./` before `gradlew` in the example command lines. That’s for Unix-like systems only. In other words, just run `gradlew <task>`.
+TODO: Mention `gradle init --type java-library` for future reference
 ====
 
-The `tasks` command will print out a list of the main tasks you can run. In the case of your new Java library project, the output will look like this:
+== Build the library
+
+Run `gradle jar`.
 
 ----
-:tasks
-
-------------------------------------------------------------
-All tasks runnable from root project
-------------------------------------------------------------
-
-Build tasks                                                                                   <1>
------------
-assemble - Assembles the outputs of this project.
-build - Assembles and tests this project.
-buildDependents - Assembles and tests this project and all projects that depend on it.
-buildNeeded - Assembles and tests this project and all projects it depends on.
-classes - Assembles main classes.
-clean - Deletes the build directory.
-jar - Assembles a jar archive containing the main classes.
-testClasses - Assembles test classes.
-
-Build Setup tasks
------------------
-init - Initializes a new Gradle build. [incubating]
-wrapper - Generates Gradle wrapper files. [incubating]
-
-Documentation tasks
--------------------
-javadoc - Generates Javadoc API documentation for the main source code.
-
-Help tasks
-----------
-buildEnvironment - Displays all buildscript dependencies declared in root project 'new-java-gradle'.
-components - Displays the components produced by root project 'new-java-gradle'. [incubating]
-dependencies - Displays all dependencies declared in root project 'new-java-gradle'.
-dependencyInsight - Displays the insight into a specific dependency in root project 'new-java-gradle'.
-help - Displays a help message.
-model - Displays the configuration model of root project 'new-java-gradle'. [incubating]
-projects - Displays the sub-projects of root project 'new-java-gradle'.
-properties - Displays the properties of root project 'new-java-gradle'.
-tasks - Displays the tasks runnable from root project 'new-java-gradle'.
-
-Verification tasks
-------------------
-check - Runs all checks.
-test - Runs the unit tests.
-
-Rules
------
-Pattern: clean<TaskName>: Cleans the output files of a task.
-Pattern: build<ConfigurationName>: Assembles the artifacts of a configuration.
-Pattern: upload<ConfigurationName>: Assembles and uploads the artifacts belonging to a configuration.
-
-To see all tasks and more detail, run gradlew tasks --all
-
-To see more detail about a task, run gradlew help --task <task>
-
-BUILD SUCCESSFUL
-----
-<1> The set of tasks you'll be using in this guide
-
-As you can see, you have a lot of tasks to choose from. We’ll focus on just a few of them in this guide, mostly from the Build Tasks group.
-
-Run your first task with the following command:
-
-    ./gradlew assemble
-
-If you have deleted the existing source files - do that now if you haven't - you’ll see the following output:
-
-----
-:compileJava UP-TO-DATE
+$ gradle jar
+:compileJava
 :processResources UP-TO-DATE
-:classes UP-TO-DATE
-:jar UP-TO-DATE
-:assemble UP-TO-DATE
+:classes
+:jar
 
 BUILD SUCCESSFUL
 ----
-
-Each of the names prefixed with a colon (`:`) is the name of a task. The output is telling you that running the `assemble` task results in Gradle
 
  1. compiling the Java source code
  2. processing any resource files
  3. packaging everything up into a JAR file
 
-As there are no source files yet, the build doesn’t actually do anything. That's why all the tasks say they're up to date. Let’s fix that next.
-
-=== Adding the code
-
-Create the file _src/main/java/org/example/Digester.java_, ensuring that its parent directories exist. Next, put the following text into that file:
-
-[source,java]
 ----
-package org.example;
-
-import org.apache.commons.codec.digest.DigestUtils;
-
-public class Digester {
-    public static String iterativeHash(String text, int iterationCount) {
-        for (int i = 0; i < iterationCount; i++) {
-            text = DigestUtils.sha256Hex(text);
-        }
-
-        return text;
-    }
-}
+$ ls build/libs/
+mylib.jar
 ----
 
-You now have something to compile and package into a JAR file, so run the `assemble` task again. This time you’ll see the build fail during the `compileJava` task as the compiler can’t find the `DigestUtils` class. It’s time to add a library dependency!
-
-== Adding dependencies
-
-Gradle has built-in dependency management, so you don’t have to track down the relevant JAR files and copy them into the project. Instead, all you need to do is tell Gradle where to look for dependencies and specify which ones you want.
-
-Open up the _build.gradle_ file in a text editor or your IDE. It’s quite noisy as it has a lot of comments in it (using Java comment syntax). Ignore the comments and you’re left with something very concise:
-
-[source,groovy]
 ----
-apply plugin: 'java'                                 <1>
-
-repositories {
-    jcenter()                                        <2>
-}
-
-dependencies {
-    compile 'org.slf4j:slf4j-api:1.7.21'             <3>
-
-    testCompile 'junit:junit:4.12'
-}
+$ jar -tf build/libs/mylib.jar
+META-INF/
+META-INF/MANIFEST.MF
+MyClass.class
 ----
-<1> Applies the `java` plugin, which allows you to build Java projects easily, particularly if they follow the directory structure conventions - _src/main/java_, _src/main/resources_, _src/test/java_, etc.
-<2> Unlike with Apache Maven, there is no default search repository for dependencies, so if you want to use declarative dependencies, you have to declare at least one repository. Builds typically use Maven Central - `mavenCentral()` - or JCenter - `jcenter()` - as the primary repository.
-<3> Declares a compile-time dependency on SLF4J's API using the `<group>:<name>:<version>` shorthand.
 
-This sample library obviously has no need for SLF4J at this point, but it does need Commons Codec at compile time. So replace the line
+== Configure the library
 
 [source,groovy]
-compile 'org.slf4j:slf4j-api:1.7.21'
-
-with
-
-[source,groovy]
-compile 'commons-codec:commons-codec:1.10'
-
-The first part of this line specifies which configuration to add the dependency to. If you’ve used Apache Ivy in the past, you should already be familiar with the concept of a configuration. Apache Maven uses scopes to provide a similar effect. All the dependencies declared with the `compile` configuration are automatically included on the Java compiler’s classpath.
-
-The other main configurations are
-
- - `runtime` - dependencies required to use a library or run an application at runtime. Includes all `compile` dependencies automatically.
- - `testCompile` - dependencies required to compile the unit tests.
- - `testRuntime` - dependencies required to run the unit tests. Includes all `testCompile` dependencies automatically.
-
-You can learn more about these configurations in the {user-manual}java_plugin.html#sec:java_plugin_and_dependency_management[user manual].
-
-The second part of the line - `commons-codec:commons-codec:1.10` - is known as the dependency coordinate. It uniquely identifies the library using a group, name and version (or _groupId_, _artifactId_ and _version_ in Apache Maven terminology). Each component of the coordinate is separated with a colon and you can include an additional classifier component as well, immediately after the version and separated by a colon.
-
-Save the change to _build.gradle_ and run the `assemble` task again. The compilation will now be successful and the build will create a JAR file in _build/libs_. The name of that JAR will depend on several factors and it may not be what you want. So how to you change it? Let's take a look at the configuration options available to you.
-
-
-== Configuring the JAR filename
-
-The name of the archive depends on several factors. The primary one is the name of the project. You might not be happy with the current project name as it's derived from the name of the project directory. If that's the case, you can open up the _settings.gradle_ file and look for the line
-
-[source,groovy]
-rootProject.name = '...'
-
-Just change the text inside the quotes to whatever name you prefer. Both your project and the JAR file name will now reflect that change.
-
-You will also see that the name of the JAR file doesn’t include a version. That makes sense as Gradle currently has no idea what the project version is. Let’s fix that by adding the following two lines to _build.gradle_:
-
-[source,groovy]
+.build.gradle
 ----
 apply plugin: 'java'
 
-group = 'org.example'
-version = '1.0-SNAPSHOT'
-...
+jar {
+    version = '0.1.0'
+}
 ----
 
-The group isn’t important for this guide as it’s mainly relevant to publishing libraries, but it’s good to get into the habit of specifying a group with the version. The version itself can be anything you like, but this example follows the Maven archetype convention of starting with 1.0-SNAPSHOT.
+----
+$ gradle clean jar
+:compileJava
+:processResources UP-TO-DATE
+:classes
+:jar
+----
 
-Before you run the `assemble` task again, there’s one very minor issue: the previous JAR file will remain where it is as the new JAR file has a different name that includes the version. You could run `clean`, but that will force a recompilation as well, which isn’t strictly necessary. Fortunately, Gradle allows you to clean the output generated by a specific task using the pattern `clean<Task>`. This is an example of a {user-manual}more_about_tasks.html#sec:task_rules[task rule].
+----
+$ ls build/libs/
+mylib-0.1.0.jar
+----
 
-So, to ensure the previous JAR is removed without forcing a recompilation, run this:
+You now have a JAR file whose name includes the version and that you can use with other Java projects.
 
-    ./gradlew cleanJar assemble
-
-You’ll now have a JAR file whose name includes the version and that you can use with other Java projects. But is the library reliable? It may work now, but what happens when someone changes the code? Where are the tests? That's what we look at next.
-
-== Running unit tests
-
-When you run the task `build`, you’ll see that it triggers a task called `test` but nothing happens. That’s because there are no unit tests yet. As a first step, you need to create at least one.
-
-By convention, unit tests go in the _src/test/java_ directory. The test class names aren’t critical, but typically they are formed from the name of the class under test combined with a specific suffix, like “Test” or “Tests”. In this example, we’ll follow the latter naming convention, so create the file _src/test/java/org/example/DigesterTests.java_ and set its content to the following:
+== Consume the library
 
 [source,java]
+.Main.java
 ----
-package org.example;
+import org.example.mylib.MyClass;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-public class DigesterTests {
-    @Test
-    public void testIterativeHash() {
-        assertEquals(
-                "c0535e4be2b79ffd93291305436bf889314e4a3faec05ecffcbb7df31ad9e51a",
-                Digester.iterativeHash("Hello world!", 1).toLowerCase());
-        assertEquals(
-                "2c31414b16a4ba22c71230c5e5e500498b0155ddac2fb0c1ea83004c4a694f91",
-                Digester.iterativeHash("Hello world!", 5).toLowerCase());
+public class Main {
+    public static void main(String... args) {
+        System.out.printf("Hello, %s!\n", MyClass.class.getSimpleName());
     }
 }
-
 ----
 
-Now when you run `./gradlew test`, you’ll get a unit test report at _build/reports/tests/test/index.html_ that you can open in a browser.
-
-You can also configure many aspects of the unit tests through the following syntax:
-
-[source,groovy]
-test {
-    useTestNG()
-    maxHeapSize = "512m"
-}
-
-This example is changing the default behavior of the `test` task directly, switching to TestNG as the test framework and giving the separate unit test JVM a larger heap. You can learn about all the available options in the {dsl-ref}org.gradle.api.tasks.testing.Test.html[DSL reference for the `Test` task type].
-
-With appropriate plugins and configuration, you can easily add support for other verification steps, including integration tests and static code analysis with tools such as {user-manual}findbugs_plugin.html[FindBugs]. Covering those is unfortunately outside the scope of this guide, but it’s useful to know what you can do in your own builds.
-
-You now have a fully working Java build that includes the core steps: compilation, testing, and packaging. There is just one more customization we want to show, because it’s quite common. How to generate source and javadoc JARs.
-
-== Source and Javadoc JARs
-
-The Gradle Java plugin only creates the main library JAR by default. This is often what you want, but IDEs like to have access to JARs containing the source files and Javadoc documentation as well. Fortunately this is easy to configure.
-
-The following example demonstrates how to create `Jar` tasks for both sources and Javadocs and integrate those into the rest of the build:
-
-[source,groovy]
 ----
-task sourcesJar(type: Jar) {
-    appendix = "sources"
-    from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar) {
-    appendix = "javadoc"
-    from javadoc
-}
-
-assemble.dependsOn sourcesJar, javadocJar
+$ javac Main
+Main.java:1: error: package org.example.mylib does not exist
+import org.example.mylib.MyClass;
+                        ^
+Main.java:5: error: cannot find symbol
+        System.out.printf("Hello, %s!\n", MyClass.class.getSimpleName());
+                                          ^
+  symbol:   class MyClass
+  location: class Main
+2 errors
 ----
 
-When you run the `assemble` task now, you’ll find a _-sources_ JAR and a _-javadoc_ one in the _build/libs_ directory. You should also take this opportunity to check what is in those JAR files using either the `jar tf <file>` command or some other option for viewing the contents of zip files.
-
-The above example makes use of Gradle’s rich API to easily grab the files you need for each JAR file. The source files come from the Java plugin’s {user-manual}java_plugin.html#sec:java_source_sets[concept of source sets], whereas the Javadoc files come from the {user-manual}more_about_tasks.html#sec:up_to_date_checks[output of the `javadoc` task]. This is just a taste of some of the powerful concepts provided by Gradle.
-
-This example also shows you how easy it is to insert tasks into the overall build’s task graph using the `dependsOn()` method. You can declare this when you first create the task or, as in this case, after the task has already been declared.
+----
+$ java -classpath .:build/libs/mylib.jar Main
+Hello, MyClass!
+----
 
 == Summary
 
-In this guide, you learned how to set up and execute a basic Java library build using the Java plugin. It introduced you to:
+== Next steps
 
- - Repositories and dependencies
- - Configurations
- - The Java plugin directory structure conventions
- - Tasks for compiling, testing and packaging Java code
- - Customizing the build
-
-This just scratches the surface of what you can do to mold the build to your own project’s requirements, but it hopefully gives you a sense of how easy it is to get things going if you follow the conventions. And most builds follow the conventions with only small parts affected by special project requirements.
-
-[TODO options for reading next? Adding a Java library into a multi-project build? Building Java command line apps and webapps? Publishing? Managing a different directory structure (e.g. Grails)?]
-
+////
+ - Getting Started Publishing Java Libraries gradle/build-tool-web#42
+ - Adding a Java library into a multi-project build?
+ - Building Java command line apps and webapps?
+ - Publishing?
+ - Managing a different directory structure (e.g. Grails)?
+////
