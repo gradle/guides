@@ -1,0 +1,40 @@
+plugins {
+    id "org.ajoberstar.github-pages" version "1.4.2"
+    id "org.asciidoctor.convert" version "1.5.3"
+}
+apply plugin: "base"
+
+asciidoctor {
+    sourceDir = rootDir
+    sources {
+      include "README.adoc"
+    }
+    outputDir = buildDir
+    backends = ["html5"]
+    attributes "source-highlighter": "coderay",
+            "coderay-linenums-mode": "table",
+            imagesdir: "images",
+            icons: "font",
+            sectanchors: true,
+            sectlinks: true,
+            linkattrs: true,
+            encoding: "utf-8",
+            toc: "right",
+            toclevels: 1
+}
+
+task copyIndex {
+    doLast {
+        file("${asciidoctor.outputDir}/${asciidoctor.backends[0]}/README.html")
+            .renameTo("${asciidoctor.outputDir}/${asciidoctor.backends[0]}/index.html")
+    }
+}
+
+githubPages {
+    repoUri = "git@github.com:gradle-guides/gs-writing-gs-guides.git"
+    pages {
+        from "${asciidoctor.outputDir}/${asciidoctor.backends[0]}"
+    }
+}
+
+assemble.dependsOn "asciidoctor", "copyIndex"
