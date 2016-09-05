@@ -1,10 +1,4 @@
 = Writing Gradle Plugins
-:toclevels: 1
-
-.DRAFT
-****
-This document is currently an early draft and should be treated as such. You can help *improve this guide* by submitting issues and pull requests to https://github.com/gradle-guides/gs-writing-gradle-plugins/[the GitHub repository].
-****
 
 All too often build engineers get into the habit of defining build logic in a single script. Suffice to say, this practice leads to unmaintainable and hard to understand spaghetti code. While Gradle doesn't prevent you from applying this poor engineering practice, it does give you the right tooling for writing maintainable, modularized and encapsulated build logic. This guide will walk you through the basic mechanics of writing reusable Gradle build code with the help of plugins.
 
@@ -19,10 +13,12 @@ apply plugin: 'com.acme.java-project'
 
 This guide will take you through the creation process of the plugin step by step. We'll start by externalizing build script logic into a script plugin first. Later, we'll formulate the same logic as Java class implementation, a so-called binary plugin.
 
-## What you'll need
+== What you'll need
 
-* Basic knowledge of Java and Groovy
-* Basic knowledge of Gradle build script fundamentals
+ - About 15 minutes
+ - A text editor or Java IDE
+ - Basic knowledge of Java and Groovy
+ - Basic knowledge of Gradle build script fundamentals
 
 == Implementation
 
@@ -43,7 +39,6 @@ dependencies {
 
 Executing `gradle tasks` should provide you with tasks specific to Java projects e.g. `assemble` to compile the Java classes and build the JAR artifact. Let's execute the `assemble` task on the command line:
 
-[source]
 ----
 $ gradle assemble
 :compileJava UP-TO-DATE
@@ -59,11 +54,10 @@ While the intent of the build logic is clear and doesn't contain any duplicated 
 
 === Writing a script plugin
 
-The main purpose of a https://docs.gradle.org/current/userguide/plugins.html#sec:script`plugins[script plugin] is to split up build logic based on functional boundaries in order to avoid a `build.gradle` file that stretches over multiple pages. You can think of a script plugin as a mixin or include of existing build logic that enriches your main `build.gradle` file.
+The main purpose of a {user-manual}plugins.html#sec:script_plugins[script plugin] is to split up build logic based on functional boundaries in order to avoid a `build.gradle` file that stretches over multiple pages. You can think of a script plugin as a mixin or include of existing build logic that enriches your main `build.gradle` file.
 
 The process for creating a script plugin in Gradle is straightforward. You simply take the logic you'd like to externalize and put it into a new Gradle file. Let's exercise this process by example. First of all, you'll create a new file named `java-project.gradle` under the subdirectory `gradle`. The directory structure of your project should look as follows:
 
-[source]
 ----
 .
 ├── build.gradle
@@ -89,7 +83,7 @@ Script plugins are a great way to divvy up your build logic. However, as build l
 
 === Writing a binary plugin
 
-Implementing a https://docs.gradle.org/current/userguide/plugins.html#sec:binary`plugins[binary plugin] isn't much harder than implementing a script plugin. The major difference is that you have to stand up a class that implements the https://docs.gradle.org/current/javadoc/org/gradle/api/Plugin.html[Plugin interface]. If you have a closer look at the interface, you will notice that a generic type will have to be provided. In 99.9% of all cases this generic type is a https://docs.gradle.org/current/javadoc/org/gradle/api/Project.html[Project] instance. The Project instance stands for the project that applies the plugin. Any logic you want to implement in your plugin class needs to directly work on the project instance. Let's have a look at the same logic implemented as binary plugin in Java.
+Implementing a {user-manual}plugins.html#sec:binary_plugins[binary plugin] isn't much harder than implementing a script plugin. The major difference is that you have to stand up a class that implements the {javadoc-ref}org/gradle/api/Plugin.html[Plugin interface]. If you have a closer look at the interface, you will notice that a generic type will have to be provided. 99.9% of all cases this generic type is a {javadoc-ref}org/gradle/api/Project.html[Project] instance. The Project instance stands for the project that applies the plugin. Any logic you want to implement in your plugin class needs to directly work on the project instance. Let's have a look at the same logic implemented as binary plugin in Java.
 
 [source,java]
 ----
@@ -102,7 +96,7 @@ public class JavaConventionPlugin implements Plugin<Project> {
 }
 ----
 
-Go ahead by replacing the existing logic in your `build.gradle` file with the code from the previous code example. So far you only created the binary plugin implementation. However, the plugin hasn't been applied yet. To apply a binary plugin, you will use the same https://docs.gradle.org/current/javadoc/org/gradle/api/plugins/PluginAware.html#apply(java.util.Map)[apply method] as you did for the script plugin. Instead of using the `from` keyword, you'd use the `plugin` keyword here. Let's apply the binary plugin within the `build.gradle` file.
+Go ahead by replacing the existing logic in your `build.gradle` file with the code from the previous code example. So far you only created the binary plugin implementation. However, the plugin hasn't been applied yet. To apply a binary plugin, you will use the same {javadoc-ref}org/gradle/api/plugins/PluginAware.html#apply(java.util.Map)[`apply()` method] as you did for the script plugin. Instead of using the `from` keyword, you'd use the `plugin` keyword here. Let's apply the binary plugin within the `build.gradle` file.
 
 [source,groovy]
 ----
@@ -111,16 +105,15 @@ apply plugin: JavaConventionPlugin
 
 [NOTE]
 ====
-You might not be aware of it but you are applying the plugin by type. `JavaConventionPlugin` is the fully qualified class of your plugin implementation. One of Groovy's language features is to make the http://groovy-lang.org/style-guide.html#_classes_as_first_class_citizens[.class suffix for the class definition optional]. That's why the code example doesn't show `JavaConventionPlugin.class`.
+You might not be aware of it but you are applying the plugin by type. `JavaConventionPlugin` is the fully qualified class of your plugin implementation. One of Groovy's language features is to make the `http://groovy-lang.org/style-guide.html#_classes_as_first_class_citizens[.class`]http://groovy-lang.org/style-guide.html#_classes_as_first_class_citizens[ suffix for the class definition optional]. That's why the code example doesn't show `JavaConventionPlugin.class`.
 ====
 
 Having a class definition sit in a build script is awkward and doesn't help you with making your script more maintainable. Why not represent the binary plugin implementation as actual class file? As long as the plugin is only used within the same project and doesn't have to be shared among independent projects a good place to put those classes is the `buildSrc` project. If you haven't heard about `buildSrc` yet, please have a closer look.
 
 === Externalizing plugin code to buildSrc
 
-Similar to production source code, build logic implemented as classes needs to be compiled and added to the classpath before it can be used. This is the main purposes of the https://docs.gradle.org/current/userguide/organizing`build`logic.html#sec:build`sources[buildSrc project]. If you create a `buildSrc` directory in the root directory of your project, Gradle will automatically detect it and treat it as a special project. The `buildSrc` project defines default conventions used to look for source code that needs to be compiled and added to the classpath of the consuming build script. In our case the consuming build script is the `build.gradle` file in the root directory of our project. Let's get started and create the required directory structure.
+Similar to production source code, build logic implemented as classes needs to be compiled and added to the classpath before it can be used. This is the main purposes of the {user-manual}organizing_build_logic.html#sec:build_sources[`buildSrc` project]. If you create a `buildSrc` directory in the root directory of your project, Gradle will automatically detect it and treat it as a special project. The `buildSrc` project defines default conventions used to look for source code that needs to be compiled and added to the classpath of the consuming build script. In our case the consuming build script is the `build.gradle` file in the root directory of our project. Let's get started and create the required directory structure.
 
-[source]
 ----
 .
 ├── build.gradle
@@ -134,7 +127,7 @@ The directory `src/main/java` is one of the conventions used by the `buildSrc` p
 
 [NOTE]
 ====
-Be aware that classes can be put into any package underneath the Java source directory. The plugin in this example uses the default package for simplicity reasons. 
+Be aware that classes can be put into any package underneath the Java source directory. The plugin in this example uses the default package for simplicity reasons.
 ====
 
 Classes created under `buildSrc` live outside of the context of a `build.gradle` file. In practice that means that you will have to explicitly import external classes. That's also the case for classes from the Gradle API. For your Java class you will need to define the following imports:
@@ -148,7 +141,6 @@ import org.gradle.api.plugins.JavaPlugin;
 
 Now that you moved the class definition in a Groovy source file under `buildSrc`, there's no more need to keep the script plugin `java-project.gradle`. You can safely delete the file now. Let's execute the command `gradle assemble` to ensure that the plugin is still working as expected.
 
-[source]
 ----
 $ gradle assemble
 :buildSrc:clean UP-TO-DATE
@@ -170,15 +162,13 @@ $ gradle assemble
 :classes UP-TO-DATE
 :jar
 :assemble
-
-BUILD SUCCESSFUL
 ----
 
 As you can see in the console output, `buildSrc` is executed as actual project with its own lifecycle of tasks. Effectively, Gradle compiled the code found under `src/main/groovy` by running the task `:buildSrc:compileJava`, created a JAR from the class files with `:buildSrc:jar` and added it to the classpath of the `build.gradle` file.
 
 === Providing a plugin identifier
 
-Applying a binary plugin by type is only one way to use a binary plugin in a build script. The other, more descriptive option, is to provide a so-called https://docs.gradle.org/current/userguide/custom`plugins.html#sec:creating`a`plugin`id[plugin identifier], a string that uniquely identifies a plugin implementation on the classpath.
+Applying a binary plugin by type is only one way to use a binary plugin in a build script. The other, more descriptive option, is to provide a so-called {user-manual}custom_plugins.html#sec:creating_a_plugin_id[plugin identifier], a string that uniquely identifies a plugin implementation on the classpath.
 
 It only takes a single step to set up an identifier for your plugin. The JAR file of the plugin needs to contain a properties file that resembles the identifier that contains a pointer to the plugin type. For example, if you'd like to provide the identifier `com.acme.java-project` for our plugin, then you'd need to create the file `com.acme.java-project.properties`. The properties file requires to contain a key/value mapping from `implementation-class` to the `JavaConventionPlugin`. Let's set up the properties file `buildSrc/src/main/resources/META-INF/gradle-plugins/com.acme.java-project.properties` with the following content.
 
@@ -198,9 +188,9 @@ apply plugin: 'com.acme.java-project'
 
 Congratulations! You successfully learned how to write a basic script and binary plugin with Gradle. There's far more to learn. Please have a look at the following resources to expand your knowledge.
 
-* Writing tests for a plugin
-* Configuring a plugin through a custom DSL
-* Publishing a plugin
-* Plugin writing tips & tricks
-* Writing a n different JVM-based languages (e.g. Groovy, Kotlin)
+ - Writing tests for a plugin
+ - Configuring a plugin through a custom DSL
+ - Publishing a plugin
+ - Plugin writing tips & tricks
+ - Writing a plugin in different JVM-based languages (e.g. Groovy, Kotlin)
 
