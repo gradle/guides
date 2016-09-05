@@ -105,7 +105,7 @@ apply plugin: JavaConventionPlugin
 
 [NOTE]
 ====
-You might not be aware of it but you are applying the plugin by type. `JavaConventionPlugin` is the fully qualified class of your plugin implementation. One of Groovy's language features is to make the `http://groovy-lang.org/style-guide.html#_classes_as_first_class_citizens[.class`]http://groovy-lang.org/style-guide.html#_classes_as_first_class_citizens[ suffix for the class definition optional]. That's why the code example doesn't show `JavaConventionPlugin.class`.
+You might not be aware of it but you are applying the plugin by type. `JavaConventionPlugin` is the fully qualified class of your plugin implementation. One of Groovy's language features is to make the http://groovy-lang.org/style-guide.html#_classes_as_first_class_citizens[`.class` suffix for the class definition optional]. That's why the code example doesn't show `JavaConventionPlugin.class`.
 ====
 
 Having a class definition sit in a build script is awkward and doesn't help you with making your script more maintainable. Why not represent the binary plugin implementation as actual class file? As long as the plugin is only used within the same project and doesn't have to be shared among independent projects a good place to put those classes is the `buildSrc` project. If you haven't heard about `buildSrc` yet, please have a closer look.
@@ -172,7 +172,6 @@ Applying a binary plugin by type is only one way to use a binary plugin in a bui
 
 It only takes a single step to set up an identifier for your plugin. The JAR file of the plugin needs to contain a properties file that resembles the identifier that contains a pointer to the plugin type. For example, if you'd like to provide the identifier `com.acme.java-project` for our plugin, then you'd need to create the file `com.acme.java-project.properties`. The properties file requires to contain a key/value mapping from `implementation-class` to the `JavaConventionPlugin`. Let's set up the properties file `buildSrc/src/main/resources/META-INF/gradle-plugins/com.acme.java-project.properties` with the following content.
 
-[source,groovy]
 ----
 implementation-class=JavaConventionPlugin
 ----
