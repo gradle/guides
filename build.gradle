@@ -22,6 +22,7 @@ asciidoctor {
             toc: "right",
             toclevels: 1,
             'user-manual': "https://docs.gradle.org/current/userguide/",
+            'dsl-ref': "https://docs.gradle.org/current/dsl/",
             'javadoc-ref': "https://docs.gradle.org/current/javadoc/"
 }
 
