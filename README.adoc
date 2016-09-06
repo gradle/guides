@@ -24,11 +24,6 @@ $ cd mylib
 $ mkdir -p src/main/java/org/example/mylib
 ----
 
-[TIP]
-====
-You can use an IDE to create the Java library project for you as well.
-====
-
 Now create the `Greeter` class using the following content:
 
 [source,java]
