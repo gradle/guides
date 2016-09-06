@@ -19,9 +19,9 @@ Create a new project directory named `mylib` and initialize the directory struct
 
 [source,shell]
 ----
-mkdir mylib
-cd mylib
-mkdir -p src/main/java/org/example/mylib
+$ mkdir mylib
+$ cd mylib
+$ mkdir -p src/main/java/org/example/mylib
 ----
 
 [TIP]
@@ -110,7 +110,7 @@ version = '0.1.0'
 Re-running the `jar` task after a `clean` via this command:
 
 ----
-gradle clean jar
+$ gradle clean jar
 ----
 
 will result in the build creating the file `build/libs/mylib-0.1.0.jar`.
