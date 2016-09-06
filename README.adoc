@@ -138,6 +138,12 @@ Implementation-Title: mylib
 Implementation-Version: 0.1.0
 ----
 
+[NOTE]
+.Learn more about configuring JARs
+====
+The `manifest` is just one of many properties that can be configured on the `jar` task. For a complete list, see the https://docs.gradle.org/3.0/dsl/org.gradle.api.tasks.bundling.Jar.html[Jar section] of the {language-reference}[Gradle Language Reference] as well as the {user-manual}java_plugin.html#sec:jar[Jar] and {user-manual}working_with_files.html#sec:archives[Creating Archives] sections of the Gradle {user-manual}[User Manual].
+====
+
 Now you can complete this exercise by trying to compile some Java code that uses the library you just built.
 
 == Consume the library

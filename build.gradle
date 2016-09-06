@@ -24,7 +24,7 @@ asciidoctor {
             toclevels: 1,
             "gradle-version": gradleVersion,
             "user-manual": "https://docs.gradle.org/$gradleVersion/userguide/",
-            "dsl-ref": "https://docs.gradle.org/$gradleVersion/dsl/"
+            "language-reference": "https://docs.gradle.org/$gradleVersion/dsl/"
 }
 
 task copyIndex {
