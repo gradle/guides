@@ -196,17 +196,8 @@ That's it! You've now successfully built a Java library project, packaged it as 
 
 == Next steps
 
-There are many directions you may want to go from here, the most common of which include:
+Of course, building a library is one aspect of effective code reuse. From here, you may be interested in:
 
- - Consuming the Java library in a multi-project build
- - Publishing the library to a Maven-compatible repository
- - Building a Java web application
- - Incorporating unit tests into the project
- - Incorporating integration and functional tests into the project
-////
- - Getting Started Publishing Java Libraries gradle/build-tool-web#42
- - Adding a Java library into a multi-project build?
- - Building Java command line apps and webapps?
- - Publishing?
- - Managing a different directory structure (e.g. Grails)?
-////
+ - {user-manual}/artifact_dependencies_tutorial.html[Consuming JVM libraries]
+ - {user-manual}/artifact_management.html[Publishing JVM libraries]
+ - {user-manual}/intro_multi_project_builds.html[Multi-project builds]
