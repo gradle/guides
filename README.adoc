@@ -200,8 +200,8 @@ That's it! You've now successfully built a Java library project, packaged it as 
 
 == Next steps
 
-Of course, building a library is one aspect of effective code reuse. From here, you may be interested in:
+Building a library is just one aspect of reusing code across project boundaries. From here, you may be interested in:
 
  - {user-manual}/artifact_dependencies_tutorial.html[Consuming JVM libraries]
  - {user-manual}/artifact_management.html[Publishing JVM libraries]
- - {user-manual}/intro_multi_project_builds.html[Multi-project builds]
+ - {user-manual}/intro_multi_project_builds.html[Working with multi-project builds]
