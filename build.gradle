@@ -5,6 +5,7 @@ plugins {
 apply plugin: "base"
 
 asciidoctor {
+    def gradleVersion = '3.0'
     sourceDir = rootDir
     sources {
       include "README.adoc"
@@ -21,8 +22,9 @@ asciidoctor {
             encoding: "utf-8",
             toc: "right",
             toclevels: 1,
-            'user-manual': "https://docs.gradle.org/current/userguide/",
-            'dsl-ref': "https://docs.gradle.org/current/dsl/"
+            "gradle-version": gradleVersion,
+            "user-manual": "https://docs.gradle.org/$gradleVersion/userguide/",
+            "dsl-ref": "https://docs.gradle.org/$gradleVersion/dsl/"
 }
 
 task copyIndex {
