@@ -1,17 +1,17 @@
-
-#-----------------------------------------------------------------------
-[guides/architecture]
-#-----------------------------------------------------------------------
+[architecture]
 checkout = git clone git@github.com:gradle-guides/architecture.git
 
-
-#-----------------------------------------------------------------------
-[guides/jigsaw-quick-start]
-#-----------------------------------------------------------------------
+[jigsaw-quick-start]
 checkout = git clone git@github.com:gradle/jigsaw-quick-start.git
 
-
-#-----------------------------------------------------------------------
-[guides/performance]
-#-----------------------------------------------------------------------
+[performance]
 checkout = git clone git@github.com:gradle-guides/performance.git
+
+[gs-writing-gs-guides]
+checkout = git clone git@github.com:gradle-guides/gs-writing-gs-guides.git
+
+[gs-building-java-libraries]
+checkout = git clone git@github.com:gradle-guides/gs-building-java-libraries.git
+
+[gs-writing-gradle-plugins]
+checkout = git clone git@github.com:gradle-guides/gs-writing-gradle-plugins.git

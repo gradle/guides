@@ -1,5 +1,8 @@
-# myrepos (see .mrconfig)
-guides
+# mr-managed guide repositories
+architecture
+gs-*
+jigsaw-quick-start
+performance
 
 # Vim
 *.sw?
