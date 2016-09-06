@@ -188,12 +188,11 @@ That's it as you have now successfully created the JAR file and used the library
 
 == Summary
 
-In this Getting Started guide, you learned how to:
+That's it! You've now successfully built a Java library project, packaged it as a JAR and consumed it within another application. Along the way, you've learned how to:
 
- - apply the Java plugin so that you can build a Java library project
- - structure your project to minimize configuration
- - build the JAR file
- - customize the name of the JAR file and the content of its manifest
+ - Apply Gradle's Java plugin
+ - Run the Java plugin's `jar` task and examine its output
+ - Customize the name of JAR file and the content of its manifest
 
 == Next steps
 
