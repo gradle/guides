@@ -36,7 +36,7 @@ public class Greeter {
 
     public Greeter(String name) { this.name = name; }
 
-    public String getGreeting() { return "Hello " + this.name; }
+    public String getGreeting() { return "Hello, " + this.name + "!"; }
 }
 ----
 
@@ -187,7 +187,7 @@ Finally, run the application to test everything is working:
 
 ----
 $ java -cp .:build/libs/mylib-0.1.0.jar Main
-Hello Gradle
+Hello, Gradle!
 ----
 
 == Summary
