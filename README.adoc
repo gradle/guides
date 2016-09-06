@@ -118,8 +118,8 @@ Another common requirement is to customize the manifest file, typically by addin
 ----
 jar {
     manifest {
-        attributes("Implementation-Title": project.name,
-                   "Implementation-Version": project.version)
+        attributes('Implementation-Title': project.name,
+                   'Implementation-Version': project.version)
     }
 }
 ----
