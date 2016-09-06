@@ -190,11 +190,9 @@ $ java -cp .:build/libs/mylib-0.1.0.jar Main
 Hello Gradle
 ----
 
-That's it as you have now successfully created the JAR file and used the library with a separate application.
-
 == Summary
 
-That's it! You've now successfully built a Java library project, packaged it as a JAR and consumed it within another application. Along the way, you've learned how to:
+That's it! You've now successfully built a Java library project, packaged it as a JAR and consumed it within a separate application. Along the way, you've learned how to:
 
  - Apply Gradle's Java plugin
  - Run the Java plugin's `jar` task and examine its output
