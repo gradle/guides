@@ -1,8 +1,8 @@
-# mr-managed guide repositories
-architecture
+# Getting Started Guide repositories
 gs-*
-jigsaw-quick-start
-performance
+
+# Topical Guide repositories
+top-*
 
 # Vim
 *.sw?
