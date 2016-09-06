@@ -6,7 +6,3 @@ checkout = git clone git@github.com:gradle-guides/gs-building-java-libraries.git
 
 [gs-writing-gradle-plugins]
 checkout = git clone git@github.com:gradle-guides/gs-writing-gradle-plugins.git
-
-[top-performance]
-checkout = git clone git@github.com:gradle-guides/performance.git
-
