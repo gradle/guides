@@ -1,10 +1,10 @@
 = Building a Java Library
 
-This guide walks you through the process of using Gradle to creating a Java library project that produces a JAR (Java Archive).
+This guide walks you through the process of using Gradle to produce a Java library suitable for sharing with other JVM-based projects.
 
 == What you’ll build
 
-You'll write a simple Java class and then use Gradle to compile and package it into a new library named `mylib`. The result will be a JAR file containing the compiled class and a default manifest file. Along the way, you'll configure Gradle to include the library _version_ in the name of the JAR file and in the manifest. When complete, you'll verify that the library is well-formed by consuming it in a basic command-line application.
+You'll write a simple Java class and then use Gradle to compile and package it into a new library named `mylib`. The result will be a Java Archive (https://docs.oracle.com/javase/8/docs/technotes/guides/jar/index.html[JAR]) containing the compiled class and a default manifest file. Along the way, you'll configure Gradle to include the library _version_ in the name of the JAR file and in the manifest. When complete, you'll verify that the library is well-formed by consuming it in a basic command-line application.
 
 == What you’ll need
 
