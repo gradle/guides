@@ -1,8 +1,8 @@
 [gs-writing-gs-guides]
 checkout = git clone git@github.com:gradle-guides/gs-writing-gs-guides.git
 
-[gs-building-java-libraries]
-checkout = git clone git@github.com:gradle-guides/gs-building-java-libraries.git
+[gs-building-jvm-libraries]
+checkout = git clone git@github.com:gradle-guides/gs-building-jvm-libraries.git
 
 [gs-writing-gradle-plugins]
 checkout = git clone git@github.com:gradle-guides/gs-writing-gradle-plugins.git
