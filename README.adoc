@@ -65,7 +65,7 @@ $ gradle jar
 BUILD SUCCESSFUL
 ----
 
-The output is telling you that running the `jar` task results:
+The output is telling you that running the `jar` task results in:
 
  1. compiling the Java source code
  2. processing any resource files
