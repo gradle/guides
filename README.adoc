@@ -108,7 +108,7 @@ Now run the `jar` task once more:
 $ gradle jar
 ----
 
-and notice that resulting JAR file at `build/libs/mylib-0.1.0.jar` contains the version as expected.
+and notice that the resulting JAR file at `build/libs/mylib-0.1.0.jar` contains the version as expected.
 
 Another common requirement is customizing the manifest file, typically by adding one or more attributes. Let's include the library name and version in the manifest file by {user-manual}more_about_tasks.html#sec:configuring_tasks[configuring the `jar` task]. Add the following to the end of your build script:
 
@@ -123,14 +123,14 @@ jar {
 }
 ----
 
-To confirm that these changes work as as expected, run the `jar` task again, and this time also unpack the manifest file from the JAR:
+To confirm that these changes work as expected, run the `jar` task again, and this time also unpack the manifest file from the JAR:
 
 ----
 $ gradle jar
 $ jar xf build/libs/mylib-0.1.0.jar META-INF/MANIFEST.MF
 ----
 
-Now view the contents of the `META-INF/MANIFEST.MF` file and you should see the following contents:
+Now view the contents of the `META-INF/MANIFEST.MF` file and you should see the following:
 
 [source,mf]
 .META-INF/MANIFEST.MF
