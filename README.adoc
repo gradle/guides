@@ -40,7 +40,7 @@ public class Greeter {
 }
 ----
 
-You now have all the necessary components for a simple Java library project. The next step is to create a Gradle build script capable of compiling and packaging the library into a JAR. To do so, add a file named `build.gradle` in the root of the project and have it apply Gradle's {user-manual}/java_plugin.html[Java plugin] as follows:
+You now have all the necessary components for a simple Java library project. The next step is to create a Gradle build script capable of compiling and packaging the library into a JAR. To do so, add a file named `build.gradle` in the root of the project and have it apply Gradle's {user-manual}java_plugin.html[Java plugin] as follows:
 
 [source,groovy]
 .build.gradle
@@ -52,7 +52,7 @@ Once you've saved the file, you're ready to build your library.
 
 == Build the library
 
-The Java plugin {user-manual}/java_plugin.html#sec:java_tasks[adds a number of tasks] to your project, including a `jar` task. To build your library,
+The Java plugin {user-manual}java_plugin.html#sec:java_tasks[adds a number of tasks] to your project, including a `jar` task. To build your library,
 run `gradle jar`, like so:
 
 ----
@@ -141,7 +141,7 @@ Implementation-Version: 0.1.0
 [NOTE]
 .Learn more about configuring JARs
 ====
-The `manifest` is just one of many properties that can be configured on the `jar` task. For a complete list, see the https://docs.gradle.org/3.0/dsl/org.gradle.api.tasks.bundling.Jar.html[Jar section] of the {language-reference}[Gradle Language Reference] as well as the {user-manual}java_plugin.html#sec:jar[Jar] and {user-manual}working_with_files.html#sec:archives[Creating Archives] sections of the Gradle {user-manual}[User Manual].
+The `manifest` is just one of many properties that can be configured on the `jar` task. For a complete list, see the {language-reference}org.gradle.api.tasks.bundling.Jar.html[Jar section] of the {language-reference}[Gradle Language Reference] as well as the {user-manual}java_plugin.html#sec:jar[Jar] and {user-manual}working_with_files.html#sec:archives[Creating Archives] sections of the Gradle {user-manual}[User Manual].
 ====
 
 Now you can complete this exercise by trying to compile some Java code that uses the library you just built.
@@ -202,6 +202,6 @@ That's it! You've now successfully built a Java library project, packaged it as 
 
 Building a library is just one aspect of reusing code across project boundaries. From here, you may be interested in:
 
- - {user-manual}/artifact_dependencies_tutorial.html[Consuming JVM libraries]
- - {user-manual}/artifact_management.html[Publishing JVM libraries]
- - {user-manual}/intro_multi_project_builds.html[Working with multi-project builds]
+ - {user-manual}artifact_dependencies_tutorial.html[Consuming JVM libraries]
+ - {user-manual}artifact_management.html[Publishing JVM libraries]
+ - {user-manual}intro_multi_project_builds.html[Working with multi-project builds]
