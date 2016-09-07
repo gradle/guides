@@ -165,7 +165,7 @@ public class Main {
 If you now try to compile this file, you'll get the following error:
 
 ----
-$ javac Main
+$ javac Main.java
 Main.java:1: error: package org.example.mylib does not exist
 import org.example.mylib.Greeter;
                         ^
