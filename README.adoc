@@ -40,7 +40,7 @@ public class Greeter {
 }
 ----
 
-You now have all the necessary components for a standard Java library project. The next step is to create a build for it, so add a `build.gradle` file in the root of the project and have it apply Gradle's {user-manual}/java_plugin.html[Java plugin] with the following content:
+You now have all the necessary components for a simple Java library project. The next step is to create a Gradle build script capable of compiling and packaging the library into a JAR. To do so, add a file named `build.gradle` in the root of the project and have it apply Gradle's {user-manual}/java_plugin.html[Java plugin] as follows:
 
 [source,groovy]
 .build.gradle
@@ -93,7 +93,7 @@ At this point, your library is ready to be consumed by other JVM-based projects,
 
 == Configure the JAR
 
-You will often want the name of the JAR file to include the library version. This is easily achieved by setting a top-level `version` property in the build file, like so:
+You will often want the name of the JAR file to include the library version. This is easily achieved by setting a top-level `version` property in the build script, like so:
 
 [source,groovy]
 .build.gradle
