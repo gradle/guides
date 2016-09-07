@@ -196,7 +196,7 @@ That's it! You've now successfully built a Java library project, packaged it as 
 
  - Apply Gradle's Java plugin
  - Run the Java plugin's `jar` task and examine its output
- - Customize the name of JAR file and the content of its manifest
+ - Customize the name of a JAR file and the content of its manifest
 
 == Next steps
 
