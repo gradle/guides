@@ -4,6 +4,8 @@ plugins {
 }
 apply plugin: "base"
 
+def repoPath = 'gradle-guides/gs-building-jvm-libraries'
+
 asciidoctor {
     def gradleVersion = '3.0'
     sourceDir = rootDir
@@ -23,6 +25,7 @@ asciidoctor {
             idprefix: "",
             toc: "right",
             toclevels: 1,
+            "repo-path": repoPath,
             "gradle-version": gradleVersion,
             "user-manual": "https://docs.gradle.org/$gradleVersion/userguide/",
             "language-reference": "https://docs.gradle.org/$gradleVersion/dsl/"
@@ -36,7 +39,6 @@ task copyIndex {
 }
 
 githubPages {
-    def repoPath = 'gradle-guides/gs-building-jvm-libraries'
     def ghToken = System.getenv('GH_TOKEN')
     if (ghToken) {
         repoUri = "https://github.com/${repoPath}.git"
