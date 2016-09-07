@@ -46,7 +46,7 @@ public class MyJavaConventionPlugin implements Plugin<Project> {
 }
 ----
 
-This plugin is using the Gradle API to do exactly the same as this build file fragment:
+This plugin is using the Gradle API to do exactly the same as this build script fragment:
 
 [source,groovy]
 ----
