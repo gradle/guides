@@ -1,10 +1,10 @@
 = Building JVM Libraries
 
-This guide walks you through the process of using Gradle to produce a Java library suitable for sharing with other JVM-based projects.
+This guide walks you through the process of using Gradle to produce a JVM library suitable for consumption by other JVM libraries and applications.
 
 == What you’ll build
 
-You'll write a simple Java class and then use Gradle to compile and package it into a new library named `mylib`. The result will be a Java Archive (https://docs.oracle.com/javase/8/docs/technotes/guides/jar/index.html[JAR]) containing the compiled class and a default manifest file. Along the way, you'll configure Gradle to include the library _version_ in the name of the JAR file and in the manifest. When complete, you'll verify that the library is well-formed by consuming it in a basic command-line application.
+You'll start by creating a Java library project consisting of a single class. You'll then use Gradle to compile and package the library into a _Java Archive_ (https://docs.oracle.com/javase/8/docs/technotes/guides/jar/index.html[JAR]) that contains the compiled class and a default manifest file. Next, you'll configure your Gradle build script to customize the name of the JAR and the contents of its manifest. Finally, you'll verify that the library JAR is well-formed by consuming it from a separate command-line application.
 
 == What you’ll need
 
@@ -15,7 +15,7 @@ You'll write a simple Java class and then use Gradle to compile and package it i
 
 == Create a library project
 
-Create a new project directory named `mylib` and initialize the directory structure that will hold your library classes, for example by running the following commands on a Unix-like system:
+Create a new project directory named `mylib` and initialize the directory structure that will contain your library's sources, for example by running the following commands on a Unix-like system:
 
 [source,shell]
 ----
@@ -24,7 +24,7 @@ $ cd mylib
 $ mkdir -p src/main/java/org/example/mylib
 ----
 
-Now create the `Greeter` class using the following content:
+Now create a class named `Greeter` as follows:
 
 [source,java]
 .src/main/java/org/example/mylib/Greeter.java
@@ -40,7 +40,7 @@ public class Greeter {
 }
 ----
 
-You now have all the necessary components for a simple Java library project. The next step is to create a Gradle build script capable of compiling and packaging the library into a JAR. To do so, add a file named `build.gradle` in the root of the project and have it apply Gradle's {user-manual}java_plugin.html[Java plugin] as follows:
+You now have the necessary components for a simple Java library project. The next step is to create a Gradle build script capable of compiling and packaging the library into a JAR. To do so, add a file named `build.gradle` in the root of the project and apply Gradle's {user-manual}java_plugin.html[Java plugin] as follows:
 
 [source,groovy]
 .build.gradle
@@ -48,12 +48,11 @@ You now have all the necessary components for a simple Java library project. The
 apply plugin: 'java'
 ----
 
-Once you've saved the file, you're ready to build your library.
+Once you've saved the file, you're ready to assemble your library JAR.
 
 == Assemble the library JAR
 
-The Java plugin {user-manual}java_plugin.html#sec:java_tasks[adds a number of tasks] to your project, including a `jar` task. To build your library,
-run `gradle jar`, like so:
+The Java plugin {user-manual}java_plugin.html#sec:java_tasks[adds a number of tasks] to your project, including a `jar` task. To assemble your library JAR, run `gradle jar`, like so:
 
 ----
 $ gradle jar
@@ -65,15 +64,15 @@ $ gradle jar
 BUILD SUCCESSFUL
 ----
 
-The output is telling you that running the `jar` task results in:
+The output above tells you that running the `jar` task causes Gradle to:
 
- 1. compiling the Java source code
- 2. processing any resource files
- 3. packaging everything up into a JAR file
+ 1. compile the Java source code
+ 2. process any resource files
+ 3. package everything up into a JAR file
 
 [NOTE]
 ====
-All of this happens without any additional configuration in `build.gradle` because the Java plugin assumes your project's sources are arranged in a {user-manual}java_plugin.html#sec:java_project_layout[conventional project layout]. You can change the project layout if you wish {user-manual}java_plugin.html#sec:changing_java_project_layout[as described in the user manual].
+All of this happens without any additional configuration in `build.gradle` because Gradle's Java plugin assumes your project sources are arranged in a {user-manual}java_plugin.html#sec:java_project_layout[conventional project layout]. You can customize the project layout if you wish {user-manual}java_plugin.html#sec:changing_java_project_layout[as described in the user manual].
 ====
 
 You can find your newly packaged JAR file in the `build/libs` directory with the name `mylib.jar`. Verify that the archive is valid by running the following command:
@@ -89,11 +88,11 @@ org/example/Greeter.class
 
 You should see the required manifest file—`MANIFEST.MF`—and the compiled `Greeter` class.
 
-At this point, your library is ready to be consumed by other JVM-based projects, but there are a couple of improvements you can make first. We'll look at those next.
+At this point, your library is ready to be consumed by other JVM-based projects, but there are a couple of customizations you may want to make first. We'll look at those next.
 
 == Customize the library JAR
 
-You will often want the name of the JAR file to include the library version. This is easily achieved by setting a top-level `version` property in the build script, like so:
+You will often want the name of the JAR file to include the library _version_. This is easily achieved by setting a top-level `version` property in the build script, like so:
 
 [source,groovy]
 .build.gradle
@@ -103,15 +102,15 @@ apply plugin: 'java'
 version = '0.1.0'
 ----
 
-Re-running the `jar` task after a `clean` via this command:
+Now run the `jar` task once more:
 
 ----
-$ gradle clean jar
+$ gradle jar
 ----
 
-will result in the build creating the file `build/libs/mylib-0.1.0.jar`.
+and notice that resulting JAR file at `build/libs/mylib-0.1.0.jar` contains the version as expected.
 
-Another common requirement is to customize the manifest file, typically by adding one or more attributes. Let's include the library name and version in the manifest file by {user-manual}more_about_tasks.html#sec:configuring_tasks[configuring the `jar` task]. Add the following to the end of your build script:
+Another common requirement is customizing the manifest file, typically by adding one or more attributes. Let's include the library name and version in the manifest file by {user-manual}more_about_tasks.html#sec:configuring_tasks[configuring the `jar` task]. Add the following to the end of your build script:
 
 [source,groovy]
 .build.gradle
@@ -124,14 +123,17 @@ jar {
 }
 ----
 
-You can verify the effect by:
+To confirm that these changes work as as expected, run the `jar` task again, and this time also unpack the manifest file from the JAR:
 
- - running `gradle jar` again
- - running `jar xf build/libs/mylib-0.1.0.jar META-INF/MANIFEST.MF`
- - viewing the `META-INF/MANIFEST.MF` file that's now in your project
+----
+$ gradle jar
+$ jar xf build/libs/mylib-0.1.0.jar META-INF/MANIFEST.MF
+----
 
-You should see the following:
+Now view the contents of the `META-INF/MANIFEST.MF` file and you should see the following contents:
 
+[source,mf]
+.META-INF/MANIFEST.MF
 ----
 Manifest-Version: 1.0
 Implementation-Title: mylib
