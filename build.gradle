@@ -36,7 +36,7 @@ task copyIndex {
 }
 
 githubPages {
-    repoUri = "git@github.com:gradle-guides/gs-building-java-libraries.git"
+    repoUri = "git@github.com:gradle-guides/gs-building-jvm-libraries.git"
     pages {
         from "${asciidoctor.outputDir}/${asciidoctor.backends[0]}"
     }
