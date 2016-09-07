@@ -8,7 +8,7 @@ You'll write a simple Java class and then use Gradle to compile and package it i
 
 == What you’ll need
 
- - About 5 minutes
+ - About 10 minutes
  - A text editor
  - A http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK), version 1.7 or better
  - A {user-manual}/installation.html#sec:download[Gradle distribution], version {gradle-version} or better
