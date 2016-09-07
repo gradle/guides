@@ -1,4 +1,4 @@
-= Building a Java Library
+= Building JVM Libraries
 
 This guide walks you through the process of using Gradle to produce a Java library suitable for sharing with other JVM-based projects.
 
@@ -13,7 +13,7 @@ You'll write a simple Java class and then use Gradle to compile and package it i
  - A http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK), version 1.7 or better
  - A {user-manual}/installation.html#sec:download[Gradle distribution], version {gradle-version} or better
 
-== Create a new Java library project
+== Create a library project
 
 Create a new project directory named `mylib` and initialize the directory structure that will hold your library classes, for example by running the following commands on a Unix-like system:
 
@@ -50,7 +50,7 @@ apply plugin: 'java'
 
 Once you've saved the file, you're ready to build your library.
 
-== Build the library
+== Assemble the library JAR
 
 The Java plugin {user-manual}java_plugin.html#sec:java_tasks[adds a number of tasks] to your project, including a `jar` task. To build your library,
 run `gradle jar`, like so:
@@ -91,7 +91,7 @@ You should see the required manifest file—`MANIFEST.MF`—and the compiled `Gr
 
 At this point, your library is ready to be consumed by other JVM-based projects, but there are a couple of improvements you can make first. We'll look at those next.
 
-== Configure the JAR
+== Customize the library JAR
 
 You will often want the name of the JAR file to include the library version. This is easily achieved by setting a top-level `version` property in the build script, like so:
 
@@ -146,7 +146,7 @@ The `manifest` is just one of many properties that can be configured on the `jar
 
 Now you can complete this exercise by trying to compile some Java code that uses the library you just built.
 
-== Consume the library
+== Consume the library JAR
 
 Create a new Java file in the root of the project called `Main.java` and put the following code in it:
 
