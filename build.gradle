@@ -36,10 +36,21 @@ task copyIndex {
 }
 
 githubPages {
-    repoUri = "git@github.com:gradle-guides/gs-building-jvm-libraries.git"
+    def repoPath = 'gradle-guides/gs-building-jvm-libraries'
+    def ghToken = System.getenv('GH_TOKEN')
+    if (ghToken) {
+        repoUri = "https://github.com/${repoPath}.git"
+        credentials {
+            username = ghToken
+            password = '\n'
+        }
+    } else {
+        repoUri = "git@github.com:${repoPath}.git"
+    }
     pages {
         from "${asciidoctor.outputDir}/${asciidoctor.backends[0]}"
     }
+    commitMessage = 'Publish to GitHub Pages'
 }
 
 assemble.dependsOn "asciidoctor", "copyIndex"
