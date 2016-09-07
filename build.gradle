@@ -19,6 +19,7 @@ asciidoctor {
             sectlinks: true,
             linkattrs: true,
             encoding: "utf-8",
+            idprefix: "",
             toc: "right",
             toclevels: 1
 }
