@@ -111,7 +111,7 @@ $ gradle clean jar
 
 will result in the build creating the file `build/libs/mylib-0.1.0.jar`.
 
-Another common requirement is to customize the manifest file, typically by adding one or more attributes. Let's include the library name and version in the manifest file by adding the following code to the end of the build file:
+Another common requirement is to customize the manifest file, typically by adding one or more attributes. Let's include the library name and version in the manifest file by {user-manual}more_about_tasks.html#sec:configuring_tasks[configuring the `jar` task]. Add the following to the end of your build script:
 
 [source,groovy]
 .build.gradle
