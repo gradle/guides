@@ -1,4 +1,4 @@
-= Writing a Getting Started Guide
+= Writing a Getting Started Guide image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
 
 This guide walks you through the process of writing a new _Getting Started Guide_ for inclusion at http://grdev.org/guides[https://gradle.org/guides].
 

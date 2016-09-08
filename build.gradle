@@ -4,6 +4,8 @@ plugins {
 }
 apply plugin: "base"
 
+def repoPath = 'gradle-guides/gs-writing-gs-guides'
+
 asciidoctor {
     sourceDir = rootDir
     sources {
@@ -21,7 +23,8 @@ asciidoctor {
             encoding: "utf-8",
             idprefix: "",
             toc: "right",
-            toclevels: 1
+            toclevels: 1,
+            "repo-path": repoPath
 }
 
 task copyIndex {
@@ -32,10 +35,20 @@ task copyIndex {
 }
 
 githubPages {
-    repoUri = "git@github.com:gradle-guides/gs-writing-gs-guides.git"
+    def ghToken = System.getenv('GH_TOKEN')
+    if (ghToken) {
+        repoUri = "https://github.com/${repoPath}.git"
+        credentials {
+            username = ghToken
+            password = '\n'
+        }
+    } else {
+        repoUri = "git@github.com:${repoPath}.git"
+    }
     pages {
         from "${asciidoctor.outputDir}/${asciidoctor.backends[0]}"
     }
+    commitMessage = 'Publish to GitHub Pages'
 }
 
 assemble.dependsOn "asciidoctor", "copyIndex"
