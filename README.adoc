@@ -1,4 +1,4 @@
-= Writing Gradle Plugins
+= Writing Gradle Plugins image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
 
 This guide walks you through the process of creating reusable build logic in a Gradle plugin.
 
