@@ -1,5 +1,9 @@
 # Getting Started Guide repositories
 gs-*
 
+# nginx
+nginx.pid
+
 # Vim
 *.sw?
+
