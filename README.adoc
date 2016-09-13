@@ -8,113 +8,141 @@ You'll write a simple plugin class that applies some standard Java project confi
 
 == What you'll need
 
- - About 5 minutes
+ - About [TBD] minutes
  - A text editor
- - A http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Runtime Environment] (JRE), version 1.7 or better
- - Gradle version 3.0 or better
+ - A http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Runtime Environment] (JRE) or http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK), version 1.8 or better
+ - A {user-manual}/installation.html#sec:download[Gradle distribution], version {gradle-version} or better
 
 // Last item should link to whatever gradle/build-tool-web#102 comes up with
 
-== Create a Java project
+== Create a project
 
-~TODO: Various options, such as `init` task, manual creation, follow the Getting Started Building Java Library, use a Lazybones template~
+You'll need to create a directory for this plugin project and switch to it:
 
-This project will both host and use the plugin you're about to create.
+    $ mkdir greeting-plugin
+    $ cd greeting-plugin
+
+Next, you will create a special directory structure for the plugin code:
+
+    $ mkdir -p buildSrc/src/main/java/org/example/greeting
+
+If you'd like to learn more about this `buildSrc` directory, you can read about how it allows you to organize your build logic {user-manual}organizing_build_logic.html#sec:build_sources[in the User Manual].
 
 == Create the plugin
 
-----
-mkdir -p buildSrc/src/main/java/org/example/myplugin
-----
-
-Create the file `buildSrc/src/main/java/org/example/myplugin` and set its content to:
+Create the file `GreetingPlugin.java` in the `buildSrc/src/main/java/org/example/greeting` directory you just created. The contents of that file should be the following:
 
 [source,java]
 ----
-package org.example.myplugin;
+package org.example.greeting;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.plugins.JavaPlugin;
 
-public class MyJavaConventionPlugin implements Plugin<Project> {
-    public void apply(Project project) {
-        project.getPlugins().apply(JavaPlugin.class);
-        project.getRepositories().mavenCentral();
-        project.getDependencies().add("testCompile", "junit:junit:4.12");
+public class GreetingPlugin implements Plugin<Project> {
+    public void apply(final Project project) {
+        final String extensionName = "greeting";
+        project.getExtensions().create(extensionName, GreetingExtension.class);         <1>
+
+        project.getTasks().create("hello", (task) -> {                                  <2>
+            task.doLast((t) -> {
+                GreetingExtension extension = (GreetingExtension)
+                        project.getExtensions().getByName(extensionName);
+                String msg = extension.getMessage() + " " + extension.getName() + "!";
+                System.out.println(msg);
+            });
+        });
     }
 }
 ----
+<1> Creates a new extension that can be configured in the build script
+<2> Creates a new task named "hello" in the project that the plugin gets applied to
 
-This plugin is using the Gradle API to do exactly the same as this build script fragment:
-
-[source,groovy]
-----
-apply plugin: "java"
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testCompile  "junit:junit:4.12"
-}
-----
-
-The Gradle `Project` object is the entry point to the entire Gradle API.
+The Gradle `Project` object is the entry point to the entire Gradle API and allows you to do anything you can do in a normal build script. In this case, that involves creating an extension class, whose use you will see later when you apply the plugin, and creating a task.
 
 TIP: Use the Gradle {dsl-ref}[DSL Reference] and {javadoc-ref}[Javadocs] to learn what you can do with the Gradle API. Start with the entry for {dsl-ref}org.gradle.api.Project.html[`Project`].
 
-Now run the `help` task and notice how the class in `buildSrc` automatically gets compiled.
+// I considered talking about configuring tasks, not letting them configure themselves, but I don't think we have enough context here. Such a tip only makes sense when using custom task classes.
 
-== Use the plugin in your Java project
+Alongside that plugin source file, create another file called `GreetingExtension.java` and put the following in it:
 
-Create/open the `build.gradle` file in your Java project and add the following line:
-
-[source,groovy]
+[source,java]
 ----
-apply plugin: org.example.myplugin.MyJavaConventionPlugin
-----
+package org.example.greeting;
 
-[NOTE]
-====
-You might not be aware of it but you are applying the plugin by type. `JavaConventionPlugin` is the fully qualified class of your plugin implementation. One of Groovy's language features is to make the http://groovy-lang.org/style-guide.html#_classes_as_first_class_citizens[`.class` suffix for the class definition optional]. That's why the code example doesn't show `JavaConventionPlugin.class`.
-====
+public class GreetingExtension {
+    private String name = "World";                                                      <1>
+    private String message = "Hello";                                                   <1>
 
-You can now run the build to compile, test and package your Java project:
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-----
-$ gradle build
-...
-----
-
-This doesn't look as tidy as when you apply plugins with the `plugins {}` block, but we can fix that by adding a plugin identifier.
-
-== Add plugin identifier
-
-// Link to {user-manual}custom_plugins.html#sec:creating_a_plugin_id[plugin identifier]
-
-Add a `buildSrc/src/main/resources/META-INF/gradle-plugins/org.example.my-java.properties` file that contains the following:
-
-----
-implementation-class=org.example.myplugin.MyJavaConventionPlugin
-----
-
-You must put the properties file in the directory `META-INF/gradle-plugins` as Gradle will try to resolve the file from that specific location in the plugin JAR. Now that your plugin has an identifier, you can replace
-
-[source,groovy]
-----
-apply plugin: org.example.myplugin.MyJavaConventionPlugin
-----
-
-with
-
-[source,groovy]
-----
-plugins {
-    id "org.example.my-java"
+    public String getMessage() { return message; }
+    public void setMessage(String message) { this.message = message; }
 }
 ----
+<1> Sets some default values for our extension properties
+
+You now have a plugin, but a plugin alone doesn't do anything. You need to apply it in another project.
+
+== Use the plugin in the main project
+
+Create a `build.gradle` file in the root of the project with the following contents:
+
+[source,groovy]
+----
+apply plugin: org.example.greeting.GreetingPlugin
+----
+
+You can now verify that your plugin is working by running its `hello` task in the root of the project:
+
+----
+$ gradle hello
+:buildSrc:compileJava
+:buildSrc:compileGroovy UP-TO-DATE
+:buildSrc:processResources UP-TO-DATE
+:buildSrc:classes
+:buildSrc:jar
+:buildSrc:assemble
+:buildSrc:compileTestJava UP-TO-DATE
+:buildSrc:compileTestGroovy UP-TO-DATE
+:buildSrc:processTestResources UP-TO-DATE
+:buildSrc:testClasses UP-TO-DATE
+:buildSrc:test UP-TO-DATE
+:buildSrc:check UP-TO-DATE
+:buildSrc:build
+:hello
+Hello World!
+----
+
+As you can see from the output above, the files in `buildSrc` are treated as a Java project. This gets built first and then the classes inside that project become available in your main build, which is what runs the `hello` task.
+
+Your build is currently just using the default values for the greeting, hence why it prints out "Hello World!". This doesn't have to be the case as the plugin pulls the greeting values from the extension it creates. All you have to do is provide your own values in the build script like so:
+
+[source,groovy]
+----
+apply plugin: org.example.greeting.GreetingPlugin
+
+greeting {                                                       <1>
+    name = "Gradle"                                              <2>
+    message = "Hi"
+}
+----
+<1> Configures the extension named "greeting", which in this case is of type `GreetingExtension`
+<2> Sets the extension's `name` property (via the `setName()` method) to "Gradle"
+
+Now when you run the `hello` task, you'll see the following - using `-q` to hide the `buildSrc` output:
+
+----
+$ gradle -q hello
+Hi Gradle!
+----
+
+So extensions are a mechanism to introduce new model elements to the build script language. Note how the build author doesn't need to explicitly configure any tasks themselves. [Learning opportunity on domain modelling and making the task configuration independent of the build script]
+
+This example is now functionally complete and you've seen it in action in the above build. Now you can take the opportunity to tidy up the build script by removing the rather ugly reference to the `GreetingPlugin` class.
+
+// I've removed the plugin identifier marlarky as I think it's more aligned with plugin publishing than use inside `buildSrc`.
 
 == Summary
 
@@ -125,3 +153,4 @@ plugins {
  - Publish the plugin to plugin portal
  - Publish to private company repository
  - Functionally test the plugin
+ - Add incremental build support for plugins that deal with files
