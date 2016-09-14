@@ -201,3 +201,5 @@ The file makes it harder to understand the project at a glance without providing
  - What to use italics for
  - Proper format of git commit messages
  - When to use inline links to other guides and resources vs. when to call out other guides explicitly in the "Next Steps" area at the bottom of the page
+ - Always include the appropriate file paths in the titles of source listings
+ - Always use the appropriate language setting for source listings
