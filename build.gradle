@@ -5,6 +5,7 @@ plugins {
 apply plugin: "base"
 
 def repoPath = 'gradle-guides/gs-writing-gradle-plugins'
+def gradleVersion = '3.0'
 
 asciidoctor {
     sourceDir = rootDir
@@ -25,9 +26,9 @@ asciidoctor {
             toc: "right",
             toclevels: 1,
             "repo-path": repoPath,
-            'user-manual': "https://docs.gradle.org/current/userguide/",
-            'dsl-ref': "https://docs.gradle.org/current/dsl/",
-            'javadoc-ref': "https://docs.gradle.org/current/javadoc/"
+            "gradle-version": gradleVersion,
+            "user-manual": "https://docs.gradle.org/$gradleVersion/userguide/",
+            "language-reference": "https://docs.gradle.org/$gradleVersion/dsl/"
 }
 
 task copyIndex {

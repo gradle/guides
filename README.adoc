@@ -4,16 +4,14 @@ This guide walks you through the process of creating reusable build logic in a G
 
 == What you'll build
 
-You'll write a simple plugin class that applies some standard Java project configuration. You'll then use that plugin for a simple Java build.
+You'll write a simple plugin [line-through]#class that applies some standard Java project configuration. You'll then use that plugin for a simple Java build#.
 
 == What you'll need
 
- - About [TBD] minutes
- - A text editor
- - A http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Runtime Environment] (JRE) or http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK), version 1.8 or better
+ - About 10 minutes
+ - A text editor or IDE
+ - A http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK), version 1.8 or better
  - A {user-manual}/installation.html#sec:download[Gradle distribution], version {gradle-version} or better
-
-// Last item should link to whatever gradle/build-tool-web#102 comes up with
 
 == Create a project
 
@@ -26,62 +24,63 @@ Next, you will create a special directory structure for the plugin code:
 
     $ mkdir -p buildSrc/src/main/java/org/example/greeting
 
-If you'd like to learn more about this `buildSrc` directory, you can read about how it allows you to organize your build logic {user-manual}organizing_build_logic.html#sec:build_sources[in the User Manual].
+TIP: If you'd like to learn more about this `buildSrc` directory, you can read about how it allows you to organize your build logic {user-manual}organizing_build_logic.html#sec:build_sources[in the User Manual].
 
 == Create the plugin
 
 Create the file `GreetingPlugin.java` in the `buildSrc/src/main/java/org/example/greeting` directory you just created. The contents of that file should be the following:
 
 [source,java]
+.buildSrc/src/main/java/org/example/greeting/GreetingPlugin.java
 ----
 package org.example.greeting;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.plugins.ExtensionContainer;
 
 public class GreetingPlugin implements Plugin<Project> {
-    public void apply(final Project project) {
-        final String extensionName = "greeting";
-        project.getExtensions().create(extensionName, GreetingExtension.class);         <1>
+    public void apply(Project project) {
+        final ExtensionContainer extensions = project.getExtensions();
 
-        project.getTasks().create("hello", (task) -> {                                  <2>
+        extensions.create("greeting", GreetingExtension.class);              <1>
+
+        project.getTasks().create("hello", (task) -> {                       <2>
             task.doLast((t) -> {
-                GreetingExtension extension = (GreetingExtension)
-                        project.getExtensions().getByName(extensionName);
-                String msg = extension.getMessage() + " " + extension.getName() + "!";
-                System.out.println(msg);
+                GreetingExtension extension =
+                    (GreetingExtension) extensions.getByName("greeting");
+                System.out.printf("%s, %s!\n", extension.getMessage(), extension.getName());
             });
         });
     }
 }
 ----
-<1> Creates a new extension that can be configured in the build script
-<2> Creates a new task named "hello" in the project that the plugin gets applied to
+<1> Creates a new extension named `greeting` that can be configured in the build script
+<2> Creates a new task named `hello` in the project that the plugin gets applied to
 
 The Gradle `Project` object is the entry point to the entire Gradle API and allows you to do anything you can do in a normal build script. In this case, that involves creating an extension class, whose use you will see later when you apply the plugin, and creating a task.
 
 TIP: Use the Gradle {dsl-ref}[DSL Reference] and {javadoc-ref}[Javadocs] to learn what you can do with the Gradle API. Start with the entry for {dsl-ref}org.gradle.api.Project.html[`Project`].
 
-// I considered talking about configuring tasks, not letting them configure themselves, but I don't think we have enough context here. Such a tip only makes sense when using custom task classes.
-
 Alongside that plugin source file, create another file called `GreetingExtension.java` and put the following in it:
 
 [source,java]
+.buildSrc/src/main/java/org/example/greeting/GreetingExtension.java
 ----
 package org.example.greeting;
 
 public class GreetingExtension {
-    private String name = "World";                                                      <1>
-    private String message = "Hello";                                                   <1>
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    private String message = "Hello";                                        <1>
+    private String name = "World";                                           <1>
 
     public String getMessage() { return message; }
     public void setMessage(String message) { this.message = message; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 }
 ----
-<1> Sets some default values for our extension properties
+<1> Sets default values for the extension's properties
 
 You now have a plugin, but a plugin alone doesn't do anything. You need to apply it in another project.
 
@@ -90,6 +89,7 @@ You now have a plugin, but a plugin alone doesn't do anything. You need to apply
 Create a `build.gradle` file in the root of the project with the following contents:
 
 [source,groovy]
+.build.gradle
 ----
 apply plugin: org.example.greeting.GreetingPlugin
 ----
@@ -112,37 +112,36 @@ $ gradle hello
 :buildSrc:check UP-TO-DATE
 :buildSrc:build
 :hello
-Hello World!
+Hello, World!
 ----
 
 As you can see from the output above, the files in `buildSrc` are treated as a Java project. This gets built first and then the classes inside that project become available in your main build, which is what runs the `hello` task.
 
-Your build is currently just using the default values for the greeting, hence why it prints out "Hello World!". This doesn't have to be the case as the plugin pulls the greeting values from the extension it creates. All you have to do is provide your own values in the build script like so:
+Your build is currently just using the default values for the greeting, hence why it prints out "Hello, World!". This doesn't have to be the case as the plugin pulls the greeting values from the extension it creates. All you have to do is provide your own values in the build script like so:
 
 [source,groovy]
+.build.gradle
 ----
 apply plugin: org.example.greeting.GreetingPlugin
 
 greeting {                                                       <1>
-    name = "Gradle"                                              <2>
     message = "Hi"
+    name = "Gradle"                                              <2>
 }
 ----
-<1> Configures the extension named "greeting", which in this case is of type `GreetingExtension`
+<1> Configures the extension named `greeting`, which in this case is of type `GreetingExtension`
 <2> Sets the extension's `name` property (via the `setName()` method) to "Gradle"
 
 Now when you run the `hello` task, you'll see the following - using `-q` to hide the `buildSrc` output:
 
 ----
 $ gradle -q hello
-Hi Gradle!
+Hi, Gradle!
 ----
 
-So extensions are a mechanism to introduce new model elements to the build script language. Note how the build author doesn't need to explicitly configure any tasks themselves. [Learning opportunity on domain modelling and making the task configuration independent of the build script]
+So extensions are a mechanism to introduce new model elements to the build script language. Note how the build author doesn't need to explicitly configure any tasks themselves. [Learning opportunity on domain modeling and making the task configuration independent of the build script]
 
-This example is now functionally complete and you've seen it in action in the above build. Now you can take the opportunity to tidy up the build script by removing the rather ugly reference to the `GreetingPlugin` class.
-
-// I've removed the plugin identifier marlarky as I think it's more aligned with plugin publishing than use inside `buildSrc`.
+This example is now functionally complete and you've seen it in action in the above build. [line-through]#Now you can take the opportunity to tidy up the build script by removing the rather ugly reference to the `GreetingPlugin` class#.
 
 == Summary
 
@@ -154,3 +153,4 @@ This example is now functionally complete and you've seen it in action in the ab
  - Publish to private company repository
  - Functionally test the plugin
  - Add incremental build support for plugins that deal with files
+ - ~TODO: https://docs.gradle.org/3.0/userguide/userguide_single.html#custom_plugins
