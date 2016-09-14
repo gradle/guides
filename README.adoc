@@ -179,7 +179,7 @@ These guidelines are related to the processes around writing and publishing the 
 
 This ties the commit to a particular issue within the GitHub UI, making it easy to navigate between the two. Every commit should reference at least the issue covering the guide that you're working on.
 
-Use the text `<org>/<repo>#<issueNumber>` within the commit message, for example "See gradle-guides/gradle-guides.github.io#12".
+Use the text `Issue: <org>/<repo>#<issueNumber>` within the commit message, for example "Issue: gradle-guides/gradle-guides.github.io#12".
 
 === Use proper git author metadata
 
