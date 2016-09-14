@@ -189,7 +189,7 @@ For those with `gradle.com` addresses, make sure that `user.email` references th
 
 === Avoid putting a `settings.gradle` file in the GS guide project
 
-The file adds to project pollution without providing any benefit.
+The file makes it harder to understand the project at a glance without providing any real benefit.
 
 == To be clarified/determined
 
