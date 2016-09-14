@@ -112,9 +112,9 @@ This includes:
 
 This is mostly to ensure consistency across guides, but single quotes are also a little less noisy than double quotes. Only use double quotes if you want to include an embedded expression in the string.
 
-=== Use Ascii quotes rather than smart quotes
+=== Use ASCII quotes rather than smart quotes
 
-This ensures the guide can be read on any system. It's also to ensure consistency across all the guides.
+This ensures the guide can be read on any system and the basic quotes render slightly better on GitHub too. This guideline is also to ensure consistency across all the guides.
 
 === Refer to the User Manual and Language Reference
 
