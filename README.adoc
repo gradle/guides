@@ -14,47 +14,47 @@ The following guidelines relate to the structural elements of the guide, such as
 
 === Use a set grammar for guide titles
 
-You should start guide titles with “Getting Started <present participle> …” and ensure that they represent a capability the reader will learn rather than a task that they perform
+You should start guide titles with "Getting Started <present participle> …" and ensure that they represent a capability the reader will learn rather than a task that they perform
 
- - For example, favor “Getting Started Building JVM libraries” over “Getting Started Building _a _Java library”, since the capability is “I can build JVM libraries”
+ - For example, favor "Getting Started Building JVM libraries" over "Getting Started Building _a _Java library", since the capability is "I can build JVM libraries"
 
 === Include a fixed, standard set of sections in order
 
 
 These sections are:
 
- - What you’ll build
- - What you’ll need
+ - What you'll build
+ - What you'll need
  - <Your instructional sections>
  - Summary
  - Next Steps
 
 === End the instructions with a practical validation step
 
-It’s easy to tell the reader that they have finished the task, but how do they know? The last section of the instructions should describe the steps required to verify the rest of the instructions were followed correctly. In effect, you want something that demonstrates successful completion of the guide, eliciting a “I did it!”
+It's easy to tell the reader that they have finished the task, but how do they know? The last section of the instructions should describe the steps required to verify the rest of the instructions were followed correctly. In effect, you want something that demonstrates successful completion of the guide, eliciting a "I did it!"
 
 === Use the imperative for headings of instructional sections
 
-Instructional sections are the ones between “What you’ll need” and “Summary”. They are the ones that take the reader through a series of steps to accomplish the overall task defined by the guide. Since you are telling the reader what to do, the imperative mood is appropriate for these section headings.
+Instructional sections are the ones between "What you'll need" and "Summary". They are the ones that take the reader through a series of steps to accomplish the overall task defined by the guide. Since you are telling the reader what to do, the imperative mood is appropriate for these section headings.
 
 == General content
 
 This section contains miscellaneous guidelines for the content of the guides that are independent of any specific guide section.
 
-=== Prefer ‘you’ over ‘we’ where appropriate
+=== Prefer 'you' over 'we' where appropriate
 
-When walking a reader through something you want them to do, it’s perfectly fine to use either the ‘you’ or ‘we’ forms. However, it’s important to be consistent in order to avoid dissonance for the reader.
+When walking a reader through something you want them to do, it's perfectly fine to use either the 'you' or 'we' forms. However, it's important to be consistent in order to avoid dissonance for the reader.
 
-With that in mind, use ‘you’ when referring to actions the reader should do or has done, or things that they should have or will have. For example:
+With that in mind, use 'you' when referring to actions the reader should do or has done, or things that they should have or will have. For example:
 
  - You will create a new project
  - When you ran this task, …
  - You should now have a package you can use in other projects
  - By following these instructions, you will have a complete build for …
 
-The ‘we’ form should be limited to speaking from the perspective of the guide author or team, for example “we want to encourage you to experiment with this.”
+The 'we' form should be limited to speaking from the perspective of the guide author or team, for example "we want to encourage you to experiment with this."
 
-=== Use ‘they’ for gender-neutral 3rd person singular pronoun
+=== Use 'they' for gender-neutral 3rd person singular pronoun
 
 You may occasionally refer to a third party such as a build user, i.e. someone that is neither you nor the reader. When that happens and you want to use a pronoun, prefer 'they', 'them', 'their', etc. This avoids the problem of assigning a gender to that third party with 'he' or 'she'.
 
@@ -64,7 +64,7 @@ Some URLs point to content that changes over time. For example, URLs to the curr
 
 Following this guideline means that:
 
- - linked content won’t change in a way that adversely affects the integrity of the guide 
+ - linked content won't change in a way that adversely affects the integrity of the guide 
  - we force a controlled and intentional upgrade of the guide at a time of our choosing
 
 === Use Asciidoctor attributes for commonly referenced base URLs
@@ -78,12 +78,12 @@ Using attributes in this way means that:
 
 Lastly:
 
- - the base URL for an attribute should end with a slash - ‘/
- - don’t use attributes for one-off or very infrequently used URLs
+ - the base URL for an attribute should end with a slash - '/
+ - don't use attributes for one-off or very infrequently used URLs
 
-=== Generate anchor links in the guide that don’t have a leading underscore
+=== Generate anchor links in the guide that don't have a leading underscore
 
-This is handled automatically by the GS guides’ template build script, but if you’re not using that for some reason - not recommended! - be sure to set the Asciidoctor `idprefix` attribute to an empty string in the build.
+This is handled automatically by the GS guides' template build script, but if you're not using that for some reason - not recommended! - be sure to set the Asciidoctor `idprefix` attribute to an empty string in the build.
 
 === Use command line snippets for reader-executed commands
 
@@ -92,7 +92,7 @@ We want to avoid any confusion as to what bits of text need to be copied and pas
     $ <command line>
     <expected output>
 
-The expected output is optional, but it’s useful for the reader in determining whether they correctly ran the given command line. Here's a simple example of the style we're want:
+The expected output is optional, but it's useful for the reader in determining whether they correctly ran the given command line. Here's a simple example of the style we're want:
 
     $ gradle hello
     :hello
@@ -114,11 +114,11 @@ This is mostly to ensure consistency across guides, but single quotes are also a
 
 === Use Ascii quotes rather than smart quotes
 
-This ensures the guide can be read on any system. It’s also to ensure consistency across all the guides.
+This ensures the guide can be read on any system. It's also to ensure consistency across all the guides.
 
 === Refer to the User Manual and Language Reference
 
-This is purely to ensure consistency of language across the guides. We also want to deprecate the use of the term DSL when talking about that part of the reference documentation, as it’s not obvious to everyone what it means.
+This is purely to ensure consistency of language across the guides. We also want to deprecate the use of the term DSL when talking about that part of the reference documentation, as it's not obvious to everyone what it means.
 
 Also take note of the capitalization! _User Manual_ rather than _user manual_.
 
@@ -132,15 +132,15 @@ It may not be possible to follow this guideline in every case. The admonition sh
 
 This is to ensure consistency across guides.
 
-=== Avoid instructions or commands that aren’t strictly necessary
+=== Avoid instructions or commands that aren't strictly necessary
 
 Anything extra beyond the bare minimum acts as a potential distraction and digression from the main aim of the guide.
 
 === Use matching terms in prose, section headings and document titles
 
-It can be confusing to the reader if different terms are used for the same thing. How are they supposed to know if you’re talking about the same thing or not.
+It can be confusing to the reader if different terms are used for the same thing. How are they supposed to know if you're talking about the same thing or not.
 
-As an example, if a section heading talks about “assembling a library JAR”, then the prose should not then say “building the project JAR file”. Instead, go with “assembling the library JAR”.
+As an example, if a section heading talks about "assembling a library JAR", then the prose should not then say "building the project JAR file". Instead, go with "assembling the library JAR".
 
 == Section-specific content
 
@@ -153,7 +153,7 @@ This is with respect to software that the reader needs to have installed before 
 
 === Include installation links for software prerequisites
 
-It’s all well and good telling a user what software to install, but it makes their lives much easier if those instructions also include links on how to do so.
+It's all well and good telling a user what software to install, but it makes their lives much easier if those instructions also include links on how to do so.
 
 === Never underestimate the time required to complete the guide
 
@@ -163,7 +163,7 @@ Imagine you spend double the time completing a guide than is stated in the prere
 
 In many cases, a next step should link to another guide. In the cases where no suitable guide exists, link to the appropriate chapter or section of the user manual. Otherwise we leave the reader stranded.
 
-=== Add comments for desirable next steps that don’t have suitable material
+=== Add comments for desirable next steps that don't have suitable material
 
 Following on from the previous guideline, we want to track and identify any content or guides that we think should exist for a Next Step. To do this, add an Asciidoc comment that links to the GitHub issue for that missing content:
 
@@ -177,13 +177,13 @@ These guidelines are related to the processes around writing and publishing the 
 
 === Include GitHub issue references into commit messages
 
-This ties the commit to a particular issue within the GitHub UI, making it easy to navigate between the two. Every commit should reference at least the issue covering the guide that you’re working on.
+This ties the commit to a particular issue within the GitHub UI, making it easy to navigate between the two. Every commit should reference at least the issue covering the guide that you're working on.
 
-Use the text `<org>/<repo>#<issueNumber>` within the commit message, for example “See gradle-guides/gradle-guides.github.io#12”.
+Use the text `<org>/<repo>#<issueNumber>` within the commit message, for example "See gradle-guides/gradle-guides.github.io#12".
 
 === Use proper git author metadata
 
-Make sure that git’s `user.name` property is your full, real name. The `user.email` property should be a valid email address for you.
+Make sure that git's `user.name` property is your full, real name. The `user.email` property should be a valid email address for you.
 
 For those with `gradle.com` addresses, make sure that `user.email` references that email address.
 
