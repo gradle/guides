@@ -1,10 +1,12 @@
 = Getting Started (GS) Style Guide for Authors
 
-:toc-title: Style Guidelines
-
 The Getting Started guides for Gradle form a potentially large collection of tutorials written by a variety of authors. From the perspective of the reader, though, they are all of one piece. Once they've read one guide, the next one should be familiar and hence easy to digest.
 
 We have developed this style guide to ensure that the guides retain a reasonable base level of consistency so that switching between them is not too jarring for the reader. It also helps you, the author of a guide, by reducing the number of decisions you have to make when writing a guide. And making decisions can be surprisingly time-consuming!
+
+:toc: macro
+:toc-title: Style Guidelines
+toc::[]
 
 == Guide structure
 
