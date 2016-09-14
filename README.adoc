@@ -78,7 +78,7 @@ Using attributes in this way means that:
 
 Lastly:
 
- - the base URL for an attribute should end with a slash - '/
+ - the base URL for an attribute should end with a slash - '/'
  - don't use attributes for one-off or very infrequently used URLs
 
 === Generate anchor links in the guide that don't have a leading underscore
@@ -128,7 +128,7 @@ Admonitions are great for calling out information, but they also disrupt the flo
 
 It may not be possible to follow this guideline in every case. The admonition should also be as close to other relevant content as possible. When these two guidelines conflict, favor the latter.
 
-=== Favour build script over build file
+=== Favor 'build script' over 'build file'
 
 This is to ensure consistency across guides.
 
