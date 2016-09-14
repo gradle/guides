@@ -161,7 +161,7 @@ Imagine you spend double the time completing a guide than is stated in the prere
 
 === Provide links to relevant documentation in Next Steps
 
-In many cases, a next step should link to another guide. In the cases where no suitable guide exists, link to the appropriate chapter or section of the user manual. Otherwise we leave the reader stranded.
+In many cases, a next step should link to another guide. In the cases where no suitable guide exists, link to the appropriate chapter or section of the User Manual. Otherwise we leave the reader stranded.
 
 === Add comments for desirable next steps that don't have suitable material
 
