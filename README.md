@@ -1,4 +1,4 @@
-# guides.gradle.org
+# guides.gradle.org [![Build Status](https://travis-ci.org/gradle/guides.svg?branch=master)](https://travis-ci.org/gradle/guides)
 
 To build and serve all guides locally, run the following:
 
