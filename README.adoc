@@ -1,10 +1,10 @@
 = Writing a Getting Started Guide image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
 
-This guide walks you through the process of writing a new _Getting Started Guide_ for inclusion at http://grdev.org/guides[https://gradle.org/guides].
+This guide walks you through the process of writing a new _Getting Started Guide_ for inclusion at http://guides.gradle.org/[https://guides.gradle.org/].
 
 == What you'll build
 
-Starting from a template project, you'll create a new Git repository for your Getting Started Guide complete with everything you need. After writing the content of the guide in Asciidoc, you'll publish your guide to the web via GitHub Pages and then issue a Pull Request to include your guide at http://grdev.org/guides[https://gradle.org/guides].
+Starting from a template project, you'll create a new Git repository for your Getting Started Guide complete with everything you need. After writing the content of the guide in Asciidoc, you'll publish your guide to the web via GitHub Pages and then issue a Pull Request to include your guide at http://guides.gradle.org/guides[https://guides.gradle.org/].
 
 == What you'll need
 
@@ -91,7 +91,7 @@ Then, regenerate your guide's HTML:
 
 When complete, open or refresh `build/html5/index.html` in your browser and notice that the title of the document has changed as expected.
 
-As you work on the main content of the guide, we recommend that you read the https://github.com/gradle-guides/style-guide/blob/master/README.adoc[style guide] and work through a few of the existing http://guides.grdev.org/[Getting Started Guides] if you haven't done so already.
+As you work on the main content of the guide, we recommend that you read the https://github.com/gradle-guides/style-guide/blob/master/README.adoc[style guide] and work through a few of the existing http://guides.gradle.org/[Getting Started Guides] if you haven't done so already.
 
 [TIP]
 .New to Asciidoc?
