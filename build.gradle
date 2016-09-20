@@ -28,7 +28,8 @@ asciidoctor {
             "repo-path": repoPath,
             "gradle-version": gradleVersion,
             "user-manual": "https://docs.gradle.org/$gradleVersion/userguide/",
-            "language-reference": "https://docs.gradle.org/$gradleVersion/dsl/"
+            "language-reference": "https://docs.gradle.org/$gradleVersion/dsl/",
+            "javadocs": "https://docs.gradle.org/$gradleVersion/javadocs/"
 }
 
 task copyIndex {

@@ -1,10 +1,10 @@
 = Writing Gradle Plugins image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
 
-This guide walks you through the process of creating reusable build logic in a Gradle plugin.
+This guide walks you through the process of creating reusable build logic in a Gradle plugin, which can then be applied to other Gradle builds.
 
 == What you'll build
 
-You'll write a simple plugin [line-through]#class that applies some standard Java project configuration. You'll then use that plugin for a simple Java build#.
+You'll write a simple plugin that adds a new task type and creates a task of that type in whatever project its applied to. You will also prove that the plugin works and see its effect by applying the plugin to a build.
 
 == What you'll need
 
@@ -26,6 +26,8 @@ Next, you will create a special directory structure for the plugin code:
 
 TIP: If you'd like to learn more about this `buildSrc` directory, you can read about how it allows you to organize your build logic {user-manual}organizing_build_logic.html#sec:build_sources[in the User Manual].
 
+TIP: You will often want to publish the plugin so that it can be reused across multiple builds. You can learn about the options to do just that in <<Next steps>>.
+
 == Create the plugin
 
 Create the file `GreetingPlugin.java` in the `buildSrc/src/main/java/org/example/greeting` directory you just created. The contents of that file should be the following:
@@ -37,52 +39,54 @@ package org.example.greeting;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.plugins.ExtensionContainer;
 
 public class GreetingPlugin implements Plugin<Project> {
     public void apply(Project project) {
-        final ExtensionContainer extensions = project.getExtensions();
-
-        extensions.create("greeting", GreetingExtension.class);              <1>
-
-        project.getTasks().create("hello", (task) -> {                       <2>
-            task.doLast((t) -> {
-                GreetingExtension extension =
-                    (GreetingExtension) extensions.getByName("greeting");
-                System.out.printf("%s, %s!\n", extension.getMessage(), extension.getName());
-            });
+        project.getTasks().create("hello", Greeting.class, (task) -> {       <1>
+            task.setMessage("Hello");
+            task.setRecipient("World");                                      <2>
         });
     }
 }
 ----
-<1> Creates a new extension named `greeting` that can be configured in the build script
-<2> Creates a new task named `hello` in the project that the plugin gets applied to
+<1> Creates a new task named `hello` of type `Greeting` (which you will define shortly)
+<2> Sets default values for the new task
 
-The Gradle `Project` object is the entry point to the entire Gradle API and allows you to do anything you can do in a normal build script. In this case, that involves creating an extension class, whose use you will see later when you apply the plugin, and creating a task.
+This is the actual plugin and the Gradle `Project` object is your access point for the entire Gradle API, which allows you to do the same things as you can do in a build script. In this case, you are creating a simple task called `hello` in the target project.
 
-TIP: Use the Gradle {dsl-ref}[DSL Reference] and {javadoc-ref}[Javadocs] to learn what you can do with the Gradle API. Start with the entry for {dsl-ref}org.gradle.api.Project.html[`Project`].
+TIP: Use the Gradle {language-reference}[DSL Reference] and {javadocs}[Javadocs] to learn what you can do with the Gradle API. Start with the entry for {language-reference}org.gradle.api.Project.html[`Project`]. You can find out more about what you can achieve by also following the links in <<Next steps>>.
 
-Alongside that plugin source file, create another file called `GreetingExtension.java` and put the following in it:
+Next, you'll create the class for the task type that the plugin is using. Create another file, called `Greeting.java`, in the same directory as `GreetingPlugin.java` and set its contents to the following:
 
 [source,java]
-.buildSrc/src/main/java/org/example/greeting/GreetingExtension.java
+.buildSrc/src/main/java/org/example/greeting/Greeting.java
 ----
 package org.example.greeting;
 
-public class GreetingExtension {
-    private String message = "Hello";                                        <1>
-    private String name = "World";                                           <1>
+import org.gradle.api.DefaultTask;
+import org.gradle.api.tasks.TaskAction;
+
+public class Greeting extends DefaultTask {
+    private String message;
+    private String recipient;
 
     public String getMessage() { return message; }
     public void setMessage(String message) { this.message = message; }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getRecipient() { return recipient; }
+    public void setRecipient(String recipient) { this.recipient = recipient; }
+
+    @TaskAction
+    void sayGreeting() {
+        System.out.printf("%s, %s!\n", getMessage(), getRecipient());             <1>
+    }
 }
 ----
-<1> Sets default values for the extension's properties
+<1> Prints out the configured greeting when the task runs
 
-You now have a plugin, but a plugin alone doesn't do anything. You need to apply it in another project.
+TIP: You can learn more about creating your own task types in the {user-manual}custom_tasks.html[User Manual].
+
+You now have a plugin, but a plugin alone doesn't do anything. You need to apply it in another project for it to be useful, so we will show you how to do that next.
 
 == Use the plugin in the main project
 
@@ -94,7 +98,11 @@ Create a `build.gradle` file in the root of the project with the following conte
 apply plugin: org.example.greeting.GreetingPlugin
 ----
 
-You can now verify that your plugin is working by running its `hello` task in the root of the project:
+This applies your plugin to the main project, adding the `hello` task to the build.
+
+TIP: The above syntax is all that's required because the plugin source resides in the `buildSrc` directory. Applying other, non-core Gradle plugins requires other syntax as described in the {user-manual}plugins.html#sec:binary_plugins[User Manual].
+
+You can now verify that your plugin is working by running its `hello` task in the main build:
 
 ----
 $ gradle hello
@@ -115,22 +123,23 @@ $ gradle hello
 Hello, World!
 ----
 
-As you can see from the output above, the files in `buildSrc` are treated as a Java project. This gets built first and then the classes inside that project become available in your main build, which is what runs the `hello` task.
+The bulk of the output reflects that the files in `buildSrc` are treated as a Java project, which needs to be built first. Once that happens, the classes inside that project become available in your main build and the main build can execute the task or tasks that you specified.
 
-Your build is currently just using the default values for the greeting, hence why it prints out "Hello, World!". This doesn't have to be the case as the plugin pulls the greeting values from the extension it creates. All you have to do is provide your own values in the build script like so:
+Your build is currently just using the default values for the greeting, hence why it prints out "Hello, World!". This doesn't have to be the case as you can configure the task directly in the build script:
 
 [source,groovy]
 .build.gradle
 ----
 apply plugin: org.example.greeting.GreetingPlugin
 
-greeting {                                                       <1>
+hello {                                                                      <1>
     message = "Hi"
-    name = "Gradle"                                              <2>
+    recipient = "Gradle"
 }
 ----
-<1> Configures the extension named `greeting`, which in this case is of type `GreetingExtension`
-<2> Sets the extension's `name` property (via the `setName()` method) to "Gradle"
+<1> Configures multiple properties of the task named `hello`
+
+TIP: You can learn more about the syntax for configuring tasks in the {user-manual}more_about_tasks.html#sec:configuring_tasks[User Manual].
 
 Now when you run the `hello` task, you'll see the following - using `-q` to hide the `buildSrc` output:
 
@@ -139,18 +148,54 @@ $ gradle -q hello
 Hi, Gradle!
 ----
 
-So extensions are a mechanism to introduce new model elements to the build script language. Note how the build author doesn't need to explicitly configure any tasks themselves. [Learning opportunity on domain modeling and making the task configuration independent of the build script]
+Your plugin is now functionally complete and you've seen it in action in the above build. There is just one more thing we want to show you, which helps make the build script a bit tidier and also helps when it comes to publishing your plugin: adding a plugin identifier.
 
-This example is now functionally complete and you've seen it in action in the above build. [line-through]#Now you can take the opportunity to tidy up the build script by removing the rather ugly reference to the `GreetingPlugin` class#.
+== Add plugin identifier
+
+Create a `buildSrc/src/main/resources/META-INF/gradle-plugins/org.example.greeting.properties` file that contains the following:
+
+----
+implementation-class=org.example.greeting.GreetingPlugin
+----
+
+Gradle uses this file to determine which class implements the `Plugin` interface. It also uses to the name of the file to determine the plugin's string identifier.
+
+WARN: You must put the properties file in the directory `META-INF/gradle-plugins` as Gradle will try to resolve the file from that specific location in the plugin JAR.
+
+Now that your plugin has an identifier, you can replace the following line of the build script:
+
+[source,groovy]
+----
+apply plugin: org.example.greeting.GreetingPlugin
+----
+
+with one that uses the plugin ID:
+
+[source,groovy]
+----
+apply plugin: "org.example.greeting"
+----
+
+Note how the name of the properties file - `org.example.greeting.properties` - maps to the ID above.
+
+TIP: Always qualify the plugin name with a namespace that is unique to you instead of the "org.example" used in this guide. Doing so helps avoid name clashes between plugins. You can find more details about plugin IDs in the {user-manual}custom_plugins.html#sec:creating_a_plugin_id[User Manual].
 
 == Summary
 
-~TODO: Write the summary!
+You're now done! You have successfully created a plugin and used it within a build. Along the way, you've learned how to:
+
+ - Put build logic into a plugin
+ - Use the `buildSrc` directory for a plugin's classes
+ - Give the plugin an ID and apply it in a build script
+
+This guide focuses on the essence of what a plugin is, but most plugins are far more substantial in the features that they provide. The next section will guide you towards learning more about what plugins can do and how you should implement them.
 
 == Next steps
 
- - Publish the plugin to plugin portal
- - Publish to private company repository
- - Functionally test the plugin
- - Add incremental build support for plugins that deal with files
- - ~TODO: https://docs.gradle.org/3.0/userguide/userguide_single.html#custom_plugins
+If you want to take your plugin skills further, you should consider the following:
+
+ - {user-manual}javaGradle_plugin.html[Using a helper plugin] to simplify plugin development
+ - https://plugins.gradle.org/docs/submit[Publishing the plugin to the plugin portal]
+ - {user-manual}custom_plugins.html#sec:getting_input_from_the_build[Using extensions] to provide a user-friendly model for your build type
+ - {user-manual}test_kit.html[Testing the plugin]
+ - {user-manual}more_about_tasks.html#sec:up_to_date_checks[Adding incremental build] support to the plugin's task types
