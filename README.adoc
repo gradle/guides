@@ -91,12 +91,6 @@ Then, regenerate your guide's HTML:
 
 When complete, open or refresh `build/html5/index.html` in your browser and notice that the title of the document has changed as expected.
 
-[TIP]
-.Tighten the development loop with Gradle's _continuous build_ feature
-====
-Making a change to a file and re-running `./gradlew build` to see the results is repetitive and time consuming. Instead, run Gradle in _continuous mode_ to watch for changes to source files and re-generate guide HTML automatically with `./gradlew --continuous build`.
-====
-
 As you work on the main content of the guide, we recommend that you read the https://github.com/gradle-guides/style-guide/blob/master/README.adoc[style guide] and work through a few of the existing http://guides.grdev.org/[Getting Started Guides] if you haven't done so already.
 
 [TIP]
