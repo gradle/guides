@@ -9,7 +9,7 @@ To build and serve all guides locally, run the following:
     ./nginx.sh
     open http://localhost:8080
 
-When complete, http://localhost:8080 should mirror what's available at http://guides.gradle.org.
+When complete, http://localhost:8080 should mirror what's available at https://guides.gradle.org.
 
 ## Accepting new guides
 
