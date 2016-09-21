@@ -22,6 +22,13 @@ A guide on performance tuning would normally start with profiling and something 
 
 The Gradle daemon is a mechanism for improving the performance of Gradle. As of Gradle 3.0, the daemon is enabled by default but if you are using an older version, you should definitely enable it. You will see big improvements in build speed by doing so. You can learn how to do that https://docs.gradle.org/2.14/userguide/gradle_daemon.html[in the 2.14 user guide].
 
+[CAUTION]
+====
+You should take particular care when using the daemon with a build that calls into third-party Java `main()` methods, such as those provided with JVM-based compilers. It's tempting to run Java code from within the Gradle VM in order to avoid the cost of spawning a new process, but if that code holds onto memory after it finishes, then it causes problems for the daemon.
+
+For the sake of daemon stability, you should use the `JavaExec` task to execute the code in a separate process.
+====
+
 The recommendation for pre-3.0 versions of Gradle is to enable the daemon for developer machines and disable it for continuous integration servers. This is because the daemon is a background process that may require manual intervention from time to time and that’s not always easy when the process is on a separate machine from where you’re sitting. You also need to factor in whether you run many builds with different VM configurations, which will lead to each build having its own daemon and a potential sea of daemon processes at any one time.
 
 Nonetheless, if build times on your CI server hurt developer productivity, you should definitely consider enabling the daemon there. Alternatively, upgrade to the latest version of Gradle to benefit from improvements in the robustness of the daemon.
