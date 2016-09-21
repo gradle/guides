@@ -1,41 +1,43 @@
 = Writing a Getting Started Guide image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
 
-This guide walks you through the process of writing a new _Getting Started Guide_ for inclusion at http://guides.gradle.org/[https://guides.gradle.org/].
+This guide walks you through the process of writing a new _Getting Started Guide_ for inclusion at http://guides.gradle.org/[https://guides.gradle.org/]. These guides are short, step-by-step tutorials that focus on a single, minimal task. The idea is to take readers from nothing to a working example, while pointing out further reading if they want to learn more.
 
 == What you'll build
 
-Starting from a template project, you'll create a new Git repository for your Getting Started Guide complete with everything you need. After writing the content of the guide in Asciidoc, you'll publish your guide to the web via GitHub Pages and then issue a Pull Request to include your guide at http://guides.gradle.org/guides[https://guides.gradle.org/].
+Once you and the Gradle Guides team have agreed on a new guide, you will work on a fork of a skeleton Getting Started Guide repository, develop the guide using Asciidoc, and finally submit a Pull Request once your guide is ready for review. 
 
 == What you'll need
 
- - About 15 minutes (does not include actual writing time)
  - A https://git-scm.org[Git] client
  - A https://github.com[GitHub] account
- - The http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Runtime Environment] version 1.7 or better (to run Gradle)
+ - A http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Runtime Environment], version 1.7 or better
  - A text editor
  - A basic familiarity with http://asciidoctor.org/docs/user-manual/[Asciidoc]
 
-== Create a new repository for your guide
+== Create a GitHub issue
 
-The document you are reading right now is itself a Getting Started Guide whose source lives at https://github.com/gradle-guides/gs-writing-gs-guides. Follow the steps below to use this repository as a template for creating your own new guide.
+The first step in creating a new Getting Started Guide that is listed on the Gradle Guides site involves submitting a proposal for the new guide to the https://github.com/gradle/guides[gradle/guides] GitHub repository. This is so that we, the Gradle Guides team, can work with you to determine the most appropriate subject and scope for the guide.
 
-----
-$ git clone https://github.com/gradle-guides/gs-writing-gs-guides.git gs-your-guide <1>
-$ cd gs-your-guide
-$ rm -rf .git                                                                <2>
-$ git init                                                                   <3>
-$ git add .                                                                  <4>
-$ git commit -m "Initialize repository from template"                        <5>
-----
-<1> Clone the template repository locally, renaming it to `gs-your-guide` in the process. Replace the `<your-guide>` part with the actual name of your guide. For example, `gs-writing-plugins` would be a suitable repository name for a guide titled "Getting Started Writing Gradle Plugins", and `gs-fat-jars` would work for a guide titled "Getting Started Working with Fat JARs".
-<2> Remove the `.git` database for the template guide
-<3> Initialize a new `.git` database for your guide
-<4> Add all content from the template as a baseline for your guide
-<5> Commit the template content to your new repository
+To submit your proposal:
+
+ - Create a new issue at https://github.com/gradle/guidesi/issues[gradle/guides] with a title that matches the suggested topic for the new guide. For example, "Publishing to private repositories" or "Creating fat JARs". The title should, in general, be a description of a task that a Gradle user might want to undertake.
+ - Add a basic outline for the proposed guide, i.e. section headings
+ - Engage with the Gradle Guides team through this issue to nail down the final form of the guide
+
+Once the proposal has been accepted, the Gradle Guides team will https://github.com/gradle/guides/blob/master/README.md[create a new GitHub repository] for your guide. You won't be able to commit directly to that repository, but that's not a problem as you will be using the standard fork and pull request work flow.
+
+== Fork and clone the repository
+
+The Gradle Guides team will add a link to your guide's repository in the issue you created in the previous step. As soon as you see that link, you can:
+
+ - https://help.github.com/articles/fork-a-repo/[Fork the repository]
+ - Clone your fork
+
+That's it! You're now ready to work on the content for your new guide using the infrastructure provided by the project you just cloned.
 
 == Render and view your guide locally
 
-You now have everything you need to render the guide from Asciidoc into HTML and view the result. Run the following commands to process the guide source and open the resulting HTML file:
+You already have everything you need to render the guide from Asciidoc into HTML and view the result. Run the following commands in the guide project directory to process the guide source and open the resulting HTML file:
 
 ----
 $ ./gradlew build                                                            <1>
@@ -44,14 +46,14 @@ $ open build/html5/index.html                                                <2>
 <1> Run Gradle (via the Gradle Wrapper) to generate HTML from your guide's Asciidoc sources
 <2> Open the generated HTML file in your system's default browser
 
-At this point, you should have opened an HTML page that looks identical to the one you're reading right now. But before you start replacing that with your own content, take a look at the project's structure.
+At this point, you should have opened an HTML page that has a title and some section headings, but nothing else. It's your job to fill in the gaps! But before you start working on that content, it's worth having a basic understanding of the project structure.
 
 == Get familiar with your guide's structure and contents
 
 The structure of a Getting Started Guide repository is very simple, consisting of just two basic components:
 
-1. An Asciidoc source file and
-2. a Gradle build to process them into HTML (and later to publish them to GitHub Pages)
+ 1. An Asciidoc source file
+ 2. A Gradle build to process them into HTML (and later to publish them to GitHub Pages)
 
 The file you'll interact with most as a guide author is `README.adoc`, but it's useful to know what the other files and directories are for as well. The following listing walks through each of the top-level directory entries:
 
@@ -75,21 +77,7 @@ Now you're ready to work on your new guide's content.
 
 == Write your guide
 
-In this step, you'll use your favorite editor to re-write `README.adoc` to create your new guide.
-
-First, change the title found on the first line of `README.adoc` to something appropriate for your guide. For example, from
-
-  = Writing a Getting Started Guide
-
-to
-
-  = Winning Friends and Influencing People
-
-Then, regenerate your guide's HTML:
-
-    $ ./gradlew build
-
-When complete, open or refresh `build/html5/index.html` in your browser and notice that the title of the document has changed as expected.
+Now you can use your favorite editor to flesh out your new guide in `README.adoc`!
 
 As you work on the main content of the guide, we recommend that you read the https://github.com/gradle-guides/style-guide/blob/master/README.adoc[style guide] and work through a few of the existing http://guides.gradle.org/[Getting Started Guides] if you haven't done so already.
 
@@ -99,68 +87,17 @@ As you work on the main content of the guide, we recommend that you read the htt
 Refer to the http://asciidoctor.org/docs/user-manual/[Asciidoctor user manual] while writing and you'll master the basics in no time. There is also a http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/[quick reference for syntax] that's particularly useful when you just want to know the syntax for something specific.
 ====
 
-[NOTE]
-====
-Before writing the remainder of your guide, you may want to skip ahead to the next sections to understand the rest of the guide publication workflow.
-====
+When you want to preview your changes, simply regenerate your guide's HTML with the following build command:
 
-== Host your guide repository on GitHub
+    $ ./gradlew build
 
-Log into your GitHub account and https://help.github.com/articles/create-a-repo/[create a new repository] for your guide, taking the following into account:
+Then open or refresh `build/html5/index.html` in your browser. It's as simple as that.
 
- - Give the repository the same name as you used in the first steps above, e.g. `gs-writing-plugins`
- - Make sure the repository is _public_, not _private_
- - When prompted, do not add a README or any other files to the repository
+== Send a pull request
 
-When complete, you should have a new, empty repository at https://github.com/your-github-username/gs-your-guide.
+Once you're happy with your guide, the final step is to submit it through a https://help.github.com/articles/creating-a-pull-request-from-a-fork/[Pull Request]. Your guide well then enter a review process, during which changes may be requested. If that happens, simply make the changes locally and push them to your fork. The Pull Request will be updated automatically.
 
-You can now push the contents of your local Git repository to your new GitHub remote with these commands:
-
-----
-$ git remote add origin https://github.com/your-github-username/gs-your-guide
-$ git push --set-upstream origin master:master
-----
-
-TIP: Feel free to use either the HTTPS or the SSH URL for your GitHub repository. We're only using the HTTPS URL for demonstration purposes.
-
-== Publish your guide to GitHub Pages
-
-At any point in the writing process, you can publish your guide to GitHub Pages to see what it looks like live on the web.
-
-[TIP]
-.New to GitHub Pages?
-====
-https://pages.github.com/[GitHub Pages] provides GitHub users with a free and convienent way to publish static content on the web. You'll find everything you need for publishing your guide in the steps below, but if you'd like more information about GitHub Pages, check out https://help.github.com/categories/github-pages-basics/[GitHub Pages Basics].
-====
-
-First, open `build.gradle` and change the value assigned to `repoUri` to reflect the URL of your new repository. For example:
-
-[source,groovy]
-.build.gradle
-----
-githubPages {
-    repoUri = "https://github.com/your-github-username/gs-your-guide.git"
-    // ...
-}
-----
-
-To publish your guide, just run:
-
-----
-$ ./gradlew build publishGhPages
-----
-
-When complete, an HTML rendering of the latest changes to your guide should be available at http://your-github-username.github.io/gs-your-guide.
-
-== Request that your guide be listed at gradle.org
-
-When you've finished writing, reviewing and editing your guide, https://help.github.com/articles/editing-files-in-another-user-s-repository/[propose an edit] to the https://github.com/gradle/build-tool-web/blob/gh-pages/_data/guides.yml[_data/guides.yml] page in the https://github.com/gradle/build-tool-web/[gradle/build-tool-web] repository. Add an entry for your guide, including its name and full URL. The Gradle team will review your guide and work with you to get it listed.
-
-[TIP]
-.Reach out to the Gradle team *before* writing your guide
-====
-If you're not 100% sure that your guide is a good candidate for inclusion at gradle.org, reach out to the Gradle team before you spend much time writing it. Just add an issue to the https://github.com/gradle/guides[gradle/guides] repository and ask the team for feedback.
-====
+You'll be able to find your guide from the http://guides.gradle.org/[Gradle Guides site] soon after the pull request is accepted and merged.
 
 == Summary
 
