@@ -37,44 +37,36 @@ Nonetheless, if build times on your CI server hurt developer productivity, you s
 
 The Gradle team works regularly on improving the performance of different aspects of Gradle builds. If you’re using an old version of Gradle, you’re missing out on the benefits of that work. Try upgrading to the latest version of Gradle to see what kind of impact it has. Doing so is low risk because very few things break between minor versions of Gradle.
 
-Going up a major version will probably involve more work as that's when deliberate breaking changes happen. Even so, it’s definitely worth giving it a try, particularly if the release notes for a new version explicitly call out new performance improvements.
+Going up a major version is often just as easy and definitely recommended when available. Just be aware that this is when deprecations become failures. So be sure to fix those deprecation warnings! 
 
-As Gradle runs on the JVM, improvements in the performance of the latter will often benefit Gradle. You should consider running Gradle with the latest major version of the JVM for that reason.
+As Gradle runs on the JVM, improvements in the performance of the latter will often benefit Gradle. Hence, you should consider running Gradle with the latest major version of the JVM.
+
+### Configure on demand
+
+Imagine you have 300 subprojects all managed by a single Gradle build. Even if the configuration time for each project is just half a second, that means every build will take at last 300 x 0.5s = 2.5 minutes! That’s why it’s particularly crucial to keep a close eye on configuration times for projects that have a lot of modules.
+
+With that in mind, wouldn’t it be better if Gradle only configured the projects that were actually required to execute the requested task(s)? Of course, and that’s where the `--configure-on-demand` command line option comes in. It avoids a lot of unnecessary configuration at the cost of working out which projects are required. We wouldn’t recommend using it if you only have a small number of quick-to-configure subprojects, but otherwise you should try it.
+
+NOTE: Configure on demand will only work reliably when you have decoupled projects or explicit (rather than implicit) inter-project dependencies. You can learn more about https://docs.gradle.org/current/userguide/multi_project_builds.html#sec:decoupled_projects[decoupled projects] in the User Manual.
+
+You can make configure on demand the default for a project by adding the following setting to its _gradle.properties_ file:
+
+[source,java]
+org.gradle.configureondemand=true
+
 
 ### Parallel builds
-
-[WARNING]
-====
-Both parallel builds and configure on demand are easy to enable, but should not be used unless you're an *expert user*. They can have a really big impact on multi-project build performance, but they are also incubating features - which means they may still have significant bugs - and they require you to avoid certain techniques in your build files to work properly.
-
-Some of the things you need to avoid are documented (follow the "decoupled projects" link in this section), but others are not. So if you have long-running, multi-project builds, certainly give them a try as you could very well see a big reduction in build times, but understand that the builds may fail for unclear reasons. If that happens, simply stop using these options.
-====
 
 Few non-trivial builds consist of just one project and when you have a mult-project build, some of those projects are usually independent of one another. Yet Gradle will only ever run one task at a time by default, regardless of the project structure. By using the `--parallel` switch, you can force Gradle to execute independent subprojects - those that have no implicit or explicit project dependencies between one another - in parallel, allowing it to run multiple tasks at the same time as long as those tasks are in different projects.
 
 You could see big improvements in build times as soon as you enable parallel builds. The extent of those improvements depends on your project structure and how many explicit dependencies you have between them. A build whose execution time is dominated by a single project won't benefit much at all, for example. Or one that has lots of inter-project dependencies resulting in few projects that can be executed in parallel. But most multi-project builds should see a worthwhile boost to build times.
 
+NOTE: Parallel builds have similar requirements to configure on demand with regard to decoupled projects. In addition, you should read more about them in https://docs.gradle.org/current/userguide/multi_project_builds.html#sec:parallel_execution[the User Manual] before using them extensively. You need to be more careful in your build configuration and execution than normal to use parallel builds reliably. For example, you should currently avoid running the `clean` task in combination with other tasks in a parallel build - the User Manual explains why in a warning.
+
 You can also make building in parallel the default for a project by adding the following setting to the project's _gradle.properties_ file:
 
 [source]
 org.gradle.parallel=true
-
-*Note* Parallel builds will only work reliably when you have decoupled projects or explicit (rather than implicit) inter-project dependencies. You can learn more about https://docs.gradle.org/current/userguide/multi_project_builds.html#sec:parallel_execution[parallel builds] and https://docs.gradle.org/current/userguide/multi_project_builds.html#sec:decoupled_projects[decoupled projects] in the user guide.
-
-### Configure on demand
-
-WARNING: See the warning in the above parallel builds section to find out why you need to take care with this feature.
-
-Imagine you have 300 subprojects all managed by a single Gradle build. Even if the configuration time for each project is just half a second, that means every build will take at last 300 x 0.5s = 2.5 minutes! That’s why it’s particularly crucial to keep a close eye on configuration times for projects that have a lot of modules.
-
-With that in mind, wouldn’t it be better if Gradle only configured the projects that were actually required to execute the requested task(s)? Of course, and that’s where the `--configure-on-demand` command line option comes in. It avoids a lot of unnecessary configuration at the cost of working out which projects are required. We wouldn’t recommend using it if you only have a small number of quick-to-configure subprojects, but otherwise it may be worth a try.
-
-In the same fashion as parallel builds, you can make configure on demand the default for a project by adding the following setting to its _gradle.properties_ file:
-
-[source,java]
-org.gradle.configureondemand=true
-
-*Note* Configure on demand has similar requirements to parallel builds: it’s an incubating feature that requires projects to be properly decoupled.
 
 That’s the end of our quick wins. From here on out, improving your build performance will require some elbow grease. We start with perhaps the most important step: finding out which bits of your build are slow and why.
 
