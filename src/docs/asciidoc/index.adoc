@@ -73,23 +73,53 @@ That’s the end of our quick wins. From here on out, improving your build perfo
 
 ## Profile, profile, profile
 
-As with any attempt to optimize, your first instinct should be to profile the system you’re interested in. For most jobs, Gradle’s built-in profiling may be sufficient and it should definitely be your first port of call.
+As with any attempt to optimize, your first instinct should be to profile the system you’re interested in. Gradle provides two mechanisms for doing this and both of them give you reports that you can view in a browser. Let's take a look at these two mechanisms - build scans and profile reports - before then discussing how to interpret the information provided in the reports.
+
+### Using Gradle build scans
+
+Build scans are a feature provided by Gradle Inc. that aggregate information across multiple build runs and make those diagnostics available to you online as a report. You can
+
+* Easily share scans between developers and build masters
+* Track build performance over time
+* More easily identify the source of a problem
+* Identify issues specific to a single developer site
+
+Gradle won't generate build scans automatically, but you can easily enable them by following these steps:
+
+1. Apply the _build-scan_ plugin https://scans.gradle.com/setup/step-1[as described on Gradle.com]
+2. Run your builds with the `-Dscan` option, e.g. `gradle build -Dscan`
+
+At the end of the build, Gradle displays the URL where your build scan awaits your attention.
+
+The build scans themselves provide a lot of information, but the main area of interest in the early stages of diagnosis is the performance page. To get there, follow the link highlighted in the following screenshot of the build scan home page:
+
+image::build-scan-home.png[title="Performance page link on build scan home page"]
+
+The performance page gives you a breakdown of how long different stages of your build took to complete. As you can see from the following screenshot, you get to see how long Gradle took to start up, configure the build's projects, resolve dependencies, and execute the tasks. You also get details about environmental properties, such as whether a daemon was used or not.
+
+image::build-scan-performance-page.png[title="Build scan performance page"]
+
+We will look into the different categories presented in the report shortly. You can also learn more about build scans https://gradle.com[at Gradle.com].
 
 ### Profile report
 
-It’s trivially easy to profile a Gradle build: simply run
+If you don't have internet access or have some other reason not to use build scans, it’s still trivially easy to profile a Gradle build. Simply add the `--profile` option to the command line args:
 
     gradle --profile <tasks>
 
-This will result in the generation of an HTML report that you can find in the _build/reports/profile_ directory of the root project. Each profile report has a timestamp in its name to avoid overwriting existing reports and so that you can easily identify the one you just generated.
+This will result in the generation of an HTML report that you can find in the _build/reports/profile_ directory of the _root_ project. Each profile report has a timestamp in its name to avoid overwriting existing ones.
 
-The report itself displays a breakdown of the time taken to run the build for a given set of task arguments. Here’s a screenshot of a real profile report showing the different categories that Gradle uses:
+Similar to build scans, the report itself displays a breakdown of the time taken to run the build for a given set of task arguments. Here’s a screenshot of a real profile report showing the different categories that Gradle uses:
 
 image::gradle-profile-report.png[title="An example profile report", alt="Sample Gradle profile report"]
 
 Each of the main categories - _Configuration_, _Dependency Resolution_, and _Task Execution_ - may reveal different time sinks that you may want to tackle. We’ll go through those categories in later sections, detailing the types of issue you may encounter for each one. Before then, let’s take a look at some of the items in the summary.
 
-### Startup
+### Understanding the profile report categories
+
+Both build scans and the local profile reports break build execution down into the same categories. We'll now look at those categories, what they mean, and what sorts of problems you can identify with them.
+
+#### Startup
 
 This reflects Gradle’s initialization time, which consists mostly of
 
@@ -100,7 +130,7 @@ This reflects Gradle’s initialization time, which consists mostly of
 
 Even if a build execution has a long startup time, a subsequent run will usually see a dramatic drop off in the startup time. The main reason for a build's startup time to be persistently slow is a problem in your init scripts. Double check that the work you’re doing there is necessary and as performant as possible.
 
-### Settings and _buildSrc_
+#### Settings and _buildSrc_
 
 Soon after Gradle has got itself up and running, it initializes your project. This commonly just means processing your _settings.gradle_ file, but if you have custom build logic in a _buildSrc_ directory, that gets built as well.
 
@@ -108,22 +138,11 @@ The sample profile report shows a time of just over 8 seconds for this category,
 
 The _settings.gradle_ file rarely has computationally or IO expensive code in it. If you find that Gradle is taking a significant amount of time to process it, you should use more traditional profiling methods, such as timing statements in _settings.gradle_ or a profiler, to determine why.
 
-### Loading projects
+#### Loading projects
 
 It normally doesn’t take a significant amount of time to load projects, nor do you have any control over it. The time spent here is basically a function of the number of projects you have in your build.
 
 The rest of the summary relates to the main categories, which we cover in detail in the next sections. Before we do that, there's one more tool available to you for diagnosing performance problems: Gradle build scans.
-
-### Using Gradle build scans
-
-Build scans are a feature provided by Gradle Inc. that aggregate information across multiple build runs and make those diagnostics available to you online as a report. These have several benefits over a single build profile report:
-
-* Easily share scans between developers and build masters
-* Track build performance over time
-* More easily identify the source of a problem
-* Identify issues specific to a single developer site
-
-You can learn more about build scans https://gradle.com[at Gradle.com].
 
 ## Configuration
 
