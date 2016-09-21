@@ -236,7 +236,7 @@ Gradle benefits hugely from the rich collection of third-party plugins that you 
 
 Dependency resolution is a hard problem to solve and making it perform well simply adds to the challenge. So it’s no surprise that plugins might adversely affect the time spent during dependency resolution, albeit unintentionally. If you are using such plugins, have a look at the dependency resolution section of the build profile report to see if the times are longer than expected. Then try disabling the plugin and running the build again to see whether the build times change significantly.
 
-## Avoiding task execution
+## Task execution
 
 The fastest task is one that doesn’t execute. If you can find ways to skip tasks you don’t need to run, you’ll end up with a faster build overall. In this section, we’ll discuss a few ways to achieve task avoidance in Gradle.
 
