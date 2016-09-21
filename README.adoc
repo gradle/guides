@@ -1,10 +1,10 @@
 = Writing a Getting Started Guide image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
 
-This guide walks you through the process of writing a new _Getting Started Guide_ for inclusion at http://guides.gradle.org/[https://guides.gradle.org/]. These guides are short, step-by-step tutorials that focus on a single, minimal task. The idea is to take readers from nothing to a working example, while pointing out further reading if they want to learn more.
+This guide walks you through the process of writing a new _Getting Started Guide_ for inclusion at https://guides.gradle.org/[guides.gradle.org]. These guides are short, step-by-step tutorials that focus on a single, minimal task. The idea is to take readers from nothing to a working example, while pointing out further reading if they want to learn more.
 
 == What you'll build
 
-Once you and the Gradle Guides team have agreed on a new guide, you will work on a fork of a skeleton Getting Started Guide repository, develop the guide using Asciidoc, and finally submit a Pull Request once your guide is ready for review. 
+Once you and the Gradle Guides team have agreed on a new guide, you will work on a fork of a skeleton Getting Started Guide repository, develop the guide using Asciidoc, and finally submit a Pull Request once your guide is ready for review.
 
 == What you'll need
 
@@ -79,7 +79,7 @@ Now you're ready to work on your new guide's content.
 
 Now you can use your favorite editor to flesh out your new guide in `README.adoc`!
 
-As you work on the main content of the guide, we recommend that you read the https://github.com/gradle-guides/style-guide/blob/master/README.adoc[style guide] and work through a few of the existing http://guides.gradle.org/[Getting Started Guides] if you haven't done so already.
+As you work on the main content of the guide, we recommend that you read the https://github.com/gradle-guides/style-guide/blob/master/README.adoc[style guide] and work through a few of the existing https://guides.gradle.org/[Getting Started Guides] if you haven't done so already.
 
 [TIP]
 .New to Asciidoc?
@@ -97,7 +97,7 @@ Then open or refresh `build/html5/index.html` in your browser. It's as simple as
 
 Once you're happy with your guide, the final step is to submit it through a https://help.github.com/articles/creating-a-pull-request-from-a-fork/[Pull Request]. Your guide well then enter a review process, during which changes may be requested. If that happens, simply make the changes locally and push them to your fork. The Pull Request will be updated automatically.
 
-You'll be able to find your guide from the http://guides.gradle.org/[Gradle Guides site] soon after the pull request is accepted and merged.
+You'll be able to find your guide from the https://guides.gradle.org/[Gradle Guides site] soon after the pull request is accepted and merged.
 
 == Summary
 
