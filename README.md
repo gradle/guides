@@ -2,8 +2,8 @@
 
 To build and serve all guides locally, run the following:
 
-    git clone https://github.com/gradle-guides/gradle-guides.github.io
-    cd gradle-guides.github.io
+    git clone https://github.com/gradle/guides.git
+    cd guides
     mr checkout
     mr run ./gradlew build
     ./nginx.sh
