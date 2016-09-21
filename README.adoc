@@ -42,9 +42,9 @@ import org.gradle.api.Project;
 
 public class GreetingPlugin implements Plugin<Project> {
     public void apply(Project project) {
-        project.getTasks().create("hello", Greeting.class, (task) -> {       <1>
+        project.getTasks().create("hello", Greeting.class, (task) -> { <1>
             task.setMessage("Hello");
-            task.setRecipient("World");                                      <2>
+            task.setRecipient("World");                                <2>
         });
     }
 }
@@ -78,7 +78,7 @@ public class Greeting extends DefaultTask {
 
     @TaskAction
     void sayGreeting() {
-        System.out.printf("%s, %s!\n", getMessage(), getRecipient());             <1>
+        System.out.printf("%s, %s!\n", getMessage(), getRecipient()); <1>
     }
 }
 ----
@@ -132,7 +132,7 @@ Your build is currently just using the default values for the greeting, hence wh
 ----
 apply plugin: org.example.greeting.GreetingPlugin
 
-hello {                                                                      <1>
+hello { <1>
     message = "Hi"
     recipient = "Gradle"
 }
