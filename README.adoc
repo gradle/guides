@@ -4,6 +4,19 @@
 
 The Getting Started guides for Gradle form a potentially large collection of tutorials written by a variety of authors. From the perspective of the reader, though, they are all of one piece. Once they've read one guide, the next one should be familiar and hence easy to digest.
 
+Here are the core traits of Getting Started Guides:
+
+ - Focused on a single task
+ - Provide precise steps for the reader to follow, with commands and code that can be copied and pasted
+ - Short - a reader should be able to get through them in 10-30 minues, including practical work
+ - Align with common Gradle "how to" Google searches, e.g. how to work with a Gradle project in Eclipse
+ - Provide users new to that task with a "quick win"
+ - Result in a working build representing the "hello world" of the task at hand
+ - Result in a build scan where applicable
+ - Free of any need for unnecessary prior knowledge or unimportant context
+ - Provide links to reference documents or guides that allow the reader to learn more about the task or related topics
+ - Address Application Engineers and Automation Engineers new to the topic, not necessarily new to Gradle
+
 We have developed this style guide to ensure that the guides retain a reasonable base level of consistency so that switching between them is not too jarring for the reader. It also helps you, the author of a guide, by reducing the number of decisions you have to make when writing a guide. And making decisions can be surprisingly time-consuming!
 
 toc::[]
