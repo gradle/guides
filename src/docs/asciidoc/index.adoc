@@ -209,7 +209,7 @@ The `files` property will force Gradle to resolve the dependencies, and in this 
 
 Note that the `from()` declaration doesn’t resolve the dependencies because you’re using the configuration itself as an argument, not its files. The `Copy` task handles the resolution of the configuration itself during task execution, which is exactly what you want.
 
-A simple way to determine whether you’re resolving dependencies during configuration is to run
+The performance page of build scans explicitly shows how dependency resolution time is split across project configuration and task execution, so it's easy to identify this particular issue. If you're using the older profile reports, a simple way to determine whether you’re resolving dependencies during configuration is to run
 
     gradle --profile help
 
@@ -219,7 +219,7 @@ and look at the time spent on dependency resolution. This should be zero, so if 
 
 You will sometimes encounter situations in which you're only using one or two methods or classes from a third-party library. When that happens, you should seriously consider implementing the required code yourself in the project or copying it from an open source library if that's an option for you. Remember that managing third-party libraries and their transitive dependencies adds a not insignificant cost to project maintenance as well as build times.
 
-Another thing to watch out for is the existence of _unused dependencies_. This can easily happen after code refactoring when a third-party library stops being used but isn't removed from the dependency list. You can use the https://github.com/nebula-plugins/gradle-lint-plugin[Gradle Lint plugin] to identify such dependencies, amongst other things.
+Another thing to watch out for is the existence of _unused dependencies_. This can easily happen after code refactoring when a third-party library stops being used but isn't removed from the dependency list. You can use the https://github.com/nebula-plugins/gradle-lint-plugin[Gradle Lint plugin] to identify such dependencies.
 
 ### Minimize repository count
 
@@ -371,7 +371,7 @@ or, more commonly, to apply the configuration to _all_ Java compilation tasks:
 This has two benefits:
 
 1. Gradle can handle compilation of very large numbers of source files concurrently without forcing you to increase the heap size of the main Gradle process or daemon.
-2. The compiler process is reused between builds, potentially reducing the overall compilation times.
+2. The compiler process is reused between builds, significantly reducing the overall compilation times.
 
 It's unlikely to be useful for small projects, but you should definitely consider it if a single task is compiling close to a thousand or more source files together.
 
