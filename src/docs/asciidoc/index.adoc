@@ -188,11 +188,9 @@ Software projects rely on dependency resolution to simplify the integration of t
 
 ### Dynamic and snapshot versions
 
-The general recommendation for Gradle builds is to use fixed versions wherever possible. There are several reasons for this, but the relevant one here is that Gradle doesn’t have to contact the remote repository once it has cached a particular version locally. This saves on network traffic, which can be significant when you have hundreds of dependencies.
+Dynamic versions, such as “2.+”, and snapshot (or changing) versions force Gradle to contact the remote repository to find out whether there’s a new version or snapshot available. By default, Gradle will only perform the check once every 24 hours, but this can be changed. Look out for `cacheDynamicVersionsFor` and `cacheChangingModulesFor` in your build files and initialization scripts in case they are set to very short periods or disabled completely. Otherwise you may be condemning your build users to frequent slower-than-normal builds rather than a single slower-than-normal build a day.
 
-Dynamic versions, such as “2.+”, and snapshot (or changing) versions force Gradle to contact the remote repository to find out whether there’s a new version or snapshot available. By default, Gradle will only perform the check once every 24 hours, but this can be changed. Look out for `cacheDynamicVersionsFor` and `cacheChangingModulesFor` in your build files and initialization scripts in case they are set to very short periods or disabled completely. Otherwise you may be condemning your build users to frequent slow builds rather than a single slow build a day.
-
-So prefer fixed versions, but if you really want to stay up to date with newer versions of dependencies, make sure you tune the cache settings for your needs.
+You may be able to use fixed versions - like 1.2 and 3.0.3.GA - in which case Gradle will always use the cached version. But if you want or need to use dynamic and snapshot versions, make sure you tune the cache settings according to your requirements.
 
 ### Favor dependency resolution during execution
 
