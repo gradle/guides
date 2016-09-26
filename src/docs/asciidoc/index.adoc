@@ -227,11 +227,13 @@ When Gradle attempts to resolve a dependency, it searches through each repositor
 
 One technique available if you're using a custom repository server is to create a virtual repository that aggregates several real repositories together. You can then add just that repository to your build file, further reducing the number of HTTP requests that Gradle sends during dependency resolution.
 
-### Beware third party dependency resolution plugins
+### Be careful with custom dependency resolution logic
 
-Gradle benefits hugely from the rich collection of third-party plugins that you can apply to your projects. Many are indispensable. Even so, when you are trying to optimize your build as much as possible, you need to look at the plugins that you’re applying.
+Dependency resolution is a hard problem to solve and making it perform well simply adds to the challenge. And yet, Gradle still needs to allow users to model dependency resolution in the way that best suits them. That's why it has a powerful API for customizing how the dependency resolution works.
 
-Dependency resolution is a hard problem to solve and making it perform well simply adds to the challenge. So it’s no surprise that plugins might adversely affect the time spent during dependency resolution, albeit unintentionally. If you are using such plugins, have a look at the dependency resolution section of the build profile report to see if the times are longer than expected. Then try disabling the plugin and running the build again to see whether the build times change significantly.
+Simple customizations -- such as forcing specific versions of a dependency or substituting one dependency for another -- don't have a big impact on dependency resolution times. But if custom logic involves downloading and parsing extra POMs, for example, then the impact can be significant.
+
+You should use build scans or profile reports to check that any custom dependency resolution logic you have in your build doesn't adversely affect dependency resolution times in a big way. And note that this could be custom logic you have written yourself or it could be part of a plugin that you're using.
 
 ## Task execution
 
