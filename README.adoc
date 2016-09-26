@@ -2,6 +2,12 @@
 
 This guide walks you through the process of creating reusable build logic in a Gradle plugin, which can then be applied to other Gradle builds.
 
+*Option 1* The core of Gradle provides an infrastructure for building anything, but plugins are what allow build users to get things done with a minimum of effort. They can apply conventions, add new task types, integrate with third-party tools and libraries, and more. This guide focuses on the most basic of plugins, but it represents the tip of the iceberg.
+
+*Option 2* Almost every Gradle build uses plugins. Why is that? The Gradle core is agnostic about specific types of build, and so plugins are needed to provide the features you need for your specific builds. They solve specific problems and needs so that you can build your projects with a minimum of effort. This guide focuses on the most basic of plugins, but it really is just the tip of the iceberg.
+
+*Option 3* Everywhere you look, Gradle builds apply one or more plugins. Why? The Gradle core is flexible enough to build anything, but that flexibility means work for you. Unless you use plugins. They provide features, conventions, and more, reducing the amount of work you need to build _your_ projects. They're like a Pick 'n Mix store for Gradle authors.
+
 == What you'll build
 
 You'll write a simple plugin that adds a new task type and creates a task of that type in whatever project its applied to. You will also prove that the plugin works and see its effect by applying the plugin to a build.
@@ -30,7 +36,7 @@ TIP: You will often want to publish the plugin so that it can be reused across m
 
 == Create the plugin
 
-Create the file `GreetingPlugin.java` in the `buildSrc/src/main/java/org/example/greeting` directory you just created. The contents of that file should be the following:
+Create the class `GreetingPlugin` in the directory you just created, setting its contents to the following:
 
 [source,java]
 .buildSrc/src/main/java/org/example/greeting/GreetingPlugin.java
@@ -56,7 +62,7 @@ This is the actual plugin and the Gradle `Project` object is your access point f
 
 TIP: Use the Gradle {language-reference}[DSL Reference] and {javadocs}[Javadocs] to learn what you can do with the Gradle API. Start with the entry for {language-reference}org.gradle.api.Project.html[`Project`]. You can find out more about what you can achieve by also following the links in <<Next steps>>.
 
-Next, you'll create the class for the task type that the plugin is using. Create another file, called `Greeting.java`, in the same directory as `GreetingPlugin.java` and set its contents to the following:
+Next, you'll create the class for the task type that the plugin is using. Add a new `Greeting` class in the same package as the plugin:
 
 [source,java]
 .buildSrc/src/main/java/org/example/greeting/Greeting.java
@@ -141,7 +147,7 @@ hello { <1>
 
 TIP: You can learn more about the syntax for configuring tasks in the {user-manual}more_about_tasks.html#sec:configuring_tasks[User Manual].
 
-Now when you run the `hello` task, you'll see the following - using `-q` to hide the `buildSrc` output:
+Now when you run the `hello` task -- using `-q` to hide the `buildSrc` output this time -- you'll see the following:
 
 ----
 $ gradle -q hello
@@ -150,19 +156,22 @@ Hi, Gradle!
 
 Your plugin is now functionally complete and you've seen it in action in the above build. There is just one more thing we want to show you, which helps make the build script a bit tidier and also helps when it comes to publishing your plugin: adding a plugin identifier.
 
-== Add plugin identifier
+== Declare a plugin identifier
 
-Create a `buildSrc/src/main/resources/META-INF/gradle-plugins/org.example.greeting.properties` file that contains the following:
+In most cases, you apply plugins using an ID because they are easier to remember than fully-qualified class names. They also result in tidier build files. So it makes sense to ensure that your own plugin can also be applied in the same way, which is why you will now declare an identifier for the plugin.
 
+Create the following properties file:
+
+.buildSrc/src/main/resources/META-INF/gradle-plugins/org.example.greeting.properties
 ----
 implementation-class=org.example.greeting.GreetingPlugin
 ----
 
 Gradle uses this file to determine which class implements the `Plugin` interface. It also uses to the name of the file to determine the plugin's string identifier.
 
-WARN: You must put the properties file in the directory `META-INF/gradle-plugins` as Gradle will try to resolve the file from that specific location in the plugin JAR.
+WARNING: You must put the properties file in the directory `META-INF/gradle-plugins` as Gradle will try to resolve the file from that specific location in the plugin JAR.
 
-Now that your plugin has an identifier, you can replace the following line of the build script:
+That's all you need to do in your plugin, so now you can replace the following line of the build script:
 
 [source,groovy]
 ----
@@ -176,7 +185,7 @@ with one that uses the plugin ID:
 apply plugin: "org.example.greeting"
 ----
 
-Note how the name of the properties file - `org.example.greeting.properties` - maps to the ID above.
+Note how the name of the properties file -- `org.example.greeting.properties` -- maps to the ID above.
 
 TIP: Always qualify the plugin name with a namespace that is unique to you instead of the "org.example" used in this guide. Doing so helps avoid name clashes between plugins. You can find more details about plugin IDs in the {user-manual}custom_plugins.html#sec:creating_a_plugin_id[User Manual].
 
@@ -192,10 +201,10 @@ This guide focuses on the essence of what a plugin is, but most plugins are far 
 
 == Next steps
 
-If you want to take your plugin skills further, you should consider the following:
+Now that you're familiar with the basics of building Gradle plugins, you may be interested in:
 
- - {user-manual}javaGradle_plugin.html[Using a helper plugin] to simplify plugin development
- - https://plugins.gradle.org/docs/submit[Publishing the plugin to the plugin portal]
- - {user-manual}custom_plugins.html#sec:getting_input_from_the_build[Using extensions] to provide a user-friendly model for your build type
- - {user-manual}test_kit.html[Testing the plugin]
- - {user-manual}more_about_tasks.html#sec:up_to_date_checks[Adding incremental build] support to the plugin's task types
+ - {user-manual}javaGradle_plugin.html[Simplifying plugin development with the Java Gradle Plugin Development Plugin]
+ - https://plugins.gradle.org/docs/submit[Publishing plugins to the Gradle Plugin Portal]
+ - {user-manual}custom_plugins.html#sec:getting_input_from_the_build[Modeling your domain with extensions]
+ - {user-manual}test_kit.html[Testing plugins]
+ - {user-manual}more_about_tasks.html#sec:up_to_date_checks[Adding incremental build support to new task types]
