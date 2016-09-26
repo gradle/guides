@@ -29,7 +29,7 @@ The following guidelines relate to the structural elements of the guide, such as
 
 You should start guide titles with "Getting Started <present participle> …" and ensure that they represent a capability the reader will learn rather than a task that they perform
 
- - For example, favor "Getting Started Building JVM libraries" over "Getting Started Building _a _Java library", since the capability is "I can build JVM libraries"
+ - For example, favor "Getting Started Building JVM libraries" over "Getting Started Building _a_ Java library", since the capability is "I can build JVM libraries"
 
 === Include a fixed, standard set of sections in order
 
