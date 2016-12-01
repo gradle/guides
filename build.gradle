@@ -4,7 +4,10 @@ plugins {
 }
 apply plugin: "base"
 
-def repoPath = 'gradle-guides/gs-writing-gs-guides'
+ext {
+  repoPath = 'gradle-guides/gs-writing-gradle-tasks'
+  gradleVersion = gradle.gradleVersion
+}
 
 asciidoctor {
     sourceDir = rootDir
@@ -24,7 +27,11 @@ asciidoctor {
             idprefix: "",
             toc: "right",
             toclevels: 1,
-            "repo-path": repoPath
+            "repo-path": repoPath,
+            "gradle-version": gradleVersion,
+            "user-manual": "https://docs.gradle.org/$gradleVersion/userguide/",
+            "language-reference": "https://docs.gradle.org/$gradleVersion/dsl/"
+
 }
 
 task copyIndex {
