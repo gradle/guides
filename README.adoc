@@ -1,108 +1,92 @@
-= Writing a Getting Started Guide image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
+= Getting Started Writing Gradle Tasks
 
-This guide walks you through the process of writing a new _Getting Started Guide_ for inclusion at https://guides.gradle.org/[guides.gradle.org]. These guides are short, step-by-step tutorials that focus on a single, minimal task. The idea is to take readers from nothing to a working example, while pointing out further reading if they want to learn more.
+This guide will walk you through the creation of a custom Gradle task exploring
+a number of key concepts that make Gradle tasks so powerful.
+
+////
+Need to refer and distinguish task types that are shipped by Gradle or acquired via plugins.
+Explain this is a custom task.
+////
 
 == What you'll build
 
-Once you and the Gradle Guides team have agreed on a new guide, you will work on a fork of a skeleton Getting Started Guide repository, develop the guide using Asciidoc, and finally submit a Pull Request once your guide is ready for review.
+////
+Te reader is not really building anything, rather just learning about custom tasks.
+Maybe change the section to be called "What you'll learn". ??
+////
 
-== What you'll need
+== What you’ll need
 
- - A https://git-scm.org[Git] client
- - A https://github.com[GitHub] account
- - A http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Runtime Environment], version 1.7 or better
- - A text editor
- - A basic familiarity with http://asciidoctor.org/docs/user-manual/[Asciidoc]
+* About 20 minutes
+* A text editor or IDE
+* A Java Development Kit (JDK), version 1.7 or better
+* A {user-manual}/installation.html#sec:download[Gradle distribution], version {gradle-version} or better
 
-== Create a GitHub issue
+== Create a custom task
 
-The first step in creating a new Getting Started Guide that is listed on the Gradle Guides site involves submitting a proposal for the new guide to the https://github.com/gradle/guides[gradle/guides] GitHub repository. This is so that we, the Gradle Guides team, can work with you to determine the most appropriate subject and scope for the guide.
+////
+Use the section to describe task creation and explain the syntax.
 
-To submit your proposal:
-
- - Create a new issue at https://github.com/gradle/guidesi/issues[gradle/guides] with a title that matches the suggested topic for the new guide. For example, "Publishing to private repositories" or "Creating fat JARs". The title should, in general, be a description of a task that a Gradle user might want to undertake.
- - Add a basic outline for the proposed guide, i.e. section headings
- - Engage with the Gradle Guides team through this issue to nail down the final form of the guide
-
-Once the proposal has been accepted, the Gradle Guides team will https://github.com/gradle/guides/blob/master/README.md[create a new GitHub repository] for your guide. You won't be able to commit directly to that repository, but that's not a problem as you will be using the standard fork and pull request work flow.
-
-== Fork and clone the repository
-
-The Gradle Guides team will add a link to your guide's repository in the issue you created in the previous step. As soon as you see that link, you can:
-
- - https://help.github.com/articles/fork-a-repo/[Fork the repository]
- - Clone your fork
-
-That's it! You're now ready to work on the content for your new guide using the infrastructure provided by the project you just cloned.
-
-== Render and view your guide locally
-
-You already have everything you need to render the guide from Asciidoc into HTML and view the result. Run the following commands in the guide project directory to process the guide source and open the resulting HTML file:
-
+[source,groovy]
 ----
-$ ./gradlew build                                                            <1>
-$ open build/html5/index.html                                                <2>
+task hello {
+  doLast { // <1>
+      println 'Hello, World'
+  }
+}
 ----
-<1> Run Gradle (via the Gradle Wrapper) to generate HTML from your guide's Asciidoc sources
-<2> Open the generated HTML file in your system's default browser
+<1>
+////
 
-At this point, you should have opened an HTML page that has a title and some section headings, but nothing else. It's your job to fill in the gaps! But before you start working on that content, it's worth having a basic understanding of the project structure.
+== Actions
 
-== Get familiar with your guide's structure and contents
+////
+Describe how actions relate to tasks and cover doFirst, doLast
+////
 
-The structure of a Getting Started Guide repository is very simple, consisting of just two basic components:
+=== Left-shift operator is deprecated
 
- 1. An Asciidoc source file
- 2. A Gradle build to process them into HTML (and later to publish them to GitHub Pages)
+////
+Need to show an example of << and tell people not to use it.
+Explain why it has been deprecated.
+////
 
-The file you'll interact with most as a guide author is `README.adoc`, but it's useful to know what the other files and directories are for as well. The following listing walks through each of the top-level directory entries:
+// Need a better title here
+== Inputs & outputs
 
-----
-.
-├── README.adoc                                                              <1>
-├── build                                                                    <2>
-├── build.gradle                                                             <3>
-├── gradle                                                                   <4>
-├── gradlew                                                                  <5>
-└── gradlew.bat                                                              <6>
-----
-<1> Asciidoc source for the guide
-<2> Output directory for the build, where generated HTML for the guide can be found
-<3> Project build script, where Asciidoc processing and GitHub Pages publication is configured
-<4> Gradle Wrapper storage directory
-<5> Gradle Wrapper Bash shell script
-<6> Gradle Wrapper Windows batch file
+////
+Use example of reading greeting from a file and show how this will affect
+behaviour. I believe this is an important part of the journey. This is not
+covered in the user manual, but it has been the source of numerous questions
+on the forum.
 
-Now you're ready to work on your new guide's content.
+A little explanation (not too detailed) of up to date checks should be in order.
+We are not covering enabled/onlyIf/outputs.upToDateWhen just inputs, outputs.
+Also I am not even sure whether inputs.properties schould be in scope.
+////
 
-== Write your guide
 
-Now you can use your favorite editor to flesh out your new guide in `README.adoc`!
+== Limitation of custom tasks
 
-As you work on the main content of the guide, we recommend that you read the https://github.com/gradle-guides/style-guide/blob/master/README.adoc[style guide] and work through a few of the existing https://guides.gradle.org/[Getting Started Guides] if you haven't done so already.
+////
+Need to mention items like below as this can be dovetailed to next steps.
 
-[TIP]
-.New to Asciidoc?
-====
-Refer to the http://asciidoctor.org/docs/user-manual/[Asciidoctor user manual] while writing and you'll master the basics in no time. There is also a http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/[quick reference for syntax] that's particularly useful when you just want to know the syntax for something specific.
-====
-
-When you want to preview your changes, simply regenerate your guide's HTML with the following build command:
-
-    $ ./gradlew build
-
-Then open or refresh `build/html5/index.html` in your browser. It's as simple as that.
-
-== Send a pull request
-
-Once you're happy with your guide, the final step is to submit it through a https://help.github.com/articles/creating-a-pull-request-from-a-fork/[Pull Request]. Your guide well then enter a review process, during which changes may be requested. If that happens, simply make the changes locally and push them to your fork. The Pull Request will be updated automatically.
-
-You'll be able to find your guide from the https://guides.gradle.org/[Gradle Guides site] soon after the pull request is accepted and merged.
+* Logic cannot be re-used
+* More work to set it up to behave nicely
+////
 
 == Summary
 
-That's it! You've worked through the steps necessary to create a Getting Started Guide. We hope you've found the process a pleasure and wish you all the best in your writing. Thanks in advance for your contribution!
+That's it! You've worked through the steps necessary to create a custom Gradle Task. You should now understand the basic of actions, inputs, outputs and up-to-date checks for Gradle tasks.
+
+== Next steps
+
+////
+Need to reference:
+* Plugins getting started
+* Task javadoc
+////
 
 == Help improve this guide
 
-Have feedback or a question? Found a typo? Like all Gradle guides, help is just a GitHub Issue away. Please add an issue or pull request to the https://github.com/gradle/build-tool-web/[gradle/build-tool-web] and we'll get back to you.
+Have feedback or a question? Found a typo? Like all Gradle guides, help is just a GitHub Issue away. Please add an issue or pull request to the https://github.com/{repo-path}/[{repo-path}] and we'll get back to you.
