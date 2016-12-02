@@ -9,3 +9,6 @@ checkout = git clone git@github.com:gradle-guides/gs-writing-gradle-plugins.git
 
 [gs-writing-gradle-tasks]
 checkout = git clone 'git@github.com:gradle-guides/gs-writing-gradle-tasks.git' 'gs-writing-gradle-tasks'
+
+[style-guide]
+checkout = git clone 'git@github.com:gradle-guides/style-guide.git' 'style-guide'
