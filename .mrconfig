@@ -6,3 +6,6 @@ checkout = git clone git@github.com:gradle-guides/gs-building-jvm-libraries.git
 
 [gs-writing-gradle-plugins]
 checkout = git clone git@github.com:gradle-guides/gs-writing-gradle-plugins.git
+
+[gs-writing-gradle-tasks]
+checkout = git clone 'git@github.com:gradle-guides/gs-writing-gradle-tasks.git' 'gs-writing-gradle-tasks'
