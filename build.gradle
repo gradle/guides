@@ -16,21 +16,22 @@ asciidoctor {
     }
     outputDir = buildDir
     backends = ["html5"]
-    attributes "source-highlighter": "coderay",
-            "coderay-linenums-mode": "table",
-            imagesdir: "images",
-            icons: "font",
+    attributes 'source-highlighter': 'coderay',
+            'coderay-linenums-mode': 'table',
+            imagesdir: 'images',
+            icons: 'font',
             sectanchors: true,
             sectlinks: true,
             linkattrs: true,
-            encoding: "utf-8",
-            idprefix: "",
-            toc: "right",
+            encoding: 'utf-8',
+            idprefix: '',
+            toc: 'right',
             toclevels: 1,
-            "repo-path": repoPath,
-            "gradle-version": gradleVersion,
-            "user-manual": "https://docs.gradle.org/$gradleVersion/userguide/",
-            "language-reference": "https://docs.gradle.org/$gradleVersion/dsl/"
+            'repo-path' : repoPath,
+            'gradle-version' : gradleVersion,
+            'user-manual' : "https://docs.gradle.org/$gradleVersion/userguide/",
+            javadoc : "https://docs.gradle.org/$gradleVersion/javadoc/",
+            'language-reference': "https://docs.gradle.org/$gradleVersion/dsl/"
 
 }
 
