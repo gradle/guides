@@ -1,6 +1,6 @@
-= How to Write Gradle Guides image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
+= Writing Gradle Guides image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
 
-This guide walks you through the process of writing a new _Gradle Guide_ for inclusion at https://guides.gradle.org/[guides.gradle.org]. These guides can take different forms—such as short, step-by-step tutorials or longer, more discussion-oriented pieces—but the process for writing and contributing them is the same.
+This guide walks you through the process of writing a new guide for inclusion at the https://guides.gradle.org/[Gradle Guides site]. These guides can take different forms—such as short, step-by-step tutorials or longer, more discussion-oriented pieces—but the process for writing and contributing them is the same.
 
 == What you'll need
 
@@ -12,17 +12,17 @@ This guide walks you through the process of writing a new _Gradle Guide_ for inc
 
 == Create a GitHub issue
 
-The first step in creating a new Gradle Guide is to submit a proposal to the https://github.com/gradle/guides[gradle/guides] GitHub repository. This is so that we, the Gradle Guides team, can work with you to determine the most appropriate subject, form and scope for the guide.
+The first step in creating a new Gradle guide is to submit a proposal to the https://github.com/gradle/guides[gradle/guides] GitHub repository. This is so that we, the Gradle Guides team, can work with you to determine the most appropriate subject, form and scope for the guide.
 
 To submit your proposal:
 
  - Create a new issue at https://github.com/gradle/guidesi/issues[gradle/guides] with a title that matches the suggested topic for the new guide. For example, "Publishing to private repositories" or "Creating fat JARs". The title should, in general, be a description of a task that a Gradle user might want to undertake.
  - Add a basic outline for the proposed guide, i.e. section headings
- - Engage with the Gradle Guides team through this issue to nail down the final form of the guide
+ - Engage with the team through this issue to nail down the final form of the guide
 
 You don't have to specify which form the guide should take in the initial proposal, but if you do, please express your preference as one of the following:
 
- - Short, step-by-step tutorial (Getting Started Guide)
+ - Short, step-by-step tutorial (getting-started guide)
  - Long-form tutorial
  - Discussion about a single topic (topical guide)
 
@@ -52,7 +52,7 @@ At this point, you should have opened an HTML page that has a title and some sec
 
 == Get familiar with your guide's structure and contents
 
-The structure of a Gradle Guide repository is very simple, consisting of just two basic components:
+The structure of a Gradle guide repository is very simple, consisting of just two basic components:
 
  1. An Asciidoc source file
  2. A Gradle build to process it into HTML (and later, publish it to GitHub Pages)
@@ -81,7 +81,7 @@ Now you're ready to work on your new guide's content.
 
 Asciidoc is a pure ASCII text format, so you can use any text editor or IDE to work on `README.adoc`. Many of them have support for Asciidoc syntax highlighting, which makes things easier. Once you've decided on an editor, just open the file and get writing!
 
-As you work on the main content of the guide, we recommend that you read the associated https://github.com/gradle-guides/style-guide/blob/master/README.adoc[style guide] and read through a few of the existing https://guides.gradle.org/[Gradle Guides] if you haven't done so already.
+As you work on the main content of the guide, we recommend that you read the associated https://github.com/gradle-guides/style-guide/blob/master/README.adoc[style guide] and browse through a few of the existing https://guides.gradle.org/[guides] if you haven't done so already.
 
 [TIP]
 .New to Asciidoc?
@@ -101,7 +101,7 @@ Writing is usually an iterative process. You write a draft, it gets reviewed, yo
 
 Your guide enters the review process at this point. Each step of a review involves either feedback (as comments) or edits (as commits) depending on the current stage of the process. That's why it's important for you to specify what type of review you want. Should the Gradle Guides team treat the current version of your guide as a first draft or something that's ready to be published? Do you simply want feedback on the structure and overall tone, or do you want the team to check for and fix spelling and grammar issues? You don't have to be too specific and the team will ask for clarification if necessary.
 
-Whenever you have a new draft ready, push the changes to your fork and add a comment to the pull request mentioning the Gradle Guides team, saying what type of review you would like. The pull request will update automatically and the review will continue until both sides are happy with the result.
+Whenever you have a new draft ready, push the changes to your fork and add a comment to the pull request saying what type of review you would like. The pull request will update automatically and the review will continue until both sides are happy with the result.
 
 You'll find your guide on the https://guides.gradle.org/[Gradle Guides site] soon after the pull request is accepted and merged. Well done and thank you for the valuable contribution!
 
@@ -109,7 +109,7 @@ You'll find your guide on the https://guides.gradle.org/[Gradle Guides site] soo
 
 In this guide, you learned how to:
 
- - Submit a proposal for a new Gradle Guide
+ - Submit a proposal for a new Gradle guide
  - Fork and clone the new guide's repository
  - Work on the guide's content according to style guidelines
  - Initiate a review of your guide
