@@ -1,12 +1,10 @@
 = Writing Custom Gradle Tasks
 
-https://docs.gradle.org/current/userguide/tutorial_using_tasks.html[Tasks] are the cornerstone of getting things done in Gradle. They represent single atomic pieces of work within a build such as creating a JAR or linking an executable. Even though the Gradle distribution ships with a good range of {language-reference}/org.gradle.api.Task.html[predefined tasks and task types] and  most https://plugins.gradle.org[third-party plugins] providing additional tasks, it might still not be enough for your own project or organizational context.
-
-Gradle's flexibility allows for the creation of custom tasks within a build script.
+Tasks are the cornerstone of getting things done in Gradle. They represent single atomic pieces of work within a build such as creating a JAR or linking an executable. This guide will walk you through the process of customising your build using small, bespoke tasks.
 
 == What you'll create
 
-This guide will walk you through the creation of a ad-hoc Gradle task and converting it to a custom task type.
+You'll start by creating an ad-hoc Gradle task that prints _Hello, World_ to the console. You'll then move to making it configurable to print any message. In this process you'll learn about ad-hic tasks and custom task types.
 
 == What you’ll need
 
@@ -19,6 +17,7 @@ This guide will walk you through the creation of a ad-hoc Gradle task and conver
 
 In a new folder create a `build.gradle` and enter the following
 
+.build.gradle
 [source,groovy]
 ----
 task hello { // <1>
@@ -27,11 +26,17 @@ task hello { // <1>
   }
 }
 ----
-<1> An ad-hoc task is created by simply using the keyword `task` followed by the
-  name of the task and finally the closure that will configure the task.
-<2> Ad-hoc task actions are added using {javadoc}/org/gradle/api/Task.html#doLast(groovy.lang.Closure)[doLast] or {javadoc}/org/gradle/api/Task.html#doFirst(groovy.lang.Closure)[doFirst].
+<1> Create a new ad-hoc task called `hello`.
+<2> Add a task action to print to the console.
 
-Save the file and on the command-line type `gradle tasks`. Your new task will appear under `Other tasks`.
+Save the file and on the command-line and type:
+
+[listing]
+----
+gradle tasks
+----
+
+Your new task will appear under `Other tasks`.
 
 .Verifying that your task has been created
 [listing]
@@ -41,18 +46,25 @@ Other tasks
 hello
 ----
 
-Run your task by executing `gradle hello` and it will produce a simple output
+Run your task
 
-.Executing your ad-hoc task
+[listing]
+----
+gradle hello
+----
+
+It will produce a simple output.
+
+.Output from executing your ad-hoc task
 [listing]
 ----
 :hello // <1>
 Hello, World // <2>
 ----
-<1> Indicates that your `hello` task has executed.
-<2> The output from your ad-hoc task.
+<1> This indicates that your `hello` task has executed.
+<2> This is the output from your ad-hoc task.
 
-Congratulations. You have you added your first ad-hoc task.
+Congratulations! You have you added your first ad-hoc task.
 
 .Do not use << as an alternative to doLast
 [IMPORTANT]
@@ -73,32 +85,24 @@ This form has caused too much confusion in the past especially among people that
 
 Although you have tested your new ad-hoc task and know that it works, it is good practice to tell others who will use your build script what the purpose of your new task is. It is also useful to categorise your task.
 
-When you ran `gradle tasks` earlier you would have seen other tasks in the listing which contain descriptions and are grouped according to function.
-
-.Well-documented tasks
-[listing]
-----
-Build Setup tasks
------------------
-init - Initializes a new Gradle build. [incubating]
-wrapper - Generates Gradle wrapper files. [incubating]
-----
-
 This is achieved by setting the `group` and `description` properties on the task.  Edit your ad-hoc task and add the following:
 
+.build.gradle
 [source,groovy]
 ----
 task hello {
   group 'Welcome'
   description 'Produces a greeting'
+
   doLast {
       println 'Hello, World'
   }
 }
 ----
 
-Run `gradle tasks` again and now you should see
+Run `gradle tasks` again.
 
+.Output from 'tasks' task
 [listing]
 ----
 Welcome tasks
@@ -106,16 +110,15 @@ Welcome tasks
 hello - Produces a greeting
 ----
 
-Congratulations! You have created your ad-hoc task and documented it.
+Well done!
 
-== Convert to a custom task type
+== Make the message configurable
 
-Ad-hoc tasks are good for bespoke, small & simple tasks, but they do not scale. The logic cannot be re-used very easily.  You could just copy and paste and create more of the same, just changing the name and modifying the action slightly. This will soon become a maintainability trap and the build script will become unreadable.
+Ad-hoc tasks are good for bespoke, small & simple tasks, but they do not scale. To make the message and greeting configurable you will now convert your ad-hoc task into a custom task type. This is achieved by creating a class inline within the build script.
 
-This is the point where you need to convert your ad-hoc task into a custom task type, and this is achieved by creating a class inline within the build script.
+Return to your build script and add the following class and refactor your `hello` task.
 
-Return to your `build.gradle` file and add the following class.
-
+.build.gradle
 [source,groovy]
 ----
 class Greeting extends DefaultTask { // <1> <2>
@@ -127,28 +130,30 @@ class Greeting extends DefaultTask { // <1> <2>
         println "${message}, ${recipient}!" // <5>
     }
 }
-----
-<1> As the build DSL in a `build.gradle` file is a Groovy-base DSL, the class will be a Groovy class.
-<2> Although other task classes from the Gradle API can be used in specific circumstances, extending {javadoc}/org/gradle/api/DefaultTask.html[DefaultTask] is the most common scenario.
-<3> Adding `message` and `recipient` properties allows instance of this custom task type to be configurable
-<4> It is standard practice to have a default action for a task and this is achieved by adding the `@TaskAction` annotation to a *single* method in the task class. When the task is executed this is the method that will be called.
-<5> Print the message using a standard Groovy interpolated string.
 
-Now that you have created the class, what remains is to refactor the existing `hello` task:
-
-[source,groovy]
-----
-task hello ( type : Greeting ) { // <1>
+task hello ( type : Greeting ) { // <6>
     group 'Welcome'
     description 'Produces a world greeting'
-    message 'Hello' // <2>
+    message 'Hello' // <7>
     recipient 'World'
 }
 ----
-<1> Specify the task type by referencing the class type `Greeting` you have added above.
-<2> Configure the message and the recipient.
+<1> As the build DSL in a `build.gradle` file is a Groovy-base DSL, the class will be a Groovy class.
+<2> Although other task classes from the Gradle API can be used in specific circumstances, extending {javadoc}/org/gradle/api/DefaultTask.html[DefaultTask] is the most common scenario.
+<3> Adding `message` and `recipient` properties allow instances of this custom task type to be configurable
+<4> Annotate the default task action.
+<5> Print the message using a standard Groovy interpolated string.
+<6> Specify the task type by referencing the class type `Greeting` you have added above.
+<7> Configure the message and the recipient.
 
-Test your modification by running `gradle hello` again as you should see the same output
+Test your modification.
+
+[listing]
+----
+gradle hello
+----
+
+You should see the same output
 
 .Output after conversion to a custom task type
 [listing]
@@ -192,43 +197,20 @@ Finally, run the new task by doing `gradle germanHello`
 Guten Tag, Welt
 ----
 
-
-
-////
-[source,groovy]
-----
-class Greeting extends DefaultTask {
-
-    String getMessage() { return message }
-    void setMessage(String message) { this.message = message }
-
-    String getRecipient() { return recipient }
-    void setRecipient(String recipient) { this.recipient = recipient }
-
-    @TaskAction
-    void sayGreeting() {
-      println "${message}, ${recipient}!"
-    }
-
-    private String message
-    private String recipient
-}
-----
-////
-
 == Summary
 
 That's it! You've worked through the steps necessary to create a custom Gradle Task. You should now have learnt how to
 
 * Create an ad-hoc task and add an action using `doLast`.
-* Document an ad-hoc task.
+* Document a task.
 * Convert an ad-hoc task to a custom Gradle task type and creating task instances.
 * Using `@TaskAction` to set a default action for a task type.
 
 == Next steps
 
-// TODO: This should point to a GS guide on organizing build logic
+// TODO: This should point to a GS guide on organizing build logic (gradle/guides#45)
 * Having classes in a build script will soon lead to a messy and potentially unmaintainable build script. Learn how to {user-manual}/organizing_build_logic.html[organize your build logic].
+* Read more about https://docs.gradle.org/current/userguide/tutorial_using_tasks.html[using tasks], and {language-reference}/org.gradle.api.Task.html[predefined tasks and task types]
 
 == Help improve this guide
 
