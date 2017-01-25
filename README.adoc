@@ -24,7 +24,7 @@ You don't have to specify which form the guide should take in the initial propos
 
  - Short, step-by-step introduction (getting-started guide)
  - Long-form tutorial
- - In depth discussion about a single topic (topical guide)
+ - In-depth discussion about a single topic (topical guide)
 
 Once the proposal has been accepted, the Gradle Guides team will https://github.com/gradle/guides/blob/master/README.md[create a new GitHub repository] for your guide. You won't be able to commit directly to that repository. Instead, you will use the standard fork and pull request workflow described here.
 
@@ -74,9 +74,9 @@ The file you'll interact with most as a guide author is `README.adoc`, but it's 
 <1> Asciidoc source for the guide
 <2> Output directory for the build, where generated HTML for the guide can be found
 <3> Project build script, containing tasks for Asciidoc processing and GitHub Pages publication
-<4> Gradle wrapper storage directory
-<5> Gradle wrapper Unix shell script
-<6> Gradle wrapper Windows batch file
+<4> Gradle Wrapper storage directory
+<5> Gradle Wrapper Unix shell script
+<6> Gradle Wrapper Windows batch file
 
 Now you're ready to work on your new guide's content. You will edit the `README.adoc` file. The Gradle build will rename the result to `index.html`.
 
