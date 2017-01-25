@@ -12,7 +12,7 @@ This guide walks you through the process of writing a new guide for inclusion at
 
 == Create a GitHub issue
 
-The first step in creating a new Gradle guide is to submit a proposal to the https://github.com/gradle/guides[gradle/guides] GitHub repository. This is so that we, the Gradle Guides team, can work with you to determine the most appropriate subject, form, and scope for the guide.  // Holy Oxford comma, Batman!
+The first step in creating a new Gradle guide is to submit a proposal to the https://github.com/gradle/guides[gradle/guides] GitHub repository. This is so that we, the Gradle Guides team, can work with you to determine the most appropriate subject, form, and scope for the guide.
 
 To submit your proposal:
 
@@ -26,7 +26,7 @@ You don't have to specify which form the guide should take in the initial propos
  - Long-form tutorial
  - In depth discussion about a single topic (topical guide)
 
-Once the proposal has been accepted, the Gradle Guides team will https://github.com/gradle/guides/blob/master/README.md[create a new GitHub repository] for your guide. You won't be able to commit directly to that repository. Instead, you will use the standard fork and pull request workflow, as described here.
+Once the proposal has been accepted, the Gradle Guides team will https://github.com/gradle/guides/blob/master/README.md[create a new GitHub repository] for your guide. You won't be able to commit directly to that repository. Instead, you will use the standard fork and pull request workflow described here.
 
 == Fork and clone the repository
 
@@ -57,7 +57,7 @@ At this point, you should have an HTML page that has a title and some section he
 
 The structure of a Gradle guide repository is very simple, consisting of just two basic components:
 
- 1. An Asciidoc source file
+ 1. An Asciidoc source file called `README.adoc`
  2. A Gradle build script to process it into HTML (which later will publish it to the GitHub Pages site where the guides are hosted)
 
 The file you'll interact with most as a guide author is `README.adoc`, but it's useful to know what the other files and directories are for as well. The following listing walks through each of the top-level directory entries:
