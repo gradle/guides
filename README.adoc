@@ -16,7 +16,7 @@ The first step in creating a new Gradle guide is to submit a proposal to the htt
 
 To submit your proposal:
 
- - https://help.github.com/articles/creating-an-issue/[Create a new issue] at https://github.com/gradle/guidesi/issues[gradle/guides] with a title that matches the suggested topic for the new guide. For example, "Publishing to private repositories" or "Creating fat JARs". The title should, in general, be a description of a task that a Gradle user might want to undertake.
+ - https://help.github.com/articles/creating-an-issue/[Create a new issue] at https://github.com/gradle/guides/issues[gradle/guides] with a title that matches the suggested topic for the new guide. For example, "Publishing to private repositories" or "Creating fat JARs". The title should, in general, be a description of a task that a Gradle user might want to undertake.
  - Add a basic outline for the proposed guide, i.e. section headings
  - Engage with the team through this issue to nail down the final form of the guide
 
