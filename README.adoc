@@ -16,9 +16,9 @@ The first step in creating a new Gradle guide is to submit a proposal to the htt
 
 To submit your proposal:
 
- - https://help.github.com/articles/creating-an-issue/[Create a new issue] at https://github.com/gradle/guides/issues[gradle/guides] with a title that matches the suggested topic for the new guide. For example, "Publishing to private repositories" or "Creating fat JARs". The title should, in general, be a description of a task that a Gradle user might want to undertake.
- - Add a basic outline for the proposed guide, i.e. section headings
- - Engage with the team through this issue to nail down the final form of the guide
+ 1. https://help.github.com/articles/creating-an-issue/[Create a new issue] at https://github.com/gradle/guides/issues[gradle/guides] with a title that matches the suggested topic for the new guide. For example, "Publishing to private repositories" or "Creating fat JARs". The title should, in general, be a description of a task that a Gradle user might want to undertake.
+ 2. Add a basic outline for the proposed guide, i.e. section headings
+ 3. Engage with the team through this issue to nail down the final form of the guide
 
 You don't have to specify which form the guide should take in the initial proposal, but if you do, please express your preference as one of the following:
 
@@ -32,9 +32,9 @@ Once the proposal has been accepted, the Gradle Guides team will https://github.
 
 When your guide's repository is ready, you'll find a link to it in the issue created by you in the previous step. You should then:
 
- - https://help.github.com/articles/fork-a-repo/[Fork the repository]
- - Clone your fork onto your local machine
- - Set an `upstream` remote that points to the original repo (See https://help.github.com/articles/configuring-a-remote-for-a-fork/[this help page] for details)
+ 1. https://help.github.com/articles/fork-a-repo/[Fork the repository]
+ 2. Clone your fork onto your local machine
+ 3. Set an `upstream` remote that points to the original repo (See https://help.github.com/articles/configuring-a-remote-for-a-fork/[this help page] for details)
 
 That's it! You're now ready to work on the content for your new guide using the infrastructure provided by the project you just cloned.
 
