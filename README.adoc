@@ -34,7 +34,7 @@ The user should have a working build after following the steps of a Getting Star
 
 The title of the guide should work when prefixed with "Getting Started" and start with a present participle where possible. The title should also ensure that it represents a capability the reader will learn rather than a task that they perform.
 
-For example, favor "Building JVM libraries" over "Building _a_ Java library", since the capability is "I can build JVM libraries."
+For example, favor "Building JVM libraries" over "Building _a_ JVM library", since the capability is "I can build JVM libraries."
 
 === Use standard sections
 
