@@ -1,6 +1,5 @@
 = Style Guide for Gradle Guide Authors
 :toc: macro
-:toc-title: Style Guidelines
 
 The Gradle Guides form a potentially large collection of learning material written by a variety of authors. From the perspective of the reader, though, they are all of one piece. Once they've read one guide, the next one should be familiar and hence easy to digest. This style guide is designed to satisfy that goal by helping authors keep their writing consistent with other guides.
 
