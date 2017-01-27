@@ -2,7 +2,7 @@
 :toc: macro
 :toc-title: Style Guidelines
 
-The Gradle Guides form a potentially large collection of learning material written by a variety of authors. From the perspective of the reader, though, they are all of one piece. Once they've read one guide, the next one should be familiar and hence easy to digest. This style guide is designed to satisfy that goal by helping authors keep their writing consistent with other guides. The guidelines also have a positive side effect of removing some of the indecision that plagues writers over things like whether to italicize or capitalize something.
+The Gradle Guides form a potentially large collection of learning material written by a variety of authors. From the perspective of the reader, though, they are all of one piece. Once they've read one guide, the next one should be familiar and hence easy to digest. This style guide is designed to satisfy that goal by helping authors keep their writing consistent with other guides.
 
 Each guide follows the structure and intent of one of these forms:
 
