@@ -73,7 +73,7 @@ Anything extra beyond the bare minimum acts as a potential distraction and digre
 
 === Call out to places with more information
 
-Getting Started Guides are lean and shouldn't introduce discussion points if possible. However, they _should_ link to reliable external material—such as the Gradle User Manual—that covers important and relevant discussion points for the given task. 
+Getting Started Guides are lean and shouldn't introduce discussion points if possible. However, they _should_ link to reliable external material—such as the Gradle User Manual—that covers important and relevant discussion points for the given task.
 
 As an example, https://guides.gradle.org/gs-building-jvm-libraries/#assemble_the_library_jar[Getting Started Building JVM Libraries] uses the standard Java project structure but links to the user manual to explain what that structure is and how to configure it, since that's relevant information.
 
@@ -196,7 +196,7 @@ Some URLs point to content that changes over time. For example, URLs to the curr
 
 Following this guideline means that:
 
- - linked content won't change in a way that adversely affects the integrity of the guide 
+ - linked content won't change in a way that adversely affects the integrity of the guide
  - we force a controlled and intentional upgrade of the guide at a time of our choosing
 
 === Use Asciidoctor attributes for commonly referenced base URLs
