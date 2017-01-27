@@ -125,4 +125,4 @@ Now that you have some experience with it, we hope that you're inspired to contr
 
 == Help improve this guide
 
-Have feedback or a question? Found a typo? Like all Gradle guides, help is just a GitHub Issue away. Please add an issue or pull request to https://github.com/gradle-guides/gs-writing-gradle-guides/[gradle-guides/gs-writing-gradle-guides] and we'll get back to you.
+Have feedback or a question? Found a typo? Like all Gradle guides, help is just a GitHub issue away. Please add an issue or pull request to https://github.com/gradle-guides/gs-writing-gradle-guides/[gradle-guides/gs-writing-gradle-guides] and we'll get back to you.
