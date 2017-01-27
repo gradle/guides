@@ -12,7 +12,7 @@ This guide walks you through the process of writing a new guide for inclusion at
 
 == Create a GitHub issue
 
-The first step in creating a new Gradle guide is to submit a proposal to the https://github.com/gradle/guides[gradle/guides] GitHub repository. This is so that we, the Gradle Guides team, can work with you to determine the most appropriate subject, form, and scope for the guide.
+The first step in creating a new Gradle guide is to submit a proposal to the https://github.com/gradle/guides[gradle/guides] GitHub repository. This is so that we, the Gradle Guides team, can work with you to determine the most appropriate subject, form and scope for the guide.
 
 To submit your proposal:
 
