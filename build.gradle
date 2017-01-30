@@ -4,7 +4,7 @@ plugins {
 }
 apply plugin: "base"
 
-def repoPath = 'gradle-guides/@@GUIDE_SLUG@@'
+def repoPath = 'gradle-guides/gs-creating-java-projects'
 def gradleVersion = '3.3'
 
 asciidoctor {
