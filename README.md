@@ -28,47 +28,22 @@ Otherwise, once you have agreed on the title and other details above, move on to
 
 ### Create a new repository for the guide
 
-Each guide gets its own GitHub repository under the gradle-guides organization, so you will have to create one for each accepted proposal. You should start by cloning an existing repository that has the required structure.
+Each guide gets its own GitHub repository under the gradle-guides organization, so you will have to create one for each accepted proposal. A helper script, `create-gs-guides` exists in the root of the gradle/guides repository to aid in this process.
 
-Follow these steps on your local machine, replacing `<new-guide>` with a name that matches the agreed guide title:
+Follow these steps on your local machine, replacing `Creating Java Projects` with the agreed-upon title for the guide, and replacing `49` with the number of the issue created in the step above:
 
-    git clone https://github.com/gradle-guides/gs-writing-gs-guides.git new-guide
-    cd new-guide
-    rm -rf .git
-    git init
-    git add .
-    git commit -m "Initialize repository from template"
+    git clone https://github.com/gradle/guides.git
+    cd guides
+    ./create-gs-guide 'Creating Java Projects' 49
 
-When naming the repository, ensure that the `gs-` prefix remains for getting started guides. Other types of guide require no specific prefix. For example:
+    # The command above will create a directory named gs-creating-java-projects
+    cd gs-creating-java-projects
 
- - `gs-writing-plugins` for a guide titled _Getting Started Writing Gradle Plugins_
- - `gs-fat-jars` for a guide titled _Getting Started Working with Fat JARs_
- - `maven-migration` or `migrating-from-maven` for a guide titled _Migrating to Gradle from Maven_
+    # Review the newly-created guide, make sure everything looks correct
 
+    # Create a GitHub repository for the guide (assumes `hub` is installed)
+    git create gradle-guides/gs-creating-java-projects
 
-### Update the skeleton project
-
-You need to make various changes to some of the files in the project so that it's ready for consumption by the guide author:
-
- - Update the `repoPath` variable in `build.gradle` so that it reflects the name of the new repository
- - Replace the contents of `README.adoc` with the agreed title of the guide plus any standard section headings applicable to the particular type of guide—see the [style guide](https://github.com/gradle-guides/style-guide) for details
-
-Commit these changes once you're happy with them.
-
-
-### Host the guide repository on GitHub
-
-Create a new repository under the _gradle-guides_ organization, taking the following into account:
-
- - Give the repository the same name as you used in the first steps above, e.g. `gs-writing-plugins`
- - When prompted, do not add a README or any other files to the repository
-
-When finished, you should have a new, empty repository at `https://github.com/gradle-guides/gs-new-guide`, where `<gs-new-guide>` matches the name of the local repo you created.
-
-Now push the contents of your local Git repository to the new remote repository with these commands, again replacing `<new-guide>` as appropriate:
-
-    git remote add origin https://github.com/gradle-guides/new-guide
-    git push --set-upstream origin master
 
 Once this has been done, _paste the link for this new repository into the guide's GitHub issue_ and let the author know that they have everything they need to begin writing.
 
