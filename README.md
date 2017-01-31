@@ -25,7 +25,6 @@ In the (hopefully rare) case of rejecting a guide proposal, provide your reasoni
 
 Otherwise, once you have agreed on the title and other details above, move on to the next step of creating a GitHub repository for the new guide.
 
-
 ### Create a new repository for the guide
 
 Each guide gets its own GitHub repository under the gradle-guides organization, so you will have to create one for each accepted proposal. A helper script, `create-gs-guides` exists in the root of the gradle/guides repository to aid in this process.
@@ -43,6 +42,7 @@ Follow these steps on your local machine, replacing `Creating Java Projects` wit
 
     # Create a GitHub repository for the guide (assumes `hub` is installed and aliased to `git`)
     git create gradle-guides/gs-creating-java-projects
+    git push --set-upstream origin master
 
 
 Once this has been done, _paste the link for this new repository into the guide's GitHub issue_ and let the author know that they have everything they need to begin writing.
