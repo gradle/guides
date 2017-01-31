@@ -41,7 +41,7 @@ Follow these steps on your local machine, replacing `Creating Java Projects` wit
 
     # Review the newly-created guide, make sure everything looks correct
 
-    # Create a GitHub repository for the guide (assumes `hub` is installed)
+    # Create a GitHub repository for the guide (assumes `hub` is installed and aliased to `git`)
     git create gradle-guides/gs-creating-java-projects
 
 
@@ -74,5 +74,3 @@ The Gradle Guides homepage at guides.gradle.org is hosted on [GitHub Pages](http
 The GitHub repositories where Organization Pages live have naming constraints, and in our case the repository where the guides.gradle.org Organization Page lives is [gradle-guides/gradle-guides.github.io](https://github.com/gradle-guides/gradle-guides.github.io). That repository is a _mirror_ of this one—gradle/guides—meaning that every commit here is also pushed to gradle-guides/gradle-guides.github.io, which in turn triggers publication to GitHub Pages.
 
 The mirroring process is managed as a simple Travis CI build; see [.travis.yml](.travis.yml) for details. We set up this mirrored arrangement because "gradle-guides/gradle-guides.github.io" is cumbersome to type and talk about, while "gradle/guides" is a friendlier and more intention-revealing name. The mirroring process should be transparent and hands-free for maintainers. We mention it here for reference and clarity.
-
-
