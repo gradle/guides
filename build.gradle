@@ -1,3 +1,9 @@
+buildscript {
+    dependencies {
+        classpath "org.jsoup:jsoup:1.10.1"
+    }
+}
+
 plugins {
     id "org.ajoberstar.github-pages" version "1.4.2"
     id "org.asciidoctor.convert" version "1.5.3"
@@ -16,7 +22,11 @@ asciidoctor {
     backends = ["html5"]
     attributes "source-highlighter": "coderay",
             "coderay-linenums-mode": "table",
-            imagesdir: "images",
+            imagesdir: "src/images",
+            stylesheet: "asciidoctor.css",
+            linkcss: true,
+            docinfodir: "src/asciidoc",
+            docinfo1: "",
             icons: "font",
             sectanchors: true,
             sectlinks: true,
@@ -29,6 +39,19 @@ asciidoctor {
             "gradle-version": gradleVersion,
             "user-manual": "https://docs.gradle.org/$gradleVersion/userguide/",
             "language-reference": "https://docs.gradle.org/$gradleVersion/dsl/"
+    extensions {
+        postprocessor { document, output ->
+            if (!document.basebackend("html")) {
+                throw new IllegalArgumentException("Expected html Asciidoctor backend")
+            }
+            def doc = org.jsoup.Jsoup.parse(output, "UTF-8")
+            def header = doc.getElementById("header")
+            def logoFile = file("src/images/gradle-guides.svg")
+            def logoSvg = logoFile.text
+            header.prepend("""<div style="padding-top: 10px;">$logoSvg</div>""")
+            doc.html()
+        }
+    }
 }
 
 task copyIndex {
@@ -36,6 +59,11 @@ task copyIndex {
         file("${asciidoctor.outputDir}/${asciidoctor.backends[0]}/README.html")
             .renameTo("${asciidoctor.outputDir}/${asciidoctor.backends[0]}/index.html")
     }
+}
+
+task copyIcon(type: Copy) {
+    from "icon/"
+    into "${asciidoctor.outputDir}/${asciidoctor.backends[0]}/icon"
 }
 
 githubPages {
@@ -55,4 +83,4 @@ githubPages {
     commitMessage = 'Publish to GitHub Pages'
 }
 
-assemble.dependsOn "asciidoctor", "copyIndex"
+assemble.dependsOn "asciidoctor", "copyIndex", "copyIcon"
