@@ -181,13 +181,9 @@ div, dl, dt, dd, ul, ol, li, h1, h2, h3, #toctitle, .sidebarblock > .content > .
 /* Default Link Styles */
 a {
   color:  #00C489; text-decoration: none; line-height: inherit;
-  -webkit-transition: all 0.3s ease;
-  -moz-transition: all 0.3s ease;
-  -o-transition: all 0.3s ease;
-  transition: all 0.3s ease;
 }
 
-a:hover, a:focus { color: #1C7487; }
+a:hover, a:focus { color: #23527c; }
 a img { border: none; }
 
 /* Default paragraph styles */
