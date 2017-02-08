@@ -345,7 +345,7 @@ p a > code:hover { color: rgba(0, 0, 0, 0.9); }
 #toc ul.sectlevel0 ul.sectlevel1 { margin: 0.5em 0; }
 #toc ul { font-family: "Lato", Arial, sans-serif; list-style-type: none; }
 #toc li { line-height: 1.3334; margin-top: 0.3334em; }
-#toc a { color: #1C7487; text-decoration: none; }
+#toc a { color: #02303A; text-decoration: none; }
 #toc a:active { text-decoration: underline; }
 #toc a:hover, #toc a:focus { color: #00C489; }
 
