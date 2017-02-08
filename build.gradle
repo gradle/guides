@@ -61,6 +61,11 @@ task copyIndex {
     }
 }
 
+task copyIcon(type: Copy) {
+    from "icon/"
+    into "${asciidoctor.outputDir}/${asciidoctor.backends[0]}/icon"
+}
+
 githubPages {
     def ghToken = System.getenv('GH_TOKEN')
     if (ghToken) {
@@ -78,4 +83,4 @@ githubPages {
     commitMessage = 'Publish to GitHub Pages'
 }
 
-assemble.dependsOn "asciidoctor", "copyIndex"
+assemble.dependsOn "asciidoctor", "copyIndex", "copyIcon"
