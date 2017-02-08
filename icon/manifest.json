@@ -1,7 +1,5 @@
----
----
 {
-	"name": "{{ site.title }}",
+	"name": "Building JVM Libraries",
 	"icons": [
 		{
 			"src": "\/icon\/android-chrome-192x192.png",
