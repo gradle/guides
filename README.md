@@ -4,7 +4,7 @@
 
 This repository contains the source for the Gradle Guides homepage at https://guides.gradle.org.
 
-Each individual Gradle guide is backed by its own repository under the [gradle-guides](https://github.com/gradle-guides) GitHub organization. For example, you can find the source of the _Building JVM Libraries_ guide—hosted at [https://guides.gradle.org/gs-building-jvm-libraries]—in the [gradle-guides/gs-building-jvm-libraries](https://github.com/gradle-guides/gs-building-jvm-libraries) repository.
+Each individual Gradle guide is backed by its own repository under the [gradle-guides](https://github.com/gradle-guides) GitHub organization. For example, you can find the source of the _Building JVM Libraries_ guide—hosted at [https://guides.gradle.org/gs-building-jvm-libraries](https://guides.gradle.org/gs-building-jvm-libraries)—in the [gradle-guides/gs-building-jvm-libraries](https://github.com/gradle-guides/gs-building-jvm-libraries) repository.
 
 ### Are you interested in contributing a guide?
 
