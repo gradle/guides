@@ -48,7 +48,7 @@ asciidoctor {
             def header = doc.getElementById("header")
             def logoFile = file("src/images/gradle-guides.svg")
             def logoSvg = logoFile.text
-            header.prepend("""<div style="padding-top: 10px;">$logoSvg</div>""")
+            header.prepend("""<div style="padding-top: 10px;"><a href="https://guides.gradle.org">$logoSvg</a></div>""")
             doc.html()
         }
     }
