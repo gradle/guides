@@ -1,19 +1,287 @@
 = Creating Java Projects image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
 
+This guide demonstrates how to create a Java project in the standard form using Gradle's Build Init plugin. Optionally, you'll use the `eclipse` plugin to generate the files that allow you to import the project into any Eclipse-based tool.
 
 == What you'll build
 
+You'll generate a Java project with the standard layout, with an added `eclipse` plugin.
 
 == What you'll need
 
+* About 15 minutes
+* A text editor
+* A command prompt
+* The Java Development Kit (JDK), version 1.7 or higher
+* Any recent Gradle distribution
 
-== Step 1
+== Check the user manual
 
+The User Manual documents the Build Init plugin at https://docs.gradle.org/3.3/userguide/build_init_plugin.html. Note that it is a built-in plugin for Gradle, so you don't need to add or install anything to use it.
 
-== Step 2
+The plugin has one task, called `init`, that generates the project. The `init` task calls the (also built-in) `wrapper` task to create a Gradle wrapper script, `gradlew`.
 
+To run the `init` task, you run the following command on a Unix-based file system:
 
-== Step N
+----
+$ gradle init --type <name>
+----
 
+where `name` is one of the following:
+
+* `java-application`
+* `java-library`
+* `scala-library`
+* `groovy-library`
+* `basic`
+
+This guide uses the `java-application` type.
+
+The only thing the documentation does not emphasize is that the new project is created in the current directory. Therefore, the first step is to create a folder for the new project and change directory into it.
+
+----
+$ mkdir java-demo
+$ cd java-demo
+----
+
+== Run the init task
+
+From inside the new project directory, run the `init` task with the `java-application` argument.
+
+----
+$ gradle init --type java-application
+Starting a Gradle Daemon (subsequent builds will be faster)
+:wrapper
+:init
+
+BUILD SUCCESSFUL
+----
+
+The `init` task runs the `wrapper` task first, which generates the `gradlew` and `gradlew.bat` wrapper scripts. Then it creates the new project.
+
+The structure of the generated project is:
+
+----
+├── build.gradle
+├── gradle
+│   └── wrapper
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── gradlew
+├── gradlew.bat
+├── settings.gradle
+└── src
+    ├── main
+    │   └── java
+    │       └── App.java
+    └── test
+        └── java
+            └── AppTest.java
+----
+
+The `gradle` directory includes files that support the wrapper. The sample Java class and test are in the `src/main/java` and `src/test/java` folders, respectively.
+
+== Review the generated project files
+
+The `settings.gradle` file is heavily commented, but has only one active line:
+
+[source,groovy]
+----
+rootProject.name = 'java-demo'
+----
+
+This assigns the name of the root project to `java-demo`, which is the default.
+
+The generated `build.gradle` file also has many comments. The active portion is reproduced here (note version numbers for the dependencies may be updated in later versions of Gradle):
+
+.Generated build.gradle
+====
+[source,groovy]
+----
+apply plugin: 'java'
+apply plugin: 'application'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.google.guava:guava:20.0'
+    testCompile 'junit:junit:4.12'
+}
+
+mainClassName = 'App'
+----
+====
+
+The build file adds the `java` and `application` plugins. The former support Java projects. The latter lets you designate one class as having a `main` method, which can be executed by the build from the command line. In the demo, the name of the `main` class is `App`.
+
+By default, the build uses `jcenter`, the public Bintray Artifactory repository, to resolve any dependencies.
+
+Two dependencies are added to the project. The `Guava` library from Google is a popular library, used here only as a demonstration of the proper syntax. The `testCompile` dependency is on JUnit, which is used in the `AppTest` class.
+
+The file `src/main/java/App.java` is shown here:
+
+.The generated App.java class
+====
+[source,java]
+----
+public class App {
+    public String getGreeting() {
+        return "Hello world.";
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new App().getGreeting());
+    }
+}
+----
+====
+
+The `App` class has an instance method `getGreeting`, which returns the normal welcome message, and a `main` method that instantiates the class, calls `getGreeting`, and prints the result.
+
+The test class, `src/test/java/AppTest.java` is shown next:
+
+.The JUnit test, AppTest
+====
+[source,java]
+----
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class AppTest {
+    @Test public void testAppHasAGreeting() {
+        App classUnderTest = new App();
+        assertNotNull("app should have a greeting",
+                       classUnderTest.getGreeting());
+    }
+}
+----
+====
+
+The generated test class has a single test annotated with JUnit's `@Test` annotation. The test instantiates the `App` class, invokes the `getGreeting` method, and checks that the returned value is not null.
+
+== Execute the build
+
+To build the project, run the `build` command. You can use the regular `gradle` command, but when a project includes a wrapper script, it is considered good form to use it instead.
+
+----
+$ ./gradlew build
+:compileJava
+// Download of Guava if not already cached...
+:processResources UP-TO-DATE
+:classes
+:jar
+:startScripts
+:distTar
+:distZip
+:assemble
+:compileTestJava
+// Download of JUnit if not already cached...
+:processTestResources UP-TO-DATE
+:testClasses
+:test
+:check
+:build
+
+BUILD SUCCESSFUL
+----
+
+NOTE: The first time you run the wrapper script, `gradlew`, there will be a delay while that version of `gradle` is downloaded and stored locally in your `~/.gradle/wrapper/dists` folder.
+
+The first time you run the build, Gradle will check whether or not you already have the Guava and JUnit libraries in your cache under your `~/.gradle` directory. If not, the libraries will be downloaded and stored there. The next time you run the build, the cached versions will be used.
+
+Then it will compile the classes, run the tests, and generate a test report.
+
+You can view the test report by opening the HTML output file.
+
+----
+$ open build/reports/tests/test/index.html
+----
+
+A sample report is shown here:
+
+image::Test-Summary.png[]
+
+== Run the application
+
+Because the Gradle build used the Application plugin, you can run the application from the command line. First, use the `tasks` task to see what task has been added by the plugin.
+
+----
+$ ./gradlew tasks
+:tasks
+
+------------------------------------------------------------
+All tasks runnable from root project
+------------------------------------------------------------
+
+Application tasks
+-----------------
+run - Runs this project as a JVM application
+
+// ... many other tasks ...
+----
+
+The `run` task tells Gradle to execute the `main` method in the class assigned to the `mainClassName` property.
+
+----
+$ ./gradlew run
+:compileJava UP-TO-DATE
+:processResources UP-TO-DATE
+:classes UP-TO-DATE
+:run
+Hello world.
+
+BUILD SUCCESSFUL
+----
+
+== Add the Eclipse plugin (Optional)
+
+There are two primary IDEs used in the Java world. One is IntelliJ IDEA, a commercial tool from JetBrains, that comes in both a free "Community" edition and a paid "Ultimate" edition. IntellIJ IDEA can import Gradle projects by selecting `open` or `import` and navigating to the `build.gradle` file on your disk.
+
+The other major IDE is Eclipse (http://www.eclipse.org) and its variants, like IBM's Rational Application Developer, or Pivotal's Spring Tool Suite, among others. The easiest way to adapt a Gradle project to Eclipse is to add the Eclipse plugin for Gradle.
+
+NOTE: There is also a Gradle plugin for Eclipse, known as Buildship. It's use is the subject of a different guide and tutorial.
+
+To add Eclipse support, edit the `build.gradle` file to add the following line:
+
+[source,groovy]
+----
+apply plugin: 'eclipse'
+----
+
+Now if you run the `tasks` command, you'll see additional tasks based on the IDE:
+
+----
+$ ./gradlew tasks
+
+IDE tasks
+---------
+cleanEclipse - Cleans all Eclipse files.
+eclipse - Generates all Eclipse files.
+----
+
+The `cleanEclipse` removes any Eclipse-related files, and the `eclipse` task generates them. Running them together makes them repeatable.
+
+----
+$ ./gradlew cleanEclipse eclipse
+:cleanEclipseClasspath UP-TO-DATE
+:cleanEclipseJdt UP-TO-DATE
+:cleanEclipseProject UP-TO-DATE
+:cleanEclipse UP-TO-DATE
+:eclipseClasspath
+// Download of the Guava and JUnit sources jar... :eclipseJdt
+:eclipseProject
+:eclipse
+
+BUILD SUCCESSFUL
+----
+
+Now the project should have a `.project` file and a `.settings` folder, which are used by Eclipse.
+
+You can now open Eclipse, navigate to `File -> Import... -> General -> Existing Projects Into Workspace`, and browse to the root of your `java-demo` project.
+
+Eclipse will find the project, import it, and show it in the workspace.
 
 == Summary
+
+This guide showed how to generate a new Java project using Gradle's build init plugin.
