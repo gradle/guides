@@ -12,3 +12,15 @@ checkout = git clone 'git@github.com:gradle-guides/gs-writing-gradle-tasks.git' 
 
 [style-guide]
 checkout = git clone 'git@github.com:gradle-guides/style-guide.git' 'style-guide'
+
+[create-composite-builds]
+checkout = git clone 'git@github.com:gradle-guides/create-composite-builds.git' 'create-composite-builds'
+
+[gs-template]
+checkout = git clone 'git@github.com:gradle-guides/gs-template.git' 'gs-template'
+
+[gs-creating-java-projects]
+checkout = git clone 'git@github.com:gradle-guides/gs-creating-java-projects.git' 'gs-creating-java-projects'
+
+[performance]
+checkout = git clone 'git@github.com:gradle-guides/performance.git' 'performance'
