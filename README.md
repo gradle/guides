@@ -42,6 +42,12 @@ Follow these steps on your local machine, replacing `Creating Java Projects` wit
 
     # Create a GitHub repository for the guide (assumes `hub` is installed and aliased to `git`)
     git create gradle-guides/creating-java-projects
+    
+    # Hub always uses ssh. If you prefer to use https, then this extra step is
+    # required (replace GITHUB_USER with your Github username).
+    git remote set-url origin https://GITHUB_USER@github.com/gradle-guides/create-java-projects.git
+    
+    # Finally push the created repository to Github
     git push --set-upstream origin master
 
 
