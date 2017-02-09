@@ -4,11 +4,11 @@ GUIDE_TEMPLATE_SLUG="gs-template"
 GUIDE_TEMPLATE_REPO="https://github.com/gradle-guides/$GUIDE_TEMPLATE_SLUG.git"
 
 GUIDE_NAME=$1
-GUIDE_SLUG=gs-$(echo "$GUIDE_NAME" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
+GUIDE_SLUG=$(echo "$GUIDE_NAME" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
 
 ISSUE_NUMBER=$2
 
-if [ -z "$GUIDE_NAME" ] || [ -z "$ISSUE_NUMBER" ]; then cat <<EOM
+if [[ -z "$GUIDE_NAME" || -z "$ISSUE_NUMBER" ]]; then cat <<EOM
 
 DESCRIPTION
 
@@ -31,7 +31,7 @@ SEE ALSO
 EOM
 exit 255; fi
 
-if [ -d "$GUIDE_SLUG" ]; then
+if [[ -d "$GUIDE_SLUG" ]]; then
     echo "'$GUIDE_SLUG' directory already exists" && exit 255
 fi
 
@@ -46,6 +46,15 @@ git commit --allow-empty -m"Initialize $GUIDE_SLUG repository (#$ISSUE_NUMBER)"
 git add .
 git commit -m "Add content from $GUIDE_TEMPLATE_SLUG repository (#$ISSUE_NUMBER)"
 
-sed -i '' "s/@@GUIDE_NAME@@/$GUIDE_NAME/g" README.adoc
-sed -i '' "s/@@GUIDE_SLUG@@/$GUIDE_SLUG/g" build.gradle
+case "`uname`" in
+  Darwin* )
+    sed_inplace="sed -i ''"
+    ;;
+  *)
+    sed_inplace="sed -i"
+    ;;
+esac
+
+${sed_inplace} "s/@@GUIDE_NAME@@/$GUIDE_NAME/g" README.adoc
+${sed_inplace} "s/@@GUIDE_SLUG@@/$GUIDE_SLUG/g" build.gradle
 git commit -am "Replace template placeholders (#$ISSUE_NUMBER)"

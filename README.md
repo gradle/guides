@@ -35,13 +35,13 @@ Follow these steps on your local machine, replacing `Creating Java Projects` wit
     cd guides
     ./create-gs-guide 'Creating Java Projects' 49
 
-    # The command above will create a directory named gs-creating-java-projects
-    cd gs-creating-java-projects
+    # The command above will create a directory named creating-java-projects
+    cd creating-java-projects
 
     # Review the newly-created guide, make sure everything looks correct
 
     # Create a GitHub repository for the guide (assumes `hub` is installed and aliased to `git`)
-    git create gradle-guides/gs-creating-java-projects
+    git create gradle-guides/creating-java-projects
     git push --set-upstream origin master
 
 
