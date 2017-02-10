@@ -20,7 +20,7 @@ Gradle comes with a built-in plugin called the Build Init plugin. It is document
 
 The plugin has one task, called `init`, that generates the project. The `init` task calls the (also built-in) `wrapper` task to create a Gradle wrapper script, `gradlew`.
 
-To run the `init` task, you run the following command on a Unix-based file system:
+To run the `init` task, you run the following from a command prompt:
 
 ----
 $ gradle init --type <name>
@@ -187,7 +187,7 @@ $ ./gradlew build
 BUILD SUCCESSFUL
 ----
 
-NOTE: The first time you run the wrapper script, `gradlew`, there will be a delay while that version of `gradle` is downloaded and stored locally in your `~/.gradle/wrapper/dists` folder.
+NOTE: The first time you run the wrapper script, `gradlew`, there may be a delay while that version of `gradle` is downloaded and stored locally in your `~/.gradle/wrapper/dists` folder.
 
 The first time you run the build, Gradle will check whether or not you already have the Guava and JUnit libraries in your cache under your `~/.gradle` directory. If not, the libraries will be downloaded and stored there. The next time you run the build, the cached versions will be used. The `build` task compiles the classes, runs the tests, and generates a test report.
 
