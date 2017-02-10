@@ -1,14 +1,26 @@
 [gs-writing-gs-guides]
-checkout = git clone git@github.com:gradle-guides/gs-writing-gs-guides.git
+checkout = git clone git@github.com:gradle-guides/gs-writing-gs-guides.git 'gs-writing-gs-guides'
 
 [gs-building-jvm-libraries]
-checkout = git clone git@github.com:gradle-guides/gs-building-jvm-libraries.git
+checkout = git clone git@github.com:gradle-guides/gs-building-jvm-libraries.git 'gs-building-jvm-libraries'
 
 [gs-writing-gradle-plugins]
-checkout = git clone git@github.com:gradle-guides/gs-writing-gradle-plugins.git
+checkout = git clone git@github.com:gradle-guides/gs-writing-gradle-plugins.git 'gs-writing-gradle-plugins'
 
 [gs-writing-gradle-tasks]
 checkout = git clone 'git@github.com:gradle-guides/gs-writing-gradle-tasks.git' 'gs-writing-gradle-tasks'
 
 [style-guide]
 checkout = git clone 'git@github.com:gradle-guides/style-guide.git' 'style-guide'
+
+[creating-composite-builds]
+checkout = git clone 'git@github.com:gradle-guides/creating-composite-builds.git' 'creating-composite-builds'
+
+[gs-template]
+checkout = git clone 'git@github.com:gradle-guides/gs-template.git' 'gs-template'
+
+[gs-creating-java-projects]
+checkout = git clone 'git@github.com:gradle-guides/gs-creating-java-projects.git' 'gs-creating-java-projects'
+
+[performance]
+checkout = git clone 'git@github.com:gradle-guides/performance.git' 'performance'
