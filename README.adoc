@@ -22,7 +22,7 @@ In a new folder create a `build.gradle` and enter the following
 ----
 task hello { // <1>
   doLast { // <2>
-      println 'Hello, World'
+      println 'Hello, World!'
   }
 }
 ----
@@ -36,7 +36,7 @@ Save the file and on the command-line and type:
 gradle tasks
 ----
 
-Your new task will appear under `Other tasks`.
+Save the file and on the command-line type `gradle tasks --all`. Your new task will appear under `Other tasks`.
 
 .Verifying that your task has been created
 [listing]
@@ -72,7 +72,7 @@ Congratulations! You have you added your first ad-hoc task.
 [source,groovy]
 ----
 task hello << {
-  println 'Hello, World'
+  println 'Hello, World!'
 }
 ----
 
@@ -84,6 +84,17 @@ This form has caused too much confusion in the past especially among people that
 == Add a task description
 
 Although you have tested your new ad-hoc task and know that it works, it is good practice to tell others who will use your build script what the purpose of your new task is. It is also useful to categorise your task.
+
+When you ran `gradle tasks --all` earlier you would have seen other tasks in the listing which contain descriptions and are grouped according to function. Also (and since Gradle 3.3) if a task does not have a group it will not be listed unless `--all` is specified.
+
+.Well-documented tasks
+[listing]
+----
+Build Setup tasks
+-----------------
+init - Initializes a new Gradle build. [incubating]
+wrapper - Generates Gradle wrapper files. [incubating]
+----
 
 This is achieved by setting the `group` and `description` properties on the task.  Edit your ad-hoc task and add the following:
 
@@ -114,7 +125,7 @@ Well done!
 
 == Make the message configurable
 
-Ad-hoc tasks are good for bespoke, small & simple tasks, but they do not scale. To make the message and greeting configurable you will now convert your ad-hoc task into a custom task type. This is achieved by creating a class inline within the build script.
+This is the point where you need to convert your ad-hoc task into a custom task type, and this is achieved by creating a class within the build script.
 
 Return to your build script and add the following class and refactor your `hello` task.
 
@@ -159,7 +170,7 @@ You should see the same output
 [listing]
 ----
 :hello
-Hello, World
+Hello, World!
 ----
 
 Now that you have the custom task type, you can add additional tasks. Add a German version of the greeting by just creating an additional task.
@@ -167,7 +178,7 @@ Now that you have the custom task type, you can add additional tasks. Add a Germ
 .Adding a second task
 [source,groovy]
 ----
-task germanHello( type : Greeting ) {
+task gutenTag( type : Greeting ) {
     group 'Welcome'
     description 'Produces a German greeting'
     message 'Guten Tag'
@@ -185,21 +196,21 @@ Run `gradle tasks` again to verify that the new task has been added.
 Welcome tasks
 -------------
 hello - Produces a greeting
-germanHello - Produces a German greeting
+gutenTag - Produces a German greeting
 ----
 
-Finally, run the new task by doing `gradle germanHello`
+Finally, run the new task by doing `gradle gutenTag`
 
 .Output of your second task.
 [listing]
 ----
-:germanHello
-Guten Tag, Welt
+:gutenTag
+Guten Tag, Welt!
 ----
 
 == Summary
 
-That's it! You've worked through the steps necessary to create a custom Gradle Task. You should now have learnt how to
+That's it! You've worked through the steps necessary to create a custom Gradle Task. You should now have learned how to
 
 * Create an ad-hoc task and add an action using `doLast`.
 * Document a task.
