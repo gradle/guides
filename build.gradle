@@ -1,13 +1,17 @@
+buildscript {
+    dependencies {
+        classpath "org.jsoup:jsoup:1.10.1"
+    }
+}
+
 plugins {
     id "org.ajoberstar.github-pages" version "1.4.2"
     id "org.asciidoctor.convert" version "1.5.3"
 }
 apply plugin: "base"
 
-ext {
-  repoPath = 'gradle-guides/gs-writing-gradle-tasks'
-  gradleVersion = gradle.gradleVersion
-}
+def repoPath = "gradle-guides/writing-gradle-tasks"
+def gradleVersion = "3.3"
 
 asciidoctor {
     sourceDir = rootDir
@@ -16,23 +20,37 @@ asciidoctor {
     }
     outputDir = buildDir
     backends = ["html5"]
-    attributes 'source-highlighter': 'coderay',
-            'coderay-linenums-mode': 'table',
-            imagesdir: 'images',
-            icons: 'font',
+    attributes "source-highlighter": "coderay",
+            "coderay-linenums-mode": "table",
+            imagesdir: "images",
+            stylesheet: null,
+            linkcss: true,
+            docinfodir: ".",
+            docinfo1: "",
+            icons: "font",
             sectanchors: true,
             sectlinks: true,
             linkattrs: true,
-            encoding: 'utf-8',
-            idprefix: '',
-            toc: 'right',
+            encoding: "utf-8",
+            idprefix: "",
+            toc: "right",
             toclevels: 1,
-            'repo-path' : repoPath,
-            'gradle-version' : gradleVersion,
-            'user-manual' : "https://docs.gradle.org/$gradleVersion/userguide/",
-            javadoc : "https://docs.gradle.org/$gradleVersion/javadoc/",
-            'language-reference': "https://docs.gradle.org/$gradleVersion/dsl/"
-
+            "repo-path": repoPath,
+            "gradle-version": gradleVersion,
+            "user-manual": "https://docs.gradle.org/$gradleVersion/userguide/",
+            "language-reference": "https://docs.gradle.org/$gradleVersion/dsl/",
+            "api-reference": "https://docs.gradle.org/$gradleVersion/javadoc/"
+    extensions {
+        postprocessor { document, output ->
+            if (!document.basebackend("html")) {
+                throw new IllegalArgumentException("Expected html Asciidoctor backend")
+            }
+            def doc = org.jsoup.Jsoup.parse(output, "UTF-8")
+            def header = doc.getElementById("header")
+            header.prepend("""<div style="padding-top: 10px;"><a href="https://guides.gradle.org"><img src="http://guides.gradle.org/gradle-guides.svg" alt=""></a></div>""")
+            doc.html()
+        }
+    }
 }
 
 task copyIndex {
@@ -43,12 +61,12 @@ task copyIndex {
 }
 
 githubPages {
-    def ghToken = System.getenv('GH_TOKEN')
+    def ghToken = System.getenv("GH_TOKEN")
     if (ghToken) {
         repoUri = "https://github.com/${repoPath}.git"
         credentials {
             username = ghToken
-            password = '\n'
+            password = "\n"
         }
     } else {
         repoUri = "git@github.com:${repoPath}.git"
@@ -56,7 +74,9 @@ githubPages {
     pages {
         from "${asciidoctor.outputDir}/${asciidoctor.backends[0]}"
     }
-    commitMessage = 'Publish to GitHub Pages'
+    commitMessage = "Publish to GitHub Pages"
 }
+
+publishGhPages.enabled = System.getenv("TRAVIS_BRANCH") == "master" && System.getenv("TRAVIS_PULL_REQUEST") == "false"
 
 assemble.dependsOn "asciidoctor", "copyIndex"
