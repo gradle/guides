@@ -1,0 +1,19 @@
+= @@GUIDE_NAME@@ image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
+
+
+== What you'll build
+
+
+== What you'll need
+
+
+== Step 1
+
+
+== Step 2
+
+
+== Step N
+
+
+== Summary

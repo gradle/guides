@@ -1,0 +1,61 @@
+plugins {
+    id "org.ajoberstar.github-pages" version "1.4.2"
+    id "org.asciidoctor.convert" version "1.5.3"
+}
+apply plugin: "base"
+
+def repoPath = "gradle-guides/@@GUIDE_SLUG@@"
+def gradleVersion = "3.3"
+
+asciidoctor {
+    sourceDir = rootDir
+    sources {
+      include "README.adoc"
+    }
+    outputDir = buildDir
+    backends = ["html5"]
+    attributes "source-highlighter": "coderay",
+            "coderay-linenums-mode": "table",
+            imagesdir: "images",
+            icons: "font",
+            sectanchors: true,
+            sectlinks: true,
+            linkattrs: true,
+            encoding: "utf-8",
+            idprefix: "",
+            toc: "right",
+            toclevels: 1,
+            "repo-path": repoPath,
+            "gradle-version": gradleVersion,
+            "user-manual": "https://docs.gradle.org/$gradleVersion/userguide/",
+            "language-reference": "https://docs.gradle.org/$gradleVersion/dsl/",
+            "api-reference": "https://docs.gradle.org/$gradleVersion/javadoc/"
+}
+
+task copyIndex {
+    doLast {
+        file("${asciidoctor.outputDir}/${asciidoctor.backends[0]}/README.html")
+            .renameTo("${asciidoctor.outputDir}/${asciidoctor.backends[0]}/index.html")
+    }
+}
+
+githubPages {
+    def ghToken = System.getenv("GH_TOKEN")
+    if (ghToken) {
+        repoUri = "https://github.com/${repoPath}.git"
+        credentials {
+            username = ghToken
+            password = "\n"
+        }
+    } else {
+        repoUri = "git@github.com:${repoPath}.git"
+    }
+    pages {
+        from "${asciidoctor.outputDir}/${asciidoctor.backends[0]}"
+    }
+    commitMessage = 'Publish to GitHub Pages'
+    
+    enabled = System.getenv('TRAVIS_BRANCH') == 'master' && System.getenv('TRAVIS_PULL_REQUEST') == 'false'
+}
+
+assemble.dependsOn "asciidoctor", "copyIndex"
