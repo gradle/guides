@@ -57,5 +57,6 @@ case "`uname`" in
 esac
 
 ${sed_inplace} "s/@@GUIDE_NAME@@/$GUIDE_NAME/g" README.adoc
+${sed_inplace} "s/@@GUIDE_NAME@@/$GUIDE_NAME/g" docinfo.html
 ${sed_inplace} "s/@@GUIDE_SLUG@@/$GUIDE_SLUG/g" build.gradle
 git commit -am "Replace template placeholders ($ISSUE_NUMBER)"
