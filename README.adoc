@@ -1,4 +1,4 @@
-= @@GUIDE_NAME@@ image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
+= Creating New Gradle Builds image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
 
 
 == What you'll build
