@@ -1,19 +1,23 @@
 language: java
 jdk:
 - oraclejdk7
-script:
-- "./gradlew publishGhPages --stacktrace"
+script: |
+  if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then
+      ./gradlew publishGhPages --stacktrace;
+  else
+      echo "Skipping publication to GitHub pages for branch '$TRAVIS_BRANCH' (PR: $TRAVIS_PULL_REQUEST)"
+  fi
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 - rm -fr $HOME/.gradle/caches/*/scripts/
 cache:
   directories:
-  - "$HOME/.gradle/caches/"
-  - "$HOME/.gradle/wrapper/"
+  - $HOME/.gradle/caches/
+  - $HOME/.gradle/wrapper/
 env:
   global:
-    secure: uB5fkgAYZyNLslMXugHiCvojjjeNR7IXyXMQT3qMD9LZ3LRN+oxGiQjeZ4bEnqpUQT2k/gSQwsObUcuREof28CmMWjGWvbA0vPzS9FUqvLhqFOzO5Ja8iyjHYKRFIxDVLyPf8UJQVaiz32yIPfyO+K8RxPJTbNGwhm3IsHTw0Of+crd6Yo+hjvdle/uhGkyjvAG0wBMWHz0RIuoyfCQpxmFPXV+FczMqhIvG4Z7heFU27VLBOASwiNPsRNE2qeYYzXiZRBTHCqonFka4hhrOtIp5wiqJxr1RxmLhve8Hsiv/fQoKSrpXzYgGCnjFsjMeSq8KcNKzdsHzgdFIqgHaJqecvo7yr8QFERhl03EhF8ubNGiIFbjcgeKS/M6smUrWE3OcbrR8fKQfE58XGrR2yZFrve9XPBEKOFFV13t9PS+pA99tSS+JoGTijFxNpp63gvhZaMUcAao7U3W8vzIRatMb1PynlpoEF3r6GIpMopZcNT9MSluF1Ph5Rp9gRu2RxDY7nfXVlupLy9RIU92vhqCwpudrW7Fn5Q/S/jCqQoLeAROeTGxgnD/4jh0P6Wo49yjkVoVCs6Ed6Vh9Tbh6hDZjSlprEbIlPsx9xadU42gjNN46xQ2zLl8XLyG6wQ8BkB0GQYuLq1pYte9NGBU4V4GZjwpLnRs2vMzCSWTfHY8=
+    secure: kjv1U6k95rKEvFybNDWCbqYkHRX+XOTF7KGpJUwBnsWLFifD4oimIl/Ir6pkeLGE3mqbQ1+D+leyyV1/TtHoSCHS04WFzRFQmKWWNVpviONUI7ILKM7AZiMHcEbCJtydWcPs3FjJ16qP7LoWuvAQDEcFJxQBOHiP1pVj29G/t1OZ19S1ngF6k+j0MiM6yEWr7ZNW63T1jxnirPQtElntNEYevTwwUIh6Umd9ESdXoELPUMIihE4BtcFBK3wbjZt8p2C+eqwg4jwf8GWB6SV7ri7nn+iUpqYMJBg4Cq291mSCzn4icOLm6J4Ep4LgZCrdOVWrUaDik/fcYNzMut6y0chIefQ/1GmcIoISvwkaEpQN0LYlUKUSyioXp+zlxWVduHaCbQgj+pVIARZ0LeEQiBpGEVMg6I3pmjZqLLQLs1hlEwSZhnlXE8XiD/+vYDka/icgFDqnV0Kmn/LbqNkIUuLiDroTdcowriVmJ7nFznsJWmOv+Gj6sTtdD0/uCkz8L788uhitNi5Vu9RrPnS6JS0xAiRlVT8P1c9wgWQucZqLL//GlSPSD4rkm07fBNRKnJyG1RdIIcNhjXR3aMJnZdHKvNR7xeeqcnRaIX9kX0irvGYFMst66YxedqzaJmOqSz404lkLJin1LNnpJdbLsaml0Pivifm4aAkp/+yIpZM=
 notifications:
   slack:
     on_success: change
