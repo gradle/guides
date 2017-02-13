@@ -55,7 +55,8 @@ githubPages {
     }
     commitMessage = 'Publish to GitHub Pages'
     
-    enabled = System.getenv('TRAVIS_BRANCH') == 'master' && System.getenv('TRAVIS_PULL_REQUEST') == 'false'
 }
+
+publishGhPages.enabled = System.getenv('TRAVIS_BRANCH') == 'master' && System.getenv('TRAVIS_PULL_REQUEST') == 'false'
 
 assemble.dependsOn "asciidoctor", "copyIndex"
