@@ -1,4 +1,4 @@
-= Creating Java Projects image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
+= Creating Java Applications image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
 
 This guide demonstrates how to create a Java project in the standard form using Gradle's Build Init plugin.
 
