@@ -1,26 +1,29 @@
-[gs-writing-gs-guides]
-checkout = git clone git@github.com:gradle-guides/gs-writing-gs-guides.git 'gs-writing-gs-guides'
-
-[gs-building-jvm-libraries]
-checkout = git clone git@github.com:gradle-guides/gs-building-jvm-libraries.git 'gs-building-jvm-libraries'
-
-[gs-writing-gradle-plugins]
-checkout = git clone git@github.com:gradle-guides/gs-writing-gradle-plugins.git 'gs-writing-gradle-plugins'
-
-[gs-writing-gradle-tasks]
-checkout = git clone 'git@github.com:gradle-guides/gs-writing-gradle-tasks.git' 'gs-writing-gradle-tasks'
-
-[style-guide]
-checkout = git clone 'git@github.com:gradle-guides/style-guide.git' 'style-guide'
+[building-jvm-libraries]
+checkout = git clone git@github.com:gradle-guides/building-jvm-libraries.git
 
 [creating-composite-builds]
-checkout = git clone 'git@github.com:gradle-guides/creating-composite-builds.git' 'creating-composite-builds'
+checkout = git clone git@github.com:gradle-guides/creating-composite-builds.git
+
+[creating-java-applications]
+checkout = git clone git@github.com:gradle-guides/creating-java-applications.git
+
+[creating-new-gradle-builds]
+checkout = git clone git@github.com:gradle-guides/creating-new-gradle-builds.git
 
 [gs-template]
-checkout = git clone 'git@github.com:gradle-guides/gs-template.git' 'gs-template'
-
-[gs-creating-java-projects]
-checkout = git clone 'git@github.com:gradle-guides/gs-creating-java-projects.git' 'gs-creating-java-projects'
+checkout = git clone git@github.com:gradle-guides/gs-template.git
 
 [performance]
-checkout = git clone 'git@github.com:gradle-guides/performance.git' 'performance'
+checkout = git clone git@github.com:gradle-guides/performance.git
+
+[style-guide]
+checkout = git clone git@github.com:gradle-guides/style-guide.git
+
+[writing-getting-started-guides]
+checkout = git clone git@github.com:gradle-guides/writing-getting-started-guides.git
+
+[writing-gradle-plugins-in-java]
+checkout = git clone git@github.com:gradle-guides/writing-gradle-plugins-in-java.git
+
+[writing-gradle-tasks]
+checkout = git clone git@github.com:gradle-guides/writing-gradle-tasks.git

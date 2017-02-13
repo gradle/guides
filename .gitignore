@@ -1,12 +1,17 @@
 # mr-managed repositories
-creating-composite-builds
-gs-*
-performance
-style-guide
+building-jvm-libraries/
+creating-composite-builds/
+creating-java-applications/
+creating-new-gradle-builds/
+gs-template/
+performance/
+style-guide/
+writing-getting-started-guides/
+writing-gradle-plugins-in-java/
+writing-gradle-tasks/
 
 # nginx
 nginx.pid
 
 # Vim
 *.sw?
-
