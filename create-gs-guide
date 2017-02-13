@@ -21,7 +21,8 @@ USAGE
 
 EXAMPLE
 
-    $0 'Creating Java Projects' 49
+    $0 'Creating Java Projects' '#49'
+    $0 'Migrating Java Projects' 'gradle/guides#49'
 
 SEE ALSO
 
@@ -41,10 +42,10 @@ cd $GUIDE_SLUG || exit 255
 rm -rf .git
 
 git init
-git commit --allow-empty -m"Initialize $GUIDE_SLUG repository (#$ISSUE_NUMBER)"
+git commit --allow-empty -m"Initialize $GUIDE_SLUG repository ($ISSUE_NUMBER)"
 
 git add .
-git commit -m "Add content from $GUIDE_TEMPLATE_SLUG repository (#$ISSUE_NUMBER)"
+git commit -m "Add content from $GUIDE_TEMPLATE_SLUG repository ($ISSUE_NUMBER)"
 
 case "`uname`" in
   Darwin* )
@@ -57,4 +58,4 @@ esac
 
 ${sed_inplace} "s/@@GUIDE_NAME@@/$GUIDE_NAME/g" README.adoc
 ${sed_inplace} "s/@@GUIDE_SLUG@@/$GUIDE_SLUG/g" build.gradle
-git commit -am "Replace template placeholders (#$ISSUE_NUMBER)"
+git commit -am "Replace template placeholders ($ISSUE_NUMBER)"
