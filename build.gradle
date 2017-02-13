@@ -10,10 +10,10 @@ plugins {
 }
 apply plugin: "base"
 
-def repoPath = 'gradle-guides/gs-building-jvm-libraries'
+def repoPath = "gradle-guides/building-jvm-libraries"
+def gradleVersion = "3.3"
 
 asciidoctor {
-    def gradleVersion = '3.0'
     sourceDir = rootDir
     sources {
       include "README.adoc"
@@ -22,10 +22,10 @@ asciidoctor {
     backends = ["html5"]
     attributes "source-highlighter": "coderay",
             "coderay-linenums-mode": "table",
-            imagesdir: "src/images",
-            stylesheet: "asciidoctor.css",
+            imagesdir: "images",
+            stylesheet: null,
             linkcss: true,
-            docinfodir: "src/asciidoc",
+            docinfodir: ".",
             docinfo1: "",
             icons: "font",
             sectanchors: true,
@@ -38,7 +38,8 @@ asciidoctor {
             "repo-path": repoPath,
             "gradle-version": gradleVersion,
             "user-manual": "https://docs.gradle.org/$gradleVersion/userguide/",
-            "language-reference": "https://docs.gradle.org/$gradleVersion/dsl/"
+            "language-reference": "https://docs.gradle.org/$gradleVersion/dsl/",
+            "api-reference": "https://docs.gradle.org/$gradleVersion/javadoc/"
     extensions {
         postprocessor { document, output ->
             if (!document.basebackend("html")) {
@@ -46,9 +47,7 @@ asciidoctor {
             }
             def doc = org.jsoup.Jsoup.parse(output, "UTF-8")
             def header = doc.getElementById("header")
-            def logoFile = file("src/images/gradle-guides.svg")
-            def logoSvg = logoFile.text
-            header.prepend("""<div style="padding-top: 10px;"><a href="https://guides.gradle.org">$logoSvg</a></div>""")
+            header.prepend("""<div style="padding-top: 10px;"><a href="https://guides.gradle.org"><img src="http://guides.gradle.org/gradle-guides.svg" alt=""></a></div>""")
             doc.html()
         }
     }
@@ -61,18 +60,13 @@ task copyIndex {
     }
 }
 
-task copyIcon(type: Copy) {
-    from "icon/"
-    into "${asciidoctor.outputDir}/${asciidoctor.backends[0]}/icon"
-}
-
 githubPages {
-    def ghToken = System.getenv('GH_TOKEN')
+    def ghToken = System.getenv("GH_TOKEN")
     if (ghToken) {
         repoUri = "https://github.com/${repoPath}.git"
         credentials {
             username = ghToken
-            password = '\n'
+            password = "\n"
         }
     } else {
         repoUri = "git@github.com:${repoPath}.git"
@@ -80,7 +74,9 @@ githubPages {
     pages {
         from "${asciidoctor.outputDir}/${asciidoctor.backends[0]}"
     }
-    commitMessage = 'Publish to GitHub Pages'
+    commitMessage = "Publish to GitHub Pages"
 }
 
-assemble.dependsOn "asciidoctor", "copyIndex", "copyIcon"
+publishGhPages.enabled = System.getenv("TRAVIS_BRANCH") == "master" && System.getenv("TRAVIS_PULL_REQUEST") == "false"
+
+assemble.dependsOn "asciidoctor", "copyIndex"
