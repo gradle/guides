@@ -1,10 +1,9 @@
 language: java
-script:
-  git push -f https://${GH_TOKEN}@github.com/gradle-guides/gradle-guides.github.io master 2>&1 |
-  sed "s/${GH_TOKEN}/[secure]/"
+script: git push -f https://${GH_TOKEN}@github.com/gradle-guides/gradle-guides.github.io
+  master 2>&1 | sed "s/${GH_TOKEN}/[secure]/"
 env:
   global:
-    secure: Um1XnQKL1ldODBknFNYa5xeA+xz1PSZP3Kql/AqgP+rk45PrHAHRSBQClTzLxAWJYKaEquHjb2/990Et1zDE9RC85mxNKjwgV02LGFMIg4dNn5WvXR0fu/FKHvmLsQBHRXf0/iwVQoCmqPh4XK4osPymu3hBCGkybnhVd9mP//A51x46Q74VP0EZXKRbmNC04/8MjWfRbwzVGcc2UDtAOJriAMLC+uZT6Dx4zAijEDbaPAhRtCAI1g4ZypPrh4FKmvSeGC7yH6zcsFLvw2qtn1pJSs/4+Y+u6qEr2DEF664Z/LAAFPfFijyeve2KzFDmPmQrLXbb8u5cKWhFHWblBlDOQOL3gaZpeGspEyfONEfrW0oFuT7MmugDSPdwg0YMxKL9++7FHz1Ak9Kkp7urx2q+JsVpK1jvP3usTkDdYsg4y3lcHIIwCXmkgCmPEmS/ZKTBe1h8QS3No6pBBllGw646RwBqoS3INzPLhekXa0Msx6dVf9IisRY3k5kKpsf8L/fH87KD2WEF8wG32etkDrjXKakNmpHrEI3rscr8Nbk+0WhkPoU4XlnRv91bNTM9YJvNDeBgQcJK2nryFY4pgzVhPiIkQIF1ZR85gCkAiR3hztvmVEeA3F4KoQinNyJRn8P6tFFr9Rta9zVVnRCEHUFE1/TdHxJpA/WyczL5uCE=
+    secure: ecToiSwreKCHHmKLViPb0I5myPxGJkcjjqRY4jtZ+IHO7sZvjdWp1SnJ3V8SEY3p4Y3qat3tIQcQAXvlpwVuW23KnjePBnQwlDDr2aHQhAG2SZUo3Eq7odU3jJI5vDyUfsO3ghBbOiY73MCsOZMGuUIOg+cPo/iPbmTBLJ/gA/C4h+K7j40TuhgPmMeh1Nu21AHOg5MRBvzdvVZIYat0ZNGHUX5WNTr7/jW6IGO6gwNGX0ZTX6VycNVvJ6ionIKp9dbKXFSxBB74Q0OfLeAVMumxkZm1hUaRAceMPUxjtJraNlTr/G4khWBn1Egs1YPFyYeWv16+Y+2OxbB3rA/Kq9upJjSrFvVokfuJDoWyhKF55blwmlkih6XLXSfrY817CLH0wolZMkEf8Zt6OKckNtodT+7Sn2swQ+t808ccNn/Bj059nlrWBfd+YufbwXR7PxpIStdXGJNTQVEP1XI+5asomOFfYFpma2FqfWnOB9O/Elubbl13EIVLL2lCnW4C4iwBaeWW33fsU5qsWWXmlttmvt4+uAbp5bwwFYIXalc7qN3BG5QSIWY2pG0EhXK37XAgaiWcqEBLf4C3vf3fAXj4mz0pjiP+k6v5PdQOKO4bkMxVipd7AAcUFonRVU1psfw6oht9qIASTNLbegXg5erZ/cpeqVCVZDD3tjXdEVg=
 notifications:
   slack:
     on_success: change
