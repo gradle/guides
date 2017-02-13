@@ -3,6 +3,12 @@ jdk:
 - oraclejdk7
 script:
 - "./gradlew publishGhPages --stacktrace"
+script: |
+  if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then
+      ./gradlew publishGhPages --stacktrace;
+  else
+      echo "Skipping publication to GitHub pages for branch '$TRAVIS_BRANCH' (PR: $TRAVIS_PULL_REQUEST)"
+  fi
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
