@@ -4,7 +4,7 @@ Tasks are the cornerstone of getting things done in Gradle. They represent singl
 
 == What you'll create
 
-You'll start by creating an ad-hoc Gradle task that prints _Hello, World_ to the console. You'll then move to making it configurable to print any message. In this process you'll learn about ad-hic tasks and custom task types.
+You'll start by creating an ad-hoc Gradle task that prints _Hello, World_ to the console. You'll then move to making it configurable to print any message. In this process you'll learn about ad-hoc tasks and custom task types.
 
 == What you’ll need
 
