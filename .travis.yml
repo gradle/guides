@@ -2,12 +2,15 @@ language: java
 jdk:
 - oraclejdk7
 script:
-- "./gradlew publishGhPages --stacktrace"
+- ./gradlew publishGhPages --stacktrace
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 - rm -fr $HOME/.gradle/caches/*/scripts/
 cache:
   directories:
-  - "$HOME/.gradle/caches/"
-  - "$HOME/.gradle/wrapper/"
+  - $HOME/.gradle/caches/
+  - $HOME/.gradle/wrapper/
+env:
+  global:
+    secure: 4SFsXu2kqy4+xvZ7lni/wwaLcnIF9riehDszOReEh0b6ew9vWHq+ViDEhsLzCYaz82NbhxhgLs+UIayEWj3jw9qwwemvR1gsrJJVmtfzNNFZbj1bP2uXEtFbHmBMNoSITShSn91NSeq8tLcV9MuzjXguea9MtP2dD6Q8ExAL+SK1TorGE4XOzk8m7jurhkn3edHb6fVfh1cV6YKjUFMF2Zvyo6g6c3q6laQbUPU6f6u/M1fmIFffw48NP/YQ3yia3cbUuRZirbE8a3KKC+C++KSc6NyING33//lwiRCcFpVgQAE/Qt1MjvyLYKNyj2rYvZGDGY97lacYjh3IVhhP+1fLzMlQhDTiZxpUWcvsQbdrSQ2eIocND13NY0N4H8Jke7sYhJJOs9efgNtUoO1+IZTa9m8BtE66oI+wjTwQadLsCpZXpvioo1aGw/I6OAItIKF29owzZqNTgpXPwYQv11FFtcjHg2gAOh2r6T4bhjtVjCXZEezu0oyB8kgU7EUxJe+YWi0jUtBnq4xDvQPZuQon315R6wghpRmK73FgWZPHpiK3Vc8y+PW+AdMUvnbR9EOBC6dps9kMrJrUhVGmyNHZ2JFpkxvHXt62eRbJ8kT2jU0W1E6qMgRDf0IDGrZBvfZkDqf7gjFAyTun/v/BPXVpmFLUCOMWX4u1ug2pR94=
