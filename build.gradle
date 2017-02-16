@@ -35,7 +35,7 @@ asciidoctor {
             idprefix: "",
             toc: "right",
             toclevels: 1,
-            guides : 'https://guides.gradle.org',
+            guides : 'https://guides.gradle.org/',
             "repo-path": repoPath,
             "gradle-version": gradleVersion,
             "user-manual": "https://docs.gradle.org/$gradleVersion/userguide/",
