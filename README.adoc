@@ -27,15 +27,15 @@ $ gradle init --type=java-library // <1>
 
 To learn more about bootstrapping a Gradle build, particularly if you want or need to do it by hand, follow the quick start guide for the type of project you want:
 
-* *java*, *groovy*, *scala*: you have {user-manual}/tutorial_java_projects.html[a JVM project]. The user guide also has more details about each of the language plugins if you want a bit more depth.
+* *Java*, *Groovy*, *Scala*: you have {user-manual}/tutorial_java_projects.html[a JVM project]. The user guide also has more details about each of the language plugins if you want a bit more depth.
 * *c*, *cpp*, *assembler*, *objective-c*, *objective-cpp*: you have {user-manual}/native_software.html[a native build].
-* *android*: you have http://tools.android.com/tech-docs/new-build-system/user-guide[an Android project]()
+* *android*: you have http://tools.android.com/tech-docs/new-build-system/user-guide[an Android project]
 
-It's not uncommon in multi-project builds to have subprojects of different types, particularly when you have a polyglot project or a separate project for documentation for example, so you may want to check out more than one of the quick start guides. You'll learn more about multi-project builds in step 3.
+It's not uncommon in multi-project builds to have subprojects of different types, particularly when you have a polyglot project or a separate project for documentation. For example, you may want to use one or more examples from the quick start guides. You'll more information about multi-project builds under [#next_steps](Next Steps).
 
 == Learn the key concepts
 
-Gradle is a very powerful tool, which means you need a good understanding of the underlying model to create maintainable builds. Fortunately, there are just a few core concepts to get your head round:
+Gradle is a very powerful tool, which means you need a good understanding of the underlying model to create maintainable builds. Fortunately, there are just a few core concepts to understand:
 
 * Gradle's build phases—read the first section of the {user-manual}/build_lifecycle.html[build lifecycle chapter] for a description of these.
 * The project API and {user-manual}/writing_build_scripts.html[properties]
