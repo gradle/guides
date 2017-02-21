@@ -220,8 +220,8 @@ That's it! You've worked through the steps necessary to create a custom Gradle T
 == Next steps
 
 // TODO: This should point to a GS guide on organizing build logic (gradle/guides#45)
-* Having classes in a build script will soon lead to a messy and potentially unmaintainable build script. Learn how to {user-manual}/organizing_build_logic.html[organize your build logic].
-* Read more about https://docs.gradle.org/current/userguide/tutorial_using_tasks.html[using tasks], and {language-reference}/org.gradle.api.Task.html[predefined tasks and task types]
+* Having classes in a build script will soon lead to a messy and potentially unmaintainable build script. Learn how to {user-manual}organizing_build_logic.html[organize your build logic].
+* Read more about https://docs.gradle.org/current/userguide/tutorial_using_tasks.html[using tasks], and {language-reference}org.gradle.api.Task.html[predefined tasks and task types]
 
 == Help improve this guide
 
