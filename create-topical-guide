@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+GUIDE_TEMPLATE_SLUG="topical-template"
+GUIDE_TEMPLATE_REPO="https://github.com/gradle-guides/$GUIDE_TEMPLATE_SLUG.git"
+
+GUIDE_NAME=$1
+GUIDE_SLUG=$(echo "$GUIDE_NAME" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
+
+ISSUE_NUMBER=$2
+
+if [[ -z "$GUIDE_NAME" || -z "$ISSUE_NUMBER" ]]; then cat <<EOM
+
+DESCRIPTION
+
+    Create a new Topical Guide based on the template
+    repository at $GUIDE_TEMPLATE_REPO
+
+USAGE
+
+    $0 '<guide name>' <issue-number>
+
+EXAMPLE
+
+    $0 'Creating Java Projects' '#49'
+    $0 'Migrating Java Projects' 'gradle/guides#49'
+
+SEE ALSO
+
+    https://github.com/gradle/guides#readme
+
+
+EOM
+exit 255; fi
+
+if [[ -d "$GUIDE_SLUG" ]]; then
+    echo "'$GUIDE_SLUG' directory already exists" && exit 255
+fi
+
+git clone $GUIDE_TEMPLATE_REPO $GUIDE_SLUG
+
+cd $GUIDE_SLUG || exit 255
+rm -rf .git
+
+git init
+git commit --allow-empty -m"Initialize $GUIDE_SLUG repository ($ISSUE_NUMBER)"
+
+git add .
+git commit -m "Add content from $GUIDE_TEMPLATE_SLUG repository ($ISSUE_NUMBER)"
+
+case "`uname`" in
+  Darwin* )
+    sed_inplace="sed -i ''"
+    ;;
+  *)
+    sed_inplace="sed -i"
+    ;;
+esac
+
+for i in build.gradle contents/*.adoc contents/*.html ; do
+  ${sed_inplace} "s/@@GUIDE_NAME@@/$GUIDE_NAME/g" $i
+done
+git commit -am "Replace template placeholders ($ISSUE_NUMBER)"
