@@ -16,7 +16,7 @@ You'll generate a Java application with the standard layout.
 
 == Check the user manual
 
-Gradle comes with a built-in plugin called the Build Init plugin. It is documented in the Gradle User Manual at https://docs.gradle.org/3.3/userguide/build_init_plugin.html.
+Gradle comes with a built-in plugin called the Build Init plugin. It is documented in the Gradle User Manual at https://docs.gradle.org/current/userguide/build_init_plugin.html.
 
 The plugin has one task, called `init`, that generates the project. The `init` task calls the (also built-in) `wrapper` task to create a Gradle wrapper script, `gradlew`.
 
