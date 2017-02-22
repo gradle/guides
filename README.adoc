@@ -1,6 +1,6 @@
 = Getting Started Creating New Gradle Builds image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
 
-Creating a new build using Gradle means that you become a _build author_. You still need to follow the same https://gradle.org/getting-started/using-a-build/[path as a build user], but in addition, you will want to understand the Gradle Build Language and its API.
+Creating a new build using Gradle means that you become a _build author_. You still need to follow the same https://gradle.org/getting-started/using-a-build[path as a build user], but in addition, you will want to understand the Gradle Build Language and its API.
 
 A build user needs to be able to identify the project type and how such a project is structured. In your case, you know in advance what project type you want but you still need to understand the conventions and project structure. In addition, you also have to understand the basic declarative elements and underlying model of the project type you want to build.
 
