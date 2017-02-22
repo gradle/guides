@@ -4,47 +4,66 @@ Creating a new build using Gradle means that you become a _build author_. You st
 
 A build user needs to be able to identify the project type and how such a project is structured. In your case, you know in advance what project type you want but you still need to understand the conventions and project structure. In addition, you also have to understand the basic declarative elements and underlying model of the project type you want to build.
 
-== What you'll build
-
-You will create a basic build script with skeleton code for building a Java application.
-
 == What you'll need
 
-* About 20 minutes
+* About 5 minutes
 * A text editor or IDE
 * A Java Development Kit (JDK), version 1.7 or better
-* A {user-manual}installation.html#sec:download[Gradle distribution], version {gradle-version} or better
+* A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 
 == Create a project
 
-One way to get your project started is via the `init` command, which is documented under the {user-manual}build_init_plugin.html[Build Init plugin] chapter of the user guide. It will create a skeleton project with a Gradle build file based on the project type that you specify. For example, you can run the following to create a basic Java project:
+You can start a new project simply by creating a `build.gradle` file and writing build logic. When you are new to Gradle this can be a daunting task and an easier way is to get your project started via the `init` command.  It will create a skeleton project with a Gradle build file based on the project type that you specify. Run the following to create a basic Java project:
 
 [listing]
 ----
-$ gradle init --type=java-library // <1>
+$ mkdir test
+$ cd test
+$ gradle init --type java-library // <1>
 ----
-<1> Check out the documentation to find out what {user-manual}build_init_plugin.html#sec:build_init_types[project types] are currently supported.
+<1> The `init` plugin is documented in the {user-manual}build_init_plugin.html[Build Init plugin] chapter of the user guide. Also have a look to find out what {user-manual}build_init_plugin.html#sec:build_init_types[project types] are currently supported.
 
-To learn more about bootstrapping a Gradle build, particularly if you want or need to do it by hand, follow the quick start guide for the type of project you want:
+If you inspect the `test` directory you will see that it has created a number of files and directories.
 
-* *Java*, *Groovy*, *Scala*: you have {user-manual}tutorial_java_projects.html[a JVM project]. The user guide also has more details about each of the language plugins if you want a bit more depth.
-* *c*, *cpp*, *assembler*, *objective-c*, *objective-cpp*: you have {user-manual}native_software.html[a native build].
-* *android*: you have http://tools.android.com/tech-docs/new-build-system/user-guide[an Android project]
+.Top-level directory layout after gradle init
+[listing]
+----
+├── build.gradle
+├── gradle
+├── gradlew
+├── gradlew.bat
+├── settings.gradle
+└── src
+----
 
-It's not uncommon in multi-project builds to have subprojects of different types, particularly when you have a polyglot project or a separate project for documentation. For example, you may want to use one or more examples from the quick start guides. You'll more information about multi-project builds under link:#next_steps[Next Steps].
+Congratulations! You can now edit this the `build.gradle` files and the source files as a quick start to your project.
 
-== Learn the key concepts
+If you are specifically interested in building *Java* applications, read the {guides}creating-java-applications[Getting Started Building Java Applications] guide. You should also read the {user-manual}tutorial_java_projects.html[Java Quickstart] chapter of the user manual to obtain a wide understanding.
+
+To learn more about bootstrapping other kinds of popular Gradle build, particularly if you want or need to do it by hand, follow these readings for the type of project you want:
+
+.Documentation for other popular project types
+* *C*, *C++*, *Assembler*, *Objective-c*, *Objective-c++*: {user-manual}native_software.html[Native builds]
+*Scala*: {user-manual}scala_plugin.html[Scala plugin]
+*Groovy*: {user-manual}tutorial_groovy_projects.html[Groovy quickstart]
+*Android*: http://tools.android.com/tech-docs/new-build-system/user-guide[Android userguide]
+
+== Next Steps
+
+=== Learn the key concepts
 
 Gradle is a very powerful tool, which means you need a good understanding of the underlying model to create maintainable builds. Fortunately, there are just a few core concepts to understand:
 
-* Gradle's build phases—read the first section of the {user-manual}build_lifecycle.html[build lifecycle chapter] for a description of these.
-* The project API and {user-manual}writing_build_scripts.html[properties]
-* {user-manual}more_about_tasks.html[Tasks]
-* {user-manual}working_with_files.html[File handling]
-* {user-manual}artifact_dependencies_tutorial.html[Dependency management]
+* *Build phases*: read the first section of the {user-manual}build_lifecycle.html[build lifecycle chapter] for a description of these.
+* *Properties*: The project API and {user-manual}writing_build_scripts.html[properties]
+* *Tasks*: {user-manual}more_about_tasks.html[Tasks]
+* *File handling*: {user-manual}working_with_files.html[File handling]
+* *Dependency management*: {user-manual}artifact_dependencies_tutorial.html[Dependency management]
 
-== Next steps
+=== Understand multi-project builds
 
-* *Building a Java application*: Follow {guides}creating-java-applications[Getting Started Building Java Applications] guide.
-* *Learn about multi-project builds*: If you don't see a need right now to create a multi-project build, then you can safely skip this step—it's easy to make the switch later on if necessary. But if you do want to split a project into multiple, dependent and independent modules, you will need to learn how to configure them and manage the inter-module relationships. That requires a much more in-depth understanding of the topic than was covered in the build user path. We recommend you read the entirety of the {user-manual}multi_project_builds.html[multi-project builds chapter] of the user guide.
-* *Learn Groovy*: You can make a fair bit of progress with Gradle without learning the language that build scripts are written in, but ultimately you'll limit yourself if you don't learn the basics of Groovy. Head to the http://groovy-lang.org/learn.html[Groovy website] to find out what learning resources are available or simply check out the https://classroom.udacity.com/courses/ud867/lessons/3968239469/concepts/42963752880923[Groovy fundamentals and Groovy Closures] sections of the free Udacity course.
+It's not uncommon in multi-project builds to have subprojects of different types, particularly when you have a polyglot project or a separate project for documentation.  If you don't see a need right now to create a multi-project build, then you can safely skip this step—it's easy to make the switch later on if necessary. But if you do want to split a project into multiple, dependent and independent modules, you will need to learn how to configure them and manage the inter-module relationships. That requires a much more in-depth understanding of the topic than was covered in the build user path. We recommend you read the entirety of the {user-manual}multi_project_builds.html[multi-project builds chapter] of the user guide.
+
+=== Learn basics of Groovy
+
+You can make a fair bit of progress with Gradle without learning the language that build scripts are written in, but ultimately you'll limit yourself if you don't learn the basics of Groovy. Head to the http://groovy-lang.org/learn.html[Groovy website] to find out what learning resources are available or simply check out the https://classroom.udacity.com/courses/ud867/lessons/3968239469/concepts/42963752880923[Groovy fundamentals and Groovy Closures] sections of the free Udacity course.
