@@ -27,29 +27,22 @@ Otherwise, once you have agreed on the title and other details above, move on to
 
 ### Create a new repository for the guide
 
-Each guide gets its own GitHub repository under the gradle-guides organization, so you will have to create one for each accepted proposal. A helper script, `create-gs-guides` exists in the root of the gradle/guides repository to aid in this process.
+Each guide gets its own GitHub repository under the gradle-guides organization, so you will have to create one for each accepted proposal. A helper Gradle script, exists in the `create-guides` folder of the `gradle/guides` repository to aid in this process.
 
 Follow these steps on your local machine, replacing `Creating Java Projects` with the agreed-upon title for the guide, and replacing `49` with the number of the issue created in the step above:
 
     git clone https://github.com/gradle/guides.git
-    cd guides
-    ./create-gs-guide 'Creating Java Projects' 49
+    cd guides/create-guides
+    # Use getting-started OR topical as the guide type
+    # The issue must be in the Github markup format organization/repository#number
+    ./gradlew create --guide-type getting-started --guide-name 'Creating Java Projects' --guide-issue gradle/guides#49
 
-    # The command above will create a directory named creating-java-projects
-    cd creating-java-projects
+    # The command above will create a directory named `build/new-guide-repositories/creating-java-projects`
+    cd build/new-guide-repositories/creating-java-projects
 
-    # Review the newly-created guide, make sure everything looks correct
+In order for this to work a Github personal authentication token must be supplied. The token must have `repo` scope. It is passed as a project property called `gradle.guides.authToken`. This can be setup in the `gradle.properties` file or supplied via the command line using `-Pgradle.guides.authToken=<GITHUB-TOKEN>`.
 
-    # Create a GitHub repository for the guide (assumes `hub` is installed and aliased to `git`)
-    git create gradle-guides/creating-java-projects
-    
-    # Hub always uses ssh. If you prefer to use https, then this extra step is
-    # required (replace GITHUB_USER with your Github username).
-    git remote set-url origin https://GITHUB_USER@github.com/gradle-guides/create-java-projects.git
-    
-    # Finally push the created repository to Github
-    git push --set-upstream origin master
-
+In it's current format the Gradle `create` task will take care of creating the repository on GitHub, cloning the appropriate template for the guide type, substituting appropriate values and finally pushing the content upstream. It will also take care of enabling the repository to be built by Travis.
 
 Once this has been done, _paste the link for this new repository into the guide's GitHub issue_ and let the author know that they have everything they need to begin writing.
 

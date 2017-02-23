@@ -15,3 +15,8 @@ nginx.pid
 
 # Vim
 *.sw?
+
+.gradle
+build
+.idea
+*.iml
