@@ -63,7 +63,7 @@ asciidoctor {
 githubPages {
     def ghToken = System.getenv('GH_TOKEN')
     if (ghToken) {
-        repoUri = 'https://github.com/${repoPath}.git'
+        repoUri = "https://github.com/${repoPath}.git"
         credentials {
             username = ghToken
             password = '\n'
