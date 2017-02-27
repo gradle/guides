@@ -45,7 +45,7 @@ $ gradle init
 
 from the root project directory and let Gradle do its thing. That basically consists of parsing the existing POMs and generating corresponding Gradle build files plus a `settings.gradle` file if it's a multi-project build.
 
-You'll find that the new Gradle build includes any custom repositories specified in the POM, your external and inter-project dependencies, the appropriate plugins (any of `maven`, `java`, and `war`), and more. See the user guide for {user-manual}build_init_plugin.html=sec:pom_maven_conversion_[a complete list of the automatic conversion features].
+You'll find that the new Gradle build includes any custom repositories specified in the POM, your external and inter-project dependencies, the appropriate plugins (any of `maven`, `java`, and `war`), and more. See the user guide for {user-manual}build_init_plugin.html#sec:pom_maven_conversion_[a complete list of the automatic conversion features].
 
 One thing to bear in mind is that assemblies are not automatically converted. They aren't necessarily problematic to convert, but you will need to do some manual work.
 
