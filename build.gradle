@@ -77,6 +77,10 @@ githubPages {
     commitMessage = 'Publish to GitHub Pages'
 }
 
+publishGhPages {
+    dependsOn 'assemble'
+}
+
 assemble {
   dependsOn 'asciidoctor'
 }
