@@ -8,13 +8,21 @@ plugins {
     id 'org.ajoberstar.github-pages' version '1.6.0'
     id 'org.asciidoctor.convert' version '1.5.3'
     id 'org.ysb33r.cloudci' version '1.0'
+    id 'groovy'
 }
 
-apply plugin: 'base'
 
 ext {
   repoPath = 'gradle-guides/@@GUIDE_SLUG@@'
   gradleVersion = gradle.gradleVersion
+  spockGroovyVer = GroovySystem.version.replaceAll(/\.\d+$/,'')
+}
+
+dependencies {
+    testCompile localGroovy()
+    testCompile ("org.spockframework:spock-core:1.0-groovy-${spockGroovyVer}") {
+        exclude module : 'groovy-all'
+    }
 }
 
 asciidoctor {
@@ -79,6 +87,10 @@ githubPages {
 
 assemble {
   dependsOn 'asciidoctor'
+}
+
+publishGhPages {
+  dependsOn 'build'
 }
 
 travisci {
