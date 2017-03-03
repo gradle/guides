@@ -1,0 +1,15 @@
+repositories {
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
+}
+
+apply plugin : 'groovy'
+
+dependencies {
+    compile 'org.ajoberstar:grgit:1.8.0'
+    compile 'org.kohsuke:github-api:1.84'
+    runtime 'org.ysb33r.gradle:vfs-gradle-plugin:1.0'
+    runtime 'com.github.jruby-gradle:jruby-gradle-plugin:1.4.0'
+    runtime 'commons-httpclient:commons-httpclient:3.1'
+}
