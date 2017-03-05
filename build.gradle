@@ -11,7 +11,7 @@ plugins {
 apply plugin: "base"
 
 def repoPath = "gradle-guides/writing-gradle-plugins-in-java"
-def gradleVersion = "3.3"
+def gradleVersion = gradle.gradleVersion
 
 asciidoctor {
     sourceDir = rootDir
