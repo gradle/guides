@@ -1,12 +1,6 @@
-= Writing Gradle Plugins image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
+= Writing Gradle Plugins
 
-This guide walks you through the process of creating reusable build logic in a Gradle plugin, which can then be applied to other Gradle builds.
-
-*Option 1* The core of Gradle provides an infrastructure for building anything, but plugins are what allow build users to get things done with a minimum of effort. They can apply conventions, add new task types, integrate with third-party tools and libraries, and more. This guide focuses on the most basic of plugins, but it represents the tip of the iceberg.
-
-*Option 2* Almost every Gradle build uses plugins. Why is that? The Gradle core is agnostic about specific types of build, and so plugins are needed to provide the features you need for your specific builds. They solve specific problems and needs so that you can build your projects with a minimum of effort. This guide focuses on the most basic of plugins, but it really is just the tip of the iceberg.
-
-*Option 3* Everywhere you look, Gradle builds apply one or more plugins. Why? The Gradle core is flexible enough to build anything, but that flexibility means work for you. Unless you use plugins. They provide features, conventions, and more, reducing the amount of work you need to build _your_ projects. They're like a Pick 'n Mix store for Gradle authors.
+This guide walks you through the process of creating reusable build logic in a Gradle plugin, which can then be applied to other Gradle builds. The core of Gradle provides an infrastructure for building anything, but plugins are what allow build users to get things done with a minimum of effort. They can apply conventions, add new task types, integrate with third-party tools and libraries, and more. This guide focuses on the most basic of plugins, but it represents the tip of the iceberg.
 
 == What you'll build
 
@@ -17,7 +11,7 @@ You'll write a simple plugin that adds a new task type and creates a task of tha
  - About 10 minutes
  - A text editor or IDE
  - A http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK), version 1.8 or better
- - A {user-manual}/installation.html#sec:download[Gradle distribution], version {gradle-version} or better
+ - A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 
 == Create a project
 
@@ -92,19 +86,18 @@ public class Greeting extends DefaultTask {
 
 TIP: You can learn more about creating your own task types in the {user-manual}custom_tasks.html[User Manual].
 
-You now have a plugin, but a plugin alone doesn't do anything. You need to apply it in another project for it to be useful, so we will show you how to do that next.
+You now have a plugin, but a plugin alone doesn't do anything. You need to apply it to a project using the `apply` keyword for it to be useful, so we will show you how to do that next.
 
 == Use the plugin in the main project
 
 Create a `build.gradle` file in the root of the project with the following contents:
 
-[source,groovy]
 .build.gradle
+[source,groovy]
 ----
-apply plugin: org.example.greeting.GreetingPlugin
+apply plugin: org.example.greeting.GreetingPlugin // <1>
 ----
-
-This applies your plugin to the main project, adding the `hello` task to the build.
+<1> This applies your plugin to the current `Project` instance, adding the `hello` task to the build.
 
 TIP: The above syntax is all that's required because the plugin source resides in the `buildSrc` directory. Applying other, non-core Gradle plugins requires other syntax as described in the {user-manual}plugins.html#sec:binary_plugins[User Manual].
 
@@ -131,10 +124,10 @@ Hello, World!
 
 The bulk of the output reflects that the files in `buildSrc` are treated as a Java project, which needs to be built first. Once that happens, the classes inside that project become available in your main build and the main build can execute the task or tasks that you specified.
 
-Your build is currently just using the default values for the greeting, hence why it prints out "Hello, World!". This doesn't have to be the case as you can configure the task directly in the build script:
+Your build is currently just using the default property values for the greeting, hence why it prints out "Hello, World!". This doesn't have to be the case as you can configure the task directly in the build script:
 
-[source,groovy]
 .build.gradle
+[source,groovy]
 ----
 apply plugin: org.example.greeting.GreetingPlugin
 
@@ -167,7 +160,7 @@ Create the following properties file:
 implementation-class=org.example.greeting.GreetingPlugin
 ----
 
-Gradle uses this file to determine which class implements the `Plugin` interface. It also uses to the name of the file to determine the plugin's string identifier.
+Gradle uses this file to determine which class implements the `Plugin` interface. The name of this properties file excluding the `.properties` extension becomes the identifier of the plugin.
 
 WARNING: You must put the properties file in the directory `META-INF/gradle-plugins` as Gradle will try to resolve the file from that specific location in the plugin JAR.
 
