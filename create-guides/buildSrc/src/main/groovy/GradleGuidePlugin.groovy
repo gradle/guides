@@ -9,7 +9,7 @@ class GradleGuidePlugin implements Plugin<Project> {
             apply plugin: 'com.github.jruby-gradle.base'
 
             dependencies {
-                jrubyExec 'rubygems:travis:1.8.6'
+                jrubyExec 'rubygems:travis:1.8.8'
             }
 
             tasks.create( 'create', CreateGradleGuide ) {

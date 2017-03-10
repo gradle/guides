@@ -137,6 +137,8 @@ class CreateGradleGuide extends DefaultTask {
         project.copy {
             from zipUnpacked, {
                 include '**'
+            }
+            filesNotMatching ([ 'gradle/**','gradlew*' ]) {
                 filter ReplaceTokens, beginToken: '@@', endToken: '@@', tokens: [
                     'GUIDE_NAME': getGuideName(),
                     'GUIDE_SLUG': getGuideSlug()
