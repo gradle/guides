@@ -1,11 +1,16 @@
 # mr-managed repositories
+basic-build-scans/
 building-jvm-libraries/
 creating-composite-builds/
 creating-java-applications/
 creating-new-gradle-builds/
 gs-template/
+migrating-from-maven/
 performance/
+publishing-plugins-to-gradle-plugin-portal/
 style-guide/
+topical-template/
+using-an-existing-gradle-build/
 writing-getting-started-guides/
 writing-gradle-plugins-in-java/
 writing-gradle-tasks/

@@ -1,3 +1,6 @@
+[basic-build-scans]
+checkout = git clone git@github.com:gradle-guides/basic-build-scans.git
+
 [building-jvm-libraries]
 checkout = git clone git@github.com:gradle-guides/building-jvm-libraries.git
 
@@ -13,11 +16,23 @@ checkout = git clone git@github.com:gradle-guides/creating-new-gradle-builds.git
 [gs-template]
 checkout = git clone git@github.com:gradle-guides/gs-template.git
 
+[migrating-from-maven]
+checkout = git clone git@github.com:gradle-guides/migrating-from-maven.git
+
 [performance]
 checkout = git clone git@github.com:gradle-guides/performance.git
 
+[publishing-plugins-to-gradle-plugin-portal]
+checkout = git clone git@github.com:gradle-guides/publishing-plugins-to-gradle-plugin-portal.git
+
 [style-guide]
 checkout = git clone git@github.com:gradle-guides/style-guide.git
+
+[topical-template]
+checkout = git clone git@github.com:gradle-guides/topical-template.git
+
+[using-an-existing-gradle-build]
+checkout = git clone git@github.com:gradle-guides/using-an-existing-gradle-build.git
 
 [writing-getting-started-guides]
 checkout = git clone git@github.com:gradle-guides/writing-getting-started-guides.git
