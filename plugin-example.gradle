@@ -1,0 +1,23 @@
+// tag::pluginmain[]
+apply plugin : 'java'  // <1>
+
+dependencies {
+    compileOnly gradleApi() // <2>
+}
+// end::pluginmain[]
+
+
+
+
+
+
+
+
+
+
+
+
+
+apply plugin : 'groovy'
+
+

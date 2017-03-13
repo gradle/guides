@@ -8,7 +8,9 @@ plugins {
     id "org.ajoberstar.github-pages" version "1.4.2"
     id "org.asciidoctor.convert" version "1.5.3"
 }
-apply plugin: "base"
+
+
+apply from : 'plugin-example.gradle'
 
 def repoPath = "gradle-guides/publishing-plugins-to-gradle-plugin-portal"
 def gradleVersion = "3.3"
@@ -21,26 +23,31 @@ asciidoctor {
     outputDir = buildDir
     backends = ["html5"]
     attributes "source-highlighter": "coderay",
-            "coderay-linenums-mode": "table",
-            imagesdir: "images",
-            stylesheet: null,
-            linkcss: true,
-            docinfodir: ".",
-            docinfo1: "",
-            icons: "font",
-            sectanchors: true,
-            sectlinks: true,
-            linkattrs: true,
-            encoding: "utf-8",
-            idprefix: "",
-            toc: "right",
-            toclevels: 1,
-            guides : 'https://guides.gradle.org',
-            "repo-path": repoPath,
-            "gradle-version": gradleVersion,
-            "user-manual": "https://docs.gradle.org/$gradleVersion/userguide/",
-            "language-reference": "https://docs.gradle.org/$gradleVersion/dsl/",
-            "api-reference": "https://docs.gradle.org/$gradleVersion/javadoc/"
+        "coderay-linenums-mode": "table",
+        imagesdir: "images",
+        stylesheet: null,
+        linkcss: true,
+        docinfodir: '.',
+        docinfo1: '',
+        icons: 'font',
+        sectanchors: true,
+        sectlinks: true,
+        linkattrs: true,
+        encoding: 'utf-8',
+        idprefix: '',
+        toc: 'right',
+        toclevels: 1,
+        guides               : 'https://guides.gradle.org',
+        'repo-path'          : repoPath,
+        'gradle-version'     : gradleVersion,
+        'user-manual'        : "https://docs.gradle.org/$gradleVersion/userguide/",
+        'language-reference' : "https://docs.gradle.org/$gradleVersion/dsl/",
+        'api-reference'      : "https://docs.gradle.org/$gradleVersion/javadoc/",
+        'projdir'            : project.projectDir.absolutePath,
+        'codedir'            : file('src/main').absolutePath,
+        'testdir'            : file('src/test').absolutePath
+
+
     extensions {
         postprocessor { document, output ->
             if (!document.basebackend("html")) {

@@ -1,19 +1,100 @@
 = Publishing Plugins to Gradle Plugin Portal image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
+:portal: Gradle Plugin Portal
+:plugin: Greeting Plugin
+:publishplugin: Plugin Publishing Plugin
 
+Provides a brief introduction to publishing and how it works
+Makes concrete statements about what the plugin portal is and isn't
 
 == What you'll build
 
+You will evolve the {plugin} from {guides}/writing-gradle-plugins-in-java[Writing Gradle Plugins in Java] to a fully re-usable plugin and have it published to the {portal}.
 
 == What you'll need
 
 
-== Step 1
+
+* About 25 minutes
+* A text editor
+* A command prompt
+* The Java Development Kit (JDK), version 1.7 or higher
+* A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
+
+Describes the process of publishing (on an architectural high-level view)
+
+What's the Plugin Publishing Plugin and how does it function internally?
+
+Using and configuring the Plugin Publishing Plugin
 
 
-== Step 2
+== Create a project
 
+NOTE: If you do not know how to create a Java project in Gradle read {guides}creating-java-applications[Creating Java Applications] first.
 
-== Step N
+You’ll need to create a directory for this plugin project and switch to it:
 
+[source,bash,indent=2]
+----
+$ mkdir greeting-plugin
+$ cd greeting-plugin
+----
+
+.build.gradle
+[source,groovy]
+----
+include::{projdir}/plugin-example.gradle[tags=pluginmain]
+----
+<1> As your plugin is in Java, you will need to apply the Java plugin.
+<2> For plugins the special `gradleApi()` method is used to set the correct dependency on the Gradle API. We also place this in the `compileOnly` configuration.
+
+Next, create a directory using the Java conventions where you will place the plugin source code:
+
+[source,bash,indent=2]
+----
+$ mkdir -p src/main/java/org/example/greeting
+----
+
+*TBC*
+
+.src/main/java/org/example/greeting/Greeting.java
+[source,java]
+----
+include::{codedir}/java/org/example/greeting/Greeting.java[]
+----
+<1> Most task classes will derive from `DefaultTask`, but more more specialised classes may derive from other task classes in the API. Read about writing custom task types in {guides}writing-gradle-tasks[Getting Started Writing Gradle Tasks] and consult the {api-reference}[Javadoc API] for other task class types.
+<2> Prints out the configured greeting when the task runs
+
+*TBC*
+
+.src/main/java/org/example/greeting/GreetingPlugin.java
+[source,java]
+----
+include::{codedir}/java/org/example/greeting/GreetingPlugin.java[]
+----
+<1> Creates a new task named `hello` of type `Greeting` (which you will define shortly)
+<2> Sets default values for the new task
+
+*TBC*
+
+== Create an account on the {portal}
+
+*TBC*
+
+== Configure the {publishplugin}
+
+*TBC*
+
+== Publish your plugin
+
+*TBC*
+
+== Consume the published plugin
+
+*TBC*
 
 == Summary
+
+== Next steps
+
+* Read the https://plugins.gradle.org/docs/publish-plugin[reference documentation for the {publishplugin}].
+
