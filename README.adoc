@@ -9,29 +9,33 @@ This guide shows you how to modify a build script to enable build scans. Optiona
 * Either your own sample project, or you can use the sample available from Gradle
 * Access to the Internet
 * Access to your email
+* About 15 minutes
 
-== Step 1: Select A Sample Project
+== Select a sample project
 
 Gradle makes available a simple Java project that you can use to demonstrate build scan capabilities. If you wish to use it, clone or download the repository located at https://github.com/gradle/gradle-build-scan-quickstart . If you prefer to use your own build, you can skip this step.
 
-== Step 2: Apply the Build-Scan Plugin
+== Apply the build-scan plugin
 
 Add a `plugins` block to the `build.gradle` file with the following contents:
 
+====
 [source, groovy]
 ----
 plugins {
-    id 'com.gradle.build-scan' version '1.6'
+    id 'com.gradle.build-scan' version '1.6' // <1>
 }
 ----
+<1> Use latest version of plugin
+====
 
-If you already have a `plugins` block, add the build-scan plugin shown first. Adding it below any existing plugins will still work, but will miss useful information.
+If you already have a `plugins` block, always put the build-scan plugin first. Adding it below any existing plugins will still work, but will miss useful information.
 
-NOTE: When this guide was written, the latest version of the build scan plugin was 1.6. The latest version of the plugin can be found from the https://plugins.gradle.org/plugin/com.gradle.build-scan[Gradle Plugin Portal].
+NOTE: The latest version of the plugin can be found from the https://plugins.gradle.org/plugin/com.gradle.build-scan[Gradle Plugin Portal].
 
 Using the `plugins` block in this way will not only download the plugin, it will apply it as well.
 
-== Step 3: Add the License Agreement
+== Add the license agreement
 
 In order to use the build-scan plugin, you need to agree to the terms of service. This is an automated process that you can enable by adding the following section to your build file:
 
@@ -45,7 +49,7 @@ buildScan {
 
 The `buildScan` block allows you to configure the plugin. Here you are setting two properties necessary to agree to the terms of service. Other properties are available. See the https://docs.gradle.com/scans/[Build Scans User Manual] for details.
 
-== Step 4: Run the Build Scan
+== Run the build scan
 
 The scan is enabled using a command-line flag called `--scan`.
 
@@ -66,7 +70,7 @@ Publishing build information...
 https://gradle.com/s/7msdnpptouxg4
 ----
 
-== Step 5: Access the Scan Online
+== Access the scan online
 
 The first time you follow the link, you will be asked to provide your email address so that a separate link can be sent to you. You will also have an opportunity to check a box to allow Gradle to remember you, so you won't have to go through the email process in the future.
 
@@ -80,7 +84,7 @@ image::build_scan_page.png[]
 
 You can now explore all the information contained in the build scan, including the time taken for tasks to execute, the time required during each stage of the build, the results of any tests, plugins used and other dependencies, any command-line switches used, and more.
 
-== (Optional) Step 6: Enable Build Scans For All Builds
+== Enable build scans for all builds (optional)
 
 You can avoid having to add the plugin and license agreement to every build by using a Gradle init script. Create a file called `buildScan.gradle` in the directory `~/.gradle/init.d` (where the tilde represents your home directory) with the following contents:
 
@@ -120,6 +124,6 @@ In this guide, you learned how to:
 * View the build scan information online
 * Create an init script to enable scans for all builds
 
-== For More Information
+== Next Steps
 
 Additional information can be found in the Build Scans User Manual found at https://docs.gradle.com/scans/ .
