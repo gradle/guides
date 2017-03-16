@@ -42,14 +42,14 @@
     <ul class="sectlevel1"> 
      <li><a href="#what_you_ll_create">What you’ll create</a></li> 
      <li><a href="#what_you_ll_need">What you’ll need</a></li> 
-     <li><a href="#step_1_select_a_sample_project">Step 1: Select A Sample Project</a></li> 
-     <li><a href="#step_2_apply_the_build_scan_plugin">Step 2: Apply the Build-Scan Plugin</a></li> 
-     <li><a href="#step_3_add_the_license_agreement">Step 3: Add the License Agreement</a></li> 
-     <li><a href="#step_4_run_the_build_scan">Step 4: Run the Build Scan</a></li> 
-     <li><a href="#step_5_access_the_scan_online">Step 5: Access the Scan Online</a></li> 
-     <li><a href="#optional_step_6_enable_build_scans_for_all_builds">(Optional) Step 6: Enable Build Scans For All Builds</a></li> 
+     <li><a href="#select_a_sample_project">Select a sample project</a></li> 
+     <li><a href="#apply_the_build_scan_plugin">Apply the build-scan plugin</a></li> 
+     <li><a href="#add_the_license_agreement">Add the license agreement</a></li> 
+     <li><a href="#run_the_build_scan">Run the build scan</a></li> 
+     <li><a href="#access_the_scan_online">Access the scan online</a></li> 
+     <li><a href="#enable_build_scans_for_all_builds_optional">Enable build scans for all builds (optional)</a></li> 
      <li><a href="#summary">Summary</a></li> 
-     <li><a href="#for_more_information">For More Information</a></li> 
+     <li><a href="#next_steps">Next Steps</a></li> 
     </ul> 
    </div> 
   </div> 
@@ -70,12 +70,13 @@
        <li> <p>Either your own sample project, or you can use the sample available from Gradle</p> </li> 
        <li> <p>Access to the Internet</p> </li> 
        <li> <p>Access to your email</p> </li> 
+       <li> <p>About 15 minutes</p> </li> 
       </ul> 
      </div> 
     </div> 
    </div> 
    <div class="sect1"> 
-    <h2 id="step_1_select_a_sample_project"><a class="anchor" href="#step_1_select_a_sample_project"></a>Step 1: Select A Sample Project</h2> 
+    <h2 id="select_a_sample_project"><a class="anchor" href="#select_a_sample_project"></a>Select a sample project</h2> 
     <div class="sectionbody"> 
      <div class="paragraph"> 
       <p>Gradle makes available a simple Java project that you can use to demonstrate build scan capabilities. If you wish to use it, clone or download the repository located at <a href="https://github.com/gradle/gradle-build-scan-quickstart" class="bare">https://github.com/gradle/gradle-build-scan-quickstart</a> . If you prefer to use your own build, you can skip this step.</p> 
@@ -83,27 +84,41 @@
     </div> 
    </div> 
    <div class="sect1"> 
-    <h2 id="step_2_apply_the_build_scan_plugin"><a class="anchor" href="#step_2_apply_the_build_scan_plugin"></a>Step 2: Apply the Build-Scan Plugin</h2> 
+    <h2 id="apply_the_build_scan_plugin"><a class="anchor" href="#apply_the_build_scan_plugin"></a>Apply the build-scan plugin</h2> 
     <div class="sectionbody"> 
      <div class="paragraph"> 
       <p>Add a <code>plugins</code> block to the <code>build.gradle</code> file with the following contents:</p> 
      </div> 
-     <div class="listingblock"> 
+     <div class="exampleblock"> 
       <div class="content"> 
-       <pre class="CodeRay highlight"><code data-lang="groovy">plugins {
-    id <span class="string"><span class="delimiter">'</span><span class="content">com.gradle.build-scan</span><span class="delimiter">'</span></span> version <span class="string"><span class="delimiter">'</span><span class="content">1.6</span><span class="delimiter">'</span></span>
+       <div class="listingblock"> 
+        <div class="content"> 
+         <pre class="CodeRay highlight"><code data-lang="groovy">plugins {
+    id <span class="string"><span class="delimiter">'</span><span class="content">com.gradle.build-scan</span><span class="delimiter">'</span></span> version <span class="string"><span class="delimiter">'</span><span class="content">1.6</span><span class="delimiter">'</span></span> <i class="conum" data-value="1"></i><b>(1)</b>
 }</code></pre> 
+        </div> 
+       </div> 
+       <div class="colist arabic"> 
+        <table> 
+         <tbody>
+          <tr> 
+           <td><i class="conum" data-value="1"></i><b>1</b></td> 
+           <td>Use latest version of plugin</td> 
+          </tr> 
+         </tbody>
+        </table> 
+       </div> 
       </div> 
      </div> 
      <div class="paragraph"> 
-      <p>If you already have a <code>plugins</code> block, add the build-scan plugin shown first. Adding it below any existing plugins will still work, but will miss useful information.</p> 
+      <p>If you already have a <code>plugins</code> block, always put the build-scan plugin first. Adding it below any existing plugins will still work, but will miss useful information.</p> 
      </div> 
      <div class="admonitionblock note"> 
       <table> 
        <tbody>
         <tr> 
          <td class="icon"> <i class="fa icon-note" title="Note"></i> </td> 
-         <td class="content"> When this guide was written, the latest version of the build scan plugin was 1.6. The latest version of the plugin can be found from the <a href="https://plugins.gradle.org/plugin/com.gradle.build-scan">Gradle Plugin Portal</a>. </td> 
+         <td class="content"> The latest version of the plugin can be found from the <a href="https://plugins.gradle.org/plugin/com.gradle.build-scan">Gradle Plugin Portal</a>. </td> 
         </tr> 
        </tbody>
       </table> 
@@ -114,7 +129,7 @@
     </div> 
    </div> 
    <div class="sect1"> 
-    <h2 id="step_3_add_the_license_agreement"><a class="anchor" href="#step_3_add_the_license_agreement"></a>Step 3: Add the License Agreement</h2> 
+    <h2 id="add_the_license_agreement"><a class="anchor" href="#add_the_license_agreement"></a>Add the license agreement</h2> 
     <div class="sectionbody"> 
      <div class="paragraph"> 
       <p>In order to use the build-scan plugin, you need to agree to the terms of service. This is an automated process that you can enable by adding the following section to your build file:</p> 
@@ -133,7 +148,7 @@
     </div> 
    </div> 
    <div class="sect1"> 
-    <h2 id="step_4_run_the_build_scan"><a class="anchor" href="#step_4_run_the_build_scan"></a>Step 4: Run the Build Scan</h2> 
+    <h2 id="run_the_build_scan"><a class="anchor" href="#run_the_build_scan"></a>Run the build scan</h2> 
     <div class="sectionbody"> 
      <div class="paragraph"> 
       <p>The scan is enabled using a command-line flag called <code>--scan</code>.</p> 
@@ -168,7 +183,7 @@ https://gradle.com/s/7msdnpptouxg4</pre>
     </div> 
    </div> 
    <div class="sect1"> 
-    <h2 id="step_5_access_the_scan_online"><a class="anchor" href="#step_5_access_the_scan_online"></a>Step 5: Access the Scan Online</h2> 
+    <h2 id="access_the_scan_online"><a class="anchor" href="#access_the_scan_online"></a>Access the scan online</h2> 
     <div class="sectionbody"> 
      <div class="paragraph"> 
       <p>The first time you follow the link, you will be asked to provide your email address so that a separate link can be sent to you. You will also have an opportunity to check a box to allow Gradle to remember you, so you won’t have to go through the email process in the future.</p> 
@@ -195,7 +210,7 @@ https://gradle.com/s/7msdnpptouxg4</pre>
     </div> 
    </div> 
    <div class="sect1"> 
-    <h2 id="optional_step_6_enable_build_scans_for_all_builds"><a class="anchor" href="#optional_step_6_enable_build_scans_for_all_builds"></a>(Optional) Step 6: Enable Build Scans For All Builds</h2> 
+    <h2 id="enable_build_scans_for_all_builds_optional"><a class="anchor" href="#enable_build_scans_for_all_builds_optional"></a>Enable build scans for all builds (optional)</h2> 
     <div class="sectionbody"> 
      <div class="paragraph"> 
       <p>You can avoid having to add the plugin and license agreement to every build by using a Gradle init script. Create a file called <code>buildScan.gradle</code> in the directory <code>~/.gradle/init.d</code> (where the tilde represents your home directory) with the following contents:</p> 
@@ -248,7 +263,7 @@ rootProject {
     </div> 
    </div> 
    <div class="sect1"> 
-    <h2 id="for_more_information"><a class="anchor" href="#for_more_information"></a>For More Information</h2> 
+    <h2 id="next_steps"><a class="anchor" href="#next_steps"></a>Next Steps</h2> 
     <div class="sectionbody"> 
      <div class="paragraph"> 
       <p>Additional information can be found in the Build Scans User Manual found at <a href="https://docs.gradle.com/scans/" class="bare">https://docs.gradle.com/scans/</a> .</p> 
@@ -258,7 +273,7 @@ rootProject {
   </div> 
   <div id="footer"> 
    <div id="footer-text">
-     Last updated 2017-03-11 00:29:14 -05:00 
+     Last updated 2017-03-16 16:29:52 -04:00 
    </div> 
   </div>  
  </body>
