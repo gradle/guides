@@ -124,4 +124,4 @@ In this guide, you learned how to:
 
 == Next Steps
 
-Additional information can be found in the Build Scans User Manual found at https://docs.gradle.com/scans/ .
+Additional information can be found in the https://docs.gradle.com/scans/[Build Scans User Manual].
