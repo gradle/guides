@@ -19,7 +19,6 @@ Gradle makes available a simple Java project that you can use to demonstrate bui
 
 Add a `plugins` block to the `build.gradle` file with the following contents:
 
-====
 [source, groovy]
 ----
 plugins {
@@ -27,7 +26,6 @@ plugins {
 }
 ----
 <1> Use latest version of plugin which can be found from the https://plugins.gradle.org/plugin/com.gradle.build-scan[Gradle Plugin Portal].
-====
 
 If you already have a `plugins` block, always put the build-scan plugin first. Adding it below any existing plugins will still work, but will miss useful information.
 
