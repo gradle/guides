@@ -26,12 +26,10 @@ plugins {
     id 'com.gradle.build-scan' version '1.6' // <1>
 }
 ----
-<1> Use latest version of plugin
+<1> Use latest version of plugin which can be found from the https://plugins.gradle.org/plugin/com.gradle.build-scan[Gradle Plugin Portal].
 ====
 
 If you already have a `plugins` block, always put the build-scan plugin first. Adding it below any existing plugins will still work, but will miss useful information.
-
-NOTE: The latest version of the plugin can be found from the https://plugins.gradle.org/plugin/com.gradle.build-scan[Gradle Plugin Portal].
 
 Using the `plugins` block in this way will not only download the plugin, it will apply it as well.
 
