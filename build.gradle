@@ -10,8 +10,6 @@ plugins {
 }
 
 
-apply from : 'plugin-example.gradle'
-
 def repoPath = "gradle-guides/publishing-plugins-to-gradle-plugin-portal"
 def gradleVersion = "3.3"
 

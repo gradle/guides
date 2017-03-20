@@ -25,6 +25,7 @@ You will take an exisisting plugin and configure its project so that the plugin 
 //
 //Using and configuring the Plugin Publishing Plugin
 
+NOTE: If you have never written a plugin, you can look at the https://github.com/gradle-guides/greeting-plugin-example[Greeting Plugin example], but please do not try to publish this to the {portal}. You can also look at {guides}
 
 == Create an account on the {portal}
 
