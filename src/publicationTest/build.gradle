@@ -1,0 +1,57 @@
+// tag::plugins_block[]
+plugins {
+    id 'com.gradle.plugin-publish' version '0.9.7'
+}
+// end::plugins_block[]
+
+// tag::plugin_bundle[]
+pluginBundle { // <1>
+    // These settings are set for the whole plugin bundle
+    website = 'http://www.gradle.org/' // <2>
+    vcsUrl = 'https://github.com/gradle/gradle' // <3>
+// end::plugin_bundle[]
+
+    // Plugin config blocks can set the id, displayName, version, description
+    // and tags for each plugin.
+
+    // id and displayName are mandatory.
+    // If no version is set, the project version will be used.
+    // If no tags or description are set, the tags or description from the
+    // pluginBundle block will be used, but they must be set in one of the
+    // two places.
+
+    // tag::plugin_definitions[]
+    plugins { // <1>
+        greetingsPlugin {  // <2>
+            id = 'org.samples.greeting' // <3>
+            displayName = 'Gradle Greeting plugin' // <4>
+            description = 'Greetings from here!' // <5>
+            tags = ['individual', 'tags', 'per', 'plugin'] // <6>
+            version = '1.2' // <7>
+        }
+    }
+    // end::plugin_definitions[]
+
+    // Optional overrides for Maven coordinates.
+    // If you have an existing plugin deployed to Bintray and would like to keep
+    // your existing group ID and artifact ID for continuity, you can specify
+    // them here.
+    //
+    // As publishing to a custom group requires manual approval by the Gradle
+    // team for security reasons, we recommend not overriding the group ID unless
+    // you have an existing group ID that you wish to keep. If not overridden,
+    // plugins will be published automatically without a manual approval process.
+    //
+    // You can also override the version of the deployed artifact here, though it
+    // defaults to the project version, which would normally be sufficient.
+
+    mavenCoordinates { // <1>
+        groupId = "org.samples.override"
+        artifactId = "greeting-plugins"
+        version = "1.4" // <2>
+    }
+// tag::plugin_bundle[]
+}
+// end::plugin_bundle[]
+
+

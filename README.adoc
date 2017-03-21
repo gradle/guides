@@ -31,9 +31,43 @@ NOTE: If you have never written a plugin, you can look at the https://github.com
 
 *TBC*
 
+== Add the {publishplugin} to the project
+
+.build.gradle
+[source,groovy]
+----
+include::{exampledir}/build.gradle[tags=plugins_block]
+----
+
 == Configure the {publishplugin}
 
-*TBC*
+*TBC: These settings are set for the whole plugin bundle*
+
+.build.gradle
+[source,groovy]
+----
+include::{exampledir}/build.gradle[tags=plugin_bundle]
+----
+<1> Everything for the plugin is configured in the `pluginBundle` extension block.
+<2> Set the website for your plugin's project
+<3> Provide the source repository URI so that others can find it if they want to contribute.
+
+.build.gradle
+[source,groovy]
+----
+pluginBundle {
+
+include::{exampledir}/build.gradle[tags=plugin_definitions,indent=2]
+
+}
+----
+<1> Each plugin in a bundle is specified in the `plugins` block. As you are only publishing a single plugin at this point there will only be one entry, but should your project publish a bundle in future you will list each of them in here.
+<2> The name for each plugin block does not affect the plugin configuration, but they need to be unique for each plugin provided in the `plugins` block.
+<3> This is the same identifier specified as the name of plugin properties file that is located in the `src/main/resources/META-INF/gradle-plugins` directory.
+<4> Set the plugin name in human-readable form.
+<5> Set a description that will be displayed on the portal. Although this is optional it provides useful information to people would might want to use your plugin.
+<6> Set tags that might build script authors might use to search for plugin types. This can make your plugin easier to locate.
+<7> By default the version from `project.version` will be used, but you can set your own version if required.
 
 == Publish your plugin
 

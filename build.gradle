@@ -45,6 +45,7 @@ asciidoctor {
         'codedir'            : file('src/main').absolutePath,
         'testdir'            : file('src/test').absolutePath
 
+    attributes 'exampledir'  : file('src/publicationTest').absolutePath
 
     extensions {
         postprocessor { document, output ->
@@ -83,6 +84,13 @@ githubPages {
     commitMessage = "Publish to GitHub Pages"
 }
 
+
+//task testPublication( type : GradleBuild ) {
+//    systemPropertiesArgs 'gradle.portal.uri' : file("${project.buildDir}/testportal").toURI()
+//}
+
 publishGhPages.enabled = System.getenv("TRAVIS_BRANCH") == "master" && System.getenv("TRAVIS_PULL_REQUEST") == "false"
 
 assemble.dependsOn "asciidoctor", "copyIndex"
+
+check.dependsOn 'testPublication'
