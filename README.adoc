@@ -70,13 +70,13 @@ include::{exampledir}/build.gradle[tags=plugin_bundle]
 <2> Set the website for your plugin's project
 <3> Provide the source repository URI so that others can find it if they want to contribute.
 
+*TBC Transition paragraph to plugins block*
+
 .build.gradle
 [source,groovy]
 ----
 pluginBundle {
-
 include::{exampledir}/build.gradle[tags=plugin_definitions,indent=2]
-
 }
 ----
 <1> Each plugin in a bundle is specified in the `plugins` block. As you are only publishing a single plugin at this point there will only be one entry, but should your project publish a bundle in future you will list each of them in here.
@@ -89,13 +89,15 @@ include::{exampledir}/build.gradle[tags=plugin_definitions,indent=2]
 
 == Publish your plugin
 
-*TBC*
+*TBC: Describe running publishPlugins*
 
 == Consume the published plugin
 
-*TBC*
+*TBC: Instructions on portal*
 
 == Summary
+
+*TBC*
 
 == Next steps
 
