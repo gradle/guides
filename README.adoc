@@ -29,7 +29,25 @@ NOTE: If you have never written a plugin, you can look at the https://github.com
 
 == Create an account on the {portal}
 
-*TBC*
+If you never published a plugin before you need to create a account on the {portal}. This consists of three steps:
+
+. Create an account.
+. Create an API key.
+. Add your API key to your Gradle configuration.
+
+Firstly go to the https://plugins.gradle.org/user/register[registration page] and create an account.
+
+.Regustration page
+image::registration-page-552x432.png[]
+
+Follow the instructions and once you have logged in, you can get your API key via the “API Keys” tab of your profile page.
+
+.API keys is the third tab
+image::api-keys-833x103.png[]
+
+It is common practive to place to copy-paste the text into your `$HOME/.gradle/gradle.properties` file, but if you wish you can place it elsewhere. All that the plugin requires is that `gradle.publish.key` and `gradle.publish.secret` are available as project properties when the appropriate Plugin portal tasks are executed.
+
+Once you have the API key you can publish as many plugins as you like.
 
 == Add the {publishplugin} to the project
 
