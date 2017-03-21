@@ -14,12 +14,15 @@ def repoPath = "gradle-guides/publishing-plugins-to-gradle-plugin-portal"
 def gradleVersion = "3.3"
 
 asciidoctor {
-    sourceDir = rootDir
+    sourceDir 'contents'
+    outputDir buildDir
+    backends  'html5'
+
     sources {
-      include "README.adoc"
+      include "index.adoc"
     }
-    outputDir = buildDir
-    backends = ["html5"]
+
+
     attributes "source-highlighter": "coderay",
         "coderay-linenums-mode": "table",
         imagesdir: "images",
@@ -60,13 +63,6 @@ asciidoctor {
     }
 }
 
-task copyIndex {
-    doLast {
-        file("${asciidoctor.outputDir}/${asciidoctor.backends[0]}/README.html")
-            .renameTo("${asciidoctor.outputDir}/${asciidoctor.backends[0]}/index.html")
-    }
-}
-
 githubPages {
     def ghToken = System.getenv("GH_TOKEN")
     if (ghToken) {
@@ -91,6 +87,6 @@ githubPages {
 
 publishGhPages.enabled = System.getenv("TRAVIS_BRANCH") == "master" && System.getenv("TRAVIS_PULL_REQUEST") == "false"
 
-assemble.dependsOn "asciidoctor", "copyIndex"
+assemble.dependsOn "asciidoctor"
 
 check.dependsOn 'testPublication'
