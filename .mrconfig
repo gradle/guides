@@ -37,8 +37,8 @@ checkout = git clone git@github.com:gradle-guides/using-an-existing-gradle-build
 [writing-getting-started-guides]
 checkout = git clone git@github.com:gradle-guides/writing-getting-started-guides.git
 
-[writing-gradle-plugins-in-java]
-checkout = git clone git@github.com:gradle-guides/writing-gradle-plugins-in-java.git
+[writing-gradle-plugins]
+checkout = git clone git@github.com:gradle-guides/writing-gradle-plugins.git
 
 [writing-gradle-tasks]
 checkout = git clone git@github.com:gradle-guides/writing-gradle-tasks.git

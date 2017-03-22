@@ -12,7 +12,7 @@ style-guide/
 topical-template/
 using-an-existing-gradle-build/
 writing-getting-started-guides/
-writing-gradle-plugins-in-java/
+writing-gradle-plugins/
 writing-gradle-tasks/
 
 # nginx
