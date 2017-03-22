@@ -1,7 +1,7 @@
 language: java
 jdk:
 - oraclejdk7
-script: "./gradlew publishGhPages --stacktrace"
+script: "./gradlew build publishGhPages --stacktrace"
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/

@@ -60,4 +60,4 @@ asciidoctor {
     }
 }
 
-assemble.dependsOn "asciidoctor"
+build.dependsOn "asciidoctor"
