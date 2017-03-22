@@ -4,6 +4,13 @@ plugins {
 }
 // end::plugins_block[]
 
+apply plugin : 'java'
+version = '1.0'
+
+dependencies {
+    compileOnly gradleApi()
+}
+
 // tag::plugin_bundle[]
 pluginBundle { // <1>
     website = 'http://www.gradle.org/' // <2>

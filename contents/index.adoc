@@ -54,7 +54,7 @@ Once you have the API key you can publish as many plugins as you like.
 .build.gradle
 [source,groovy]
 ----
-include::{exampledir}/build.gradle[tags=plugins_block]
+include::{exampledir}/build.gradle[tags=plugins_block,indent=0]
 ----
 
 == Configure the {publishplugin}

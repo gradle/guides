@@ -12,12 +12,11 @@ ext {
 
 apply from : 'gradle/build-documentation.gradle'
 apply from : 'gradle/publish-documentation.gradle'
+apply from : 'gradle/test-source.gradle'
+
+
 
 asciidoctor {
     attributes 'exampledir'  : file('src/publicationTest').absolutePath
 }
-
-
-
-assemble.dependsOn "asciidoctor"
 
