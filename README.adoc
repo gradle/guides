@@ -1,0 +1,4 @@
+= Publishing Plugins to Gradle Plugin Portal image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
+
+* Edit guide in `contents/index.adoc`.
+* Add testable code snippets to `src` folder
