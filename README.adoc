@@ -1,5 +1,9 @@
 = Basic Build Scans image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
 
+== Introduction
+
+A build scan is a shareable and centralized record of a build that provides insights into what happened and why. By applying the build scan plugin to your project, you can create a build scan in the Gradle Cloud for free.
+
 == What you'll create
 
 This guide shows you how to modify a build script to enable build scans. Optionally, you will also modify an `init` script to enable build scans for all of your applications.
