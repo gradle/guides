@@ -1,19 +1,371 @@
 = Building Java Web Applications image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
 
+== Introduction
+
+Gradle includes a `war` plugin for building Java web applications, and the community supplies an excellent plugin called `gretty` for testing and deploying web applications on Jetty or Tomcat. This guide demonstrates how to build a simple web app, deploy it on Jetty, and test it using Mockito.
 
 == What you'll build
 
+You will create a web application in the default Gradle structure, add dependencies for the Servlet API and the Mockito testing framework, add the `gretty` plugin, then build and test the application.
 
 == What you'll need
 
+* About XX minutes (TODO)
+* A text editor or IDE
+* A Java distribution, version 7 or higher
+* A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 
-== Step 1
+== Create the structure of a web application
 
+Gradle includes a `war` plugin that is documented in the  {user-manual}web_project_tutorial.html[Web Application Quickstart] and the {user-manual}war_plugin.html chapters of the user manual. The `war` plugin extends the Java plugin to add support for web applications. By default, it uses a folder called `src/main/webapp` for web-related resources.
 
-== Step 2
+Therefore, create the following file structure for a project called `webdemo`:
 
+.Sample project layout
+----
+webdemo/
+    src/
+        main/
+            java/
+            webapp/
+        test
+            java/
+----
 
-== Step N
+Any servlets or other Java classes will go in `src/main/java`, tests will go in `src/test/java`, and other web artifacts will go in `src/main/webapp`.
 
+== Add a Gradle build file
+
+Add a file called `build.gradle` to the root of the project, with the following contents:
+
+.build.gradle
+====
+[source,groovy]
+----
+plugins {
+    id 'java'
+    id 'war'  // <1>
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    providedCompile 'javax.servlet:javax.servlet-api:3.1.0' // <2>
+    testCompile 'junit:junit:4.12'
+}
+----
+<1> Using the `war` plugin
+<2> Current release version of the servlet API
+====
+
+The `war` plugin adds the configurations `providedCompile` and `providedRuntime`, analogous to `compile` and `runtime` in regular Java applications, to represent dependencies that are needed locally but should not be added to the generated `webdemo.war` file.
+
+The `plugins` syntax is used to apply the `java` and `war` plugins. No version is needed for either, since they are included with the Gradle distribution.
+
+It is a good practice to generate a Gradle wrapper for the project by executing the `wrapper` task:
+
+----
+> gradle wrapper
+:wrapper
+----
+
+This will produce `gradlew` and `gradlew.bat` scripts and the `gradle` folder with the wrapper jar inside as described in the {user-manual}gradle_wrapper.html section of the User Manual.
+
+== Add a servlet and metadata to the project
+
+There are two options for defining web application metadata. Prior to version 3.0 of the servlet specification, metadata resided in a deployment descriptor called `web.xml` in the `WEB-INF` folder of the project. Since 3.0, the metadata can be defined using annotations.
+
+If you wish to use annotations, add a servlet called `org.gradle.demo.HelloServlet` to the `src/main/java` folder, in package structure, with the following contents:
+
+.`src/main/java/com/gradle/demo/HelloServlet.java`
+====
+[source,java]
+----
+package org.gradle.demo;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@WebServlet(name = "HelloServlet", urlPatterns = {"hello"}, loadOnStartup = 1) // <1>
+public class HelloServlet extends HttpServlet {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+          throws ServletException, IOException {
+        response.getWriter().print("Hello, World!");  // <2>
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String name = request.getParameter("name");
+        if (name == null) name = "World";
+        request.setAttribute("user", name);
+        request.getRequestDispatcher("response.jsp").forward(request, response); // <3>
+    }
+}
+----
+<1> Annotation-based servlet
+<2> GET request returns a simple string
+<3> POST request forwards to a JSP page
+====
+
+The servlet uses the `@WebServlet` annotation for configuration. The `doGet` method responds to HTTP GET requests by writing a "Hello, World!" string to the output writer. It reacts to HTTP POST requests by looking for a request parameter called `name` and adding it to the `request` as an attribute called `user`, then forwarding to a `response.jsp` page.
+
+If you prefer to use the older style of metadata, define a file called `web.xml` in the directory `src/main/webapp/WEB-INF` with the following contents:
+
+.`src/main/webapp/WEB-INF/web.xml` (optional)
+====
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+
+    <servlet>
+        <servlet-name>helloServlet</servlet-name>
+        <servlet-class>org.gradle.demo.HelloServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>helloServlet</servlet-name>
+        <url-pattern>hello</url-pattern>
+    </servlet-mapping>
+</web-app>
+----
+====
+
+This is equivalent to the information given in the `@WebServlet` annotation, so if you choose to use the `web.xml` file, delete the `@WebServlet` annotation.
+
+WARNING: Do not include both the `@WebServlet` annotation and the `servlet` and `servlet-mapping` tags in the `web.xml` file. Use one or the other.
+
+== Add JSP pages to the demo application
+
+Add an index page to the root of the application by creating the file `index.jsp` in the `src/main/webapp` folder, with the following contents:
+
+.`src/main/webapp/index.jsp`
+====
+[source,html]
+----
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+  <head>
+    <title>Web Demo</title>
+  </head>
+  <body>
+    <p>Say <a href="hello">Hello</a></p>  // <1>
+
+    <form method="post" action="hello">   // <2>
+        <h2>Name:</h2>
+        <input type="text" name="name" />
+        <input type="submit" value="Say Hello" />
+    </form>
+  </body>
+</html>
+----
+<1> Link submits GET request
+<2> Form uses POST request
+====
+
+The `index.jsp` page uses a link to submit an HTTP GET request to the servlet, and a form to submit an HTTP POST request. The form contains a text field called `name`, which is accessed by the servlet in its `doPost` method.
+
+In its `doPost` method, the servlet forwards control to another JSP page called `response.jsp`. Therefore define a file of that name inside `src/main/webapp` with the following contents:
+
+.`src/main/webapp/response.jsp`
+====
+[source,html]
+----
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+    <head>
+        <title>Hello Page</title>
+    </head>
+    <body>
+        <h2>Hello, ${user}!</h2>
+    </body>
+</html>
+----
+====
+
+The `response` page accessed the `user` variable from the request and renders it inside an `h2` tag.
+
+== Add the `gretty` plugin and run the app
+
+The `gretty` plugin is an outstanding community-supported plugin that can be found in the Gradle plugin repository at `https://plugins.gradle.org/plugin/org.akhikhl.gretty`. The plugin makes it easy to run or test webapps on either Jetty or Tomcat.
+
+Add it to our project by adding the following line to the `plugins` block inside `build.gradle`.
+
+.Updating `build.gradle` to add `gretty`
+====
+[source,groovy]
+----
+plugins {
+    id 'java'
+    id 'war'
+    id 'org.akhikhl.gretty' version '1.4.2' // <1>
+}
+----
+<1> Adding the `gretty` plugin
+====
+
+The `gretty` plugin adds a large number of tasks to the application, useful for running or testing in Jetty or Tomcat environments. Now you can build and deploy the app to the default (Jetty) container by using the `appRun` task.
+
+.Executing the `appRun` task
+====
+----
+> ./gradlew appRun
+:prepareInplaceWebAppFolder
+:createInplaceWebAppFolder UP-TO-DATE
+:compileJava
+:processResources UP-TO-DATE
+:classes
+:prepareInplaceWebAppClasses
+:prepareInplaceWebApp
+:appRun
+12:25:13 INFO  Jetty 9.2.15.v20160210 started and listening on port 8080
+12:25:13 INFO  webdemo runs at:
+12:25:13 INFO    http://localhost:8080/webdemo
+Press any key to stop the server. // <1>
+> Building 87% > :appRun
+
+BUILD SUCCESSFUL
+----
+<1> Waits for any keypress
+====
+
+You can now access the web app at http://localhost:8080/webdemo and either click on the link to execute a GET request or submit the form to execute a POST request.
+
+== Test the servlet using Mockito
+
+The open source http://site.mockito.org/[Mockito framework] makes it easy to unit test Java applications. Add the Mockito dependency to the `build.gradle` file under the `testCompile` configuration.
+
+.Adding the Mockito library to `build.gradle`
+====
+[source,groovy]
+----
+// ... from earlier ...
+
+dependencies {
+    providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:2.7.19'  // <1>
+}
+----
+<1> Adding Mockito
+====
+
+To test the servlet, create a Java class called `org.gradle.demo.HelloServletTest` in the `src/test/java` directory, with the following contents:
+
+.`src/test/java/org/gradle/demo/HelloServletTest.java`
+====
+[source,java]
+----
+package org.gradle.demo;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
+
+public class HelloServletTest {
+    @Mock private HttpServletRequest request;
+    @Mock private HttpServletResponse response;
+    @Mock private RequestDispatcher requestDispatcher;
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+    }
+
+    @Test
+    public void doGet() throws Exception {
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(stringWriter);
+
+        when(response.getWriter()).thenReturn(printWriter);
+
+        new HelloServlet().doGet(request, response);
+
+        assertEquals("Hello, World!", stringWriter.toString());
+    }
+
+    @Test
+    public void doPostWithoutName() throws Exception {
+        when(request.getRequestDispatcher("response.jsp"))
+            .thenReturn(requestDispatcher);
+
+        new HelloServlet().doPost(request, response);
+
+        verify(request).setAttribute("user", "World");
+        verify(requestDispatcher).forward(request,response);
+    }
+
+    @Test
+    public void doPostWithName() throws Exception {
+        when(request.getParameter("name")).thenReturn("Dolly");
+        when(request.getRequestDispatcher("response.jsp"))
+            .thenReturn(requestDispatcher);
+
+        new HelloServlet().doPost(request, response);
+
+        verify(request).setAttribute("user", "Dolly");
+        verify(requestDispatcher).forward(request,response);
+    }
+}
+----
+====
+
+The test creates mock objects for the `HttpServletRequest`, `HttpServletResponse`, and `RequestDispatcher` classes. For the `doGet` test, a `PrintWriter` that uses a `StringWriter` is created, and the mock request object is configured to return it when the `getWriter` method is invoked. After calling the `doGet` method, the test checks that the returned string is correct.
+
+For the post requests, the mock request is configured to return a given name if present or null otherwise, and the `getRequestDispatcher` method returns the associated mock object. Calling the `doPost` method executes the request. Mockito then verifies that the `setAttribute` method was invoked on the mock response with the proper arguments and that the `forward` method was called on the request dispatcher.
+
+You can now test the servlet using Gradle with the `test` task (or any task, like `build`, that depends on it).
+
+----
+> ./gradlew build
+:compileJava UP-TO-DATE
+:processResources UP-TO-DATE
+:classes UP-TO-DATE
+:war
+:assemble
+:compileTestJava
+:processTestResources UP-TO-DATE
+:testClasses
+:test
+:check
+:build
+
+BUILD SUCCESSFUL
+----
+
+The test output can be accessed from `build/reports/tests/test/index.html` in the usual manner. You should get a result similar to:
+
+image::test-results.png[]
 
 == Summary
+
+In this guide, you learned how to:
+
+* Use the `war` plugin in Gradle builds to define a web application
+* Add a servlet and JSP pages to a web app
+* Use the `gretty` plugin to deploy the application
+* Test a servlet using the Mockito framework
+
+== Next steps
+
+Gretty can be used to do integration tests, deploy to clusters, and more. See the documentation at http://akhikhl.github.io/gretty-doc/ for details.
