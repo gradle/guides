@@ -14,7 +14,7 @@ The rest of the README is written primarily for the [project team](https://githu
 
 ## Handling proposals for new guides
 
-As mentioned in the previous section, we would like Gradle users to contribute their own guides to the Gradle Guides site. To make the process as simple as possible, we set up the infrastructure needed by each guide and aid in the development of the guide's content. What follows is the process the Gradle Guides team should follow when a user submits a proposal, per the instructions in [_Getting Started Writing Gradle Guides_](https://guides.gradle.org/gs-writing-gs-guides/).
+As mentioned in the previous section, we would like Gradle users to contribute their own guides to the Gradle Guides site. To make the process as simple as possible, we set up the infrastructure needed by each guide and aid in the development of the guide's content. What follows is the process the Gradle Guides team should follow when a user submits a proposal, per the instructions in [_Getting Started Writing Gradle Guides_](https://guides.gradle.org/writing-getting-started-guides/).
 
 
 ### Agree on a topic and scope for the guide
