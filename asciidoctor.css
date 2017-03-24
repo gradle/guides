@@ -743,3 +743,7 @@ p { margin-bottom: 1.25rem; }
   .print-only { display: block !important; }
   .hide-for-print { display: none !important; }
   .show-for-print { display: inherit !important; } }
+
+/* Override default styles */
+
+p.lead, .paragraph.lead > p, #preamble > .sectionbody > .paragraph:first-of-type p { font-size: 1.0625rem; }
