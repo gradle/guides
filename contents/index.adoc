@@ -32,7 +32,7 @@ If you never published a plugin before you need to create a account on the {port
 
 Firstly go to the https://plugins.gradle.org/user/register[registration page] and create an account.
 
-.Regustration page
+.Registration page
 image::registration-page-552x432.png[]
 
 Follow the instructions and once you have logged in, you can get your API key via the “API Keys” tab of your profile page.
@@ -85,10 +85,29 @@ include::{exampledir}/build.gradle[tags=plugin_definitions,indent=2]
 <6> Set tags that might build script authors might use to search for plugin types. This can make your plugin easier to locate.
 <7> By default the version from `project.version` will be used, but you can set your own version if required.
 
+Think about what would be the correct metadata for your plugin and fill the template in appropriately. Here is an example of what the `pluginBundle` configuration for the the https://github.com/gradle-guides/greeting-plugin-example[Greeting Plugin example] will look like.
 
-Congratulation, You are now ready to publish your plugin.
+.build.gradle
+[source,groovy]
+----
+pluginBundle {
+    website = 'http://www.gradle.org/'
+    vcsUrl = 'https://github.com/gradle-guides/greeting-plugin-example'
+
+    plugins {
+        greetingsPlugin {
+            id = 'org.samples.greeting'
+            displayName = 'Gradle Guides Example Greeting Plugin'
+            description = 'The Greeting plugin is used as a template for people to start their plugin adventure'
+            tags = ['example','template','greeting']
+            version = '1.2'
+        }
+    }
+}
+----
 
 == Publish your plugin
+
 
 Publish the plugin by using the `publishPlugin` task.
 

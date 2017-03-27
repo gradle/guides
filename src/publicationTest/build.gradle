@@ -13,16 +13,16 @@ dependencies {
 
 // tag::plugin_bundle[]
 pluginBundle { // <1>
-    website = 'http://www.gradle.org/' // <2>
-    vcsUrl = 'https://github.com/gradle/gradle' // <3>
+    website = '<substitute your project website>' // <2>
+    vcsUrl = "<uri to project's source control>" // <3>
 // end::plugin_bundle[]
 
 // tag::plugin_definitions[]
     plugins { // <1>
         greetingsPlugin {  // <2>
-            id = 'org.samples.greeting' // <3>
-            displayName = 'Gradle Greeting plugin' // <4>
-            description = 'Greetings from here!' // <5>
+            id = '<your plugin identifier>' // <3>
+            displayName = '<short displyable name for plugin>' // <4>
+            description = '<Good human-readable description of what your plugin is about>' // <5>
             tags = ['individual', 'tags', 'per', 'plugin'] // <6>
             version = '1.2' // <7>
         }
