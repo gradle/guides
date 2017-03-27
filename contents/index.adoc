@@ -3,9 +3,9 @@
 :plugin: Greeting Plugin
 :publishplugin: Plugin Publishing Plugin
 
-Sharing a plugin with others means publishing it to any type of repository that is supported by Gradle. Sharing a plugin on a global scale requires using a well-known repository. the https://plugins.gradle.org[{portal}] provides a centralised repository that is dedicated to Gradle plugins and which is also easily searchable.
+Sharing a plugin with others means publishing the artifact along with specific metadata to any type of repository that is supported by Gradle. Sharing a plugin on a global scale requires using a well-known repository. The https://plugins.gradle.org[{portal}] provides a centralized repository that is dedicated to Gradle plugins and which is also easily searchable.
 
-The https://plugins.gradle.org/plugin/com.gradle.plugin-publish[{publishplugin}] provides a convenient DSL to publish to the {portal} and reduce a large number of configuration steps that might be needed when publishing to another Maven repository. It also provides a number of checks to validate that your plugin meets the criteria for publishing to the {portal}.
+The https://plugins.gradle.org/plugin/com.gradle.plugin-publish[{publishplugin}] provides a convenient DSL to publish to the {portal} and thereby eliminating a large number of configuration steps that might be needed when publishing to another Maven repository. It also provides a number of checks to validate that your plugin meets the criteria for publishing to the {portal}.
 
 == What you'll build
 
@@ -20,7 +20,7 @@ You will take an existing plugin and configure its project so that the plugin is
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 * Source code for an existing Gradle plugin. (Preferably your own).
 
-NOTE: If you have never written a plugin, you can look at the https://github.com/gradle-guides/greeting-plugin-example[Greeting Plugin example], but please do not try to publish this to the {portal}. You can also look at {guides}writing-gradle-plugins[Writing Gradle Plugins].
+NOTE: If you have never written a plugin, you can look at the https://github.com/gradle-guides/greeting-plugin-example[Greeting Plugin example], but please do not try to publish this to the {portal} as the portal might be overloaded with a number of experimental and duplicate greeting-type plugins that is of no benefit to the community. You can also look at {guides}writing-gradle-plugins[Writing Gradle Plugins].
 
 == Create an account on the {portal}
 
@@ -40,7 +40,7 @@ Follow the instructions and once you have logged in, you can get your API key vi
 .API keys is the third tab
 image::api-keys-833x103.png[]
 
-It is common practice to copy-paste the text into your `$HOME/.gradle/gradle.properties` file, but if you wish you can place it elsewhere. All that the plugin requires is that `gradle.publish.key` and `gradle.publish.secret` are available as project properties when the appropriate Plugin portal tasks are executed.
+It is common practice to copy-paste the text into your {user-manual}build_environment.html#properties[$HOME/.gradle/gradle.properties] file, but if you wish you can place it elsewhere. All that the plugin requires is that `gradle.publish.key` and `gradle.publish.secret` are available as project properties when the appropriate Plugin portal tasks are executed.
 
 Once you have the API key you can publish as many plugins as you like.
 
@@ -57,7 +57,7 @@ include::{exampledir}/build.gradle[tags=plugins_block,indent=0]
 
 == Configure the {publishplugin}
 
-Create a `pluginBundle` block and specify global information regarding your plugin. (it can also be about a bundle of plugins). This helps other people which a browsing the portal to find more information about your plugin and possibly how to contribute to its development.
+Create a `pluginBundle` block and specify global information regarding your plugin. This helps other people which are browsing the portal to find more information about your plugin and possibly how to contribute to its development.
 
 .build.gradle
 [source,groovy]
@@ -68,7 +68,7 @@ include::{exampledir}/build.gradle[tags=plugin_bundle]
 <2> Set the website for your plugin's project.
 <3> Provide the source repository URI so that others can find it if they want to contribute.
 
-Now specify the details of the plugin. This is done in a `plugins` block within the `pluginBundle` block. The most important part is the `id` as that is what will uniquely identify it on the {portal} and prevent namespace clashes between different plugin authors. Substitute the values from this example with ones specific to your plugin. Take your time to think about good entries as all of this contribute to a better experience for people looking for specific plugins
+Now specify the details of the plugin. This is done in a `plugins` block within the `pluginBundle` block. The most important part is the `id` as that is what will uniquely identify it on the {portal} and prevent namespace clashes between different plugin authors. It should follow a domain namespace pattern i.e. `org.samples.greeting`. Substitute the values from this example with ones specific to your plugin. Take your time to think about good entries as all of this contribute to a better experience for people looking for specific plugins.
 
 .build.gradle
 [source,groovy]
@@ -106,6 +106,32 @@ pluginBundle {
 }
 ----
 
+As a second example of plugin configuration consider the https://plugins.gradle.org/plugin/org.ysb33r.gradletest[GradleTest plugin]
+
+.build.gradle (for GradleTest project)
+[source,groovy]
+----
+pluginBundle {
+    website     = 'https://github.com/ysb33r/gradleTest'
+    vcsUrl      = 'https://github.com/ysb33r/gradleTest.git'
+
+    plugins {
+        gradletestPlugin {
+            id = 'org.ysb33r.gradletest'
+            displayName = 'Plugin for compatibility testing of Gradle plugins'
+            description = 'A plugin that helps you test your plugin against a variety of Gradle versions'
+            tags = ['testing','integrationTesting','compatibility']
+        }
+    }
+}
+----
+
+If you browser the page on the {portal} for the https://plugins.gradle.org/plugin/org.ysb33r.gradletest[GradleTest plugin], you will notice how the above metadata has manifested on the page.
+
+.GradleTest plugin metadata on the {portal}
+image::org.ysb33r.gradletest-1299x354.png[]
+
+
 == Publish your plugin
 
 
@@ -125,8 +151,14 @@ $ ./gradlew publishPlugins -Pgradle.publish.key=<key> -Pgradle.publish.secret=<s
 
 == Consume the published plugin
 
-Once your plugin has been published, the instructions for others to use it will automatically appear on the plugin under a URL such as `https://plugins.gradle.org/plugin/<your-plugin-id>`.
+Once your plugin has been published, the instructions for others to use it will automatically appear on the plugin under a URL such as
+
+[listing]
+----
+    https://plugins.gradle.org/plugin/<your-plugin-id>
+----
 
 == Next steps
 
 * Read the https://plugins.gradle.org/docs/publish-plugin[reference documentation for the {publishplugin}].
+* If you are concerned about placing your credentials in `gradle.properties`, investigate use of https://plugins.gradle.org/plugin/de.qaware.seu.as.code.credentials[Seauc Credentials plugin] or the https://plugins.gradle.org/plugin/nu.studer.credentials[Gradle Credentials plugin].
