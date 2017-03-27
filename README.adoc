@@ -267,6 +267,10 @@ Asciidoctor allows you to specify the language used in a code listing, so use it
 
 This is mostly to ensure consistency across guides, but single quotes are also a little less noisy than double quotes. Only use double quotes if you want to include an embedded expression in the string.
 
+=== Lowercase plugin in references.
+
+For consistency use capitalization in the name of a plugin, but lowercase the `plugin` at the end. For instance *Groovy VFS plugin*.
+
 == Process
 
 These guidelines are related to the processes around writing and publishing the guides.
