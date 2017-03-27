@@ -77,7 +77,7 @@ This will produce `gradlew` and `gradlew.bat` scripts and the `gradle` folder wi
 
 There are two options for defining web application metadata. Prior to version 3.0 of the servlet specification, metadata resided in a deployment descriptor called `web.xml` in the `WEB-INF` folder of the project. Since 3.0, the metadata can be defined using annotations.
 
-If you wish to use annotations, add a servlet called `org.gradle.demo.HelloServlet` to the `src/main/java` folder, in package structure, with the following contents:
+Add a servlet called `org.gradle.demo.HelloServlet` to the `src/main/java` folder, in package structure, with the following contents:
 
 .`src/main/java/com/gradle/demo/HelloServlet.java`
 ====
@@ -115,65 +115,38 @@ public class HelloServlet extends HttpServlet {
 
 The servlet uses the `@WebServlet` annotation for configuration. The `doGet` method responds to HTTP GET requests by writing a "Hello, World!" string to the output writer. It reacts to HTTP POST requests by looking for a request parameter called `name` and adding it to the `request` as an attribute called `user`, then forwarding to a `response.jsp` page.
 
-If you prefer to use the older style of metadata, define a file called `web.xml` in the directory `src/main/webapp/WEB-INF` with the following contents:
+NOTE: The `war` plugin supports the use of the older `web.xml` deployment descriptor, which by default should reside in the `WEB-INF` folder under `src/main/webapp`. Feel free to use that as an alternative to the annotation-based approach.
 
-.`src/main/webapp/WEB-INF/web.xml` (optional)
-====
-[source,xml]
-----
-<?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
-         version="3.1">
-
-    <servlet>
-        <servlet-name>helloServlet</servlet-name>
-        <servlet-class>org.gradle.demo.HelloServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>helloServlet</servlet-name>
-        <url-pattern>hello</url-pattern>
-    </servlet-mapping>
-</web-app>
-----
-====
-
-This is equivalent to the information given in the `@WebServlet` annotation, so if you choose to use the `web.xml` file, delete the `@WebServlet` annotation.
-
-WARNING: Do not include both the `@WebServlet` annotation and the `servlet` and `servlet-mapping` tags in the `web.xml` file. Use one or the other.
+You now have a simple servlet that responds to HTTP GET and POST requests.
 
 == Add JSP pages to the demo application
 
-Add an index page to the root of the application by creating the file `index.jsp` in the `src/main/webapp` folder, with the following contents:
+Add an index page to the root of the application by creating the file `index.html` in the `src/main/webapp` folder, with the following contents:
 
-.`src/main/webapp/index.jsp`
+.`src/main/webapp/index.html`
 ====
 [source,html]
 ----
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
-  <head>
-    <title>Web Demo</title>
-  </head>
-  <body>
-    <p>Say <a href="hello">Hello</a></p>  // <1>
+    <head>
+        <title>Web Demo</title>
+    </head>
+    <body>
+        <p>Say <a href="hello">Hello</a></p> // <1>
 
-    <form method="post" action="hello">   // <2>
-        <h2>Name:</h2>
-        <input type="text" name="name" />
-        <input type="submit" value="Say Hello" />
-    </form>
-  </body>
+        <form method="post" action="hello">  // <2>
+            <h2>Name:</h2>
+            <input type="text" id="say-hello-text-input" name="name" />
+            <input type="submit" id="say-hello-button" value="Say Hello" />
+        </form>
+    </body>
 </html>
 ----
 <1> Link submits GET request
 <2> Form uses POST request
 ====
 
-The `index.jsp` page uses a link to submit an HTTP GET request to the servlet, and a form to submit an HTTP POST request. The form contains a text field called `name`, which is accessed by the servlet in its `doPost` method.
+The `index.html` page uses a link to submit an HTTP GET request to the servlet, and a form to submit an HTTP POST request. The form contains a text field called `name`, which is accessed by the servlet in its `doPost` method.
 
 In its `doPost` method, the servlet forwards control to another JSP page called `response.jsp`. Therefore define a file of that name inside `src/main/webapp` with the following contents:
 
@@ -241,7 +214,7 @@ BUILD SUCCESSFUL
 
 You can now access the web app at http://localhost:8080/webdemo and either click on the link to execute a GET request or submit the form to execute a POST request.
 
-== Test the servlet using Mockito
+== Unit test the servlet using Mockito
 
 The open source http://site.mockito.org/[Mockito framework] makes it easy to unit test Java applications. Add the Mockito dependency to the `build.gradle` file under the `testCompile` configuration.
 
@@ -260,7 +233,7 @@ dependencies {
 <1> Adding Mockito
 ====
 
-To test the servlet, create a Java class called `org.gradle.demo.HelloServletTest` in the `src/test/java` directory, with the following contents:
+To unit test the servlet, create a Java class called `org.gradle.demo.HelloServletTest` in the `src/test/java` directory, with the following contents:
 
 .`src/test/java/org/gradle/demo/HelloServletTest.java`
 ====
@@ -357,6 +330,128 @@ The test output can be accessed from `build/reports/tests/test/index.html` in th
 
 image::test-results.png[]
 
+== Add a functional test
+
+The `gretty` plugin combines with Gradle to make it easy to add functional tests to web applications. To do so, add the following lines to your `build.gradle` file:
+
+.Gretty additions to `build.gradle` for functional testing
+====
+[source,groovy]
+----
+gretty {  // <1>
+    integrationTestTask = 'intTest'
+}
+
+task intTest(type: Test) {}
+
+// ... rest from before ...
+dependencies {
+    // ... existing dependencies ...
+    testCompile 'io.github.bonigarcia:webdrivermanager:1.6.1' // <2>
+    testCompile 'org.seleniumhq.selenium:selenium-java:3.3.1' // <3>
+}
+----
+<1> Tell gretty which task needs the server
+<2> Automatically installs browser drivers
+<3> Uses Selenium for functional tests
+====
+
+The `gretty` plugin needs to know which task requires a start and stop of the server, and here that task is arbitrarily called `intTest`.
+
+http://www.seleniumhq.org[Selenium] is a popular open-source API for writing functional tests. Version 2.0 is based on the WebDriver API. Recent versions require testers to download and install a version of WebDriver for their browser, which can be tedious and hard to automate. The https://github.com/bonigarcia/webdrivermanager[WebDriverManager] project makes it easy to let Gradle handle that process for you.
+
+Add the following functional test to your project, in the `src/test/java` directory:
+
+.`src/test/java/org/gradle/demo/HelloServletFunctionalTest.java`
+====
+[source,java]
+----
+package org.gradle.demo;
+
+import io.github.bonigarcia.wdm.ChromeDriverManager;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import static org.junit.Assert.assertEquals;
+
+public class HelloServletFunctionalTest {
+    private WebDriver driver;
+
+    @BeforeClass
+    public static void setupClass() {
+        ChromeDriverManager.getInstance().setup(); // <1>
+    }
+
+    @Before
+    public void setUp() {
+        driver = new ChromeDriver();               // <2>
+    }
+
+    @After
+    public void tearDown() {
+        if (driver != null)
+            driver.quit();                         // <3>
+    }
+
+    @Test
+    public void sayHello() throws Exception {      // <4>
+        // given
+        driver.get("http://localhost:8080/webdemo");
+
+        // when
+        driver.findElement(By.id("say-hello-text-input")).sendKeys("Dolly");
+        driver.findElement(By.id("say-hello-button")).click();
+
+        // then
+        assertEquals("Hello Page", driver.getTitle());
+        assertEquals("Hello, Dolly!", driver.findElement(By.tagName("h2")).getText());
+    }
+}
+----
+<1> Downloads and installs browser driver, if necessary
+<2> Start the browser automation
+<3> Shut down the browser when done
+<4> Run the functional test using the Selenium API
+====
+
+The WebDriverManager portion of this test checks for the latest version of the binary, and downloads and installs it if it is not present. Then the `sayHello` test method drives a Chrome browser to the root of our application, fills in the input text field, clicks the button, and verifies the title of the destination page and that the `h2` tag contains the expected string.
+
+The WebDriverManager system supports Chrome, Opera, Internet Explorer, Microsoft Edge, PhantomJS, and Firefox. Check the project documentation for more details.
+
+== Run the functional test
+
+Run the test using the `intTest` task:
+
+----
+> ./gradlew intTest
+:prepareInplaceWebAppFolder UP-TO-DATE
+:createInplaceWebAppFolder UP-TO-DATE
+:compileJava
+:processResources UP-TO-DATE
+:classes
+:prepareInplaceWebAppClasses
+:prepareInplaceWebApp
+:compileTestJava
+:processTestResources UP-TO-DATE
+:testClasses
+:appBeforeIntegrationTest
+16:38:33 INFO  Jetty 9.2.15.v20160210 started and listening on port 8080
+16:38:33 INFO  webdemo runs at:
+16:38:33 INFO    http://localhost:8080/webdemo
+:intTest
+:appAfterIntegrationTest
+Server stopped.
+
+BUILD SUCCESSFUL
+----
+
+The `gretty` plugin starts up an embedded version of Jetty 9 on the default port, executes the tests, and shuts down the server. If you watch, you'll see the Selenium system open a new browser, access the site, complete the form, click the button, check the new page, and finally shut down the browser.
+
 == Summary
 
 In this guide, you learned how to:
@@ -364,8 +459,11 @@ In this guide, you learned how to:
 * Use the `war` plugin in Gradle builds to define a web application
 * Add a servlet and JSP pages to a web app
 * Use the `gretty` plugin to deploy the application
-* Test a servlet using the Mockito framework
+* Unit test a servlet using the Mockito framework
+* Functionally test the web app using `gretty` and Selenium
 
 == Next steps
 
-Gretty can be used to do integration tests, deploy to clusters, and more. See the documentation at http://akhikhl.github.io/gretty-doc/ for details.
+Gretty is a very powerful API. See the documentation at http://akhikhl.github.io/gretty-doc/ for details. Further details about Selenium can be found at http://www.seleniumhq.org, and more about the WebDriverManager system is available at https://github.com/bonigarcia/webdrivermanager .
+
+If you are interested in functional testing, check out the open source http://www.gebish.org[Geb] library, which provides a powerful Groovy DSL for browser automation that rests on top of Selenium and WebDriver.
