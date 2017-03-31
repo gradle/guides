@@ -39,7 +39,6 @@ Any servlets or other Java classes will go in `src/main/java`, tests will go in 
 Add a file called `build.gradle` to the root of the project, with the following contents:
 
 .build.gradle
-====
 [source,groovy]
 ----
 plugins {
@@ -58,7 +57,6 @@ dependencies {
 ----
 <1> Using the `war` plugin
 <2> Current release version of the servlet API
-====
 
 The `war` plugin adds the configurations `providedCompile` and `providedRuntime`, analogous to `compile` and `runtime` in regular Java applications, to represent dependencies that are needed locally but should not be added to the generated `webdemo.war` file.
 
@@ -80,7 +78,6 @@ There are two options for defining web application metadata. Prior to version 3.
 Add a servlet called `org.gradle.demo.HelloServlet` to the `src/main/java` folder, in package structure, with the following contents:
 
 .`src/main/java/com/gradle/demo/HelloServlet.java`
-====
 [source,java]
 ----
 package org.gradle.demo;
@@ -111,7 +108,6 @@ public class HelloServlet extends HttpServlet {
 <1> Annotation-based servlet
 <2> GET request returns a simple string
 <3> POST request forwards to a JSP page
-====
 
 The servlet uses the `@WebServlet` annotation for configuration. The `doGet` method responds to HTTP GET requests by writing a "Hello, World!" string to the output writer. It reacts to HTTP POST requests by looking for a request parameter called `name` and adding it to the `request` as an attribute called `user`, then forwarding to a `response.jsp` page.
 
@@ -124,7 +120,6 @@ You now have a simple servlet that responds to HTTP GET and POST requests.
 Add an index page to the root of the application by creating the file `index.html` in the `src/main/webapp` folder, with the following contents:
 
 .`src/main/webapp/index.html`
-====
 [source,html]
 ----
 <html>
@@ -144,14 +139,12 @@ Add an index page to the root of the application by creating the file `index.htm
 ----
 <1> Link submits GET request
 <2> Form uses POST request
-====
 
 The `index.html` page uses a link to submit an HTTP GET request to the servlet, and a form to submit an HTTP POST request. The form contains a text field called `name`, which is accessed by the servlet in its `doPost` method.
 
 In its `doPost` method, the servlet forwards control to another JSP page called `response.jsp`. Therefore define a file of that name inside `src/main/webapp` with the following contents:
 
 .`src/main/webapp/response.jsp`
-====
 [source,html]
 ----
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -164,7 +157,6 @@ In its `doPost` method, the servlet forwards control to another JSP page called 
     </body>
 </html>
 ----
-====
 
 The `response` page accessed the `user` variable from the request and renders it inside an `h2` tag.
 
@@ -175,7 +167,6 @@ The `gretty` plugin is an outstanding community-supported plugin that can be fou
 Add it to our project by adding the following line to the `plugins` block inside `build.gradle`.
 
 .Updating `build.gradle` to add `gretty`
-====
 [source,groovy]
 ----
 plugins {
@@ -185,12 +176,10 @@ plugins {
 }
 ----
 <1> Adding the `gretty` plugin
-====
 
 The `gretty` plugin adds a large number of tasks to the application, useful for running or testing in Jetty or Tomcat environments. Now you can build and deploy the app to the default (Jetty) container by using the `appRun` task.
 
 .Executing the `appRun` task
-====
 ----
 > ./gradlew appRun
 :prepareInplaceWebAppFolder
@@ -210,7 +199,6 @@ Press any key to stop the server. // <1>
 BUILD SUCCESSFUL
 ----
 <1> Waits for any keypress
-====
 
 You can now access the web app at http://localhost:8080/webdemo and either click on the link to execute a GET request or submit the form to execute a POST request.
 
@@ -219,7 +207,6 @@ You can now access the web app at http://localhost:8080/webdemo and either click
 The open source http://site.mockito.org/[Mockito framework] makes it easy to unit test Java applications. Add the Mockito dependency to the `build.gradle` file under the `testCompile` configuration.
 
 .Adding the Mockito library to `build.gradle`
-====
 [source,groovy]
 ----
 // ... from earlier ...
@@ -231,12 +218,10 @@ dependencies {
 }
 ----
 <1> Adding Mockito
-====
 
 To unit test the servlet, create a Java class called `org.gradle.demo.HelloServletTest` in the `src/test/java` directory, with the following contents:
 
 .`src/test/java/org/gradle/demo/HelloServletTest.java`
-====
 [source,java]
 ----
 package org.gradle.demo;
@@ -301,7 +286,6 @@ public class HelloServletTest {
     }
 }
 ----
-====
 
 The test creates mock objects for the `HttpServletRequest`, `HttpServletResponse`, and `RequestDispatcher` classes. For the `doGet` test, a `PrintWriter` that uses a `StringWriter` is created, and the mock request object is configured to return it when the `getWriter` method is invoked. After calling the `doGet` method, the test checks that the returned string is correct.
 
@@ -335,7 +319,6 @@ image::test-results.png[]
 The `gretty` plugin combines with Gradle to make it easy to add functional tests to web applications. To do so, add the following lines to your `build.gradle` file:
 
 .Gretty additions to `build.gradle` for functional testing
-====
 [source,groovy]
 ----
 gretty {  // <1>
@@ -354,7 +337,6 @@ dependencies {
 <1> Tell gretty which task needs the server
 <2> Automatically installs browser drivers
 <3> Uses Selenium for functional tests
-====
 
 The `gretty` plugin needs to know which task requires a start and stop of the server, and here that task is arbitrarily called `intTest`.
 
@@ -363,7 +345,6 @@ http://www.seleniumhq.org[Selenium] is a popular open-source API for writing fun
 Add the following functional test to your project, in the `src/test/java` directory:
 
 .`src/test/java/org/gradle/demo/HelloServletFunctionalTest.java`
-====
 [source,java]
 ----
 package org.gradle.demo;
@@ -417,7 +398,6 @@ public class HelloServletFunctionalTest {
 <2> Start the browser automation
 <3> Shut down the browser when done
 <4> Run the functional test using the Selenium API
-====
 
 The WebDriverManager portion of this test checks for the latest version of the binary, and downloads and installs it if it is not present. Then the `sayHello` test method drives a Chrome browser to the root of our application, fills in the input text field, clicks the button, and verifies the title of the destination page and that the `h2` tag contains the expected string.
 
