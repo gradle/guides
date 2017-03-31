@@ -436,7 +436,7 @@ There is one remaining problem. If you simply run the `test` task, the server do
 
 Change the `build.gradle` file to be:
 
-.Make gretty start the server on tests
+.Make gretty start and stop the server on all tests
 ====
 [source,groovy]
 ----
