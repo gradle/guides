@@ -77,7 +77,7 @@ There are two options for defining web application metadata. Prior to version 3.
 
 Add a servlet called `org.gradle.demo.HelloServlet` to the `src/main/java` folder, in package structure, with the following contents:
 
-.`src/main/java/com/gradle/demo/HelloServlet.java`
+.src/main/java/com/gradle/demo/HelloServlet.java
 [source,java]
 ----
 package org.gradle.demo;
@@ -119,7 +119,7 @@ You now have a simple servlet that responds to HTTP GET and POST requests.
 
 Add an index page to the root of the application by creating the file `index.html` in the `src/main/webapp` folder, with the following contents:
 
-.`src/main/webapp/index.html`
+.src/main/webapp/index.html
 [source,html]
 ----
 <html>
@@ -144,7 +144,7 @@ The `index.html` page uses a link to submit an HTTP GET request to the servlet, 
 
 In its `doPost` method, the servlet forwards control to another JSP page called `response.jsp`. Therefore define a file of that name inside `src/main/webapp` with the following contents:
 
-.`src/main/webapp/response.jsp`
+.src/main/webapp/response.jsp
 [source,html]
 ----
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -221,7 +221,7 @@ dependencies {
 
 To unit test the servlet, create a Java class called `org.gradle.demo.HelloServletTest` in the `src/test/java` directory, with the following contents:
 
-.`src/test/java/org/gradle/demo/HelloServletTest.java`
+.src/test/java/org/gradle/demo/HelloServletTest.java
 [source,java]
 ----
 package org.gradle.demo;
@@ -344,7 +344,7 @@ http://www.seleniumhq.org[Selenium] is a popular open-source API for writing fun
 
 Add the following functional test to your project, in the `src/test/java` directory:
 
-.`src/test/java/org/gradle/demo/HelloServletFunctionalTest.java`
+.src/test/java/org/gradle/demo/HelloServletFunctionalTest.java
 [source,java]
 ----
 package org.gradle.demo;
