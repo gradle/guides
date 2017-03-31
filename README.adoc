@@ -452,6 +452,28 @@ BUILD SUCCESSFUL
 
 The `gretty` plugin starts up an embedded version of Jetty 9 on the default port, executes the tests, and shuts down the server. If you watch, you'll see the Selenium system open a new browser, access the site, complete the form, click the button, check the new page, and finally shut down the browser.
 
+There is one remaining problem. If you simply run the `test` task, the server does not start and the integration test therefore fails. This can be fixed in a variety of ways, but the easiest is to tell `gretty` to start the server whenever you run tests.
+
+Change the `build.gradle` file to be:
+
+.Make gretty start the server on tests
+====
+[source,groovy]
+----
+gretty {
+    integrationTestTask = 'test' // <1>
+}
+
+// task intTest(type: Test) {}   // <2>
+
+// ... rest from before ...
+----
+<1> Start server on all tests
+<2> No longer need separate task
+====
+
+Integration tests are often handled by creating a separate source set and dedicated tasks, but that is beyond the scope of this guide. See the gretty documentation for details.
+
 == Summary
 
 In this guide, you learned how to:
