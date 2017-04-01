@@ -398,7 +398,7 @@ public class HelloServletFunctionalTest {
 <3> Shut down the browser when done
 <4> Run the functional test using the Selenium API
 
-The WebDriverManager portion of this test checks for the latest version of the binary, and downloads and installs it if it is not present. Then the `sayHello` test method drives a Chrome browser to the root of our application, fills in the input text field, clicks the button, and verifies the title of the destination page and that the `h2` tag contains the expected string.
+The WebDriverManager portion of this test checks for the latest version of the binary, and downloads and installs it when it is not present. Then the `sayHello` test method drives a Chrome browser to the root of our application, fills in the input text field, clicks the button, and verifies the title of the destination page and that the `h2` tag contains the expected string.
 
 The WebDriverManager system supports Chrome, Opera, Internet Explorer, Microsoft Edge, PhantomJS, and Firefox. Check the project documentation for more details.
 
