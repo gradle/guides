@@ -64,8 +64,9 @@ The `plugins` syntax is used to apply the `java` and `war` plugins. No version i
 
 It is a good practice to generate a Gradle wrapper for the project by executing the `wrapper` task:
 
+[listing,subs="attributes"]
 ----
-> gradle wrapper
+$ gradle wrapper --gradle-version={gradle-version}
 :wrapper
 ----
 
@@ -75,7 +76,7 @@ This will produce `gradlew` and `gradlew.bat` scripts and the `gradle` folder wi
 
 There are two options for defining web application metadata. Prior to version 3.0 of the servlet specification, metadata resided in a deployment descriptor called `web.xml` in the `WEB-INF` folder of the project. Since 3.0, the metadata can be defined using annotations.
 
-Add a servlet called `org.gradle.demo.HelloServlet` to the `src/main/java` folder, in package structure, with the following contents:
+Create a package folder `org/gradle/demo` below the `src/main/java` folder. Add a servlet file `HelloServlet.java`, with the following contents:
 
 .src/main/java/com/gradle/demo/HelloServlet.java
 [source,java]
@@ -181,7 +182,7 @@ The `gretty` plugin adds a large number of tasks to the application, useful for 
 
 .Executing the `appRun` task
 ----
-> ./gradlew appRun
+$ ./gradlew appRun
 :prepareInplaceWebAppFolder
 :createInplaceWebAppFolder UP-TO-DATE
 :compileJava
@@ -193,14 +194,15 @@ The `gretty` plugin adds a large number of tasks to the application, useful for 
 12:25:13 INFO  Jetty 9.2.15.v20160210 started and listening on port 8080
 12:25:13 INFO  webdemo runs at:
 12:25:13 INFO    http://localhost:8080/webdemo
-Press any key to stop the server. // <1>
+Press any key to stop the server.
 > Building 87% > :appRun
 
 BUILD SUCCESSFUL
 ----
-<1> Waits for any keypress
 
 You can now access the web app at http://localhost:8080/webdemo and either click on the link to execute a GET request or submit the form to execute a POST request.
+
+Although the outputs says `Press any key to stop the server, standard input is intercepted by Gradle. To stop the process press `ctrl-C`.
 
 == Unit test the servlet using Mockito
 
@@ -219,7 +221,7 @@ dependencies {
 ----
 <1> Adding Mockito
 
-To unit test the servlet, create a Java class called `org.gradle.demo.HelloServletTest` in the `src/test/java` directory, with the following contents:
+To unit test the servlet, create a packageg folder `org.gradle.demo` beneath `src.test/java`. Add a test class file `HelloServletTest.java` with the following contents:
 
 .src/test/java/org/gradle/demo/HelloServletTest.java
 [source,java]
@@ -294,7 +296,7 @@ For the post requests, the mock request is configured to return a given name if 
 You can now test the servlet using Gradle with the `test` task (or any task, like `build`, that depends on it).
 
 ----
-> ./gradlew build
+$ ./gradlew build
 :compileJava UP-TO-DATE
 :processResources UP-TO-DATE
 :classes UP-TO-DATE
@@ -408,7 +410,7 @@ The WebDriverManager system supports Chrome, Opera, Internet Explorer, Microsoft
 Run the test using the `intTest` task:
 
 ----
-> ./gradlew intTest
+$ ./gradlew intTest
 :prepareInplaceWebAppFolder UP-TO-DATE
 :createInplaceWebAppFolder UP-TO-DATE
 :compileJava
