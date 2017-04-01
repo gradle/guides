@@ -452,7 +452,7 @@ gretty {
 <1> Start server on all tests
 <2> No longer need separate task
 
-Integration tests are often handled by creating a separate source set and dedicated tasks, but that is beyond the scope of this guide. See the gretty documentation for details.
+Integration tests are often handled by creating a separate source set and dedicated tasks, but that is beyond the scope of this guide. See the http://akhikhl.github.io/gretty-doc/[Gretty documentation] for details.
 
 == Summary
 
