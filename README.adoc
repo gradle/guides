@@ -383,14 +383,11 @@ public class HelloServletFunctionalTest {
 
     @Test
     public void sayHello() throws Exception {      // <4>
-        // given
         driver.get("http://localhost:8080/webdemo");
 
-        // when
         driver.findElement(By.id("say-hello-text-input")).sendKeys("Dolly");
         driver.findElement(By.id("say-hello-button")).click();
 
-        // then
         assertEquals("Hello Page", driver.getTitle());
         assertEquals("Hello, Dolly!", driver.findElement(By.tagName("h2")).getText());
     }
