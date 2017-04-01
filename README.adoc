@@ -439,7 +439,6 @@ There is one remaining problem. If you simply run the `test` task, the server do
 Change the `build.gradle` file to be:
 
 .Make gretty start and stop the server on all tests
-====
 [source,groovy]
 ----
 gretty {
@@ -452,7 +451,6 @@ gretty {
 ----
 <1> Start server on all tests
 <2> No longer need separate task
-====
 
 Integration tests are often handled by creating a separate source set and dedicated tasks, but that is beyond the scope of this guide. See the gretty documentation for details.
 
