@@ -1,4 +1,4 @@
-package org.gradle.plugins.site;
+package org.gradle.plugins.site.tasks;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
@@ -7,6 +7,7 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.plugins.site.data.ProjectDescriptor;
 
 import java.io.BufferedWriter;
 import java.io.File;

@@ -1,4 +1,4 @@
-package org.gradle.plugins.site;
+package org.gradle.plugins.site.data;
 
 import org.gradle.api.tasks.Input;
 

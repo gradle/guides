@@ -4,6 +4,9 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.plugins.site.data.ProjectDescriptor;
+import org.gradle.plugins.site.data.TaskDescriptor;
+import org.gradle.plugins.site.tasks.SiteGenerate;
 
 import java.io.File;
 
