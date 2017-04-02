@@ -10,7 +10,7 @@ You will create a web application in the default Gradle structure, add dependenc
 
 == What you'll need
 
-* About XX minutes (TODO)
+* About 25 minutes
 * A text editor or IDE
 * A Java distribution, version 7 or higher
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
