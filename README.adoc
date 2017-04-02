@@ -221,7 +221,7 @@ dependencies {
 ----
 <1> Adding Mockito
 
-To unit test the servlet, create a packageg folder `org.gradle.demo` beneath `src.test/java`. Add a test class file `HelloServletTest.java` with the following contents:
+To unit test the servlet, create a package folder `org.gradle.demo` beneath `src.test/java`. Add a test class file `HelloServletTest.java` with the following contents:
 
 .src/test/java/org/gradle/demo/HelloServletTest.java
 [source,java]
