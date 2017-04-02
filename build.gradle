@@ -1,0 +1,20 @@
+plugins {
+    id 'groovy'
+    id 'java-gradle-plugin'
+}
+
+apply from: "$rootDir/gradle/functional-test.gradle"
+
+group = 'org.gradle.site'
+version = '0.1'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile gradleApi()
+    testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
+        exclude group: 'org.codehaus.groovy'
+    }
+}
