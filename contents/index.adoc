@@ -3,13 +3,13 @@
 :plugin: Greeting Plugin
 :publishplugin: Plugin Publishing Plugin
 
-Sharing a plugin with others means publishing the artifact along with specific metadata to any type of repository that is supported by Gradle. Sharing a plugin on a global scale requires using a well-known repository. The https://plugins.gradle.org[{portal}] provides a centralized repository that is dedicated to Gradle plugins and which is also easily searchable.
+Sharing a plugin with others means publishing the artifact, along with specific metadata, to any type of repository that is supported by Gradle. Sharing a plugin on a global scale requires using a well-known repository. The https://plugins.gradle.org[{portal}] provides a centralized repository that is dedicated to Gradle plugins and which is also easily searchable.
 
-The https://plugins.gradle.org/plugin/com.gradle.plugin-publish[{publishplugin}] provides a convenient DSL to publish to the {portal} and thereby eliminating a large number of configuration steps that might be needed when publishing to another Maven repository. It also provides a number of checks to validate that your plugin meets the criteria for publishing to the {portal}.
+The https://plugins.gradle.org/plugin/com.gradle.plugin-publish[{publishplugin}] provides a convenient DSL to publish to the {portal} and thereby eliminating a large number of configuration steps that might otherwise be needed when publishing to different Maven repository. It also provides a number of checks to validate that your plugin meets the criteria for publishing to the {portal}.
 
 == What you'll build
 
-You will take an existing plugin and configure its project so that the plugin is publishable to the {portal}.
+You will take an existing plugin project and configure it so that the plugin is publishable to the {portal}.
 
 == What you'll need
 
@@ -20,7 +20,7 @@ You will take an existing plugin and configure its project so that the plugin is
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 * Source code for an existing Gradle plugin. (Preferably your own).
 
-NOTE: If you have never written a plugin, you can look at the https://github.com/gradle-guides/greeting-plugin-example[Greeting Plugin example], but please do not try to publish this to the {portal} as the portal might be overloaded with a number of experimental and duplicate greeting-type plugins that is of no benefit to the community. You can also look at {guides}writing-gradle-plugins[Writing Gradle Plugins].
+NOTE: If you have never written a plugin, you can use the https://github.com/gradle-guides/greeting-plugin-example[Greeting Plugin example], but please do not try to publish this to the {portal}. That will keep the portal from being overrun with too many experimental and duplicate greeting-type plugins. See {guides}/writing-gradle-plugins[Writing Gradle Plugins] for other plugin ideas.
 
 == Create an account on the {portal}
 
@@ -30,12 +30,12 @@ If you never published a plugin before you need to create a account on the {port
 . Create an API key.
 . Add your API key to your Gradle configuration.
 
-Firstly go to the https://plugins.gradle.org/user/register[registration page] and create an account.
+First go to the https://plugins.gradle.org/user/register[registration page] and create an account.
 
 .Registration page
 image::registration-page-552x432.png[]
 
-Follow the instructions and once you have logged in, you can get your API key via the “API Keys” tab of your profile page.
+Follow the instructions on that page. Once you have logged in, you can get your API key via the “API Keys” tab of your profile page.
 
 .API keys is the third tab
 image::api-keys-833x103.png[]
@@ -57,7 +57,7 @@ include::{exampledir}/build.gradle[tags=plugins_block,indent=0]
 
 == Configure the {publishplugin}
 
-Create a `pluginBundle` block and specify global information regarding your plugin. This helps other people which are browsing the portal to find more information about your plugin and possibly how to contribute to its development.
+Create a `pluginBundle` block in `build.gradle` and specify global information regarding your plugin. This helps other people browsing the portal find more information about your plugin and learn how to contribute to its development.
 
 .build.gradle
 [source,groovy]
@@ -68,7 +68,7 @@ include::{exampledir}/build.gradle[tags=plugin_bundle]
 <2> Set the website for your plugin's project.
 <3> Provide the source repository URI so that others can find it if they want to contribute.
 
-Now specify the details of the plugin. This is done in a `plugins` block within the `pluginBundle` block. The most important part is the `id` as that is what will uniquely identify it on the {portal} and prevent namespace clashes between different plugin authors. It should follow a domain namespace pattern i.e. `org.samples.greeting`. Substitute the values from this example with ones specific to your plugin. Take your time to think about good entries as all of this contribute to a better experience for people looking for specific plugins.
+Now specify the details of the plugin. This is done in a `plugins` block within the `pluginBundle` block. The most important part is the `id`, as that both uniquely identifies it on the {portal} and prevents namespace clashes between different plugin authors. It should follow a domain namespace pattern i.e. `org.samples.greeting`. Substitute the values from this example with ones specific to your plugin. Take your time to think about good entries, as this information contributes to a better experience for people looking for specific plugins.
 
 .build.gradle
 [source,groovy]
@@ -78,14 +78,14 @@ include::{exampledir}/build.gradle[tags=plugin_definitions,indent=2]
 }
 ----
 <1> Each plugin in a bundle is specified in the `plugins` block. As you are only publishing a single plugin at this point there will only be one entry, but should your project publish a bundle in future you will list each of them in here.
-<2> The name for each plugin block does not affect the plugin configuration, but they need to be unique for each plugin provided in the `plugins` block.
-<3> This is the same identifier specified as the name of plugin properties file that is located in the `src/main/resources/META-INF/gradle-plugins` directory.
+<2> The name for each plugin block does not affect the plugin configuration, but needs to be unique for each plugin provided.
+<3> Must be the same identifier specified in the plugin properties file located in the `src/main/resources/META-INF/gradle-plugins` directory.
 <4> Set the plugin name in human-readable form.
-<5> Set a description that will be displayed on the portal. Although this is optional it provides useful information to people would might want to use your plugin and it is highly recommended to spend some time on this property.
-<6> Set tags that might build script authors might use to search for plugin types. This can make your plugin easier to locate.
+<5> Set a description that will be displayed on the portal. Although this is optional, it provides useful information to people would might want to use your plugin. Please give careful thought to the value of this property.
+<6> Set tags that build script authors might use to search for plugin types. This can make your plugin easier to locate.
 <7> By default the version from `project.version` will be used, but you can set your own version if required.
 
-Think about what would be the correct metadata for your plugin and fill the template in appropriately. Here is an example of what the `pluginBundle` configuration for the the https://github.com/gradle-guides/greeting-plugin-example[Greeting Plugin example] will look like.
+Think about what would be the correct metadata for your plugin and fill in the template appropriately. Here is an example of the `pluginBundle` configuration for the the https://github.com/gradle-guides/greeting-plugin-example[Greeting Plugin example]:
 
 .build.gradle
 [source,groovy]
@@ -98,7 +98,7 @@ pluginBundle {
         greetingsPlugin {
             id = 'org.samples.greeting'
             displayName = 'Gradle Guides Example Greeting Plugin'
-            description = 'The Greeting plugin is used as a template for people to start their plugin adventure'
+            description = 'The Greeting plugin is used as a template for people to start their own plugin adventure'
             tags = ['example','template','greeting']
             version = '1.2'
         }
@@ -106,7 +106,7 @@ pluginBundle {
 }
 ----
 
-As a second example of plugin configuration consider the https://plugins.gradle.org/plugin/org.ysb33r.gradletest[GradleTest plugin]
+As a second example of plugin configuration, consider the https://plugins.gradle.org/plugin/org.ysb33r.gradletest[GradleTest plugin]
 
 .build.gradle (for GradleTest project)
 [source,groovy]
@@ -126,7 +126,7 @@ pluginBundle {
 }
 ----
 
-If you browser the page on the {portal} for the https://plugins.gradle.org/plugin/org.ysb33r.gradletest[GradleTest plugin], you will notice how the above metadata has manifested on the page.
+If you browse the associated page on the {portal} for the https://plugins.gradle.org/plugin/org.ysb33r.gradletest[GradleTest plugin], you will see how the specified metadata is displayed.
 
 .GradleTest plugin metadata on the {portal}
 image::org.ysb33r.gradletest-1299x354.png[]
@@ -142,7 +142,7 @@ Publish the plugin by using the `publishPlugin` task.
 $ ./gradlew publishPlugins
 ----
 
-If you have not configured your {portal} key and secret in your `gradle.properties` file you can specify it on the command-line
+If you have not configured your {portal} key and secret values in your `gradle.properties` file, you can specify them on the command-line
 
 [listing]
 ----
@@ -151,7 +151,7 @@ $ ./gradlew publishPlugins -Pgradle.publish.key=<key> -Pgradle.publish.secret=<s
 
 == Consume the published plugin
 
-Once your plugin has been published, the instructions for others to use it will automatically appear on the plugin under a URL such as
+Once your plugin has been published, the instructions for others to use it will automatically appear on the plugin under a URL of the form
 
 [listing]
 ----

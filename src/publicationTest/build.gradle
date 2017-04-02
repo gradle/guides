@@ -14,7 +14,7 @@ dependencies {
 // tag::plugin_bundle[]
 pluginBundle { // <1>
     website = '<substitute your project website>' // <2>
-    vcsUrl = "<uri to project's source control>" // <3>
+    vcsUrl = "<uri to project's source repository>" // <3>
 // end::plugin_bundle[]
 
 // tag::plugin_definitions[]
@@ -32,5 +32,3 @@ pluginBundle { // <1>
 // tag::plugin_bundle[]
 }
 // end::plugin_bundle[]
-
-
