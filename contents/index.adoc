@@ -157,12 +157,7 @@ NOTE: If you publish the example `GreetingPlugin` as-is, it will be rejected. Th
 [[consume]]
 == Consume the published plugin
 
-Once your plugin has been published, the instructions for others to use it will automatically appear on the plugin under a URL of the form
-
-[listing]
-----
-https://plugins.gradle.org/plugin/<your-plugin-id>
-----
+Once your plugin has been published, the instructions for others to use it will automatically appear on the plugin under a URL of the form *+https://plugins.gradle.org/plugin/<your-plugin-id>+*.
 
 == Next steps
 
