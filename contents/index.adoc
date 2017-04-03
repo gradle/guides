@@ -38,7 +38,7 @@ image::registration-page-552x432.png[]
 Follow the instructions on that page. Once you have logged in, you can get your API key via the “API Keys” tab of your profile page.
 
 .API keys is the third tab
-image::api-keys-833x103.png[]
+image::api-keys-860x208.png[]
 
 It is common practice to copy-paste the text into your {user-manual}build_environment.html#properties[$HOME/.gradle/gradle.properties] file, but if you wish you can place it elsewhere. All that the plugin requires is that `gradle.publish.key` and `gradle.publish.secret` are available as project properties when the appropriate Plugin portal tasks are executed.
 
