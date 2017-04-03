@@ -3,7 +3,7 @@
 :plugin: Greeting Plugin
 :publishplugin: Plugin Publishing Plugin
 
-Sharing a plugin with others means publishing the artifact, along with specific metadata, to any type of repository that is supported by Gradle. Sharing a plugin on a global scale requires using a well-known repository. The https://plugins.gradle.org[{portal}] provides a centralized repository that is dedicated to Gradle plugins and which is also easily searchable.
+Sharing a plugin with others means publishing the artifact, along with specific metadata and in most cases the `pom.xml`, to any type of repository that is supported by Gradle. Sharing a plugin on a global scale requires using a well-known repository. The https://plugins.gradle.org[{portal}] provides a centralized repository that is dedicated to Gradle plugins and which is also easily searchable.
 
 The https://plugins.gradle.org/plugin/com.gradle.plugin-publish[{publishplugin}] provides a convenient DSL to publish to the {portal} and thereby eliminating a large number of configuration steps that might otherwise be needed when publishing to different Maven repository. It also provides a number of checks to validate that your plugin meets the criteria for publishing to the {portal}.
 
@@ -41,6 +41,8 @@ Follow the instructions on that page. Once you have logged in, you can get your 
 image::api-keys-833x103.png[]
 
 It is common practice to copy-paste the text into your {user-manual}build_environment.html#properties[$HOME/.gradle/gradle.properties] file, but if you wish you can place it elsewhere. All that the plugin requires is that `gradle.publish.key` and `gradle.publish.secret` are available as project properties when the appropriate Plugin portal tasks are executed.
+
+If you are concerned about placing your credentials in `gradle.properties`, investigate use of https://plugins.gradle.org/plugin/de.qaware.seu.as.code.credentials[Seauc Credentials plugin] or the https://plugins.gradle.org/plugin/nu.studer.credentials[Gradle Credentials plugin].
 
 Once you have the API key you can publish as many plugins as you like.
 
@@ -161,4 +163,3 @@ Once your plugin has been published, the instructions for others to use it will 
 == Next steps
 
 * Read the https://plugins.gradle.org/docs/publish-plugin[reference documentation for the {publishplugin}].
-* If you are concerned about placing your credentials in `gradle.properties`, investigate use of https://plugins.gradle.org/plugin/de.qaware.seu.as.code.credentials[Seauc Credentials plugin] or the https://plugins.gradle.org/plugin/nu.studer.credentials[Gradle Credentials plugin].
