@@ -1,6 +1,6 @@
 = Writing Custom Gradle Tasks
 
-Tasks are the cornerstone of getting things done in Gradle. They represent single atomic pieces of work within a build such as creating a JAR or linking an executable. This guide will walk you through the process of customising your build using small, bespoke tasks.
+Tasks are the cornerstone of getting things done in Gradle. They represent single atomic pieces of work within a build such as creating a JAR or linking an executable. This guide will walk you through the process of customising your build using small, tailored tasks.
 
 == What you'll create
 
