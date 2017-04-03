@@ -108,7 +108,7 @@ pluginBundle {
 }
 ----
 
-As a second example of plugin configuration, consider the https://plugins.gradle.org/plugin/org.ysb33r.gradletest[GradleTest plugin]
+As a second example of plugin configuration, consider the https://plugins.gradle.org/plugin/org.ysb33r.gradletest[GradleTest plugin] which is already published to the {portal}.
 
 .build.gradle (for GradleTest project)
 [source,groovy]
