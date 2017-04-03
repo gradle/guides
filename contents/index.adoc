@@ -20,7 +20,7 @@ You will take an existing plugin project and configure it so that the plugin is 
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 * Source code for an existing Gradle plugin. (Preferably your own).
 
-NOTE: If you have never written a plugin, you can use the https://github.com/gradle-guides/greeting-plugin-example[Greeting Plugin example], but please do not try to publish this to the {portal}. That will keep the portal from being overrun with too many experimental and duplicate greeting-type plugins. See {guides}/writing-gradle-plugins[Writing Gradle Plugins] for other plugin ideas.
+NOTE: If you have never written a plugin, you can use the https://github.com/gradle-guides/greeting-plugin-example[Greeting Plugin example]. Also see {guides}/writing-gradle-plugins[Writing Gradle Plugins] for other plugin ideas.
 
 == Create an account on the {portal}
 
@@ -151,13 +151,17 @@ If you have not configured your {portal} key and secret values in your `gradle.p
 $ ./gradlew publishPlugins -Pgradle.publish.key=<key> -Pgradle.publish.secret=<secret>
 ----
 
+NOTE: If you publish the example `GreetingPlugin` as-is, it will be rejected. That will keep the portal from being overrun with too many experimental and duplicate greeting-type plugins. In this case the following link:#consume[Consume the publish plugin] section will not be applicable.
+
+
+[[consume]]
 == Consume the published plugin
 
 Once your plugin has been published, the instructions for others to use it will automatically appear on the plugin under a URL of the form
 
 [listing]
 ----
-    https://plugins.gradle.org/plugin/<your-plugin-id>
+https://plugins.gradle.org/plugin/<your-plugin-id>
 ----
 
 == Next steps
