@@ -2,11 +2,11 @@
 
 == Introduction
 
-Gradle includes a `war` plugin for building Java web applications, and the community supplies an excellent plugin called `gretty` for testing and deploying web applications on Jetty or Tomcat. This guide demonstrates how to build a simple web app, deploy it on Jetty, and test it using Mockito.
+Gradle includes a `war` plugin for building Java web applications, and the community supplies an excellent plugin called `gretty` for testing and deploying web applications on Jetty or Tomcat. This guide demonstrates how to build a simple web app and deploy it on Jetty. You'll also learn how to write a unit test for a servlet using the Mockito framework and how to write a functional test for the web app using `gretty` and Selenium.
 
 == What you'll build
 
-You will create a web application in the default Gradle structure, add dependencies for the Servlet API and the Mockito testing framework, add the `gretty` plugin, then build and test the application.
+You will create a web application in the default Gradle structure, add dependencies for the Servlet API, add the `gretty` plugin, then build and test the application.
 
 == What you'll need
 
@@ -18,6 +18,8 @@ You will create a web application in the default Gradle structure, add dependenc
 == Create the structure of a web application
 
 Gradle includes a `war` plugin that is documented in the  {user-manual}web_project_tutorial.html[Web Application Quickstart] and the {user-manual}war_plugin.html[WAR plugin chapter] of the user manual. The `war` plugin extends the Java plugin to add support for web applications. By default, it uses a folder called `src/main/webapp` for web-related resources.
+
+NOTE: The "Web Application Quickstart" section in the User Manual still refers to the `jetty` plugin, which is deprecated in favor of the `gretty` plugin used here. The parts specific to the `war` plugin are fine, however, and the section will be updated soon.
 
 Therefore, create the following file structure for a project called `webdemo`:
 
@@ -221,7 +223,7 @@ dependencies {
 ----
 <1> Adding Mockito
 
-To unit test the servlet, create a package folder `org.gradle.demo` beneath `src.test/java`. Add a test class file `HelloServletTest.java` with the following contents:
+To unit test the servlet, create a package folder `org.gradle.demo` beneath `src/test/java`. Add a test class file `HelloServletTest.java` with the following contents:
 
 .src/test/java/org/gradle/demo/HelloServletTest.java
 [source,java]
@@ -323,11 +325,9 @@ The `gretty` plugin combines with Gradle to make it easy to add functional tests
 .Gretty additions to `build.gradle` for functional testing
 [source,groovy]
 ----
-gretty {  // <1>
-    integrationTestTask = 'intTest'
+gretty {
+    integrationTestTask = 'test'  // <1>
 }
-
-task intTest(type: Test) {}
 
 // ... rest from before ...
 dependencies {
@@ -336,11 +336,11 @@ dependencies {
     testCompile 'org.seleniumhq.selenium:selenium-java:3.3.1' // <3>
 }
 ----
-<1> Tell gretty which task needs the server
+<1> Tell gretty to start and stop the server on test
 <2> Automatically installs browser drivers
 <3> Uses Selenium for functional tests
 
-The `gretty` plugin needs to know which task requires a start and stop of the server, and here that task is arbitrarily called `intTest`.
+The `gretty` plugin needs to know which task requires a start and stop of the server. Frequently that is assigned to your own task, but to keep things simple just use the existing `test` task.
 
 http://www.seleniumhq.org[Selenium] is a popular open-source API for writing functional tests. Version 2.0 is based on the WebDriver API. Recent versions require testers to download and install a version of WebDriver for their browser, which can be tedious and hard to automate. The https://github.com/bonigarcia/webdrivermanager[WebDriverManager] project makes it easy to let Gradle handle that process for you.
 
@@ -404,25 +404,25 @@ The WebDriverManager system supports Chrome, Opera, Internet Explorer, Microsoft
 
 == Run the functional test
 
-Run the test using the `intTest` task:
+Run the test using the `test` task:
 
 ----
-$ ./gradlew intTest
+$ ./gradlew test
 :prepareInplaceWebAppFolder UP-TO-DATE
 :createInplaceWebAppFolder UP-TO-DATE
-:compileJava
+:compileJava UP-TO-DATE
 :processResources UP-TO-DATE
-:classes
-:prepareInplaceWebAppClasses
-:prepareInplaceWebApp
-:compileTestJava
+:classes UP-TO-DATE
+:prepareInplaceWebAppClasses UP-TO-DATE
+:prepareInplaceWebApp UP-TO-DATE
+:compileTestJava UP-TO-DATE
 :processTestResources UP-TO-DATE
-:testClasses
+:testClasses UP-TO-DATE
 :appBeforeIntegrationTest
-16:38:33 INFO  Jetty 9.2.15.v20160210 started and listening on port 8080
-16:38:33 INFO  webdemo runs at:
-16:38:33 INFO    http://localhost:8080/webdemo
-:intTest
+12:57:56 INFO  Jetty 9.2.15.v20160210 started and listening on port 8080
+12:57:56 INFO  webdemo runs at:
+12:57:56 INFO    http://localhost:8080/webdemo
+:test
 :appAfterIntegrationTest
 Server stopped.
 
@@ -430,24 +430,6 @@ BUILD SUCCESSFUL
 ----
 
 The `gretty` plugin starts up an embedded version of Jetty 9 on the default port, executes the tests, and shuts down the server. If you watch, you'll see the Selenium system open a new browser, access the site, complete the form, click the button, check the new page, and finally shut down the browser.
-
-There is one remaining problem. If you simply run the `test` task, the server does not start and the integration test therefore fails. This can be fixed in a variety of ways, but the easiest is to tell `gretty` to start the server whenever you run tests.
-
-Change the `build.gradle` file to be:
-
-.Make gretty start and stop the server on all tests
-[source,groovy]
-----
-gretty {
-    integrationTestTask = 'test' // <1>
-}
-
-// task intTest(type: Test) {}   // <2>
-
-// ... rest from before ...
-----
-<1> Start server on all tests
-<2> No longer need separate task
 
 Integration tests are often handled by creating a separate source set and dedicated tasks, but that is beyond the scope of this guide. See the http://akhikhl.github.io/gretty-doc/[Gretty documentation] for details.
 
