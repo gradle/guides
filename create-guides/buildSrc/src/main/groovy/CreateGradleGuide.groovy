@@ -150,10 +150,22 @@ class CreateGradleGuide extends DefaultTask {
             includeEmptyDirs true
             into destDir
         }
+        addGitIgnoreFile(destDir)
         Grgit grgit = Grgit.init(dir: destDir)
         grgit.add(patterns: ['.'])
         grgit.commit(message: "Initialize ${guideSlug} repository ($issue)", all: true)
         return grgit
+    }
+
+    private void addGitIgnoreFile(final File destDir) {
+        new File(destDir,'.gitignore').text = '''
+.gradle
+.idea
+.project
+*.iml
+*.sw?
+build
+'''
     }
 
     @CompileDynamic
