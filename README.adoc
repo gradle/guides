@@ -1,4 +1,4 @@
-= Building JVM Libraries image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
+= Building Java Libraries image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
 
 This guide walks you through the process of using Gradle to produce a JVM library suitable for consumption by other JVM libraries and applications.
 

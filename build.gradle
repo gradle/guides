@@ -10,7 +10,7 @@ plugins {
 }
 apply plugin: "base"
 
-def repoPath = "gradle-guides/building-jvm-libraries"
+def repoPath = "gradle-guides/building-java-libraries"
 def gradleVersion = "3.3"
 
 asciidoctor {
