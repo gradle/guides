@@ -5,7 +5,7 @@ plugins {
 }
 
 ext {
-    repoPath = "gradle-guides/publishing-plugins-to-gradle-plugin-portal"
+    repoPath = "gradle-guides/@@GUIDE_SLUG@@"
 }
 
 apply from : 'gradle/build-documentation.gradle'
