@@ -1,4 +1,9 @@
-apply plugin : 'java'  
+plugins {
+  id 'java'
+}
+
+group = 'org.samples.greeting'
+version = '0.1'
 
 dependencies {
     compileOnly gradleApi() 
