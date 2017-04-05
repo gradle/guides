@@ -55,7 +55,7 @@ Add the {publishplugin} to the `plugins` block.
 ----
 include::{exampledir}/build.gradle[tags=plugins_block,indent=0]
 ----
-<1> The latest version can be found on https://plugins.gradle.org/plugin/com.gradle.plugin-publish[portal].
+<1> The latest version can be found on the https://plugins.gradle.org/plugin/com.gradle.plugin-publish[portal].
 
 == Configure the {publishplugin}
 
@@ -79,9 +79,9 @@ pluginBundle {
 include::{exampledir}/build.gradle[tags=plugin_definitions,indent=2]
 }
 ----
-<1> Each plugin in a bundle is specified in the `plugins` block. As you are only publishing a single plugin at this point there will only be one entry, but should your project publish a bundle in future you will list each of them in here.
+<1> Each plugin in a bundle is specified in the `plugins` block. As you are only publishing a single plugin at this point there will only be one entry, but should your project publish a bundle in the future you will list each of them in here.
 <2> The name for each plugin block does not affect the plugin configuration, but needs to be unique for each plugin provided.
-<3> Must be the same identifier specified in the plugin properties file located in the `src/main/resources/META-INF/gradle-plugins` directory.
+<3> Must be the same identifier as specified in the plugin properties filename, the latter to be located in the `src/main/resources/META-INF/gradle-plugins` directory.
 <4> Set the plugin name in human-readable form.
 <5> Set a description that will be displayed on the portal. Although this is optional, it provides useful information to people would might want to use your plugin. Please give careful thought to the value of this property.
 <6> Set tags that build script authors might use to search for plugin types. This can make your plugin easier to locate.
