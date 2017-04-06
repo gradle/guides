@@ -1,3 +1,7 @@
 apply plugin : GradleGuidePlugin
 
-
+if(project.properties.templateBranch) {
+  create {
+    templateBranch = project.properties.templateBranch
+  }
+}
