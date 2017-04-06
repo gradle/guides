@@ -42,6 +42,13 @@ Follow these steps on your local machine, replacing `Creating Java Projects` wit
 
 In order for this to work a Github personal authentication token must be supplied. The token must have `repo` scope. It is passed as a project property called `gradle.guides.authToken`. This can be setup in the `gradle.properties` file or supplied via the command line using `-Pgradle.guides.authToken=<GITHUB-TOKEN>`.
 
+You might want to consider adding two more (optional) properties:
+
+- `gradle.guides.user.email` - Set this to your email address at `@gradle.com`.
+- `gradle.guides.user.signingkey` - Set this to your GPG key for signing commits.
+
+Once again these can be set in `gradle.properties` or supplied on the command-line.
+
 In it's current format the Gradle `create` task will take care of creating the repository on GitHub, cloning the appropriate template for the guide type, substituting appropriate values and finally pushing the content upstream. It will also take care of enabling the repository to be built by Travis.
 
 Once this has been done, _paste the link for this new repository into the guide's GitHub issue_ and let the author know that they have everything they need to begin writing.
