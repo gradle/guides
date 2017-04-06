@@ -88,6 +88,22 @@ class CreateGradleGuide extends DefaultTask {
         this.authToken = authToken
     }
 
+    void setUserEmail(final String userEmail) {
+        this.userEmail = userEmail
+    }
+
+    String getUserEmail() {
+        this.userEmail ?: (String) (project.properties['gradle.guides.user.email'])
+    }
+
+    void setUserSigningKey(final String signingKey) {
+        this.userSigningKey = signingKey
+    }
+
+    String getUserSigningKey() {
+        this.userSigningKey ?: (String) (project.properties['gradle.guides.user.signingkey'])
+    }
+
     @TaskAction
     void exec() {
         // Check that we have an auth token set before executing
@@ -105,6 +121,7 @@ class CreateGradleGuide extends DefaultTask {
         File destDir = getRepoDir()
         destDir.mkdirs()
         createRepoFromZip(zipFile, destDir)
+        addUserPropertiesToLocalRepo(destDir)
 
         final String guideRepo = "${guideOrgUrl}/${guideSlug}"
         createRepoOnGitHub(destDir,guideRepo.toURI())
@@ -168,6 +185,23 @@ build
 '''
     }
 
+    private addUserPropertiesToLocalRepo(final File repoDir) {
+        final String email = getUserEmail()
+        final String key = getUserSigningKey()
+        if(email || key) {
+            new File(repoDir,'.git/config').withWriterAppend { BufferedWriter w ->
+                w.println ''
+                w.println '[user]'
+                if(email) {
+                    w.println "\temail = ${email}"
+                }
+                if(key) {
+                    w.println "\tsigningkey = ${key}"
+                }
+            }
+        }
+    }
+
     @CompileDynamic
     private void pushRemote(final File repoDir,final String url) {
         Grgit grgit = Grgit.open(
@@ -217,4 +251,6 @@ build
     }
 
     private String authToken
+    private String userEmail
+    private String userSigningKey
 }
