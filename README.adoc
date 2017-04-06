@@ -1,6 +1,6 @@
 = Writing Gradle Plugins
 
-This guide walks you through the process of creating reusable build logic in a Gradle plugin, which can then be applied to other Gradle builds. The core of Gradle provides an infrastructure for building anything, but plugins are what allow build users to get things done with a minimum of effort. They can apply conventions, add new task types, integrate with third-party tools and libraries, and more. This guide focuses on the most basic of plugins, but it represents the tip of the iceberg.
+This guide walks you through the process of creating reusable build logic in a Gradle plugin, which can then be applied to other Gradle builds. The core of Gradle provides an infrastructure for building anything, but plugins are what allow build script authors to get things done with a minimum of effort, allowing them to focus on *what to build*, rather than *how to build*. Plugins can apply conventions, add new task types, integrate with third-party tools and libraries, and more. For instance, the `java` plugin provides standard source directory layouts and tasks such as `compileJava` and `compileTestJava`. This guide focuses on the most basic of plugins, but represents the tip of the iceberg.
 
 == What you'll build
 
