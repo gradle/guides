@@ -165,4 +165,4 @@ Wrote an awesome plugin? Write a tweet to link:https://twitter.com/gradle[@gradl
 
 Now that you’re familiar with the basics of designing Gradle plugins, you may be interested in:
 
-- Writing Gradle plugins
+- link:https://guides.gradle.org/implementing-gradle-plugins[Implementing Gradle plugins]
