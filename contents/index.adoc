@@ -52,6 +52,7 @@ serverPlugin {
 
 As you can see, the user only declares the "what" - the server the plugin should reach out to. The actual inner workings - the "how - is completely hidden from the end user.
 
+[[capabilities-vs-conventions]]
 === Capabilities vs. conventions
 
 The functionality brought in by a plugin can be extremely powerful but also very opinionated. That’s especially the case if a plugin predefines tasks and conventions that a project inherits automatically when applying it. Sometimes the reality that you - as plugin developer - chose for your users might simply look different than expected. For that very reason you need to make a plugin as flexible and configurable as possible.
