@@ -28,6 +28,8 @@ You don't have to specify which form the guide should take in the initial propos
 
 Once the proposal has been accepted, the Gradle Guides team will https://github.com/gradle/guides/blob/master/README.md[create a new GitHub repository] for your guide. You won't be able to commit directly to that repository. Instead, you will use the standard fork and pull request workflow described here.
 
+You will also need to complete a https://gradle.org/cla[Contributor's License Agreement] before your can submit your work.
+
 == Fork and clone the repository
 
 When your guide's repository is ready, you'll find a link to it in the issue created by you in the previous step. You should then:
@@ -55,36 +57,43 @@ At this point, you should have an HTML page that has a title and some section he
 
 == Get familiar with your guide's structure and contents
 
-The structure of a Gradle guide repository is very simple, consisting of just two basic components:
+The structure of a Gradle guide repository is very simple, consisting of just two three components:
 
- 1. An Asciidoc source file called `README.adoc`
+ 1. A directory called `contents` which contains an entry point Asciidoc source file called `index.adoc`.
  2. A Gradle build script to process it into HTML (which later will publish it to the GitHub Pages site where the guides are hosted)
+ 3. A `src` folder where source code to support the guide is hosted. This source code would normally get build with the guide to ensure that the code snippets used inthe guide is up to date.
 
-The file you'll interact with most as a guide author is `README.adoc`, but it's useful to know what the other files and directories are for as well. The following listing walks through each of the top-level directory entries:
+The file you'll interact with most as a guide author is `index.adoc`, but it's useful to know what the other files and directories are for as well. The following listing walks through each of the top-level directory entries:
 
 ----
 .
 ├── README.adoc                      <1>
-├── build/                           <2>
-├── build.gradle                     <3>
-├── gradle/                          <4>
-├── gradlew                          <5>
-└── gradlew.bat                      <6>
+├── contents/index.adoc              <2>
+├── contents/images                  <3>
+├── src/                             <4>
+├── build/                           <5>
+├── build.gradle                     <6>
+├── gradle/                          <7>
+├── gradlew                          <8>
+└── gradlew.bat                      <9>
 ----
-<1> Asciidoc source for the guide
-<2> Output directory for the build, where generated HTML for the guide can be found
-<3> Project build script, containing tasks for Asciidoc processing and GitHub Pages publication
-<4> Gradle Wrapper storage directory
-<5> Gradle Wrapper Unix shell script
-<6> Gradle Wrapper Windows batch file
+<1> GitHub README with some instructions.
+<2> Asciidoc source for the guide.
+<3> Supporting images for the guide.
+<4> Supporting source code for the guide. Include these in the guide via the Asciidoc `include::` directive and `tag::` markup.
+<5> Output directory for the build, where generated HTML for the guide can be found
+<6> Project build script, containing tasks for Asciidoc processing and GitHub Pages publication. Familiarize yourself with the Asciidoc attributes that the `asciidoctor` task will pass down during document generation.
+<7> Gradle Wrapper storage directory
+<8> Gradle Wrapper Unix shell script
+<9> Gradle Wrapper Windows batch file
 
-Now you're ready to work on your new guide's content. You will edit the `README.adoc` file. The Gradle build will rename the result to `index.html`.
+Now you're ready to work on your new guide's content. You will edit the `contents/index.adoc` file. You are welcome to create additional Asciidoc files inthe `contents` directory and include them via the Asciidoc `include::` directive.
 
-NOTE: Edit `README.adoc`, but preview `index.html` in the `build/html5` directory
+NOTE: Edit `contents/index.adoc`, but preview `index.html` in the `build/html5` directory.
 
 == Write your guide
 
-Asciidoc is a pure ASCII text format, so you can use any text editor or IDE to work on `README.adoc`. Many of them have support for Asciidoc syntax highlighting, which makes things easier. Once you've decided on an editor, just open the file and get writing!
+Asciidoc is a pure ASCII text format, so you can use any text editor or IDE to work on `contens/index.adoc`. Many of them have support for Asciidoc syntax highlighting, which makes things easier. Once you've decided on an editor, just open the file and get writing!
 
 As you work on the main content of the guide, we recommend that you read the associated https://github.com/gradle-guides/style-guide/blob/master/README.adoc[style guide] and browse through a few of the existing https://guides.gradle.org/[guides] if you haven't done so already.
 
