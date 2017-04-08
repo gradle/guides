@@ -22,7 +22,7 @@ public class SitePlugin implements Plugin<Project> {
     }
 
     private ProjectDescriptor deriveProjectDescription(Project project) {
-        ProjectDescriptor projectDescriptor = new ProjectDescriptor(project.getName(), project.getGroup().toString(), project.getDescription(), project.getVersion().toString());
+        final ProjectDescriptor projectDescriptor = new ProjectDescriptor(project.getName(), project.getGroup().toString(), project.getDescription(), project.getVersion().toString());
 
         project.getTasks().all(new Action<Task>() {
             @Override
