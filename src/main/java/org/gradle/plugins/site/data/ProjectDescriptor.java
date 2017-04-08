@@ -1,5 +1,6 @@
 package org.gradle.plugins.site.data;
 
+import org.gradle.api.Plugin;
 import org.gradle.api.tasks.Input;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ public class ProjectDescriptor {
     private final String group;
     private final String description;
     private final String version;
+    private final List<Class<? extends Plugin>> pluginClasses = new ArrayList<Class<? extends Plugin>>();
     private final List<TaskDescriptor> tasks = new ArrayList<TaskDescriptor>();
 
     public ProjectDescriptor(String name, String group, String description, String version) {
@@ -40,12 +42,21 @@ public class ProjectDescriptor {
         return version;
     }
 
+    @Input
+    public List<TaskDescriptor> getTasks() {
+        return tasks;
+    }
+
     public void addTask(TaskDescriptor task) {
         tasks.add(task);
     }
 
     @Input
-    public List<TaskDescriptor> getTasks() {
-        return tasks;
+    public List<Class<? extends Plugin>> getPluginClasses() {
+        return pluginClasses;
+    }
+
+    public void addPluginClass(Class<? extends Plugin> pluginClass) {
+        this.pluginClasses.add(pluginClass);
     }
 }

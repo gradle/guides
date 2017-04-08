@@ -25,8 +25,18 @@ public class SitePlugin implements Plugin<Project> {
 
     private ProjectDescriptor deriveProjectDescription(Project project) {
         ProjectDescriptor projectDescriptor = new ProjectDescriptor(project.getName(), project.getGroup().toString(), project.getDescription(), project.getVersion().toString());
+        addPluginDescription(project, projectDescriptor);
         addTasksDescription(project, projectDescriptor);
         return projectDescriptor;
+    }
+
+    private void addPluginDescription(Project project, final ProjectDescriptor projectDescriptor) {
+        project.getPlugins().all(new Action<Plugin>() {
+            @Override
+            public void execute(Plugin plugin) {
+                projectDescriptor.addPluginClass(plugin.getClass());
+            }
+        });
     }
 
     private void addTasksDescription(Project project, final ProjectDescriptor projectDescriptor) {
