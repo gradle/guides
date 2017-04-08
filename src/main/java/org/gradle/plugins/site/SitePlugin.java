@@ -12,6 +12,8 @@ import java.io.File;
 
 public class SitePlugin implements Plugin<Project> {
 
+    public static final String SITE_TASK_NAME = "site";
+
     @Override
     public void apply(Project project) {
         SitePluginExtension sitePluginExtension = project.getExtensions().create("site", SitePluginExtension.class, project);
@@ -39,7 +41,7 @@ public class SitePlugin implements Plugin<Project> {
     }
 
     private void configureSiteTask(Project project, SitePluginExtension sitePluginExtension, ProjectDescriptor projectDescriptor) {
-        SiteGenerate siteGenerate = project.getTasks().create("site", SiteGenerate.class);
+        SiteGenerate siteGenerate = project.getTasks().create(SITE_TASK_NAME, SiteGenerate.class);
         siteGenerate.setProjectDescriptor(projectDescriptor);
         siteGenerate.setOutputDir(sitePluginExtension.getOutputDirProvider());
     }

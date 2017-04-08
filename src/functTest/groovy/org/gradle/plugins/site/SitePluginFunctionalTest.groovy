@@ -1,10 +1,12 @@
 package org.gradle.plugins.site
 
+import static org.gradle.plugins.site.SitePlugin.SITE_TASK_NAME
+
 class SitePluginFunctionalTest extends AbstractFunctionalTest {
 
     def "can generate site for default conventions"() {
         when:
-        build('site')
+        build(SITE_TASK_NAME)
 
         then:
         def indexFile = new File(projectDir,'build/docs/site/index.html')
@@ -22,7 +24,7 @@ class SitePluginFunctionalTest extends AbstractFunctionalTest {
         """
 
         when:
-        build('site')
+        build(SITE_TASK_NAME)
 
         then:
         def indexFile = new File(projectDir, "$customOutputDir/index.html")
