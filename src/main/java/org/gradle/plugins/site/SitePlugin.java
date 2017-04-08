@@ -22,8 +22,12 @@ public class SitePlugin implements Plugin<Project> {
     }
 
     private ProjectDescriptor deriveProjectDescription(Project project) {
-        final ProjectDescriptor projectDescriptor = new ProjectDescriptor(project.getName(), project.getGroup().toString(), project.getDescription(), project.getVersion().toString());
+        ProjectDescriptor projectDescriptor = new ProjectDescriptor(project.getName(), project.getGroup().toString(), project.getDescription(), project.getVersion().toString());
+        addTasksDescription(project, projectDescriptor);
+        return projectDescriptor;
+    }
 
+    private void addTasksDescription(Project project, final ProjectDescriptor projectDescriptor) {
         project.getTasks().all(new Action<Task>() {
             @Override
             public void execute(Task task) {
@@ -32,8 +36,6 @@ public class SitePlugin implements Plugin<Project> {
                 }
             }
         });
-
-        return projectDescriptor;
     }
 
     private void configureSiteTask(Project project, SitePluginExtension sitePluginExtension, ProjectDescriptor projectDescriptor) {
