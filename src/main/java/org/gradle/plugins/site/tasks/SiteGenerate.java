@@ -1,18 +1,15 @@
 package org.gradle.plugins.site.tasks;
 
 import org.gradle.api.DefaultTask;
-import org.gradle.api.GradleException;
 import org.gradle.api.provider.PropertyState;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.plugins.site.data.ProjectDescriptor;
+import org.gradle.plugins.site.data.SiteGenerator;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 
 public class SiteGenerate extends DefaultTask {
 
@@ -52,22 +49,7 @@ public class SiteGenerate extends DefaultTask {
 
     @TaskAction
     public void generate() {
-        try {
-            writeFile(new File(getOutputDir(), "index.html"), getProjectDescriptor().getName());
-        } catch (IOException e) {
-            throw new GradleException("Unable to generate site", e);
-        }
-    }
-
-    private void writeFile(File destination, String content) throws IOException {
-        BufferedWriter output = null;
-        try {
-            output = new BufferedWriter(new FileWriter(destination));
-            output.write(content);
-        } finally {
-            if (output != null) {
-                output.close();
-            }
-        }
+        SiteGenerator siteGenerator = new SiteGenerator(getOutputDir());
+        siteGenerator.generate(getProjectDescriptor());
     }
 }
