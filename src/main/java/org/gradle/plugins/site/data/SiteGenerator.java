@@ -22,6 +22,7 @@ public class SiteGenerator {
         try {
             copyCssResources();
             copyJsResources();
+            copyImgResources();
             FileUtils.writeFile(new File(outputDir, "index.html"), projectDescriptor.getName());
         } catch (Exception e) {
             throw new GradleException("Unable to generate site", e);
@@ -39,6 +40,12 @@ public class SiteGenerator {
         List<String> resources = new ArrayList<String>();
         resources.add("bootstrap.js");
         copyResources("js", resources);
+    }
+
+    private void copyImgResources() throws IOException, URISyntaxException {
+        List<String> resources = new ArrayList<String>();
+        resources.add("elephant-corner.png");
+        copyResources("img", resources);
     }
 
     private void copyResources(String subdir, List<String> resources) throws IOException, URISyntaxException {
