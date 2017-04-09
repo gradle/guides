@@ -4,6 +4,9 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.plugins.JavaPlugin;
+import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.plugins.site.data.JavaProjectDescriptor;
 import org.gradle.plugins.site.data.ProjectDescriptor;
 import org.gradle.plugins.site.data.TaskDescriptor;
 import org.gradle.plugins.site.tasks.SiteGenerate;
@@ -27,7 +30,18 @@ public class SitePlugin implements Plugin<Project> {
         ProjectDescriptor projectDescriptor = new ProjectDescriptor(project.getName(), project.getGroup().toString(), project.getDescription(), project.getVersion().toString());
         addPluginDescription(project, projectDescriptor);
         addTasksDescription(project, projectDescriptor);
+        addJavaDescription(project, projectDescriptor);
         return projectDescriptor;
+    }
+
+    private void addJavaDescription(final Project project, final ProjectDescriptor projectDescriptor) {
+        project.getPlugins().withType(JavaPlugin.class, new Action<JavaPlugin>() {
+            @Override
+            public void execute(JavaPlugin javaPlugin) {
+                JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
+                projectDescriptor.setJavaProject(new JavaProjectDescriptor(javaConvention.getSourceCompatibility().toString(), javaConvention.getTargetCompatibility().toString()));
+            }
+        });
     }
 
     private void addPluginDescription(Project project, final ProjectDescriptor projectDescriptor) {

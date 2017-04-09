@@ -80,14 +80,16 @@
                   <td>Version</td>
                   <td>${(project.version)!}</td>
               </tr>
+              <#if project.javaProject??>
               <tr>
                   <td>Source compatibility</td>
-                  <td>1.6</td>
+                  <td>${project.javaProject.sourceCompatibility}</td>
               </tr>
               <tr>
                   <td>Target compatibility</td>
-                  <td>1.6</td>
+                  <td>${project.javaProject.targetCompatibility}</td>
               </tr>
+              </#if>
               <tr>
                   <td>Gradle version</td>
                   <td>3.5</td>
