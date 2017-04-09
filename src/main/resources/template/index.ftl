@@ -52,14 +52,14 @@
           <li>&nbsp;&nbsp;&nbsp;&nbsp;</li>
           <li><img src="img/elephant-corner.png" height="35" width="35"></li>
         </ul>
-        <h3>Gradle Docker Plugin</h3>
+        <h3>${project.name}</h3>
       </div>
 
       <hr>
 
       <div class="jumbotron">
         <p class="lead">
-            Gradle plugin for managing Docker images and containers.
+        ${(project.description)!}
         </p>
       </div>
 
@@ -74,11 +74,11 @@
               </tr>
               <tr>
                   <td>Group</td>
-                  <td>org.gradle.site</td>
+                  <td>${(project.group)!}</td>
               </tr>
               <tr>
                   <td>Version</td>
-                  <td>1.0</td>
+                  <td>${(project.version)!}</td>
               </tr>
               <tr>
                   <td>Source compatibility</td>
@@ -94,22 +94,25 @@
               </tr>
           </table>
       </div>
+
       <hr>
+
       <div>
           <h4><div class="colored-font">Plugins</div></h4>
           <table class="table table-striped top-spacer">
               <tr>
                   <th>Implementation Class</th>
               </tr>
+              <#list project.pluginClasses as pluginClass>
               <tr>
-                  <td><code>org.gradle.api.plugins.HelpTasksPlugin</code></td>
+                  <td><code>${pluginClass}</code></td>
               </tr>
-              <tr>
-                  <td><code>org.gradle.plugins.site.SitePlugin</code></td>
-              </tr>
+              </#list>
           </table>
       </div>
+
       <hr>
+
       <div>
           <h4><div class="colored-font">Tasks</div></h4>
           <table class="table table-striped top-spacer">
@@ -118,34 +121,22 @@
                   <th>Group</th>
                   <th>Description</th>
               </tr>
+              <#list project.tasks as task>
               <tr>
-                  <td>compile</td>
-                  <td>build</td>
-                  <td>Compiles code</td>
+                  <td>${task.name}</td>
+                  <td>${task.group}</td>
+                  <td>${task.description}</td>
               </tr>
-              <tr>
-                  <td>jar</td>
-                  <td>build</td>
-                  <td>Builds JAR file</td>
-              </tr>
-              <tr>
-                  <td>javadoc</td>
-                  <td>documentation</td>
-                  <td>Generates Javadocs</td>
-              </tr>
-              <tr>
-                  <td>build</td>
-                  <td>all</td>
-                  <td>Does everything</td>
-              </tr>
+              </#list>
           </table>
       </div>
       
       <hr>
 
       <div class="footer">
-        <div class="pull-left">&copy; Gradle Inc. 2013</div>
-        <div class="pull-right">Generated: 2017-04-10 17:20</div>
+        <#assign dateTime = .now>
+        <div class="pull-left">&copy; Gradle Inc. ${dateTime?string("yyyy")}</div>
+        <div class="pull-right">Generated: ${dateTime?string("yyyy-MM-dd HH:mm:ss")}</div>
       </div>
     </div>
 

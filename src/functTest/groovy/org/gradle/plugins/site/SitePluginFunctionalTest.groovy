@@ -9,9 +9,7 @@ class SitePluginFunctionalTest extends AbstractFunctionalTest {
         build(SITE_TASK_NAME)
 
         then:
-        def indexFile = new File(projectDir,'build/docs/site/index.html')
-        indexFile.isFile()
-        indexFile.text == projectDir.name
+        assertSiteFiles(new File(projectDir, 'build/docs/site'))
     }
 
     def "can generate site for custom conventions"() {
@@ -27,8 +25,14 @@ class SitePluginFunctionalTest extends AbstractFunctionalTest {
         build(SITE_TASK_NAME)
 
         then:
-        def indexFile = new File(projectDir, "$customOutputDir/index.html")
-        indexFile.isFile()
-        indexFile.text == projectDir.name
+        assertSiteFiles(new File(projectDir, customOutputDir))
+    }
+
+    static void assertSiteFiles(File directory) {
+        assert new File(directory, "index.html").isFile()
+        assert new File(directory, "css/bootstrap.css").isFile()
+        assert new File(directory, "css/bootstrap-responsive.css").isFile()
+        assert new File(directory, "js/bootstrap.js").isFile()
+        assert new File(directory, "img/elephant-corner.png").isFile()
     }
 }

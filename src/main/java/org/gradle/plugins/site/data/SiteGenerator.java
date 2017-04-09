@@ -1,14 +1,21 @@
 package org.gradle.plugins.site.data;
 
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateExceptionHandler;
 import org.gradle.api.GradleException;
 import org.gradle.plugins.site.utils.FileUtils;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SiteGenerator {
 
@@ -23,7 +30,7 @@ public class SiteGenerator {
             copyCssResources();
             copyJsResources();
             copyImgResources();
-            FileUtils.writeFile(new File(outputDir, "index.html"), projectDescriptor.getName());
+            processIndexPageTemplate(projectDescriptor);
         } catch (Exception e) {
             throw new GradleException("Unable to generate site", e);
         }
@@ -60,5 +67,17 @@ public class SiteGenerator {
 
     private URL resolveAsUrl(String name) {
         return getClass().getClassLoader().getResource(name);
+    }
+
+    private void processIndexPageTemplate(ProjectDescriptor projectDescriptor) throws IOException, URISyntaxException, TemplateException {
+        Configuration cfg = new Configuration(Configuration.VERSION_2_3_25);
+        cfg.setDirectoryForTemplateLoading(new File(resolveAsUrl("template").toURI()));
+        cfg.setDefaultEncoding("UTF-8");
+        cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        cfg.setLogTemplateExceptions(false);
+        Map<String, Object> root = new HashMap<String, Object>();
+        root.put("project", projectDescriptor);
+        Template template = cfg.getTemplate("index.ftl");
+        template.process(root, new FileWriter(new File(outputDir, "index.html")));
     }
 }
