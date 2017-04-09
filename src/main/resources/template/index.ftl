@@ -92,7 +92,7 @@
               </#if>
               <tr>
                   <td>Gradle version</td>
-                  <td>3.5</td>
+                  <td>${project.environment.gradleVersion}</td>
               </tr>
           </table>
       </div>

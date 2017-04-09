@@ -15,13 +15,15 @@ public class ProjectDescriptor {
     private final String version;
     private final List<Class<? extends Plugin>> pluginClasses = new ArrayList<Class<? extends Plugin>>();
     private final List<TaskDescriptor> tasks = new ArrayList<TaskDescriptor>();
+    private final EnvironmentDescriptor environment;
     private JavaProjectDescriptor javaProject;
 
-    public ProjectDescriptor(String name, String group, String description, String version) {
+    public ProjectDescriptor(String name, String group, String description, String version, EnvironmentDescriptor environment) {
         this.name = name;
         this.group = group;
         this.description = description;
         this.version = version;
+        this.environment = environment;
     }
 
     @Input
@@ -69,5 +71,10 @@ public class ProjectDescriptor {
 
     public void setJavaProject(JavaProjectDescriptor javaProject) {
         this.javaProject = javaProject;
+    }
+
+    @Nested
+    public EnvironmentDescriptor getEnvironment() {
+        return environment;
     }
 }

@@ -6,6 +6,7 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.plugins.site.data.EnvironmentDescriptor;
 import org.gradle.plugins.site.data.JavaProjectDescriptor;
 import org.gradle.plugins.site.data.ProjectDescriptor;
 import org.gradle.plugins.site.data.TaskDescriptor;
@@ -27,7 +28,7 @@ public class SitePlugin implements Plugin<Project> {
     }
 
     private ProjectDescriptor deriveProjectDescription(Project project) {
-        ProjectDescriptor projectDescriptor = new ProjectDescriptor(project.getName(), project.getGroup().toString(), project.getDescription(), project.getVersion().toString());
+        ProjectDescriptor projectDescriptor = new ProjectDescriptor(project.getName(), project.getGroup().toString(), project.getDescription(), project.getVersion().toString(), new EnvironmentDescriptor(project.getGradle().getGradleVersion()));
         addPluginDescription(project, projectDescriptor);
         addTasksDescription(project, projectDescriptor);
         addJavaDescription(project, projectDescriptor);
