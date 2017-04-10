@@ -1,100 +1,13 @@
-buildscript {
-    dependencies {
-        classpath 'org.jsoup:jsoup:1.10.1'
-    }
-}
-
 plugins {
-    id 'org.ajoberstar.github-pages' version '1.6.0'
-    id 'org.asciidoctor.convert' version '1.5.3'
+    id "org.ajoberstar.github-pages" version "1.4.2"
+    id "org.asciidoctor.convert" version "1.5.3"
     id 'org.ysb33r.cloudci' version '1.0'
-    id 'groovy'
 }
-
 
 ext {
-  repoPath = 'gradle-guides/designing-gradle-plugins'
-  gradleVersion = gradle.gradleVersion
-  spockGroovyVer = GroovySystem.version.replaceAll(/\.\d+$/,'')
+    repoPath = "gradle-guides/designing-gradle-plugins"
 }
 
-dependencies {
-    testCompile localGroovy()
-    testCompile ("org.spockframework:spock-core:1.0-groovy-${spockGroovyVer}") {
-        exclude module : 'groovy-all'
-    }
-}
-
-asciidoctor {
-    sourceDir 'contents'
-    sources {
-      include 'index.adoc'
-    }
-    outputDir  buildDir
-    backends  'html5'
-    attributes 'source-highlighter': 'coderay',
-            'coderay-linenums-mode': 'table',
-            imagesdir           : 'images',
-            stylesheet          : null,
-            linkcss             : true,
-            docinfodir          : '.',
-            docinfo1            : '',
-            icons               : 'font',
-            sectanchors         : true,
-            sectlinks           : true,
-            linkattrs           : true,
-            encoding            : 'utf-8',
-            idprefix            : '',
-            toc                 : 'right',
-            toclevels           : 2,
-            'repo-path'         : repoPath,
-            'gradle-version'    : gradleVersion,
-            'user-manual'       : "https://docs.gradle.org/${gradleVersion}/userguide/",
-            'language-reference': "https://docs.gradle.org/${gradleVersion}/dsl/",
-            'api-reference'     : "https://docs.gradle.org/${gradleVersion}/javadoc/",
-            'codedir'           : file('src/main').absolutePath,
-            'testdir'           : file('src/test').absolutePath
-
-    extensions {
-        postprocessor { document, output ->
-            if (!document.basebackend('html')) {
-                throw new IllegalArgumentException('Expected html Asciidoctor backend')
-            }
-            def doc = org.jsoup.Jsoup.parse(output, 'UTF-8')
-            def header = doc.getElementById('header')
-            header.prepend('''<div style='padding-top: 10px;'><a href='https://guides.gradle.org'><img src='http://guides.gradle.org/gradle-guides.svg' alt=''></a></div>''')
-            doc.html()
-        }
-    }
-}
-
-githubPages {
-    def ghToken = System.getenv('GH_TOKEN')
-    if (ghToken) {
-        repoUri = "https://github.com/${repoPath}.git"
-        credentials {
-            username = ghToken
-            password = '\n'
-        }
-    } else {
-        repoUri = "git@github.com:${repoPath}.git"
-    }
-    pages {
-        from "${asciidoctor.outputDir}/html5"
-    }
-    commitMessage = 'Publish to GitHub Pages'
-}
-
-assemble {
-  dependsOn 'asciidoctor'
-}
-
-publishGhPages {
-  dependsOn 'build'
-}
-
-travisci {
-  publishGhPages {
-    enabled = System.getenv('TRAVIS_BRANCH') == 'master' && System.getenv('TRAVIS_PULL_REQUEST') == 'false'
-  }
-}
+apply from : 'gradle/build-documentation.gradle'
+apply from : 'gradle/publish-documentation.gradle'
+apply from : 'gradle/test-source.gradle'
