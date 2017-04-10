@@ -54,7 +54,7 @@ public class GreetingPlugin implements Plugin<Project> {
 
 This is the actual plugin and the Gradle `Project` object is your access point for the entire Gradle API, which allows you to do the same things as you can do in a build script. In this case, you are creating a simple task called `hello` in the target project.
 
-TIP: Use the Gradle {language-reference}[DSL Reference] and {javadocs}[Javadocs] to learn what you can do with the Gradle API. Start with the entry for {language-reference}org.gradle.api.Project.html[`Project`]. You can find out more about what you can achieve by also following the links in <<Next steps>>.
+TIP: Use the Gradle {language-reference}[DSL Reference] and {api-reference}[Javadocs] to learn what you can do with the Gradle API. Start with the entry for {language-reference}org.gradle.api.Project.html[`Project`]. You can find out more about what you can achieve by also following the links in <<Next steps>>.
 
 Next, you'll create the class for the task type that the plugin is using. Add a new `Greeting` class in the same package as the plugin:
 
