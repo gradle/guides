@@ -6,6 +6,11 @@
 
 == What you'll need
 
+* About NN minutes
+* A text editor
+* A command prompt
+* The Java Development Kit (JDK), version 1.7 or higher
+* A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 
 == Step 1
 
