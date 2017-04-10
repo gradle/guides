@@ -134,7 +134,7 @@ The _settings.gradle_ file rarely has computationally or IO expensive code in it
 
 It normally doesn’t take a significant amount of time to load projects, nor do you have any control over it. The time spent here is basically a function of the number of projects you have in your build.
 
-The rest of the summary relates to the main categories, which we cover in detail in the next sections. Before we do that, there's one more tool available to you for diagnosing performance problems: Gradle build scans.
+The rest of the summary relates to the main categories, which we cover in detail in the next sections.
 
 ## Configuration
 
