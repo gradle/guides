@@ -1,4 +1,4 @@
-= TITLE_TBC
+= @@GUIDE_NAME@@
 :numbered:
 
 *INTRO_TBC*
