@@ -30,7 +30,7 @@ public class SiteGenerate extends DefaultTask {
         this.projectDescriptor.set(projectDescriptor);
     }
 
-    public void setProjectDescriptor(Provider projectDescriptor) {
+    public void setProjectDescriptor(Provider<ProjectDescriptor> projectDescriptor) {
         this.projectDescriptor.set(projectDescriptor);
     }
 
@@ -43,7 +43,7 @@ public class SiteGenerate extends DefaultTask {
         this.outputDir.set(outputDir);
     }
 
-    public void setOutputDir(Provider outputDir) {
+    public void setOutputDir(Provider<File> outputDir) {
         this.outputDir.set(outputDir);
     }
 
