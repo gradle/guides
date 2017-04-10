@@ -1,22 +1,18 @@
 language: java
 jdk:
- - oraclejdk7
-
-script: ./gradlew build publishGhPages --stacktrace
-
+- oraclejdk7
+script: "./gradlew build publishGhPages --stacktrace"
 before_cache:
- - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
- - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
- - rm -fr $HOME/.gradle/caches/*/scripts/
-
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+- rm -fr $HOME/.gradle/caches/*/scripts/
 cache:
   directories:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
-
 env:
   global:
-    secure: Y6PJlkEsaPLqk0ZvICmaZVmjKljB0DC8xs4xWz7ot6D0ijVc7DcblBjuDaBiOq2rn2IMcdUEC2Kc9SBT0BdkNakx8I8UlBFdzMVPu1/8PpzcYXv12GCqUClPC7VP2Qv8uWyjodmwk6Wk2eMtDbWLoa1w3c/acQv1x0HHnu5clH05lxeTnA6T5JF65Xg4Jmazkt2yp4sUCcaAeOwRrAUapFv/9Sp2t+0QvNMz8QKxCf/IkfhZEANuyhnGCLtK2P6YKbc4Oa9I8Pl1NsOYS83UwEEWyXlpEFESQtKYUzEvhAFPgJJyhDvlEeqMcn7Hl5llWG62IGzAo5cZPmPQ9tTO/2VEumtWJAo/OPnAgtyYfNBRA6x4a9p8kx3Da1es2BCr1UQK/AMsJARwzYIQzRrQ7di/8kbY7D50ltM5T55sh5M6QhWrAVlVYN9sJFg6Wq3D1Mrxg+cVRpiwjwmWC3tS2nTonBdqFvgXOuFKuPxa5wTAqv2G2WD8gV2EnRMno8rxlMN6K2g5XR7L5hI+Uz54JqiQC4P7H+yOoh7uSwudbla6n+j/2uR46IFmL4xaO9x4PSGT6SDWmHehCN3P5GawAJFlnKJEuUpvsugD2u0oR7qwuJE89YMpeyto4DvYSCq/oUU42MTe/m0a3Mc+zNdBhiP61QwLT9WpKnwCsSypG94=
+    secure: QkyOd2lLd3la6OKFGMTfE4ybmS6rnoiWMldKV4qCF0HoniTR2gVv4MPBHlXYlhpmVslSPT62rpQwZXYiVbjOKLHGllExGV0X72rxg19yJUXRgf/o3lNrj7y0XXbDai41A7UjCr1hUdcfdyk0qiTWTDKxzASmpM0z5LxfQD1qgeCUcHkea/jhYACo2l0H0iYHqj7EOS12u3F5gxTM1XHgxz8eVySpEVwcERyOf2xAPqmRliXKjWyqCq65MyIYXquQSzUfHasmaqI7wvpKAVYsj5AY8gWBedy0Dd8kpBmbv0INt7cIRz2AlEPINocqrncQQDBLumNXVT+mHRuI3mKGk2jLKjdhDIMqIRyYO4ZDc2wj42qH0eohkwJ18ItDKNiItGYEZgcfyjuNWIcjyFZui4+/s5A6gBlcGLsOnTclmV884q50yU5bcnDaG08J2iV1ty/bVgh2pM1tC1phmyPzxcLyQ6/X4T5k0gRXSZYNLD4tzjO1P7RG8jtnQw+ZVj1rWoWEQZkkGxzKc0IB8n5VErPj4jJMFp0YoHdXePQj3cakZsR4j4dPTA1H9WdFIcvQ5rIx6DvHRVpTt4s0EYzhu5mS3T69e3oW3a+wRex/277OWG6QVIcRvSTCkxrs8lkpxpkdL6N5aXer9O7WQdj1MlwiaaHGf4/q+jy8rF/jZ/E=
 notifications:
   slack:
     on_success: change
