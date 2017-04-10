@@ -1,18 +1,22 @@
 language: java
 jdk:
-- oraclejdk7
-script: ./gradlew publishGhPages --stacktrace
+ - oraclejdk7
+
+script: ./gradlew build publishGhPages --stacktrace
+
 before_cache:
-- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-- rm -fr $HOME/.gradle/caches/*/scripts/
+ - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+ - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+ - rm -fr $HOME/.gradle/caches/*/scripts/
+
 cache:
   directories:
-  - $HOME/.gradle/caches/
-  - $HOME/.gradle/wrapper/
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+
 env:
   global:
-    secure: QNgelYXYSiDIWzQJge9T7Xoh2J5EkTxnfNmnxb1UyJWH5nWS6qePZCuIArGUO/B/BXfGc857/moXyrIg8tzREqs0zuZlrk0q4aVk0MEdJQ83x51dR6I5CgJFQfP1qpn1zf9Q/mud/Vm2u3H0/zVJrYj5LeLydqttjsD+EYdSE0UjGA8c07DBJkLJRpIUl3mnfxhr7c++0N5cHCIH7FJZow+VAVpLExuTkFWJ45ZSvWFNAaDOP7jrZfGh2j93LjBw2dS7vNbwcSsPL8WJ7SRdRyBlQREY7nPHhSsaFTQnJFTVTS3BpahrYHNFysRPPihtOdJPvH5tU3T5XS1Cx1kSUU8shgAS3crtwuz67uLZH/oaWnOuBLdt9Fd1quusX+dPb0MBP7QkuEX29DUtVFOIzzwFDgLAhkZ+DR+AaGZRww67SFH9BcYGhNJlOn0vjBQj+aaC56bZIHPSbGQtydZW65R+ex1VM+feC23VId8F5EJBgEv7vZIsG04P22+AqDB95EAdRQloumXB9nVDIYHlgbox7G/xiJD78boEfNNiqxcYOdyeMAe59opiisXJ9YQsBp2P3KZH+RB80TiV0FUQrMmsl3lICx2xCSrrLC3EnuK5j8MKsUq8zf1T2wACdmGLPfBpnMygGCNe20vrponh6SmAa25InSdaZghpEEUIf0c=
+    secure: Y6PJlkEsaPLqk0ZvICmaZVmjKljB0DC8xs4xWz7ot6D0ijVc7DcblBjuDaBiOq2rn2IMcdUEC2Kc9SBT0BdkNakx8I8UlBFdzMVPu1/8PpzcYXv12GCqUClPC7VP2Qv8uWyjodmwk6Wk2eMtDbWLoa1w3c/acQv1x0HHnu5clH05lxeTnA6T5JF65Xg4Jmazkt2yp4sUCcaAeOwRrAUapFv/9Sp2t+0QvNMz8QKxCf/IkfhZEANuyhnGCLtK2P6YKbc4Oa9I8Pl1NsOYS83UwEEWyXlpEFESQtKYUzEvhAFPgJJyhDvlEeqMcn7Hl5llWG62IGzAo5cZPmPQ9tTO/2VEumtWJAo/OPnAgtyYfNBRA6x4a9p8kx3Da1es2BCr1UQK/AMsJARwzYIQzRrQ7di/8kbY7D50ltM5T55sh5M6QhWrAVlVYN9sJFg6Wq3D1Mrxg+cVRpiwjwmWC3tS2nTonBdqFvgXOuFKuPxa5wTAqv2G2WD8gV2EnRMno8rxlMN6K2g5XR7L5hI+Uz54JqiQC4P7H+yOoh7uSwudbla6n+j/2uR46IFmL4xaO9x4PSGT6SDWmHehCN3P5GawAJFlnKJEuUpvsugD2u0oR7qwuJE89YMpeyto4DvYSCq/oUU42MTe/m0a3Mc+zNdBhiP61QwLT9WpKnwCsSypG94=
 notifications:
   slack:
     on_success: change
