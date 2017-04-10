@@ -1,0 +1,7 @@
+
+.gradle
+.idea
+.project
+*.iml
+*.sw?
+build
