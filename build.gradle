@@ -1,3 +1,4 @@
+
 plugins {
     id "org.ajoberstar.github-pages" version "1.4.2"
     id "org.asciidoctor.convert" version "1.5.3"
@@ -11,3 +12,15 @@ ext {
 apply from : 'gradle/build-documentation.gradle'
 apply from : 'gradle/publish-documentation.gradle'
 apply from : 'gradle/test-source.gradle'
+apply from : 'gradle/use-buildinit.gradle'
+
+asciidoctor {
+
+    inputs.dir tasks.runBuildInit.destDir.parentFile
+
+    attributes initexampledir : tasks.runBuildInit.destDir.absolutePath,
+        initlogfile : tasks.runBuildInit.initOutputFile.absolutePath,
+        buildlogfile : tasks.runBuildInit.buildOutputFile.absolutePath
+
+    dependsOn runBuildInit
+}

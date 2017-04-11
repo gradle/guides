@@ -1,0 +1,15 @@
+├── build.gradle
+├── gradle
+│   └── wrapper  // <1>
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── gradlew
+├── gradlew.bat
+├── settings.gradle
+└── src
+    ├── main
+    │   └── groovy  // <2>
+    │       └── Library.groovy
+    └── test
+        └── groovy // <3>
+            └── LibraryTest.groovy
