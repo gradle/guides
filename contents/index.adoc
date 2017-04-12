@@ -15,9 +15,9 @@ If you happen to be a beginner to Gradle please start by working through the lin
 == Practices
 
 [[plugin-development-plugin]]
-=== Using the Plugin Development Plugin for writing plugins
+=== Using the Plugin Development plugin for writing plugins
 
-Setting up a Gradle plugin project should require as little boilerplate code as possible. The {user-manual}javaGradle_plugin.html[Java Gradle Plugin Development Plugin] provides aid in this concern. To get started add the following code to your _build.gradle_ file:
+Setting up a Gradle plugin project should require as little boilerplate code as possible. The {user-manual}javaGradle_plugin.html[Java Gradle Plugin Development plugin] provides aid in this concern. To get started add the following code to your _build.gradle_ file:
 
 .build.gradle
 [source,groovy]
@@ -153,7 +153,7 @@ public class Generate extends DefaultTask {
 }
 ----
 
-The first section of this guide talks about the <<plugin-development-plugin,Plugin Development Plugin>>. As an added benefit of applying the plugin to your project, the task `validateTaskProperties` automatically checks for an existing input/output annotation for every public property define in a custom task type implementation.
+The first section of this guide talks about the <<plugin-development-plugin,Plugin Development plugin>>. As an added benefit of applying the plugin to your project, the task `validateTaskProperties` automatically checks for an existing input/output annotation for every public property define in a custom task type implementation.
 
 === Reacting to plugins
 
