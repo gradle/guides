@@ -2,7 +2,7 @@
 :toclevels: 2
 :numbered:
 
-Writing plugin code is a routine activity for advanced build authors. The activity usually involves writing the plugin implementation, creating custom task type for executing desired functionality and making the runtime behavior configurable for the end user by exposing a declarative and expressive DSL. In this guide you will learn established practices to make you a better plugin developer and how make a plugin as accessible and useful for consumers as possible. Please consider working through the guide on link:https://guides.gradle.org/designing-gradle-plugins[designing Gradle plugins] before reading this guide.
+Writing plugin code is a routine activity for advanced build authors. The activity usually involves writing the plugin implementation, creating custom task type for executing desired functionality and making the runtime behavior configurable for the end user by exposing a declarative and expressive DSL. In this guide you will learn established practices to make you a better plugin developer and how make a plugin as accessible and useful for consumers as possible. Please consider working through the guide on {guides}/designing-gradle-plugins[designing Gradle plugins] before reading this guide.
 
 The guide assumes you have:
 
@@ -284,7 +284,7 @@ You will find that this pattern works well for tasks that require an external de
 
 A descriptive plugin identifier makes it easy for consumers to apply the plugin to a project. The ID should reflect the purpose of the plugin with a single term. Additionally, a domain name should be added to avoid conflicts between other plugins with similar functionality. In the previous sections, dependencies shows in code examples use the group ID `com.company`. We could use the same identifier as domain name. In case you are not working with a legal entity or should want to publish a open-source plugin then you can just use the domain name hosting the source code e.g. `com.github`.
 
-When publishing multiple plugins as part of a single JAR artifact (as described in the section link:https://guides.gradle.org/designing-gradle-plugins#capabilities-vs-conventions["Capabilities vs. conventions" in the "Designing Gradle plugins" guide]) the same naming conventions should apply. There’s no limitation to the number of plugins that can be registered by identifier and serves as a nice way to group related plugins together. For illustration, the Gradle Android plugin defines two different plugins in the directory `src/main/resources/META-INF/gradle-plugins`.
+When publishing multiple plugins as part of a single JAR artifact (as described in the section {guides}/designing-gradle-plugins#capabilities-vs-conventions["Capabilities vs. conventions" in the "Designing Gradle plugins" guide]) the same naming conventions should apply. There’s no limitation to the number of plugins that can be registered by identifier and serves as a nice way to group related plugins together. For illustration, the Gradle Android plugin defines two different plugins in the directory `src/main/resources/META-INF/gradle-plugins`.
 
 ----
 .
@@ -354,4 +354,4 @@ Wrote an awesome plugin? Write a tweet to link:https://twitter.com/gradle[@gradl
 
 There’s far more to Gradle plugins than the actual implementation. You may be interested in:
 
-- link:https://guides.gradle.org/designing-gradle-plugins[Designing Gradle plugins]
+- {guides}/designing-gradle-plugins[Designing Gradle plugins]
