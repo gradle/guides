@@ -2,7 +2,7 @@
 :toclevels: 2
 :numbered:
 
-Writing plugin code is a routine activity for advanced build authors. The activity usually involves writing the plugin implementation, creating custom task type for executing desired functionality and making the runtime behavior configurable for the end user by exposing a declarative and expressive DSL. In this guide you will learn established practices to make you a better plugin developer and how make a plugin as accessible and useful for consumers as possible. Please consider working through the guide on link:https://guides.gradle.org/designing-gradle-plugins[designing Gradle plugins] before reading this guide.
+Writing plugin code is a routine activity for advanced build authors. The activity usually involves writing the plugin implementation, creating custom task type for executing desired functionality and making the runtime behavior configurable for the end user by exposing a declarative and expressive DSL. In this guide you will learn established practices to make you a better plugin developer and how make a plugin as accessible and useful for consumers as possible. Please consider working through the guide on {guides}/designing-gradle-plugins[designing Gradle plugins] before reading this guide.
 
 The guide assumes you have:
 
@@ -10,14 +10,14 @@ The guide assumes you have:
 - Knowledge of Gradle fundamentals like project organization, task creation and configuration as well as the Gradle build lifecycle
 - Working knowledge in writing Java code
 
-If you happen to be a beginner to Gradle please start by working through the link:https://gradle.org/docs#getting-started[getting started guides on Gradle development] first while referencing the link:https://docs.gradle.org/current/userguide/userguide.html[Gradle user guide] to go deeper.
+If you happen to be a beginner to Gradle please start by working through the link:https://gradle.org/docs#getting-started[Getting Started Guides on Gradle development] first while referencing the {user-manual}userguide.html[Gradle User Manual] to go deeper.
 
 == Practices
 
 [[plugin-development-plugin]]
-=== Using the Plugin Development Plugin for writing plugins
+=== Using the Plugin Development plugin for writing plugins
 
-Setting up a Gradle plugin project should require as little boilerplate code as possible. The link:https://docs.gradle.org/current/userguide/javaGradle_plugin.html[Java Gradle Plugin Development Plugin] provides aid in this concern. To get started add the following code to your _build.gradle_ file:
+Setting up a Gradle plugin project should require as little boilerplate code as possible. The {user-manual}javaGradle_plugin.html[Java Gradle Plugin Development plugin] provides aid in this concern. To get started add the following code to your _build.gradle_ file:
 
 .build.gradle
 [source,groovy]
@@ -31,7 +31,7 @@ By applying the plugin, necessary plugins are applied and relevant dependencies 
 
 === Prefer writing and using custom task types
 
-Gradle tasks can be defined as link:https://docs.gradle.org/current/userguide/tutorial_using_tasks.html#sec:projects_and_tasks[ad-hoc tasks], simple task definitions of type `DefaultTask` with one or many actions, or as link:https://docs.gradle.org/current/userguide/more_about_tasks.html[enhanced tasks], the ones that use a custom task type and expose its configurability with the help of properties. Generally speaking, custom tasks provide the means for reusability, maintainability, configurability and testability. The same principles hold true when providing tasks as part of plugins. Always prefer custom task types over ad-hoc tasks. Consumers of your plugin will also have the chance to reuse the existing task type if they want to add more tasks to the build script.
+Gradle tasks can be defined as {guides}/writing-gradle-tasks[ad-hoc tasks], simple task definitions of type `DefaultTask` with one or many actions, or as {user-manual}more_about_tasks.html[enhanced tasks], the ones that use a custom task type and expose its configurability with the help of properties. Generally speaking, custom tasks provide the means for reusability, maintainability, configurability and testability. The same principles hold true when providing tasks as part of plugins. Always prefer custom task types over ad-hoc tasks. Consumers of your plugin will also have the chance to reuse the existing task type if they want to add more tasks to the build script.
 
 Let’s say you implemented a plugin that resolves the latest version of a dependency in a binary repository by making HTTP calls by providing a custom task type. The custom task is provided by a plugin that takes care of communicating via HTTP and processing the response in machine-readable format like XML or JSON.
 
@@ -91,7 +91,7 @@ task latestVersionInhouseRepo(type: LatestArtifactVersion) {
 
 === Benefiting from incremental tasks
 
-Gradle uses declared inputs and outputs to determine if a task is up-to-date and needs to perform any work. If none of the inputs or outputs have changed, Gradle can skip that task. Gradle calls this mechanism incremental build support. The advantage of link:https://docs.gradle.org/current/userguide/more_about_tasks.html#sec:up_to_date_checks[incremental build support] is that it can significantly improve the performance of a build.
+Gradle uses declared inputs and outputs to determine if a task is up-to-date and needs to perform any work. If none of the inputs or outputs have changed, Gradle can skip that task. Gradle calls this mechanism incremental build support. The advantage of {user-manual}more_about_tasks.html#sec:up_to_date_checks[incremental build support] is that it can significantly improve the performance of a build.
 
 It’s very common for Gradle plugins to introduce custom task types. As a plugin author that means that you’ll have to annotation all properties of a task with input or output annotations. It’s highly recommended to equip every task with the information to run up-to-date checking. Remember: for up-to-date checking to work properly a task needs to define both inputs and outputs.
 
@@ -104,30 +104,30 @@ public class Generate extends DefaultTask {
     private int fileCount;
     private String content;
     private File generatedFileDir;
-    
+
     @Input
     public int getFileCount() {
         return fileCount;
     }
-    
+
     public void setFileCount(int fileCount) {
         this.fileCount = fileCount;
     }
-    
+
     @Input
     public int getContent() {
         return content;
     }
-    
+
     public void setContent(String content) {
         this.content = content;
     }
-    
+
     @OutputDirectory
     public File getGeneratedFileDir() {
         return generatedFileDir;
     }
-    
+
     public void setGeneratedFileDir(File generatedFileDir) {
         this.generatedFileDir = generatedFileDir;
     }
@@ -138,7 +138,7 @@ public class Generate extends DefaultTask {
             writeFile(new File(generatedFileDir, i + ".txt"), content);
         }
     }
-    
+
     private void writeFile(File destination, String content) throws IOException {
         BufferedWriter output = null;
         try {
@@ -153,7 +153,7 @@ public class Generate extends DefaultTask {
 }
 ----
 
-The first section of this guide talks about the <<plugin-development-plugin,Plugin Development Plugin>>. As an added benefit of applying the plugin to your project, the task `validateTaskProperties` automatically checks for an existing input/output annotation for every public property define in a custom task type implementation.
+The first section of this guide talks about the <<plugin-development-plugin,Plugin Development plugin>>. As an added benefit of applying the plugin to your project, the task `validateTaskProperties` automatically checks for an existing input/output annotation for every public property define in a custom task type implementation.
 
 === Reacting to plugins
 
@@ -165,7 +165,7 @@ Configuring the runtime behavior of existing plugins and tasks in a build is a c
 public class InhouseConventionJavaPlugin implements Plugin<Project> {
     public void apply(Project project) {
         project.getPlugins().apply(JavaPlugin.class);
-        JavaPluginConvention javaConvention = 
+        JavaPluginConvention javaConvention =
             project.getConvention().getPlugin(JavaPluginConvention.class);
         SourceSet main = javaConvention.getSourceSets().create(SourceSet.MAIN_SOURCE_SET_NAME);
         main.getAllJava().setSrcDirs(Arrays.asList("src"));
@@ -182,7 +182,7 @@ public class InhouseConventionJavaPlugin implements Plugin<Project> {
     public void apply(Project project) {
         project.getPlugins().withType(JavaPlugin.class, new Action<JavaPlugin>() {
             public void execute(JavaPlugin javaPlugin) {
-                JavaPluginConvention javaConvention = 
+                JavaPluginConvention javaConvention =
                     project.getConvention().getPlugin(JavaPluginConvention.class);
                 SourceSet main = javaConvention.getSourceSets().create(SourceSet.MAIN_SOURCE_SET_NAME);
                 main.getAllJava().setSrcDirs(Arrays.asList("src"));
@@ -212,7 +212,7 @@ public class InhouseConventionWarPlugin implements Plugin<Project> {
 
 The implementation of a plugin sometimes requires the use of an external dependency. You might want to automatically download an artifact using Gradle’s dependency management mechanism and later use it in the action of a task type declared in the plugin. Optimally, the plugin implementation doesn’t need to ask the user for the coordinates of that dependency - it can simply predefine a sensible default version.
 
-Let’s have a look at an example. You wrote a plugin that downloads files containing data for further processing. The plugin implementation declares a custom configuration that allows for link:https://docs.gradle.org/current/userguide/dependency_management.html#sec:configuration_defaults[assigning those external dependencies with default dependency coordinates].
+Let’s have a look at an example. You wrote a plugin that downloads files containing data for further processing. The plugin implementation declares a custom configuration that allows for {user-manual}dependency_management.html#sec:configuration_defaults[assigning those external dependencies with default dependency coordinates].
 
 Please be aware that the code example below currently uses an internal API: convention mapping. Gradle 4.0 will provide a new public API for this purpose. This guide will be updated to reflect the use of the new public API as soon as the release goes out.
 
@@ -226,7 +226,7 @@ public class DataProcessingPlugin implements Plugin<Project> {
             .setDescription("The data artifacts to be processed for this plugin.");
 
         config.defaultDependencies(new Action<DependencySet>() {
-            public void execute(DependencySet dependencies) {      
+            public void execute(DependencySet dependencies) {
                 dependencies.add(project.getDependencies().create("com.company:data:1.4.6"));
             }
         });
@@ -278,13 +278,13 @@ dependencies {
 }
 ----
 
-You will find that this pattern works well for tasks that require an external dependency when the action of the task is actually executed. The method is heavily used for custom tasks that execute an external Ant task like many of the link:https://docs.gradle.org/current/userguide/standard_plugins.html#sec:software_development_plugins[Gradle core static analysis plugins] do e.g. the FindBugs and Checkstyle plugin. In fact those plugins even go further and abstract the version to be used for the external dependency by exposing an extension property (e.g. link:https://docs.gradle.org/current/dsl/org.gradle.testing.jacoco.plugins.JacocoPluginExtension.html#org.gradle.testing.jacoco.plugins.JacocoPluginExtension:toolVersion[`toolVersion` in the JaCoCo plugin]).
+You will find that this pattern works well for tasks that require an external dependency when the action of the task is actually executed. The method is heavily used for custom tasks that execute an external Ant task like many of the {user-manual}standard_plugins.html#sec:software_development_plugins[Gradle core static analysis plugins] do e.g. the FindBugs and Checkstyle plugin. In fact those plugins even go further and abstract the version to be used for the external dependency by exposing an extension property (e.g. `toolVersion` {language-reference}org.gradle.testing.jacoco.plugins.JacocoPluginExtension.html#org.gradle.testing.jacoco.plugins.JacocoPluginExtension:toolVersion[in the JaCoCo plugin]).
 
 === Assigning appropriate plugin identifiers
 
 A descriptive plugin identifier makes it easy for consumers to apply the plugin to a project. The ID should reflect the purpose of the plugin with a single term. Additionally, a domain name should be added to avoid conflicts between other plugins with similar functionality. In the previous sections, dependencies shows in code examples use the group ID `com.company`. We could use the same identifier as domain name. In case you are not working with a legal entity or should want to publish a open-source plugin then you can just use the domain name hosting the source code e.g. `com.github`.
 
-When publishing multiple plugins as part of a single JAR artifact (as described in the section link:https://guides.gradle.org/designing-gradle-plugins#capabilities-vs-conventions["Capabilities vs. conventions" in the "Designing Gradle plugins" guide]) the same naming conventions should apply. There’s no limitation to the number of plugins that can be registered by identifier and serves as a nice way to group related plugins together. For illustration, the Gradle Android plugin defines two different plugins in the directory `src/main/resources/META-INF/gradle-plugins`.
+When publishing multiple plugins as part of a single JAR artifact (as described in the section {guides}/designing-gradle-plugins#capabilities-vs-conventions["Capabilities vs. conventions" in the "Designing Gradle plugins" guide]) the same naming conventions should apply. There’s no limitation to the number of plugins that can be registered by identifier and serves as a nice way to group related plugins together. For illustration, the Gradle Android plugin defines two different plugins in the directory `src/main/resources/META-INF/gradle-plugins`.
 
 ----
 .
@@ -316,7 +316,7 @@ Gradle plugin implementations are consumable APIs: Plugins can be applied, exten
  */
 public class Generate extends DefaultTask {
     private int fileCount;
-    
+
     /**
      * Returns the number of files to be generated.
      *
@@ -326,7 +326,7 @@ public class Generate extends DefaultTask {
     public int getFileCount() {
         return fileCount;
     }
-    
+
     /**
      * Sets the number of files to be generated.
      *
@@ -354,4 +354,4 @@ Wrote an awesome plugin? Write a tweet to link:https://twitter.com/gradle[@gradl
 
 There’s far more to Gradle plugins than the actual implementation. You may be interested in:
 
-- link:https://guides.gradle.org/designing-gradle-plugins[Designing Gradle plugins]
+- {guides}/designing-gradle-plugins[Designing Gradle plugins]
