@@ -11,13 +11,13 @@ This guide assumes you have:
 - Basic understanding of software engineering practices
 - Knowledge of Gradle fundamentals like project organization, task creation and configuration as well as the Gradle build lifecycle
 
-If you happen to be a beginner to Gradle please start by working through the link:https://gradle.org/docs#getting-started[Getting Started Guides on Gradle development] first while referencing the link:https://docs.gradle.org/current/userguide/userguide.html[Gradle user guide] to go deeper.
+If you happen to be a beginner to Gradle please start by working through the link:https://gradle.org/docs#getting-started[Getting Started Guides on Gradle development] first while referencing the link:https://docs.gradle.org/current/userguide/userguide.html[Gradle User Manual] to go deeper.
 
 == Architecture
 
 === Reusable logic should be written as binary plugin
 
-The Gradle user guide differentiates two types of plugins: link:https://docs.gradle.org/current/userguide/plugins.html#sec:types_of_plugins[script plugins and binary plugins]. Script plugins are basically just plain old Gradle build scripts with a different name. While script plugins have their place for organizing build logic in a Gradle project, it’s hard to keep them well-maintained, they are hard to test and you can’t define new reusable types in them.
+The Gradle User Manual differentiates two types of plugins: link:https://docs.gradle.org/current/userguide/plugins.html#sec:types_of_plugins[script plugins and binary plugins]. Script plugins are basically just plain old Gradle build scripts with a different name. While script plugins have their place for organizing build logic in a Gradle project, it’s hard to keep them well-maintained, they are hard to test and you can’t define new reusable types in them.
 
 link:https://docs.gradle.org/current/userguide/plugins.html#sec:binary_plugins[Binary plugins] should be used whenever logic needs to be reused or shared across independent projects. They allow for properly structuring code into classes and packages, are cachable, can follow a versioning scheme to enable smooth upgrade procedures and are easily testable.
 
