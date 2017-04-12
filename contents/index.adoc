@@ -2,7 +2,7 @@
 :toclevels: 2
 :numbered:
 
-For beginners to Gradle implementing plugins can look like a daunting task that includes many considerations and deep knowledge: organizing and structuring plugin logic, testing and debugging plugin code as well as publishing the plugin artifact to a repository for consumption. You can find answers to many of those questions in the link:https://gradle.org/docs#getting-started[getting started guides for plugin development].
+For beginners to Gradle implementing plugins can look like a daunting task that includes many considerations and deep knowledge: organizing and structuring plugin logic, testing and debugging plugin code as well as publishing the plugin artifact to a repository for consumption. You can find answers to many of those questions in the link:https://gradle.org/docs#getting-started[Getting Started Guides for plugin development].
 
 This guide is the first installment of a series of topical guides with deep coverage on various aspects of Gradle plugin development. You will learn how to properly design Gradle plugins based on established practices and apply them to your own projects.
 
@@ -11,7 +11,7 @@ This guide assumes you have:
 - Basic understanding of software engineering practices
 - Knowledge of Gradle fundamentals like project organization, task creation and configuration as well as the Gradle build lifecycle
 
-If you happen to be a beginner to Gradle please start by working through the link:https://gradle.org/docs#getting-started[getting started guides on Gradle development] first while referencing the link:https://docs.gradle.org/current/userguide/userguide.html[Gradle user guide] to go deeper.
+If you happen to be a beginner to Gradle please start by working through the link:https://gradle.org/docs#getting-started[Getting Started Guides on Gradle development] first while referencing the link:https://docs.gradle.org/current/userguide/userguide.html[Gradle user guide] to go deeper.
 
 == Architecture
 
@@ -29,7 +29,7 @@ As you write plugin code ask yourself whether the code shouldn’t rather be run
 
 === Convention over configuration
 
-link:https://en.wikipedia.org/wiki/Convention_over_configuration[Convention over configuration] is a software engineering paradigm that allows a tool or framework to make an attempt at decreasing the number of decisions the user has to make without losing its flexibility. What does that mean for Gradle plugins? Gradle plugins can provide users with sensible defaults and standards (_conventions_) in a certain context. Let’s take the link:https://docs.gradle.org/current/userguide/java_plugin.html[Java plugin] as an example. 
+link:https://en.wikipedia.org/wiki/Convention_over_configuration[Convention over configuration] is a software engineering paradigm that allows a tool or framework to make an attempt at decreasing the number of decisions the user has to make without losing its flexibility. What does that mean for Gradle plugins? Gradle plugins can provide users with sensible defaults and standards (_conventions_) in a certain context. Let’s take the link:https://docs.gradle.org/current/userguide/java_plugin.html[Java plugin] as an example.
 
 - It defines the directory _src/main/java_ as the default source directory for compilation.
 - The output directory for compiled source code and other artifacts (like the JAR file) is _build_.
@@ -99,7 +99,7 @@ Here are two open-source plugins that apply the concept for inspiration:
 
 === Prefer using a statically-typed language to implement a plugin
 
-Gradle doesn’t take a stance on the programming language you should chose for implementing a plugin. It’s a developer’s choice as long as the plugin binary can be executed on the JVM. 
+Gradle doesn’t take a stance on the programming language you should chose for implementing a plugin. It’s a developer’s choice as long as the plugin binary can be executed on the JVM.
 
 It is recommended to use a statically-typed language like Java or Kotlin for implementing plugins to decrease the likelihood of binary incompatibilities. Should you decide on using Groovy for your plugin implementation then it is a good choice to use the annotation link:http://docs.groovy-lang.org/latest/html/gapi/groovy/transform/CompileStatic.html[@groovy.transform.CompileStatic].
 
