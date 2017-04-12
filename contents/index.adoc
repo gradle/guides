@@ -10,7 +10,7 @@ The guide assumes you have:
 - Knowledge of Gradle fundamentals like project organization, task creation and configuration as well as the Gradle build lifecycle
 - Working knowledge in writing Java code
 
-If you happen to be a beginner to Gradle please start by working through the link:https://gradle.org/docs#getting-started[getting started guides on Gradle development] first while referencing the link:https://docs.gradle.org/current/userguide/userguide.html[Gradle user guide] to go deeper.
+If you happen to be a beginner to Gradle please start by working through the link:https://gradle.org/docs#getting-started[Getting Started Guides on Gradle development] first while referencing the link:https://docs.gradle.org/current/userguide/userguide.html[Gradle user guide] to go deeper.
 
 == Practices
 
@@ -104,30 +104,30 @@ public class Generate extends DefaultTask {
     private int fileCount;
     private String content;
     private File generatedFileDir;
-    
+
     @Input
     public int getFileCount() {
         return fileCount;
     }
-    
+
     public void setFileCount(int fileCount) {
         this.fileCount = fileCount;
     }
-    
+
     @Input
     public int getContent() {
         return content;
     }
-    
+
     public void setContent(String content) {
         this.content = content;
     }
-    
+
     @OutputDirectory
     public File getGeneratedFileDir() {
         return generatedFileDir;
     }
-    
+
     public void setGeneratedFileDir(File generatedFileDir) {
         this.generatedFileDir = generatedFileDir;
     }
@@ -138,7 +138,7 @@ public class Generate extends DefaultTask {
             writeFile(new File(generatedFileDir, i + ".txt"), content);
         }
     }
-    
+
     private void writeFile(File destination, String content) throws IOException {
         BufferedWriter output = null;
         try {
@@ -165,7 +165,7 @@ Configuring the runtime behavior of existing plugins and tasks in a build is a c
 public class InhouseConventionJavaPlugin implements Plugin<Project> {
     public void apply(Project project) {
         project.getPlugins().apply(JavaPlugin.class);
-        JavaPluginConvention javaConvention = 
+        JavaPluginConvention javaConvention =
             project.getConvention().getPlugin(JavaPluginConvention.class);
         SourceSet main = javaConvention.getSourceSets().create(SourceSet.MAIN_SOURCE_SET_NAME);
         main.getAllJava().setSrcDirs(Arrays.asList("src"));
@@ -182,7 +182,7 @@ public class InhouseConventionJavaPlugin implements Plugin<Project> {
     public void apply(Project project) {
         project.getPlugins().withType(JavaPlugin.class, new Action<JavaPlugin>() {
             public void execute(JavaPlugin javaPlugin) {
-                JavaPluginConvention javaConvention = 
+                JavaPluginConvention javaConvention =
                     project.getConvention().getPlugin(JavaPluginConvention.class);
                 SourceSet main = javaConvention.getSourceSets().create(SourceSet.MAIN_SOURCE_SET_NAME);
                 main.getAllJava().setSrcDirs(Arrays.asList("src"));
@@ -226,7 +226,7 @@ public class DataProcessingPlugin implements Plugin<Project> {
             .setDescription("The data artifacts to be processed for this plugin.");
 
         config.defaultDependencies(new Action<DependencySet>() {
-            public void execute(DependencySet dependencies) {      
+            public void execute(DependencySet dependencies) {
                 dependencies.add(project.getDependencies().create("com.company:data:1.4.6"));
             }
         });
@@ -316,7 +316,7 @@ Gradle plugin implementations are consumable APIs: Plugins can be applied, exten
  */
 public class Generate extends DefaultTask {
     private int fileCount;
-    
+
     /**
      * Returns the number of files to be generated.
      *
@@ -326,7 +326,7 @@ public class Generate extends DefaultTask {
     public int getFileCount() {
         return fileCount;
     }
-    
+
     /**
      * Sets the number of files to be generated.
      *
