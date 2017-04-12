@@ -2,7 +2,7 @@
 :toclevels: 2
 :numbered:
 
-For beginners to Gradle implementing plugins can look like a daunting task that includes many considerations and deep knowledge: organizing and structuring plugin logic, testing and debugging plugin code as well as publishing the plugin artifact to a repository for consumption. You can find answers to many of those questions in the link:https://gradle.org/docs#getting-started[getting started guides for plugin development].
+For beginners to Gradle implementing plugins can look like a daunting task that includes many considerations and deep knowledge: organizing and structuring plugin logic, testing and debugging plugin code as well as publishing the plugin artifact to a repository for consumption. You can find answers to many of those questions in the link:https://gradle.org/docs#getting-started[Getting Started Guides for plugin development].
 
 This guide is the first installment of a series of topical guides with deep coverage on various aspects of Gradle plugin development. You will learn how to properly design Gradle plugins based on established practices and apply them to your own projects.
 
@@ -11,13 +11,13 @@ This guide assumes you have:
 - Basic understanding of software engineering practices
 - Knowledge of Gradle fundamentals like project organization, task creation and configuration as well as the Gradle build lifecycle
 
-If you happen to be a beginner to Gradle please start by working through the link:https://gradle.org/docs#getting-started[getting started guides on Gradle development] first while referencing the link:https://docs.gradle.org/current/userguide/userguide.html[Gradle user guide] to go deeper.
+If you happen to be a beginner to Gradle please start by working through the link:https://gradle.org/docs#getting-started[Getting Started Guides on Gradle development] first while referencing the link:https://docs.gradle.org/current/userguide/userguide.html[Gradle User Manual] to go deeper.
 
 == Architecture
 
 === Reusable logic should be written as binary plugin
 
-The Gradle user guide differentiates two types of plugins: link:https://docs.gradle.org/current/userguide/plugins.html#sec:types_of_plugins[script plugins and binary plugins]. Script plugins are basically just plain old Gradle build scripts with a different name. While script plugins have their place for organizing build logic in a Gradle project, it’s hard to keep them well-maintained, they are hard to test and you can’t define new reusable types in them.
+The Gradle User Manual differentiates two types of plugins: link:https://docs.gradle.org/current/userguide/plugins.html#sec:types_of_plugins[script plugins and binary plugins]. Script plugins are basically just plain old Gradle build scripts with a different name. While script plugins have their place for organizing build logic in a Gradle project, it’s hard to keep them well-maintained, they are hard to test and you can’t define new reusable types in them.
 
 link:https://docs.gradle.org/current/userguide/plugins.html#sec:binary_plugins[Binary plugins] should be used whenever logic needs to be reused or shared across independent projects. They allow for properly structuring code into classes and packages, are cachable, can follow a versioning scheme to enable smooth upgrade procedures and are easily testable.
 
@@ -29,7 +29,7 @@ As you write plugin code ask yourself whether the code shouldn’t rather be run
 
 === Convention over configuration
 
-link:https://en.wikipedia.org/wiki/Convention_over_configuration[Convention over configuration] is a software engineering paradigm that allows a tool or framework to make an attempt at decreasing the number of decisions the user has to make without losing its flexibility. What does that mean for Gradle plugins? Gradle plugins can provide users with sensible defaults and standards (_conventions_) in a certain context. Let’s take the link:https://docs.gradle.org/current/userguide/java_plugin.html[Java plugin] as an example. 
+link:https://en.wikipedia.org/wiki/Convention_over_configuration[Convention over configuration] is a software engineering paradigm that allows a tool or framework to make an attempt at decreasing the number of decisions the user has to make without losing its flexibility. What does that mean for Gradle plugins? Gradle plugins can provide users with sensible defaults and standards (_conventions_) in a certain context. Let’s take the link:https://docs.gradle.org/current/userguide/java_plugin.html[Java plugin] as an example.
 
 - It defines the directory _src/main/java_ as the default source directory for compilation.
 - The output directory for compiled source code and other artifacts (like the JAR file) is _build_.
@@ -57,14 +57,14 @@ As you can see, the user only declares the "what" - the server the plugin should
 
 The functionality brought in by a plugin can be extremely powerful but also very opinionated. That’s especially the case if a plugin predefines tasks and conventions that a project inherits automatically when applying it. Sometimes the reality that you - as plugin developer - chose for your users might simply look different than expected. For that very reason you need to make a plugin as flexible and configurable as possible.
 
-One way to provide these quality criteria is to separate capabilities from conventions. In practice that means separating general-purpose functionality from pre-configured, opinionated functionality. Let’s have a look at an example to explain this seemingly abstract concept. There are two Gradle core plugins that demonstrate the concept perfectly: the link:https://docs.gradle.org/current/userguide/standard_plugins.html#sec:base_plugins[Java base plugin] and the link:https://docs.gradle.org/current/userguide/java_plugin.html[Java plugin].
+One way to provide these quality criteria is to separate capabilities from conventions. In practice that means separating general-purpose functionality from pre-configured, opinionated functionality. Let’s have a look at an example to explain this seemingly abstract concept. There are two Gradle core plugins that demonstrate the concept perfectly: the link:https://docs.gradle.org/current/userguide/standard_plugins.html#sec:base_plugins[Java Base plugin] and the link:https://docs.gradle.org/current/userguide/java_plugin.html[Java plugin].
 
-- The Java base plugin just provided un-opinionated functionality and general purpose concepts. For example it formalized the concept of a SourceSet and introduces dependency management configurations. However, it doesn’t actually create tasks you’d use as a Java developer on a regular basis nor does it create instances of source set.
-- The Java plugin applies the Java base plugin internally and inherits all its functionality. On top it creates source set instances like `main` and `test`, creates tasks well-known to Java developers like `classes`, `jar` or `javadoc`. It also establishes a lifecycle between those tasks that make sense for the domain.
+- The Java Base plugin just provided un-opinionated functionality and general purpose concepts. For example it formalized the concept of a SourceSet and introduces dependency management configurations. However, it doesn’t actually create tasks you’d use as a Java developer on a regular basis nor does it create instances of source set.
+- The Java plugin applies the Java Base plugin internally and inherits all its functionality. On top it creates source set instances like `main` and `test`, creates tasks well-known to Java developers like `classes`, `jar` or `javadoc`. It also establishes a lifecycle between those tasks that make sense for the domain.
 
 image::java-plugin-composition.png[align="center"]
 
-The bottom line is that we _separated capabilities from conventions_. If a user decides that he doesn’t like the tasks created or doesn’t want to reconfigure a lot of the conventions because that’s not how the project structure looks like, then he can just fall back to applying the Java base plugin and take matters into his own hands.
+The bottom line is that we _separated capabilities from conventions_. If a user decides that he doesn’t like the tasks created or doesn’t want to reconfigure a lot of the conventions because that’s not how the project structure looks like, then he can just fall back to applying the Java Base plugin and take matters into his own hands.
 
 You should consider using the same technique when designing your own plugins. You can develop both plugins within the same project and ship their compiled classes and identifiers with the same binary artifact. The following code example show how to apply a plugin from another one, so-called plugin composition:
 
@@ -99,7 +99,7 @@ Here are two open-source plugins that apply the concept for inspiration:
 
 === Prefer using a statically-typed language to implement a plugin
 
-Gradle doesn’t take a stance on the programming language you should chose for implementing a plugin. It’s a developer’s choice as long as the plugin binary can be executed on the JVM. 
+Gradle doesn’t take a stance on the programming language you should chose for implementing a plugin. It’s a developer’s choice as long as the plugin binary can be executed on the JVM.
 
 It is recommended to use a statically-typed language like Java or Kotlin for implementing plugins to decrease the likelihood of binary incompatibilities. Should you decide on using Groovy for your plugin implementation then it is a good choice to use the annotation link:http://docs.groovy-lang.org/latest/html/gapi/groovy/transform/CompileStatic.html[@groovy.transform.CompileStatic].
 
