@@ -297,51 +297,6 @@ When publishing multiple plugins as part of a single JAR artifact (as described 
                     └── com.android.library.properties
 ----
 
-=== Adding helpful Javadocs to implementation
-
-Gradle plugin implementations are consumable APIs: Plugins can be applied, extensions and task types expose methods and properties to configure the runtime behavior. link:http://www.oracle.com/technetwork/articles/java/index-137868.html[Javadocs] are a great way to inform the end user about the purpose of classes, their usage in build script including available configuration options. It’s important to provide this information via Javadocs as you write the code.
-
-.Generate.java
-[source,java]
-----
-/**
- * Custom task type for generating files for the provided text.
- * <p>
- * The following sample code demonstrates the use of the type in a Gradle build script:
- * <pre>
- * task generate(type: Generate) {
- *     fileCount = 5
- * }
- * </pre>
- */
-public class Generate extends DefaultTask {
-    private int fileCount;
-
-    /**
-     * Returns the number of files to be generated.
-     *
-     * @return Number of files
-     */
-    @Input
-    public int getFileCount() {
-        return fileCount;
-    }
-
-    /**
-     * Sets the number of files to be generated.
-     *
-     * @param Number of files
-     */
-    public void setFileCount(int fileCount) {
-        this.fileCount = fileCount;
-    }
-
-    ...
-}
-----
-
-We are planning to publish another guide in this series of topical guides that explains how to generate the Javadocs for your plugins and publish them to a public hosting platform.
-
 == Summary
 
 Writing plugins doesn’t have to be hard. With the right techniques you can easily overcome commonly-faced challenges and implement plugins that are maintainable, reusable, declarative, well-documented and tested. Not all presented recommendations and recipes presented in this guide might be applicable to your plugin or your use case. However, the presented solutions should help you move toward the right direction.
