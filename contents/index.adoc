@@ -139,3 +139,4 @@ You now have a new Groovy project that you generated using Gradle's build init p
 * How to generate a Groovy library
 * How the generated build file and sample Groovy files are structured
 * How to run the build and view the test report
+* Generating API documentation.
