@@ -75,7 +75,7 @@ The file `src/main/java/App.java` is shown here:
 .Generated src/main/groovy/Library.groovy
 [source,groovy]
 ----
-include::{initexampledir}/src/main/groovy/Library.groovy[]
+include::{initexampledir}/src/main/groovy/Library.groovy[tags=source-code]
 ----
 
 The generated Spock specification, `src/test/groovy/LibraryTest.groovy` is shown next:
@@ -109,6 +109,28 @@ A sample report is shown here:
 image::Test-Summary.png[]
 
 Congratulations, you have just completed the step from creating a Groovy library! You can can now customise this to your own project needs.
+
+== Adding API documentation
+
+The `groovy` plugin has built-in support for Groovy's API documentation tool `groovydoc`.
+
+Annotate the `Library.groovy` file with Groovydoc markup.
+
+.src/main/groovy/Library.groovy
+[source,groovy]
+----
+include::{initexampledir}/src/main/groovy/Library.groovy[tags=groovy-doc]
+----
+
+Run the `groovydoc` task.
+
+[listing]
+----
+$ ./gradlew groovydoc
+include::{groovydoclogfile}[]
+----
+
+You can view the generated Groovydoc by opening the HTML file, located at `build/docs/groovydoc/index.html`.
 
 == Summary
 

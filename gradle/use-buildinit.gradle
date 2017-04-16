@@ -5,6 +5,7 @@ buildscript {
 }
 
 import org.gradle.testkit.runner.GradleRunner
+import org.apache.tools.ant.filters.*
 
 task runBuildInit {
 
@@ -13,11 +14,14 @@ task runBuildInit {
         destDir = file("${buildDir}/init/${project.name}")
         initOutputFile =  file("${buildDir}/init/output/init.txt")
         buildOutputFile =  file("${buildDir}/init/output/build.txt")
+        groovydocOutputFile =  file("${buildDir}/init/output/groovydoc.txt")
     }
 
     outputs.dir { destDir }
     outputs.file { initOutputFile }
     outputs.file { buildOutputFile }
+    outputs.file { groovydocOutputFile }
+
     inputs.property 'gradleVer' , gradle.gradleVersion
 
     doLast {
@@ -39,6 +43,14 @@ task runBuildInit {
         tmpBuildFile.withWriter { Writer output ->
             GradleRunner.create().forwardStdOutput(output).withProjectDir(tmpDir).
                 withArguments('build').build()
+        }
+
+        File editLibrary = new File(tmpDir,'src/main/groovy/Library.groovy')
+        editLibrary.text = file('contents/groovydoc-prefix.txt').text + editLibrary.text
+
+        groovydocOutputFile.withWriter { Writer output ->
+            GradleRunner.create().forwardStdOutput(output).withProjectDir(tmpDir).
+                withArguments('groovydoc').build()
         }
 
         copy {
@@ -82,6 +94,11 @@ task runBuildInit {
                         line
                     }
                 }
+            }
+
+            filesMatching( ['src/main/groovy/Library.groovy'] ) {
+                filter ConcatFilter, prepend: file('contents/groovydoc-prefix.txt'),
+                    append: file('contents/groovydoc-postfix.txt')
             }
         }
 
