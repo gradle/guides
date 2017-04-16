@@ -1,46 +1,90 @@
 = Getting Started Creating New Gradle Builds image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
 
-Creating a new build using Gradle means that you become a _build author_. You still need to follow the same https://guides.gradle.org/using-an-existing-gradle-build[path as a build user], but in addition, you will want to understand the Gradle Build Language and its API.
-
-A build user needs to be able to identify the project type and how such a project is structured. In your case, you know in advance what project type you want but you still need to understand the conventions and project structure. In addition, you also have to understand the basic declarative elements and underlying model of the project type you want to build.
+When encountering a Gradle-based project for the first time, many developers don't know what Gradle can do for them. The purpose of this guide is to show some of the basic tasks that work in any Gradle build, regardless of type of project. In this guide, you'll create a trivial Gradle project, invoke some of the basic Gradle commands, and get a sense of how Gradle manages the project.
 
 == What you'll need
 
-* About 5 minutes
+* About NN minutes
 * A text editor or IDE
-* A Java Development Kit (JDK), version 1.7 or better
+* A Java Development Kit (JDK), version 1.7 or better (only necessary to run Gradle)
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 
 == Create a project
 
-You can start a new project simply by creating a `build.gradle` file and writing build logic. When you are new to Gradle this can be a daunting task and an easier way is to get your project started via the `init` command.  It will create a skeleton project with a Gradle build file based on the project type that you specify. Run the following to create a basic Java project:
+You can start a new project simply by creating a `build.gradle` file and adding build logic to it. To keep this example as simple as possible, create a new directory and add an empty file called `build.gradle` to it.
+
+NOTE: Shell commands will shown for Unix-based systems. Windows has analogous commands for each.
 
 [listing]
 ----
-$ mkdir test
-$ cd test
-$ gradle init --type java-library // <1>
+$ mkdir basic-demo
+$ cd basic-demo
+$ touch build.gradle // <1>
 ----
-<1> The `init` plugin is documented in the {user-manual}build_init_plugin.html[Build Init plugin] chapter of the user guide. Also have a look to find out what {user-manual}build_init_plugin.html#sec:build_init_types[project types] are currently supported.
+<1> Create an empty file called `build.gradle`
 
-If you inspect the `test` directory you will see that it has created a number of files and directories.
+== Run the `tasks` command
 
-.Top-level directory layout after gradle init
+Gradle is a Domain-Specific Language (DSL) for building projects. As an object-oriented system, its API is made up of many classes and methods. The build file itself configures an instance of the `org.gradle.api.Project` class, which has many built-in properties and methods. From the `Project`, you have access to all of Gradle's features.
+
+By default, the name of the build file is called `build.gradle`. A `Project` includes a collection of _tasks_, each of which performs some basic operation.
+
+To see what tasks are available even in this otherwise empty project, run the `tasks` command at the command prompt.
+
 [listing]
 ----
-├── build.gradle
-├── gradle
-├── gradlew
-├── gradlew.bat
-├── settings.gradle
-└── src
+$ gradle tasks
+:tasks
+
+------------------------------------------------------------
+All tasks runnable from root project
+------------------------------------------------------------
+
+Build Setup tasks
+-----------------
+init - Initializes a new Gradle build.
+wrapper - Generates Gradle wrapper files.
+
+Help tasks
+----------
+buildEnvironment - Displays all buildscript dependencies declared in root project 'basic-demo'.
+components - Displays the components produced by root project 'basic-demo'. [incubating]
+dependencies - Displays all dependencies declared in root project 'basic-demo'.
+dependencyInsight - Displays the insight into a specific dependency in root project 'basic-demo'.
+dependentComponents - Displays the dependent components of components in root project 'basic-demo'. [incubating]
+help - Displays a help message.
+model - Displays the configuration model of root project 'basic-demo'. [incubating]
+projects - Displays the sub-projects of root project 'basic-demo'.
+properties - Displays the properties of root project 'basic-demo'.
+tasks - Displays the tasks runnable from root project 'basic-demo'.
+
+To see all tasks and more detail, run gradle tasks --all
+
+To see more detail about a task, run gradle help --task <task>
+
+BUILD SUCCESSFUL
 ----
 
-Congratulations! You can now edit this the `build.gradle` files and the source files as a quick start to your project.
+As the output shows, Gradle tasks are organized into categories, like `Build Setup` or `Help`, and each has a name and an optional description. You can define your own (known as _ad hoc_) tasks, configure tasks provided by the Gradle library, or use tasks that are added by plugins.
+
+== Generate a Gradle wrapper
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 If you are specifically interested in building *Java* applications, read the {guides}creating-java-applications[Getting Started Building Java Applications] guide. You should also read the {user-manual}tutorial_java_projects.html[Java Quickstart] chapter of the user manual to obtain a wide understanding.
 
-To learn more about bootstrapping other kinds of popular Gradle build, particularly if you want or need to do it by hand, follow these readings for the type of project you want:
+To learn more about bootstrapping other kinds of popular Gradle builds, particularly if you want or need to do it by hand, follow these readings for the type of project you want:
 
 .Documentation for other popular project types
 * *C*, *C++*, *Assembler*, *Objective-c*, *Objective-c++*: {user-manual}native_software.html[Native builds]
