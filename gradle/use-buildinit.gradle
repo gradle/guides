@@ -90,7 +90,7 @@ task runBuildInit {
             into buildOutputFile.parentFile
 
             filter { line ->
-                if( line=~ /^Downloading/) {
+                if( line=~ /^Download/) {
                     null
                 } else {
                     line
