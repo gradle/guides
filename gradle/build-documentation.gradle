@@ -2,10 +2,6 @@ buildscript {
     repositories {
         jcenter()
     }
-
-    dependencies {
-        classpath "org.jsoup:jsoup:1.10.1"
-    }
 }
 
 
@@ -49,13 +45,12 @@ asciidoctor {
 
     extensions {
         postprocessor { document, output ->
-            if (!document.basebackend("html")) {
-                throw new IllegalArgumentException("Expected html Asciidoctor backend")
-            }
-            def doc = org.jsoup.Jsoup.parse(output, "UTF-8")
-            def header = doc.getElementById("header")
-            header.prepend("""<div style="padding-top: 10px;"><a href="https://guides.gradle.org"><img src="http://guides.gradle.org/gradle-guides.svg" alt=""></a></div>""")
-            doc.html()
+          if (document.basebackend("html")) {
+            def extra = """<div style="padding-top: 10px;"><a href="https://guides.gradle.org"><img src="http://guides.gradle.org/gradle-guides.svg" alt=""></a></div>"""
+            output.replaceAll( ~/<div id="header">\s*<h1>/, """<div id="header">${extra}<h1>""")
+          } else {
+            output
+          }
         }
     }
 }
