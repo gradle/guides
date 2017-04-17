@@ -1,6 +1,6 @@
 = Getting Started Creating New Gradle Builds image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"]
 
-When encountering a Gradle-based project for the first time, many developers don't know what Gradle can do for them. The purpose of this guide is to show some of the basic tasks that work in any Gradle build, regardless of type of project. In this guide, you'll create a trivial Gradle project, invoke some of the basic Gradle commands, and get a sense of how Gradle manages the project.
+When encountering a project that uses Gradle for the first time, many developers don't know what Gradle can do for them. The purpose of this guide is to show some of the basic tasks that work in any Gradle build, regardless of type of project. In this guide, you'll create a trivial Gradle project, invoke some of the basic Gradle commands, and get a sense of how Gradle manages the project.
 
 == What you'll need
 
@@ -69,22 +69,279 @@ As the output shows, Gradle tasks are organized into categories, like `Build Set
 
 == Generate a Gradle wrapper
 
+As the output from the `tasks` command shows, the `wrapper` task generates a Gradle wrapper file. The wrapper is a small script and supporting jar and properties file that allows a user to execute Gradle tasks even if they don't already have Gradle installed. Generating a wrapper also ensures that the user will use the same version of Gradle as the person who created the project.
 
+TIP: While Gradle versions are very good about supporting backward compatibility, using a wrapper ensures that the user is working with a version of Gradle that the project creator supports, and is therefore considered a good practice.
 
+Details about the `wrapper` task can be seen through the `help` task.
 
+[listing]
+----
+$ gradle help --task wrapper
+:help
+Detailed task information for wrapper
 
+Path
+     :wrapper
 
+Type
+     Wrapper (org.gradle.api.tasks.wrapper.Wrapper)
 
+Options
+     --distribution-type     The type of the Gradle distribution to be used by the wrapper.
+                             Available values are:
+                                  ALL
+                                  BIN
 
+     --gradle-distribution-url     The URL to download the Gradle distribution from.
 
+     --gradle-version     The version of the Gradle distribution required by the wrapper.
 
+Description
+     Generates Gradle wrapper files.
 
+Group
+     Build Setup
 
+BUILD SUCCESSFUL
+----
 
+By default, the `wrapper` task will generate a wrapper that uses the binary distribution of the same version as the Gradle command. Generate that wrapper now.
 
-If you are specifically interested in building *Java* applications, read the {guides}creating-java-applications[Getting Started Building Java Applications] guide. You should also read the {user-manual}tutorial_java_projects.html[Java Quickstart] chapter of the user manual to obtain a wide understanding.
+[listing]
+----
+$ gradle wrapper
+:wrapper
 
-To learn more about bootstrapping other kinds of popular Gradle builds, particularly if you want or need to do it by hand, follow these readings for the type of project you want:
+BUILD SUCCESSFUL
+----
+
+This generates a Unix script called `gradlew` and a Windows command called `gradlew.bat`, along with a jar file and a properties file. The resulting directory structure looks like:
+
+----
+.
+├── build.gradle
+├── gradle
+│   └── wrapper
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── gradlew          // <1>
+└── gradlew.bat      // <2>
+----
+<1> Wrapper script for Unix-based systems
+<2> Wrapper script for Windows
+
+All subsequent commands in this guide will use the wrapper.
+
+== Run the `properties` task
+
+If the `tasks` task tells you what tasks are available, the `properties` command does the same for the project's attributes. Try that command as well.
+
+----
+$ ./gradlew properties
+----
+
+NOTE: On Windows, you don't need the leading `./` in front of the `gradlew` command.
+
+The output is extensive, so here is just a sample:
+
+----
+:properties
+
+------------------------------------------------------------
+Root project
+------------------------------------------------------------
+
+allprojects: [root project 'basic-demo']
+buildDir: /Users/.../basic-demo/build
+buildFile: /Users/.../basic-demo/build.gradle
+childProjects: {}
+defaultTasks: []
+dependencies:
+description: null
+gradle: build 'basic-demo'
+group:
+name: basic-demo
+org.gradle.daemon: true
+projectDir: /Users/.../basic-demo
+subprojects: []
+version: unspecified
+
+BUILD SUCCESSFUL
+----
+
+Gradle supports multi-project builds, but this is only a single project, which explains the values of `allprojects`, `childProjects`, and `subprojects`.
+
+The `name` of the project matches the name of the folder by default. You can also specify `group` and `version` properties, but at the moment they are empty, as is the `description`.
+
+The `buildFile` property is fully-qualified path name to `build.gradle`, which resides in the `buildDir` -- by default, the `build` subdirectory of the `projectDir`, the directory containing the `build.gradle` file.
+
+Finally, starting in Gradle 3.0 the Gradle Daemon was enabled by default. The daemon caches part of the Gradle startup to make subsequent executions quicker.
+
+You can change some of the properties. Add the following lines to your `build.gradle` file:
+
+[source,groovy]
+----
+description = 'A trivial Gradle build'
+version = '1.0'
+----
+
+Now run the `properties` task again and see the updated values of the `description` and `version` fields.
+
+[listing]
+----
+$ ./gradlew properties
+:properties
+...
+description: A trivial Gradle build
+...
+version: 1.0
+....
+----
+
+== Configure a Gradle core task
+
+Gradle comes with a library of tasks that you can configure in your own projects. For example, there is a core type called `Copy`, which copies files from one location to another. The `Copy` task is very powerful (see the documentation for details), but here, once again, keep it simple. Perform the following steps:
+
+. Create a directory called `src`.
+. Add a file called `myfile.txt` in the `src` directory. The contents are arbitrary (it can even be empty), but for convenience add the single line `Hello, World!` to it.
+. Define a task called `copy` of type `Copy` (note the capital letter) that copies the `src` directory to a new directory called `dest`. (You don't have to create the `dest` directory -- the task will do it for you.) The syntax is:
++
+[source,groovy]
+----
+task copy(type: Copy) {
+    from 'src'
+    into 'dest'
+}
+----
++
+
+Now you can run the `tasks` command with the `--all` flag to see the new task:
+
+[listing]
+----
+$ ./gradlew tasks --all
+:tasks
+...
+Other tasks
+-----------
+copy
+----
+
+Execute the `copy` task:
+
+[listing]
+----
+$ ./gradlew copy
+:copy
+
+BUILD SUCCESSFUL
+----
+
+Verify that it worked as expected by checking that there is a file called `myfile.txt` in the `dest` directory, and that its contents match the contents of the same one in the `src` directory.
+
+== Configure a core task and use a plugin
+
+Gradle includes a range of plugins, and many, many more are available at http://plugins.gradle.org[the Gradle plugin portal]. One of the plugins included with the distribution is the `base` plugin. Combined with a core type called `Zip`, you can create a zip archive of your project with a configured name and location.
+
+Add the `base` plugin to your `build.gradle` file using the `plugins` syntax. Be sure to add the `plugins` block at the top of the file.
+
+[source,groovy]
+----
+plugins {
+    id 'base'
+}
+
+... rest of the build file ...
+----
+
+Now add a task that creates a zip archive from the `src` directory.
+
+[source,groovy]
+----
+task zip(type: Zip) {
+    from 'src'
+}
+----
+
+The name of the generated archive takes the form `basename-appendix-version-classifier.extension`, located in the `libraries` folder under the build directory. Virtually all of those values are customizable.
+
+In this case, simply run the new `zip` task.
+
+[listing]
+----
+$ ./gradlew zip
+zip:
+
+BUILD SUCCESSFUL
+----
+
+There should now be a file called `basic-demo-1.0.zip` in the `build/distributions` directory.
+
+Run the tasks command again to see the tasks added by the `basic` plugin.
+
+[listing]
+----
+$ ./gradlew tasks --all
+tasks:
+
+Build tasks
+-----------
+assemble - Assembles the outputs of this project.
+build - Assembles and tests this project.
+clean - Deletes the build directory.
+
+...
+
+Other tasks
+-----------
+copy
+zip
+----
+
+The `assemble` and `build` tasks aren't useful in this project, because they are associated with compilation and generation of a release artifact. Many of the language plugins, like the `java` plugin, are created on top the `base` plugin.
+
+The `clean` task, however, is an easy way to remove the `build` directory.
+
+[listing]
+----
+$ ./gradlew clean
+clean:
+
+BUILD SUCCESSFUL
+----
+
+The `build` directory should now be gone.
+
+== Add a "Hello, World!" task
+
+Since every technology needs a "Hello, World!" example, add an ad hoc task to your Gradle build. The syntax is:
+
+[source,groovy]
+----
+task hello {
+    doLast {
+        println 'Hello, World!'
+    }
+}
+----
+
+When executed, this task will print the string "Hello, World!" to the console.
+
+[listing]
+----
+$ ./gradlew hello
+:hello
+Hello, World!
+
+BUILD SUCCESSFUL
+----
+
+The contents of the `hello` task use commands from the Gradle DSL, like `task` and `doLast`. Writing your own tasks is an interesting topic, but beyond the scope of this guide. See *** for details.
+
+== Next Steps
+
+If you are specifically interested in building *Java* applications, read the {guides}creating-java-applications[Getting Started Building Java Applications] guide. You should also read the {user-manual}tutorial_java_projects.html[Java Quickstart] chapter of the user manual. To learn about creating other kinds of popular Gradle builds, follow these readings for the type of project you want:
 
 .Documentation for other popular project types
 * *C*, *C++*, *Assembler*, *Objective-c*, *Objective-c++*: {user-manual}native_software.html[Native builds]
@@ -92,9 +349,7 @@ To learn more about bootstrapping other kinds of popular Gradle builds, particul
 * *Groovy*: {user-manual}tutorial_groovy_projects.html[Groovy quickstart]
 * *Android*: http://tools.android.com/tech-docs/new-build-system/user-guide[Android userguide]
 
-== Next Steps
-
-=== Learn the key concepts
+=== Additional information
 
 Gradle is a very powerful tool, which means you need a good understanding of the underlying model to create maintainable builds. Fortunately, there are just a few core concepts to understand:
 
@@ -103,11 +358,3 @@ Gradle is a very powerful tool, which means you need a good understanding of the
 * *Tasks*: {user-manual}more_about_tasks.html[Tasks]
 * *File handling*: {user-manual}working_with_files.html[File handling]
 * *Dependency management*: {user-manual}artifact_dependencies_tutorial.html[Dependency management]
-
-=== Understand multi-project builds
-
-It's not uncommon in multi-project builds to have subprojects of different types, particularly when you have a polyglot project or a separate project for documentation.  If you don't see a need right now to create a multi-project build, then you can safely skip this step—it's easy to make the switch later on if necessary. But if you do want to split a project into multiple, dependent and independent modules, you will need to learn how to configure them and manage the inter-module relationships. That requires a much more in-depth understanding of the topic than was covered in the build user path. We recommend you read the entirety of the {user-manual}multi_project_builds.html[multi-project builds chapter] of the user guide.
-
-=== Learn basics of Groovy
-
-You can make a fair bit of progress with Gradle without learning the language that build scripts are written in, but ultimately you'll limit yourself if you don't learn the basics of Groovy. Head to the http://groovy-lang.org/learn.html[Groovy website] to find out what learning resources are available or simply check out the https://classroom.udacity.com/courses/ud867/lessons/3968239469/concepts/42963752880923[Groovy fundamentals and Groovy Closures] sections of the free Udacity course.
