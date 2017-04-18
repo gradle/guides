@@ -1,0 +1,58 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
+
+
+ext {
+    gradleVersion = gradle.gradleVersion
+}
+
+asciidoctor {
+    sourceDir 'contents'
+    outputDir buildDir
+    backends  'html5'
+
+    sources {
+        include "index.adoc"
+    }
+
+    attributes "source-highlighter": "coderay",
+        "coderay-linenums-mode": "table",
+        imagesdir: "images",
+        stylesheet: null,
+        linkcss: true,
+        docinfodir: '.',
+        docinfo1: '',
+        icons: 'font',
+        sectanchors: true,
+        sectlinks: true,
+        linkattrs: true,
+        encoding: 'utf-8',
+        idprefix: '',
+        toc: 'right',
+        toclevels: 1,
+        guides               : 'https://guides.gradle.org',
+        'repo-path'          : repoPath,
+        'gradle-version'     : gradleVersion,
+        'user-manual'        : "https://docs.gradle.org/$gradleVersion/userguide/",
+        'language-reference' : "https://docs.gradle.org/$gradleVersion/dsl/",
+        'api-reference'      : "https://docs.gradle.org/$gradleVersion/javadoc/",
+        'projdir'            : project.projectDir.absolutePath,
+        'codedir'            : file('src/main').absolutePath,
+        'testdir'            : file('src/test').absolutePath
+
+    extensions {
+        postprocessor { document, output ->
+          if (document.basebackend("html")) {
+            def extra = """<div style="padding-top: 10px;"><a href="https://guides.gradle.org"><img src="http://guides.gradle.org/gradle-guides.svg" alt=""></a></div>"""
+            output.replaceAll( ~/<div id="header">\s*<h1>/, """<div id="header">${extra}<h1>""")
+          } else {
+            output
+          }
+        }
+    }
+}
+
+build.dependsOn "asciidoctor"

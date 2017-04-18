@@ -1,0 +1,24 @@
+= @@GUIDE_NAME@
+
+
+== What you'll build
+
+
+== What you'll need
+
+* About NN minutes
+* A text editor
+* A command prompt
+* The Java Development Kit (JDK), version 1.7 or higher
+* A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
+
+== Step 1
+
+
+== Step 2
+
+
+== Step N
+
+
+== Summary
