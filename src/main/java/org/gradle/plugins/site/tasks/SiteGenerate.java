@@ -7,6 +7,7 @@ import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.plugins.site.data.CustomData;
+import org.gradle.plugins.site.data.FreemarkerSiteGenerator;
 import org.gradle.plugins.site.data.ProjectDescriptor;
 import org.gradle.plugins.site.data.SiteGenerator;
 
@@ -57,7 +58,7 @@ public class SiteGenerate extends DefaultTask {
 
     @TaskAction
     public void generate() {
-        SiteGenerator siteGenerator = new SiteGenerator(getOutputDir());
+        SiteGenerator siteGenerator = new FreemarkerSiteGenerator(getOutputDir());
         siteGenerator.generate(getProjectDescriptor(), customData);
     }
 }
