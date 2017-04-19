@@ -7,9 +7,9 @@ import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.plugins.site.data.CustomData;
-import org.gradle.plugins.site.data.FreemarkerSiteGenerator;
+import org.gradle.plugins.site.generator.FreemarkerSiteGenerator;
 import org.gradle.plugins.site.data.ProjectDescriptor;
-import org.gradle.plugins.site.data.SiteGenerator;
+import org.gradle.plugins.site.generator.SiteGenerator;
 
 import java.io.File;
 

@@ -1,10 +1,12 @@
-package org.gradle.plugins.site.data;
+package org.gradle.plugins.site.generator;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import org.gradle.api.GradleException;
+import org.gradle.plugins.site.data.CustomData;
+import org.gradle.plugins.site.data.ProjectDescriptor;
 import org.gradle.plugins.site.utils.FileUtils;
 
 import java.io.File;
