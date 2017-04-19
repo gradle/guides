@@ -4,6 +4,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
+import spock.lang.Unroll
 
 import static org.gradle.plugins.site.SitePlugin.SITE_TASK_NAME
 
@@ -19,6 +20,8 @@ class SitePluginFunctionalTest extends AbstractFunctionalTest {
         def doc = parseIndexHtml(outputDir)
         findWebsiteLinkDivs(doc).empty
         findCodeLinkDivs(doc).empty
+        findJavaSourceCompatibilityDiv(doc).empty
+        findJavaTargetCompatibilityDiv(doc).empty
     }
 
     def "can generate site for custom conventions"() {
@@ -51,6 +54,36 @@ class SitePluginFunctionalTest extends AbstractFunctionalTest {
         vcsUrlLinks.size() == 1
     }
 
+    @Unroll
+    def "can derive and render Java-specific information for #plugin plugin"() {
+        given:
+        def sourceCompatibility = '1.6'
+        def targetCompatibility = '1.7'
+        buildFile << """
+            apply plugin: '$plugin'
+            
+            sourceCompatibility = '$sourceCompatibility'
+            targetCompatibility = '$targetCompatibility'
+        """
+
+        when:
+        build(SITE_TASK_NAME)
+
+        then:
+        def outputDir = new File(projectDir, 'build/docs/site')
+        assertSiteFiles(outputDir)
+        def doc = parseIndexHtml(outputDir)
+        def javaSourceCompatibilityDivs = findJavaSourceCompatibilityDiv(doc)
+        javaSourceCompatibilityDivs.size() == 1
+        javaSourceCompatibilityDivs.first().text() == sourceCompatibility
+        def javaTargetCompatibilityDivs = findJavaTargetCompatibilityDiv(doc)
+        javaTargetCompatibilityDivs.size() == 1
+        javaTargetCompatibilityDivs.first().text() == targetCompatibility
+
+        where:
+        plugin << ['java', 'groovy']
+    }
+
     static void assertSiteFiles(File directory) {
         assert new File(directory, 'index.html').isFile()
         assert new File(directory, 'css/bootstrap.css').isFile()
@@ -64,11 +97,23 @@ class SitePluginFunctionalTest extends AbstractFunctionalTest {
     }
 
     static Elements findWebsiteLinkDivs(Document doc) {
-        doc.select('div[id=website-link]')
+        findDivsById(doc, 'website-link')
     }
 
     static Elements findCodeLinkDivs(Document doc) {
-        doc.select('div[id=code-link]')
+        findDivsById(doc, 'code-link')
+    }
+
+    static Elements findJavaSourceCompatibilityDiv(Document doc) {
+        findDivsById(doc, 'java-source-compatibility')
+    }
+
+    static Elements findJavaTargetCompatibilityDiv(Document doc) {
+        findDivsById(doc, 'java-target-compatibility')
+    }
+
+    static Elements findDivsById(Document doc, String id) {
+        doc.select("div[id=$id]")
     }
 
     static Elements findAhrefs(Element element, String url) {

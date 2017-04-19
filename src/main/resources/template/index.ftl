@@ -87,11 +87,11 @@
               <#if project.javaProject??>
               <tr>
                   <td>Source compatibility</td>
-                  <td>${project.javaProject.sourceCompatibility}</td>
+                  <td><div id="java-source-compatibility">${project.javaProject.sourceCompatibility}</div></td>
               </tr>
               <tr>
                   <td>Target compatibility</td>
-                  <td>${project.javaProject.targetCompatibility}</td>
+                  <td><div id="java-target-compatibility">${project.javaProject.targetCompatibility}</div></td>
               </tr>
               </#if>
               <tr>

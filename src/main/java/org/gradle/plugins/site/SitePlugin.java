@@ -36,13 +36,19 @@ public class SitePlugin implements Plugin<Project> {
     }
 
     private void addJavaDescription(final Project project, final ProjectDescriptor projectDescriptor) {
-        project.getPlugins().withType(JavaPlugin.class, new Action<JavaPlugin>() {
+        project.afterEvaluate(new Action<Project>() {
             @Override
-            public void execute(JavaPlugin javaPlugin) {
-                JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
-                projectDescriptor.setJavaProject(new JavaProjectDescriptor(javaConvention.getSourceCompatibility().toString(), javaConvention.getTargetCompatibility().toString()));
+            public void execute(final Project project) {
+                project.getPlugins().withType(JavaPlugin.class, new Action<JavaPlugin>() {
+                    @Override
+                    public void execute(JavaPlugin javaPlugin) {
+                        JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
+                        projectDescriptor.setJavaProject(new JavaProjectDescriptor(javaConvention.getSourceCompatibility().toString(), javaConvention.getTargetCompatibility().toString()));
+                    }
+                });
             }
         });
+
     }
 
     private void addPluginDescription(Project project, final ProjectDescriptor projectDescriptor) {
