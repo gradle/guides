@@ -1,5 +1,7 @@
 = Gradle Site Plugin
 
+image:https://travis-ci.org/bmuschko/gradle-site-plugin.svg?branch=master["Build Status", link="https://travis-ci.org/bmuschko/gradle-site-plugin"]
+
 A sample Gradle plugin demonstrating established techniques and practices for plugin development as described in the following guides:
 
 - link:https://guides.gradle.org/designing-gradle-plugins/[Designing Gradle plugins]
