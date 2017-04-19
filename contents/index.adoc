@@ -64,7 +64,7 @@ The generated `build.gradle` file also has many comments. The active portion is 
 ----
 include::{initexampledir}/build.gradle[]
 ----
-<1> public Bintray Artifactory repository
+<1> Public Bintray Artifactory repository
 <2> Groovy version that this project will include as dependency
 <3> Spock Framework testing library
 <4> JUnit testing library
