@@ -1,0 +1,15 @@
+├── build.gradle
+├── gradle
+│   └── wrapper  // <1>
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── gradlew
+├── gradlew.bat
+├── settings.gradle
+└── src
+    ├── main
+    │   └── scala  // <2>
+    │       └── Library.scala
+    └── test
+        └── scala // <3>
+            └── LibrarySuite.scala

@@ -1,0 +1,120 @@
+buildscript {
+    dependencies {
+        classpath gradleTestKit()
+    }
+}
+
+import org.gradle.testkit.runner.GradleRunner
+import org.apache.tools.ant.filters.*
+
+task runBuildInit {
+
+    ext {
+        buildType       = 'scala-library'
+        destDir         = file("${buildDir}/init/${project.name}")
+        initOutputFile  = file("${buildDir}/init/output/init.txt")
+        buildOutputFile = file("${buildDir}/init/output/build.txt")
+        docOutputFile   = file("${buildDir}/init/output/groovydoc.txt")
+    }
+
+    outputs.dir { destDir }
+    outputs.file { initOutputFile }
+    outputs.file { buildOutputFile }
+    outputs.file { docOutputFile }
+
+    inputs.property 'gradleVer' , gradle.gradleVersion
+
+    doLast {
+        File tmpDir = file("${buildDir}/tmp/init/${project.name}")
+        File tmpBuildFile = file("${buildDir}/tmp/init/output/build.txt")
+
+        destDir.deleteDir()
+        tmpDir.deleteDir()
+        mkdir destDir
+        mkdir tmpDir
+        mkdir initOutputFile.parentFile
+        mkdir tmpBuildFile.parentFile
+
+        initOutputFile.withWriter { Writer output ->
+            GradleRunner.create().forwardStdOutput(output).withProjectDir(tmpDir).
+                withArguments('init','--type',buildType).build()
+        }
+
+        tmpBuildFile.withWriter { Writer output ->
+            GradleRunner.create().forwardStdOutput(output).withProjectDir(tmpDir).
+                withArguments('build').build()
+        }
+
+        File editLibrary = new File(tmpDir,'src/main/scala/Library.scala')
+        editLibrary.text = file('contents/scaladoc-prefix.txt').text + editLibrary.text
+
+        docOutputFile.withWriter { Writer output ->
+            GradleRunner.create().forwardStdOutput(output).withProjectDir(tmpDir).
+                withArguments('scaladoc').build()
+        }
+
+        copy {
+            from tmpDir
+            into destDir
+
+            exclude '.gradle/**'
+            exclude 'build/**'
+
+            filesMatching (['build.gradle','**/*.scala']) {
+                filter { line ->
+                    if (line =~ /^(\/\*)|(\s*\*)|(\/\/)/) {
+                        null
+                    } else {
+                        line
+                    }
+                }
+            }
+
+            filesMatching (['settings.gradle']) {
+                filter { line->
+                    if(line=~/^rootProject/) {
+                        "${line} // <1>"
+                    } else {
+                        null
+                    }
+                }
+            }
+
+            filesMatching (['build.gradle']) {
+                filter { line ->
+                    if (line=~/\s*jcenter/) {
+                        "${line} // <1>"
+                    } else if (line=~/\s*compile.+scala-library/) {
+                        "${line} // <2>"
+                    } else if (line=~/\s*testCompile.+scalatest/) {
+                        "${line} // <4>"
+                    } else if (line=~/\s*testCompile.+junit/) {
+                        "${line} // <3>"
+                    } else if (line=~/\s*testRuntime.+scala-xml/) {
+                        "${line} // <5>"
+                    } else {
+                        line
+                    }
+                }
+            }
+
+            filesMatching( ['src/main/scala/Library.scala'] ) {
+                filter ConcatFilter, prepend: file('contents/scaladoc-prefix.txt'),
+                    append: file('contents/scaladoc-postfix.txt')
+            }
+        }
+
+        copy {
+            from tmpBuildFile.parentFile
+            into buildOutputFile.parentFile
+
+            filter { line ->
+                if( line=~ /^Download/) {
+                    null
+                } else {
+                    line
+                }
+            }
+        }
+    }
+}
