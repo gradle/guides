@@ -25,12 +25,12 @@ public class SiteGenerator {
         this.outputDir = outputDir;
     }
 
-    public void generate(ProjectDescriptor projectDescriptor) {
+    public void generate(ProjectDescriptor projectDescriptor, CustomData customData) {
         try {
             copyCssResources();
             copyJsResources();
             copyImgResources();
-            processIndexPageTemplate(projectDescriptor);
+            processIndexPageTemplate(projectDescriptor, customData);
         } catch (Exception e) {
             throw new GradleException("Unable to generate site", e);
         }
@@ -69,7 +69,7 @@ public class SiteGenerator {
         return getClass().getClassLoader().getResource(name);
     }
 
-    private void processIndexPageTemplate(ProjectDescriptor projectDescriptor) throws IOException, URISyntaxException, TemplateException {
+    private void processIndexPageTemplate(ProjectDescriptor projectDescriptor, CustomData customData) throws IOException, URISyntaxException, TemplateException {
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_25);
         cfg.setDirectoryForTemplateLoading(new File(resolveAsUrl("template").toURI()));
         cfg.setDefaultEncoding("UTF-8");
@@ -77,6 +77,7 @@ public class SiteGenerator {
         cfg.setLogTemplateExceptions(false);
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("project", projectDescriptor);
+        root.put("customData", customData);
         Template template = cfg.getTemplate("index.ftl");
         template.process(root, new FileWriter(new File(outputDir, "index.html")));
     }

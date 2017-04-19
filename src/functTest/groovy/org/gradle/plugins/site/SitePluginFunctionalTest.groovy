@@ -18,6 +18,8 @@ class SitePluginFunctionalTest extends AbstractFunctionalTest {
         buildFile << """
             site {
                 outputDir = file('$customOutputDir')
+                websiteUrl = 'https://gradle.org'
+                vcsUrl = 'https://github.com/gradle/gradle'
             }
         """
 

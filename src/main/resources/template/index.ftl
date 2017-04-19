@@ -47,8 +47,12 @@
 
       <div class="masthead">
         <ul class="nav nav-pills pull-right">
-          <li><a href="#"><div class="colored-font">Website</div></a></li>
-          <li><a href="#"><div class="colored-font">Code</div></a></li>
+          <#if customData.websiteUrl??>
+          <li><div id="website-link"><a href="${customData.websiteUrl}"><div class="colored-font">Website</div></a></div></li>
+          </#if>
+          <#if customData.vcsUrl??>
+          <li><div id="code-link"><a href="${customData.vcsUrl}"><div class="colored-font">Code</div></a></div></li>
+          </#if>
           <li>&nbsp;&nbsp;&nbsp;&nbsp;</li>
           <li><img src="img/elephant-corner.png" height="35" width="35"></li>
         </ul>

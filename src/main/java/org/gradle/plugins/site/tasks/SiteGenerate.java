@@ -6,6 +6,7 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.plugins.site.data.CustomData;
 import org.gradle.plugins.site.data.ProjectDescriptor;
 import org.gradle.plugins.site.data.SiteGenerator;
 
@@ -15,10 +16,12 @@ public class SiteGenerate extends DefaultTask {
 
     private final PropertyState<ProjectDescriptor> projectDescriptor;
     private final PropertyState<File> outputDir;
+    private final CustomData customData;
 
     public SiteGenerate() {
         this.projectDescriptor = getProject().property(ProjectDescriptor.class);
         this.outputDir = getProject().property(File.class);
+        customData = new CustomData(getProject());
     }
 
     @Nested
@@ -47,9 +50,14 @@ public class SiteGenerate extends DefaultTask {
         this.outputDir.set(outputDir);
     }
 
+    @Nested
+    public CustomData getCustomData() {
+        return customData;
+    }
+
     @TaskAction
     public void generate() {
         SiteGenerator siteGenerator = new SiteGenerator(getOutputDir());
-        siteGenerator.generate(getProjectDescriptor());
+        siteGenerator.generate(getProjectDescriptor(), customData);
     }
 }

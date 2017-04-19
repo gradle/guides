@@ -69,5 +69,7 @@ public class SitePlugin implements Plugin<Project> {
         SiteGenerate siteGenerate = project.getTasks().create(SITE_TASK_NAME, SiteGenerate.class);
         siteGenerate.setProjectDescriptor(projectDescriptor);
         siteGenerate.setOutputDir(sitePluginExtension.getOutputDirProvider());
+        siteGenerate.getCustomData().setWebsiteUrl(sitePluginExtension.getWebsiteUrlProvider());
+        siteGenerate.getCustomData().setVcsUrl(sitePluginExtension.getVcsUrlProvider());
     }
 }
