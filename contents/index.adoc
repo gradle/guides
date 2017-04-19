@@ -20,9 +20,10 @@ Gradle comes with a built-in plugin called the Build Init plugin. It is document
 
 The first step is to create a folder for the new project and change directory into it.
 
+[listing]
 ----
-$ mkdir groovy-demo
-$ cd groovy-demo
+$ mkdir building-groovy-libraries
+$ cd building-groovy-libraries
 ----
 
 == Run the init task
