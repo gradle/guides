@@ -9,11 +9,11 @@ A sample Gradle plugin demonstrating established techniques and practices for pl
 
 - Production source code written in Java, test code written in Groovy.
 - Reusable logic written as binary plugin.
-- Usage of the link:https://docs.gradle.org/current/userguide/javaGradle_plugin.html[Plugin Development plugin] to simplify plugin development.
-- Implementation of tasks as custom task type.
-- Usage of input and output properties to enable incremental tasks.
-- Usage of an extension to capture user-configurable values.
-- Mapping of extension property values to custom task properties.
-- Reacting to plugins instead of applying plugins.
-- Declaration of appropriate plugin identifiers.
-- Functional testing with link:https://docs.gradle.org/current/userguide/test_kit.html[TestKit].
+- Usage of the link:https://docs.gradle.org/current/userguide/javaGradle_plugin.html[Plugin Development plugin] to simplify plugin development. [link:https://github.com/bmuschko/gradle-site-plugin/blob/master/build.gradle#L3[Code] | link:https://guides.gradle.org/implementing-gradle-plugins/#plugin-development-plugin[More Details]]
+- Implementation of tasks as custom task type. [link:https://github.com/bmuschko/gradle-site-plugin/blob/master/src/main/java/org/gradle/plugins/site/tasks/SiteGenerate.java[Code] | link:https://guides.gradle.org/implementing-gradle-plugins/#prefer_writing_and_using_custom_task_types[More Details]]
+- Usage of input and output properties to enable incremental tasks. [link:https://github.com/bmuschko/gradle-site-plugin/blob/master/src/main/java/org/gradle/plugins/site/tasks/SiteGenerate.java[Code] | link:https://guides.gradle.org/implementing-gradle-plugins/#benefiting_from_incremental_tasks[More Details]]
+- Usage of an extension to capture user-configurable values. [Code | More Details]
+- Mapping of extension property values to custom task properties. [Code | More Details]
+- Reacting to plugins instead of applying plugins. [link:https://github.com/bmuschko/gradle-site-plugin/blob/master/src/main/java/org/gradle/plugins/site/SitePlugin.java#L42[Code] | link:https://guides.gradle.org/implementing-gradle-plugins/#reacting_to_plugins[More Details]]
+- Declaration of appropriate plugin identifiers. [link:https://github.com/bmuschko/gradle-site-plugin/blob/master/src/main/resources/META-INF/gradle-plugins/org.gradle.site.properties[Code] | link:https://guides.gradle.org/implementing-gradle-plugins/#assigning_appropriate_plugin_identifiers[More Details]]
+- Functional testing with link:https://docs.gradle.org/current/userguide/test_kit.html[TestKit]. [link:https://github.com/bmuschko/gradle-site-plugin/blob/master/build.gradle#L6[Code] | More Details]
