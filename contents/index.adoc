@@ -71,7 +71,7 @@ include::{initexampledir}/build.gradle[]
 
 The build file adds the `groovy` plugin. This is an extension of the `java` plugins and adds additional tasks for compiling Groovy source code. It also allows for joint compilation of Groovy and Java files if found in the appropriate `groovy` source folders.
 
-The file `src/main/java/App.java` is shown here:
+The file `src/main/groovy/Library.groovy` is shown here:
 
 .Generated src/main/groovy/Library.groovy
 [source,groovy]
@@ -91,7 +91,7 @@ The generated test class has a single http://spockframework.org[Spock specificat
 
 == Execute the build
 
-To build the project, run the `build` command. You can use the regular `gradle` command, but when a project includes a wrapper script, it is considered good form to use it instead.
+To build the project, run the `build` task. You can use the regular `gradle` command, but when a project includes a wrapper script, it is considered good form to use it instead.
 
 [listing]
 ----
