@@ -47,23 +47,9 @@ class CreateGradleGuide extends DefaultTask {
     @Option(option = "guide-type", description = "getting-started|topical|tutorial")
     String guideType
 
-    @Input
-    GuideType getGuideDetails() {
-        this.guideType ? GuideType.byName(this.guideType) : null
-    }
-
     @Option(option = "guide-issue", description = "Github issue in the form org/repo#issue")
     @Input
     String issue
-
-    URI getGitHubURI() {
-        "https://github.com/gradle-guides/${guideName}".toURI()
-    }
-
-
-    URI getArchiveURI() {
-        "${guideDetails.template}/archive/${getTemplateBranch()}.zip".toURI()
-    }
 
     File repoBaseDir = new File(project.buildDir, 'new-guide-repositories')
     String guideOrgUrl = 'https://github.com/gradle-guides'
@@ -72,12 +58,29 @@ class CreateGradleGuide extends DefaultTask {
     @Input
     String guideName
 
+    @Option(option = "guide-repo-name", description = "Override repository name of guide to be created")
+    @Input
+    String guideRepoName
+
+    @Input
+    GuideType getGuideDetails() {
+        this.guideType ? GuideType.byName(this.guideType) : null
+    }
+
     String getGuideSlug() {
-        guideName?.toLowerCase()?.replaceAll(~/\s+/, '-')
+        guideRepoName ?: (guideName?.toLowerCase()?.replaceAll(~/\s+_/, '-'))
+    }
+
+    URI getGitHubURI() {
+        "https://github.com/gradle-guides/${getGuideSlug()}".toURI()
+    }
+
+    URI getArchiveURI() {
+        "${guideDetails.template}/archive/${getTemplateBranch()}.zip".toURI()
     }
 
     File getRepoDir() {
-        new File(repoBaseDir, guideSlug)
+        new File(repoBaseDir, getGuideSlug())
     }
 
     String getGitHubAuthToken() {
@@ -116,6 +119,15 @@ class CreateGradleGuide extends DefaultTask {
             throw new GradleException('Github issue must be in the form org/repo#issue')
         }
 
+        // Check that we have a valid repository name
+        if( !(guideName =~ /^[\w-\s]+$/) && guideRepoName == null ) {
+            throw new GradleException("Guide name contains non-alphanumeric characters (besides dash) and --guide-repo-name was not specified")
+        }
+
+        if (guideRepoName != null && !(guideRepoName =~ /^[\p{Lower}\p{Digit}-]+$/)) {
+            throw new GradleException("Guide reponame can only consist of digits, lower case alphabet characters and dashes")
+        }
+
         File zipFile = downloadZipFile(getTemporaryDir())
 
         File destDir = getRepoDir()
@@ -123,7 +135,7 @@ class CreateGradleGuide extends DefaultTask {
         createRepoFromZip(zipFile, destDir)
         addUserPropertiesToLocalRepo(destDir)
 
-        final String guideRepo = "${guideOrgUrl}/${guideSlug}"
+        final String guideRepo = "${guideOrgUrl}/${getGuideSlug()}"
         createRepoOnGitHub(destDir,guideRepo.toURI())
         pushRemote(destDir,guideRepo)
 

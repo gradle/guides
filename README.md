@@ -40,6 +40,8 @@ Follow these steps on your local machine, replacing `Creating Java Projects` wit
     # The command above will create a directory named `build/new-guide-repositories/creating-java-projects`
     cd build/new-guide-repositories/creating-java-projects
 
+In case the guide name contains non-alpha characters under than spaces, dashes and underscores used `--guide-repo-name` to specify a reposiotry name that is GitHub safe.
+
 In order for this to work a Github personal authentication token must be supplied. The token must have `repo` scope. It is passed as a project property called `gradle.guides.authToken`. This can be setup in the `gradle.properties` file or supplied via the command line using `-Pgradle.guides.authToken=<GITHUB-TOKEN>`.
 
 You might want to consider adding two more (optional) properties:
