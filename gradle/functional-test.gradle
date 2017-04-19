@@ -25,3 +25,7 @@ check.dependsOn functionalTest
 gradlePlugin {
     testSourceSets sourceSets.functionalTest
 }
+
+dependencies {
+    functionalTestCompile 'org.jsoup:jsoup:1.10.2'
+}
