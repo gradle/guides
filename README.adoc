@@ -10,7 +10,7 @@ You'll write a simple plugin that adds a new task type and creates a task of tha
 
  - About 10 minutes
  - A text editor or IDE
- - A http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK), version 1.8 or better
+ - A http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK), version 1.7 or better
  - A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 
 == Create a project
