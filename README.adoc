@@ -1,6 +1,6 @@
 = Writing Gradle Plugins
 
-This guide walks you through the process of creating reusable build logic in a Gradle plugin, which can then be applied to other Gradle builds. The core of Gradle provides an infrastructure for building anything, but plugins are what allow build users to get things done with a minimum of effort. They can apply conventions, add new task types, integrate with third-party tools and libraries, and more. This guide focuses on the most basic of plugins, but it represents the tip of the iceberg.
+This guide walks you through the process of creating reusable build logic in a Gradle plugin, which can then be applied to other Gradle builds. The core of Gradle provides an infrastructure for building anything, but plugins are what allow build script authors to get things done with a minimum of effort, allowing them to focus on *what to build*, rather than *how to build*. Plugins can apply conventions, add new task types, integrate with third-party tools and libraries, and more. For instance, the `java` plugin provides standard source directory layouts and tasks such as `compileJava` and `compileTestJava`. This guide focuses on the most basic of plugins, but represents the tip of the iceberg.
 
 == What you'll build
 
@@ -54,7 +54,7 @@ public class GreetingPlugin implements Plugin<Project> {
 
 This is the actual plugin and the Gradle `Project` object is your access point for the entire Gradle API, which allows you to do the same things as you can do in a build script. In this case, you are creating a simple task called `hello` in the target project.
 
-TIP: Use the Gradle {language-reference}[DSL Reference] and {javadocs}[Javadocs] to learn what you can do with the Gradle API. Start with the entry for {language-reference}org.gradle.api.Project.html[`Project`]. You can find out more about what you can achieve by also following the links in <<Next steps>>.
+TIP: Use the Gradle {language-reference}[DSL Reference] and {api-reference}[Javadocs] to learn what you can do with the Gradle API. Start with the entry for {language-reference}org.gradle.api.Project.html[`Project`]. You can find out more about what you can achieve by also following the links in <<Next steps>>.
 
 Next, you'll create the class for the task type that the plugin is using. Add a new `Greeting` class in the same package as the plugin:
 
@@ -197,7 +197,7 @@ This guide focuses on the essence of what a plugin is, but most plugins are far 
 Now that you're familiar with the basics of building Gradle plugins, you may be interested in:
 
  - {user-manual}javaGradle_plugin.html[Simplifying plugin development with the Java Gradle Plugin Development Plugin]
- - https://plugins.gradle.org/docs/submit[Publishing plugins to the Gradle Plugin Portal]
+ - {guides}/publishing-plugins-to-gradle-plugin-portal/[Publishing plugins to the Gradle Plugin Portal]
  - {user-manual}custom_plugins.html#sec:getting_input_from_the_build[Modeling your domain with extensions]
  - {user-manual}test_kit.html[Testing plugins]
  - {user-manual}more_about_tasks.html#sec:up_to_date_checks[Adding incremental build support to new task types]
