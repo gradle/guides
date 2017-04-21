@@ -25,7 +25,7 @@ $ touch build.gradle // <1>
 
 == Run the `tasks` command
 
-Gradle is a Domain-Specific Language (DSL) for building projects. As an object-oriented system, its API is made up of many classes and methods. The build file itself configures an instance of the `org.gradle.api.Project` class, which has many built-in properties and methods. From the `Project`, you have access to all of Gradle's features.
+Gradle is a general-purpose build tool for projects. Gradle itself is built on an object-oriented API, which is made up of many classes and methods, along with a simple syntax for configuring them. The build file itself configures an instance of the `org.gradle.api.Project` class, which has many built-in properties and methods. From the `Project`, you have access to all of Gradle's features.
 
 By default, the name of the build file is called `build.gradle`. A `Project` includes a collection of _tasks_, each of which performs some basic operation.
 
@@ -143,7 +143,7 @@ $ ./gradlew properties
 
 NOTE: On Windows, you don't need the leading `./` in front of the `gradlew` command.
 
-The output is extensive, so here is just a sample:
+The output is extensive. Here are just a few:
 
 ----
 :properties
@@ -152,33 +152,22 @@ The output is extensive, so here is just a sample:
 Root project
 ------------------------------------------------------------
 
-allprojects: [root project 'basic-demo']
 buildDir: /Users/.../basic-demo/build
 buildFile: /Users/.../basic-demo/build.gradle
-childProjects: {}
-defaultTasks: []
-dependencies:
 description: null
-gradle: build 'basic-demo'
 group:
 name: basic-demo
-org.gradle.daemon: true
 projectDir: /Users/.../basic-demo
-subprojects: []
 version: unspecified
 
 BUILD SUCCESSFUL
 ----
 
-Gradle supports multi-project builds, but this is only a single project, which explains the values of `allprojects`, `childProjects`, and `subprojects`.
-
-The `name` of the project matches the name of the folder by default. You can also specify `group` and `version` properties, but at the moment they are empty, as is the `description`.
+The `name` of the project matches the name of the folder by default. You can also specify `group` and `version` properties, but at the moment they are taking their default values, as is `description`.
 
 The `buildFile` property is fully-qualified path name to `build.gradle`, which resides in the `buildDir` -- by default, the `build` subdirectory of the `projectDir`, the directory containing the `build.gradle` file.
 
-Finally, starting in Gradle 3.0 the Gradle Daemon was enabled by default. The daemon caches part of the Gradle startup to make subsequent executions quicker.
-
-You can change some of the properties. Add the following lines to your `build.gradle` file:
+You can change many of the properties. Add the following lines to your `build.gradle` file:
 
 [source,groovy]
 ----
@@ -264,9 +253,9 @@ task zip(type: Zip) {
 }
 ----
 
-The name of the generated archive takes the form `basename-appendix-version-classifier.extension`, located in the `libraries` folder under the build directory. Virtually all of those values are customizable.
+The `base` plugin works with the settings to create an archive file called `basic-demo-1.0.zip` in the `libraries` folder under `build\distributions`.
 
-In this case, simply run the new `zip` task.
+In this case, simply run the new `zip` task and see that the generated zip file is where you expect.
 
 [listing]
 ----
@@ -276,9 +265,7 @@ zip:
 BUILD SUCCESSFUL
 ----
 
-There should now be a file called `basic-demo-1.0.zip` in the `build/distributions` directory.
-
-Run the tasks command again to see the tasks added by the `basic` plugin.
+Run the `tasks` command again to see the tasks added by the `basic` plugin.
 
 [listing]
 ----
