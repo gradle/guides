@@ -29,6 +29,8 @@ WARNING: The plugin is currently not published a public binary repository nor th
 
 The plugin can be applied with by identifier `org.gradle.site`. Default values can be configured with the help of the provided extension `org.gradle.plugins.site.SitePluginExtension`. To generate the web page run the task named `site` e.g. `gradle site`.
 
+IMPORTANT: The plugin requires a Gradle version of 4.0 or higher.
+
 ```
 apply plugin: 'org.gradle.site'
 
