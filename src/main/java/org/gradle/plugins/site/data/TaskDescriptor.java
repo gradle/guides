@@ -4,6 +4,9 @@ import org.gradle.api.tasks.Input;
 
 import java.io.Serializable;
 
+/**
+ * The data descriptor for task information.
+ */
 public class TaskDescriptor implements Serializable {
 
     private final String name;

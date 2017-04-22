@@ -2,6 +2,9 @@ package org.gradle.plugins.site.data;
 
 import org.gradle.api.tasks.Input;
 
+/**
+ * The data descriptor for Java-based projects.
+ */
 public class JavaProjectDescriptor {
     private final String sourceCompatibility;
     private final String targetCompatibility;

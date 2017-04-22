@@ -19,6 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A site generator implementation based on <a href="http://freemarker.org/">Freemarker</a>.
+ */
 public class FreemarkerSiteGenerator implements SiteGenerator {
 
     private final File outputDir;

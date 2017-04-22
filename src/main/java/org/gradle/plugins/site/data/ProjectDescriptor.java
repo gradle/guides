@@ -7,6 +7,9 @@ import org.gradle.api.tasks.Nested;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The data descriptor for the whole project.
+ */
 public class ProjectDescriptor {
 
     private final String name;

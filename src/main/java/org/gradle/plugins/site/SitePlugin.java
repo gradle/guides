@@ -15,9 +15,25 @@ import org.gradle.plugins.site.tasks.SiteGenerate;
 
 import java.io.File;
 
+/**
+ * A plugin for generating a web page containing derived project information.
+ * <p>
+ * The default directory for generated web page is {@code $buildDir/docs/site}.
+ */
 public class SitePlugin implements Plugin<Project> {
 
+    /**
+     * The name of the extension for configuring the runtime behavior of the plugin.
+     *
+     * @see org.gradle.plugins.site.SitePluginExtension
+     */
     public static final String EXTENSION_NAME = "site";
+
+    /**
+     * The name of task generating the web page containing derived project information.
+     *
+     * @see org.gradle.plugins.site.tasks.SiteGenerate
+     */
     public static final String SITE_TASK_NAME = "site";
 
     @Override

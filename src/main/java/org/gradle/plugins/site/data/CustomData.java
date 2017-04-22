@@ -6,6 +6,9 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Optional;
 
+/**
+ * The data descriptor for user-provided information.
+ */
 public class CustomData {
     private final PropertyState<String> websiteUrl;
     private final PropertyState<String> vcsUrl;
