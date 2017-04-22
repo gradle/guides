@@ -4,6 +4,7 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.plugins.JavaBasePlugin;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.plugins.site.data.EnvironmentDescriptor;
@@ -74,7 +75,7 @@ public class SitePlugin implements Plugin<Project> {
 
     private SiteGenerate createSiteTask(Project project, SitePluginExtension sitePluginExtension) {
         SiteGenerate siteGenerate = project.getTasks().create(SITE_TASK_NAME, SiteGenerate.class);
-        siteGenerate.setGroup("Documentation");
+        siteGenerate.setGroup(JavaBasePlugin.DOCUMENTATION_GROUP);
         siteGenerate.setDescription("Generates a web page containing information about the project.");
         siteGenerate.setOutputDir(sitePluginExtension.getOutputDirProvider());
         siteGenerate.getCustomData().setWebsiteUrl(sitePluginExtension.getWebsiteUrlProvider());
