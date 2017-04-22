@@ -1,0 +1,68 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath "org.ajoberstar:gradle-git:1.4.2"
+    }
+}
+
+apply plugin: org.ajoberstar.gradle.git.ghpages.GithubPagesPlugin
+apply from: "$rootDir/gradle/publishing-local.gradle"
+
+task generateSampleBuild {
+    ext.outputDir = file("$buildDir/sample")
+    ext.buildFile = file("$ext.outputDir/build.gradle")
+
+    doLast {
+        outputDir.mkdirs()
+        buildFile << """
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url 'file:///$buildDir/repo'
+        }
+    }
+
+    dependencies {
+        classpath 'org.gradle.site:gradle-site-plugin:0.1'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'org.gradle.site'
+
+group = 'org.example'
+version = '1.0'
+description = 'Sample Gradle plugin project information.'
+
+sourceCompatibility = '1.6'
+targetCompatibility = '1.7'
+
+site {
+    websiteUrl = 'https://github.com/bmuschko/gradle-site-plugin'
+    vcsUrl = 'http://gradle.org'
+}
+"""
+    }
+}
+
+task generateSampleSite(type: GradleBuild) {
+    dependsOn generateSampleBuild, 'publishPluginMavenPublicationToFileBasedRepository'
+    dir = generateSampleBuild.outputDir
+    tasks = ['site']
+}
+
+githubPages {
+    repoUri = 'git@github.com:bmuschko/gradle-site-plugin.git'
+
+    pages {
+        from(file("$generateSampleBuild.outputDir/build/docs/site")) {
+            into 'sample'
+        }
+    }
+}
+
+publishGhPages.dependsOn generateSampleSite
