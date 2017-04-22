@@ -54,6 +54,47 @@ class SitePluginFunctionalTest extends AbstractFunctionalTest {
         vcsUrlLinks.size() == 1
     }
 
+    def "can query extension properties"() {
+        when:
+        buildFile << """
+            task assertDefaultExtensionProperties {
+                doLast {
+                    assert project.extensions.site.outputDir == file("\$buildDir/docs/site")
+                    assert !project.extensions.site.websiteUrl
+                    assert !project.extensions.site.vcsUrl
+                }
+            }
+        """
+        build('assertDefaultExtensionProperties')
+
+        then:
+        noExceptionThrown()
+
+        when:
+        def customOutputDir = 'build/custom/site'
+        def websiteUrl = 'https://gradle.org'
+        def vcsUrl = 'https://github.com/gradle/gradle'
+        buildFile << """
+            site {
+                outputDir = file('$customOutputDir')
+                websiteUrl = '$websiteUrl'
+                vcsUrl = '$vcsUrl'
+            }
+            
+            task assertCustomExtensionProperties {
+                doLast {
+                    assert project.extensions.site.outputDir == file('$customOutputDir')
+                    assert project.extensions.site.websiteUrl == '$websiteUrl'
+                    assert project.extensions.site.vcsUrl == '$vcsUrl'
+                }
+            }
+        """
+        build('assertCustomExtensionProperties')
+
+        then:
+        noExceptionThrown()
+    }
+
     @Unroll
     def "can derive and render Java-specific information for #plugin plugin"() {
         given:
