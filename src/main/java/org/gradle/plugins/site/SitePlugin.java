@@ -23,9 +23,15 @@ public class SitePlugin implements Plugin<Project> {
     public void apply(Project project) {
         SitePluginExtension sitePluginExtension = project.getExtensions().create(EXTENSION_NAME, SitePluginExtension.class, project);
         sitePluginExtension.setOutputDir(new File(project.getBuildDir(), "docs/site"));
+        final SiteGenerate siteGenerateTask = createSiteTask(project, sitePluginExtension);
 
-        ProjectDescriptor projectDescriptor = deriveProjectDescription(project);
-        configureSiteTask(project, sitePluginExtension, projectDescriptor);
+        project.afterEvaluate(new Action<Project>() {
+            @Override
+            public void execute(Project project) {
+                ProjectDescriptor projectDescriptor = deriveProjectDescription(project);
+                siteGenerateTask.setProjectDescriptor(projectDescriptor);
+            }
+        });
     }
 
     private ProjectDescriptor deriveProjectDescription(Project project) {
@@ -37,19 +43,13 @@ public class SitePlugin implements Plugin<Project> {
     }
 
     private void addJavaDescription(final Project project, final ProjectDescriptor projectDescriptor) {
-        project.afterEvaluate(new Action<Project>() {
+        project.getPlugins().withType(JavaPlugin.class, new Action<JavaPlugin>() {
             @Override
-            public void execute(final Project project) {
-                project.getPlugins().withType(JavaPlugin.class, new Action<JavaPlugin>() {
-                    @Override
-                    public void execute(JavaPlugin javaPlugin) {
-                        JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
-                        projectDescriptor.setJavaProject(new JavaProjectDescriptor(javaConvention.getSourceCompatibility().toString(), javaConvention.getTargetCompatibility().toString()));
-                    }
-                });
+            public void execute(JavaPlugin javaPlugin) {
+                JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
+                projectDescriptor.setJavaProject(new JavaProjectDescriptor(javaConvention.getSourceCompatibility().toString(), javaConvention.getTargetCompatibility().toString()));
             }
         });
-
     }
 
     private void addPluginDescription(Project project, final ProjectDescriptor projectDescriptor) {
@@ -72,13 +72,13 @@ public class SitePlugin implements Plugin<Project> {
         });
     }
 
-    private void configureSiteTask(Project project, SitePluginExtension sitePluginExtension, ProjectDescriptor projectDescriptor) {
+    private SiteGenerate createSiteTask(Project project, SitePluginExtension sitePluginExtension) {
         SiteGenerate siteGenerate = project.getTasks().create(SITE_TASK_NAME, SiteGenerate.class);
         siteGenerate.setGroup("Documentation");
         siteGenerate.setDescription("Generates a web page containing information about the project.");
-        siteGenerate.setProjectDescriptor(projectDescriptor);
         siteGenerate.setOutputDir(sitePluginExtension.getOutputDirProvider());
         siteGenerate.getCustomData().setWebsiteUrl(sitePluginExtension.getWebsiteUrlProvider());
         siteGenerate.getCustomData().setVcsUrl(sitePluginExtension.getVcsUrlProvider());
+        return siteGenerate;
     }
 }
