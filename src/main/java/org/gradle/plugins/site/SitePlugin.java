@@ -16,11 +16,12 @@ import java.io.File;
 
 public class SitePlugin implements Plugin<Project> {
 
+    public static final String EXTENSION_NAME = "site";
     public static final String SITE_TASK_NAME = "site";
 
     @Override
     public void apply(Project project) {
-        SitePluginExtension sitePluginExtension = project.getExtensions().create("site", SitePluginExtension.class, project);
+        SitePluginExtension sitePluginExtension = project.getExtensions().create(EXTENSION_NAME, SitePluginExtension.class, project);
         sitePluginExtension.setOutputDir(new File(project.getBuildDir(), "docs/site"));
 
         ProjectDescriptor projectDescriptor = deriveProjectDescription(project);
