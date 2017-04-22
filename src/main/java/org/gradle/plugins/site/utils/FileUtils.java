@@ -6,7 +6,7 @@ public final class FileUtils {
     private FileUtils() {}
 
     public static void createDirectory(File dir) throws IOException {
-        if (!dir.exists() && !dir.mkdir()) {
+        if (!dir.exists() && !dir.mkdirs()) {
             throw new IOException("Unable to create directory " + dir);
         }
     }
@@ -30,18 +30,6 @@ public final class FileUtils {
             }
             if (out != null) {
                 out.close();
-            }
-        }
-    }
-
-    public static void writeFile(File destination, String content) throws IOException {
-        BufferedWriter output = null;
-        try {
-            output = new BufferedWriter(new FileWriter(destination));
-            output.write(content);
-        } finally {
-            if (output != null) {
-                output.close();
             }
         }
     }
