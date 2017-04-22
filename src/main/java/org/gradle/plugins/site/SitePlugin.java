@@ -74,6 +74,8 @@ public class SitePlugin implements Plugin<Project> {
 
     private void configureSiteTask(Project project, SitePluginExtension sitePluginExtension, ProjectDescriptor projectDescriptor) {
         SiteGenerate siteGenerate = project.getTasks().create(SITE_TASK_NAME, SiteGenerate.class);
+        siteGenerate.setGroup("Documentation");
+        siteGenerate.setDescription("Generates a web page containing information about the project.");
         siteGenerate.setProjectDescriptor(projectDescriptor);
         siteGenerate.setOutputDir(sitePluginExtension.getOutputDirProvider());
         siteGenerate.getCustomData().setWebsiteUrl(sitePluginExtension.getWebsiteUrlProvider());

@@ -10,6 +10,16 @@ import static org.gradle.plugins.site.SitePlugin.SITE_TASK_NAME
 
 class SitePluginFunctionalTest extends AbstractFunctionalTest {
 
+    def "provides site task"() {
+        when:
+        def buildResult = build('tasks', '--all')
+
+        then:
+        buildResult.output.contains("""Documentation tasks
+-------------------
+site - Generates a web page containing information about the project.""")
+    }
+
     def "can generate site for default conventions"() {
         when:
         build(SITE_TASK_NAME)
