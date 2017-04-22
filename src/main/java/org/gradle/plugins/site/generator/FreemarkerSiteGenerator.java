@@ -12,8 +12,8 @@ import org.gradle.plugins.site.utils.FileUtils;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,17 +63,17 @@ public class FreemarkerSiteGenerator implements SiteGenerator {
 
         for (String resource : resources) {
             String sourcePath = subdir + "/" + resource;
-            FileUtils.copyFile(new File(resolveAsUrl(sourcePath).toURI()), new File(targetDir, resource));
+            FileUtils.copyFile(resolveAsUrl(sourcePath), new File(targetDir, resource));
         }
     }
 
-    private URL resolveAsUrl(String name) {
-        return getClass().getClassLoader().getResource(name);
+    private InputStream resolveAsUrl(String name) {
+        return getClass().getClassLoader().getResourceAsStream(name);
     }
 
     private void processIndexPageTemplate(ProjectDescriptor projectDescriptor, CustomData customData) throws IOException, URISyntaxException, TemplateException {
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_25);
-        cfg.setDirectoryForTemplateLoading(new File(resolveAsUrl("template").toURI()));
+        cfg.setClassLoaderForTemplateLoading(getClass().getClassLoader(), "template");
         cfg.setDefaultEncoding("UTF-8");
         cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
         cfg.setLogTemplateExceptions(false);

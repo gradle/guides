@@ -12,21 +12,23 @@ public final class FileUtils {
     }
 
     public static void copyFile(File source, File target) throws IOException {
-        InputStream in = null;
+        copyFile(new FileInputStream(source), target);
+    }
+
+    public static void copyFile(InputStream source, File target) throws IOException {
         OutputStream out = null;
 
         try {
-            in = new FileInputStream(source);
             out = new FileOutputStream(target);
 
             byte[] buf = new byte[1024];
             int len;
-            while ((len = in.read(buf)) > 0) {
+            while ((len = source.read(buf)) > 0) {
                 out.write(buf, 0, len);
             }
         } finally {
-            if (in != null) {
-                in.close();
+            if (source != null) {
+                source.close();
             }
             if (out != null) {
                 out.close();
