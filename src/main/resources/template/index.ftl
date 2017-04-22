@@ -48,10 +48,10 @@
       <div class="masthead">
         <ul class="nav nav-pills pull-right">
           <#if customData.websiteUrl??>
-          <li><div id="website-link"><a href="${customData.websiteUrl}"><div class="colored-font">Website</div></a></div></li>
+          <li><a href="${customData.websiteUrl}" id="website-link"><div class="colored-font">Website</div></a></li>
           </#if>
           <#if customData.vcsUrl??>
-          <li><div id="code-link"><a href="${customData.vcsUrl}"><div class="colored-font">Code</div></a></div></li>
+          <li><a href="${customData.vcsUrl}" id="code-link"><div class="colored-font">Code</div></a></li>
           </#if>
           <li>&nbsp;&nbsp;&nbsp;&nbsp;</li>
           <li><img src="img/elephant-corner.png" height="35" width="35"></li>
@@ -87,11 +87,11 @@
               <#if project.javaProject??>
               <tr>
                   <td>Source compatibility</td>
-                  <td><div id="java-source-compatibility">${project.javaProject.sourceCompatibility}</div></td>
+                  <td id="java-source-compatibility">${project.javaProject.sourceCompatibility}</td>
               </tr>
               <tr>
                   <td>Target compatibility</td>
-                  <td><div id="java-target-compatibility">${project.javaProject.targetCompatibility}</div></td>
+                  <td id="java-target-compatibility">${project.javaProject.targetCompatibility}</td>
               </tr>
               </#if>
               <tr>

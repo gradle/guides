@@ -28,10 +28,10 @@ site - Generates a web page containing information about the project.""")
         def outputDir = new File(projectDir, 'build/docs/site')
         assertSiteFiles(outputDir)
         def doc = parseIndexHtml(outputDir)
-        findWebsiteLinkDivs(doc).empty
-        findCodeLinkDivs(doc).empty
-        findJavaSourceCompatibilityDiv(doc).empty
-        findJavaTargetCompatibilityDiv(doc).empty
+        findWebsiteLinkAs(doc).empty
+        findCodeLinkAs(doc).empty
+        findJavaSourceCompatibilityTds(doc).empty
+        findJavaTargetCompatibilityTds(doc).empty
     }
 
     def "can generate site for custom conventions"() {
@@ -54,13 +54,13 @@ site - Generates a web page containing information about the project.""")
         File outputDir = new File(projectDir, customOutputDir)
         assertSiteFiles(outputDir)
         def doc = parseIndexHtml(outputDir)
-        def foundWebSiteDivs = findWebsiteLinkDivs(doc)
-        foundWebSiteDivs.size() == 1
-        def webSiteLinks = findAhrefs(foundWebSiteDivs.first(), websiteUrl)
+        def foundWebSiteLinks = findWebsiteLinkAs(doc)
+        foundWebSiteLinks.size() == 1
+        def webSiteLinks = findAhrefs(foundWebSiteLinks.first(), websiteUrl)
         webSiteLinks.size() == 1
-        def foundVcsDivs = findCodeLinkDivs(doc)
-        foundVcsDivs.size() == 1
-        def vcsUrlLinks = findAhrefs(foundVcsDivs.first(), vcsUrl)
+        def foundVcsLis = findCodeLinkAs(doc)
+        foundVcsLis.size() == 1
+        def vcsUrlLinks = findAhrefs(foundVcsLis.first(), vcsUrl)
         vcsUrlLinks.size() == 1
     }
 
@@ -124,10 +124,10 @@ site - Generates a web page containing information about the project.""")
         def outputDir = new File(projectDir, 'build/docs/site')
         assertSiteFiles(outputDir)
         def doc = parseIndexHtml(outputDir)
-        def javaSourceCompatibilityDivs = findJavaSourceCompatibilityDiv(doc)
+        def javaSourceCompatibilityDivs = findJavaSourceCompatibilityTds(doc)
         javaSourceCompatibilityDivs.size() == 1
         javaSourceCompatibilityDivs.first().text() == sourceCompatibility
-        def javaTargetCompatibilityDivs = findJavaTargetCompatibilityDiv(doc)
+        def javaTargetCompatibilityDivs = findJavaTargetCompatibilityTds(doc)
         javaTargetCompatibilityDivs.size() == 1
         javaTargetCompatibilityDivs.first().text() == targetCompatibility
 
@@ -147,24 +147,28 @@ site - Generates a web page containing information about the project.""")
         Jsoup.parse(new File(outputDir, 'index.html'), 'UTF-8')
     }
 
-    static Elements findWebsiteLinkDivs(Document doc) {
-        findDivsById(doc, 'website-link')
+    static Elements findWebsiteLinkAs(Document doc) {
+        findAsById(doc, 'website-link')
     }
 
-    static Elements findCodeLinkDivs(Document doc) {
-        findDivsById(doc, 'code-link')
+    static Elements findCodeLinkAs(Document doc) {
+        findAsById(doc, 'code-link')
     }
 
-    static Elements findJavaSourceCompatibilityDiv(Document doc) {
-        findDivsById(doc, 'java-source-compatibility')
+    static Elements findJavaSourceCompatibilityTds(Document doc) {
+        findTdsById(doc, 'java-source-compatibility')
     }
 
-    static Elements findJavaTargetCompatibilityDiv(Document doc) {
-        findDivsById(doc, 'java-target-compatibility')
+    static Elements findJavaTargetCompatibilityTds(Document doc) {
+        findTdsById(doc, 'java-target-compatibility')
     }
 
-    static Elements findDivsById(Document doc, String id) {
-        doc.select("div[id=$id]")
+    static Elements findAsById(Document doc, String id) {
+        doc.select("a[id=$id]")
+    }
+
+    static Elements findTdsById(Document doc, String id) {
+        doc.select("td[id=$id]")
     }
 
     static Elements findAhrefs(Element element, String url) {
