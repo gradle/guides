@@ -1,0 +1,16 @@
+apply plugin: 'maven-publish'
+
+publishing {
+    publications {
+        sitePlugin(MavenPublication) {
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            name 'fileBased'
+            url "$buildDir/repo"
+        }
+    }
+}
