@@ -20,7 +20,7 @@ asciidoctor {
 
     attributes initexampledir : tasks.runBuildInit.destDir.absolutePath,
         initlogfile : tasks.runBuildInit.initOutputFile.absolutePath,
-        groovydoclogfile : tasks.runBuildInit.groovydocOutputFile.absolutePath,
+        groovydoclogfile : tasks.runBuildInit.docOutputFile.absolutePath,
         buildlogfile : tasks.runBuildInit.buildOutputFile.absolutePath
 
     dependsOn runBuildInit
