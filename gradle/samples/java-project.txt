@@ -1,0 +1,27 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url 'file:///${repoDir}'
+        }
+    }
+
+    dependencies {
+        classpath 'org.gradle.site:gradle-site-plugin:${projectVersion}'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'org.gradle.site'
+
+group = 'org.example'
+version = '1.0'
+description = 'Sample Gradle plugin project information.'
+
+sourceCompatibility = '1.6'
+targetCompatibility = '1.7'
+
+site {
+    websiteUrl = 'https://github.com/bmuschko/gradle-site-plugin'
+    vcsUrl = 'http://gradle.org'
+}
