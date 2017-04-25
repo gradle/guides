@@ -1,0 +1,7 @@
+apply plugin : 'cpp' // <1>
+
+model { // <2>
+    components {
+        main(NativeExecutableSpec) // <3> <4>
+    }
+}

@@ -10,4 +10,5 @@ ext {
 
 apply from : 'gradle/build-documentation.gradle'
 apply from : 'gradle/publish-documentation.gradle'
-apply from : 'gradle/test-source.gradle'
+//apply from : 'gradle/test-source.gradle'
+apply from : 'gradle/cpp.gradle'
