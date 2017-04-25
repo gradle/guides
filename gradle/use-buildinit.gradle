@@ -12,9 +12,11 @@ task runBuildInit {
     ext {
         buildType       = 'scala-library'
         destDir         = file("${buildDir}/init/${project.name}")
-        initOutputFile  = file("${buildDir}/init/output/init.txt")
-        buildOutputFile = file("${buildDir}/init/output/build.txt")
-        docOutputFile   = file("${buildDir}/init/output/groovydoc.txt")
+        outputLogFileDir = file("${buildDir}/init/output")
+        tmpOutputDir     = file("${buildDir}/tmp/init/output")
+        initOutputFile   = file("${outputLogFileDir}/init.txt")
+        buildOutputFile  = file("${outputLogFileDir}/build.txt")
+        docOutputFile    = file("${outputLogFileDir}/scaladoc.txt")
     }
 
     outputs.dir { destDir }
@@ -26,7 +28,9 @@ task runBuildInit {
 
     doLast {
         File tmpDir = file("${buildDir}/tmp/init/${project.name}")
-        File tmpBuildFile = file("${buildDir}/tmp/init/output/build.txt")
+        File tmpInitFile  = new File(tmpOutputDir,initOutputFile.name)
+        File tmpBuildFile = new File(tmpOutputDir,buildOutputFile.name)
+        File tmpDocFile   = new File(tmpOutputDir,docOutputFile.name)
 
         destDir.deleteDir()
         tmpDir.deleteDir()
@@ -35,7 +39,7 @@ task runBuildInit {
         mkdir initOutputFile.parentFile
         mkdir tmpBuildFile.parentFile
 
-        initOutputFile.withWriter { Writer output ->
+        tmpInitFile.withWriter { Writer output ->
             GradleRunner.create().forwardStdOutput(output).withProjectDir(tmpDir).
                 withArguments('init','--type',buildType).build()
         }
@@ -48,7 +52,7 @@ task runBuildInit {
         File editLibrary = new File(tmpDir,'src/main/scala/Library.scala')
         editLibrary.text = file('contents/scaladoc-prefix.txt').text + editLibrary.text
 
-        docOutputFile.withWriter { Writer output ->
+        tmpDocFile.withWriter { Writer output ->
             GradleRunner.create().forwardStdOutput(output).withProjectDir(tmpDir).
                 withArguments('scaladoc').build()
         }
@@ -105,12 +109,14 @@ task runBuildInit {
         }
 
         copy {
-            from tmpBuildFile.parentFile
-            into buildOutputFile.parentFile
+            from tmpOutputDir
+            into outputLogFileDir
 
             filter { line ->
-                if( line=~ /^Download/) {
+                if( line=~ /^Download|Total time/) {
                     null
+                } else if (line =~ /building-scala-libraries\/build\/resources\/main' does not exist/) {
+                    null // This hides ugly output which we don't want the guide reader to see
                 } else {
                     line
                 }
