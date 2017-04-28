@@ -4,7 +4,7 @@ When encountering a project that uses Gradle for the first time, many developers
 
 == What you'll need
 
-* About NN minutes
+* About 15 minutes
 * A text editor or IDE
 * A Java Development Kit (JDK), version 1.7 or better (only necessary to run Gradle)
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
@@ -143,7 +143,7 @@ $ ./gradlew properties
 
 NOTE: On Windows, you don't need the leading `./` in front of the `gradlew` command.
 
-The output is extensive. Here are just a few:
+The output is extensive. Here are just a few of the available properties:
 
 ----
 :properties
@@ -227,7 +227,7 @@ $ ./gradlew copy
 BUILD SUCCESSFUL
 ----
 
-Verify that it worked as expected by checking that there is a file called `myfile.txt` in the `dest` directory, and that its contents match the contents of the same one in the `src` directory.
+Verify that it worked as expected by checking that there is now a file called `myfile.txt` in the `dest` directory, and that its contents match the contents of the same one in the `src` directory.
 
 == Configure a core task and use a plugin
 
@@ -324,7 +324,7 @@ Hello, World!
 BUILD SUCCESSFUL
 ----
 
-The contents of the `hello` task use commands from the Gradle DSL, like `task` and `doLast`. Writing your own tasks is an interesting topic, but beyond the scope of this guide. See *** for details.
+The contents of the `hello` task use commands from the Gradle DSL, like `task` and `doLast`. Writing your own tasks is an interesting topic, but beyond the scope of this guide. See {guides}writing-gradle-tasks[Writing Custom Gradle Tasks] for details.
 
 == Next Steps
 
@@ -332,8 +332,8 @@ If you are specifically interested in building *Java* applications, read the {gu
 
 .Documentation for other popular project types
 * *C*, *C++*, *Assembler*, *Objective-c*, *Objective-c++*: {user-manual}native_software.html[Native builds]
-* *Scala*: {user-manual}scala_plugin.html[Scala plugin]
-* *Groovy*: {user-manual}tutorial_groovy_projects.html[Groovy quickstart]
+* *Scala*: {guides}building-scala-libraries[Scala plugin]
+* *Groovy*: {guides}building-groovy-libraries[Groovy quickstart]
 * *Android*: http://tools.android.com/tech-docs/new-build-system/user-guide[Android userguide]
 
 === Additional information
