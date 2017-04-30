@@ -87,7 +87,7 @@ The generated Scala test suite, `src/test/scala/LibrarySuite.scala` is shown nex
 include::{initexampledir}/src/test/scala/LibrarySuite.scala[]
 ----
 
-The generated test class consists of asingle http://www.scalatest.org/getting_started_with_fun_suite[Scala FunSuite]. The test instantiates the `Library` class, invokes the `someLibraryMethod` method, and checks that the returned value is `true.
+The generated test class consists of a single http://www.scalatest.org/getting_started_with_fun_suite[Scala FunSuite]. The test instantiates the `Library` class, invokes the `someLibraryMethod` method, and checks that the returned value is `true.
 
 == Execute the build
 
