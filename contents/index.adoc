@@ -1,9 +1,9 @@
-= Building C++ Executables
+= Building {cpp} Executables
 
 
 == What you'll build
 
-This guide demonstrates how to create a minimalist C++ executable using Gradle's `cpp` plugin.
+This guide demonstrates how to create a minimalist {cpp} executable using Gradle's `cpp` plugin.
 
 == What you'll need
 
@@ -12,11 +12,12 @@ This guide demonstrates how to create a minimalist C++ executable using Gradle's
 * A command prompt
 * The Java Development Kit (JDK), version 1.7 or higher
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
-* An installer C++ compiler. See which {user-manual}native_software.html#native-binaries:tool-chain-support[C++ tool chains] are supported by Gradle and whether you have to do any {user-guide}native_software.html#sec:tool_chain_installation[installation configuration] for your platform.
+* An installer {cpp} compiler. See which link:{user-manual}native_software.html#native-binaries:tool-chain-support[{cpp} tool chains] are supported by Gradle and whether you have to do any {user-manual}native_software.html#sec:tool_chain_installation[installation configuration] for your platform.
+
 
 == Layout
 
-The first step is to create a folder for the new project and change directory into it.
+The first step is to create a folder for the new project and change folder into it.
 
 [listing]
 ----
@@ -31,8 +32,8 @@ Create a minimalist `build.gradle` file with the following content:
 ----
 include::{projdir}/gradle/cpp.gradle[]
 ----
-<1> C++ projects are enabled via the `cpp` plugin
-<2> All native build defnitiions are done within a `model` block.
+<1> {cpp} projects are enabled via the `cpp` plugin
+<2> All native build definitions are done within a `model` block.
 <3> A native executable component is defined by a name - `main` in this case. This will determine the default location of source code, as well as the final name of the executable.
 <4> An executable is specified by using {language-reference}org.gradle.nativeplatform.NativeExecutableSpec.html[NativeExecutableSpec].
 
@@ -62,9 +63,9 @@ Note the use of `Main` in the task names which are a direct deriviative of the c
 
 == Add source code
 
-By convention, C++ projects in Gradle will follow a more contemporary layout. This can be troublesome for you if you are used to building C++ code with build tools that do not use a convention-over-configuration approach. Rest assured that Gradle is very configurable in this regard and should you need to migrate a C++ project to Gradle you can consult the {user-manual}native_software.html#sec:cpp_sources[C++ sources] section of the User Guide.
+By convention, {cpp} projects in Gradle will follow a more contemporary layout. This can be troublesome for you if you are used to building {cpp} code with build tools that do not use a convention-over-configuration approach. Rest assured that Gradle is very configurable in this regard and should you need to migrate a {cpp} project to Gradle you can consult the {user-manual}native_software.html#sec:cpp_sources[{cpp} sources] section of the User Guide.
 
-In the `build.gradle` you have previsouly defined the executable component to be called `main`. By convention, this will means that Gradle will look in `src/main/cpp` for source files and non-exported header files. Create this directory
+In the `build.gradle` you have previsouly defined the executable component to be called `main`. By convention, this will means that Gradle will look in `src/main/cpp` for source files and non-exported header files. Create this folder
 
 [listing]
 ----
@@ -78,8 +79,8 @@ and place a `main.cpp` an a `greeting.hpp` within.
 ----
 include::{codedir}/cpp/main.cpp[]
 ----
-<1> The standard C++ headers wil be located via the compiler toolchain that Gradle uses
-<2> Non-exported headers will be searched for relative to the specified C++ source folders. (In this case `src/main/cpp`).
+<1> The standard {cpp} headers wil be located via the compiler toolchain that Gradle uses
+<2> Non-exported headers will be searched for relative to the specified {cpp} source folders. (In this case `src/main/cpp`).
 
 .src/main/cpp/greeting.hpp
 [source,cpp]
@@ -102,7 +103,7 @@ $ ./gradlew mainExecutable
 BUILD SUCCESSFUL
 ----
 
-Look inside the `build` directory and you will notice the appearance of a `exe` folder. By convention Gradle will place all executables in subfolders named according to the componenet name. In this case you will find your assembled executable in `build/exe/main` and it will be called `main` (or `main.exe` under Windows).
+Look inside the `build` folder and you will notice the appearance of a `exe` folder. By convention Gradle will place all executables in subfolders named according to the component name. In this case you will find your assembled executable in `build/exe/main` and it will be called `main` (or `main.exe` under Windows).
 
 Now run your newly built executable.
 
@@ -113,17 +114,17 @@ $ ./build/exe/main/main
 Hello World
 ----
 
-Congratulations! You have just built a C++ executable with Gradle.
+Congratulations! You have just built a {cpp} executable with Gradle.
 
 == Summary
 
-You have created an C++ project  that can be used as a foundation for something more substantial. In the process you saw:
+You have created an {cpp} project  that can be used as a foundation for something more substantial. In the process you saw:
 
-* How to create a build script for C++ executables.
+* How to create a build script for {cpp} executables.
 * Where to add source code by convention.
 * How to build the executable without building the full project.
 
 == Next Steps
 
-* Testing using http://cunit.sourceforge.net[CUnit] or [GoogleTest] is supported. Gradle will respectively create a matching {language-reference}org.gradle.nativeplatform.test.cunit.CUnitTestSuiteSpec.html[CUnitTestSuiteSpec] or {language-reference}native_software.html#native_binaries:google_test[GoogleTestTestSuiteSpec ] component for the executable you have defined in this guide. See  the {user-manual}native_software.html#native_binaries:cunit[CUnit support] and {user-manual}native_software.html#native_binaries:google_test[GoogleTest support] sections in  the User Guide for more details.
-* As there is no 'standard' way of creating documentation for C++ projects, the `cpp` plugin does not offer a task to generate documentation. If you do use the popular http://www.stack.nl/~dimitri/doxygen[Doxygen] tool for documenting C++ code, you may want to have a look at the https://plugins.gradle.org/plugin/org.ysb33r.doxygen[Doxygen plugin] for Gradle
+* Testing using http://cunit.sourceforge.net[CUnit] or https://github.com/google/googletest[GoogleTest] is supported. Gradle will respectively create a matching {language-reference}org.gradle.nativeplatform.test.cunit.CUnitTestSuiteSpec.html[CUnitTestSuiteSpec] or {language-reference}native_software.html#native_binaries:google_test[GoogleTestTestSuiteSpec ] component for the executable you have defined in this guide. See  the {user-manual}native_software.html#native_binaries:cunit[CUnit support] and {user-manual}native_software.html#native_binaries:google_test[GoogleTest support] sections in  the User Guide for more details.
+* As there is no 'standard' way of creating documentation for {cpp} projects, the `cpp` plugin does not offer a task to generate documentation. If you do use the popular http://www.stack.nl/~dimitri/doxygen[Doxygen] tool for documenting {cpp} code, you may want to have a look at the link:https://plugins.gradle.org/plugin/org.ysb33r.doxygen[Doxygen plugin] for Gradle
