@@ -1,4 +1,4 @@
-= @@GUIDE_NAME@
+= @@GUIDE_NAME@@
 
 
 == What you'll build
