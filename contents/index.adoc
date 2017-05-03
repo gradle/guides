@@ -12,7 +12,7 @@ This guide demonstrates how to create a minimalist {cpp} executable using Gradle
 * A command prompt
 * The Java Development Kit (JDK), version 1.7 or higher
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
-* An installer {cpp} compiler. See which link:{user-manual}native_software.html#native-binaries:tool-chain-support[{cpp} tool chains] are supported by Gradle and whether you have to do any {user-manual}native_software.html#sec:tool_chain_installation[installation configuration] for your platform.
+* An installed {cpp} compiler. See which link:{user-manual}native_software.html#native-binaries:tool-chain-support[{cpp} tool chains] are supported by Gradle and whether you have to do any {user-manual}native_software.html#sec:tool_chain_installation[installation configuration] for your platform.
 
 
 == Layout
