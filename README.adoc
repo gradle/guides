@@ -1,4 +1,4 @@
-= Gradle Site Plugin image:https://travis-ci.org/bmuschko/gradle-site-plugin.svg?branch=master["Build Status", link="https://travis-ci.org/bmuschko/gradle-site-plugin"]
+= Gradle Site Plugin image:https://travis-ci.org/gradle-guides/gradle-site-plugin.svg?branch=master["Build Status", link="https://travis-ci.org/gradle-guides/gradle-site-plugin"]
 
 A sample Gradle plugin demonstrating established techniques and practices for plugin development as described in the following guides:
 
