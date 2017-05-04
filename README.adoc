@@ -9,7 +9,7 @@ A sample Gradle plugin demonstrating established techniques and practices for pl
 
 The plugin provides a task for generating a web page that derives information about the project e.g. applied plugins and available tasks. While minimalistic in functionality it serves as a show case for demonstrating best practices for Gradle plugin development. A site generated for a sample project can be viewed link:http://gradle-guides.github.io/gradle-site-plugin/sample/index.html[here].
 
-WARNING: The plugin is currently not published a public binary repository nor the Gradle plugin portal.
+WARNING: The plugin is currently not published to a public binary repository nor the Gradle plugin portal.
 
 == Applied techniques and practices
 
