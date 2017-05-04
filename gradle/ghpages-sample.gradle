@@ -26,7 +26,7 @@ task generateSampleSite(type: GradleBuild) {
 }
 
 githubPages {
-    repoUri = 'git@github.com:bmuschko/gradle-site-plugin.git'
+    repoUri = 'git@github.com:gradle-guides/gradle-site-plugin.git'
 
     pages {
         from(file("$generateSampleBuild.outputDir/build/docs/site")) {

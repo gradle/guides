@@ -15,7 +15,7 @@ import java.io.File;
  *
  * site {
  *     outputDir = file("$buildDir/site")
- *     websiteUrl = 'https://github.com/bmuschko/gradle-site-plugin'
+ *     websiteUrl = 'https://github.com/gradle-guides/gradle-site-plugin'
  *     vcsUrl = 'http://gradle.org'
  * }
  * </pre>

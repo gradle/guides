@@ -12,8 +12,8 @@ buildscript {
 apply plugin: com.gradle.publish.PublishPlugin
 
 pluginBundle {
-    website = "https://github.com/bmuschko/${project.name}"
-    vcsUrl = "https://github.com/bmuschko/${project.name}.git"
+    website = "https://github.com/gradle-guides/${project.name}"
+    vcsUrl = "https://github.com/gradle-guides/${project.name}.git"
     tags = ['documentation', 'site', 'project']
 
     plugins {
