@@ -34,7 +34,7 @@ public class SitePlugin implements Plugin<Project> {
      *
      * @see org.gradle.plugins.site.tasks.SiteGenerate
      */
-    public static final String SITE_TASK_NAME = "site";
+    public static final String GENERATE_SITE_TASK_NAME = "generateSite";
 
     @Override
     public void apply(Project project) {
@@ -90,12 +90,12 @@ public class SitePlugin implements Plugin<Project> {
     }
 
     private SiteGenerate createSiteTask(Project project, SitePluginExtension sitePluginExtension) {
-        SiteGenerate siteGenerate = project.getTasks().create(SITE_TASK_NAME, SiteGenerate.class);
-        siteGenerate.setGroup(JavaBasePlugin.DOCUMENTATION_GROUP);
-        siteGenerate.setDescription("Generates a web page containing information about the project.");
-        siteGenerate.setOutputDir(sitePluginExtension.getOutputDirProvider());
-        siteGenerate.getCustomData().setWebsiteUrl(sitePluginExtension.getWebsiteUrlProvider());
-        siteGenerate.getCustomData().setVcsUrl(sitePluginExtension.getVcsUrlProvider());
-        return siteGenerate;
+        SiteGenerate generateSiteTask = project.getTasks().create(GENERATE_SITE_TASK_NAME, SiteGenerate.class);
+        generateSiteTask.setGroup(JavaBasePlugin.DOCUMENTATION_GROUP);
+        generateSiteTask.setDescription("Generates a web page containing information about the project.");
+        generateSiteTask.setOutputDir(sitePluginExtension.getOutputDirProvider());
+        generateSiteTask.getCustomData().setWebsiteUrl(sitePluginExtension.getWebsiteUrlProvider());
+        generateSiteTask.getCustomData().setVcsUrl(sitePluginExtension.getVcsUrlProvider());
+        return generateSiteTask;
     }
 }

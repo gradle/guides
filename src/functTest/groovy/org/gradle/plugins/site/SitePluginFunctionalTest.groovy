@@ -6,7 +6,7 @@ import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import spock.lang.Unroll
 
-import static org.gradle.plugins.site.SitePlugin.SITE_TASK_NAME
+import static org.gradle.plugins.site.SitePlugin.GENERATE_SITE_TASK_NAME
 
 class SitePluginFunctionalTest extends AbstractFunctionalTest {
 
@@ -17,12 +17,12 @@ class SitePluginFunctionalTest extends AbstractFunctionalTest {
         then:
         buildResult.output.contains("""Documentation tasks
 -------------------
-site - Generates a web page containing information about the project.""")
+$GENERATE_SITE_TASK_NAME - Generates a web page containing information about the project.""")
     }
 
     def "can generate site for default conventions"() {
         when:
-        build(SITE_TASK_NAME)
+        build(GENERATE_SITE_TASK_NAME)
 
         then:
         def outputDir = new File(projectDir, 'build/docs/site')
@@ -48,7 +48,7 @@ site - Generates a web page containing information about the project.""")
         """
 
         when:
-        build(SITE_TASK_NAME)
+        build(GENERATE_SITE_TASK_NAME)
 
         then:
         File outputDir = new File(projectDir, customOutputDir)
@@ -118,7 +118,7 @@ site - Generates a web page containing information about the project.""")
         """
 
         when:
-        build(SITE_TASK_NAME)
+        build(GENERATE_SITE_TASK_NAME)
 
         then:
         def outputDir = new File(projectDir, 'build/docs/site')
