@@ -23,7 +23,7 @@ WARNING: The plugin is currently not published a public binary repository nor th
 - Reacting to plugins instead of applying plugins. [link:https://github.com/bmuschko/gradle-site-plugin/blob/master/src/main/java/org/gradle/plugins/site/SitePlugin.java#L42[Code] | link:https://guides.gradle.org/implementing-gradle-plugins/#reacting_to_plugins[More Details]]
 - Declaration of appropriate plugin identifiers. [link:https://github.com/bmuschko/gradle-site-plugin/blob/master/src/main/resources/META-INF/gradle-plugins/org.gradle.site.properties[Code] | link:https://guides.gradle.org/implementing-gradle-plugins/#assigning_appropriate_plugin_identifiers[More Details]]
 - Functional testing with TestKit. [link:https://github.com/bmuschko/gradle-site-plugin/blob/master/build.gradle#L6[Code] | link:https://docs.gradle.org/current/userguide/test_kit.html[More Details]]
-- Continuous Integration of plugin code with link:https://enterprise.travis-ci.com/?gclid=CjwKEAjw_uvHBRDUkumF0tLFp3cSJACAIHMYyC1jcpbxEv6KhWZHs1k9jhfHcH_td2yThI9MWqKv7hoC0lzw_wcB[Travis CI]. [link:https://github.com/bmuschko/gradle-site-plugin/blob/master/.travis.yml[Code] | More Details]
+- Continuous Integration of plugin code with link:https://travis-ci.org/[Travis CI]. [link:https://github.com/bmuschko/gradle-site-plugin/blob/master/.travis.yml[Code] | More Details]
 
 == Usage example
 
