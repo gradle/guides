@@ -96,12 +96,14 @@ To build your project you can simply do `./gradlew build` as per usual, but if y
 ----
 $ ./gradlew mainExecutable
 
-:compileMainExecutableMainCpp
-:linkMainExecutable
+:compileMainExecutableMainCpp // <1>
+:linkMainExecutable // <2>
 :mainExecutable
 
 BUILD SUCCESSFUL
 ----
+<1> To keep things tidy on the console, Gradle does not display compiler output. If you need to ever diagnose a compilation issue, the output from the compiler is stored in `build/tmp/compileMainExecutableMainCpp/output.txt`.
+<2> In a similar fashion the output from the linker is written to `build/tmp/linkMainExecutable/output.txt`
 
 Look inside the `build` folder and you will notice the appearance of a `exe` folder. By convention Gradle will place all executables in subfolders named according to the component name. In this case you will find your assembled executable in `build/exe/main` and it will be called `main` (or `main.exe` under Windows).
 
