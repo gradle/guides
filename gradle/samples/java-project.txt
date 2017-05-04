@@ -22,6 +22,6 @@ sourceCompatibility = '1.6'
 targetCompatibility = '1.7'
 
 site {
-    websiteUrl = 'https://github.com/bmuschko/gradle-site-plugin'
-    vcsUrl = 'http://gradle.org'
+    websiteUrl = 'http://gradle.org'
+    vcsUrl = 'https://github.com/bmuschko/gradle-site-plugin'
 }
