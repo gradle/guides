@@ -13,7 +13,7 @@ WARNING: The plugin is currently not published a public binary repository nor th
 
 == Applied techniques and practices
 
-- Production source code written in Java, test code written in Groovy.
+- Production source code written in Java, test code written in Groovy with [Spock framework](http://spockframework.org/).
 - Reusable logic written as binary plugin.
 - Usage of the Plugin Development plugin to simplify plugin development. [link:https://github.com/bmuschko/gradle-site-plugin/blob/master/build.gradle#L3[Code] | link:https://guides.gradle.org/implementing-gradle-plugins/#plugin-development-plugin[More Details]]
 - Implementation of tasks as custom task type. [link:https://github.com/bmuschko/gradle-site-plugin/blob/master/src/main/java/org/gradle/plugins/site/tasks/SiteGenerate.java[Code] | link:https://guides.gradle.org/implementing-gradle-plugins/#prefer_writing_and_using_custom_task_types[More Details]]
