@@ -33,7 +33,6 @@ public class FreemarkerSiteGenerator implements SiteGenerator {
     public void generate(ProjectDescriptor projectDescriptor, CustomData customData) {
         try {
             copyCssResources();
-            copyJsResources();
             copyImgResources();
             processIndexPageTemplate(projectDescriptor, customData);
         } catch (Exception e) {
@@ -46,12 +45,6 @@ public class FreemarkerSiteGenerator implements SiteGenerator {
         resources.add("bootstrap.css");
         resources.add("bootstrap-responsive.css");
         copyResources("css", resources);
-    }
-
-    private void copyJsResources() throws IOException, URISyntaxException {
-        List<String> resources = new ArrayList<String>();
-        resources.add("bootstrap.js");
-        copyResources("js", resources);
     }
 
     private void copyImgResources() throws IOException, URISyntaxException {

@@ -139,7 +139,6 @@ site - Generates a web page containing information about the project.""")
         assert new File(directory, 'index.html').isFile()
         assert new File(directory, 'css/bootstrap.css').isFile()
         assert new File(directory, 'css/bootstrap-responsive.css').isFile()
-        assert new File(directory, 'js/bootstrap.js').isFile()
         assert new File(directory, 'img/elephant-corner.png').isFile()
     }
 
