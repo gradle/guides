@@ -3,6 +3,7 @@ apply plugin: 'java-gradle-plugin'
 apply from: "$rootDir/gradle/functional-test.gradle"
 apply from: "$rootDir/gradle/publishing-portal.gradle"
 apply from: "$rootDir/gradle/ghpages-sample.gradle"
+apply from: "$rootDir/gradle/build-scan.gradle"
 
 group = 'org.gradle.site'
 version = '0.1'
