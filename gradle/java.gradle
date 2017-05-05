@@ -1,0 +1,17 @@
+// tag::version[]
+// tag::plugin[]
+apply plugin : 'java'
+// end::plugin[]
+
+version = '0.1.0'
+// end::version[]
+
+// tag::jar[]
+jar {
+    manifest {
+        attributes('Implementation-Title': project.name,
+            'Implementation-Version': project.version)
+    }
+}
+// end::jar[]
+
