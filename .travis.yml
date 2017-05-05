@@ -5,3 +5,8 @@ jdk:
 
 env:
   - CI=true
+
+install: true
+
+script:
+  - ./gradlew check publishGhPages
