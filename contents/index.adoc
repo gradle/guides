@@ -161,50 +161,6 @@ BUILD SUCCESSFUL
 
 You can view the generated Javadoc by opening the HTML file, located at `build/docs/javadoc/index.html`.
 
-== Consume the library JAR
-
-Create a new Java file in the root of the project called `Main.java` and put the following code in it:
-
-[source,java]
-.Main.java
-----
-import org.example.mylib.Greeter;
-
-public class Main {
-    public static void main(String... args) {
-        System.out.println(new Greeter("Gradle").getGreeting());
-    }
-}
-----
-
-If you now try to compile this file, you'll get the following error:
-
-----
-$ javac Main.java
-Main.java:1: error: package org.example.mylib does not exist
-import org.example.mylib.Greeter;
-                        ^
-Main.java:5: error: cannot find symbol
-        System.out.println(new Greeter("Gradle").getGreeting());
-                               ^
-  symbol:   class Greeter
-  location: class Main
-2 errors
-----
-
-Let's fix that quickly by including our JAR file on the compilation classpath:
-
-----
-$ javac -cp .:build/libs/mylib-0.1.0.jar Main.java
-----
-
-Finally, run the application to test everything is working:
-
-----
-$ java -cp .:build/libs/mylib-0.1.0.jar Main
-Hello, Gradle!
-----
-
 == Summary
 
 That's it! You've now successfully built a Java library project, packaged it as a JAR and consumed it within a separate application. Along the way, you've learned how to:
