@@ -1,12 +1,11 @@
 language: java
+install: true
 
 jdk:
   - oraclejdk8
 
 env:
   - CI=true
-
-install: true
 
 script:
   - ./gradlew check -s
