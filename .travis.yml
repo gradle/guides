@@ -9,4 +9,4 @@ env:
 install: true
 
 script:
-  - ./gradlew check publishGhPages
+  - ./gradlew check -s
