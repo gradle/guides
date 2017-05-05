@@ -29,7 +29,7 @@ Now create a class named `Greeter` as follows:
 [source,java]
 .src/main/java/org/example/mylib/Greeter.java
 ----
-include::{codedir}/java/org/example/mylib/Greeter.java[]
+include::{codedir}/java/org/example/mylib/Greeter.java[tags=code]
 ----
 
 You now have the necessary components for a simple Java library project. The next step is to create a Gradle build script capable of compiling and packaging the library into a JAR. To do so, add a file named `build.gradle` in the root of the project and apply Gradle's {user-manual}java_plugin.html[Java plugin] as follows:
@@ -132,6 +132,34 @@ The `manifest` is just one of many properties that can be configured on the `jar
 ====
 
 Now you can complete this exercise by trying to compile some Java code that uses the library you just built.
+
+== Adding API documentation
+
+The `java` plugin has built-in support for Java's API documentation tool via the `javadoc` task.
+
+Annotate the `Greeter.java` file with Javadoc markup.
+
+[source,java]
+.src/main/java/org/example/mylib/Greeter.java
+----
+include::{codedir}/java/org/example/mylib/Greeter.java[tags=javadoc]
+----
+
+Run the `javadoc` task.
+
+[listing]
+----
+$ ./gradlew javadoc
+
+:compileJava
+:processResources NO-SOURCE
+:classes
+:javadoc
+
+BUILD SUCCESSFUL
+----
+
+You can view the generated Javadoc by opening the HTML file, located at `build/docs/javadoc/index.html`.
 
 == Consume the library JAR
 

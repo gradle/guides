@@ -1,5 +1,12 @@
+// tag::code[]
 package org.example.mylib;
+// end::code[]
 
+// tag::javadoc[]
+/** A class that will produce a greeting for a provided name.
+ *
+ */
+// tag::code[]
 public class Greeter {
     private String name;
 
@@ -7,3 +14,5 @@ public class Greeter {
 
     public String getGreeting() { return "Hello, " + this.name + "!"; }
 }
+// end::code[]
+// end::javadoc[]
