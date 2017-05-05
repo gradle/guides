@@ -18,9 +18,9 @@ pluginBundle {
 
     plugins {
         sitePlugin {
-            id = 'org.gradle.site'
+            id = 'com.github.gradle-guides.site'
             displayName = 'Gradle Site Plugin'
-            description = 'Gradle plugin generating a web page containing project information'
+            description = 'Gradle plugin generating a web page containing project information.'
         }
     }
 }

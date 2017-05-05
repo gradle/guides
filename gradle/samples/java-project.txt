@@ -7,12 +7,12 @@ buildscript {
     }
 
     dependencies {
-        classpath 'org.gradle.site:gradle-site-plugin:${projectVersion}'
+        classpath 'com.github.gradle-guides:gradle-site-plugin:${projectVersion}'
     }
 }
 
 apply plugin: 'java'
-apply plugin: 'org.gradle.site'
+apply plugin: 'com.github.gradle-guides.site'
 
 group = 'org.example'
 version = '1.0'

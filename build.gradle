@@ -5,7 +5,7 @@ apply from: "$rootDir/gradle/functional-test.gradle"
 apply from: "$rootDir/gradle/publishing-portal.gradle"
 apply from: "$rootDir/gradle/ghpages-sample.gradle"
 
-group = 'org.gradle.site'
+group = 'com.github.gradle-guides'
 version = '0.1'
 
 ext.compatibilityVersion = '1.6'

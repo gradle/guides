@@ -34,7 +34,7 @@ IMPORTANT: The plugin requires a Gradle version of 4.0 or higher. All features t
 marked above. All other features will work with earlier versions of Gradle.
 
 ```
-apply plugin: 'org.gradle.site'
+apply plugin: 'com.github.gradle-guides.site'
 
 site {
     outputDir = file("$buildDir/site")

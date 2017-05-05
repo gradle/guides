@@ -18,7 +18,7 @@ abstract class AbstractFunctionalTest extends Specification {
 
         buildFile << """
             plugins {
-                id 'org.gradle.site'
+                id 'com.github.gradle-guides.site'
             }
         """
     }

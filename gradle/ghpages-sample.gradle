@@ -22,7 +22,7 @@ task generateSampleBuild(type: Copy) {
 task generateSampleSite(type: GradleBuild) {
     dependsOn generateSampleBuild, 'publishPluginMavenPublicationToFileBasedRepository'
     dir = generateSampleBuild.outputDir
-    tasks = ['site']
+    tasks = ['generateSite']
 }
 
 githubPages {
