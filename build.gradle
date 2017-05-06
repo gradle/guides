@@ -11,6 +11,18 @@ ext {
 
 apply from : 'gradle/build-documentation.gradle'
 apply from : 'gradle/publish-documentation.gradle'
-//apply from : 'gradle/test-source.gradle'
-apply from : 'gradle/java.gradle'
+apply from : 'gradle/use-buildinit.gradle'
+
+asciidoctor {
+
+    inputs.dir tasks.runBuildInit.destDir.parentFile
+
+    attributes initexampledir : tasks.runBuildInit.destDir.absolutePath,
+        initlogfile : tasks.runBuildInit.initOutputFile.absolutePath,
+        doclogfile : tasks.runBuildInit.docOutputFile.absolutePath,
+        buildlogfile : tasks.runBuildInit.buildOutputFile.absolutePath,
+        manifestfile : tasks.runBuildInit.manifestFile.absolutePath
+
+    dependsOn runBuildInit
+}
 
