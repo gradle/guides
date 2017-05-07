@@ -137,7 +137,7 @@ Now you can complete this exercise by trying to compile some Java code that uses
 
 The `java` plugin has built-in support for Java's API documentation tool via the `javadoc` task.
 
-Annotate the `Greeter.java` file with Javadoc markup.
+Annotate the `Greeter.java` file with `javadoc` markup.
 
 [source,java]
 .src/main/java/org/example/mylib/Greeter.java
@@ -159,7 +159,7 @@ $ ./gradlew javadoc
 BUILD SUCCESSFUL
 ----
 
-You can view the generated Javadoc by opening the HTML file, located at `build/docs/javadoc/index.html`.
+You can view the generated `javadoc` files by opening the HTML file located at `build/docs/javadoc/index.html`.
 
 == Consume the library JAR
 
