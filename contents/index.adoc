@@ -14,6 +14,20 @@
 
 == Step 1
 
+The first step is to create a folder for the new project and add a {user-manual}gradle_wrapper.html#sec:wrapper_generation[Gradle Wrapper] to the project.
+
+[listing]
+----
+$ mkdir @@GUIDE_SLUG@@
+$ cd @@GUIDE_SLUG@@
+$ gradle wrapper // <1>
+
+:wrapper
+
+BUILD SUCCESSFUL
+----
+<1> This allows a version of Gradle to be locked to a project and henceforth you can use `./gradlew` instead of `gradle`.
+
 
 == Step 2
 
