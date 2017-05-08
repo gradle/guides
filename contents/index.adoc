@@ -14,16 +14,21 @@ This guide demonstrates how to create a minimalist {cpp} executable using Gradle
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 * An installed {cpp} compiler. See which link:{user-manual}native_software.html#native-binaries:tool-chain-support[{cpp} tool chains] are supported by Gradle and whether you have to do any {user-manual}native_software.html#sec:tool_chain_installation[installation configuration] for your platform.
 
-
 == Layout
 
-The first step is to create a folder for the new project and change folder into it.
+The first step is to create a folder for the new project and add a {user-manual}gradle_wrapper.html#sec:wrapper_generation[Gradle Wrapper] to the project.
 
 [listing]
 ----
 $ mkdir cpp-executable
 $ cd cpp-executable
+$ gradle wrapper // <1>
+
+:wrapper
+
+BUILD SUCCESSFUL
 ----
+<1> This allows a version of Gradle to be locked to a project and henceforth you can use `./gradlew` instead of `gradle`.
 
 Create a minimalist `build.gradle` file with the following content:
 
