@@ -7,7 +7,7 @@ This guide demonstrates how to create a minimalist {cpp} executable using Gradle
 
 == What you'll need
 
-* About NN minutes
+* About 15 minutes
 * A text editor
 * A command prompt
 * The Java Development Kit (JDK), version 1.7 or higher
