@@ -1,86 +1,133 @@
 = Building Java Libraries
 
-This guide walks you through the process of using Gradle to produce a JVM library suitable for consumption by other JVM libraries and applications.
+This guide walks you through the process of using Gradle's Build Init plugin to produce a JVM library which is suitable for consumption by other JVM libraries and applications.
 
 == What you’ll build
 
-You'll start by creating a Java library project consisting of a single class. You'll then use Gradle to compile and package the library into a _Java Archive_ (https://docs.oracle.com/javase/8/docs/technotes/guides/jar/index.html[JAR]) that contains the compiled class and a default manifest file. Next, you'll configure your Gradle build script to customize the name of the JAR and the contents of its manifest. Finally, you'll verify that the library JAR is well-formed by consuming it from a separate command-line application.
+You'll generate a Java library with the standard layout.
 
 == What you’ll need
 
- - About 10 minutes
+ - About 15 minutes
  - A text editor or IDE
  - A http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK), version 1.7 or better
- - A {user-manual}/installation.html#sec:download[Gradle distribution], version {gradle-version} or better
+ - A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 
 == Create a library project
 
-Create a new project directory named `mylib` and initialize the directory structure that will contain your library's sources, for example by running the following commands on a Unix-like system:
+Gradle comes with a built-in plugin called the Build Init plugin. It is documented in the https://docs.gradle.org/current/userguide/build_init_plugin.html[Gradle User Manual]. The plugin has one task, called `init`, that generates the project. The `init` task calls the (also built-in) `wrapper` task to create a Gradle wrapper script, `gradlew`.
 
-[source,shell]
-----
-$ mkdir mylib
-$ cd mylib
-$ mkdir -p src/main/java/org/example/mylib
-----
+The first step is to create a folder for the new project and change directory into it.
 
-Now create a class named `Greeter` as follows:
-
-[source,java]
-.src/main/java/org/example/mylib/Greeter.java
+[listing]
 ----
-include::{codedir}/java/org/example/mylib/Greeter.java[tags=code]
+$ mkdir building-java-libraries
+$ cd building-java-libraries
 ----
 
-You now have the necessary components for a simple Java library project. The next step is to create a Gradle build script capable of compiling and packaging the library into a JAR. To do so, add a file named `build.gradle` in the root of the project and apply Gradle's {user-manual}java_plugin.html[Java plugin] as follows:
+== Run the init task
 
+From inside the new project directory, run the `init` task with the `java-library` argument.
+
+[listing]
+----
+$ gradle init --type java-library
+include::{initlogfile}[]
+----
+
+The `init` task runs the `wrapper` task first, which generates the `gradlew` and `gradlew.bat` wrapper scripts. Then it creates the new project with the following structure:
+
+[listing]
+----
+include::project-structure.txt[]
+----
+<1> Generated folder for wrapper files
+<2> Default Java source folder
+<3> Default Java test folder
+
+You now have the necessary components for a simple Java library project.
+
+== Review the generated project files
+
+The `settings.gradle` file is heavily commented, but has only one active line:
+
+.Generated settings.gradle
 [source,groovy]
-.build.gradle
 ----
-include::{projdir}/gradle/java.gradle[tags=plugin]
+include::{initexampledir}/settings.gradle[]
+----
+<1>  This assigns the name of the root project.
+
+The generated `build.gradle` file also has many comments. The active portion is reproduced here (note version numbers for the dependencies may be updated in later versions of Gradle):
+
+.Generated build.gradle
+[source,groovy]
+----
+include::{initexampledir}/build.gradle[]
+----
+<1> Public Bintray Artifactory repository
+<2> This is an example of a dependency which is exported to consumers, that is to say found on their compile classpath.
+<3> This is an exampe of a dependency which is used internally, and not exposed to consumers on their own compile classpath.
+<4> JUnit testing library
+
+The build file adds the {user-manual}java_library_plugin.html[java-library] plugin. This is an extension of the `java-base` plugin and adds additional tasks for compiling Java source code.
+
+The file `src/main/java/Library.java` is shown here:
+
+.Generated src/main/groovy/Library.groovy
+[source,java]
+----
+include::{initexampledir}/src/main/java/Library.java[tags=source-code]
 ----
 
-Once you've saved the file, you're ready to assemble your library JAR.
+The generated JUnit specification, `src/test/java/LibraryTest.java` is shown next:
+
+.Generated  src/test/java/LibraryTest.java
+[source,java]
+----
+include::{initexampledir}/src/test/java/LibraryTest.java[]
+----
+
+The generated test class has a single http://junit.org/junit4/[JUnit 4] test. The test instantiates the `Library` class, invokes the `someLibraryMethod` method, and checks that the returned value is `true.
 
 == Assemble the library JAR
 
-The Java plugin {user-manual}java_plugin.html#sec:java_tasks[adds a number of tasks] to your project, including a `jar` task. To assemble your library JAR, run `gradle jar`, like so:
+To build the project, run the `build` task. You can use the regular `gradle` command, but when a project includes a wrapper script, it is considered good form to use it instead.
 
+[listing]
 ----
-$ gradle jar
-:compileJava
-:processResources UP-TO-DATE
-:classes
-:jar
-
-BUILD SUCCESSFUL
+$ ./gradlew build
+include::{buildlogfile}[]
 ----
 
-The output above tells you that running the `jar` task causes Gradle to:
+NOTE: The first time you run the wrapper script, `gradlew`, there may be a delay while that version of `gradle` is downloaded and stored locally in your `~/.gradle/wrapper/dists` folder.
 
- 1. compile the Java source code
- 2. process any resource files
- 3. package everything up into a JAR file
+The first time you run the build, Gradle will check whether or not you already have the JUnit libraries and other listed dependencies in your cache under your `~/.gradle` directory. If not, the libraries will be downloaded and stored there. The next time you run the build, the cached versions will be used. The `build` task compiles the classes, runs the tests, and generates a test report.
+
+You can view the test report by opening the HTML output file, located at `build/reports/tests/test/index.html`.
+
+A sample report is shown here:
+
+image::Test-Summary.png[]
+
+
+You can find your newly packaged JAR file in the `build/libs` directory with the name `building-java-libraries.jar`. Verify that the archive is valid by running the following command:
+
+----
+$ jar tf build/libs/building-java-libraries.jar
+META-INF/
+META-INF/MANIFEST.MF
+Library.class
+----
+
+You should see the required manifest file—`MANIFEST.MF`—and the compiled `Library` class.
 
 [NOTE]
 ====
-All of this happens without any additional configuration in `build.gradle` because Gradle's Java plugin assumes your project sources are arranged in a {user-manual}java_plugin.html#sec:java_project_layout[conventional project layout]. You can customize the project layout if you wish {user-manual}java_plugin.html#sec:changing_java_project_layout[as described in the user manual].
+All of this happens without any additional configuration in `build.gradle` because Gradle's `java-library` plugin assumes your project sources are arranged in a {user-manual}java_plugin.html#sec:java_project_layout[conventional project layout]. You can customize the project layout if you wish {user-manual}java_plugin.html#sec:changing_java_project_layout[as described in the user manual].
 ====
 
-You can find your newly packaged JAR file in the `build/libs` directory with the name `mylib.jar`. Verify that the archive is valid by running the following command:
-
-----
-$ jar tf build/libs/mylib.jar
-META-INF/
-META-INF/MANIFEST.MF
-org/
-org/example/
-org/example/Greeter.class
-----
-
-You should see the required manifest file—`MANIFEST.MF`—and the compiled `Greeter` class.
-
-At this point, your library is ready to be consumed by other JVM-based projects, but there are a couple of customizations you may want to make first. We'll look at those next.
+Congratulations, you have just completed the step from creating a Java library! You can can now customize this to your own project needs.
 
 == Customize the library JAR
 
@@ -89,30 +136,30 @@ You will often want the name of the JAR file to include the library _version_. T
 [source,groovy]
 .build.gradle
 ----
-include::{projdir}/gradle/java.gradle[tags=version]
+include::jar-postfix.txt[tags=version]
 ----
 
-Now run the `jar` task once more:
+Now run the `jar` task:
 
 ----
-$ gradle jar
+$ ./gradlew jar
 ----
 
-and notice that the resulting JAR file at `build/libs/mylib-0.1.0.jar` contains the version as expected.
+and notice that the resulting JAR file at `build/libs/building-java-libraries-0.1.0.jar` contains the version as expected.
 
 Another common requirement is customizing the manifest file, typically by adding one or more attributes. Let's include the library name and version in the manifest file by {user-manual}more_about_tasks.html#sec:configuring_tasks[configuring the `jar` task]. Add the following to the end of your build script:
 
 [source,groovy]
 .build.gradle
 ----
-include::{projdir}/gradle/java.gradle[tags=jar]
+include::jar-postfix.txt[tags=jar-manifest]
 ----
 
 To confirm that these changes work as expected, run the `jar` task again, and this time also unpack the manifest file from the JAR:
 
 ----
-$ gradle jar
-$ jar xf build/libs/mylib-0.1.0.jar META-INF/MANIFEST.MF
+$ ./gradlew jar
+$ jar xf build/libs/building-java-libraries-0.1.0.jar META-INF/MANIFEST.MF
 ----
 
 Now view the contents of the `META-INF/MANIFEST.MF` file and you should see the following:
@@ -120,98 +167,48 @@ Now view the contents of the `META-INF/MANIFEST.MF` file and you should see the 
 [source,mf]
 .META-INF/MANIFEST.MF
 ----
-Manifest-Version: 1.0
-Implementation-Title: mylib
-Implementation-Version: 0.1.0
+include::{manifestfile}[]
 ----
 
 [NOTE]
 .Learn more about configuring JARs
 ====
-The `manifest` is just one of many properties that can be configured on the `jar` task. For a complete list, see the {language-reference}org.gradle.api.tasks.bundling.Jar.html[Jar section] of the {language-reference}[Gradle Language Reference] as well as the {user-manual}java_plugin.html#sec:jar[Jar] and {user-manual}working_with_files.html#sec:archives[Creating Archives] sections of the Gradle {user-manual}[User Manual].
+The `manifest` is just one of many properties that can be configured on the `jar` task. For a complete list, see the {language-reference}org.gradle.api.tasks.bundling.Jar.html[Jar section] of the {language-reference}[Gradle Language Reference] as well as the {user-manual}java_plugin.html#sec:jar[Jar] and {user-manual}working_with_files.html#sec:archives[Creating Archives] sections of the Gradle {user-manual}userguide.html[User Manual].
 ====
 
 Now you can complete this exercise by trying to compile some Java code that uses the library you just built.
 
 == Adding API documentation
 
-The `java` plugin has built-in support for Java's API documentation tool via the `javadoc` task.
+The `java-library` plugin has built-in support for Java's API documentation tool via the `javadoc` task.
 
-Annotate the `Greeter.java` file with `javadoc` markup.
+The code generated by the Build Init plugin already placed a comment on the `Library.java` file. Modify the comment to become `javadoc` markup.
 
+.src/main/scala/Library.java
 [source,java]
-.src/main/java/org/example/mylib/Greeter.java
 ----
-include::{codedir}/java/org/example/mylib/Greeter.java[tags=javadoc]
+include::{initexampledir}/src/main/java/Library.java[tags=java-doc]
 ----
-
 Run the `javadoc` task.
 
 [listing]
 ----
 $ ./gradlew javadoc
 
-:compileJava
-:processResources NO-SOURCE
-:classes
-:javadoc
-
-BUILD SUCCESSFUL
+include::{doclogfile}[]
 ----
 
 You can view the generated `javadoc` files by opening the HTML file located at `build/docs/javadoc/index.html`.
-
-== Consume the library JAR
-
-Create a new Java file in the root of the project called `Main.java` and put the following code in it:
-
-[source,java]
-.Main.java
-----
-import org.example.mylib.Greeter;
-
-public class Main {
-    public static void main(String... args) {
-        System.out.println(new Greeter("Gradle").getGreeting());
-    }
-}
-----
-
-If you now try to compile this file, you'll get the following error:
-
-----
-$ javac Main.java
-Main.java:1: error: package org.example.mylib does not exist
-import org.example.mylib.Greeter;
-                        ^
-Main.java:5: error: cannot find symbol
-        System.out.println(new Greeter("Gradle").getGreeting());
-                               ^
-  symbol:   class Greeter
-  location: class Main
-2 errors
-----
-
-Let's fix that quickly by including our JAR file on the compilation classpath:
-
-----
-$ javac -cp .:build/libs/mylib-0.1.0.jar Main.java
-----
-
-Finally, run the application to test everything is working:
-
-----
-$ java -cp .:build/libs/mylib-0.1.0.jar Main
-Hello, Gradle!
-----
 
 == Summary
 
 That's it! You've now successfully built a Java library project, packaged it as a JAR and consumed it within a separate application. Along the way, you've learned how to:
 
- - Apply Gradle's Java plugin
- - Run the Java plugin's `jar` task and examine its output
- - Customize the name of a JAR file and the content of its manifest
+* How to generate a Java library
+* How the generated build file and sample Java files are structured
+* How to run the build and view the test report
+* Customize the name of a JAR file and the content of its manifest
+* Generating API documentation.
 
 == Next steps
 

@@ -1,0 +1,16 @@
+.
+├── build.gradle
+├── gradle
+│   └── wrapper // <1>
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── gradlew
+├── gradlew.bat
+├── settings.gradle
+└── src
+    ├── main
+    │   └── java // <2>
+    │       └── Library.java
+    └── test
+        └── java // <3>
+            └── LibraryTest.java
