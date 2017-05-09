@@ -111,7 +111,7 @@
               </tr>
               <#list project.pluginClasses as pluginClass>
               <tr>
-                  <td><code>${pluginClass}</code></td>
+                  <td><code>${pluginClass.getName()}</code></td>
               </tr>
               </#list>
           </table>
