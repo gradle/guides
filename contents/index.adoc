@@ -1,0 +1,38 @@
+= Creating Multi-project Builds
+
+
+== What you'll build
+
+
+== What you'll need
+
+* About NN minutes
+* A text editor
+* A command prompt
+* The Java Development Kit (JDK), version 1.7 or higher
+* A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
+
+== Step 1
+
+The first step is to create a folder for the new project and add a {user-manual}gradle_wrapper.html#sec:wrapper_generation[Gradle Wrapper] to the project.
+
+[listing]
+----
+$ mkdir creating-multi-project-builds
+$ cd creating-multi-project-builds
+$ gradle wrapper // <1>
+
+:wrapper
+
+BUILD SUCCESSFUL
+----
+<1> This allows a version of Gradle to be locked to a project and henceforth you can use `./gradlew` instead of `gradle`.
+
+
+== Step 2
+
+
+== Step N
+
+
+== Summary
