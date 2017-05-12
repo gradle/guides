@@ -1,13 +1,33 @@
-plugins {
-    id "org.ajoberstar.github-pages" version "1.4.2"
-    id "org.asciidoctor.convert" version "1.5.3"
-    id 'org.ysb33r.cloudci' version '1.0'
-}
+buildscript {
+    repositories {
+        jcenter()
 
-ext {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+
+    }
+    dependencies {
+        classpath 'org.gradle.guides:gradle-guides-plugin:0.1'
+    }
+}
+//plugins {
+////    id "org.ajoberstar.github-pages" version "1.4.2"
+////    id "org.asciidoctor.convert" version "1.5.3"
+////    id 'org.ysb33r.cloudci' version '1.0'
+//    id 'org.gradle.guides.getting-started' version '0.1'
+//}
+
+apply plugin : 'org.gradle.guides.getting-started'
+
+guide {
     repoPath = "gradle-guides/creating-multi-project-builds"
 }
 
-apply from : 'gradle/build-documentation.gradle'
-apply from : 'gradle/publish-documentation.gradle'
-apply from : 'gradle/test-source.gradle'
+//ext {
+//    repoPath = "gradle-guides/creating-multi-project-builds"
+//}
+//
+//apply from : 'gradle/build-documentation.gradle'
+//apply from : 'gradle/publish-documentation.gradle'
+//apply from : 'gradle/test-source.gradle'
