@@ -35,12 +35,12 @@ Follow these steps on your local machine, replacing `Creating Java Projects` wit
     cd guides/create-guides
     # Use getting-started OR topical as the guide type
     # The issue must be in the Github markup format organization/repository#number
-    ./gradlew create --guide-type getting-started --guide-name 'Creating Java Projects' --guide-issue gradle/guides#49
+    ./gradlew create --guide-type getting-started --guide-name 'Creating Java Projects' --guide-issue 'gradle/guides#49'
 
     # The command above will create a directory named `build/new-guide-repositories/creating-java-projects`
     cd build/new-guide-repositories/creating-java-projects
 
-In case the guide name contains non-alpha characters under than spaces, dashes and underscores used `--guide-repo-name` to specify a reposiotry name that is GitHub safe.
+In case the guide name contains non-alpha characters other than spaces, dashes and underscores use `--guide-repo-name` to specify a repository name that is GitHub safe.
 
 In order for this to work a Github personal authentication token must be supplied. The token must have `repo` scope. It is passed as a project property called `gradle.guides.authToken`. This can be setup in the `gradle.properties` file or supplied via the command line using `-Pgradle.guides.authToken=<GITHUB-TOKEN>`.
 
