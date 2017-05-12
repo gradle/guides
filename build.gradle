@@ -2,10 +2,11 @@ plugins {
     id 'groovy'
     id 'com.github.hierynomus.license' version '0.13.1'
     id 'com.gradle.plugin-publish' version '0.9.7'
+    id 'org.ysb33r.cloudci' version '1.0'
 }
 
 group = 'org.gradle.guides'
-version = '0.1-SNAPSHOT'
+version = '0.1'
 
 repositories {
     jcenter()
@@ -13,6 +14,10 @@ repositories {
     maven {
         url "https://plugins.gradle.org/m2/"
     }
+}
+
+ext {
+    spockGroovyVer = GroovySystem.version.replaceAll(/\.\d+$/,'')
 }
 
 dependencies {
@@ -26,6 +31,10 @@ dependencies {
     implementation 'org.ajoberstar:gradle-git:1.7.1'
 
     runtime 'org.ysb33r.gradle:gradle-cloudci-plugin:1.0'
+
+    testImplementation "org.spockframework:spock-core:1.0-groovy-${spockGroovyVer}", {
+        exclude module : 'groovy-all'
+    }
 }
 
 license {
@@ -70,9 +79,31 @@ pluginBundle {
             description = 'Plugin required for authoring new Gradle Tutorial guides'
         }
         jvmtestPlugin {
-            id = 'org.gradle.guides.test-jvm-cde'
+            id = 'org.gradle.guides.test-jvm-code'
             displayName = 'Gradle Guides JVM Code Snippet Test Plugin'
             description = 'Plugin required for testing of JVM code snippets used in guides'
         }
+    }
+}
+
+publishPlugins {
+    enabled = false
+    dependsOn build
+
+    onlyIf { !version.endsWith('-SNAPSHOT')}
+}
+
+travisci  {
+    System.setProperty('gradle.publish.skip.namespace.check', 'true')
+
+    project.properties.'gradle.publish.key' = System.getenv('GRADLE_PUBLISH_KEY')
+    project.properties.'gradle.publish.secret' = System.getenv('GRADLE_PUBLISH_SECRET')
+
+    publishPlugins {
+        enabled = System.getenv('TRAVIS_BRANCH') == 'master' && System.getenv('TRAVIS_PULL_REQUEST') == 'false'
+    }
+
+    task release {
+        dependsOn build, publishPlugins
     }
 }

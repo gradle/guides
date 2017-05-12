@@ -14,18 +14,24 @@
 
 package org.gradle.guides
 
-import groovy.transform.CompileStatic
 import org.gradle.api.Project
+import org.gradle.testfixtures.ProjectBuilder
+import spock.lang.Specification
+
 
 /**
  *
- * @since 0.1
+ * @since
  */
-@CompileStatic
-class GuidesExtension {
+class BasePluginSpec extends Specification {
 
-    String repoPath
+    Project project = ProjectBuilder.builder().build()
 
-    GuidesExtension(Project project) {
+    def 'Applying plugin should not throw exception'() {
+        when:
+        project.apply plugin : 'org.gradle.guides.base'
+
+        then:
+        noExceptionThrown()
     }
 }

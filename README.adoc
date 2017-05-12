@@ -7,3 +7,78 @@ This is a collection of very opinionated plugins that support the authoring of g
 * `org.gradle.guides.topical`: Used by all new Topical guides.
 * `org.gradle.guides.tutorial`: Used by all new Tutorials.
 * `org.gradle.guides.test-jvm-code`: Used to test JVM-based code snippets.
+
+== Base plugin
+
+* Adds `guides` extension.
+* Adds `asciidoctor` task with appropriate defaults for guide authoring. This task is also linked into the build lifecycle.
+* Adds `asciidoctorAttributes` task.
+* Adds `publishGhPages` task for publishing guide to `gh-pages`. (Used on Travis).
+* Adds special Travis CI support via the `travisci` block.
+* Adds `checkLinks` task to check hyperlinks in generated pages. (In this current release on absolute URLs are supported).
+
+=== The guides extension
+
+This `guides` extension always has to be configured for a guide. (The initial repository generation process will proably provide a suitable default).
+
+[source,groovy]
+----
+guides {
+    repoPath = 'gradle-guides/creating-multi-project-builds' // <1>
+}
+----
+<1> Set the Github below `github.com`.
+
+=== The asciidoctorAttributes task
+
+This task tells guide authors which Asciidoctor attributes are passed down from Gradle to the `asciidoctor` task
+
+[listing]
+----
+$ ./gradlew asciidoctorAttributes
+
+:asciidoctorAttributes
+Current Asciidoctor Attributes
+==============================
+source-highlighter: coderay
+coderay-linenums-mode: table
+imagesdir: images
+stylesheet: null
+linkcss: true
+docinfodir: .
+docinfo1:
+icons: font
+sectanchors: true
+sectlinks: true
+linkattrs: true
+encoding: utf-8
+idprefix:
+toc: right
+toclevels: 1
+guides: https://guides.gradle.org
+gradle-version: 3.5
+user-manual-name: User Manual
+user-manual: https://docs.gradle.org/3.5/userguide/
+language-reference: https://docs.gradle.org/3.5/dsl/
+api-reference: https://docs.gradle.org/3.5/javadoc/
+repo-path: gradle-guides/creating-multi-project-builds
+----
+
+== Test JVM Code plugin
+
+Adds `groovy` plugin, as well Spock Framework so that JVM code snippets can be tested.
+
+== Getting Started plugin
+
+This should be applied in the authoring of all new Getting Started guides
+
+== Topical plugin
+
+This should be applied in the authoring of all new Topical guides
+
+== Tutorial plugin
+
+This should be applied in the authoring of all new Topical guides
+
+
+

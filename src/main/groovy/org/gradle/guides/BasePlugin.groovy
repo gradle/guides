@@ -1,3 +1,17 @@
+//
+// ============================================================================
+// (C) Copyright Schalk W. Cronje 2017
+//
+// This software is licensed under the Apache License 2.0
+// See http://www.apache.org/licenses/LICENSE-2.0 for license details
+//
+// Unless required by applicable law or agreed to in writing, software distributed under the License is
+// distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and limitations under the License.
+//
+// ============================================================================
+//
+
 package org.gradle.guides
 
 import groovy.transform.CompileDynamic
@@ -12,6 +26,7 @@ import org.gradle.api.Task
 class BasePlugin implements Plugin<Project> {
 
     static final String GUIDE_EXTENSION_NAME = 'guide'
+    static final String CHECK_LINKS_TASK = 'checkLinks'
 
     void apply(Project project) {
         project.apply plugin : org.gradle.api.plugins.BasePlugin
@@ -28,7 +43,7 @@ class BasePlugin implements Plugin<Project> {
     }
 
     private void addCheckLinks(Project project) {
-        CheckLinks task = project.tasks.create('checkLinks',CheckLinks)
+        CheckLinks task = project.tasks.create(CHECK_LINKS_TASK,CheckLinks)
 
         AsciidoctorTask asciidoc = (AsciidoctorTask)(project.tasks.getByName('asciidoctor'))
         task.indexDocument = {  project.file("${asciidoc.outputDir}/html5/index.html") }
@@ -45,7 +60,7 @@ class BasePlugin implements Plugin<Project> {
         project.tasks.getByName('build').dependsOn asciidoc
 
 
-        Task asciidocAttributes = project.tasks.create('asciidocAttributes')
+        Task asciidocAttributes = project.tasks.create('asciidoctorAttributes')
         asciidocAttributes.description = 'Display all Asciidoc attributes that are passed from Gradle'
         asciidocAttributes.group = 'Documentation'
         asciidocAttributes.doLast {
@@ -78,6 +93,7 @@ class BasePlugin implements Plugin<Project> {
                     toclevels            : 1,
                     guides               : 'https://guides.gradle.org',
                     'gradle-version'     : gradleVersion,
+                    'user-manual-name'   : 'User Manual',
                     'user-manual'        : "https://docs.gradle.org/${gradleVersion}/userguide/",
                     'language-reference' : "https://docs.gradle.org/${gradleVersion}/dsl/",
                     'api-reference'      : "https://docs.gradle.org/${gradleVersion}/javadoc/",
@@ -103,13 +119,12 @@ class BasePlugin implements Plugin<Project> {
                 }
             }
         }
-
     }
 
     @CompileDynamic
     private void lazyConfigureMoreAsciidoc(AsciidoctorTask asciidoc) {
 
-        GuidesExtension guide = (GuidesExtension)(project.extensions.getByName(org.gradle.guides.BasePlugin.GUIDE_EXTENSION_NAME))
+        GuidesExtension guide = (GuidesExtension)(asciidoc.project.extensions.getByName(org.gradle.guides.BasePlugin.GUIDE_EXTENSION_NAME))
 
         asciidoc.configure {
             sources {
@@ -118,7 +133,7 @@ class BasePlugin implements Plugin<Project> {
         }
 
         asciidoc.project.afterEvaluate {
-            asciidoc.attributes 'repo-path' : guides.repoPath
+            asciidoc.attributes 'repo-path' : guide.repoPath
         }
     }
 
@@ -150,6 +165,9 @@ class BasePlugin implements Plugin<Project> {
         project.apply plugin : 'org.ysb33r.cloudci'
 
         project.travisci  {
+
+            check.dependsOn CHECK_LINKS_TASK
+
             publishGhPages {
                 enabled = System.getenv('TRAVIS_BRANCH') == 'master' && System.getenv('TRAVIS_PULL_REQUEST') == 'false'
             }
