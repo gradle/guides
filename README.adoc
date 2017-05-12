@@ -128,9 +128,11 @@ A tutorial should take a user through the same example as it evolves, rather tha
 
 A topical guide has very few special requirements, which we cover here.
 
-=== Use a title of the form "On <topic>"
+=== Use a title with a readable form of "On <topic>"
 
-For example, "On Performance" or "On Migrating from Maven to Gradle".
+For example, "_On_ Performance" or "_On_ Migrating from Maven to Gradle".
+
+Don't use the _On_ when creating the repository, just allow for the title to be readable in that way.
 
 
 == Structural elements
