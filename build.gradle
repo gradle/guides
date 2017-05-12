@@ -1,0 +1,13 @@
+plugins {
+    id "org.ajoberstar.github-pages" version "1.4.2"
+    id "org.asciidoctor.convert" version "1.5.3"
+    id 'org.ysb33r.cloudci' version '1.0'
+}
+
+ext {
+    repoPath = "gradle-guides/build-cache-practices"
+}
+
+apply from : 'gradle/build-documentation.gradle'
+apply from : 'gradle/publish-documentation.gradle'
+apply from : 'gradle/test-source.gradle'
