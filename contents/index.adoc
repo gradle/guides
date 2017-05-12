@@ -14,19 +14,21 @@
 
 == Step 1
 
-The first step is to create a folder for the new project and add a {user-manual}gradle_wrapper.html#sec:wrapper_generation[Gradle Wrapper] to the project.
+The first step is to create a folder for the new project and add a {user-manual}gradle_wrapper.html#sec:wrapper_generation[Gradle Wrapper] to the project. If you use the Build Init plugin then the necessary `settings.gradle` and `build.gradle` will also be added.
 
 [listing]
 ----
 $ mkdir creating-multi-project-builds
 $ cd creating-multi-project-builds
-$ gradle wrapper // <1>
+$ gradle init // <1> <2>
 
 :wrapper
+:init
 
 BUILD SUCCESSFUL
 ----
-<1> This allows a version of Gradle to be locked to a project and henceforth you can use `./gradlew` instead of `gradle`.
+<1> Use of `init` will create skeleton `build.gradle` and `settings.gradle` files which can be customised.
+<2> This also allows a version of Gradle to be locked to a project and henceforth you can use `./gradlew` instead of `gradle`.
 
 
 == Step 2
