@@ -1,0 +1,78 @@
+plugins {
+    id 'groovy'
+    id 'com.github.hierynomus.license' version '0.13.1'
+    id 'com.gradle.plugin-publish' version '0.9.7'
+}
+
+group = 'org.gradle.guides'
+version = '0.1-SNAPSHOT'
+
+repositories {
+    jcenter()
+
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
+}
+
+dependencies {
+    compile localGroovy()
+    compile gradleApi()
+
+    implementation 'net.sourceforge.nekohtml:nekohtml:1.9.21'
+    implementation 'org.codehaus.groovy.modules:http-builder-ng-core:0.11.1'
+
+    implementation 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
+    implementation 'org.ajoberstar:gradle-git:1.7.1'
+
+    runtime 'org.ysb33r.gradle:gradle-cloudci-plugin:1.0'
+}
+
+license {
+    header = rootProject.file('config/HEADER')
+    strictCheck = true
+    ignoreFailures = false
+    mapping {
+        groovy ='DOUBLESLASH_STYLE'
+    }
+    ext.year = '2017'
+    excludes([
+            '**/*.adoc', '**/*.md',
+            '**/*.properties',
+    ])
+}
+
+pluginBundle {
+    website = 'https://guides.gradle.org'
+    vcsUrl = 'https://github.com/gradle-guides/gradle-guides-plugin'
+    tags = ['gradle', 'guides', 'documentation']
+    version = project.version
+
+    plugins {
+        basePlugin {
+            id = 'org.gradle.guides.base'
+            displayName = 'Gradle Guides Base Plugin'
+            description = 'Base plugin required by mew Gradle guide plugins'
+        }
+        gsPlugin {
+            id = 'org.gradle.guides.getting-started'
+            displayName = 'Gradle Guides Getting Started Plugin'
+            description = 'Plugin required for authoring new Gradle Getting Started guides'
+        }
+        topicalPlugin {
+            id = 'org.gradle.guides.topical'
+            displayName = 'Gradle Guides Topical Plugin'
+            description = 'Plugin required for authoring new Gradle Topical guides'
+        }
+        tutorialPlugin {
+            id = 'org.gradle.guides.tutorial'
+            displayName = 'Gradle Guides Topical Plugin'
+            description = 'Plugin required for authoring new Gradle Tutorial guides'
+        }
+        jvmtestPlugin {
+            id = 'org.gradle.guides.test-jvm-cde'
+            displayName = 'Gradle Guides JVM Code Snippet Test Plugin'
+            description = 'Plugin required for testing of JVM code snippets used in guides'
+        }
+    }
+}

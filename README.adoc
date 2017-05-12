@@ -1,0 +1,9 @@
+= Gradle Guides Plugins
+
+This is a collection of very opinionated plugins that support the authoring of guides for Gradle.
+
+* `org.gradle.guides.base`: The base of all of the subsequent plugins.
+* `org.gradle.guides.getting-started`: Used by all new Getting Started guides.
+* `org.gradle.guides.topical`: Used by all new Topical guides.
+* `org.gradle.guides.tutorial`: Used by all new Tutorials.
+* `org.gradle.guides.test-jvm-code`: Used to test JVM-based code snippets.
