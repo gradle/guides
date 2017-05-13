@@ -8,4 +8,4 @@ env:
   - CI=true
 
 script:
-  - ./gradlew check -s
+  - ./gradlew build publishGhPages -s
