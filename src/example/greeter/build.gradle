@@ -1,0 +1,28 @@
+// tag::basic-script[]
+apply plugin : 'java' // <1>
+apply plugin : 'application' // <2>
+// end::basic-script[]
+
+// tag::project-dependency[]
+dependencies {
+    compile project(':greeting-library') // <1>
+}
+// end::project-dependency[]
+
+// tag::main-class-name[]
+mainClassName = 'greeter.Greeter' // <1>
+// end::main-class-name[]
+
+
+// tag::link-docs[]
+distZip {
+    from project(':docs').asciidoctor, { // <1>
+        into "${project.name}-${version}"
+    }
+}
+distTar {
+    from project(':docs').asciidoctor, {
+        into "${project.name}-${version}"
+    }
+}
+// end::link-docs[]

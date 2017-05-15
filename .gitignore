@@ -1,7 +1,9 @@
-
 .gradle
 .idea
 .project
 *.iml
 *.sw?
 build
+hs_err_*.log
+src/example/gradle
+src/example/gradlew*
