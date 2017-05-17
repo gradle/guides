@@ -1,10 +1,24 @@
 # mr-managed repositories
-basic-build-scans/
-building-jvm-libraries/
+build-cache-practices/
+building-android-apps/
+building-c-executables/
+building-cpp-executables/
+building-groovy-libraries/
+building-java-applications/
+building-java-libraries/
+building-java-web-applications/
+building-scala-libraries/
+creating-build-scans/
 creating-composite-builds/
-creating-java-applications/
+creating-multi-project-builds/
 creating-new-gradle-builds/
+designing-gradle-plugins/
+gradle-guides-plugin/
+gradle-guides.github.io/
+gradle-site-plugin/
+greeting-plugin-example/
 gs-template/
+implementing-gradle-plugins/
 migrating-from-maven/
 performance/
 publishing-plugins-to-gradle-plugin-portal/
