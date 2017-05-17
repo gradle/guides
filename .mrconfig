@@ -43,9 +43,6 @@ checkout = git clone git@github.com:gradle-guides/designing-gradle-plugins.git
 [gradle-guides-plugin]
 checkout = git clone git@github.com:gradle-guides/gradle-guides-plugin.git
 
-[gradle-guides.github.io]
-checkout = git clone git@github.com:gradle-guides/gradle-guides.github.io.git
-
 [gradle-site-plugin]
 checkout = git clone git@github.com:gradle-guides/gradle-site-plugin.git
 
