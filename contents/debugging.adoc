@@ -1,0 +1,57 @@
+== Debugging and diagnosing cache misses
+
+For using task output caching efficiently it is essential to keep the balance between specifying all the inputs to your
+tasks while not over-specifying. If you don't specify enough of your inputs then your build will be incorrect and you
+will share outputs between tasks that should have had a different output. If you specify unnecessary inputs to your tasks,
+ you will have cache misses while you could have reused earlier outputs.
+ For Gradle's built-in tasks we prefer to err on the side of correctness and we suggest that you do the same.
+
+This chapter is about finding out why a cache miss was happening. If you have a cache hit which you didn't expect we
+suggest add the thing that should have caused the cache miss as an input to your task.
+
+=== How to find errors
+
+- Run build with no changes to see if caching still works
+- Record graphs of execution times and see if it makes sense to you
+- Look a certain types of changes and see if the expected tasks are cached
+
+=== Helpful data for diagnosing a cache miss
+
+A cache miss happens when Gradle calculates a build cache key for a task which is different from any of the build cache keys in the cache.
+Only comparing the build cache key on its own does not give much information, so we need to look at some finer grained data to be able to diagnose the cache miss.
+All the things influencing the build cache key can be found in the {user-manual}build_cache.html#sec:task_output_caching_details[userguide].
+
+Basically, we can compare the following data, listed from coarse grained to fine grained:
+- Build cache keys
+- Task and Task action implementation inputs
+  - classloader hash
+  - class name
+- Individual task property input hashes
+- Hashes of files which are part of task input properties
+
+Currently, the build cache key for the task is logged at the info level,
+while information down to the individual input property level is available in the debug log:
+
+....
+Appending taskClass to build cache key: org.gradle.api.tasks.compile.JavaCompile_Decorated
+Appending classLoaderHash to build cache key: da6eca52100422099189290bf68f200a
+Appending actionType to build cache key: org.gradle.api.internal.project.taskfactory.AbstractOutputPropertyAnnotationHandler$2$1
+Appending actionClassLoaderHash to build cache key: 2cdf3f9202925b5befa161030ab43724
+Appending actionType to build cache key: org.gradle.api.internal.project.taskfactory.TaskClassValidator
+.
+.
+.
+Appending inputPropertyHash for 'classpath' to build cache key: 2b6ab53aa11d4a7d4a1f95a8f78f4d7c
+Appending inputPropertyHash for 'effectiveAnnotationProcessorPath' to build cache key: d41d8cd98f00b204e9800998ecf8427e
+Appending inputPropertyHash for 'options.sourcepath' to build cache key: d41d8cd98f00b204e9800998ecf8427e
+Appending inputPropertyHash for 'source' to build cache key: f6ba49b2466f0090272c43ac5f54ec1d
+Appending outputPropertyName to build cache key: destinationDir
+Build cache key for task ':compileJava' is 2b220117efa6710f7ab191a0bbe48c00
+....
+
+If you want to go into the details of finding out e.g. which classes and jar files constitute the `classpath` for the `compileJava`
+task you need to resort to comparing those files on disks yourself.
+
+=== Diagnosing the reasons for a cache miss
+
+
