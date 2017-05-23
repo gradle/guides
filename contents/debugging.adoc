@@ -9,11 +9,19 @@ will share outputs between tasks that should have had a different output. If you
 This chapter is about finding out why a cache miss was happening. If you have a cache hit which you didn't expect we
 suggest to declare whatever change you expected to trigger the cache miss as an input to the task.
 
-=== How to find errors
+=== How to find problems with task output caching
 
-- Run build with no changes to see if caching still works
-- Record graphs of execution times and see if it makes sense to you
-- Look a certain types of changes and see if the expected tasks are cached
+In order to find existing problems with your usage of task output caching you can do a variety of things.
+
+For example you can run a build with the same commit and check that this build is fully cached.
+You probably should make sure that the project and the home directory changes between these builds to detect relocatability problems.
+
+We had good experiences with recording execution times of our builds, generate graphs of those and then look at the results.
+You then can look for certain patterns, like a rebuilding everything even though you expected compilation to be cached.
+
+You can also make certain changes to your code base manually or automatically and check that the expected set of tasks is cached.
+
+If these experiments point to a possible problem with your use of task output caching, you would need to go into diagnosing a cache miss as explained below.
 
 === Helpful data for diagnosing a cache miss
 
@@ -56,6 +64,10 @@ task you need to resort to comparing those files on disks yourself.
 Luckily, you do not have to capture this data yourself - the build scan plugin already takes care of this for you.
 This means that Gradle Enterprise already has the necessary data to diagnose the cache miss when using the build scan plugin.
 
+> *TODO:*
+>
+>  - Add GE screenshot showing some differences
+
 === Diagnosing the reasons for a cache miss
 
 Having the data from the last section at hand, you should be able to diagnose why the outputs of a certain task were not found in the build cache.
@@ -83,3 +95,34 @@ For example, having your integration test configuration including all the unit t
 are re-executed when a unit test changes.
 Another option is that the task tracks absolute paths instead of relative paths and the location of the project directory changed on disk.
 
+=== Example
+
+We will walk you through the process of diagnosing a cache miss.
+Let's say we have build `A` and build `B` and we expected all the test tasks for a sub-project `sub1` to be cached in build `B` since only a unit test for another sub-project `sub2` changed.
+Actually, all the tests for the sub-project have been executed.
+Since we have the cascading effect when we have cache misses, we need to find the task which caused the caching chain to fail.
+This can easily be done by filtering for all cacheable tasks which have been executed and then select the first one.
+In our case, it turns out that the tests for the sub-project `internal-testing` were executed even though there was no code change to this project.
+We start the input property comparison in GE and see that the property `classpath` changed. This means that some file on the runtime classpath actually did change.
+Looking deeper into this, we actually see that the inputs for the task `processResources` changed in that project, too.
+Finally, we find this in our build file:
+
+```groovy
+task currentVersionInfo() {
+    doLast {
+        def properties = new Properties()
+        properties.latestMilestone = version
+        properties.store(new File(generatedResourcesDir, "currentVersion.properties"))
+    }
+}
+
+sourceSets.main.output.dir generatedResourcesDir, builtBy: currentVersionInfo
+```
+
+Since a properties files stored by Java's `Properties.store` method contains a timestamp, this will cause a change to the runtime classpath every time the build runs.
+Note that the compile classpath is not affected since compile avoidance ignores non-class files on the compile classpath.
+
+> *TODO:*
+>
+>  - Add GE screenshots
+>  - Point to section on dealing with volatile inputs
