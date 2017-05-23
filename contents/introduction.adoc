@@ -1,7 +1,3 @@
-= Build cache guide
-
-== Introduction
-
 The best way to do work faster is to not do work that doesn’t need doing. Gradle has two main mechanisms to avoid work at the task level:
 
 * *incremental build* avoids running a task if its inputs and outputs are equivalent to what they were during its previous execution,
