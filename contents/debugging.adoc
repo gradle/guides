@@ -64,9 +64,11 @@ task you need to resort to comparing those files on disks yourself.
 Luckily, you do not have to capture this data yourself - the build scan plugin already takes care of this for you.
 This means that Gradle Enterprise already has the necessary data to diagnose the cache miss when using the build scan plugin.
 
+image::task-inputs-comparison.png[]
+
 > *TODO:*
 >
->  - Add GE screenshot showing some differences
+>  - Add current GE screenshot showing some differences
 
 === Diagnosing the reasons for a cache miss
 
