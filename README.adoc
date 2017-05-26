@@ -256,13 +256,11 @@ It definitely requires some effort and an investment in time to craft suitable b
 
 ### Incremental build
 
-You can can avoid executing tasks, even if they’re required by a user. If neither a task’s inputs nor its output have changed since the last time it was run, why would it need to run again? It’s up to date, which is why you often see the text `UP-TO-DATE` next to task names when running a build.
+You can can avoid executing tasks, even if they’re required by a user. If neither a task’s inputs nor its output have changed since the last time it was run, Gradle will not run it again.
 
 Incremental build is the name Gradle gives to this feature of checking inputs and outputs to determine whether a task needs to run again or not. Most tasks provided by Gradle take part in incremental build because they have been defined that way. You can also make your own tasks integrate with incremental build, as described in the user guide. The basic idea is to mark the task’s properties that have an impact on whether a task needs to run. You can learn more https://docs.gradle.org/current/userguide/more_about_tasks.html#sec:up_to_date_checks[in the user guide].
 
-Incremental build is definitely a big boon on the whole, as it helps bring build times down significantly. You do need to be aware, though, that it incurs a cost as well, even for a clean build. This is because it needs to generate and verify checksums among other things. This cost is normally insignificant compared to the execution time of a task, but if all your tasks complete in less than a tenth of a second, incremental build may be slower.
-
-You can easily identify good candidates for incremental build or tasks that aren’t up to date when they should be by looking at the Task Execution tab of the build profile report. The tasks are sorted by longest duration first, making it easy to pick out the slowest tasks. If they’re taking longer than half a second, you should probably consider enabling incremental build on them. You can also take the safe approach of making all tasks incremental.
+You can easily identify good candidates for incremental build or tasks that aren’t up to date when they should be by looking at the timeline view in a build scan. The tasks are sorted by longest duration first, making it easy to pick out the slowest tasks. Pick the slowest of your custom tasks and make it incremental, then measure again and repeat.
 
 ### Partial builds
 
