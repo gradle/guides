@@ -381,6 +381,12 @@ Note: If you use annotation processors, you need to explicitly declare them in o
 For a long time, you would declare your compile time dependencies using the `compile` configuration and all of them would be leaked into downstream projects.
 Since Gradle 3.4, you can now clearly separate which dependencies are part of your `api` and which are only `implementation` details. Implementation dependencies
 are not leaked into the compile classpath of downstream projects, which means that they will no longer be recompiled when such an implementation detail changes.
+
+    dependencies {
+       api project("myUtils")
+       implementation "com.google.guava:guava:21.0"
+    }
+
 This can significantly reduce the "ripple" effect of a single change in large multi-project builds. The `implementation` Configuration is available in the `java`
 plugin. `api` dependencies can only be defined by libraries, which should use the new https://docs.gradle.org/current/userguide/java_library_plugin.html[`java-library`] plugin.
 
@@ -395,47 +401,7 @@ will soon become the default setting, but you can already use it today to signif
 
 ## Suggestions for Android builds
 
-Everything we have talked about so far applies to Android builds too, since they're based on Gradle. Yet Android also introduces its own performance factors, particularly around the CPU-intensive dexing process. Here we provide some additional ideas for improving Android builds specifically.
-
-### Use the latest Android plugin
-
-The Android plugin is similar to Gradle in that newer versions introduce improved build performance. For example, version 2.10 of the plugin enabled incremental compilation by default and added support for in-process dexing.
-
-### Invest in fast CPUs
-
-Since dexing is CPU-intensive, a significantly faster CPU will deliver a significantly faster build. Also note that dexing uses a significant amount of memory, so you should monitor the heap usage for your build when profiling it. You may find it pays to increase the maximum heap size for Gradle.
-
-### Optimize multidex development builds
-
-Creating multidex output for your project typically adds a significant amount of time to your build due to the merging process. You can mitigate this by setting a minimum SDK version of 21, which allows the Android plugin to perform more efficient dexing.
-
-Of course, in most cases this isn't feasible in general because older versions of Android are still prevalent and many of you will want to support those devices. However, if you don't mind developing and testing against SDK 21+ only, then can set up a development flavor that targets a minimum SDK version of 21, while the production flavor targets an older version. This results in a faster build when working on the project code.
-
-Here's an example partial configuration with the two flavors:
-
-[source,groovy]
-----
-android {
-    productFlavors {
-        dev {
-            minSdkVersion 21
-        }
-        prod {
-            minSdkVersion 14
-        }
-    }
-}
-----
-
-You can find out more about this feature in the https://developer.android.com/studio/build/multidex.html#dev-build[Android Studio user guide]. Whether you use this approach or not will depend on how you see the trade off between development build speed and consistency in versions between development and production testing.
-
-### Use discretion when adding build types and flavors
-
-The more build types and flavors you create, the longer it will take for Gradle to configure your project. So what you can do is wrap flavor and build type declarations in conditions - via `if` statements typically - such that whoever runs the build can switch flavors and build type on or off through project or system properties.
-
-For example, if a developer only ever builds debug versions of a project, they could set a project property that disables the non-debug build types and the non-development flavors. They can still build whatever they need simply by passing different property values, but the default would result in a faster build.
-
-This does make builds less maintainable, though, so you should only use this approach where you get a significant boost in build speed. Conventions in property names can help with the build maintenance too.
+Everything we have talked about so far applies to Android builds too, since they're based on Gradle. Yet Android also introduces its own performance factors. The Android Studio team has put together their own excellent https://developer.android.com/studio/build/optimize-your-build.html[performance guide]. You can also https://www.youtube.com/watch?v=7ll-rkLCtyk[watch the accompanying talk] from Google IO 2017.
 
 ## Summary
 
