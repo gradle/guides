@@ -277,7 +277,7 @@ These tasks are slower than just running `build` in the target project as they d
 
 ## Suggestions for Java projects
 
-The following suggestions are specific to projects using the `java` or one of the other JVM languages.
+The following suggestions are specific to projects using the `java` plugin or one of the other JVM languages.
 
 ### Running tests
 
