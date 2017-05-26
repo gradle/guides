@@ -16,3 +16,5 @@
 ===== Filtering
 
 === The case against overlapping outputs
+
+=== Reuse of task outputs with the same inputs, but different task paths
