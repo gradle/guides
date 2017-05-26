@@ -3,9 +3,9 @@
 :numbered:
 :source-language: groovy
 
-Waiting is a part of life. Whether you’re waiting in line at a cinema or for the release of the latest must-have gadget, it’s something you learn to deal with. The same is often the case for builds and the waiting usually blocks you from doing something more productive. And the longer the build takes to complete, the more chance you'll be distracted by something else in the meantime. On top of that, since you may be repeatedly running the build many times a day, even small periods of waiting can add up to significant disruption.
+Build performance is critical to your productivity. The longer the build takes to complete, the more likely you'll be taken out of your development flow. On top of that, since you run the build many times a day, even small periods of waiting can add up to significant disruption. The same is true for CI builds: The faster they are, the faster you can react to new issues and the more capacity you will have to do innovative experiments.
 
-All this means that it’s worth investing some time and effort into ensuring that your build runs as fast as possible. This guide offers several avenues you can explore to make a build run faster, along with plenty of detail on what sorts of things can adversely affect the performance of a build and why. Let’s start with some quick wins.
+All this means that it’s worth investing some time and effort into making your build as fast as possible. This guide offers several avenues you can explore to make a build faster, along with plenty of detail on what sorts of things can degrade the performance of a build and why. Let’s start with some quick wins.
 
 ## Easy improvements
 
