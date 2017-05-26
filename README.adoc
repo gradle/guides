@@ -9,7 +9,7 @@ All this means that it’s worth investing some time and effort into making your
 
 ## Easy improvements
 
-A guide on performance tuning would normally start with profiling and something about premature optimisation being the root of all evil, etc., etc. Profiling is definitely important and we discuss it later in the guide, but there are some things you can do that will impact all your builds for the better at the flick of a switch - metaphorically speaking.
+A guide on performance tuning would normally start with profiling and something about premature optimisation being the root of all evil. Profiling is definitely important and we discuss it later in the guide, but there are some things you can do that will impact all your builds for the better at the flick of a switch.
 
 ### Use latest Gradle and JVM versions
 
