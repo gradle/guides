@@ -21,7 +21,7 @@ As Gradle runs on the JVM, improvements in the performance of the latter will of
 
 ### Parallel builds
 
-Most builds consist of more than one project and some of those projects are usually independent of one another. Yet Gradle will only run one task at a time by default, regardless of the project structure. By using the `--parallel` switch, you can force Gradle to execute tasks in parallel as long as those tasks are in different projects.
+Most builds consist of more than one project and some of those projects are usually independent of one another. Yet Gradle will only run one task at a time by default, regardless of the project structure (this will be improved soon). By using the `--parallel` switch, you can force Gradle to execute tasks in parallel as long as those tasks are in different projects.
 
 You could see big improvements in build times as soon as you enable parallel builds. The extent of those improvements depends on your project structure and how many dependencies you have between them. A build whose execution time is dominated by a single project won't benefit much at all, for example. Or one that has lots of inter-project dependencies resulting in few tasks that can be executed in parallel. But most multi-project builds should see a worthwhile boost to build times.
 
@@ -54,10 +54,17 @@ The recommendation for pre-3.0 versions of Gradle is to enable the daemon for de
 
 Even better yet: Upgrade to the latest version of Gradle to benefit from improvements in the robustness of the daemon.
 
+### Adjust the daemon's heap size
+
+By default Gradle will reserve 1GB of heap space for your build, which is plenty for most projects, especially if you follow
+our advice on forked compilation further down in this guide. However, some very large builds might need more memory to hold Gradle's model and caches. If this is the case for you, you can check in this larger memory requirement in your _gradle.properties_ file:
+
+    org.gradle.jvmargs=-Xmx2048M
+
 
 That’s the end of our quick wins. From here on out, improving your build performance will require some elbow grease. We start with perhaps the most important step: finding out which bits of your build are slow and why.
 
-## Profile, profile, profile
+## High level profiling
 
 As with any attempt to optimize, your first instinct should be to profile the system you’re interested in. Gradle provides two mechanisms for doing this and both of them give you reports that you can view in a browser. Let's take a look at these two mechanisms - build scans and profile reports - before then discussing how to interpret the information provided in the reports.
 
@@ -89,13 +96,13 @@ We will look into the different categories presented in the report shortly. You 
 
 ### Profile report
 
-If you don't have internet access or have some other reason not to use build scans, it’s still trivially easy to profile a Gradle build. Simply add the `--profile` option to the command line args:
+If you don't have internet access or have some other reason not to use build scans, you can use the `--profile` command-line option:
 
     gradle --profile <tasks>
 
 This will result in the generation of an HTML report that you can find in the _build/reports/profile_ directory of the _root_ project. Each profile report has a timestamp in its name to avoid overwriting existing ones.
 
-Similar to build scans, the report itself displays a breakdown of the time taken to run the build for a given set of task arguments. Here’s a screenshot of a real profile report showing the different categories that Gradle uses:
+The report displays a breakdown of the time taken to run the build, though less detailed than a build scan. Here’s a screenshot of a real profile report showing the different categories that Gradle uses:
 
 image::gradle-profile-report.png[title="An example profile report", alt="Sample Gradle profile report"]
 
@@ -270,21 +277,8 @@ Gradle also supports other forms of partial build via the _base_ plugin, which a
 
 These tasks are slower than just running `build` in the target project as they do more work, but they are an effective alternative to running `gradle build`, which runs `build` in _all_ the projects of a multi-project build.
 
-## Other performance tweaks
-
-You will sometimes come across tasks that need to run, but simply take a while. In such cases, you need to look at the task implementation. Or, in the case of third party tasks, such as those provided with Gradle, investigate the task configuration to see whether there are options that will improve the task execution time.
-
-As the final stage of this guide, we’ll look at useful configuration for some of the core Gradle tasks.
-
-### Boost daemon's heap size
-
-Running builds in memory-constrained environments will have a significant and detrimental impact on the performance of those builds as the garbage collector has to do a lot more work. Attach JConsole or VisualVM to a Gradle daemon process to see whether it's using close to the maximum heap size. If it is, increase the max heap size through this property in _gradle.properties_:
-
-    org.gradle.jvmargs=-Xmx2048M
-
-You should immediately see an improvement in build times once you've done this.
-
-### Running tests (JVM)
+## Suggestions for Java projects
+### Running tests
 
 A significant proportion of the build time for many projects consists of the test tasks that run. These could be a mixture of unit and integration tests, with the latter often being significantly slower. Gradle has a few ways to help your tests complete faster:
 
@@ -397,6 +391,16 @@ will soon become the default setting, but you can already use it today to signif
     tasks.withType(JavaCompile) {
         options.incremental = true
     }
+
+## Low level profiling
+
+Sometimes your build can be slow even though your build scripts are doing everything right. This often comes down to
+inefficiencies in plugins and custom tasks or constrained resources. The best way to find these kinds of bottlenecks is
+using the https://github.com/gradle/gradle-profiler[Gradle Profiler]. The Gradle Profiler allows you to define scenarios like "Running 'assemble' after making an ABI-breaking change" and then automatically runs your build several times to warm it up and collect profiling data. It can
+be used to produce build scans or together with other major profilers like JProfiler and YourKit. Using these method-level
+profilers can often help you find ineffcient algorithms in custom plugins. If you find that something in Gradle itself is
+slowing down your build, don't hesitate to send us a profiler snapshot at performance@gradle.com.
+
 
 ## Suggestions for Android builds
 
