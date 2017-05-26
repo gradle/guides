@@ -276,6 +276,9 @@ Gradle also supports other forms of partial build via the _base_ plugin, which a
 These tasks are slower than just running `build` in the target project as they do more work, but they are an effective alternative to running `gradle build`, which runs `build` in _all_ the projects of a multi-project build.
 
 ## Suggestions for Java projects
+
+The following suggestions are specific to projects using the `java` or one of the other JVM languages.
+
 ### Running tests
 
 A significant proportion of the build time for many projects consists of the test tasks that run. These could be a mixture of unit and integration tests, with the latter often being significantly slower. Gradle has a few ways to help your tests complete faster:
