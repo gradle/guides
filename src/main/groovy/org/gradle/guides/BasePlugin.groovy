@@ -36,6 +36,7 @@ class BasePlugin implements Plugin<Project> {
         addGithubPages(project)
         addCloudCI(project)
         addCheckLinks(project)
+        addGradleRunnerSteps(project)
     }
 
     private void addGuidesExtension(Project project) {
@@ -172,5 +173,9 @@ class BasePlugin implements Plugin<Project> {
                 enabled = System.getenv('TRAVIS_BRANCH') == 'master' && System.getenv('TRAVIS_PULL_REQUEST') == 'false'
             }
         }
+    }
+
+    void addGradleRunnerSteps(Project project) {
+        project.apply plugin : 'org.ysb33r.gradlerunner'
     }
 }

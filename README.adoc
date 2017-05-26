@@ -16,6 +16,7 @@ This is a collection of very opinionated plugins that support the authoring of g
 * Adds `publishGhPages` task for publishing guide to `gh-pages`. (Used on Travis).
 * Adds special Travis CI support via the `travisci` block.
 * Adds `checkLinks` task to check hyperlinks in generated pages. (In this current release on absolute URLs are supported).
+* Adds `gradleRunner` task to allow automating one set of steps described in a guide.
 
 === The guides extension
 
