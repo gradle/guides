@@ -74,7 +74,7 @@ Build scans are a feature provided by Gradle Inc. that aggregate information acr
 Gradle won't generate build scans automatically, but you can easily enable them by following these steps:
 
 1. Apply the _build-scan_ plugin https://scans.gradle.com/setup/step-1[as described on Gradle.com]
-2. Run your builds with the `-Dscan` option, e.g. `gradle build -Dscan`
+2. Run your builds with the `--scan` option, e.g. `gradle build --scan`
 
 At the end of the build, Gradle displays the URL where your build scan awaits your attention.
 
@@ -123,7 +123,7 @@ Soon after Gradle has got itself up and running, it initializes your project. Th
 
 The sample profile report shows a time of just over 8 seconds for this category, the vast majority of which was spent building the _buildSrc_ project. This part fortunately won’t take so long once _buildSrc_ is built once as Gradle will consider it up to date. The up-to-date checks still take a little time, but nowhere near as much. If you do have problems with a persistently time consuming _buildSrc_ phase, you should consider breaking it out into a separate project whose JAR artifact is added to the build's classpath.
 
-The _settings.gradle_ file rarely has computationally or IO expensive code in it. If you find that Gradle is taking a significant amount of time to process it, you should use more traditional profiling methods, such as timing statements in _settings.gradle_ or a profiler, to determine why.
+The _settings.gradle_ file rarely has computationally or IO expensive code in it. If you find that Gradle is taking a significant amount of time to process it, you should use more traditional profiling methods, such as the Gradle Profiler to determine why.
 
 #### Loading projects
 
@@ -133,7 +133,7 @@ The rest of the summary relates to the main categories, which we cover in detail
 
 ## Configuration
 
-As the user guide describes in https://docs.gradle.org/current/userguide/build_lifecycle.html[the build lifecycle chapter], a Gradle build goes through three phases: initialization, configuration, and execution. The important thing to understand here is that in non-native Gradle builds, configuration code always executes regardless of which tasks will run. That means any expensive work performed during configuration will permanently cripple the build, even for such things as `gradle help` and `gradle tasks`.
+As the user guide describes in https://docs.gradle.org/current/userguide/build_lifecycle.html[the build lifecycle chapter], a Gradle build goes through three phases: initialization, configuration, and execution. The important thing to understand here is that configuration code always executes regardless of which tasks will run. That means any expensive work performed during configuration will permanently cripple the build, even for such things as `gradle help` and `gradle tasks`.
 
 The profile report will help you identify which projects take the most time to configure, but that’s all. The next few subsections introduce techniques that can help improve the configuration time and explain why they work.
 
@@ -145,9 +145,7 @@ Ideally, plugins should not incur a significant configuration-time cost. If they
 
 ### Avoid expensive or blocking work
 
-This is fairly obvious based on what we’ve already said about the configuration phase, but it’s not hard to accidentally break this rule. It’s usually clear when you’re encrypting stuff or calling remote services during configuration if that code is in a build file. But logic like this is more often found in plugins and occasionally custom task classes, where it’s easy to forget which phase your code is running in. Things only get harder to track when they're factored into short methods and multiple classes.
-
-This is not an argument for putting all your build logic into build scripts. That’s generally a recipe for unmaintainable builds. However, if your profile report is indicating that the build is spending more time than expected in the configuration phase, you should start looking at your plugins and custom task classes. A task should generally rely on the build script or plugin that instantiates it to set its properties, rather than performing the configuration itself. If you're familiar with the principle of Inversion of Control (IoC), that's what you should be aiming for.
+This is fairly obvious based on what we’ve already said about the configuration phase, but it’s not hard to accidentally break this rule. It’s usually clear when you’re encrypting stuff or calling remote services during configuration if that code is in a build file. But logic like this is more often found in plugins and occasionally custom task classes. Any expensive work in a plugin's `apply()` method or a tasks's constructor should be a red flag. The most common and less obvious mistake is resolving dependencies at configuration time, which we cover in its own chapter further below.
 
 ### Statically compile tasks and plugins
 
@@ -156,7 +154,7 @@ Plugins and occasionally tasks perform work during the configuration phase. Thes
 In general, we recommend that you use either `@CompileStatic` on your Groovy classes (where possible) or write those classes in a statically compiled language, such as Java. This only really applies to large projects or plugins that you publish publicly (because they may be applied to large projects by other users). If you do need dynamic Groovy at any point, simply use `@CompileDynamic` for the relevant methods.
 
 
-*Note* The DSL you’re used to in the build script relies heavily on Groovy’s dynamic features, so if you want to use static compilation in your plugins, you will have to switch to using Gradle’s core API. For example, to create a new copy task, you would use code like this:
+*Note* The DSL you’re used to in the build script relies heavily on Groovy’s dynamic features, so if you want to use static compilation in your plugins, you will have to switch to more traditional Java-like syntax. For example, to create a new copy task, you would use code like this:
 
 [source]
 ----
@@ -180,7 +178,7 @@ Dynamic versions, such as “2.+”, and snapshot (or changing) versions force G
 
 You may be able to use fixed versions - like 1.2 and 3.0.3.GA - in which case Gradle will always use the cached version. But if you want or need to use dynamic and snapshot versions, make sure you tune the cache settings according to your requirements.
 
-### Favor dependency resolution during execution
+### Don't resolve dependencies at configuration time
 
 Dependency resolution is an expensive process, both in terms of IO and computation. Gradle reduces - and eliminates in some cases - the required network traffic through judicious caching, but there is still work it needs to do. Why is this important? Because if you trigger dependency resolution during the configuration phase, you’re going to add a penalty to every build that runs.
 
@@ -194,6 +192,15 @@ task copyFiles(type: Copy) {
 }
 
 The `files` property will force Gradle to resolve the dependencies, and in this example that’s happening during the configuration phase. Now every time you run the build, no matter what tasks you execute, you'll take a hit from the dependency resolution on that configuration. It would be better to add this in a `doFirst()` action.
+
+[source]
+task copyFiles(type: Copy) {
+    into "$buildDir/output"
+    from configurations.compile
+    doFirst {
+      println ">> Compilation deps: ${configurations.compile.files}"
+    }
+}
 
 Note that the `from()` declaration doesn’t resolve the dependencies because you’re using the configuration itself as an argument, not its files. The `Copy` task handles the resolution of the configuration itself during task execution, which is exactly what you want.
 
@@ -342,9 +349,8 @@ test {
 The Java compiler is quite fast, especially compared to other languages on the JVM. And yet, if you’re compiling hundreds of non-trivial Java classes, even a short compilation time adds up to something significant. You can of course upgrade your hardware to make compilation go faster, but that can be an expensive solution. Gradle offers a couple of software-based solutions that might be more to your liking:
 
 * Compiler daemon
+* Compile avoidance and the java-library plugin
 * Incremental compilation
-
-Both of these are incubating at the time of writing, but they are worth experimenting with if you’re desperate to eke out better build performance.
 
 ### Compiler daemon
 
@@ -358,25 +364,34 @@ or, more commonly, to apply the configuration to _all_ Java compilation tasks:
         options.fork = true
     }
 
-This has two benefits:
-
-1. Gradle can handle compilation of very large numbers of source files concurrently without forcing you to increase the heap size of the main Gradle process or daemon.
-2. The compiler process is reused between builds, significantly reducing the overall compilation times.
+This process is reused for the duration of a build, so the forking overhead is minimal. The benefit of forking is that the memory-intensive compilation happens
+in a different process, leading to much less garbage collection in the main Gradle daemon.
 
 It's unlikely to be useful for small projects, but you should definitely consider it if a single task is compiling close to a thousand or more source files together.
 
+### Compile avoidance
+
+A lot of the time, you are only changing internal implementation details of your code, e.g. editing a method body. Starting with Gradle 3.4, these so-called ABI-compatible
+changes no longer trigger recompilation of downstream projects. This especially improves build times in large multi-project builds with deep dependency chains.
+
+Note: If you use annotation processors, you need to explicitly declare them in order for compile avoidance to work. Read more about https://docs.gradle.org/current/userguide/java_plugin.html#sec:java_compile_avoidance[compile avoidance] in the user guide.
+
+### The java-library plugin
+
+For a long time, you would declare your compile time dependencies using the `compile` configuration and all of them would be leaked into downstream projects.
+Since Gradle 3.4, you can now clearly separate which dependencies are part of your `api` and which are only `implementation` details. Implementation dependencies
+are not leaked into the compile classpath of downstream projects, which means that they will no longer be recompiled when such an implementation detail changes.
+This can significantly reduce the "ripple" effect of a single change in large multi-project builds. The `implementation` Configuration is available in the `java`
+plugin. `api` dependencies can only be defined by libraries, which should use the new https://docs.gradle.org/current/userguide/java_library_plugin.html[`java-library`] plugin.
+
 ### Incremental compilation
 
-You may wonder why incremental compilation is an optional extra for Gradle rather than the default. Even IDEs have their own incremental compilers, right? The reason for this state of affairs is the standard Java compiler itself, the one that comes with the JDK.
+Gradle can analyze dependencies down to the individual class level in order to recompile only the classes that were affected by a change. This option
+will soon become the default setting, but you can already use it today to significantly speed up your incremental build times:
 
-The standard compiler does attempt to work out what files need recompiling based on a set of changes, but this is rather unreliable. The Java developers amongst you have probably encountered a few instances where you had to run a clean first to fix some compilation issues. So Gradle avoids the potential problems from this by not using the compiler to determine what needs to be recompiled.
-
-Still, incremental compilation can provide real performance benefits, so version 2.1 of Gradle introduced it for Java for the first time. It’s still an incubating feature and may unfortunately have bugs, but it’s very easy to enable and disable. Simply use the following configuration:
-
-[source]
-compileJava.options.incremental = true
-
-Just be aware that it is still an incubating feature. That said, you can expect continued improvements in future versions of Gradle.
+    tasks.withType(JavaCompile) {
+        options.incremental = true
+    }
 
 ## Suggestions for Android builds
 
