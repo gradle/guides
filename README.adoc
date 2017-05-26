@@ -13,11 +13,24 @@ A guide on performance tuning would normally start with profiling and something 
 
 ### Use latest Gradle and JVM versions
 
-The Gradle team works regularly on improving the performance of different aspects of Gradle builds. If you’re using an old version of Gradle, you’re missing out on the benefits of that work. Always keep up with Gradle version upgrades. Doing so is low risk because very few things break between minor versions of Gradle. Staying up-to-date also makes transitioning to the next major version easier, because you'll get early deprecation warnings.
+The Gradle team works continuously on improving the performance of different aspects of Gradle builds. If you’re using an old version of Gradle, you’re missing out on the benefits of that work. Always keep up with Gradle version upgrades. Doing so is low risk because very few things break between minor versions of Gradle. Staying up-to-date also makes transitioning to the next major version easier, because you'll get early deprecation warnings.
 
-Going up a major version is often just as easy and definitely recommended when available. Just be aware that this is when deprecations become failures. So be sure to fix those deprecation warnings!
+Going up a major version is often just as easy. Only formerly deprecated APIs and behavior become failures at these boundaries. So be sure to fix those deprecation warnings!
 
 As Gradle runs on the JVM, improvements in the performance of the latter will often benefit Gradle. Hence, you should consider running Gradle with the latest major version of the JVM.
+
+### Parallel builds
+
+Most builds consist of more than one project and some of those projects are usually independent of one another. Yet Gradle will only run one task at a time by default, regardless of the project structure. By using the `--parallel` switch, you can force Gradle to execute tasks in parallel as long as those tasks are in different projects.
+
+You could see big improvements in build times as soon as you enable parallel builds. The extent of those improvements depends on your project structure and how many dependencies you have between them. A build whose execution time is dominated by a single project won't benefit much at all, for example. Or one that has lots of inter-project dependencies resulting in few tasks that can be executed in parallel. But most multi-project builds should see a worthwhile boost to build times.
+
+NOTE: Parallel builds require projects to be decoupled at execution time, i.e. tasks in different projects must not modify shared state. Read more about that topic in https://docs.gradle.org/current/userguide/multi_project_builds.html#sec:parallel_execution[the User Manual] before using `--parallel` extensively. Make sure to upgrade to Gradle 4.0, because earlier Gradle versions would sometimes run `clean` and `build` tasks in parallel, resulting in failures.
+
+You can also make building in parallel the default for a project by adding the following setting to the project's _gradle.properties_ file:
+
+[source]
+org.gradle.parallel=true
 
 ### Configure on demand
 
@@ -31,20 +44,6 @@ You can make configure on demand the default for a project by adding the followi
 
 [source,java]
 org.gradle.configureondemand=true
-
-
-### Parallel builds
-
-Most builds consist of more than one project and some of those projects are usually independent of one another. Yet Gradle will only run one task at a time by default, regardless of the project structure. By using the `--parallel` switch, you can force Gradle to execute tasks in parallel as long as those tasks are in different projects.
-
-You could see big improvements in build times as soon as you enable parallel builds. The extent of those improvements depends on your project structure and how many dependencies you have between them. A build whose execution time is dominated by a single project won't benefit much at all, for example. Or one that has lots of inter-project dependencies resulting in few tasks that can be executed in parallel. But most multi-project builds should see a worthwhile boost to build times.
-
-NOTE: Parallel builds have similar requirements to configure on demand with regard to decoupled projects. In addition, you should read more about them in https://docs.gradle.org/current/userguide/multi_project_builds.html#sec:parallel_execution[the User Manual] before using them extensively. Make sure to upgrade to Gradle 4.0, because earlier Gradle versions would sometimes run `clean` and `build` tasks in parallel, resulting in failures.
-
-You can also make building in parallel the default for a project by adding the following setting to the project's _gradle.properties_ file:
-
-[source]
-org.gradle.parallel=true
 
 
 ### Enable the daemon on old Gradle versions
