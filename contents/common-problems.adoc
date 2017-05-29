@@ -144,9 +144,13 @@ The outputs could have been loaded from the build cache, too.
 In general, you should work together Gradle's up-to-date checks since this will ensure that task output caching has the same view of the task.
 Using `outputs.upToDateWhen` is discouraged and should be better modelled by adding the right inputs to the task.
 
-==== No overlapping outputs
+==== Overlapping outputs
 
 If two tasks write to the same output directory or output file they cannot be cached and task output caching will be automatically disabled for the task.
 Gradle's built-in tasks are configured in a way that there will not be any overlapping outputs.
 When you add new tasks to your build or re-configure built-in tasks make sure you do not create overlapping outputs for cacheable tasks.
 If you must you can add a `Sync` task which then would sync the merged outputs into the target directory while the original tasks remain cacheable.
+
+Gradle Enterprise will show tasks where caching was disabled for overlapping outputs in the timeline.
+
+image::overlapping-outputs-timeline.png[]
