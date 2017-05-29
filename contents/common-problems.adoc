@@ -90,3 +90,63 @@ Therefore, the choice for tracking the Java minor version is between sometimes o
 
 Note that the compiler infrastructure provided by the JVM used to run Gradle is also used by the Groovy compiler.
 Therefore, you can expect differences in the bytecode of compiled Groovy classes for the same reasons as above and the same suggestions apply.
+
+=== Avoid changing inputs external to your build
+
+If your build is dependent on external dependencies like binary artifacts or dynamic data from a web page you need to make sure that these inputs are consistent throughout your infrastructure.
+When there are some variations between machines then there will be no cache hits.
+
+Never re-release a non-changing binary dependency with the same version number but different contents: if this happens with a plugin dependency, you will never be able to explain why you don’t see cache reuse between machines (it’s because they have different versions of that artifact).
+
+For changing binary dependencies you would need to pay attention whether the same dependency is used throughout your build pipeline.
+You may want to look into the https://github.com/nebula-plugins/gradle-dependency-lock-plugin[dependency lock plugin] or switch to using {user-manual}composite_builds.html[composite builds] instead.
+
+The same is true for depending on volatile external resources, for example a list of released versions.
+One way of locking the changes would be to check in the volatile resource whenever it changes so that the builds only depend on the state in source control and not on the volatile resource itself.
+
+=== Suggestions for authoring your build
+
+==== Review usages of `doFirst`
+
+Using `doFirst` from a build script on a cacheable tasks ties you to build script changes since the implementation of the closure comes from the build script.
+If possible, you should use a separate tasks instead.
+
+Modifying inputs or output properties via the runtime API in `doFirst` is discouraged since these changes will not be detected for up-to-date checks and the build cache.
+Even worse, when the task does not execute then the configuration of the task is actually different from when it executes.
+Instead of using `doFirst` for modifying the inputs consider using a separate tasks to configure the task under question - a so called configure task.
+E.g., instead of doing
+
+[source,groovy]
+jar {
+    doFirst {
+        jar.manifest.mainAttributes('Class-Path': "${project(':core').jar.archivePath.name} ${project(':baseServices').jar.archivePath.name}")
+    }
+}
+
+do
+
+[source,groovy]
+-------------------
+task configureJar {
+    doLast {
+        jar.manifest.mainAttributes('Class-Path': "${project(':core').jar.archivePath.name} ${project(':baseServices').jar.archivePath.name}")
+    }
+}
+
+jar.dependsOn(configureJar)
+-------------------
+
+==== Build logic based on the outcome of a task
+
+Do not base build logic on whether a task has been _executed_.
+In particular you should not assume that the output of a task can only change if it did actually execute.
+The outputs could have been loaded from the build cache, too.
+In general, you should work together Gradle's up-to-date checks since this will ensure that task output caching has the same view of the task.
+Using `outputs.upToDateWhen` is discouraged and should be better modelled by adding the right inputs to the task.
+
+==== No overlapping outputs
+
+If two tasks write to the same output directory or output file they cannot be cached and task output caching will be automatically disabled for the task.
+Gradle's built-in tasks are configured in a way that there will not be any overlapping outputs.
+When you add new tasks to your build or re-configure built-in tasks make sure you do not create overlapping outputs for cacheable tasks.
+If you must you can add a `Sync` task which then would sync the merged outputs into the target directory while the original tasks remain cacheable.
