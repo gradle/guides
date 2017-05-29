@@ -1,18 +1,18 @@
-= Important concepts
+== Important concepts
 
-== Repeatable task outcomes
+=== Repeatable task outcomes
 
-== Stable task inputs
+=== Stable task inputs
 
 [[normalization]]
-== Better reuse via input normalization
+=== Better reuse via input normalization
 
-=== Path sensitivity and relocatability
+==== Path sensitivity and relocatability
 
-=== Compile avoidance
+==== Compile avoidance
 
-=== Runtime classpath normalization
+==== Runtime classpath normalization
 
-==== Filtering
+===== Filtering
 
-== The case against overlapping outputs
+=== The case against overlapping outputs
