@@ -39,7 +39,7 @@ Basically, we can compare the following data, listed from coarse grained to fine
 - Hashes of files which are part of task input properties
 
 Currently, the build cache key for the task is logged at the info level,
-while information down to the individual input property level is available in the debug log:
+while information down to the individual input property level is available in the info log:
 
 ....
 Appending taskClass to build cache key: org.gradle.api.tasks.compile.JavaCompile_Decorated
@@ -73,7 +73,11 @@ image::task-inputs-comparison.png[]
 === Diagnosing the reasons for a cache miss
 
 Having the data from the last section at hand, you should be able to diagnose why the outputs of a certain task were not found in the build cache.
-Since you were expecting the task to be cached, you should be able to pinpoint a build which would have produced the artifact under question.
+Since you were expecting more tasks to be cached, you should be able to pinpoint a build which would have produced the artifact under question.
+
+Before diving into how to find out why one task has not been loaded from the cache we should first look into which task caused the cache misses.
+There is a cascade effect causing dependent tasks to be executed if one of the tasks earlier in the build is not loaded from the cache and has different outputs.
+You should therefore look at the first cacheable task which was executed and continue investigating there.
 
 At first, you should check if the implementation of the task changed. This would mean checking the class names and classloader hashes
 for the task class itself and for each of its action. If there is a change, this means that the build script, `buildSrc` or the Gradle version has changed.
