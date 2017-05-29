@@ -1,0 +1,92 @@
+== Common problems and their solutions
+
+=== System file encoding
+
+Most Java tools use the system file encoding when no specific encoding is specified.
+This means that running the same build on machines with different file encoding can yield different outputs.
+Gradle currently does only track that no file encoding has been specified on a task basis - but it does not track the system encoding of the JVM it is using.
+This can cause incorrect builds. You should always set the file system encoding to avoid these kind of problems.
+
+=== Environment variable tracking
+
+Gradle does currently not track environment variables for tasks.
+For example for the `Test` tasks it is completely possible that the outcome depends on a few environment variables.
+To ensure that only the right artifacts are re-used between builds you need to add environment variables as an input to the tasks depending on them.
+
+Absolute paths are often passed as environment variables, too. You need to pay attention what you add as an input to the task in this case. If you add the absolute path then it will be very hard to re-use task outputs between different machines.
+You would need to ensure that the absolute path is the same between machines. Most times it makes sense to track the file or the contents of the directory the absolute path points to.
+If the absolute path represents a tool being used it probably makes sense to track the tool version as an input instead.
+
+If you are adding conditional logic whether you are building on CI or on a developer machine make sure that this does not break loading task outputs on developer machines from CI.
+For example, the following setup would break caching of `Test` tasks, since Gradle always would detect the difference in custom task actions:
+
+[source, groovy]
+if (System.getenv().containsKey("CI") {
+    test.doFirst {
+            println "Running test on CI"
+        }
+    }
+}
+
+You should always add the action unconditionally:
+
+[source, groovy]
+test.doFirst {
+    if (System.getenv().containsKey("CI") {
+            println "Running test on CI"
+        }
+    }
+}
+
+This way, both the task has the same custom action on CI and on developer builds and its outputs can be re-used if the remaining inputs are the same.
+
+=== Line endings
+
+If you are building on different operating systems be aware that some version control systems convert line endings on check-out.
+For example git on Windows by default uses `autocrlf=true` which converts all line endings to `\r\n`.
+As a consequence, compilation outputs can't be re-used on Windows since the input sources are different.
+You should make sure that `autocrlf=false` across your build machines to ensure optimal build cache usage.
+
+=== Symbolic links
+
+Gradle does not store the symbolic link in the build cache but the actual file contents of the destination of the link.
+As a consequence you might have a hard time when trying to re-use outputs which heavily use symbolic links.
+There currently is no workaround for this behavior.
+
+=== Java version tracking
+
+Gradle does track the major version of Java as an input for compilation and test execution.
+Currently, it does neither track the vendor nor the minor version.
+Still, the vendor and the minor version may influence the bytecode produced by compilation.
+
+If you use different JVM vendors for compiling or running Java we strongly suggest that you add the vendor as an input to the corresponding tasks.
+This can be achieved by using the {user-manual}more_about_tasks.html#sec:task_input_output_runtime_api[runtime API] as shown in the following snippet.
+
+[source,groovy]
+------------------
+tasks.withType(AbstractCompile) {
+    inputs.property("java.vendor") {
+        System.getProperty("java.vendor")
+    }
+}
+
+tasks.withType(Test) {
+    inputs.property("java.vendor") {
+        System.getProperty("java.vendor")
+    }
+}
+------------------
+
+With respect to tracking the Java minor version there are different competing aspects: support pulling results for developers and having "perfect" results on CI. There are basically two situations when you may want to track the minor version number of Java: compilation and for runtime.
+
+For compilation we saw sometimes differences in the produced bytecode for different minor version numbers. The bytecode should still expose the same runtime behavior.
+Note that {user-manual}java_plugin.html#sec:java_compile_avoidance[Java compile avoidance] will treat this bytecode the same since it extracts the ABI.
+
+Treating the minor number always as an input would it make very hard for developers to pull from the build cache. We saw that even in bigger companies different developers on the same team were using different Java minor versions. If you are able to control the environment in a way that everybody in your team and on CI is using exactly the same Java minor version then we suggest that you add the minor version as an input.
+
+Note that even without tracking the Java minor version you may have cache misses for developers due to some locally compiled class files which constitute an input to test execution.
+If these outputs made it into the local build cache on this developers machine even a clean will not solve this situation.
+Therefore, the choice for tracking the Java minor version is between sometimes or never re-using outputs between for test execution between different Java minor versions.
+
+Note that the compiler infrastructure provided by the JVM used to run Gradle is also used by the Groovy compiler.
+Therefore, you can expect differences in the bytecode of compiled Groovy classes for the same reasons as above and the same suggestions apply.
