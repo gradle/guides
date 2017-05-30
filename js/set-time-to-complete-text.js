@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-    var AVERAGE_WPM = 300;
+    var AVERAGE_WPM = 120;
 
     var content = document.querySelector("#content");
 
