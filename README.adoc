@@ -13,7 +13,7 @@ This guide shows you how to modify a build script to enable build scans. Optiona
 * Either your own sample project, or you can use the sample available from Gradle
 * Access to the Internet
 * Access to your email
-* About 15 minutes
+* About +++<span class="time-to-complete-text"></span>+++
 
 == Select a sample project
 
