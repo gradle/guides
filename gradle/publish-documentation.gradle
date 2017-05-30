@@ -1,5 +1,3 @@
-import org.asciidoctor.gradle.AsciidoctorBackend
-
 githubPages {
     def ghToken = System.getenv("GH_TOKEN")
     if (ghToken) {
@@ -12,7 +10,7 @@ githubPages {
         repoUri = "git@github.com:${repoPath}.git"
     }
     pages {
-        from new File(asciidoctor.outputDir, AsciidoctorBackend.HTML5.id)
+        from "${asciidoctor.outputDir}/${asciidoctor.backends[0]}"
     }
     commitMessage = "Publish to GitHub Pages"
 }
