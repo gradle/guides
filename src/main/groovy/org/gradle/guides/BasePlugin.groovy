@@ -32,15 +32,19 @@ class BasePlugin implements Plugin<Project> {
         project.apply plugin : org.gradle.api.plugins.BasePlugin
 
         addGuidesExtension(project)
+        addGradleRunnerSteps(project)
         addAsciidoctor(project)
         addGithubPages(project)
         addCloudCI(project)
         addCheckLinks(project)
-        addGradleRunnerSteps(project)
     }
 
     private void addGuidesExtension(Project project) {
         project.extensions.create(GUIDE_EXTENSION_NAME,GuidesExtension,project)
+    }
+
+    private void addGradleRunnerSteps(Project project) {
+        project.apply plugin : 'org.ysb33r.gradlerunner'
     }
 
     private void addCheckLinks(Project project) {
@@ -73,6 +77,7 @@ class BasePlugin implements Plugin<Project> {
         }
 
         asciidoc.with {
+            dependsOn project.tasks.getByPath('gradleRunner')
             sourceDir 'contents'
             outputDir { project.buildDir }
             backends 'html5'
@@ -160,7 +165,7 @@ class BasePlugin implements Plugin<Project> {
     }
 
     @CompileDynamic
-    void addCloudCI(Project project) {
+    private void addCloudCI(Project project) {
         project.apply plugin : 'org.ysb33r.cloudci'
 
         project.travisci  {
@@ -173,7 +178,4 @@ class BasePlugin implements Plugin<Project> {
         }
     }
 
-    void addGradleRunnerSteps(Project project) {
-        project.apply plugin : 'org.ysb33r.gradlerunner'
-    }
 }
