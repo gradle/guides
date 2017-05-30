@@ -137,7 +137,7 @@ The rest of the summary relates to the main categories, which we cover in detail
 
 ## Configuration
 
-As the user guide describes in https://docs.gradle.org/current/userguide/build_lifecycle.html[the build lifecycle chapter], a Gradle build goes through three phases: initialization, configuration, and execution. The important thing to understand here is that configuration code always executes regardless of which tasks will run. That means any expensive work performed during configuration will permanently cripple the build, even for such things as `gradle help` and `gradle tasks`.
+As the user guide describes in https://docs.gradle.org/current/userguide/build_lifecycle.html[the build lifecycle chapter], a Gradle build goes through three phases: initialization, configuration, and execution. The important thing to understand here is that configuration code always executes regardless of which tasks will run. That means any expensive work performed during configuration will slow every invocation down, even simple ones like `gradle help` and `gradle tasks`.
 
 The profile report will help you identify which projects take the most time to configure, but that’s all. The next few subsections introduce techniques that can help improve the configuration time and explain why they work.
 
@@ -357,7 +357,7 @@ or, more commonly, to apply the configuration to _all_ Java compilation tasks:
     }
 
 This process is reused for the duration of a build, so the forking overhead is minimal. The benefit of forking is that the memory-intensive compilation happens
-in a different process, leading to much less garbage collection in the main Gradle daemon.
+in a different process, leading to much less garbage collection in the main Gradle daemon. Less garbage collection in the daemon means that Gradle's infrastructure can run faster, especially if you are also using `--parallel`.
 
 It's unlikely to be useful for small projects, but you should definitely consider it if a single task is compiling close to a thousand or more source files together.
 
