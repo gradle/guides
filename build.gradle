@@ -1,5 +1,5 @@
 plugins {
-    id 'org.gradle.guides.getting-started' version '0.2'
+    id 'org.gradle.guides.getting-started' version '0.4'
 }
 
 import org.apache.tools.ant.filters.*
@@ -22,7 +22,6 @@ asciidoctor {
 test {
     inputs.dir 'src/example'
 }
-
 
 gradleRunner {
     inputs.dir 'src/example'
