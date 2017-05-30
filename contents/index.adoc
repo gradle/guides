@@ -13,7 +13,7 @@ You will take an existing plugin project and configure it so that the plugin is 
 
 == What you'll need
 
-* About 25 minutes
+* About +++<span class="time-to-complete-text"></span>+++
 * A text editor
 * A command prompt
 * The Java Development Kit (JDK), version 1.7 or higher
