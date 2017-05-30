@@ -4,7 +4,7 @@ When encountering a project that uses Gradle for the first time, many developers
 
 == What you'll need
 
-* About 15 minutes
+* About +++<span class="time-to-complete-text"></span>+++
 * A text editor or IDE
 * A Java Development Kit (JDK), version 1.7 or better (only necessary to run Gradle)
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
