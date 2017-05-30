@@ -15,7 +15,7 @@ A guide on performance tuning would normally start with profiling and something 
 
 The Gradle team works continuously on improving the performance of different aspects of Gradle builds. If you’re using an old version of Gradle, you’re missing out on the benefits of that work. Always keep up with Gradle version upgrades. Doing so is low risk because very few things break between minor versions of Gradle. Staying up-to-date also makes transitioning to the next major version easier, because you'll get early deprecation warnings.
 
-Going up a major version is often just as easy. Only formerly deprecated APIs and behavior become failures at these boundaries. So be sure to fix those deprecation warnings!
+Going up a major version is often just as easy. Only formerly deprecated APIs and behavior become failures at these boundaries. So be sure to fix those deprecation warnings! If they are caused by a third party plugin, let the author know right away, so you are not blocked when the next major release comes out.
 
 As Gradle runs on the JVM, improvements in the performance of the latter will often benefit Gradle. Hence, you should consider running Gradle with the latest major version of the JVM.
 
