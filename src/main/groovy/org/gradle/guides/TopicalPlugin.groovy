@@ -15,6 +15,7 @@
 package org.gradle.guides
 
 import groovy.transform.CompileStatic
+import org.asciidoctor.gradle.AsciidoctorTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -23,5 +24,9 @@ class TopicalPlugin implements Plugin<Project> {
 
     void apply(Project project) {
         project.apply plugin : BasePlugin
+
+        AsciidoctorTask asciidoc = (AsciidoctorTask)(project.tasks.getByPath(':asciidoctor'))
+
+        asciidoc.attributes toclevels : 2
     }
 }
