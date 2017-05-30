@@ -50,7 +50,7 @@ serverPlugin {
 }
 ----
 
-As you can see, the user only declares the "what" - the server the plugin should reach out to. The actual inner workings - the "how - is completely hidden from the end user.
+As you can see, the user only declares the "what" - the server the plugin should reach out to. The actual inner workings - the "how" - is completely hidden from the end user.
 
 [[capabilities-vs-conventions]]
 === Capabilities vs. conventions
