@@ -10,7 +10,7 @@ githubPages {
         repoUri = "git@github.com:${repoPath}.git"
     }
     pages {
-        from "${asciidoctor.outputDir}/${asciidoctor.backends[0]}"
+        from new File(asciidoctor.outputDir, 'html5')
     }
     commitMessage = "Publish to GitHub Pages"
 }
