@@ -38,14 +38,14 @@ test.doFirst {
     }
 }
 
-This way, both the task has the same custom action on CI and on developer builds and its outputs can be re-used if the remaining inputs are the same.
+This way, the task has the same custom action on CI and on developer builds and its outputs can be re-used if the remaining inputs are the same.
 
 === Line endings
 
 If you are building on different operating systems be aware that some version control systems convert line endings on check-out.
-For example git on Windows by default uses `autocrlf=true` which converts all line endings to `\r\n`.
+For example, Git on Windows uses `autocrlf=true` by default which converts all line endings to `\r\n`.
 As a consequence, compilation outputs can't be re-used on Windows since the input sources are different.
-You should make sure that `autocrlf=false` across your build machines to ensure optimal build cache usage.
+You should make sure to configure `autocrlf=false` across your build machines to ensure optimal build cache usage.
 
 === Symbolic links
 
@@ -157,6 +157,7 @@ Gradle Enterprise will show tasks where caching was disabled for overlapping out
 
 image::overlapping-outputs-timeline.png[]
 
+[[volatile_data]]
 === Volatile data in build artifacts
 
 If you include timestamps or other volatile data like Git commit ids in task inputs or outputs then it will be difficult for Gradle to re-use these between builds.

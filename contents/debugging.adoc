@@ -59,12 +59,17 @@ Build cache key for task ':compileJava' is 2b220117efa6710f7ab191a0bbe48c00
 ....
 
 If you want to go into the details of finding out e.g. which classes and jar files constitute the `classpath` for the `compileJava`
-task you need to resort to comparing those files on disks yourself.
+task you need to resort to comparing those files on disk yourself.
 
 Luckily, you do not have to capture this data yourself - the build scan plugin already takes care of this for you.
 This means that Gradle Enterprise already has the necessary data to diagnose the cache miss when using the build scan plugin.
 
 image::task-inputs-comparison.png[]
+
+Note that it is also possible that task output caching for a cacheable task was disabled.
+When this happens the reason why caching was disabled for the task is reported on the info log level and in the build scan.
+
+image::caching-disabled.png[]
 
 > *TODO:*
 >
@@ -77,7 +82,10 @@ Since you were expecting more tasks to be cached, you should be able to pinpoint
 
 Before diving into how to find out why one task has not been loaded from the cache we should first look into which task caused the cache misses.
 There is a cascade effect causing dependent tasks to be executed if one of the tasks earlier in the build is not loaded from the cache and has different outputs.
-You should therefore look at the first cacheable task which was executed and continue investigating there.
+Therefore, you should therefore at the first cacheable task which was executed and continue investigating there.
+This can be done from the timeline view in a build scan.
+
+image::first-non-cached-task.png[]
 
 At first, you should check if the implementation of the task changed. This would mean checking the class names and classloader hashes
 for the task class itself and for each of its action. If there is a change, this means that the build script, `buildSrc` or the Gradle version has changed.
@@ -109,7 +117,7 @@ Actually, all the tests for the sub-project have been executed.
 Since we have the cascading effect when we have cache misses, we need to find the task which caused the caching chain to fail.
 This can easily be done by filtering for all cacheable tasks which have been executed and then select the first one.
 In our case, it turns out that the tests for the sub-project `internal-testing` were executed even though there was no code change to this project.
-We start the input property comparison in GE and see that the property `classpath` changed. This means that some file on the runtime classpath actually did change.
+We start the input property comparison in Gradle Enterprise and see that the property `classpath` changed. This means that some file on the runtime classpath actually did change.
 Looking deeper into this, we actually see that the inputs for the task `processResources` changed in that project, too.
 Finally, we find this in our build file:
 
@@ -125,10 +133,10 @@ task currentVersionInfo() {
 sourceSets.main.output.dir generatedResourcesDir, builtBy: currentVersionInfo
 ```
 
-Since a properties files stored by Java's `Properties.store` method contains a timestamp, this will cause a change to the runtime classpath every time the build runs.
+Since properties files stored by Java's `Properties.store` method contain a timestamp, this will cause a change to the runtime classpath every time the build runs.
 Note that the compile classpath is not affected since compile avoidance ignores non-class files on the compile classpath.
+In order to solve this problem have a look at <<volatile_data>>.
 
 > *TODO:*
 >
 >  - Add GE screenshots
->  - Point to section on dealing with volatile inputs
