@@ -16,7 +16,7 @@ package org.gradle.guides
 
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
-import org.ajoberstar.gradle.git.ghpages.GithubPagesPluginExtension
+import org.ajoberstar.gradle.git.publish.GitPublishExtension
 import org.asciidoctor.gradle.AsciidoctorTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -139,22 +139,23 @@ class BasePlugin implements Plugin<Project> {
     }
 
     private void addGithubPages(Project project) {
-        project.apply plugin : 'org.ajoberstar.github-pages'
+        project.apply plugin : 'org.ajoberstar.git-publish'
 
-        GithubPagesPluginExtension githubPages = (GithubPagesPluginExtension)(project.extensions.getByName('githubPages'))
+        GitPublishExtension githubPages = (GitPublishExtension)(project.extensions.getByName('gitPublish'))
         GuidesExtension guide = (GuidesExtension)(project.extensions.getByName(org.gradle.guides.BasePlugin.GUIDE_EXTENSION_NAME))
         AsciidoctorTask asciidoc = (AsciidoctorTask)(project.tasks.getByName('asciidoctor'))
-        String ghToken = System.getenv("GH_TOKEN")
+        String ghToken = System.getenv("GRGIT_USER")
 
+        githubPages.branch = 'gh-pages'
         githubPages.commitMessage = "Publish to GitHub Pages"
-        githubPages.pages.from {"${asciidoc.outputDir}/${asciidoc.backends[0]}"}
+        githubPages.contents.from {"${asciidoc.outputDir}/${asciidoc.backends[0]}"}
 
-        if (ghToken) {
-            githubPages.repoUri = "https://github.com/${guide.repoPath}.git"
-            githubPages.credentials.username = ghToken
-            githubPages.credentials.password = "\n"
-        } else {
-            githubPages.repoUri = "git@github.com:${guide.repoPath}.git"
+        project.afterEvaluate {
+            if (ghToken) {
+                githubPages.repoUri = "https://github.com/${guide.repoPath}.git"
+            } else {
+                githubPages.repoUri = "git@github.com:${guide.repoPath}.git"
+            }
         }
     }
 
@@ -166,7 +167,7 @@ class BasePlugin implements Plugin<Project> {
 
             check.dependsOn CHECK_LINKS_TASK
 
-            publishGhPages {
+            gitPublishPush {
                 enabled = System.getenv('TRAVIS_BRANCH') == 'master' && System.getenv('TRAVIS_PULL_REQUEST') == 'false'
             }
         }

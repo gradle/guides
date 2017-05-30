@@ -1,7 +1,7 @@
 language: java
 jdk:
 - oraclejdk8
-script: ./gradlew build publishPlugins --stacktrace -Pgradle.publish.key=$GRADLE_PUBLISH_KEY
+script: ./gradlew build publishPlugins --stacktrace -Pgradle.publish.key=$GRADLE_PUBLISH_KEY -i
   -Pgradle.publish.secret=$GRADLE_PUBLISH_SECRET -Dgradle.publish.skip.namespace.check=true
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
