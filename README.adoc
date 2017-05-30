@@ -8,7 +8,7 @@ You'll start by creating an ad-hoc Gradle task that prints _Hello, World_ to the
 
 == What you’ll need
 
-* About 20 minutes
+* About +++<span class="time-to-complete-text"></span>+++
 * A text editor or IDE
 * A Java Development Kit (JDK), version 1.7 or better
 * A {user-manual}/installation.html#sec:download[Gradle distribution], version {gradle-version} or better
