@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'org.gradle.guides'
-version = '0.2'
+version = '0.3'
 
 repositories {
     jcenter()
@@ -24,8 +24,8 @@ dependencies {
     compile localGroovy()
     compile gradleApi()
 
-    implementation 'net.sourceforge.nekohtml:nekohtml:1.9.21'
-    implementation 'org.codehaus.groovy.modules:http-builder-ng-core:0.11.1'
+    compile 'net.sourceforge.nekohtml:nekohtml:1.9.21'
+    compile 'org.codehaus.groovy.modules:http-builder-ng-core:0.11.1'
 
     compile 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
     compile 'org.ajoberstar:gradle-git:1.7.1'
