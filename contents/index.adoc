@@ -8,7 +8,7 @@ You'll generate a Groovy library with the standard layout.
 
 == What you'll need
 
-* About 25 minutes
+* About +++<span class="time-to-complete-text"></span>+++
 * A text editor
 * A command prompt
 * The Java Development Kit (JDK), version 1.7 or higher
