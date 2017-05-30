@@ -7,7 +7,7 @@ buildscript {
 
 
 ext {
-    gradleVersion = gradle.gradleVersion
+    gradleVersion = 'nightly'
 }
 
 asciidoctor {
