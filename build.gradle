@@ -49,7 +49,7 @@ gradleRunner {
         File out =  new File( getStepReportDir('build-greeting-library'), 'out.txt' )
         new File(info.reportDir,'out.txt').withWriter { w ->
             out.filterLine { line ->
-                !(line =~ /^(Downloading|Cleaned up|Total time)/)
+                !(line =~ /^(Download|Cleaned up|Total time)/)
             }.writeTo(w)
         }
     }
@@ -120,7 +120,7 @@ gradleRunner {
         File out =  new File( getStepReportDir('build-app-3'), 'out.txt' )
         new File(info.reportDir,'out.txt').withWriter { w ->
             out.filterLine { line ->
-                !(line =~ /^(Downloading|Cleaned up|Total time)/)
+                !(line =~ /^(Download|Cleaned up|Total time)/)
             }.writeTo(w)
         }
     }
@@ -138,7 +138,7 @@ gradleRunner {
         File out =  new File( getStepReportDir('test-app'), 'out.txt' )
         new File(info.reportDir,'out.txt').withWriter { w ->
             out.filterLine { line ->
-                !(line =~ /^(Downloading|Cleaned up|Total time)/)
+                !(line =~ /^(Download|Cleaned up|Total time)/)
             }.writeTo(w)
         }
     }
@@ -160,7 +160,7 @@ gradleRunner {
         File out =  new File( getStepReportDir('run-asciidoctor'), 'out.txt' )
         new File(info.reportDir,'out.txt').withWriter { w ->
             out.filterLine { line ->
-                !(line =~ /^(Downloading|Cleaned up|Total time)/)
+                !(line =~ /^(Download|Cleaned up|Total time)/)
             }.writeTo(w)
         }
     }
@@ -180,7 +180,7 @@ gradleRunner {
         File out =  new File( getStepReportDir('build-with-docs'), 'out.txt' )
         new File(info.reportDir,'out.txt').withWriter { w ->
             out.filterLine { line ->
-                !(line =~ /^(Downloading|Cleaned up|Total time)/)
+                !(line =~ /^(Download|Cleaned up|Total time)/)
             }.writeTo(w)
         }
     }
