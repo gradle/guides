@@ -149,15 +149,12 @@ class BasePlugin implements Plugin<Project> {
         githubPages.commitMessage = "Publish to GitHub Pages"
         githubPages.pages.from {"${asciidoc.outputDir}/${asciidoc.backends[0]}"}
 
-        project.afterEvaluate {
-
-            if (ghToken) {
-                githubPages.repoUri = "https://github.com/${guide.repoPath}.git"
-                githubPages.credentials.username = ghToken
-                githubPages.credentials.password = "\n"
-            } else {
-                githubPages.repoUri = "git@github.com:${guide.repoPath}.git"
-            }
+        if (ghToken) {
+            githubPages.repoUri = "https://github.com/${guide.repoPath}.git"
+            githubPages.credentials.username = ghToken
+            githubPages.credentials.password = "\n"
+        } else {
+            githubPages.repoUri = "git@github.com:${guide.repoPath}.git"
         }
     }
 
