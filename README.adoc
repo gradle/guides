@@ -13,7 +13,7 @@ A guide on performance tuning would normally start with profiling and something 
 
 ### Use latest Gradle and JVM versions
 
-The Gradle team works continuously on improving the performance of different aspects of Gradle builds. If you’re using an old version of Gradle, you’re missing out on the benefits of that work. Always keep up with Gradle version upgrades. Doing so is low risk because very few things break between minor versions of Gradle. Staying up-to-date also makes transitioning to the next major version easier, because you'll get early deprecation warnings.
+The Gradle team works continuously on improving the performance of different aspects of Gradle builds. If you’re using an old version of Gradle, you’re missing out on the benefits of that work. Always keep up with Gradle version upgrades. Doing so is low risk because the Gradle team ensures backwards compatibility between minor versions of Gradle. Staying up-to-date also makes transitioning to the next major version easier, because you'll get early deprecation warnings.
 
 Going up a major version is often just as easy. Only formerly deprecated APIs and behavior become failures at these boundaries. So be sure to fix those deprecation warnings! If they are caused by a third party plugin, let the author know right away, so you are not blocked when the next major release comes out.
 
@@ -48,11 +48,9 @@ org.gradle.configureondemand=true
 
 ### Enable the daemon on old Gradle versions
 
-The Gradle daemon is a mechanism for improving the performance of Gradle. As of Gradle 3.0, the daemon is enabled by default, but if you are using an older version, you should definitely enable it. You will see big improvements in build speed by doing so. You can learn how to do that https://docs.gradle.org/2.14/userguide/gradle_daemon.html[in the 2.14 user guide].
+The Gradle daemon is a mechanism for improving the performance of Gradle. As of Gradle 3.0, the daemon is enabled by default, but if you are using an older version, you should definitely enable it on local developer machines. You will see big improvements in build speed by doing so. You can learn how to do that https://docs.gradle.org/2.14/userguide/gradle_daemon.html[in the 2.14 user guide].
 
-The recommendation for pre-3.0 versions of Gradle is to enable the daemon for developer machines and disable it for continuous integration servers. This is because the daemon required manual intervention from time to time on those old versions. That’s not always easy when the process is on a separate machine from where you’re sitting. You also need to factor in whether you run many builds with different VM configurations, which will lead to each build having its own daemon and a potential sea of daemon processes at any one time.
-
-Even better yet: Upgrade to the latest version of Gradle to benefit from improvements in the robustness of the daemon.
+On CI machines the benefit you can expect from the daemon depends on your setup. If you have long-lived CI agents and you build lots of small projects that all use the same Gradle version and JVM arguments, then the daemon can reduce your turnarounds. If your projects are big or more diverse, you probably won't see much benefit. Generally it is safe to leave the daemon on, as Gradle 3.0 introduced health monitoring which will shut daemons down on memory pressure.
 
 ### Adjust the daemon's heap size
 
