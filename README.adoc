@@ -8,7 +8,7 @@ You'll write a simple plugin that adds a new task type and creates a task of tha
 
 == What you'll need
 
- - About 10 minutes
+ - About +++<span class="time-to-complete-text"></span>+++
  - A text editor or IDE
  - A http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK), version 1.7 or better
  - A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
