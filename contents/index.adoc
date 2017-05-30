@@ -29,6 +29,7 @@ plugins {
 
 By applying the plugin, necessary plugins are applied and relevant dependencies are added. It also helps with validating the plugin metadata before publishing the binary artifact to the Gradle plugin portal. Every plugin project should apply this plugin.
 
+[[writing-and-using-custom-task-types]]
 === Prefer writing and using custom task types
 
 Gradle tasks can be defined as {guides}/writing-gradle-tasks[ad-hoc tasks], simple task definitions of type `DefaultTask` with one or many actions, or as {user-manual}more_about_tasks.html[enhanced tasks], the ones that use a custom task type and expose its configurability with the help of properties. Generally speaking, custom tasks provide the means for reusability, maintainability, configurability and testability. The same principles hold true when providing tasks as part of plugins. Always prefer custom task types over ad-hoc tasks. Consumers of your plugin will also have the chance to reuse the existing task type if they want to add more tasks to the build script.
@@ -74,7 +75,7 @@ The end user of the task can now easily create multiple tasks of that type with 
 .build.gradle
 [source,groovy]
 ----
-apply plugin: 'BinaryRepositoryVersion'
+apply plugin: 'BinaryRepositoryVersionPlugin'
 
 import com.company.gradle.binaryrepo.LatestArtifactVersion
 
@@ -296,6 +297,107 @@ When publishing multiple plugins as part of a single JAR artifact (as described 
                     ├── com.android.application.properties
                     └── com.android.library.properties
 ----
+
+=== Capturing user input to configure plugin runtime behavior
+
+Plugins often times come with default conventions that make sensible assumptions about the consuming project. The Java plugin for example searches for Java source files in the directory `src/main/java`. Default conventions are helpful to streamline project layouts but fall short when dealing with custom project structures, legacy project requirements or a different user preference.
+
+Plugins should expose a way to reconfigure the default runtime behavior. The section <<writing-and-using-custom-task-types,Prefer writing and using custom task types>> describes one way to achieve configurability: by declaring setter methods for task properties. The more sophisticated solution to the problem is to expose an extension. An extension captures user input through a custom DSL that fully blends into the DSL exposed by Gradle core.
+
+The following example applies a plugin that exposes an extension with the name `binaryRepo` to capture a server URL:
+
+.build.gradle
+[source,groovy]
+----
+apply plugin: 'BinaryRepositoryVersionPlugin'
+
+binaryRepo {
+    serverUrl = 'http://my.company.com/maven2'
+}
+----
+
+Let's assume that you'll also want to do something with the value of `serverUrl` once captured. In many cases the exposed extension property is directly mapped to a task property that actually uses the value when performing work. To avoid evaluation order problems you should use {user-manual}custom_plugins.html#mapExtensionPropertiesToTaskProperties[the public API `PropertyState`] which was introduced in Gradle 4.0.
+
+Let's have a look at the internals of the plugin `BinaryRepositoryVersionPlugin` to give you a better idea. The plugin creates the extension of type `BinaryRepositoryExtension` and maps the extension property `serverUrl` to the task property `serverUrl.`
+
+.BinaryRepositoryVersionPlugin.java
+[source,java]
+----
+public class BinaryRepositoryVersionPlugin implements Plugin<Project> {
+    public void apply(Project project) {
+        final BinaryRepositoryExtension extension = project.getExtensions().create("binaryRepo", BinaryRepositoryExtension.class, project);
+
+        project.getTasks().create("latestArtifactVersion", LatestArtifactVersion.class, new Action<LatestArtifactVersion>() {
+            public void execute(LatestArtifactVersion latestArtifactVersion) {
+                latestArtifactVersion.setServerUrl(extension.getServerUrlProvider());
+            }
+        });
+    }
+}
+----
+
+Instead of using a plain `String` type, the extension defines the field `serverUrl` with type `PropertyState<String>`. The field is initialized in the constructor of the class. It's state can be set via the exposed setter methods.
+
+.BinaryRepositoryExtension.java
+[source,java]
+----
+public class BinaryRepositoryExtension {
+    private final PropertyState<String> serverUrl;
+
+    public BinaryRepositoryExtension(Project project) {
+        serverUrl = project.property(String.class);
+    }
+
+    public String getServerUrl() {
+        return serverUrl.get();
+    }
+
+    public Provider<String> getServerUrlProvider() {
+        return serverUrl;
+    }
+
+    public void setServerUrl(String serverUrl) {
+        this.serverUrl.set(serverUrl);
+    }
+}
+----
+
+The task property also defines the `serverUrl` with type `PropertyState`. It allows for mapping the state of the property without actually accessing its value until needed for processing - that is in the task action.
+
+.LatestArtifactVersion.java
+[source,java]
+----
+public class LatestArtifactVersion extends DefaultTask {
+    private final PropertyState<String> serverUrl;
+
+    public LatestArtifactVersion() {
+        serverUrl = getProject().property(String.class);
+    }
+
+    @Input
+    public String getServerUrl() {
+        return serverUrl.get();
+    }
+
+    public void setServerUrl(String serverUrl) {
+        this.serverUrl.set(serverUrl);
+    }
+
+    public void setServerUrl(Provider<String> serverUrl) {
+        this.serverUrl.set(serverUrl);
+    }
+
+    @TaskAction
+    public void resolveLatestVersion() {
+        // Access the raw value during the execution phase of the build lifecycle
+        String serverUrl = getServerUrl();
+
+        // do additional work
+    }
+}
+----
+
+NOTE: We encourage plugin developers to migrate their plugins to the public API as soon as possible. Plugins that are not based on Gradle 4.0 yet may continue to use the internal "convention mapping" API. Please be aware that the "convention mapping" API is undocumented and might be removed with later versions of Gradle.
 
 == Summary
 
