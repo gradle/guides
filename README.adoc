@@ -208,7 +208,7 @@ task copyFiles(type: Copy) {
     }
 }
 
-Note that the `from()` declaration doesn’t resolve the dependencies because you’re using the configuration itself as an argument, not its files. The `Copy` task handles the resolution of the configuration itself during task execution, which is exactly what you want.
+Note that the `from()` declaration doesn’t resolve the dependencies because you’re using the https://docs.gradle.org/current/userguide/artifact_dependencies_tutorial.html#configurations[dependency configuration] itself as an argument, not its files. The `Copy` task handles the resolution of the configuration itself during task execution, which is exactly what you want.
 
 The performance page of build scans explicitly shows how dependency resolution time is split across project configuration and task execution, so it's easy to identify this particular issue. If you're using the older profile reports, a simple way to determine whether you’re resolving dependencies during configuration is to run
 
