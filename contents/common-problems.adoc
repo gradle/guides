@@ -53,6 +53,7 @@ Gradle does not store the symbolic link in the build cache but the actual file c
 As a consequence you might have a hard time when trying to re-use outputs which heavily use symbolic links.
 There currently is no workaround for this behavior.
 
+[[java_version_tracking]]
 === Java version tracking
 
 Gradle does track the major version of Java as an input for compilation and test execution.
@@ -136,6 +137,7 @@ task configureJar {
 jar.dependsOn(configureJar)
 -------------------
 
+[[logic_based_on_task_outcome]]
 ==== Build logic based on the outcome of a task
 
 Do not base build logic on whether a task has been _executed_.
@@ -154,3 +156,116 @@ If you must you can add a `Sync` task which then would sync the merged outputs i
 Gradle Enterprise will show tasks where caching was disabled for overlapping outputs in the timeline.
 
 image::overlapping-outputs-timeline.png[]
+
+=== Volatile data in build artifacts
+
+If you include timestamps or other volatile data like Git commit ids in task inputs or outputs then it will be difficult for Gradle to re-use these between builds.
+We will go through different instances of volatile data and how to work around using the build cache anyway.
+
+[[volatile_inputs]]
+==== Volatile inputs
+
+If you use a volatile input like a timestamp as an input property for a task, then there is nothing Gradle can do to make the task cacheable.
+You should really think hard if the volatile data is really essential to the output or if it is only there for e.g. auditing purposes.
+
+If the volatile input is essential to the output then you can try to make the task using the input cheaper to execute.
+You can do this by splitting the task into two tasks - the first task doing the expensive work which is cacheable and the second task adding the volatile data to the output.
+In this way the output stays the same and the build cache can be used to avoid doing the expensive work.
+For example for building a jar file the expensive part - Java compilation - is already a different task while the jar task itself, which is not cacheable, is cheap.
+
+If it is not an essential part of the output, then you should not declare it as an input.
+As long as the volatile input does not influence the output then there is nothing else to do.
+Most times though, the input will be part of the output.
+
+[[volatile_outputs]]
+==== Volatile outputs
+
+Having tasks which generate different outputs for the same inputs can pose a challenge for the effective use of task output caching.
+If the task output containing the volatile data is not used by any other task then the effect is very limited.
+It basically means that pulling from the cache might produce a different result than executing the same task locally.
+If the only difference between the outputs is a timestamp then you can either accept the effect of the build cache or decide that the task is not cacheable after all.
+
+The story is different if an other task depend on the volatile outputs of a task.
+For example, re-creating a jar file from the files with the same contents but different modification times yields a different jar file.
+Any other task depending on this jar file as an input file could not be loaded from the cache when the jar file is rebuilt locally.
+This can lead to hard to diagnose cache misses when the consuming build is not a clean build.
+For example when doing incremental builds it is possible that the artifact on disk which is considered up-to-date and
+the artifact in the build cache are different even though they are essentially the same.
+A task depending on this task output would then not be able to load outputs from the build cache since the inputs are not exactly the same.
+
+===== Input normalization
+
+This is where {user-manual}more_about_tasks.html#sec:configure_input_normalization[input normalization] comes into play.
+Input normalization is used by Gradle to determine if two task inputs are essentially the same.
+Gradle compares normalized inputs when doing up-to-date checks and when determining the build cache key.
+For a non-specialized input property Gradle doesn't do much - it looks at the content of the property or the files and compares those.
+
+As soon as Gradle understands that the input is a runtime classpath it switches to a smarter behavior since the concept of a classpath is known to Gradle.
+For example, for a runtime classpath Gradle inspects the contents of jar files and ignores the timestamps of the entries of the jar file.
+This means that a rebuilt jar file would be considered the same runtime classpath input.
+The details what level of understanding Gradle uses for detecting changes to classpath see the {user-manual}more_about_tasks.html#sec:task_input_using_classpath_annotations[userguide].
+
+For a runtime classpath it is possible to provide better insights to Gradle which files are essential to the input by {user-manual}more_about_tasks.html#sec:configure_input_normalization[configuring input normalization].
+
+Let's say you want to add a file `build-info.properties` to all your produced jar files which contains volatile information about the build, e.g. the timestamp when the build started or some ID to identify the CI job that published the artifact.
+This file is only for auditing purposes, and has no effect on the outcome of running tests.
+Nonetheless, this file is part of the runtime classpath for the `test` task and changes on every build invocation.
+In order to benefit from task output caching again you can add the following configuration to your project.
+
+[source,groovy]
+normalization {
+    runtimeClasspath {
+        ignore "build-info.properties"
+    }
+}
+
+The effect of this configuration would be that changes to `build-info.properties` would be ignored for up-to-date checks and build cache key calculations.
+Note that this will not change the runtime behavior of the `test` task - i.e. any test is still able to load `build-info.properties` and the runtime classpath is still the same as before.
+
+If input normalization doesn't provide the necessary features then you can also try to make the task reproduce the output byte per byte on each invocation.
+
+===== Reproducible outputs
+
+While input normalization provides a way to describe what is essential for the consumer of an artifact, reproducible outputs aim to solve the same problem on the producer side.
+If possible, using input normalization should be the preferred way to address problems with volatile outputs.
+Note that can be challenging to have tasks reproduce exactly the same byte per byte output for the same inputs.
+
+For tar and zip files Gradle can be configured to create {user-manual}working_with_files#sec:reproducible_archives[reproducible archives].
+This is done by configuring e.g. the `Zip` task via the following snippet.
+
+[source,groovy]
+-----------
+task createZip(type: Zip) {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+...
+}
+-----------
+
+Another way to make the outputs reproducible is to activate caching for a task with volatile outputs.
+If you can make sure that the same build cache is used for all builds then the task will always have the same outputs for the same inputs by design of the build cache.
+Going down this road can lead to different problems with cache misses for incremental builds as described above.
+Moreover, race conditions between different builds trying to store the same outputs in the build cache in parallel can lead to hard to diagnose cache misses.
+If possible, you should avoid going down that route.
+
+==== Limit the effect of volatile data
+
+If none of the described solutions for dealing with volatile data work for you, you should still be able to limit the effect of volatile data on effective use of the build cache.
+This can be done by adding the volatile data later to the outputs as described in [[volatile_inputs]].
+Another option would be to move the volatile data so it affects less tasks.
+For example moving the dependency from the `compile` to the `runtime` configuration may already have quite an impact.
+
+Sometimes it is also possible to build two artifacts, one containing the volatile data and another one containing a constant representation of the volatile data.
+The non-volatile output would be used e.g. for testing while the volatile one would be published to an external repository.
+This is in conflict with the Continuous Delivery "build artifacts once" principle but can sometimes be the only option.
+
+=== Custom and third party tasks
+
+If your build contains custom or third party tasks, you should take special care that these don't influence the effectiveness of the build cache.
+Special care should be taken for code generation tasks which may produce <<volatile_outputs>>.
+This can happen if the code generator includes e.g. a timestamp in the generated files or depends on the order of the input files.
+Other pitfalls can be the use of `HashMap`s or other data structures without order guarantees in the tasks code.
+
+Note that some third party tasks can even influence cacheability of Gradle's built-in tasks.
+This can happen if they add inputs like absolute paths or volatile data to Gradle's built-in tasks via the runtime API.
+In the worst case this can lead to incorrect builds when the plugins try to depend on <<logic_based_on_task_outcome,outcome of a task>> and do not take `FROM-CACHE` into account.
