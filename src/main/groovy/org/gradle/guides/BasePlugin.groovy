@@ -17,6 +17,7 @@ package org.gradle.guides
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.ajoberstar.gradle.git.publish.GitPublishExtension
+import org.asciidoctor.gradle.AsciidoctorBackend
 import org.asciidoctor.gradle.AsciidoctorTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -153,8 +154,8 @@ class BasePlugin implements Plugin<Project> {
 
         githubPages.branch = 'gh-pages'
         githubPages.commitMessage = "Publish to GitHub Pages"
-        githubPages.contents.from {"${asciidoc.outputDir}/${asciidoc.backends[0]}"}
-
+        githubPages.contents.from {"${asciidoc.outputDir}/${AsciidoctorBackend.HTML5.id}"}
+        
         project.afterEvaluate {
             if (ghToken) {
                 githubPages.repoUri = "https://github.com/${guide.repoPath}.git"
