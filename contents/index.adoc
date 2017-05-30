@@ -8,7 +8,7 @@ You'll generate a Java library with the standard layout.
 
 == What you’ll need
 
- - About 15 minutes
+ - About +++<span class="time-to-complete-text"></span>+++
  - A text editor or IDE
  - A http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK), version 1.7 or better
  - A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
