@@ -87,3 +87,11 @@ Typically, CI builds above a certain size include parallel sections to utilize m
 > *TODO:* Graph of Gradle's cache performance - from https://docs.google.com/spreadsheets/d/1dCYVAL9Qw2_ZpAdXfZAABEpLm-Q8PzD4G1etUq430zY/edit#gid=1079649909
 
 You can also measure the cumulative time it took to build a changeset, which will give you a sense of the amount of work the CI infrastructure has to excert. The cache's effect here is less money spent on CI infrastructure, as you don't need as many CI executors to maintain the same number of changes built.
+
+=== Measuring developer builds
+
+Gradle's build cache can be very useful in reducing CI infrastructure cost and feedback time, but it usually has the biggest impact when developers can reuse cached results in their local builds. This is also the hardest to quantize for a number of reasons:
+
+* developers run different builds
+* developers can have different hardware, or have different settings
+* developers run all kinds of other things on their machines that can slow them down
