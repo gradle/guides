@@ -63,7 +63,7 @@ public class LatestArtifactVersion extends DefaultTask {
     }
 
     @TaskAction
-    public void resolveLatestVersion {
+    public void resolveLatestVersion() {
         // issue HTTP call and parse response
     }
 }
