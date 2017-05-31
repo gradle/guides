@@ -1,21 +1,18 @@
 language: java
 jdk:
- - oraclejdk8
-
-script: ./gradlew build gitPublishPush  --stacktrace
-
+- oraclejdk8
+script: "./gradlew build gitPublishPush  --stacktrace"
 before_cache:
- - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
- - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
- - rm -fr $HOME/.gradle/caches/*/scripts/
-
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+- rm -fr $HOME/.gradle/caches/*/scripts/
 cache:
   directories:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
-
 env:
   global:
+    secure: bKHEHhmDhYSWe53/vJ5YCRcf08pNqDXzdYpjMDyWRFEHuh9NxQMxJcdDceXNti1Td0kKkmTfxeEuADx4XHPz1MmPgO1eH8s41LByr2XVVWov/ZRQBTCj4lQSEKPPkapvQugGqZs++70okS5UYITdJVWCo6P8u9xLwZCSe0LD9mDHurbeLRXSN3KL94m9IsaKdgZGUIwO9+2OPZF729bM8TdUemNgGnLLPVVdEP3KIUYbOnEigZMOyNZAOZ7nzjPHSQS7nk+2o8hxFuCPn0pGwSQ8OTlSWETrICMz8HHeuKPsxTlmgzJOmrV2i+Ywy0eVcSnX0nYzW20avOvvjldNYc166SAsNB74v3YPkut5LDGHi7dGQ+zSAfQya7BY6ZtTNHM1DHDxHK/Eii4qF9NNEEe6OBR/QF3mt00J7LPRTJHK3eIC6jZXmbsU3ikBwDKZEb8ccXMgI9I4Dibtm4K7UVQxxK2Po6++8cL/kYla2t1S+CWYFxc1nrZzVaCDjWyp+EIfRXmilU9tGGpcOGlysV9jEDygJeo1XnAsHUsroH6ghEU6VJ5qriEhZWnwag0yydzkXkdlAbVdiuO9ovgsfGCpSMeOFkK0/gL1K7kaZwvLNNoBqjMFC3+ZEiazKfhJissFdIPSHg0abQrJrL++fPmOTCOac8vuVU2CcIpjEFU=
 notifications:
   slack:
     on_success: change
