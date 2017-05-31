@@ -1,12 +1,10 @@
 == Important concepts
 
-=== Repeatable task outcomes
-
 As we said before, how much of your build gets loaded from cache depends on many factors. In this section we'll review some of the tools that are essential for well-cached builds.
 
 === Stable task inputs
 
-== Repeatable task outcomes
+=== Repeatable task outcomes
 
 Imagine that you've just pulled the main branch of your software afresh from version control. CI has already built this particular commit, so the remote cache should be hot: if you ran a build now, every cacheable task would be loaded from cache.
 
@@ -16,7 +14,7 @@ Because you've changed its inputs, the code generator task needs to execute agai
 
 However, if your code generator adds a timestamp, the otherwise meaningless change to the code generator's inputs _will_ result in different results being produced. Tasks that depend on the code generator's output will need to be re-executed. This can result in a cascade of changes rippling through the build, destroying build performance along the way.
 
-Gradle can stop the cascade of change requiring everything to be rebuilt when your task is repeatable.
+You can avoid the cascade of change requiring everything to be rebuilt when your task is repeatable.
 
 [[normalization]]
 === Better reuse via input normalization
@@ -37,6 +35,6 @@ Gradle can stop the cascade of change requiring everything to be rebuilt when yo
 
 We've been talking quite a bit about cacheable tasks, which implies there are non-cacheable ones, too. If caching task outputs is as awesome as it sounds, why not cache every task?
 
-There are tasks that are definitely worth caching: tasks that do complex, repeatable processing and produce moderate amounts of output. Compilation tasks are usually ideal candidates for caching. At the other end of the spectrum lie I/O-heavy tasks, like `Copy` and `Sync`, Moving files around locally typically cannot be sped up by copying them from a cache. If we did so, we would even waste good resources on storing all those redundant results in the cache.
+There are tasks that are definitely worth caching: tasks that do complex, repeatable processing and produce moderate amounts of output. Compilation tasks are usually ideal candidates for caching. At the other end of the spectrum lie I/O-heavy tasks, like `Copy` and `Sync`. Moving files around locally typically cannot be sped up by copying them from a cache. If we did so, we would even waste good resources on storing all those redundant results in the cache.
 
 Most tasks are either obviously worth caching, or obviously not. For those in-between a good rule of thumb is to see if downloading results would be significantly faster than producing them locally.
