@@ -59,7 +59,6 @@ class CreateGradleGuide extends DefaultTask {
     String guideName
 
     @Option(option = "guide-repo-name", description = "Override repository name of guide to be created")
-    @Input
     String guideRepoName
 
     @Input
@@ -67,6 +66,7 @@ class CreateGradleGuide extends DefaultTask {
         this.guideType ? GuideType.byName(this.guideType) : null
     }
 
+    @Input
     String getGuideSlug() {
         guideRepoName ?: (guideName?.toLowerCase()?.replaceAll(~/\s+_/, '-'))
     }
@@ -143,7 +143,7 @@ class CreateGradleGuide extends DefaultTask {
 
         try {
             travis 'enable'
-            travis 'encrypt', '--add', '--override', "GH_TOKEN=${getGitHubAuthToken()}"
+            travis 'encrypt', '--add', '--override', "GRGIT_USER=${getGitHubAuthToken()}"
         } finally {
             travis 'logout', '--org'
         }
@@ -253,7 +253,7 @@ build
             dir : repoDir,
             creds : new Credentials( username :getGitHubAuthToken(), password: '' )
         )
-        grgit.commit(message: "Set GH_TOKEN", all: true)
+        grgit.commit(message: "Set GRGIT_USER", all: true)
         grgit.push()
     }
 
