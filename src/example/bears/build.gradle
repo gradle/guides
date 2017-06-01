@@ -2,6 +2,10 @@ plugins {
     id 'java-library'
 }
 
+repositories {
+    jcenter()
+}
+
 dependencies {
     api project(':tale')
 
