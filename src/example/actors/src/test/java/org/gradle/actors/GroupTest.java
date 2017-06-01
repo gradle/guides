@@ -33,14 +33,13 @@ public class GroupTest {
     @Test
     public void containsActors() {
         Group beatles = Imagination.createGroup(BAND_NAME, JOHN, PAUL, GEORGE, RINGO);
-        assertBeatleiness(beatles);
-    }
-
-    @Test
-    public void containsActorsFromCollection() {
-        Collection<Actor> collection = Lists.newArrayList(JOHN, PAUL, GEORGE, RINGO);
-        Group beatles = Imagination.createGroup(BAND_NAME, collection);
-        assertBeatleiness(beatles);
+        
+        assertEquals(4, beatles.size());
+        Collection<Actor> collection = Lists.newArrayList(beatles);
+        assertTrue(collection.contains(JOHN));
+        assertTrue(collection.contains(PAUL));
+        assertTrue(collection.contains(GEORGE));
+        assertTrue(collection.contains(RINGO));
     }
 
     @Test
@@ -48,14 +47,5 @@ public class GroupTest {
         Group beatles = Imagination.createGroup(BAND_NAME, JOHN, PAUL, GEORGE, RINGO);
         assertEquals("the 4 Beatles", beatles.toString());
         assertEquals("the 0 nobodies", EMPTY.toString());
-    }
-
-    private void assertBeatleiness(Group beatles) {
-        assertEquals(4, beatles.size());
-        Collection<Actor> collection = Lists.newArrayList(beatles);
-        assertTrue(collection.contains(JOHN));
-        assertTrue(collection.contains(PAUL));
-        assertTrue(collection.contains(GEORGE));
-        assertTrue(collection.contains(RINGO));
     }
 }
