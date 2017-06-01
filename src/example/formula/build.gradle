@@ -1,0 +1,14 @@
+plugins {
+    id 'java-library'
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    implementation project(':tale')
+    implementation project(':actors')
+
+    testImplementation 'junit:junit:4.12'
+}

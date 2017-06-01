@@ -1,0 +1,18 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    implementation project(':tale')
+
+    runtimeOnly project(':pigs')
+    runtimeOnly project(':bears')
+}
+
+mainClassName = 'org.gradle.fairy.app.StoryTeller'
+
