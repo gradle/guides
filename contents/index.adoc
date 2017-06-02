@@ -8,7 +8,7 @@ Tradeoffs are inherent in any engineering decision, and they are covered in the 
 
 == What you'll build
 
-You will create a Gradle task that executes https://webpack.js.org/[Webpack] in a way that leverages Gradle's {user-manual}/more_about_tasks.html#sec:up_to_date_checks[up-to-date checks] and {user-manual}/build_cache.html[build cache].
+You will create a Gradle task that executes https://webpack.js.org/[Webpack] in a way that leverages Gradle's {user-manual}more_about_tasks.html#sec:up_to_date_checks[up-to-date checks] and {user-manual}build_cache.html[build cache].
 
 == What you'll need
 
@@ -92,7 +92,7 @@ NOTE: package-lock.json is present only for npm v5+, which is a recommended upgr
 
 Command-line processes can be invoked through Gradle https://docs.gradle.org/current/dsl/org.gradle.api.tasks.Exec.html[Exec] tasks.
 
-{user-manual}/custom_tasks.html[Custom Task Classes] are recommended for more complex uses, for example if one wants dev (debug with sourcemaps) and production variants.
+{user-manual}custom_tasks.html[Custom Task Classes] are recommended for more complex uses, for example if one wants dev (debug with sourcemaps) and production variants.
 
 === Step 2.1: Create Gradle task
 
@@ -137,12 +137,12 @@ $ ruby -run -ehttpd . -p8000
 $ npm install -g http-server && $_ -p 8000
 ----
 
-You should now be able to see your web app at http://localhost:8000.
+You should now be able to see your web app at `localhost:8000`.
 
 
 == Step 3: Declare task inputs and outputs
 
-So far, all we've managed to achieve is a bit of overhead over running `webpack` directly. Now you can start to avoid work that's already been done through Gradle's {user-manual}/more_about_tasks.html#sec:up_to_date_checks[up-to-date checks] (AKA incremental build).
+So far, all we've managed to achieve is a bit of overhead over running `webpack` directly. Now you can start to avoid work that's already been done through Gradle's {user-manual}more_about_tasks.html#sec:up_to_date_checks[up-to-date checks] (AKA incremental build).
 
 In order to take advantage of up-to-date checks, you must declare the inputs and outputs of your task. Change your task implementation in your Gradle build this way:
 
@@ -174,7 +174,7 @@ BUILD SUCCESSFUL in 0s
 
 == Step 4: Leverage Gradle Build Cache
 
-As of Gradle 4.0, Gradle can avoid work that has already been done on different VCS branches or by other machines via the {user-manual}/build_cache.html[Build Cache].
+As of Gradle 4.0, Gradle can avoid work that has already been done on different VCS branches or by other machines via the {user-manual}build_cache.html[Build Cache].
 
 For example, suppose someone else pushed JS changes that were subsequently built by CI, which then populated a shared remote build cache for other developers. Using the same webpack config and no JS changes, you can avoid re-bundling JS via Webpack and download the bundles straight from the build cache, thus saving significant bundling time.
 
@@ -195,7 +195,7 @@ task webpack(type: Exec) {
 <1> Declare that inputs should be snapshotted with relative file references.
 <2> Always attempt to use build cache if task succeeds. This condition can be changed to only use cache on CI. Learn more in Build Cache guides.
 
-NOTE: It is strongly advised to use a {user-manual}/custom_tasks.html[custom task class] when writing cacheable tasks. An example of one for webpack is provided in the Managing JavaScript guide (coming soon). Learn more about best practices of using the Gradle Build Cache from the https://guides.gradle.org/build-cache-practices/[Build Cache topical guide].
+NOTE: It is strongly advised to use a {user-manual}custom_tasks.html[custom task class] when writing cacheable tasks. An example of one for webpack is provided in the Managing JavaScript guide (coming soon). Learn more about best practices of using the Gradle Build Cache from the https://guides.gradle.org/build-cache-practices/[Build Cache topical guide].
 
 === Step 4.2: Run `webpack` to populate Gradle Build Cache
 
@@ -289,4 +289,4 @@ This additional work gets more useful as projects grow and team members are able
 Of course, it's _never_ this simple. You are now ready to explore the nuance and tradeoffs of managing JavaScript with Gradle, through Webpack.
 
 === Help improve this guide
-Have feedback or a question? Found a typo? Like all Gradle guides, help is just a GitHub issue away. Please add an issue or pull request to https://github.com/gradle/gradle-guides/using-node-js-libraries[gradle-guides/using-node-js-libraries] and we’ll get back to you.
+Have feedback or a question? Found a typo? Like all Gradle guides, help is just a GitHub issue away. Please add an issue or pull request to https://github.com/gradle-guides/running-webpack-with-gradle[gradle-guides/running-webpack-with-gradle] and we’ll get back to you.
