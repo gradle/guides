@@ -2,19 +2,4 @@ plugins {
     id 'java-library'
 }
 
-targetCompatibility = '1.9'
-
-compileJava {
-    destinationDir = file("build/mods")
-    options.compilerArgs = [
-        '--module-path', classpath.asPath,
-        '--module-source-path', sourceSets.main.java.srcDirs.join(System.getProperty('path.separator')),
-        '-m', 'org.gradle.fairy.tale',
-    ]
-    doLast {
-      copy {
-        from file(new File(destinationDir,  'org.gradle.fairy.tale'))
-        into sourceSets.main.java.outputDir.absolutePath
-      }
-    }
-}
+ext.moduleName = 'org.gradle.fairy.tale'
