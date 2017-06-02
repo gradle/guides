@@ -2,6 +2,8 @@ plugins {
     id 'java-library'
 }
 
+targetCompatibility = '1.9'
+
 repositories {
     jcenter()
 }
@@ -9,6 +11,19 @@ repositories {
 dependencies {
     implementation project(':tale')
     implementation project(':actors')
+}
 
-    testImplementation 'junit:junit:4.12'
+compileJava {
+    destinationDir = file("build/mods")
+    options.compilerArgs = [
+        '--module-path', classpath.asPath,
+        '--module-source-path', sourceSets.main.java.srcDirs.join(System.getProperty('path.separator')),
+        '-m', 'org.gradle.fairy.tale.formula',
+    ]
+    doLast {
+      copy {
+        from file(new File(destinationDir,  'org.gradle.fairy.tale.formula'))
+        into sourceSets.main.java.outputDir.absolutePath
+      }
+    }
 }

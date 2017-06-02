@@ -3,6 +3,8 @@ plugins {
     id 'application'
 }
 
+targetCompatibility = '1.9'
+
 repositories {
     jcenter()
 }
@@ -16,3 +18,17 @@ dependencies {
 
 mainClassName = 'org.gradle.fairy.app.StoryTeller'
 
+compileJava {
+    destinationDir = file("build/mods")
+    options.compilerArgs = [
+        '--module-path', classpath.asPath,
+        '--module-source-path', sourceSets.main.java.srcDirs.join(System.getProperty('path.separator')),
+        '-m', 'org.gradle.fairy.app',
+    ]
+    doLast {
+      copy {
+        from file(new File(destinationDir,  'org.gradle.fairy.app'))
+        into sourceSets.main.java.outputDir.absolutePath
+      }
+    }
+}

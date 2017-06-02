@@ -2,6 +2,8 @@ plugins {
     id 'java-library'
 }
 
+targetCompatibility = '1.9'
+
 repositories {
     jcenter()
 }
@@ -11,4 +13,19 @@ dependencies {
 
     implementation project(':formula')
     implementation project(':actors')
+}
+
+compileJava {
+    destinationDir = file("build/mods")
+    options.compilerArgs = [
+        '--module-path', classpath.asPath,
+        '--module-source-path', sourceSets.main.java.srcDirs.join(System.getProperty('path.separator')),
+        '-m', 'org.gradle.fairy.tale.pigs',
+    ]
+    doLast {
+      copy {
+        from file(new File(destinationDir,  'org.gradle.fairy.tale.pigs'))
+        into sourceSets.main.java.outputDir.absolutePath
+      }
+    }
 }
