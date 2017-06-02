@@ -1,4 +1,4 @@
-= Using Node.js Libraries image:https://travis-ci.org/gradle-guides/using-node-js-libraries.svg?branch=master["Build Status", link="https://travis-ci.org/gradle-guides/using-node-js-libraries?branch=master"]
+= Running Webpack with Gradle image:https://travis-ci.org/gradle-guides/running-webpack-with-gradle.svg?branch=master["Build Status", link="https://travis-ci.org/gradle-guides/running-webpack-with-gradle?branch=master"]
 
 * Content for this guide is in Asciidoc format and the entry file is `contents/index.adoc`.
 * Place new images under `contents/images`.
