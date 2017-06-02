@@ -16,6 +16,4 @@ include::debugging.adoc[]
 
 include::common-problems.adoc[]
 
-== Summary
-
-*TBC*
+include::summary.adoc[]
