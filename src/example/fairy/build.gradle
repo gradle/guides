@@ -3,8 +3,6 @@ plugins {
     id 'application'
 }
 
-ext.moduleName = 'org.gradle.fairy.app'
-
 dependencies {
     implementation project(':tale')
 

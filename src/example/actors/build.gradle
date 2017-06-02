@@ -2,8 +2,6 @@ plugins {
     id 'java-library'
 }
 
-ext.moduleName = 'org.gradle.actors'
-
 dependencies {
     implementation 'com.google.guava:guava:22.0'
 

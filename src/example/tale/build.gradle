@@ -1,5 +1,3 @@
 plugins {
     id 'java-library'
 }
-
-ext.moduleName = 'org.gradle.fairy.tale'

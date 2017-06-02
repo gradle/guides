@@ -2,8 +2,6 @@ plugins {
     id 'java-library'
 }
 
-ext.moduleName = 'org.gradle.fairy.tale.formula'
-
 dependencies {
     implementation project(':tale')
     implementation project(':actors')

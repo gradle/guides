@@ -2,8 +2,6 @@ plugins {
     id 'java-library'
 }
 
-ext.moduleName = 'org.gradle.fairy.tale.bears'
-
 dependencies {
     api project(':tale')
 

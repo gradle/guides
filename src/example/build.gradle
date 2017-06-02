@@ -6,21 +6,11 @@ subprojects {
 
         targetCompatibility = '1.9'
 
-        if (project.hasProperty("moduleName")) {
-            compileJava {
-                destinationDir = project.file("build/mods")
-                options.compilerArgs = [
-                    '--module-path', classpath.asPath,
-                    '--module-source-path', sourceSets.main.java.srcDirs.join(System.getProperty('path.separator')),
-                    '-m', moduleName,
-                ]
-                doLast {
-                    copy {
-                        from file(new File(destinationDir,  moduleName))
-                        into sourceSets.main.java.outputDir.absolutePath
-                    }
-                }
-            }
+        compileJava {
+            options.compilerArgs = [
+                '--module-path', classpath.asPath,
+                '--source-path', sourceSets.main.java.srcDirs.join(System.getProperty('path.separator')),
+            ]
         }
     }
 }
