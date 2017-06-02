@@ -2,24 +2,25 @@
 
 As we said before, how much of your build gets loaded from cache depends on many factors. In this section we'll review some of the tools that are essential for well-cached builds.
 
+[[stable_task_inputs]]
 === Stable task inputs
 
-Gradle provides already very good support for avoiding work that has already been done in the previous build with incremental build.
-When running the same build twice you should expect all incremental tasks up to date.
-If some incremental tasks are out of date on the second run there are some inputs which are not stable between builds - we will also call this inputs volatile.
-An example of a volatile input would be a timestamp in a file or as an input property of some task.
-Tasks which are not up-to-date on a second run of the same build will also be never pulled from the cache.
+Imagine that you've just pulled the main branch of your software afresh from version control. CI has already built this particular commit, so the remote cache should be hot: if you ran a build now, every cacheable task should be loaded from cache.
 
-If all expensive tasks are already up-to-date on the second run then you can go on to the next experiment.
-This would be to activate the local build cache and run a clean build twice.
-On the second run all cacheable tasks should have been loaded from the build cache.
-If this isn't the case then you can never expect to pull the offending tasks from the build cache.
+For this to work, your cacheable tasks in your local build need to have exactly the same inputs as on CI.
+This is only possible if your inputs are stable, i.e. they only depend on the state of the workspace and the tools required by it, e.g. the Java version.
 
-Therefore, it is important that if you do not change something in your build, e.g. your sources, then the task inputs for cacheable tasks should be stable, i.e. stay the same.
+It could well be that the inputs to your tasks are dependent on something you cannot control, for example the current time.
+This can happen quite easily. For example you decided to add a timestamp to your jar manifests or to a property file on the classpath.
+We call these inputs volatile.
+Cacheable tasks need to have stable inputs.
+If the inputs to a cacheable tasks are not stable then it will never be pulled from the cache and only take up space in the cache backend.
 
+[[concepts_repeatable_task_outputs]]
 === Repeatable task outputs
 
-Imagine that you've just pulled the main branch of your software afresh from version control. CI has already built this particular commit, so the remote cache should be hot: if you ran a build now, every cacheable task would be loaded from cache.
+Now that you have stable task inputs, image the same situation as before.
+Again, you've just pulled the main branch of your software afresh from version control. CI has already built this particular commit, so the remote cache should be hot: if you ran a build now, every cacheable task would be loaded from cache.
 
 Consider now making a small change to the inputs of your code generator task. Let's make this a change that will not result in any _meaningful_ difference to the code-generator. Maybe add an empty line at the end of a file, or change a comment.
 
@@ -32,7 +33,8 @@ You can avoid the cascade of change requiring everything to be rebuilt when your
 [[normalization]]
 === Better reuse via input normalization
 
-A variation of stable build inputs is that you have build inputs which are essentially the same but not byte for byte.
+We saw that having stable inputs is crucial for cacheable tasks.
+Achieving byte by byte identical inputs for each task can be challenging.
 This is where {user-manual}more_about_tasks.html#sec:configure_input_normalization[input normalization] comes into play.
 Input normalization is used by Gradle to determine if two task inputs are essentially the same.
 Gradle uses normalized inputs when doing up-to-date checks and when determining the build cache key.
@@ -42,7 +44,7 @@ The consumer of the file collection needs to declare what about a file is essent
 
 ==== Path sensitivity and relocatability
 
-Task having file collections as inputs can declare the parts of a file path what are essential to them - this is called the _path sensitivity_ of the input.
+Tasks having file collections as inputs can declare the parts of a file path what are essential to them - this is called the _path sensitivity_ of the input.
 For example, the class file produced by the Java compiler is dependent on the file name of the Java source file and does not depended on other parts of the file path.
 Therefore, the path sensitivity for the sources of the `JavaCompile` task is `NAME_ONLY`.
 Only the normalized paths of Java sources - the file name - would be considered an input to the `JavaCompile` task.
@@ -53,12 +55,12 @@ Absolute paths cannot be relocated between different build machines in general.
 Trying to do so would require everyone trying to re-use the outputs built on one machine to have its workspace and all the tools used by the build in the same location.
 This is highly impractical. A task or its inputs are called relocateable if all of the file inputs have a relocatable path sensitivity.
 
-Cacheable tasks always should be relocateable and we made sure that this is true for all tasks which ship with Gradle.
+Cacheable tasks always should be relocatable and we made sure that this is true for all tasks which ship with Gradle.
 
 ==== Compile avoidance
 
 Java compilation is only affected by changes to the ABI of the compile classpath.
-Gradle has a deep understanding of what a compile classpath is and therefore uses sophisticated normalization strategy for it.
+Gradle has a deep understanding of what a compile classpath is and therefore uses a sophisticated normalization strategy for it.
 Task outputs can be re-used as long the the ABI of the classes on the compile classpath stays the same.
 This enables Gradle to avoid Java compilation by using incremental builds or the build cache.
 For more information on compile avoidance see the corresponding section in the {user-manual}java_plugin.html#sec:java_compile_avoidance[userguide].
@@ -66,7 +68,7 @@ For more information on compile avoidance see the corresponding section in the {
 ==== Runtime classpath normalization
 
 Similar to compile avoidance, Gradle does understand the concept of a runtime classpath and uses a tailored input normalization to avoid running e.g. tests.
-For example, for a runtime classpath Gradle inspects the contents of jar files and ignores the timestamps of the entries of the jar file.
+For example, for a runtime classpath Gradle inspects the contents of jar files and ignores the timestamps and order of the entries in the jar file.
 This means that a rebuilt jar file would be considered the same runtime classpath input.
 For details on what level of understanding Gradle has for detecting changes to classpaths see the {user-manual}more_about_tasks.html#sec:task_input_using_classpath_annotations[userguide].
 
@@ -89,6 +91,23 @@ normalization {
 The effect of this configuration would be that changes to `build-info.properties` would be ignored for up-to-date checks and build cache key calculations.
 Note that this will not change the runtime behavior of the `test` task - i.e. any test is still able to load `build-info.properties` and the runtime classpath is still the same as before.
 
+[[concepts_input_normalization_vs_repeatable_task_outputs]]
+==== Input normalization and repeatable task outputs
+
+Input normalization and stable task outputs can both be used to solve the same problem:
+Having stable task inputs for tasks which depend on other tasks output.
+The difference is that input normalization works on the consumer side - the task consuming the output as an input -
+while repeatable task outputs try to solve the problem on the producer side - the task producing the output.
+
+Achieving repeatable outputs can be more difficult than using input normalization - especially when Gradle already provides support for the necessary normalization.
+Repeatable outputs can also be impossible to achieve for third party tasks which you do not have control on or when you need to include volatile data in your task artifacts for auditing purposes.
+Input normalization doesn't have these limitation and the same output can be used with different meaning for different consumers.
+This is what Gradle already does with respect to runtime and compile classpath.
+The same files on the Java classpath are interpreted differently and different kinds of changes are detected.
+
+We are planning on extending the support for configurable input normalization in future versions of Gradle.
+
+[[concepts_overlapping_outputs]]
 === The case against overlapping outputs
 
 If two tasks write to the same output directory or output file it is difficult for Gradle to determine which output belongs to which task.
@@ -105,7 +124,15 @@ image::overlapping-outputs-timeline.png[]
 
 === Reuse of task outputs with the same inputs, but different task paths
 
+Imagine you have two `JavaCompile` tasks in your build, both operating on the same source files, each of them having a different output directory.
+Would you expect that whichever runs second would re-use the outputs of the first task via the build cache?
 
+Having two tasks in the same build that do the same is not necessarily something you need to refactor.
+Tools like the Android plugin create several tasks for each variant of the project; some of those tasks could potentially do the same thing.
+Tying the cached result to the task path would force you to rebuild something that you've already built.
+
+We think that the outputs should be re-used since the task path is only a name and does not describe anything essential to the task itself.
+This is also why it is possible to see tasks which are loaded from the cache if you run a build even if your build cache was empty before you started the build.
 
 === Non-cacheable tasks
 
