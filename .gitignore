@@ -4,3 +4,4 @@ build
 
 # IntelliJ
 .idea
+*.iml
