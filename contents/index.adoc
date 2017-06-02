@@ -1,38 +1,292 @@
-= Using Node.js Libraries
+= Running Webpack with Gradle
 
+Many web applications are built today with distinctly different server-side and client-side technologies. In order to run these applications, both server-side and client-side sources must be built and packaged. Webpack has emerged as the tool of choice among JavaScript developers for bundling client-side assets.
+
+With some care, a smart developer team can develop a system that leverages the benefits of both Gradle and Webpack with minimal overhead to optimize engineering throughput. This guide is meant to be a beginning of that path.
+
+Tradeoffs are inherent in any engineering decision, and they are covered in the topical guide for Managing JavaScript with Gradle (coming soon).
 
 == What you'll build
 
+You will create a Gradle task that executes https://webpack.js.org/[Webpack] in a way that leverages Gradle's {user-manual}/more_about_tasks.html#sec:up_to_date_checks[up-to-date checks] and {user-manual}/build_cache.html[build cache].
 
 == What you'll need
 
 * About +++<span class="time-to-complete-text"></span>+++
-* A text editor
-* A command prompt
+* A text editor or IDE
 * The Java Development Kit (JDK), version 1.7 or higher
+* Node.js, version 8.0 or higher
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 
-== Step 1
+== Step 1: Create sample project and install dependencies
 
-The first step is to create a folder for the new project and add a {user-manual}gradle_wrapper.html#sec:wrapper_generation[Gradle Wrapper] to the project.
+Setup a trivial web application by running these commands and copying sources to the files listed.
+
+=== Step 1.1: Create sample project
+
+NOTE: This demo project is derived from https://webpack.js.org/guides/get-started/[Webpack's Getting Started Guide]. Learn more Webpack usage at https://webpack.js.org/guides/.
 
 [listing]
 ----
-$ mkdir using-node-js-libraries
-$ cd using-node-js-libraries
-$ gradle wrapper // <1>
-
-:wrapper
-
-BUILD SUCCESSFUL
+$ mkdir -p gradle-webpack-demo/app
+$ cd gradle-webpack-demo
 ----
-<1> This allows a version of Gradle to be locked to a project and henceforth you can use `./gradlew` instead of `gradle`.
+
+.app/index.js
+[source,javascript]
+----
+import _ from 'lodash';
+
+function component () {
+  var element = document.createElement('div');
+
+  /* lodash is required for the next line to work */
+  element.innerHTML = _.join(['Build', 'together'], ' ');
+
+  return element;
+}
+
+document.body.appendChild(component());
+----
+
+.index.html
+[source,html]
+----
+<html>
+  <head>
+    <title>Gradle + Webpack Demo</title>
+  </head>
+  <body>
+    <script src="build/js/bundle.js"></script> // <1>
+  </body>
+</html>
+----
+<1> Webpack-generated JS bundle will include index.js and lodash
+
+=== Step 1.2: Install Webpack and lodash
+
+[listing]
+----
+$ npm init -y
+$ npm install --save lodash@~4
+$ npm install --save-dev webpack@~2
+----
+
+Once completed successfully, your project structure should look like this:
+[listing]
+----
+.
+├── app
+│   └── index.js
+├── index.html
+├── node_modules
+│   └── lodash
+│   └── webpack
+├── package-lock.json
+└── package.json
+----
+
+NOTE: package-lock.json is present only for npm v5+, which is a recommended upgrade.
+
+== Step 2: Create an Exec Task
+
+Command-line processes can be invoked through Gradle https://docs.gradle.org/current/dsl/org.gradle.api.tasks.Exec.html[Exec] tasks.
+
+{user-manual}/custom_tasks.html[Custom Task Classes] are recommended for more complex uses, for example if one wants dev (debug with sourcemaps) and production variants.
+
+=== Step 2.1: Create Gradle task
+
+.build.gradle
+[source,groovy]
+----
+task webpack(type: Exec) { // <1>
+    commandLine "./node_modules/.bin/webpack", "app/index.js", "$buildDir/js/bundle.js"
+}
+----
+<1> Declare an Exec task to invoke `webpack`
+
+.Executing the `webpack` task
+----
+$ gradle webpack
+
+> Task :webpack
+Hash: cebd0a554d64bf1868af
+Version: webpack 2.6.1
+Time: 406ms
+    Asset    Size  Chunks                    Chunk Names
+bundle.js  544 kB       0  [emitted]  [big]  main
+   [0] ./~/lodash/lodash.js 540 kB {0} [built]
+   [1] ./app/index.js 269 bytes {0} [built]
+   [2] (webpack)/buildin/global.js 509 bytes {0} [built]
+   [3] (webpack)/buildin/module.js 517 bytes {0} [built]
 
 
-== Step 2
+BUILD SUCCESSFUL in 1s
+1 actionable task: 1 executed
+----
+
+You can now serve your project directory using your favorite web server and see "Build together"
+
+=== Step 2.2: Serve web application locally
+
+[source,bash]
+----
+# Pick your favorite one-liner or use your own
+$ python -m SimpleHTTPServer 8000
+$ ruby -run -ehttpd . -p8000
+$ npm install -g http-server && $_ -p 8000
+----
+
+You should now be able to see your web app at http://localhost:8000.
 
 
-== Step N
+== Step 3: Declare task inputs and outputs
+
+So far, all we've managed to achieve is a bit of overhead over running `webpack` directly. Now you can start to avoid work that's already been done through Gradle's {user-manual}/more_about_tasks.html#sec:up_to_date_checks[up-to-date checks] (AKA incremental build).
+
+In order to take advantage of up-to-date checks, you must declare the inputs and outputs of your task. Change your task implementation in your Gradle build this way:
+
+.build.gradle
+[source,groovy]
+----
+task webpack(type: Exec) {
+    commandLine "webpack", "app/index.js", "$buildDir/js/bundle.js"
+
+    inputs.file("package-lock.json") // <1>
+    inputs.dir("app")
+    outputs.dir("$buildDir/js")      // <2>
+}
+----
+<1> Declare `package-lock.json` and everything under `app/` as an input
+<2> Declare `build/js` as the output location
+
+.Executing the `webpack` task with no changes
+----
+$ gradle webpack
+$ gradle webpack // <1>
+
+BUILD SUCCESSFUL in 0s
+1 actionable task: 1 up-to-date // <2>
+----
+<1> Gradle will detect that the task changed for the 1st invocation and will execute `webpack`
+<2> Gradle recognizes when JS sources haven't been changed. `webpack` bundles are `UP-TO-DATE` and don't need to be generated
 
 
-== Summary
+== Step 4: Leverage Gradle Build Cache
+
+As of Gradle 4.0, Gradle can avoid work that has already been done on different VCS branches or by other machines via the {user-manual}/build_cache.html[Build Cache].
+
+For example, suppose someone else pushed JS changes that were subsequently built by CI, which then populated a shared remote build cache for other developers. Using the same webpack config and no JS changes, you can avoid re-bundling JS via Webpack and download the bundles straight from the build cache, thus saving significant bundling time.
+
+=== Step 4.1: Make webpack task cacheable
+
+.build.gradle
+[source,groovy]
+----
+task webpack(type: Exec) {
+    commandLine "webpack", "app/index.js", "$buildDir/js/bundle.js"
+
+    inputs.file("package-lock.json").withPathSensitivity(PathSensitivity.RELATIVE) // <1>
+    inputs.dir("app").withPathSensitivity(PathSensitivity.RELATIVE)
+    outputs.dir("$buildDir/js")
+    outputs.cacheIf { true } // <2>
+}
+----
+<1> Declare that inputs should be snapshotted with relative file references.
+<2> Always attempt to use build cache if task succeeds. This condition can be changed to only use cache on CI. Learn more in Build Cache guides.
+
+NOTE: It is strongly advised to use a {user-manual}/custom_tasks.html[custom task class] when writing cacheable tasks. An example of one for webpack is provided in the Managing JavaScript guide (coming soon). Learn more about best practices of using the Gradle Build Cache from the https://guides.gradle.org/build-cache-practices/[Build Cache topical guide].
+
+=== Step 4.2: Run `webpack` to populate Gradle Build Cache
+
+[listing]
+----
+$ gradle webpack --build-cache // <1>
+Build cache is an incubating feature.
+Using local directory build cache for the root build (location = ~/.gradle/caches/build-cache-1).
+
+> Task :webpack
+Hash: cebd0a554d64bf1868af
+Version: webpack 2.6.1
+Time: 411ms
+····Asset    Size  Chunks                    Chunk Names
+bundle.js  544 kB       0  [emitted]  [big]  main
+···[0] ./~/lodash/lodash.js 540 kB {0} [built]
+···[1] ./app/index.js 269 bytes {0} [built]
+···[2] (webpack)/buildin/global.js 509 bytes {0} [built]
+···[3] (webpack)/buildin/module.js 517 bytes {0} [built]
+
+
+BUILD SUCCESSFUL in 2s
+2 actionable tasks: 2 executed
+----
+<1> Enable Gradle Build Cache. Can also use `org.gradle.cache=true` in `gradle.properties`
+
+=== Step 4.3: Make a small JavaScript change
+
+.app/index.js
+[source,diff]
+----
+-  element.innerHTML = _.join(['Build', 'together'], ' ');
++  element.innerHTML = _.join(['Build', 'together;', 'not', 'alone.'], ' ');
+----
+
+=== Step 4.4: Re-run `webpack` to bundle changes
+
+[listing]
+----
+$ gradle webpack --build-cache
+Build cache is an incubating feature.
+Using local directory build cache for the root build (location = ~/.gradle/caches/build-cache-1).
+
+> Task :webpack
+Hash: f86580c7ddca3e9d092a
+Version: webpack 2.6.1
+Time: 413ms
+    Asset    Size  Chunks                    Chunk Names
+bundle.js  544 kB       0  [emitted]  [big]  main
+   [0] ./~/lodash/lodash.js 540 kB {0} [built]
+   [1] ./app/index.js 287 bytes {0} [built]
+   [2] (webpack)/buildin/global.js 509 bytes {0} [built]
+   [3] (webpack)/buildin/module.js 517 bytes {0} [built]
+
+
+BUILD SUCCESSFUL in 2s
+1 actionable task: 1 executed
+----
+
+=== Step 4.5: "reset" changes
+
+.app/index.js
+[source,diff]
+----
+-  element.innerHTML = _.join(['Build', 'together;', 'not', 'alone.'], ' ');
++  element.innerHTML = _.join(['Build', 'together'], ' ');
+----
+
+=== Step 4.6: Resolve JS bundle from build cache
+
+[listing]
+----
+$ gradle --build-cache webpack
+Build cache is an incubating feature.
+Using local directory build cache for the root build (location = ~/.gradle/caches/build-cache-1).
+
+BUILD SUCCESSFUL in 1s
+1 actionable task: 1 from cache // <1>
+----
+<1> `webpack` was not executed. `build/js/bundle.js` was loaded from the build cache instead.
+
+Even though we made changes (also works when switching git branches), we didn't have to re-bundle our JavaScript!
+
+== Next Steps
+We've avoided re-executing `webpack` a couple different ways, and begun the path to a workflow that is often faster.
+
+This additional work gets more useful as projects grow and team members are able to take advantage of computation others have already done. This is one of the fundamental goals of https://gradle.com/enterprise[Gradle Enterprise].
+
+> Build together; not alone.
+
+Of course, it's _never_ this simple. You are now ready to explore the nuance and tradeoffs of managing JavaScript with Gradle, through Webpack.
+
+=== Help improve this guide
+Have feedback or a question? Found a typo? Like all Gradle guides, help is just a GitHub issue away. Please add an issue or pull request to https://github.com/gradle/gradle-guides/using-node-js-libraries[gradle-guides/using-node-js-libraries] and we’ll get back to you.
