@@ -2,7 +2,7 @@
 
 Many web applications are built today with distinctly different server-side and client-side technologies. In order to run these applications, both server-side and client-side sources must be built and packaged. Webpack has emerged as the tool of choice among JavaScript developers for bundling client-side assets.
 
-Tradeoffs are inherent in any engineering decision, but using disjointed tools can slow down very capable development teams. Gradle provides scaffolding to integrate with everything, even Webpack and other JavaScript development tools. More information about managing Webpack with Gradle (including hot reloading) is covered in an in-depth topical guide (coming soon).
+Tradeoffs are inherent in any engineering decision, but using disjointed tools can slow down very capable development teams. Gradle provides mechanisms to integrate with everything, even Webpack and other JavaScript development tools. More information about managing Webpack with Gradle (including hot reloading) is covered in an in-depth topical guide (coming soon).
 
 This guide will start you down a path that leverages the benefits of both Gradle and https://webpack.js.org/[Webpack] with minimal overhead.
 
@@ -151,9 +151,9 @@ task webpack(type: Exec) {
 
 Execute `gradle webpack` to verify your configuration. We have changed the declared task inputs and outputs, so `webpack` will be run.
 
-Now executing `webpack` with no changes to web assets will avoid unnecessarily invoking Webpack:
+Now executing `gradle webpack` with no changes to web assets won't unnecessarily invoke Webpack:
 
-.Executing the `webpack` task with no changes
+[listing]
 ----
 $ gradle webpack
 
@@ -274,14 +274,12 @@ BUILD SUCCESSFUL in 1s
 ----
 <1> `webpack` was not executed. `build/js/bundle.js` was loaded from the build cache instead.
 
-Even though you just made changes, re-bundling is not necessary. This same mechanism works well when switching git branches and other common development workflows.
+Even though you just made changes, re-bundling is not necessary. This same mechanism works well when switching git branches and other common development workflows. It works even better when you can https://gradle.com/build-cache[reuse outputs from remote builds].
 
 == Next Steps
-Congratulations! You now have a Gradle task that executes Webpack, but only when web assets change.
+Congratulations! You now have a Gradle task that executes Webpack, but only when web assets change. The benefits of using Gradle increase as your project grows.
 
-For medium and large-sized projects, it is more important to take advantage of computation and information computers have created, in order to save time — this is one of the fundamental goals of https://gradle.com/enterprise[Gradle Enterprise].
-
-Chances are, your needs are more complex. If so, the topical guide Managing JavaScript with Gradle (coming soon) is for you. Happy https://webpack.js.org/[Webpack] bundling!
+Chances are, your needs are more complex. If so, the topical guide Managing JavaScript with Gradle (coming soon) is for you. Happy bundling!
 
 === Help improve this guide
 Have feedback or a question? Found a typo? Like all Gradle guides, help is just a GitHub issue away. Please add an issue or pull request to https://github.com/gradle-guides/running-webpack-with-gradle[gradle-guides/running-webpack-with-gradle] and we’ll get back to you.
