@@ -17,7 +17,7 @@ You'll build a greeting app which also includes documentation. In the process yo
 
 == Create a root project
 
-The first step is to create a folder for the new project and add a {user-manual}gradle_wrapper.html#sec:wrapper_generation[Gradle Wrapper] to the project. If you use the Build Init plugin then the necessary `settings.gradle` and `build.gradle` will also be added.
+The first step is to create a folder for the new project and add a {user-manual}gradle_wrapper.html#sec:wrapper_generation[Gradle Wrapper] to the project. If you use the link:{user-manual}build_init_plugin.html[Build Init plugin] then the necessary `settings.gradle` and `build.gradle` will also be added.
 
 [listing]
 ----
