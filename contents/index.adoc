@@ -116,7 +116,7 @@ $ ./gradlew build
 include::{gradle-outdir}/clean-output-build-greeting-library/out.txt[]
 ----
 
-Gradle automatically detected that there is a `build` task in `greeting-library` and executed it. This is one of the powerful features of a Gradle multi-project. When tasks i subprojects have the same names by convention, then maintenance of the build will be easier and it is also to execute the same tasks in each project by just specifying it from the top.
+Gradle automatically detected that there is a `build` task in `greeting-library` and executed it. This is one of the powerful features of a Gradle multi-project. When tasks and subprojects have the same names by convention, then maintenance of the build will be easier and it is also to execute the same tasks in each project by just specifying it from the top.
 
 A single subproject does not truly make a multi-project, therefore the next step is to add a subproject which can consume this library,
 
@@ -336,7 +336,7 @@ Notice how most tasks are still up to date, but `distZip` and `distTar` has been
 
 == Refactor common build script code
 
-At this point you might have noticed that you have common scriot code in both `greeting-plugin/build.gradle` and `greeter.build.gradle`. A key feature of Gradle is the ability to place such common build script code in the root project.
+At this point you might have noticed that you have common script code in both `greeting-plugin/build.gradle` and `greeter.build.gradle`. A key feature of Gradle is the ability to place such common build script code in the root project.
 
 Edit `build.gradle` in the root project and add the following code
 
