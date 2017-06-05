@@ -151,7 +151,7 @@ Now create a Java class file with a main function, which will consume the `Greet
 
 [listing]
 ----
-$ mkdir greeter/src/main/java/greeter
+$ mkdir -p greeter/src/main/java/greeter
 ----
 
 .src/main/java/greeter/Greeter.java
