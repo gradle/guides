@@ -10,4 +10,16 @@ dependencies {
     runtimeOnly project(':bears')
 }
 
-mainClassName = 'org.gradle.fairy.app.StoryTeller'
+mainClassName = 'org.gradle.fairy.app/org.gradle.fairy.app.StoryTeller'
+
+
+run {
+    doFirst {
+        jvmArgs = ['--module-path', classpath.asPath, '-m', mainClassName]
+    }
+}
+startScripts {
+    doFirst {
+        defaultJvmOpts = ['--module-path', classpath.asPath, '-m', mainClassName]
+    }
+}
