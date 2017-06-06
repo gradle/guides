@@ -10,6 +10,8 @@ to use. This should among others include {user-manual}, {guides}, {gradle-versio
 
 include::introduction.adoc[]
 
+include::performance.adoc[]
+
 include::concepts.adoc[]
 
 include::debugging.adoc[]
