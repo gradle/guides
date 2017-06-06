@@ -15,12 +15,12 @@ mainClassName = 'org.gradle.fairy.app/org.gradle.fairy.app.StoryTeller'
 
 run {
     doFirst {
-        jvmArgs = ['--module-path', classpath.asPath, '-m', mainClassName]
+        jvmArgs = ['--module-path', classpath.asPath, '--module', mainClassName]
     }
 }
 
 startScripts {
     doFirst {
-        defaultJvmOpts = ['--module-path', classpath.asPath, '-m', mainClassName]
+        defaultJvmOpts = ['--module-path', classpath.asPath, '--module', mainClassName]
     }
 }
