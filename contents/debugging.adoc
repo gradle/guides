@@ -48,18 +48,19 @@ All the things influencing the build cache key can be found in the {user-manual}
 
 Basically, we can compare the following data, listed from coarse grained to fine grained:
 
-- Build cache keys
-- Task and Task action implementations
-  - classloader hash
-  - class name
-- Task output property names
-- Individual task property input hashes
-- Hashes of files which are part of task input properties
+* Build cache keys
+* Task and Task action implementations
+** classloader hash
+** class name
+* Task output property names
+* Individual task property input hashes
+* Hashes of files which are part of task input properties
 
 Currently, the build cache key for the task is logged at the info level,
 while information down to the individual input property level is available in the info log:
 
-....
+[listing]
+----
 Appending taskClass to build cache key: org.gradle.api.tasks.compile.JavaCompile_Decorated
 Appending classLoaderHash to build cache key: da6eca52100422099189290bf68f200a
 Appending actionType to build cache key: org.gradle.api.internal.project.taskfactory.AbstractOutputPropertyAnnotationHandler$2$1
@@ -74,7 +75,7 @@ Appending inputPropertyHash for 'options.sourcepath' to build cache key: d41d8cd
 Appending inputPropertyHash for 'source' to build cache key: f6ba49b2466f0090272c43ac5f54ec1d
 Appending outputPropertyName to build cache key: destinationDir
 Build cache key for task ':compileJava' is 2b220117efa6710f7ab191a0bbe48c00
-....
+----
 
 If you want to go into the details of finding out e.g. which classes and jar files constitute the `classpath` for the `compileJava`
 task you need to resort to comparing those files on disk yourself.
@@ -113,10 +114,10 @@ If the implementation is the same, then you need to start comparing inputs betwe
 There should be at least one different input hash. If it is a simple value property, then the configuration of the task changed.
 This can happen for example by
 
- - changing the build script,
- - conditionally configuring the task differently for CI or the developer builds,
- - depending on a system property or an environment variable for the task configuration,
- - or having an absolute path which is part of the input.
+ * changing the build script,
+ * conditionally configuring the task differently for CI or the developer builds,
+ * depending on a system property or an environment variable for the task configuration,
+ * or having an absolute path which is part of the input.
 
 If the changed property is a file property, then the reasons can be the same as for the change of a value property.
 Most probably though a file on the filesystem changed in a way that Gradle detects a difference for this input.
@@ -140,7 +141,8 @@ We start the input property comparison in Gradle Enterprise and see that the pro
 Looking deeper into this, we actually see that the inputs for the task `processResources` changed in that project, too.
 Finally, we find this in our build file:
 
-```groovy
+[source,groovy]
+----
 task currentVersionInfo() {
     doLast {
         def properties = new Properties()
@@ -150,11 +152,11 @@ task currentVersionInfo() {
 }
 
 sourceSets.main.output.dir generatedResourcesDir, builtBy: currentVersionInfo
-```
+----
 
 Since properties files stored by Java's `Properties.store` method contain a timestamp, this will cause a change to the runtime classpath every time the build runs.
 Note that the compile classpath is not affected since compile avoidance ignores non-class files on the compile classpath.
-In order to solve this problem have a look at <<volatile_data>>.
+In order to solve this problem see <<volatile_outputs>>.
 
 > *TODO:*
 >

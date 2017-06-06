@@ -4,7 +4,8 @@ You should now have the knowledge to adapt your own build so it can make effecti
 By doing so, you will improve incremental build performance while having fast clean builds when using the build cache.
 Remember, the best way to do work faster is to not do work that doesn’t need doing.
 
-Be aware that your journey is not done here.
+Be aware that your journey does not end here.
 You should invest into keeping your build well behaved and check manually or automatically that you are still making effective use of the build cache.
 
-Our journey is also not done here. We will continue improving the build cache and give you more tools to make your builds even faster.
+The Gradle team's journey does not end here either.
+They will continue improving the build cache and give you more tools to make your builds even faster.

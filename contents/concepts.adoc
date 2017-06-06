@@ -82,11 +82,13 @@ Nonetheless, this file is part of the runtime classpath for the `test` task and 
 In order to benefit from task output caching again you can add the following configuration to your project.
 
 [source,groovy]
+----
 normalization {
     runtimeClasspath {
         ignore "build-info.properties"
     }
 }
+----
 
 The effect of this configuration would be that changes to `build-info.properties` would be ignored for up-to-date checks and build cache key calculations.
 Note that this will not change the runtime behavior of the `test` task - i.e. any test is still able to load `build-info.properties` and the runtime classpath is still the same as before.
@@ -105,7 +107,7 @@ Input normalization doesn't have these limitation and the same output can be use
 This is what Gradle already does with respect to runtime and compile classpath.
 The same files on the Java classpath are interpreted differently and different kinds of changes are detected.
 
-We are planning on extending the support for configurable input normalization in future versions of Gradle.
+The Gradle team is planning on extending the support for configurable input normalization in future versions of Gradle.
 
 [[concepts_overlapping_outputs]]
 === The case against overlapping outputs
