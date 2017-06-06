@@ -46,3 +46,8 @@ Gradle's build cache can be very useful in reducing CI infrastructure cost and f
 * developers run different builds
 * developers can have different hardware, or have different settings
 * developers run all kinds of other things on their machines that can slow them down
+
+When using the Gradle Enterprise build cache backend you should pay close attention to the hit rate in the admin UI.
+A rise in the hit rate there probably indicates better usage by developers.
+
+image::cache-admin-hit-rate.png[]
