@@ -25,10 +25,14 @@ This `guides` extension always has to be configured for a guide. (The initial re
 [source,groovy]
 ----
 guides {
-    repoPath = 'gradle-guides/creating-multi-project-builds' // <1>
+    repoPath 'gradle-guides/creating-multi-project-builds' // <1>
+    mainAuthor   'John Doe' // <2>
+    supAuthors 'Grumpy Gradlephant', 'Jane Doe' // <3>
 }
 ----
 <1> Set the Github below `github.com`.
+<2> Specify the main author
+<3> If there are supplementary authors, proofreaders etc. then you can add them as a list. This can be specified more than once.
 
 === The asciidoctorAttributes task
 

@@ -141,6 +141,7 @@ class BasePlugin implements Plugin<Project> {
 
         asciidoc.project.afterEvaluate {
             asciidoc.attributes 'repo-path' : guide.repoPath
+            asciidoc.attributes authors : guide.getAllAuthors().join(', ')
         }
     }
 

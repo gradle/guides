@@ -24,8 +24,56 @@ import org.gradle.api.Project
 @CompileStatic
 class GuidesExtension {
 
-    String repoPath
-
     GuidesExtension(Project project) {
     }
+
+    /** Path of repository relative to {@code https://github.com}.
+     *
+     */
+    String repoPath
+
+    /** Name of main author
+     *
+     * @since 0.5
+     */
+    String mainAuthor
+
+    /** Get list of supporting authors
+     *
+     * @return List of strings
+     * @since 0.5
+     */
+    List<String> getSupAuthors() {
+        this.supAuthors
+    }
+
+    /** Add supporting authors.
+     *
+     * @param a List of authors
+     * @since 0.5
+     */
+    void supAuthors( Iterable<String> a ) {
+        supAuthors.addAll(a)
+    }
+
+    /** Add supporting authors.
+     *
+     * @param a List of authors
+     * @since 0.5
+     */
+    void supAuthors( String... a ) {
+        supAuthors.addAll(a as List)
+    }
+
+    /** Returns all collaborators
+     *
+     * @return List of authors & collaborators
+     * @since 0.5
+     */
+    List<String> getAllAuthors() {
+        List<String> ret = [ this.mainAuthor ]
+        ret + getSupAuthors()
+    }
+
+    private List<String> supAuthors = []
 }
