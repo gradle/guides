@@ -1,20 +1,19 @@
 plugins {
-    id 'org.gradle.guides.getting-started' version '0.4.1'
-    id 'org.gradle.guides.test-jvm-code' version '0.4.1'
+    id 'org.gradle.guides.getting-started' version '0.5.1'
+    id 'org.gradle.guides.test-jvm-code' version '0.5.1'
 }
 
 import org.apache.tools.ant.filters.*
 
 guide {
-    repoPath = "gradle-guides/creating-multi-project-builds"
+    repoPath 'gradle-guides/creating-multi-project-builds'
+    mainAuthor 'Schalk Cronjé'
 }
 
 asciidoctor {
     inputs.dir 'src/example'
     attributes exampledir : file('src/example')
     attributes 'gradle-outdir' : "${gradleRunner.reportsDir.absolutePath}"
-
-    dependsOn gradleRunner
 }
 
 test {
