@@ -18,6 +18,7 @@ run {
         jvmArgs = ['--module-path', classpath.asPath, '-m', mainClassName]
     }
 }
+
 startScripts {
     doFirst {
         defaultJvmOpts = ['--module-path', classpath.asPath, '-m', mainClassName]

@@ -7,10 +7,12 @@ subprojects {
         targetCompatibility = '1.9'
 
         compileJava {
-            options.compilerArgs = [
-                '--module-path', classpath.asPath,
-                '--source-path', sourceSets.main.java.srcDirs.join(System.getProperty('path.separator')),
-            ]
+            doFirst {
+                options.compilerArgs = [
+                    '--module-path', classpath.asPath,
+                    '--source-path', sourceSets.main.java.srcDirs.join(System.getProperty('path.separator')),
+                ]
+            }
         }
     }
 }
