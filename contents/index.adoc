@@ -160,6 +160,15 @@ $ mkdir -p greeter/src/main/java/greeter
 include::{exampledir}/greeter/src/main/java/greeter/Greeter.java[]
 ----
 
+As the target is a distributable application, you also need to tell Gradle the name of the class which is the entry point to running the application. Edit the `build.gradle` file again and add
+
+.greeter/build.gradle
+[source,groovy]
+----
+include::{exampledir}/greeter/build.gradle[tags=main-class-name]
+----
+<1> Use `mainClassName` to set the entry point class. (This expects a class with a class emthod called `main`).
+
 Run the build which will fail.
 
 [listing]
@@ -179,27 +188,8 @@ include::{exampledir}/greeter/build.gradle[tags=project-dependency]
 ----
 <1> Use the `project(NAME)` syntax to add the artifacts of one subproject to the dependencies of another subproject.
 
-Run the build again.
-
-[listing]
-----
-$ ./gradlew build
-
-...
-include::{gradle-outdir}/build-app-2/err.txt[]
-----
-
-As the target is a distributable application, you need to tell Gradle the name of the class which is the entry point to running the application. The build has failed because this information was missing. Edit the `build.gradle` file again and add
-
-.greeter/build.gradle
-[source,groovy]
-----
-include::{exampledir}/greeter/build.gradle[tags=main-class-name]
-----
-<1> Use `mainClassName` to set the entry point class. (This expects a class with a class emthod called `main`).
-
-
 Run the build again, which now passes.
+
 
 [listing]
 ----
@@ -208,7 +198,7 @@ $ ./gradlew build
 include::{gradle-outdir}/clean-output-greeter-app/out.txt[]
 ----
 
-Notice how ach subproject is prefixed in the output, so that you know which task from which project is executed. Also note that Gradle does not process all tasks from one subproject, before moving onto another. It has processed enough tasks from `greeting-library` to be able to fulfill the project dependency needs of `greeter`.
+Notice how each subproject is prefixed in the output, so that you know which task from which project is executed. Also note that Gradle does not process all tasks from one subproject, before moving onto another. It has processed enough tasks from `greeting-library` to be able to fulfill the project dependency needs of `greeter`.
 
 Add a test to ensure your code in the application itself works. As Spock Framework is a popular approach to testing Java code as well, create the test by adding the link:{user-manual}groovy_plugin.html[Groovy plugin] to the `build.gradle` script.
 
@@ -278,7 +268,7 @@ Create a `build.gradle` file this folder with the following content
 ----
 include::{exampledir}/docs/build.gradle[]
 ----
-<1> Apply the Asciidoctor plugin this subproject
+<1> Apply the Asciidoctor plugin this subproject. This is the technique to use to selectively apply plugins to subprojects, but define all of the plugins in the rootproject.
 <2> Tells the plugin to look for a document called `greeter.adoc` in the default source folder `src/docs/asciidoc`
 <3> Adds `asciidoctor` task into the build lifecycle so that if `build` is executed fror the top, then documentation will be built as well.
 

@@ -68,7 +68,7 @@ gradleRunner {
 
             from 'src/example', {
                 include 'greeter/build.gradle'
-                filter HeadFilter, lines : 4
+                filter HeadFilter, lines : 8
             }
             into getWorkingDir()
         }
@@ -93,23 +93,10 @@ gradleRunner {
         copy {
             from 'src/example', {
                 include 'greeter/build.gradle'
-                filter HeadFilter, lines : 10
+                filter HeadFilter, lines : 14
             }
             into getWorkingDir()
         }
-    }
-
-    failingStep 'build-app-2', 'build'
-
-    step 'add-main-class-name', {
-        copy {
-            from 'src/example', {
-                include 'greeter/build.gradle'
-                filter HeadFilter, lines : 15
-            }
-            into getWorkingDir()
-        }
-
     }
 
     step 'build-app-3', 'build'

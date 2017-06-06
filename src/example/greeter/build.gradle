@@ -3,16 +3,15 @@ apply plugin : 'java' // <1>
 apply plugin : 'application' // <2>
 // end::basic-script[]
 
+// tag::main-class-name[]
+mainClassName = 'greeter.Greeter' // <1>
+// end::main-class-name[]
+
 // tag::project-dependency[]
 dependencies {
     compile project(':greeting-library') // <1>
 }
 // end::project-dependency[]
-
-// tag::main-class-name[]
-mainClassName = 'greeter.Greeter' // <1>
-// end::main-class-name[]
-
 
 // tag::link-docs[]
 distZip {
