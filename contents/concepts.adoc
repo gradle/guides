@@ -42,6 +42,7 @@ Gradle uses normalized inputs when doing up-to-date checks and when determining 
 When comparing two file collections Gradle needs to look at two aspects from each file: the file path and the file contents.
 The consumer of the file collection needs to declare what about a file is essential with respect to these two aspects.
 
+[[relocatability]]
 ==== Path sensitivity and relocatability
 
 Tasks having file collections as inputs can declare the parts of a file path what are essential to them - this is called the _path sensitivity_ of the input.
@@ -57,6 +58,7 @@ This is highly impractical. A task or its inputs are called relocateable if all 
 
 Cacheable tasks always should be relocatable and we made sure that this is true for all tasks which ship with Gradle.
 
+[[compile_avoidance]]
 ==== Compile avoidance
 
 Java compilation is only affected by changes to the ABI of the compile classpath.
@@ -65,6 +67,7 @@ Task outputs can be re-used as long the the ABI of the classes on the compile cl
 This enables Gradle to avoid Java compilation by using incremental builds or the build cache.
 For more information on compile avoidance see the corresponding section in the {user-manual}java_plugin.html#sec:java_compile_avoidance[userguide].
 
+[[runtime_classpath]]
 ==== Runtime classpath normalization
 
 Similar to compile avoidance, Gradle does understand the concept of a runtime classpath and uses a tailored input normalization to avoid running e.g. tests.
@@ -72,6 +75,7 @@ For example, for a runtime classpath Gradle inspects the contents of jar files a
 This means that a rebuilt jar file would be considered the same runtime classpath input.
 For details on what level of understanding Gradle has for detecting changes to classpaths see the {user-manual}more_about_tasks.html#sec:task_input_using_classpath_annotations[userguide].
 
+[[filter_runtime_classpath]]
 ===== Filtering
 
 For a runtime classpath it is even possible to provide better insights to Gradle which files are essential to the input by {user-manual}more_about_tasks.html#sec:configure_input_normalization[configuring input normalization].

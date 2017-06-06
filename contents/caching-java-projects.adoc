@@ -1,0 +1,101 @@
+== Caching Java projects
+
+The Gradle team's focus was on delivering support for using task output caching with Java projects.
+This means that most of the tasks related to building and testing projects targetting the JVM are cacheable and should work out of the box.
+You will need at least Gradle 4.0 for using task output caching for this use case.
+
+=== Java compilation
+
+Gradle has a deep understanding of classpaths used for Java compilation.
+Therefore, it can <<compile_avoidance,avoid compilation>> in many cases when the ABI of the compile task's dependencies does not change.
+The same is true when using task output caching: Only the ABI will be part of the build cache key.
+Changes to it will not change the build cache key and therefore more outputs can be re-used.
+
+You do not have to do anything to make this work.
+There is one caveat though: If you use annotation processors, then Gradle also uses the annotation processor classpath as an input.
+But this is a runtime classpath, so less <<runtime_classpath,input normalization>> is taking place there.
+When not explicitly set, it defaults to the compile classpath and much less compilation can be avoided.
+Avoid using annotation processors if you can.
+If you have to use annotation processing then you should explicitly set the annotation processor classpath as described in the {user-manual}java_plugin.html#sec:java_compile_avoidance[userguide].
+
+=== Unit test execution
+
+The `Test` task used for test execution for JVM languages uses <<runtime_classpath,runtime classpath normalization>> for its classpath.
+This means that changes to order and timestamps in jars on the test classpath will not cause the task to be out-of-date or change the build cache key.
+For achieving <<stable_task_inputs>> you also can wield the power of <<filter_runtime_classpath,filtering the runtime classpath>>.
+
+=== Integration test execution
+
+Unit tests are easy to cache as they normally have no external dependencies.
+For integration tests the situation can be quite different, as they can depend on a variety of inputs outside of the test and production code.
+This can be for example
+
+  * Operating system type and version
+  * external tools being installed for the tests
+  * environment variables
+  * other services being up and running
+  * a distribution of the software under test
+
+You need to be careful to declare these additional inputs for your integration test in order to avoid incorrect cache hits.
+For example, declaring the operating system in use by Gradle as an input to a `Test` task called `integTest` would work as follows.
+
+[source,groovy]
+----
+integTest {
+    inputs.property("operatingSystem") {
+        System.getProperty("os.name")
+    }
+}
+----
+
+Note that depending on a zip or tar archive as an input file will lead to cache misses since rebuilding will probably change the metadata in the archive as described in <<concepts_repeatable_task_outputs>>.
+In order to solve this problem you should depend on the contents on the archive instead. See also the section on dealing with <<volatile_outputs,non-repeatable outputs>>.
+
+You will probably pass some information from the build environment to your integration test tasks by using system properties.
+When possible, you should pass relative paths and add the input file as an input manually.
+Passing absolute paths will break <<relocatability,relocatability>> of the integration test task.
+For example, instead of doing this:
+
+[source,groovy]
+----
+integTest {
+    systemProperty "distribution.location", file("build/dist").absolutePath
+}
+----
+
+you should do this:
+
+[source,groovy]
+----
+integTest {
+    systemProperty "distribution.location", "build/dist" // <1>
+    inputs.dir("build/dist").withPropertyName("distDir").withPathSensitivity(PathSensitivity.RELATIVE) // <2>
+}
+----
+<1> Adding the relative path as system property.
+<2> Adding all the files under the distribution directory as an input.
+
+It may be necessary to ignore some system properties as inputs as they do not influence the outcome of the integration tests.
+This is possible by overriding the `systemProperties` input via the runtime API.
+
+[source,groovy]
+----
+integTest {
+    def ciProperties = [agentNumber: (System.getenv().get("AGENT_NUMBER") ?: 1] // <1>
+    systemProperties(ciProperties) // <2>
+
+    inputs.property('systemProperties') { // <3>
+        systemProperties - ciProperties // <4>
+    }
+}
+----
+<1> This property does not influence the output of the integration tests.
+<2> Set the system properties for the actual test execution.
+<3> Overwrite the `systemProperties` input property.
+<4> The new value for the `systemProperties` input without the ignored property.
+
+=== Enable caching for `buildSrc`
+
+The `buildSrc` directory will change pretty infrequently but every developer and CI agent will need to re-build and test it.
+Therefore, it is desirable to use task output caching for `buildSrc`, too.
+In order to use the same build cache configuration for `buildSrc` you should apply the same script to `buildSrc/settings.gradle` and to `settings.gradle` as shown in the {user-manual}build_cache.html#buildCacheBuildSrc[userguide].
