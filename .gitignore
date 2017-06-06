@@ -5,3 +5,5 @@ build
 # IntelliJ
 .idea
 *.iml
+.project
+*.sw?
