@@ -127,11 +127,13 @@ Instead of using `doFirst` for modifying the inputs consider using a separate ta
 E.g., instead of doing
 
 [source,groovy]
+----
 jar {
     doFirst {
         jar.manifest.mainAttributes('Class-Path': "${project(':core').jar.archivePath.name} ${project(':baseServices').jar.archivePath.name}")
     }
 }
+----
 
 do
 
