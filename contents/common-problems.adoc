@@ -207,7 +207,7 @@ As described <<concepts_input_normalization_vs_repeatable_task_outputs,earlier>>
 We already talked about the possibilities with input normalization and the possibility to configure input normalization.
 
 Gradle includes some support for creating repeatable output for archive tasks.
-For tar and zip files Gradle can be configured to create {user-manual}working_with_files#sec:reproducible_archives[reproducible archives].
+For tar and zip files Gradle can be configured to create {user-manual}working_with_files.html#sec:reproducible_archives[reproducible archives].
 This is done by configuring e.g. the `Zip` task via the following snippet.
 
 [source,groovy]
