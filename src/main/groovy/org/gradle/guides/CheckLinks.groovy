@@ -43,16 +43,20 @@ class CheckLinks extends DefaultTask {
         getAnchors(indexDocument.toURI()).each { anchor ->
 
             if(anchor.absolute) {
-                def client = HttpBuilder.configure {
-                    request.uri = anchor.toString()
-                    request.headers = ['User-Agent': 'gradle-guides-plugin/0.0.0.1']
-                }
-                try {
-                    client.head()
-                    logger.info "PASSED: ${anchor}"
-                } catch( java.lang.RuntimeException e ) {
-                    failures.add(anchor)
-                    logger.info "FAILED: ${anchor}"
+                if(anchor.scheme.startsWith('http')) {
+                    def client = HttpBuilder.configure {
+                        request.uri = anchor.toString()
+                        request.headers = ['User-Agent': 'gradle-guides-plugin/0.0.0.1']
+                    }
+                    try {
+                        client.head()
+                        logger.info "PASSED: ${anchor}"
+                    } catch( java.lang.RuntimeException e ) {
+                        failures.add(anchor)
+                        logger.info "FAILED: ${anchor}"
+                    }
+                } else {
+                    logger.debug "SKIPPED (Not http/s): ${anchor}"
                 }
             } else {
                 logger.debug "SKIPPED (relative): ${anchor}"
@@ -72,7 +76,7 @@ class CheckLinks extends DefaultTask {
         )
 
         def anchors = page.'**'.findAll {
-            it.name() ==  'A' && it.@href != null && !it.@href.toString().startsWith(('mailto:'))
+            it.name() ==  'A' && it.@href != null
         }.collect { "${it.@href}".toURI() }
 
     }

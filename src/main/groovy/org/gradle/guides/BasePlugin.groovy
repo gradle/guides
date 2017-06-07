@@ -65,7 +65,6 @@ class BasePlugin implements Plugin<Project> {
         AsciidoctorTask asciidoc = (AsciidoctorTask) (project.tasks.getByName('asciidoctor'))
         project.tasks.getByName('build').dependsOn asciidoc
 
-
         Task asciidocAttributes = project.tasks.create('asciidoctorAttributes')
         asciidocAttributes.description = 'Display all Asciidoc attributes that are passed from Gradle'
         asciidocAttributes.group = 'Documentation'
