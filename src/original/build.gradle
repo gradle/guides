@@ -1,0 +1,7 @@
+subprojects {
+    afterEvaluate { Project project ->
+        repositories {
+            jcenter()
+        }
+    }
+}
