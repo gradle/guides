@@ -300,7 +300,7 @@ When publishing multiple plugins as part of a single JAR artifact (as described 
 
 === Capturing user input to configure plugin runtime behavior
 
-Plugins often times come with default conventions that make sensible assumptions about the consuming project. The Java plugin for example searches for Java source files in the directory `src/main/java`. Default conventions are helpful to streamline project layouts but fall short when dealing with custom project structures, legacy project requirements or a different user preference.
+Plugins often times come with default conventions that make sensible assumptions about the consuming project. The Java plugin, for example, searches for Java source files in the directory `src/main/java`. Default conventions are helpful to streamline project layouts but fall short when dealing with custom project structures, legacy project requirements or a different user preference.
 
 Plugins should expose a way to reconfigure the default runtime behavior. The section <<writing-and-using-custom-task-types,Prefer writing and using custom task types>> describes one way to achieve configurability: by declaring setter methods for task properties. The more sophisticated solution to the problem is to expose an extension. An extension captures user input through a custom DSL that fully blends into the DSL exposed by Gradle core.
 
