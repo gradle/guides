@@ -72,7 +72,7 @@ class CheckLinks extends DefaultTask {
         )
 
         def anchors = page.'**'.findAll {
-            it.name() ==  'A' && it.@href != null
+            it.name() ==  'A' && it.@href != null && !it.@href.toString().startsWith(('mailto:'))
         }.collect { "${it.@href}".toURI() }
 
     }
