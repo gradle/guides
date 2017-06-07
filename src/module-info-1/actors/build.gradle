@@ -1,0 +1,42 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    implementation 'com.google.guava:guava:22.0'
+
+    testImplementation 'junit:junit:4.12'
+}
+
+compileJava {
+    doFirst {
+        classpath = classpath.minus(classpath)
+        options.compilerArgs = [
+            '--module-path', configurations.compileClasspath.asPath,
+            '--source-path', sourceSets.main.java.srcDirs.join(System.getProperty('path.separator')),
+        ]
+        println "Classpath: " + classpath.asPath
+        println options.compilerArgs
+    }
+}
+
+compileTestJava {
+    doFirst {
+        classpath = classpath.minus(classpath)
+        options.compilerArgs = [
+            '--patch-module', 'org.gradle.actors=src/java/test',
+            '--module-path', configurations.testCompileClasspath.asPath,
+            // '--source-path', sourceSets.test.java.srcDirs.join(System.getProperty('path.separator')),
+        ]
+        println options.compilerArgs
+    }
+}
+
+test {
+    doFirst {
+        jvmArgs = [
+            '--module-path', classpath.asPath,
+        ]
+        println classpath.asPath
+    }
+}
