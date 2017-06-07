@@ -1,26 +1,31 @@
 == Caching Java projects
 
-The Gradle team's focus was on delivering support for using task output caching with Java projects.
-This means that most of the tasks related to building and testing projects targetting the JVM are cacheable and should work out of the box.
-You will need at least Gradle 4.0 for using task output caching for this use case.
+As of Gradle 4.0, the build tool fully supports caching plain Java projects.
+Built in tasks for compiling, testing and documenting Java code are cached by default.
 
 === Java compilation
 
-Gradle has a deep understanding of classpaths used for Java compilation.
-Therefore, it can <<compile_avoidance,avoid compilation>> in many cases when the ABI of the compile task's dependencies does not change.
-The same is true when using task output caching: Only the ABI will be part of the build cache key.
-Changes to it will not change the build cache key and therefore more outputs can be re-used.
+Caching Java compilation makes use of Gradle's deep understanding of compile classpaths.
+The mechanism <<compile_avoidance,avoids recompilation>> when dependency change in a way that doesn't affect their abstract binary interfaces (ABI). Since the cache key is only influence by the ABI of dependencies (and not by their implementation details like private types and method bodies), task output caching can also reuse compiled classes if they were produced by the same sources and ABI-equivalent dependencies.
+
+For example, take a project with two modules: an application depending on a library.
+Suppose the latest version is already built by CI and uploaded to the shared cache.
+If a developer now modifies a method's body in the library, the library will need to be rebuilt on their computer. But they will be able to pull the compiled classes for the application from the shared cache. Gradle can do this because the library used to compile the application on CI, and the modified library available locally share the same ABI.
+
+==== Annotation processors
 
 You do not have to do anything to make this work.
-There is one caveat though: If you use annotation processors, then Gradle also uses the annotation processor classpath as an input.
-But this is a runtime classpath, so less <<runtime_classpath,input normalization>> is taking place there.
-When not explicitly set, it defaults to the compile classpath and much less compilation can be avoided.
-Avoid using annotation processors if you can.
-If you have to use annotation processing then you should explicitly set the annotation processor classpath as described in the {user-manual}java_plugin.html#sec:java_compile_avoidance[userguide].
+There is one caveat though: when using annotation processors, Gradle uses the annotation processor classpath as an input.
+As this is a runtime classpath, less <<runtime_classpath,input normalization>> is taking place there.
+When the annotation processor classpath is not set explicitly, it defaults to the compile classpath, which in turn means the compile classpath is treated as a runtime classpath input.
+
+For the example above this would mean the ABI extracted from the compile classpath would be unchanged, but the annotation processor classpath (because it's not treated with compile avoidance) would be different. Ultimately, the developer would end up having to recompile the application.
+
+The easiest way to avoid this performance penalty is to not use annotation processors. If you need to use them, make sure you set the annotation processor classpath explicitly to include only the libraries needed for annotation processing. The {user-manual}java_plugin.html#sec:java_compile_avoidance[user guide] describes how to do this.
 
 === Unit test execution
 
-The `Test` task used for test execution for JVM languages uses <<runtime_classpath,runtime classpath normalization>> for its classpath.
+The `Test` task used for test execution for JVM languages employs <<runtime_classpath,runtime classpath normalization>> for its classpath.
 This means that changes to order and timestamps in jars on the test classpath will not cause the task to be out-of-date or change the build cache key.
 For achieving <<stable_task_inputs>> you also can wield the power of <<filter_runtime_classpath,filtering the runtime classpath>>.
 
@@ -28,16 +33,16 @@ For achieving <<stable_task_inputs>> you also can wield the power of <<filter_ru
 
 Unit tests are easy to cache as they normally have no external dependencies.
 For integration tests the situation can be quite different, as they can depend on a variety of inputs outside of the test and production code.
-This can be for example
+These external factors can be for example:
 
-  * Operating system type and version
-  * external tools being installed for the tests
-  * environment variables
-  * other services being up and running
-  * a distribution of the software under test
+  * operating system type and version,
+  * external tools being installed for the tests,
+  * environment variables and Java system properties,
+  * other services being up and running,
+  * a distribution of the software under test.
 
 You need to be careful to declare these additional inputs for your integration test in order to avoid incorrect cache hits.
-For example, declaring the operating system in use by Gradle as an input to a `Test` task called `integTest` would work as follows.
+For example, declaring the operating system in use by Gradle as an input to a `Test` task called `integTest` would work as follows:
 
 [source,groovy]
 ----
@@ -48,13 +53,18 @@ integTest {
 }
 ----
 
+==== Archives as inputs
+
 Note that depending on a zip or tar archive as an input file will lead to cache misses since rebuilding will probably change the metadata in the archive as described in <<concepts_repeatable_task_outputs>>.
-In order to solve this problem you should depend on the contents on the archive instead. See also the section on dealing with <<volatile_outputs,non-repeatable outputs>>.
+To avoid this problem altogether you can instead depend on the contents on the archive. See also the section on dealing with <<volatile_outputs,non-repeatable outputs>>.
+
+==== Dealing with file paths
 
 You will probably pass some information from the build environment to your integration test tasks by using system properties.
-When possible, you should pass relative paths and add the input file as an input manually.
+When passing file locations, use only paths whenever possible, and add the input file as an input manually, so that Gradle can track changes to the contents of the file.
+(This works with directories as well.)
 Passing absolute paths will break <<relocatability,relocatability>> of the integration test task.
-For example, instead of doing this:
+For example, with a task called `integTest`, instead of this:
 
 [source,groovy]
 ----
@@ -63,7 +73,7 @@ integTest {
 }
 ----
 
-you should do this:
+...it is better to do this:
 
 [source,groovy]
 ----
@@ -75,8 +85,10 @@ integTest {
 <1> Adding the relative path as system property.
 <2> Adding all the files under the distribution directory as an input.
 
+==== Ignoring system properties
+
 It may be necessary to ignore some system properties as inputs as they do not influence the outcome of the integration tests.
-This is possible by overriding the `systemProperties` input via the runtime API.
+This is possible by overriding the `systemProperties` input property via the runtime API.
 
 [source,groovy]
 ----
@@ -94,8 +106,10 @@ integTest {
 <3> Overwrite the `systemProperties` input property.
 <4> The new value for the `systemProperties` input without the ignored property.
 
-=== Enable caching for `buildSrc`
+=== Caching `buildSrc`
 
-The `buildSrc` directory will change pretty infrequently but every developer and CI agent will need to re-build and test it.
-Therefore, it is desirable to use task output caching for `buildSrc`, too.
-In order to use the same build cache configuration for `buildSrc` you should apply the same script to `buildSrc/settings.gradle` and to `settings.gradle` as shown in the {user-manual}build_cache.html#buildCacheBuildSrc[userguide].
+// TODO: link to what `buildSrc` is
+
+While `buildSrc` typically does not change frequently, when it does every developer and CI agent needs to re-build and test it.
+Therefore, it is usually desirable to use task output caching for `buildSrc`, too.
+To use the same build cache configuration for `buildSrc` as for your root project, you can apply the same script both in `buildSrc/settings.gradle` and in `settings.gradle` as shown in the {user-manual}build_cache.html#buildCacheBuildSrc[user guide].

@@ -22,7 +22,7 @@ The build cache can do more than going back-and-forth in time: it can also bridg
 Using the build cache on CI first makes sense as the environment on CI agents is usually easier to control than developer machines.
 It helps to point out possible issues with the build that hurt cacheability.
 
-> *TODO:* Discus audit requirements.
+// TODO: Discus audit requirements.
 
 === Accelerate developer builds by reusing CI results
 
@@ -30,7 +30,7 @@ When multiple developers work on the same project, they don't just need to build
 
 The changes don't need to be completely independent, either; we'll take a look at the strategies to reuse results when dependencies are involved in the section about the <<normalization,different forms of normalization>>.
 
-> *TODO:* Mention using a Git branch for latest published commit can help reduce problems with developers pulling too fresh changes.
+// TODO: Mention using a Git branch for latest published commit can help reduce problems with developers pulling too fresh changes.
 
 === Combine CI results with local caching on developer machines
 

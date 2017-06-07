@@ -90,9 +90,7 @@ When this happens the reason why caching was disabled for the task is reported o
 
 image::caching-disabled.png[]
 
-> *TODO:*
->
->  - Add current GE screenshot showing some differences
+// TODO: Add current GE screenshot showing some differences
 
 [[diagnosing_cache_miss]]
 === Diagnosing the reasons for a cache miss
@@ -158,6 +156,4 @@ Since properties files stored by Java's `Properties.store` method contain a time
 Note that the compile classpath is not affected since compile avoidance ignores non-class files on the compile classpath.
 In order to solve this problem see <<volatile_outputs>>.
 
-> *TODO:*
->
->  - Add GE screenshots
+// TODO: - Add GE screenshots

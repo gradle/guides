@@ -7,14 +7,14 @@ As we said before, how much of your build gets loaded from cache depends on many
 
 Imagine that you've just pulled the main branch of your software afresh from version control. CI has already built this particular commit, so the remote cache should be hot: if you ran a build now, every cacheable task should be loaded from cache.
 
-For this to work, your cacheable tasks in your local build need to have exactly the same inputs as on CI.
-This is only possible if your inputs are stable, i.e. they only depend on the state of the workspace and the tools required by it, e.g. the Java version.
+For this to work, the cacheable tasks in your local build need to have exactly the same inputs as they had on CI.
+This is only possible if your inputs are stable, i.e. they only depend on the state of the workspace and the tools required by the build, e.g. the Java version.
 
 It could well be that the inputs to your tasks are dependent on something you cannot control, for example the current time.
-This can happen quite easily. For example you decided to add a timestamp to your jar manifests or to a property file on the classpath.
+For example you decided to add a timestamp to your jar manifests or to a property file on the classpath.
 We call these inputs volatile.
 Cacheable tasks need to have stable inputs.
-If the inputs to a cacheable tasks are not stable then it will never be pulled from the cache and only take up space in the cache backend.
+If the inputs to a cacheable task are not stable, then it will never be pulled from the cache, and only take up space in the cache backend.
 
 [[concepts_repeatable_task_outputs]]
 === Repeatable task outputs
