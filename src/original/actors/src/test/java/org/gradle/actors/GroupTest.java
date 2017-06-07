@@ -1,12 +1,8 @@
 package org.gradle.actors;
 
-import com.google.common.collect.Lists;
 import org.junit.Test;
 
-import java.util.Collection;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class GroupTest {
@@ -26,8 +22,7 @@ public class GroupTest {
 
     @Test
     public void noActorsByDefault() {
-        assertEquals(0, EMPTY.size());
-        assertFalse(EMPTY.iterator().hasNext());
+        assertTrue(EMPTY.isEmpty());
     }
 
     @Test
@@ -35,11 +30,10 @@ public class GroupTest {
         Group beatles = Imagination.createGroup(BAND_NAME, JOHN, PAUL, GEORGE, RINGO);
         
         assertEquals(4, beatles.size());
-        Collection<Actor> collection = Lists.newArrayList(beatles);
-        assertTrue(collection.contains(JOHN));
-        assertTrue(collection.contains(PAUL));
-        assertTrue(collection.contains(GEORGE));
-        assertTrue(collection.contains(RINGO));
+        assertTrue(beatles.contains(JOHN));
+        assertTrue(beatles.contains(PAUL));
+        assertTrue(beatles.contains(GEORGE));
+        assertTrue(beatles.contains(RINGO));
     }
 
     @Test
