@@ -53,7 +53,7 @@ class BasePlugin implements Plugin<Project> {
 
         AsciidoctorTask asciidoc = (AsciidoctorTask)(project.tasks.getByName('asciidoctor'))
         task.indexDocument = {  project.file("${asciidoc.outputDir}/html5/index.html") }
-
+        task.dependsOn asciidoc
     }
 
     private void addAsciidoctor(Project project) {
