@@ -23,9 +23,9 @@ import org.gradle.api.Project
 class TopicalPlugin implements Plugin<Project> {
 
     void apply(Project project) {
-        project.apply plugin : BasePlugin
+        project.apply plugin : org.gradle.guides.BasePlugin
 
-        AsciidoctorTask asciidoc = (AsciidoctorTask)(project.tasks.getByPath(':asciidoctor'))
+        AsciidoctorTask asciidoc = (AsciidoctorTask)(project.tasks.getByName('asciidoctor'))
 
         asciidoc.attributes toclevels : 2
     }

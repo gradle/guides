@@ -3,10 +3,11 @@ plugins {
     id 'com.github.hierynomus.license' version '0.13.1'
     id 'com.gradle.plugin-publish' version '0.9.7'
     id 'org.ysb33r.cloudci' version '1.0'
+    id 'org.ysb33r.gradletest' version '1.0-beta11'
 }
 
 group = 'org.gradle.guides'
-version = '0.5.1'
+version = '0.5.2'
 
 repositories {
     jcenter()
@@ -49,6 +50,7 @@ license {
     excludes([
             '**/*.adoc', '**/*.md',
             '**/*.properties',
+            '**/*CompatibilitySpec.groovy'
     ])
 }
 
@@ -85,6 +87,10 @@ pluginBundle {
             description = 'Plugin required for testing of JVM code snippets used in guides'
         }
     }
+}
+
+gradleTest {
+  versions '3.5', '4.0-rc-1'
 }
 
 publishPlugins {
