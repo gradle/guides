@@ -24,7 +24,10 @@ This translates into faster feedback to developers, and less money spent on the 
 Using the build cache on CI first makes sense as the environment on CI agents is usually easier to control than developer machines.
 It helps to point out possible issues with the build that hurt cacheability.
 
-// TODO: Discus audit requirements.
+If you are subject to audit requirements regarding the artifacts you ship to your customers you may need to disable the build cache for certain builds.
+Note that when using Gradle Enterprise you can easily find out which build produced an artifact coming from the build cache by clicking on the `FROM-CACHE` status.
+
+image::from-cache-origin.png[]
 
 === Accelerate developer builds by reusing CI results
 
@@ -32,7 +35,8 @@ When multiple developers work on the same project, they don't just need to build
 
 The changes don't need to be completely independent, either; we'll take a look at the strategies to re-use results when dependencies are involved in the section about the <<normalization,different forms of normalization>>.
 
-// TODO: Mention using a Git branch for latest published commit can help reduce problems with developers pulling too fresh changes.
+It may be helpful to have your CI builds push to a branch after the build warming up the build cache completed.
+In this way every developer can pull from this branch and benefit from using the shared build cache.
 
 === Combine CI results with local caching on developer machines
 

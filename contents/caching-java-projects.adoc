@@ -109,8 +109,7 @@ integTest {
 
 === Caching `buildSrc`
 
-// TODO: link to what `buildSrc` is
-
+The {user-manual}organizing_build_logic.html#sec:build_sources[`buildSrc` project] can be used to organize build logic in your Gradle build.
 While `buildSrc` typically does not change frequently, when it does every developer and CI agent needs to re-build and test it.
 Therefore, it is usually desirable to use task output caching for `buildSrc`, too.
 To use the same build cache configuration for `buildSrc` as for your root project, you can apply the same script both in `buildSrc/settings.gradle` and in `settings.gradle` as shown in the {user-manual}build_cache.html#buildCacheBuildSrc[user guide].
