@@ -3,6 +3,8 @@ plugins {
     id 'application'
 }
 
+import java.util.regex.Matcher;
+
 dependencies {
     implementation project(':tale')
 
@@ -15,12 +17,29 @@ mainClassName = 'org.gradle.fairy.app/org.gradle.fairy.app.StoryTeller'
 
 run {
     doFirst {
-        jvmArgs = ['--module-path', classpath.asPath, '--module', mainClassName]
+        copy {
+            from sourceSets.main.java.outputDir
+            into file('build/mods/org.gradle.fairy.app')
+        }
+        classpath = files()
+        jvmArgs = [
+            '--module-path', files('build/mods', configurations.runtimeClasspath).asPath,
+            '--module', mainClassName
+        ]
     }
 }
 
 startScripts {
     doFirst {
-        defaultJvmOpts = ['--module-path', classpath.asPath, '--module', mainClassName]
+        classpath = files()
+        defaultJvmOpts = [
+            '--module-path', 'DOLLARSIGNAPP_HOME/lib',
+            '--module', mainClassName
+        ]
+    }
+    doLast{
+        def bashFile = new File(getOutputDir(),applicationName)
+        String bashContent = bashFile.text
+        bashFile.text = bashContent.replaceFirst('DOLLARSIGN', Matcher.quoteReplacement('$'))
     }
 }
