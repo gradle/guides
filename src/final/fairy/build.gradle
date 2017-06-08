@@ -38,8 +38,12 @@ startScripts {
         ]
     }
     doLast{
-        def bashFile = new File(getOutputDir(),applicationName)
+        def bashFile = new File(outputDir, applicationName)
         String bashContent = bashFile.text
         bashFile.text = bashContent.replaceFirst('DOLLARSIGN', Matcher.quoteReplacement('$'))
+
+        def batFile = new File(outputDir, applicationName + ".bat")
+        String batContent = batFile.text
+        batFile.text = batContent.replaceFirst('DOLLARSIGNAPP_HOME', Matcher.quoteReplacement('%APP_HOME%'))
     }
 }
