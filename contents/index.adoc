@@ -1,7 +1,5 @@
 = Creating Multi-project Builds
 
-// fragment; used period instead of comma
-// "whilst", "modularisation" are British English
 Multi-project builds helps with modularization. It allows a person to concentrate on one area of work in a larger project, while Gradle takes care of dependencies from other parts of the project.
 
 == What you'll build
@@ -216,12 +214,13 @@ Add a test to ensure your code in the application itself works. As Spock Framewo
 .greeter/build.gradle
 [source,groovy]
 ----
-apply plugin : 'groovy' // instead of "apply plugin: 'java'"
+apply plugin : 'groovy' // <1> 
 
 // then, add the following testCompile dependency to the dependencies block:
 
 include::{exampledir}/spock.gradle[]
 ----
+<1> Having `groovy` plugin automatically applies the `java` plugin, so you could actually deleted the `pply plugin : 'java'` line. However for semantics it might be better to keep both as it indicates that you are primarily building a Java project.
 
 Then add a test called `GreeterSpec` in the `greeter` package to the sub-project in the `src/test/groovy/greeter` directory (you'll have to create that directory if it does not already exist).
 
