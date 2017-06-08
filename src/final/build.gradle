@@ -8,9 +8,10 @@ subprojects {
 
         compileJava {
             doFirst {
+                classpath = files()
                 options.compilerArgs = [
-                    '--module-path', classpath.asPath,
-                    '--source-path', sourceSets.main.java.srcDirs.join(System.getProperty('path.separator')),
+                    '--module-path', configurations.compileClasspath.asPath,
+                    '--source-path', files(sourceSets.main.java.srcDirs).asPath,
                 ]
             }
         }
