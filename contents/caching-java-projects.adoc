@@ -6,7 +6,8 @@ Built in tasks for compiling, testing and documenting Java code are cached by de
 === Java compilation
 
 Caching Java compilation makes use of Gradle's deep understanding of compile classpaths.
-The mechanism <<compile_avoidance,avoids recompilation>> when dependency change in a way that doesn't affect their abstract binary interfaces (ABI). Since the cache key is only influence by the ABI of dependencies (and not by their implementation details like private types and method bodies), task output caching can also re-use compiled classes if they were produced by the same sources and ABI-equivalent dependencies.
+The mechanism <<compile_avoidance,avoids recompilation>> when dependencies change in a way that doesn't affect their abstract binary interfaces (ABI).
+Since the cache key is only influenced by the ABI of dependencies (and not by their implementation details like private types and method bodies), task output caching can also re-use compiled classes if they were produced by the same sources and ABI-equivalent dependencies.
 
 For example, take a project with two modules: an application depending on a library.
 Suppose the latest version is already built by CI and uploaded to the shared cache.
@@ -61,7 +62,7 @@ To avoid this problem altogether you can instead depend on the contents on the a
 ==== Dealing with file paths
 
 You will probably pass some information from the build environment to your integration test tasks by using system properties.
-When passing file locations, use only paths whenever possible, and add the input file as an input manually, so that Gradle can track changes to the contents of the file.
+When passing file locations, use only relative paths whenever possible, and add the input file as an input manually, so that Gradle can track changes to the contents of the file.
 (This works with directories as well.)
 Passing absolute paths will break <<relocatability,relocatability>> of the integration test task.
 For example, with a task called `integTest`, instead of this:
