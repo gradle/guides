@@ -2,7 +2,7 @@
 
 Many web applications are built today with distinctly different server-side and client-side technologies. In order to run these applications, both server-side and client-side sources must be built and packaged. Webpack has emerged as the tool of choice among JavaScript developers for bundling client-side assets.
 
-Tradeoffs are inherent in any engineering decision, but using disjointed tools can slow down very capable development teams. Gradle provides mechanisms to integrate with everything, even Webpack and other JavaScript development tools. More information about managing Webpack with Gradle (including hot reloading) is covered in an in-depth topical guide (coming soon).
+Tradeoffs are inherent in any engineering decision, but using disjointed tools can slow down very capable development teams. Gradle provides mechanisms to integrate with almost any other toolchain, including Webpack and other JavaScript development tools. More information about managing Webpack with Gradle (including hot reloading) is covered in an in-depth topical guide (coming soon).
 
 This guide will start you down a path that leverages the benefits of both Gradle and https://webpack.js.org/[Webpack] with minimal overhead.
 
@@ -40,7 +40,7 @@ import _ from 'lodash';
 function component () {
   var element = document.createElement('div');
 
-  /* lodash is required for the next line to work */
+  /* lodash is used here for bundling demonstration purposes */
   element.innerHTML = _.join(['Build', 'together;', 'not', 'alone'], ' ');
 
   return element;
@@ -183,8 +183,8 @@ task webpack(type: Exec) {
     commandLine "$projectDir/node_modules/.bin/webpack", "app/index.js", "$buildDir/js/bundle.js"
 }
 ----
-<1> Declare that inputs should be snapshotted with relative file references.
-<2> Always cache this task's outputs. This requires that the build cache is enabled.
+<1> Declare package-lock.json and app to be relocatable. https://guides.gradle.org/build-cache-practices/#relocatability[Learn why this is important for caching].
+<2> Tell Gradle to always cache this task's outputs if the build cache is enabled.
 
 It is strongly advised to use a https://docs.gradle.org/current/userguide/custom_tasks.html[custom task class] when writing cacheable tasks. An example of one for Webpack is provided in the Managing JavaScript topical guide (coming soon). Furthermore, you may want to declare property names for better diagnostics.
 
@@ -274,12 +274,17 @@ BUILD SUCCESSFUL in 1s
 ----
 <1> `webpack` was not executed. `build/js/bundle.js` was loaded from the build cache instead.
 
-Even though you just made changes, re-bundling is not necessary. This same mechanism works well when switching git branches and other common development workflows. It works even better when you can https://gradle.com/build-cache[reuse outputs from remote builds].
+Even though you just made changes, re-bundling is not necessary. This same mechanism works well when switching git branches and other common development workflows.
 
 == Next Steps
 Congratulations! You now have a Gradle task that executes Webpack, but only when web assets change. The benefits of using Gradle increase as your project grows.
 
-Chances are, your needs are more complex. If so, the topical guide Managing JavaScript with Gradle (coming soon) is for you. Happy bundling!
+Chances are, your needs are more complex. There are 2 next steps from here:
+
+* If you're worried about the complexity of introducing a remote cache to your build process, Gradle Enterprise https://gradle.com/build-cache[has you covered]!
+* The https://github.com/gradle/guides/issues/119[Managing JavaScript with Gradle topical guide] (coming soon) covers development workflows, integration with other JS tools, and provides example Gradle tasks.
+
+Happy bundling!
 
 === Help improve this guide
 Have feedback or a question? Found a typo? Like all Gradle guides, help is just a GitHub issue away. Please add an issue or pull request to https://github.com/gradle-guides/running-webpack-with-gradle[gradle-guides/running-webpack-with-gradle] and we’ll get back to you.
