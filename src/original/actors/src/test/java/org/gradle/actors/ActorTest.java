@@ -17,4 +17,10 @@ public class ActorTest {
     public void accurateToString() {
         assertEquals(NAME, SEAN.toString());
     }
+
+    @Test
+    public void canReachDefaultActor() {
+        Actor actor = new org.gradle.actors.impl.DefaultActor("Elliot Ness");
+        assertEquals("Elliot Ness", actor.toString());
+    }
 }

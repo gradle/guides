@@ -4,8 +4,6 @@ subprojects {
             jcenter()
         }
 
-        targetCompatibility = '1.9'
-
         compileJava {
             doFirst {
                 classpath = files()
