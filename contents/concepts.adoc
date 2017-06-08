@@ -31,7 +31,7 @@ However, if your code generator adds a timestamp, the otherwise meaningless chan
 You can avoid the cascade of change requiring everything to be rebuilt when your task is repeatable.
 
 [[normalization]]
-=== Better reuse via input normalization
+=== Better re-use via input normalization
 
 We saw that having stable inputs is crucial for cacheable tasks.
 Achieving byte by byte identical inputs for each task can be challenging.
@@ -128,7 +128,7 @@ Gradle Enterprise will show tasks where caching was disabled for overlapping out
 
 image::overlapping-outputs-timeline.png[]
 
-=== Reuse of task outputs with the same inputs, but different task paths
+=== Re-use of task outputs with the same inputs, but different task paths
 
 Imagine you have two `JavaCompile` tasks in your build, both operating on the same source files, each of them having a different output directory.
 Would you expect that whichever runs second would re-use the outputs of the first task via the build cache?

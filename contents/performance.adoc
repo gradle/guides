@@ -11,7 +11,7 @@ The most straightforward way to get a feel for what the cache can do for you is 
 3. Run the build again (e.g. `./gradlew --build-cache clean assemble`); depending on your build, this time you should see many of the tasks being cached.
 4. Compare the execution time for the two builds
 
-NOTE: You might have encountered a few cached tasks even in the first of the two builds, where no previously cached results should be available. This can happen if you have tasks in your build that are configured to produce the same results from the same inputs; in such a case once one of these tasks has finished, Gradle will simply reuse its output for the rest of the tasks.
+NOTE: You might have encountered a few cached tasks even in the first of the two builds, where no previously cached results should be available. This can happen if you have tasks in your build that are configured to produce the same results from the same inputs; in such a case once one of these tasks has finished, Gradle will simply re-use its output for the rest of the tasks.
 
 Normally, your _fully cached_ build should be significantly faster than the `clean` build: this is the theoretical limit of how much time using the build cache can save on your particular build when running the tasks that you were running. We'll be covering several common causes for why your build might not produce amazing numbers here for the first try.
 
@@ -29,7 +29,8 @@ The best way to learn about the impact of caching on CI is to set up the same bu
 
 // TODO: Graph of Gradle's cache performance for sanity check between cached and non-cached
 
-Measuring complex pipelines requires some more work, and some external tool to collect and process measurements. It's important to distinguish parts of the pipeline that caching has no effect on, for example the time builds spend waiting in the CI system's queue, or time taken by checking out source code from version control.
+Measuring complex pipelines requires some more work, and some external tool to collect and process measurements.
+It's important to distinguish those parts of the pipeline that caching has no effect on, for example the time builds spend waiting in the CI system's queue, or time taken by checking out source code from version control.
 
 // TODO: Do we know of tools for TeamCity or Jenkins that make the collection of such data easier?
 
@@ -41,7 +42,7 @@ You can also measure the cumulative time it took to build a changeset, which wil
 
 === Measuring developer builds
 
-Gradle's build cache can be very useful in reducing CI infrastructure cost and feedback time, but it usually has the biggest impact when developers can reuse cached results in their local builds. This is also the hardest to quantize for a number of reasons:
+Gradle's build cache can be very useful in reducing CI infrastructure cost and feedback time, but it usually has the biggest impact when developers can re-use cached results in their local builds. This is also the hardest to quantize for a number of reasons:
 
 * developers run different builds
 * developers can have different hardware, or have different settings

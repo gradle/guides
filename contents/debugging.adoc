@@ -3,7 +3,7 @@
 For using task output caching efficiently it is essential to keep the balance between specifying all the inputs to your
 tasks while not over-specifying them. If you don't specify enough of your inputs then your build will be incorrect and you
 will share outputs between tasks that should have had a different output. If you specify unnecessary inputs to your tasks,
- you will have cache misses while you could have reused earlier outputs.
+ you will have cache misses while you could have re-used earlier outputs.
  For Gradle's built-in tasks we prefer to err on the side of correctness and we suggest that you do the same.
 
 This chapter is about finding out why a cache miss was happening. If you have a cache hit which you didn't expect we

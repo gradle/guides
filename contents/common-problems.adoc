@@ -106,9 +106,10 @@ Therefore, you can expect differences in the bytecode of compiled Groovy classes
 If your build is dependent on external dependencies like binary artifacts or dynamic data from a web page you need to make sure that these inputs are consistent throughout your infrastructure.
 When there are some variations between machines then there will be no cache hits.
 
-Never re-release a non-changing binary dependency with the same version number but different contents: if this happens with a plugin dependency, you will never be able to explain why you don’t see cache reuse between machines (it’s because they have different versions of that artifact).
+Never re-release a non-changing binary dependency with the same version number but different contents: if this happens with a plugin dependency, you will never be able to explain why you don’t see cache re-use between machines (it’s because they have different versions of that artifact).
 
-For changing binary dependencies you would need to pay attention whether the same dependency is used throughout your build pipeline.
+Using ``SNAPSHOT``s or other changing dependencies in your build by design violates the <<stable_task_inputs,stable task inputs>> principle.
+To use of the build cache effectively, you should depend on fixed dependencies.
 You may want to look into the https://github.com/nebula-plugins/gradle-dependency-lock-plugin[dependency lock plugin] or switch to using {user-manual}composite_builds.html[composite builds] instead.
 
 The same is true for depending on volatile external resources, for example a list of released versions.
