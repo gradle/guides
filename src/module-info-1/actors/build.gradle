@@ -10,33 +10,35 @@ dependencies {
 
 compileJava {
     doFirst {
-        classpath = classpath.minus(classpath)
+        classpath = files()
         options.compilerArgs = [
             '--module-path', configurations.compileClasspath.asPath,
-            '--source-path', sourceSets.main.java.srcDirs.join(System.getProperty('path.separator')),
+            '--source-path', files(sourceSets.main.java.srcDirs).asPath,
         ]
-        println "Classpath: " + classpath.asPath
-        println options.compilerArgs
     }
 }
 
 compileTestJava {
     doFirst {
-        classpath = classpath.minus(classpath)
+        classpath = files()
         options.compilerArgs = [
-            '--patch-module', 'org.gradle.actors=src/java/test',
+            '--patch-module', 'org.gradle.actors=' + files(sourceSets.test.java.srcDirs, sourceSets.main.java.outputDir).asPath,
             '--module-path', configurations.testCompileClasspath.asPath,
-            // '--source-path', sourceSets.test.java.srcDirs.join(System.getProperty('path.separator')),
         ]
-        println options.compilerArgs
     }
 }
 
 test {
+    exclude 'module-info*'
     doFirst {
+        copy {
+            from files(sourceSets.main.java.outputDir, sourceSets.test.java.outputDir)
+            into 'build/mods/org.gradle.actors'
+        }
+        classpath = files('build/mods/org.gradle.actors')
         jvmArgs = [
-            '--module-path', classpath.asPath,
+            '--module-path', files('build/mods', configurations.testRuntimeClasspath).asPath,
         ]
-        println classpath.asPath
+        println jvmArgs
     }
 }
