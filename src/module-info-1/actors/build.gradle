@@ -11,6 +11,8 @@ dependencies {
 ext.moduleName = 'org.gradle.actors'
 
 compileJava {
+    // --module-path wants a directory, which is a directory of modules
+    destinationDir = file("${sourceSets.main.java.outputDir}/$moduleName")
     doFirst {
         classpath = files()
         options.compilerArgs = [
@@ -18,23 +20,22 @@ compileJava {
             '--source-path', files(sourceSets.main.java.srcDirs).asPath,
         ]
     }
-    doLast {
-        // --module-path wants a directory, which is a directory of modules
-        // Copying the files so as not to change how the jar file is created.
-        copy {
-            from sourceSets.main.java.outputDir
-            into file("build/mods/$moduleName")
-        }
-    }
 }
 
 compileTestJava {
     doFirst {
         classpath = files()
         options.compilerArgs = [
-            '--module-path', files('build/mods', configurations.testCompileClasspath).asPath,
+            '--module-path', files(sourceSets.main.java.outputDir, configurations.testCompileClasspath).asPath,
             '--patch-module', "$moduleName=" + files(sourceSets.test.java.srcDirs).asPath,
         ]
+    }
+}
+
+jar {
+    exclude moduleName
+    with copySpec {
+        from file(compileJava.destinationDir)
     }
 }
 
