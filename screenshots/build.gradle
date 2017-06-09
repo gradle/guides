@@ -68,7 +68,7 @@ test {
 
     ['dev', 'dogfood'].each { name ->
         String prefix = "scans.${name}"
-        systemProperty "${prefix}.url", findProperty("${prefix}.url")
+        systemProperty "${prefix}.host", findProperty("${prefix}.host")
         systemProperty "${prefix}.username", findProperty("${prefix}.username")
         systemProperty "${prefix}.password", findProperty("${prefix}.password")
     }

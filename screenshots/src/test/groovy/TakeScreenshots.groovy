@@ -51,7 +51,7 @@ class TakeScreenshots {
 
     private static getCredentials(String instance) {
         String prefix = "scans.${instance}"
-        [System.getProperty("${prefix}.url"), System.getProperty("${prefix}.username"), System.getProperty("${prefix}.password")]
+        [System.getProperty("${prefix}.host"), System.getProperty("${prefix}.username"), System.getProperty("${prefix}.password")]
     }
 
     static void waitForAnimation(Browser browser, String selector, String transitionName = "transition-height-and-opacity") {
