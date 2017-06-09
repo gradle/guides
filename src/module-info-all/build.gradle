@@ -1,12 +1,10 @@
 subprojects {
-    afterEvaluate { Project project ->
+    afterEvaluate {
         repositories {
             jcenter()
         }
 
         compileJava {
-            // --module-path wants a directory, which is a directory of modules
-            // destinationDir = file("${sourceSets.main.java.outputDir}/$moduleName")
             doFirst {
                 classpath = files()
                 options.compilerArgs = [
