@@ -45,12 +45,14 @@ A task using the non-repeatable outputs of another task as its inputs is a frequ
 
 We saw that having stable inputs is crucial for cacheable tasks.
 However, achieving byte by byte identical inputs for each task can be challenging.
+In some cases sanitizing the output of a task to remove unnecessary information can be a good approach, but this also means that a task's output can only be normalized for a single purpose.
+
 This is where {user-manual}more_about_tasks.html#sec:configure_input_normalization[input normalization] comes into play.
-Input normalization is used by Gradle to determine if two task inputs are essentially the same.
+Input normalization is used by Gradle to determine if two task inputs are _essentially_ the same.
 Gradle uses normalized inputs when doing up-to-date checks and when determining if a cached result can be re-used instead of executing the task.
+As input normalization is declared by the task _consuming_ the data as input, different tasks can define different ways to normalize the same data.
 
 When it comes to file inputs, Gradle can normalize the path of the files as well as their contents.
-It is always the _consumer_ of the files that declares what about the input files is essential with respect to these two aspects.
 
 [[relocatability]]
 ==== Path sensitivity and relocatability
@@ -72,7 +74,6 @@ Therefore, the path sensitivity for the sources of the `JavaCompile` task is `NA
 ===== Compile avoidance for Java
 
 When it comes to the dependencies of a `JavaCompile` task (i.e. its _compile classpath),_ only changes to the Application Binary Interface (ABI) of these dependencies require compilation to be executed.
-re-used, despite having been compiled with different actual bytes on the compile classpath.
 Gradle has a deep understanding of what a compile classpath is and uses a sophisticated normalization strategy for it.
 Task outputs can be re-used as long the the ABI of the classes on the compile classpath stays the same.
 This enables Gradle to avoid Java compilation by using incremental builds, or load results from the cache that were produced by different (but ABI-compatible) versions of dependencies.
