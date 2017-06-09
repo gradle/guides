@@ -15,3 +15,14 @@ guide {
 gradleRunner {
 
 }
+
+asciidoctor {
+    resources {
+        from(file('contents/css')) {
+            into 'css'
+        }
+        from(file('contents/images')) {
+            into 'images'
+        }
+    }
+}

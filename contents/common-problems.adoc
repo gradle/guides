@@ -203,6 +203,7 @@ If you must you can add a `Sync` task which then would sync the merged outputs i
 
 Gradle Enterprise will show tasks where caching was disabled for overlapping outputs in the timeline and in the task input comparison:
 
+[.screenshot]
 image::overlapping-outputs-input-comparison.png[]
 
 === Achieving stable task inputs

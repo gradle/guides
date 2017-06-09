@@ -21,6 +21,7 @@ Normally, your _fully cached_ build should be significantly faster than the `cle
 We'll be covering several common causes for why your build might not produce amazing numbers here for the first try, see <<finding_problems>>.
 Build scans provide a detailed performance breakdown which show you how effectively your build is using the build cache:
 
+[.screenshot]
 image::performance-task-execution.png[]
 
 In everyday situations fully cached builds are rare, as the purpose of running a build is to process some new changes. The structure of the software being built (how many modules are there, how independent are its parts etc.), and the nature of the changes themselves ("big refactor in the core of the system" vs. "small change to a unit test" etc.) strongly influence the caching performance. As developers tend to submit different kinds of changes over time, caching performance is expected to vary with each change. As with any cache, the impact should thus be measured over time.
@@ -66,4 +67,5 @@ You can even compare the times it took to execute the task to pulling it from th
 When using the https://gradle.com/build-cache[Gradle Enterprise build cache backend] you should pay close attention to the hit rate in the admin UI.
 A rise in the hit rate there probably indicates better usage by developers:
 
+[.screenshot]
 image::cache-admin-hit-rate.png[build cache hit rate]

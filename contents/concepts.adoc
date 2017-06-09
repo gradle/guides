@@ -121,6 +121,7 @@ Removing any overlapping outputs is important for good caching performance.
 
 Gradle Enterprise will show tasks where caching was disabled for overlapping outputs in the timeline:
 
+[.screenshot]
 image::overlapping-outputs-timeline.png[]
 
 === Re-use of outputs between different tasks

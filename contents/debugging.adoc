@@ -84,11 +84,13 @@ task you need to resort to comparing those files on disk yourself.
 Luckily, you do not have to capture this data yourself - the build scan plugin already takes care of this for you.
 This means that Gradle Enterprise already has the necessary data to diagnose the cache miss when using the build scan plugin:
 
+[.screenshot]
 image::task-inputs-comparison.png[]
 
 It is also possible that task output caching for a cacheable task was disabled.
 When this happens the reason why caching was disabled for the task is reported on the info log level and in the build scan:
 
+[.screenshot]
 image::caching-disabled.png[]
 
 [[diagnosing_cache_miss]]
@@ -102,6 +104,7 @@ There is a cascade effect causing dependent tasks to be executed if one of the t
 Therefore, you should therefore at the first cacheable task which was executed and continue investigating there.
 This can be done from the timeline view in a build scan or from the task input comparison directly:
 
+[.screenshot]
 image::first-non-cached-task.png[]
 
 At first, you should check if the implementation of the task changed. This would mean checking the class names and classloader hashes
