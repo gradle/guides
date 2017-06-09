@@ -8,6 +8,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
+ext.moduleName = 'org.gradle.actors'
+
 compileJava {
     doFirst {
         classpath = files()
@@ -16,29 +18,33 @@ compileJava {
             '--source-path', files(sourceSets.main.java.srcDirs).asPath,
         ]
     }
+    doLast {
+        // --module-path wants a directory, which is a directory of modules
+        // Copying the files so as not to change how the jar file is created.
+        copy {
+            from sourceSets.main.java.outputDir
+            into file("build/mods/$moduleName")
+        }
+    }
 }
 
 compileTestJava {
     doFirst {
         classpath = files()
         options.compilerArgs = [
-            '--patch-module', 'org.gradle.actors=' + files(sourceSets.test.java.srcDirs, sourceSets.main.java.outputDir).asPath,
-            '--module-path', configurations.testCompileClasspath.asPath,
+            '--module-path', files('build/mods', configurations.testCompileClasspath).asPath,
+            '--patch-module', "$moduleName=" + files(sourceSets.test.java.srcDirs).asPath,
         ]
     }
 }
 
 test {
-    exclude 'module-info*'
     doFirst {
-        copy {
-            from files(sourceSets.main.java.outputDir, sourceSets.test.java.outputDir)
-            into 'build/mods/org.gradle.actors'
-        }
-        classpath = files('build/mods/org.gradle.actors')
+        classpath = files()
         jvmArgs = [
-            '--module-path', files('build/mods', configurations.testRuntimeClasspath).asPath,
+            '--module-path', files('build/mods', configurations.testCompileClasspath).asPath,
+            '--patch-module', "$moduleName=" + files(sourceSets.test.java.outputDir).asPath,
+            '--add-modules', 'ALL-MODULE-PATH'
         ]
-        println jvmArgs
     }
 }
