@@ -1,7 +1,7 @@
 == Caching Java projects
 
 As of Gradle 4.0, the build tool fully supports caching plain Java projects.
-Built in tasks for compiling, testing and documenting Java code are cached by default.
+Built-in tasks for compiling, testing, documenting and checking the quality of Java code are cached by default.
 
 === Java compilation
 
