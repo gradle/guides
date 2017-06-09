@@ -43,7 +43,7 @@ test {
     doFirst {
         classpath = files()
         jvmArgs = [
-            '--module-path', files('build/mods', configurations.testCompileClasspath).asPath,
+            '--module-path', files(sourceSets.main.java.outputDir, configurations.testCompileClasspath).asPath,
             '--patch-module', "$moduleName=" + files(sourceSets.test.java.outputDir).asPath,
             '--add-modules', 'ALL-MODULE-PATH'
         ]
