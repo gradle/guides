@@ -45,7 +45,8 @@ When sharing cached results between computers, it's rare that everyone runs the 
 To allow cached results to be shared even when builds are executed from different root directories, Gradle needs to understand which inputs can be relocated and which cannot.
 
 Tasks having files as inputs can declare the parts of a file's path what are essential to them: this is called the _path sensitivity_ of the input.
-Task properties that have no path sensitivity declared are considered non-relocatable
+Task properties declared with `ABSOLUTE` path sensitivity are considered non-relocatable.
+This is the default for properties not declaring path sensitivity, too.
 
 For example, the class files produced by the Java compiler are dependent on the file names of the Java source files: renaming the source files with public classes would fail the build.
 However, moving the files around would have no effect on the result of the compilation.
