@@ -1,7 +1,7 @@
 language: java
 jdk:
-- oraclejdk7
-script: ./gradlew publishGhPages --stacktrace
+- oraclejdk8
+script: GRGIT_PASS= ./gradlew build gitPublishPush --stacktrace
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -12,7 +12,7 @@ cache:
   - $HOME/.gradle/wrapper/
 env:
   global:
-    secure: SR67QxFZ9f4wNALGlOazuj8ohZph0inufRl8/5cMuIejhjCdbteBQYxzTnzpN93cLoF3/18sVBktlLTJmKcyoBmg4VoDU836Xj6YBwQmq2Xye2UGfcN3aCksjZTy55IpVvrh1YWpPStXFKYbdrQ764E2bbP34BO7squpKgdrxTPaGZ1sek1+Jm44EqzNiRLcz27vPv1y7B4o0jmcPQT0E3iclAlyM0MYMM4VwYHvJRQlaOSMLz0qFEvtO2U+o4U/ofGKodkbZno8f0Q3Vyag2C4YCxsuEI5CUZ23pD8URqNpXRNgJPrIVbZtjWYcwrmep26fZOgrfGqypg2imYDnyZ4SY/srvYX0C57iEofdwgdi4sh29qcf6JeAUCbbswtgno83d3nqE7w6IzfJTQdZdC/Hh8hwn4RR6abwT7AyvvkrrFaggC1DcpPZlHb0dPtcyWZDU8MKb8W18JexxZFNA26+0tf+KNBMJ/OqLoR1DdsB2YNYnKRQhq5vKiGzkNTAF0dohHaGpczLRz6h+lsp/Z5ZIk/VecgogxcCEsSXUcy7fsU4Jnk1pY5uIuRAux/lZi8EUdECqoRJdcm2dXApFr2/bp3pmZCIn3fyj4eCJFpltiefyWI38zOGk95SfT+NaYsLiUabp/yTAyq/xhO6Q6NRZ/qE5uSMnD9K/dPymRM=
+    secure: u0TIB++mZKDt+N+ZTdX7YwygYuQuHszVYknMFSXQvoX68n9R7EX4yGx3m10jRtRbY2H7DSbfLWUFda5yrsQp6TbYCGvcX5Ff5qiNc4I04Ze0j34fju4U6pn+etuIXNT5px7tSzbXnaCR8RTGoufyFuKeUUxG/+R2r3Be8jZxUooDwGu49t8C4tearWW3drEwNVVNEMtLh4lk/5jdDiE33qwL2Cs47z075lF02LlHyOyMVZF3lNnBXGBJo1oOypcfNeKo1zmRfKc0haCB0hm2NtojYT0MgjUa2sUjUSw25ijA1B+hd6UtDbcQOi9qcyYR+Z8/uRd5IyBZCHJfnboTHk86loSdGbSKZCdJZdow9KfWGVA5qpwaRi/Bda587clw3aC3cHhSkzM9XtTpZ57AHqzMTFS33SmiYEYObu6FE2SeLUNBj+tO3qky7+hrr1dSKnOVYFuUQJsnqBFKG37avywNVRr5vJpo/rLMLotllJIqAlePFC48LnkMZh0B0vQfBfYSUUBIflXPEPCfWCmMQ86tq6Fs0G56ij4hgUXVsfeM8V5HdevurkRKwNYPLRq33BUbStBSJM+vojTftIHM7BW3z3vmh3AY4/NHCEbO3Qibmr+hKqSz+IXgDgHQ5qpEUqiY/gnQgzIxH6Dimjqfk4k3oOgG0PaxJM/YdW+WPfU=
 notifications:
   slack:
     on_success: change
