@@ -18,9 +18,17 @@ Absolute paths are often passed as environment variables, too. You need to pay a
 In this case you need to pay special attention to what you add as task inputs.
 You would need to ensure that the absolute path is the same between machines. Most times it makes sense to track the file or the contents of the directory the absolute path points to.
 If the absolute path represents a tool being used it probably makes sense to track the tool version as an input instead.
-> *TODO:*
->
->  - Present examples how to fix these problems, probably using the runtime API
+
+For example, if you are using tools in your `Test` task called `integTest` which depend on the the contents of the `LANG` variable you should do this:
+
+[source,groovy]
+----
+integTest {
+    inputs.property("langEnvironment") {
+        System.getenv("LANG")
+    }
+}
+----
 
 If you add conditional logic to distinguish CI builds from local development builds, you have to ensure that this does not break the loading of task outputs from CI onto developer machines.
 For example, the following setup would break caching of `Test` tasks, since Gradle always detects the differences in custom task actions.
@@ -117,6 +125,7 @@ One way of locking the changes would be to check the volatile resource into sour
 
 === Suggestions for authoring your build
 
+[[custom_actions]]
 ==== Review usages of `doFirst` and `doLast`
 
 Using `doFirst` and `doLast` from a build script on a cacheable tasks ties you to build script changes since the implementation of the closure comes from the build script.
