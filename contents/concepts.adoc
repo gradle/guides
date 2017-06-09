@@ -119,7 +119,7 @@ Tasks that have dedicated, non-overlapping outputs can always be handled in a sa
 For the aforementioned reasons, task output caching is automatically disabled for tasks whose output directories overlap with another task.
 Removing any overlapping outputs is important for good caching performance.
 
-Gradle Enterprise will show tasks where caching was disabled for overlapping outputs in the timeline.
+Gradle Enterprise will show tasks where caching was disabled for overlapping outputs in the timeline:
 
 image::overlapping-outputs-timeline.png[]
 

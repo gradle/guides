@@ -19,7 +19,7 @@ This can happen if you have tasks in your build that are configured to produce t
 
 Normally, your _fully cached_ build should be significantly faster than the `clean` build: this is the theoretical limit of how much time using the build cache can save on your particular build when running the tasks that you were running.
 We'll be covering several common causes for why your build might not produce amazing numbers here for the first try, see <<finding_problems>>.
-Build scans provide a detailed performance breakdown which show you how effectively your build is using the build cache.
+Build scans provide a detailed performance breakdown which show you how effectively your build is using the build cache:
 
 image::performance-task-execution.png[]
 
@@ -31,6 +31,7 @@ In a setup where a team uses a shared cache backend, there are two locations wor
 
 The best way to learn about the impact of caching on CI is to set up the same builds with the cache enabled and disabled, and compare the results over time. If you have a single Gradle build step that you want to enable caching for, it's easy to compare the results using your CI system's built-in statistical tools.
 
+.Comparison graph for Gradle's sanity check build
 image::sanity-check-graph.png[single build comparison]
 
 Measuring complex pipelines requires some more work, and some external tool to collect and process measurements.
@@ -42,10 +43,12 @@ When using Gradle Enterprise, you can use the https://docs.gradle.com/enterprise
 
 Typically, CI builds above a certain size include parallel sections to utilize multiple agents. With parallel pipelines you can measure the wall-clock time it takes for a set of changes to go from having been pushed to version control to being built, verified and deployed. The build cache's effect in this case can be measured in the reduction of the time developers have to wait for feedback from CI.
 
+.Feedback time comparison graph for Gradle's stage 2 pipeline, which includes code quality and fast running integration tests
 image::stage-2-time-to-developer-feedback.png[time to developer feedback]
 
 You can also measure the cumulative time it took to build a changeset, which will give you a sense of the amount of work the CI infrastructure has to excert. The cache's effect here is less money spent on CI infrastructure, as you don't need as many CI agents to maintain the same number of changes built.
 
+.Cumulative build time comparison graph for Gradle's stage 2 pipeline
 image::stage-2-cumulative-time-graph.png[cumulative build time]
 
 === Measuring developer builds
@@ -61,6 +64,6 @@ You can then create statistics on how many tasks where cached per developer or b
 You can even compare the times it took to execute the task to pulling it from the cache and then estimate the time saved per developer.
 
 When using the https://gradle.com/build-cache[Gradle Enterprise build cache backend] you should pay close attention to the hit rate in the admin UI.
-A rise in the hit rate there probably indicates better usage by developers.
+A rise in the hit rate there probably indicates better usage by developers:
 
 image::cache-admin-hit-rate.png[build cache hit rate]
