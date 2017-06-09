@@ -1,0 +1,54 @@
+subprojects {
+    afterEvaluate { Project project ->
+        repositories {
+            jcenter()
+        }
+
+        compileJava {
+            // --module-path wants a directory, which is a directory of modules
+            // destinationDir = file("${sourceSets.main.java.outputDir}/$moduleName")
+            doFirst {
+                classpath = files()
+                options.compilerArgs = [
+                    '--module-path', configurations.compileClasspath.asPath,
+                    '--source-path', files(sourceSets.main.java.srcDirs).asPath,
+                    '-d', "${sourceSets.main.java.outputDir}/$moduleName"
+                ]
+            }
+            doLast {
+                copy {
+                    from "${sourceSets.main.java.outputDir}/$moduleName"
+                    into sourceSets.main.java.outputDir
+                }
+            }
+        }
+
+        compileTestJava {
+            doFirst {
+                classpath = files()
+                options.compilerArgs = [
+                    '--module-path', files(sourceSets.main.java.outputDir, configurations.testCompileClasspath).asPath,
+                    '--add-modules', "junit",
+                    '--add-reads', "$moduleName=junit",
+                    '--patch-module', "$moduleName=" + files(sourceSets.test.java.srcDirs).asPath,
+                ]
+            }
+        }
+
+        jar {
+            exclude moduleName
+        }
+
+        test {
+            doFirst {
+                classpath = files()
+                jvmArgs = [
+                    '--module-path', files(sourceSets.main.java.outputDir, configurations.testRuntimeClasspath).asPath,
+                    '--add-modules', 'ALL-MODULE-PATH',
+                    '--add-reads', "$moduleName=junit",
+                    '--patch-module', "$moduleName=" + files(sourceSets.test.java.outputDir).asPath,
+                ]
+            }
+        }
+    }
+}
