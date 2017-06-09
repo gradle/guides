@@ -19,12 +19,26 @@ The key here is not to depend on undeclared volatile inputs like the aforementio
 === Stable task inputs
 
 Having a task repeatably produce the same output is not enough if its inputs keep changing all the time.
-Timestamps and incremented sequences like the CI build number can sneak in as inputs when such information is added to the build's version number.
-A version number like `3.2-__TIMESTAMP__` can appear in a `version.properties` resource file.
-Anything that depends on that on that file will have a fresh set of inputs with every build.
+Such unstable inputs can be supplied directly to the task. Think of a version number that includes a timestamp being added to the jar file's manifest:
 
-Another example for unstable inputs is the commit ID from version control: maybe your version number is generated via `git describe`, maybe you include the commit hash directly in `version.properties` or a JAR manifest attribute.
+[source,groovy]
+----
+version = "3.2-${System.currentTimeMillis()}"
+
+jar {
+    manifest {
+        attributes("Implementation-Version": version)
+    }
+}
+----
+
+Another example for unstable inputs is the commit ID from version control.
+Maybe your version number is generated via `git describe` (and you include it in the jar manifest as shown above).
+Or maybe you include the commit hash directly in `version.properties` or a JAR manifest attribute.
 Either way, the outputs produced by any tasks depending on such data will only be re-usable by builds running against the exact same commit.
+
+Tasks are rarely work in a standalone fashion, and instead frequently depend on each other's outputs.
+A task using the non-repeatable outputs of another task as its inputs is a frequent way to introduce unstable inputs, too.
 
 [[normalization]]
 === Better re-use via input normalization
@@ -94,28 +108,13 @@ normalization {
 The effect of this configuration would be that changes to `build-info.properties` would be ignored for both up-to-date checks and task output caching.
 This will not change the runtime behavior of the `test` task -- i.e. any test is still able to load `build-info.properties`, and the runtime classpath stays the same as before.
 
-[[concepts_input_normalization_vs_repeatable_task_outputs]]
-===== Input normalization and repeatable task outputs
-
-Input normalization and stable task outputs can both be used to solve the same problem:
-Having stable task inputs for tasks which depend on other tasks output.
-The difference is that input normalization works on the consumer side - the task consuming the output as an input -
-while repeatable task outputs try to solve the problem on the producer side - the task producing the output.
-
-Achieving repeatable outputs can be more difficult than using input normalization - especially when Gradle already provides support for the necessary normalization.
-Repeatable outputs can also be impossible to achieve for third party tasks which you do not have control on or when you need to include volatile data in your task artifacts for auditing purposes.
-Input normalization doesn't have these limitation and the same output can be used with different meaning for different consumers.
-This is what Gradle already does with respect to runtime and compile classpath.
-The same files on the Java classpath are interpreted differently and different kinds of changes are detected.
-
-The Gradle team is planning on extending the support for configurable input normalization in future versions of Gradle.
-
 [[concepts_overlapping_outputs]]
 === The case against overlapping outputs
 
-If two tasks write to the same output directory or output file it is difficult for Gradle to determine which output belongs to which task.
+When two tasks write to the same output directory or output file, it is difficult for Gradle to determine which output belongs to which task.
+There are many edge cases, and executing the tasks in parallel cannot be done safely.
 It is also hard to automatically remove stale output files for the same reason.
-Tasks which have dedicated output directories which do not overlap are much easier to understand to Gradle.
+Tasks that have dedicated, non-overlapping outputs can always be handled in a safe fashion by Gradle.
 
 Moreover, task output caching will always restore the whole output directory of a task from the cache.
 For this reason, tasks whose output directories overlap with each other cannot be cached and task output caching will be automatically disabled for the task.

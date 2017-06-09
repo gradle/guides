@@ -240,7 +240,7 @@ This can lead to hard-to-diagnose cache misses when the consuming build is not a
 For example, when doing incremental builds it is possible that the artifact on disk which is considered up-to-date and the artifact in the build cache are different even though they are essentially the same.
 A task depending on this task output would then not be able to load outputs from the build cache since the inputs are not exactly the same.
 
-As described <<concepts_input_normalization_vs_repeatable_task_outputs,earlier>> you can either make the task outputs repeatable or use input normalization.
+As described <<stable_task_inputs,earlier>> you can either make the task outputs repeatable or use input normalization.
 
 We already talked about the possibilities with input normalization and the possibility to configure input normalization.
 
