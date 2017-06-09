@@ -116,26 +116,24 @@ When two tasks write to the same output directory or output file, it is difficul
 There are many edge cases, and executing the tasks in parallel cannot be done safely.
 It is also hard to automatically remove stale output files for the same reason.
 Tasks that have dedicated, non-overlapping outputs can always be handled in a safe fashion by Gradle.
-
-Moreover, task output caching will always restore the whole output directory of a task from the cache.
-For this reason, tasks whose output directories overlap with each other cannot be cached and task output caching will be automatically disabled for the task.
-Gradle's built-in tasks are configured in a way that there will not be any overlapping outputs.
+For the aforementioned reasons, task output caching is automatically disabled for tasks whose output directories overlap with another task.
+Removing any overlapping outputs is important for good caching performance.
 
 Gradle Enterprise will show tasks where caching was disabled for overlapping outputs in the timeline.
 
 image::overlapping-outputs-timeline.png[]
 
-=== Re-use of task outputs with the same inputs, but different task paths
+=== Re-use of outputs between different tasks
 
-Imagine you have two `JavaCompile` tasks in your build, both operating on the same source files, each of them having a different output directory.
-Would you expect that whichever runs second would re-use the outputs of the first task via the build cache?
+Some builds exhibit a surprising characteristic: even when executed against an empty cache, they produce tasks loaded from cache. How is this possible? Rest assured that this is completely normal.
 
-Having two tasks in the same build that do the same is not necessarily something you need to refactor.
-Tools like the Android plugin create several tasks for each variant of the project; some of those tasks could potentially do the same thing.
-Tying the cached result to the task path would force you to rebuild something that you've already built.
+When considering task outputs, Gradle only cares about the inputs to the task: the task type itself, input files and parameters etc., but it doesn't care about the task's name or which project it can be found in.
+Running `javac` will produce the same output regardless of the name of the `JavaCompile` task that invoked it.
+If your build includes two tasks that share every input, the one executing later will be able to re-use the output produced by the first.
 
-We think that the outputs should be re-used since the task path is only a name and does not describe anything essential to the task itself.
-This is also why it is possible to see tasks which are loaded from the cache if you run a build even if your build cache was empty before you started the build.
+Having two tasks in the same build that do the same might sound like a problem to fix, but it is not necessarily something bad.
+For example, the Android plugin creates several tasks for each variant of the project; some of those tasks will potentially do the same thing.
+These tasks can safely re-use each other's outputs.
 
 === Non-cacheable tasks
 
