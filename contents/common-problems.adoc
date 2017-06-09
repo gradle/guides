@@ -1,7 +1,7 @@
 [[common-problems]]
 == Solving common problems
 
-Small problems in a build, like forgetting to declare a configuration file as an input to your task, can be easily be overlooked. The configuration file might change infrequently, or change only together with some other (correctly tracked) inputs. The worst that would happen is that your task doesn't execute when it should be. Developers can always re-run the build with `clean`, and "fix" their builds for the price of a slow rebuild. In the end nobody gets blocked in their work, and the incident is chalked up to "Gradle acting up again."
+Small problems in a build, like forgetting to declare a configuration file as an input to your task, can be easily overlooked. The configuration file might change infrequently, or only change when some other (correctly tracked) input changes as well. The worst that could happen is that your task doesn't execute when it should be. Developers can always re-run the build with `clean`, and "fix" their builds for the price of a slow rebuild. In the end nobody gets blocked in their work, and the incident is chalked up to "Gradle acting up again."
 
 With cacheable tasks incorrect results are stored permanently, and can come back to haunt you later; re-running with `clean` won't achieve much either. When using a shared cache, these problems even cross machine boundaries. In the example above, Gradle might end up loading a result for your task that was produced with a different configuration. Resolving these problems with the build thus becomes even more important when task output caching is enabled.
 
