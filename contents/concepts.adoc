@@ -95,7 +95,7 @@ normalization {
 ----
 
 The effect of this configuration would be that changes to `build-info.properties` would be ignored for up-to-date checks and build cache key calculations.
-Note that this will not change the runtime behavior of the `test` task - i.e. any test is still able to load `build-info.properties` and the runtime classpath is still the same as before.
+This will not change the runtime behavior of the `test` task - i.e. any test is still able to load `build-info.properties` and the runtime classpath is still the same as before.
 
 [[concepts_input_normalization_vs_repeatable_task_outputs]]
 ==== Input normalization and repeatable task outputs

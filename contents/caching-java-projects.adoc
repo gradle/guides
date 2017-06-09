@@ -56,7 +56,7 @@ integTest {
 
 ==== Archives as inputs
 
-Note that depending on a zip or tar archive as an input file will lead to cache misses since rebuilding will probably change the metadata in the archive as described in <<concepts_repeatable_task_outputs>>.
+Depending on a zip or tar archive as an input file will lead to cache misses since rebuilding will probably change the metadata in the archive as described in <<concepts_repeatable_task_outputs>>.
 To avoid this problem altogether you can instead depend on the contents on the archive. See also the section on dealing with <<volatile_outputs,non-repeatable outputs>>.
 
 ==== Dealing with file paths

@@ -25,7 +25,7 @@ Using the build cache on CI first makes sense as the environment on CI agents is
 It helps to point out possible issues with the build that hurt cacheability.
 
 If you are subject to audit requirements regarding the artifacts you ship to your customers you may need to disable the build cache for certain builds.
-Note that when using Gradle Enterprise you can easily find out which build produced an artifact coming from the build cache by clicking on the `FROM-CACHE` status.
+When using Gradle Enterprise you can easily find out which build produced an artifact coming from the build cache by clicking on the `FROM-CACHE` status.
 
 image::from-cache-origin.png[]
 
