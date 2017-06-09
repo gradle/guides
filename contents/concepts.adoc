@@ -11,78 +11,75 @@ Consider now making a small change to the inputs of your code generator task. Le
 
 Because you've changed its inputs, the code generator task needs to execute again during the next build. However, it will generate _exactly the same output_ as before, so anything that depends on that output will stay up-to-date.
 
-On the other hand, your code generator might add some extra information to its output that doesn't depend on its declared inputs, like a timestamp. In such a case the otherwise unimportant change to the code generator's inputs _will_ result in different code being generated (because the timestamp will be updated). Tasks that depend on the code generator's output will need to be re-executed. This can result in a cascade of meaningless changes rippling through the build, destroying build performance along the way.
+On the other hand, your code generator might add some extra information to its output that doesn't depend on its declared inputs, like a timestamp. In such a case the otherwise unimportant change to the code generator's inputs _will_ result in different code being generated (because the timestamp will be updated). Tasks that depend on the code generator's output will need to be re-executed.
 
 The key here is not to depend on undeclared volatile inputs like the aforementioned timestamps, or sequences like a CI build number.
 
 [[stable_task_inputs]]
 === Stable task inputs
 
-Imagine that you've just pulled the main branch of your software afresh from version control. CI has already built this particular commit, so the remote cache should be hot: if you ran a build now, every cacheable task should be loaded from cache.
+Having a task repeatably produce the same output is not enough if its inputs keep changing all the time.
+Timestamps and incremented sequences like the CI build number can sneak in as inputs when such information is added to the build's version number.
+A version number like `3.2-__TIMESTAMP__` can appear in a `version.properties` resource file.
+Anything that depends on that on that file will have a fresh set of inputs with every build.
 
-For this to work, the cacheable tasks in your local build need to have exactly the same inputs as they had on CI.
-This is only possible if your inputs are stable, i.e. they only depend on the state of the workspace and the tools required by the build, e.g. the Java version.
-
-It could well be that the inputs to your tasks are dependent on something you cannot control, for example the current time.
-For example you decided to add a timestamp to your jar manifests or to a property file on the classpath.
-We call these inputs volatile.
-Cacheable tasks need to have stable inputs.
-If the inputs to a cacheable task are not stable, then it will never be pulled from the cache, and only take up space in the cache backend.
+Another example for unstable inputs is the commit ID from version control: maybe your version number is generated via `git describe`, maybe you include the commit hash directly in `version.properties` or a JAR manifest attribute.
+Either way, the outputs produced by any tasks depending on such data will only be re-usable by builds running against the exact same commit.
 
 [[normalization]]
 === Better re-use via input normalization
 
 We saw that having stable inputs is crucial for cacheable tasks.
-Achieving byte by byte identical inputs for each task can be challenging.
+However, achieving byte by byte identical inputs for each task can be challenging.
 This is where {user-manual}more_about_tasks.html#sec:configure_input_normalization[input normalization] comes into play.
 Input normalization is used by Gradle to determine if two task inputs are essentially the same.
-Gradle uses normalized inputs when doing up-to-date checks and when determining the build cache key.
+Gradle uses normalized inputs when doing up-to-date checks and when determining if a cached result can be re-used instead of executing the task.
 
-When comparing two file collections Gradle needs to look at two aspects from each file: the file path and the file contents.
-The consumer of the file collection needs to declare what about a file is essential with respect to these two aspects.
+When it comes to file inputs, Gradle can normalize the path of the files as well as their contents.
+It is always the _consumer_ of the files that declares what about the input files is essential with respect to these two aspects.
 
 [[relocatability]]
 ==== Path sensitivity and relocatability
 
-Tasks having file collections as inputs can declare the parts of a file path what are essential to them - this is called the _path sensitivity_ of the input.
-For example, the class file produced by the Java compiler is dependent on the file name of the Java source file and does not depended on other parts of the file path.
-Therefore, the path sensitivity for the sources of the `JavaCompile` task is `NAME_ONLY`.
-Only the normalized paths of Java sources - the file name - would be considered an input to the `JavaCompile` task.
+When sharing cached results between computers, it's rare that everyone runs the build from the exact same location on their computers.
+To allow cached results to be shared even when builds are executed from different root directories, Gradle needs to understand which inputs can be relocated and which cannot.
 
-In order to re-use task outputs between different build machines, the normalized file paths need to agree between tasks of the different workspaces.
-This only works if the path sensitivity of its inputs is `NONE`, `NAME_ONLY` or `RELATIVE`.
-Absolute paths cannot be relocated between different build machines in general.
-Trying to do so would require everyone trying to re-use the outputs built on one machine to have its workspace and all the tools used by the build in the same location.
-This is highly impractical. A task or its inputs are called relocateable if all of the file inputs have a relocatable path sensitivity.
+Tasks having files as inputs can declare the parts of a file's path what are essential to them: this is called the _path sensitivity_ of the input.
+Task properties that have no path sensitivity declared are considered non-relocatable
 
-Cacheable tasks always should be relocatable and we made sure that this is true for all tasks which ship with Gradle.
+For example, the class files produced by the Java compiler are dependent on the file names of the Java source files: renaming the source files with public classes would fail the build.
+However, moving the files around would have no effect on the result of the compilation.
+Therefore, the path sensitivity for the sources of the `JavaCompile` task is `NAME_ONLY`. Because of this only the normalized paths of the Java source files -- the file names -- are considered as inputs to the `JavaCompile` task.
+
+==== Content normalization
 
 [[compile_avoidance]]
-==== Compile avoidance
+===== Compile avoidance for Java
 
-Java compilation is only affected by changes to the ABI of the compile classpath.
-Gradle has a deep understanding of what a compile classpath is and therefore uses a sophisticated normalization strategy for it.
+When it comes to the dependencies of a `JavaCompile` task (i.e. its _compile classpath),_ only changes to the Application Binary Interface (ABI) of these dependencies require compilation to be executed.
+re-used, despite having been compiled with different actual bytes on the compile classpath.
+Gradle has a deep understanding of what a compile classpath is and uses a sophisticated normalization strategy for it.
 Task outputs can be re-used as long the the ABI of the classes on the compile classpath stays the same.
-This enables Gradle to avoid Java compilation by using incremental builds or the build cache.
-For more information on compile avoidance see the corresponding section in the {user-manual}java_plugin.html#sec:java_compile_avoidance[userguide].
+This enables Gradle to avoid Java compilation by using incremental builds, or load results from the cache that were produced by different (but ABI-compatible) versions of dependencies.
+For more information on compile avoidance see the corresponding section in the {user-manual}java_plugin.html#sec:java_compile_avoidance[user guide].
 
 [[runtime_classpath]]
-==== Runtime classpath normalization
+===== Runtime classpath normalization
 
-Similar to compile avoidance, Gradle does understand the concept of a runtime classpath and uses a tailored input normalization to avoid running e.g. tests.
-For example, for a runtime classpath Gradle inspects the contents of jar files and ignores the timestamps and order of the entries in the jar file.
+Similar to compile avoidance, Gradle does understand the concept of a runtime classpath, and uses tailored input normalization to avoid running e.g. tests.
+For runtime classpaths Gradle inspects the contents of jar files and ignores the timestamps and order of the entries in the jar file.
 This means that a rebuilt jar file would be considered the same runtime classpath input.
 For details on what level of understanding Gradle has for detecting changes to classpaths see the {user-manual}more_about_tasks.html#sec:task_input_using_classpath_annotations[userguide].
 
 [[filter_runtime_classpath]]
-===== Filtering
+====== Filtering runtime classpaths
 
-For a runtime classpath it is even possible to provide better insights to Gradle which files are essential to the input by {user-manual}more_about_tasks.html#sec:configure_input_normalization[configuring input normalization].
+For a runtime classpath it is possible to provide better insights to Gradle which files are essential to the input by {user-manual}more_about_tasks.html#sec:configure_input_normalization[configuring input normalization].
 
 Let's say you want to add a file `build-info.properties` to all your produced jar files which contains volatile information about the build, e.g. the timestamp when the build started or some ID to identify the CI job that published the artifact.
 This file is only used for auditing purposes, and has no effect on the outcome of running tests.
-Nonetheless, this file is part of the runtime classpath for the `test` task and changes on every build invocation.
-In order to benefit from task output caching again you can add the following configuration to your project.
+Nonetheless, this file is part of the runtime classpath for the `test` task. Since the file changes on every build invocation, tests cannot be cached effectively.
+To fix this you can ignore `build-info.properties` on any runtime classpath by adding the following configuration to build script:
 
 [source,groovy]
 ----
@@ -93,11 +90,11 @@ normalization {
 }
 ----
 
-The effect of this configuration would be that changes to `build-info.properties` would be ignored for up-to-date checks and build cache key calculations.
-This will not change the runtime behavior of the `test` task - i.e. any test is still able to load `build-info.properties` and the runtime classpath is still the same as before.
+The effect of this configuration would be that changes to `build-info.properties` would be ignored for both up-to-date checks and task output caching.
+This will not change the runtime behavior of the `test` task -- i.e. any test is still able to load `build-info.properties`, and the runtime classpath stays the same as before.
 
 [[concepts_input_normalization_vs_repeatable_task_outputs]]
-==== Input normalization and repeatable task outputs
+===== Input normalization and repeatable task outputs
 
 Input normalization and stable task outputs can both be used to solve the same problem:
 Having stable task inputs for tasks which depend on other tasks output.
