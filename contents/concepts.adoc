@@ -2,6 +2,19 @@
 
 As we said before, how much of your build gets loaded from cache depends on many factors. In this section we'll review some of the tools that are essential for well-cached builds.
 
+[[concepts_repeatable_task_outputs]]
+=== Repeatable task outputs
+
+Imagine that you've just pulled the main branch of your software afresh from version control. CI has already built this particular commit, so the remote cache should be hot: if you ran a build now, every cacheable task would be loaded from cache.
+
+Consider now making a small change to the inputs of your code generator task. Let's make this a change that will not result in any _meaningful_ difference to the code-generator. Maybe add an empty line at the end of a file, or change a comment.
+
+Because you've changed its inputs, the code generator task needs to execute again during the next build. However, it will generate _exactly the same output_ as before, so anything that depends on that output will stay up-to-date.
+
+On the other hand, your code generator might add some extra information to its output that doesn't depend on its declared inputs, like a timestamp. In such a case the otherwise unimportant change to the code generator's inputs _will_ result in different code being generated (because the timestamp will be updated). Tasks that depend on the code generator's output will need to be re-executed. This can result in a cascade of meaningless changes rippling through the build, destroying build performance along the way.
+
+The key here is not to depend on undeclared volatile inputs like the aforementioned timestamps, or sequences like a CI build number.
+
 [[stable_task_inputs]]
 === Stable task inputs
 
@@ -15,20 +28,6 @@ For example you decided to add a timestamp to your jar manifests or to a propert
 We call these inputs volatile.
 Cacheable tasks need to have stable inputs.
 If the inputs to a cacheable task are not stable, then it will never be pulled from the cache, and only take up space in the cache backend.
-
-[[concepts_repeatable_task_outputs]]
-=== Repeatable task outputs
-
-Now that you have stable task inputs, image the same situation as before.
-Again, you've just pulled the main branch of your software afresh from version control. CI has already built this particular commit, so the remote cache should be hot: if you ran a build now, every cacheable task would be loaded from cache.
-
-Consider now making a small change to the inputs of your code generator task. Let's make this a change that will not result in any _meaningful_ difference to the code-generator. Maybe add an empty line at the end of a file, or change a comment.
-
-Because you've changed its inputs, the code generator task needs to execute again during the next build. However, it will generate _exactly the same output_ as before, so anything that depends on that output will stay up-to-date.
-
-However, if your code generator adds a timestamp, the otherwise meaningless change to the code generator's inputs _will_ result in different results being produced. Tasks that depend on the code generator's output will need to be re-executed. This can result in a cascade of changes rippling through the build, destroying build performance along the way.
-
-You can avoid the cascade of change requiring everything to be rebuilt when your task is repeatable.
 
 [[normalization]]
 === Better re-use via input normalization
