@@ -11,7 +11,11 @@ The most straightforward way to get a feel for what the cache can do for you is 
 3. Run the build again (e.g. `./gradlew --build-cache clean assemble`); depending on your build, this time you should see many of the tasks being cached.
 4. Compare the execution time for the two builds
 
-NOTE: You might have encountered a few cached tasks even in the first of the two builds, where no previously cached results should be available. This can happen if you have tasks in your build that are configured to produce the same results from the same inputs; in such a case once one of these tasks has finished, Gradle will simply re-use its output for the rest of the tasks.
+[NOTE]
+====
+You might have encountered a few cached tasks even in the first of the two builds, where no previously cached results should be available.
+This can happen if you have tasks in your build that are configured to produce the same results from the same inputs; in such a case once one of these tasks has finished, Gradle will simply re-use its output for the rest of the tasks.
+====
 
 Normally, your _fully cached_ build should be significantly faster than the `clean` build: this is the theoretical limit of how much time using the build cache can save on your particular build when running the tasks that you were running.
 We'll be covering several common causes for why your build might not produce amazing numbers here for the first try, see <<finding_problems>>.
