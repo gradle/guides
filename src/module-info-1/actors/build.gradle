@@ -41,11 +41,6 @@ compileTestJava {
 
 jar {
     exclude moduleName
-    /*
-    with copySpec {
-        from file("${sourceSets.main.java.outputDir}/$moduleName")
-    }
-    */
 }
 
 test {
