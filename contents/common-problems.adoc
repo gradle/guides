@@ -8,6 +8,15 @@ This means that running the same build on machines with different file encoding 
 Currently Gradle only tracks on a per-task basis that no file encoding has been specified, but it does not track the system encoding of the JVM in use.
 This can cause incorrect builds. You should always set the file system encoding to avoid these kind of problems.
 
+Note that the build scripts are compiled with the file encoding of the Gradle daemon which also uses the system file encoding by default.
+You should set file encoding for the Gradle daemon in your `gradle.properties`:
+
+[source,properties]
+.gradle.properties
+----
+org.gradle.jvmargs=-Dfile.encoding=UTF-8
+----
+
 === Environment variable tracking
 
 Gradle does not track changes in environment variables for tasks.
