@@ -12,18 +12,15 @@ dependencies {
     runtimeOnly project(':bears')
 }
 
-mainClassName = 'org.gradle.fairy.app/org.gradle.fairy.app.StoryTeller'
+ext.moduleName = 'org.gradle.fairy.app'
 
+mainClassName = "$moduleName/org.gradle.fairy.app.StoryTeller"
 
 run {
     doFirst {
-        copy {
-            from sourceSets.main.java.outputDir
-            into file('build/mods/org.gradle.fairy.app')
-        }
         classpath = files()
         jvmArgs = [
-            '--module-path', files('build/mods', configurations.runtimeClasspath).asPath,
+            '--module-path', files(sourceSets.main.java.outputDir, configurations.runtimeClasspath).asPath,
             '--module', mainClassName
         ]
     }

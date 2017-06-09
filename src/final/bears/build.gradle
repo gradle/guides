@@ -8,3 +8,5 @@ dependencies {
     implementation project(':formula')
     implementation project(':actors')
 }
+
+ext.moduleName = 'org.gradle.fairy.tale.bears'

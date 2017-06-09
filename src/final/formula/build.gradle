@@ -8,3 +8,5 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
 }
+
+ext.moduleName = 'org.gradle.fairy.tale.formula'
