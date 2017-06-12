@@ -1,6 +1,15 @@
 == Build cache performance
 
-The sole reason to use any build cache is to make builds faster. But how much faster can you go when using the cache? Measuring the impact is both important and complicated, as cache performance is determined by many factors. Initial measurements of the cache's impact can validate the extra effort (work, infrastructure) that was required to start using the cache. These measurements can later serve as baselines for future improvements, and to watch for signs of regressions.
+The sole reason to use any build cache is to make builds faster.
+But how much faster can you go when using the cache?
+Measuring the impact is both important and complicated, as cache performance is determined by many factors.
+Initial measurements of the cache's impact can validate the extra effort (work, infrastructure) that was required to start using the cache.
+These measurements can later serve as baselines for future improvements, and to watch for signs of regressions.
+
+[NOTE]
+====
+Proper configuration and maintenance of a build can improve caching performance in a big way.
+====
 
 === Fully cached builds
 
@@ -18,13 +27,16 @@ This can happen if you have tasks in your build that are configured to produce t
 ====
 
 Normally, your _fully cached_ build should be significantly faster than the `clean` build: this is the theoretical limit of how much time using the build cache can save on your particular build when running the tasks that you were running.
-We'll be covering several common causes for why your build might not produce amazing numbers here for the first try, see <<finding_problems>>.
+If you do not see the expected performance gains here on the first try, see <<finding_problems>>.
 Build scans provide a detailed performance breakdown which show you how effectively your build is using the build cache:
 
 [.screenshot]
 image::performance-task-execution.png[]
 
-In everyday situations fully cached builds are rare, as the purpose of running a build is to process some new changes. The structure of the software being built (how many modules are there, how independent are its parts etc.), and the nature of the changes themselves ("big refactor in the core of the system" vs. "small change to a unit test" etc.) strongly influence the caching performance. As developers tend to submit different kinds of changes over time, caching performance is expected to vary with each change. As with any cache, the impact should thus be measured over time.
+In everyday situations fully cached builds are rare, as the purpose of running a build is to process some new changes.
+The structure of the software being built (how many modules are there, how independent are its parts etc.), and the nature of the changes themselves ("big refactor in the core of the system" vs. "small change to a unit test" etc.) strongly influence the performance gains delivered by the build cache.
+As developers tend to submit different kinds of changes over time, caching performance is expected to vary with each change.
+As with any cache, the impact should thus be measured over time.
 
 In a setup where a team uses a shared cache backend, there are two locations worth measuring cache impact at: on CI and on developer machines.
 
@@ -41,6 +53,8 @@ It's important to distinguish those parts of the pipeline that caching has no ef
 You can use https://confluence.jetbrains.com/display/TCD10/Statistic+Charts[statistic charts] if you use Teamcity for your CI builds.
 Most of time you will end up extracting data from your CI server via the corresponding REST API (see https://wiki.jenkins-ci.org/display/JENKINS/Remote+access+API[Jenkins remote access API] and https://confluence.jetbrains.com/display/TCD10/REST+API[Teamcity REST API]).
 When using Gradle Enterprise, you can use the https://docs.gradle.com/enterprise/export-api/[export API] to access the necessary data and run your analytics on them.
+Gradle Enterprise provides richer data compared to what can be obtained from the CI server.
+For example, you can get insights into the execution of single tasks.
 
 Typically, CI builds above a certain size include parallel sections to utilize multiple agents. With parallel pipelines you can measure the wall-clock time it takes for a set of changes to go from having been pushed to version control to being built, verified and deployed. The build cache's effect in this case can be measured in the reduction of the time developers have to wait for feedback from CI.
 
