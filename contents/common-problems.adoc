@@ -197,7 +197,7 @@ For the very same reason using `outputs.upToDateWhen` is discouraged and should 
 
 ==== Overlapping outputs
 
-As described <<concepts_overlapping_outputs,before>>, overlapping outputs are a problem for task output caching.
+You already saw that overlapping outputs are a problem for task output caching in <<concepts_overlapping_outputs>>.
 When you add new tasks to your build or re-configure built-in tasks make sure you do not create overlapping outputs for cacheable tasks.
 If you must you can add a `Sync` task which then would sync the merged outputs into the target directory while the original tasks remain cacheable.
 

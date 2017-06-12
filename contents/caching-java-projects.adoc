@@ -28,7 +28,7 @@ The easiest way to avoid this performance penalty is to not use annotation proce
 
 The `Test` task used for test execution for JVM languages employs <<runtime_classpath,runtime classpath normalization>> for its classpath.
 This means that changes to order and timestamps in jars on the test classpath will not cause the task to be out-of-date or change the build cache key.
-For achieving <<stable_task_inputs,stable task inputs>> you also can wield the power of <<filter_runtime_classpath,filtering the runtime classpath>>.
+For achieving <<stable_task_inputs>> you also can wield the power of <<filter_runtime_classpath,filtering the runtime classpath>>.
 
 === Integration test execution
 
@@ -56,7 +56,7 @@ integTest {
 
 ==== Archives as inputs
 
-Depending on a zip or tar archive as an input file will lead to cache misses since rebuilding will probably change the metadata in the archive as described in <<concepts_repeatable_task_outputs,repeatable task outputs>>.
+Depending on a zip or tar archive as an input file will lead to cache misses since rebuilding will probably change the metadata in the archive as described in <<concepts_repeatable_task_outputs>>.
 To avoid this problem altogether you can instead depend on the contents on the archive. See also the section on dealing with <<volatile_outputs,non-repeatable outputs>>.
 
 Let us assume that you ship an executable jar as a distribution.
