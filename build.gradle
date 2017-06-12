@@ -1,28 +1,203 @@
+import org.apache.tools.ant.filters.ConcatFilter
 
 plugins {
-    id "org.ajoberstar.github-pages" version "1.4.2"
-    id "org.asciidoctor.convert" version "1.5.3"
-    id 'org.ysb33r.cloudci' version '1.0'
+    id 'org.gradle.guides.getting-started' version '0.5.3'
 }
 
-ext {
-    repoPath = "gradle-guides/building-java-libraries"
+guide {
+    repoPath    'gradle-guides/building-java-libraries'
+    mainAuthor 'Chris Beams'
+    supAuthors  'Schalk Cronjé'
 }
-
-apply from : 'gradle/build-documentation.gradle'
-apply from : 'gradle/publish-documentation.gradle'
-apply from : 'gradle/use-buildinit.gradle'
 
 asciidoctor {
-
-    inputs.dir tasks.runBuildInit.destDir.parentFile
-
-    attributes initexampledir : tasks.runBuildInit.destDir.absolutePath,
-        initlogfile : tasks.runBuildInit.initOutputFile.absolutePath,
-        doclogfile : tasks.runBuildInit.docOutputFile.absolutePath,
-        buildlogfile : tasks.runBuildInit.buildOutputFile.absolutePath,
-        manifestfile : tasks.runBuildInit.manifestFile.absolutePath
-
-    dependsOn runBuildInit
+    attributes 'gradle-outdir' : "${gradleRunner.reportsDir.absolutePath}"
 }
 
+gradleRunner {
+    ext {
+        buildType = 'java-library'
+
+        cleanBuildOutput = { stepName, info ->
+            File out = new File(getStepReportDir(stepName), 'out.txt')
+            new File(info.reportDir, 'out.txt').withWriter { w ->
+                out.filterLine { line ->
+                    !(line =~ /^(Download|Cleaned up|Total time)/)
+                }.writeTo(w)
+            }
+        }
+
+    }
+
+    step 'initProject', 'init', '--type', buildType
+
+    step 'initOutput', cleanBuildOutput.curry('initProject')
+
+    step 'patchSettings', { info ->
+        new File(workingDir,'settings.gradle').text = "rootProject.name='${project.name}'\n"
+    }
+
+    step 'buildProject', 'build'
+
+    step 'buildOutput', cleanBuildOutput.curry('buildProject')
+
+    step 'addVersion', {
+        File editBuildFile = new File(workingDir,'build.gradle')
+        File jarConfig = project.file("contents/jar-postfix.txt")
+        editBuildFile.withWriterAppend { Writer writer ->
+            writer.println jarConfig.text
+        }
+    }
+
+    step 'updateJar', 'jar'
+
+    step 'unpackJar', { info ->
+        copy {
+            from( zipTree(new File(workingDir,'build/libs/building-java-libraries-0.1.0.jar')) ) {
+                include 'META-INF/MANIFEST.MF'
+            }
+            into info.reportDir
+        }
+    }
+
+    step 'editLibrary', {
+        File editLibrary = new File(workingDir,'src/main/java/Library.java')
+        editLibrary.text = "${file('contents/javadoc-prefix.txt').text}${editLibrary.text}"
+    }
+
+    step 'docs', 'javadoc'
+
+    step 'docOutput', cleanBuildOutput.curry('docs')
+
+    step 'files', { info ->
+        copy {
+            from workingDir
+            into info.reportDir
+
+            exclude '.gradle/**'
+            exclude 'build/**'
+
+            filesMatching (['build.gradle','**/*.java']) {
+                filter { line ->
+                    if (line =~ /^(\/\*)|(\s*\*)|(\/\/)/) {
+                        null
+                    } else {
+                        line
+                    }
+                }
+            }
+
+            filesMatching (['settings.gradle']) {
+                filter { line->
+                    if(line=~/^rootProject/) {
+                        "${line} // <1>"
+                    } else {
+                        null
+                    }
+                }
+            }
+
+            filesMatching (['build.gradle']) {
+                filter { line ->
+                    if (line=~/\s*jcenter/) {
+                        "${line} // <1>"
+                    } else if (line=~/\s*api.+commons-math/) {
+                        "${line} // <2>"
+                    } else if (line=~/\s*implementation.+guava/) {
+                        "${line} // <3>"
+                    } else if (line=~/\s*testImplementation.+junit/) {
+                        "${line} // <4>"
+                    } else {
+                        line
+                    }
+                }
+            }
+
+            filesMatching( ['src/main/java/Library.java'] ) {
+                filter ConcatFilter, prepend: file('contents/javadoc-prefix.txt'),
+                    append: file('contents/javadoc-postfix.txt')
+            }
+        }
+
+    }
+
+}
+
+//copy {
+//    from tmpDir
+//    into destDir
+//
+//    exclude '.gradle/**'
+//    exclude 'build/**'
+//
+//    filesMatching (['build.gradle','**/*.java']) {
+//        filter { line ->
+//            if (line =~ /^(\/\*)|(\s*\*)|(\/\/)/) {
+//                null
+//            } else {
+//                line
+//            }
+//        }
+//    }
+//
+//    filesMatching (['settings.gradle']) {
+//        filter { line->
+//            if(line=~/^rootProject/) {
+//                "${line} // <1>"
+//            } else {
+//                null
+//            }
+//        }
+//    }
+//
+//    filesMatching (['build.gradle']) {
+//        filter { line ->
+//            if (line=~/\s*jcenter/) {
+//                "${line} // <1>"
+//            } else if (line=~/\s*api.+commons-math/) {
+//                "${line} // <2>"
+//            } else if (line=~/\s*implementation.+guava/) {
+//                "${line} // <3>"
+//            } else if (line=~/\s*testImplementation.+junit/) {
+//                "${line} // <4>"
+//            } else {
+//                line
+//            }
+//        }
+//    }
+//
+//    filesMatching( ['src/main/java/Library.java'] ) {
+//        filter ConcatFilter, prepend: file('contents/javadoc-prefix.txt'),
+//            append: file('contents/javadoc-postfix.txt')
+//    }
+//}
+//
+//copy {
+//    from tmpOutputDir
+//    into outputLogFileDir
+//
+//    filter { line ->
+//        if( line=~ /^Download|Total time/) {
+//            null
+//        } else {
+//            line
+//        }
+//    }
+//}
+//
+//File editBuildFile = new File(tmpDir,'build.gradle')
+//File jarConfig = project.file("contents/jar-postfix.txt")
+//editBuildFile.withWriterAppend { Writer writer ->
+//    writer.println jarConfig.text
+//}
+//
+//GradleRunner.create().withProjectDir(tmpDir).
+//    withArguments('jar').build()
+//
+//copy {
+//    from( zipTree(new File(tmpDir,'build/libs/building-java-libraries-0.1.0.jar')) ) {
+//        include 'META-INF/MANIFEST.MF'
+//    }
+//    into outputLogFileDir
+//}
+//}
