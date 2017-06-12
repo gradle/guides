@@ -1,4 +1,4 @@
-= Build Cache Practices
+= Using the Build Cache
 :numbered:
 
 ////
