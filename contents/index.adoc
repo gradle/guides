@@ -1,5 +1,4 @@
 = Building Java 9 Modules
-Pepper Lebeck-Jobe <pepper@gradle.com>
 
 == What you'll learn
 
@@ -50,6 +49,88 @@ projects can be seen in the following illustration:
 [#fig-1]
 [caption="Figure 1: "]
 image::project-graph.png[Project Graph]
+
+You can clone the project and run the original program to see it's output:
+
+[listing]
+----
+$ git clone git@github.com:gradle-guides/building-java-9-modules
+$ cd building-java-9-modules/src/0-original
+$ ./gradlew run
+
+> Task :fairy:run
+Once upon a time, there lived the big bad wolf, and the 3 little pigs.
+
+<... elided ...>
+
+Goldilocks ran out of the house at top speed to escape the 3 bears.
+And they all lived happily ever after.
+
+
+BUILD SUCCESSFUL
+----
+
+Before you start modifying this project to have it use Java 9 modules, you need
+to understand two important details of how the project is structured. Namely,
+that it uses the
+https://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html[ServiceLoader]
+api to load the fairy tales at runtime, and that it contains a test class that
+shows how software modularity was broken before Java 9.
+
+=== ServiceLoader usage
+Java 1.6 introduced a simple mechanism for binding a set of implementations of
+some interface (the "Service") to a consuming class at runtime. Oracle's
+https://docs.oracle.com/javase/tutorial/ext/basics/spi.html[tutorial] on the
+topic is a bit lengthy, but here's how it is used in our sample application:
+
+.fairy/src/main/java/org/gradle/fairy/app/StoryTeller.java
+[source,java]
+----
+include::{originaldir}/fairy/src/main/java/org/gradle/fairy/app/StoryTeller.java[tags=main]
+----
+
+The `ServiceLoader` coordinates with the JVM's ClassLoader to find instances of
+the `Tale` class which have been specified in special files named
+`org.gradle.fairy.tale.Tale` in `META-INF/services` folders on the classpath.
+
+.bears/src/main/resources/META-INF/services/org.gradle.fairy.tale.Tale
+[source,java]
+----
+include::{originaldir}/bears/src/main/resources/META-INF/services/org.gradle.fairy.tale.Tale[]
+----
+
+.pigs/src/main/resources/META-INF/services/org.gradle.fairy.tale.Tale
+[source,java]
+----
+include::{originaldir}/pigs/src/main/resources/META-INF/services/org.gradle.fairy.tale.Tale[]
+----
+
+Loading these instances at runtime gives the `StoryTeller` class the loosest
+possible coupling to the two libraries which implement the `Tale` interface.
+You can see this in the `dependencies` block of the `build.gradle` file for the
+application.
+
+.fairy/build.gradle
+[source,groovy]
+----
+include::{originaldir}/fairy/build.gradle[tags=deps]
+----
+
+In fact, comment out both of the lines that start, `runtimeOnly` and notice how
+the output of the `run` task changes:
+
+[listing]
+----
+$ ./gradlew run
+
+> Task :fairy:run
+Alas, I have no tales to tell!
+
+
+BUILD SUCCESSFUL
+----
+
+=== ModularityTest discussion
 
 == Adding `module-info.java` to your source code
 
