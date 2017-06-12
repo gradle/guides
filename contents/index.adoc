@@ -33,7 +33,7 @@ From inside the new project directory, run the `init` task with the `groovy-libr
 [listing]
 ----
 $ gradle init --type groovy-library
-include::{initlogfile}[]
+include::{gradle-outdir}/initOutput/out.txt[]
 ----
 
 The `init` task runs the `wrapper` task first, which generates the `gradlew` and `gradlew.bat` wrapper scripts. Then it creates the new project with the following structure:
@@ -53,7 +53,7 @@ The `settings.gradle` file is heavily commented, but has only one active line:
 .Generated settings.gradle
 [source,groovy]
 ----
-include::{initexampledir}/settings.gradle[]
+include::{gradle-outdir}/files/settings.gradle[]
 ----
 <1>  This assigns the name of the root project.
 
@@ -62,7 +62,7 @@ The generated `build.gradle` file also has many comments. The active portion is 
 .Generated build.gradle
 [source,groovy]
 ----
-include::{initexampledir}/build.gradle[]
+include::{gradle-outdir}/files/build.gradle[]
 ----
 <1> Public Bintray Artifactory repository
 <2> Groovy version that this project will include as dependency
@@ -76,7 +76,7 @@ The file `src/main/groovy/Library.groovy` is shown here:
 .Generated src/main/groovy/Library.groovy
 [source,groovy]
 ----
-include::{initexampledir}/src/main/groovy/Library.groovy[tags=source-code]
+include::{gradle-outdir}/files/src/main/groovy/Library.groovy[tags=source-code]
 ----
 
 The generated Spock specification, `src/test/groovy/LibraryTest.groovy` is shown next:
@@ -84,7 +84,7 @@ The generated Spock specification, `src/test/groovy/LibraryTest.groovy` is shown
 .Generated  src/test/groovy/LibraryTest.groovy
 [source,groovy]
 ----
-include::{initexampledir}/src/test/groovy/LibraryTest.groovy[]
+include::{gradle-outdir}/files/src/test/groovy/LibraryTest.groovy[]
 ----
 
 The generated test class has a single http://spockframework.org[Spock specification]. The test instantiates the `Library` class, invokes the `someLibraryMethod` method, and checks that the returned value is `true.
@@ -96,7 +96,7 @@ To build the project, run the `build` task. You can use the regular `gradle` com
 [listing]
 ----
 $ ./gradlew build
-include::{buildlogfile}[]
+include::{gradle-outdir}/buildOutput/out.txt[]
 ----
 
 NOTE: The first time you run the wrapper script, `gradlew`, there may be a delay while that version of `gradle` is downloaded and stored locally in your `~/.gradle/wrapper/dists` folder.
@@ -120,7 +120,7 @@ Annotate the `Library.groovy` file with Groovydoc markup.
 .src/main/groovy/Library.groovy
 [source,groovy]
 ----
-include::{initexampledir}/src/main/groovy/Library.groovy[tags=groovy-doc]
+include::{gradle-outdir}/files/src/main/groovy/Library.groovy[tags=groovy-doc]
 ----
 
 Run the `groovydoc` task.
@@ -128,7 +128,7 @@ Run the `groovydoc` task.
 [listing]
 ----
 $ ./gradlew groovydoc
-include::{groovydoclogfile}[]
+include::{gradle-outdir}/docOutput/out.txt[]
 ----
 
 You can view the generated Groovydoc by opening the HTML file, located at `build/docs/groovydoc/index.html`.
