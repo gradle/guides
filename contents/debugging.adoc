@@ -6,7 +6,7 @@ will share outputs between tasks that should have had a different output. If you
  you will have cache misses while you could have re-used earlier outputs.
  For Gradle's built-in tasks we prefer to err on the side of correctness and we suggest that you do the same.
 
-This chapter is about finding out why a cache miss was happening. If you have a cache hit which you didn't expect we
+This chapter is about finding out why a cache miss happened. If you have a cache hit which you didn't expect we
 suggest to declare whatever change you expected to trigger the cache miss as an input to the task.
 
 [[finding_problems]]
@@ -166,6 +166,5 @@ In order to solve this problem see <<volatile_outputs>>.
 
 [NOTE]
 ====
-The compile classpath is not affected since compile avoidance ignores non-class files on the compile classpath.
+The compile classpath is not affected since compile avoidance ignores non-class files on the classpath.
 ====
-
