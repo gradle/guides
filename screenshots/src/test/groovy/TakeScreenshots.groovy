@@ -1,4 +1,5 @@
 import geb.Browser
+import geb.navigator.Navigator
 import geb.waiting.DefaultWaitingSupport
 import geb.waiting.Wait
 import org.junit.Test
@@ -13,6 +14,54 @@ import java.util.concurrent.atomic.AtomicInteger
 class TakeScreenshots {
 
     Path screenshotDir = Paths.get(System.getProperty('screenshot.dir'))
+
+    private Map<String, Closure> extraActions = [:]
+
+    TakeScreenshots() {
+        extraActions.put('from-cache-origin') {
+            waitFor {
+                at(ScanTimelinePage)
+            }
+
+            TimelineListRow row = page.list.rows[5]
+            row.hoverOverRow()
+            interact {
+                moveToElement(row.scanLink)
+            }
+        }
+        extraActions.put('overlapping-outputs-timeline') {
+            waitFor {
+                at(ScanTimelinePage)
+            }
+
+            TimelineListRow row = page.list.rows[0]
+            interact {
+                moveToElement(row.cacheableTypeCell)
+            }
+        }
+
+        ['first-non-cached-task', 'caching-disabled'].each {
+            extraActions.put(it) {
+                waitFor {
+                    at(ScanTimelinePage)
+                }
+            }
+        }
+
+        extraActions.put('performance-task-execution') {
+            waitFor {
+                $('.PerformancePage').hasClass('loaded')
+            }
+        }
+
+        ['task-inputs-comparison', 'overlapping-outputs-input-comparison'].each {
+            extraActions.put(it) {
+                waitFor {
+                    $('.TaskInputs')
+                }
+            }
+        }
+    }
 
     @Test
     void take_screenshots() {
@@ -41,6 +90,13 @@ class TakeScreenshots {
             waitFor(2000) { !find('.GradlephantLoadingIndicator') }
             waitForAnimation(delegate, '.LoadingWrapper', 'transition-opacity-slow')
             waitForScroll(delegate)
+
+            if (extraActions.containsKey(screenshotName)) {
+                Closure extraAction = extraActions[screenshotName].clone()
+                extraAction.delegate = delegate
+                extraAction.call()
+            }
+
             def screenshot = screenshotDir.resolve("${screenshotName}.png")
             if (Files.exists(screenshot)) {
                 Files.delete(screenshot)
@@ -80,5 +136,9 @@ class TakeScreenshots {
 
     static <T> T waitFor(Browser browser, Closure<T> block) {
         new DefaultWaitingSupport(browser.config).waitFor(block)
+    }
+
+    static List<String> highlights(Navigator base) {
+        base.find('mark')*.text()
     }
 }
