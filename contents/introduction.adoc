@@ -1,7 +1,7 @@
 The best way to do work faster is to not do work that doesn’t need doing. Gradle has two main mechanisms to avoid work at the task level:
 
-* *incremental build* avoids running a task if its inputs and outputs are equivalent to what they were during its previous execution,
-* *task output caching* re-uses task outputs produced with the same inputs anytime before, on any machine that is connected to the same build cache backend.
+* {user-manual}more_about_tasks.html#sec:up_to_date_checks[*incremental build*] avoids running a task if its inputs and outputs are equivalent to what they were during its previous execution,
+* {user-manual}build_cache.html#sec:task_output_caching[*task output caching*] re-uses task outputs produced with the same inputs anytime before, on any machine that is connected to the same build cache backend.
 
 This guide covers the different use cases for Gradle’s build cache, from local-only development to caching task outputs across large teams. We will discuss ways to measure the advantages provided by the build cache, and methods to improve cache performance, or to diagnose and fix common problems. Let’s dive in!
 
@@ -11,7 +11,7 @@ Gradle’s build cache is a versatile feature that can be used in different ways
 
 === Speed up developer builds with the local cache
 
-Even when used by a single developer only, the build cache can be pretty useful. Gradle's _incremental build_ feature helps avoid work that is already done, but once you change the inputs of a task, it forgets any previous results. When you are switching branches back and forth, the local results get rebuilt over and over again, even if you are building something that has already been built before. The build cache remembers, though, and heavily reduces the need to rebuild things when they were already built locally. In general it's very useful when you need to rebuild different commits, like when running `git bisect`.
+Even when used by a single developer only, the build cache can be pretty useful. Gradle's _incremental build_ feature helps avoid work that is already done, but once you change the inputs of a task, it forgets any previous results. When you are switching branches back and forth, the local results get rebuilt over and over again, even if you are building something that has already been built before. The build cache remembers, though, and heavily reduces the need to rebuild things when they were already built locally. In general it's also very useful when you need to rebuild different commits, like when running `git bisect`.
 
 The local cache can also be useful when working with a project that has multiple variants dimensions, like in the case of Android applications. Each variant has a number of tasks associated with it, and some of those task variants, despite having different names, can end up doing the same things. With the local cache enabled re-use between task variants will happen automatically when applicable.
 
@@ -32,7 +32,11 @@ image::from-cache-origin.png[]
 
 === Accelerate developer builds by reusing CI results
 
-When multiple developers work on the same project, they don't just need to build their own changes: whenever they pull from version control, they end up having to build each others' changes as well. If the pulled changes are sufficiently independent, the developer can safely re-use outputs already generated on CI. Say, you're working on module "A", and you pull in some changes to module "B" (which does not depend on your module). If those changes were already built in CI, you can download the task outputs for module "B" from the cache instead of generating them locally.
+When multiple developers work on the same project, they don't just need to build their own changes: whenever they pull from version control, they end up having to build each others' changes as well.
+If the pulled changes are sufficiently independent, the developer can safely re-use outputs already generated on CI.
+Say, you're working on module "A", and you pull in some changes to module "B" (which does not depend on your module).
+If those changes were already built in CI, you can download the task outputs for module "B" from the cache instead of generating them locally.
+A typical use case for this is when developers start their day, pull all changes from version control and then run their first build.
 
 The changes don't need to be completely independent, either; we'll take a look at the strategies to re-use results when dependencies are involved in the section about the <<normalization,different forms of normalization>>.
 
@@ -45,7 +49,10 @@ Developers can utilize both a local and a remote cache. While pulling results fr
 
 === Share results between developers
 
-Using the local cache is a sort of one-to-one thing, while the HTTP cache typically has a one-to-many topology. Gradle also allows the use of distributed caches, for example with using the https://github.com/gradle/gradle-hazelcast-plugin/[Hazelcast cache backend].
+Using the local cache is a sort of one-to-one thing, while the HTTP cache typically has a one-to-many topology.
+Gradle also allows the use of distributed caches.
+The https://gradle.com/build-cache[Gradle enterprise build cache] will soon include support for multiple nodes.
+There is also a proof of concept build cache backend https://github.com/gradle/gradle-hazelcast-plugin/[using Hazelcast].
 
 It is also possible to allow developers to upload their results to a shared cache, thus making them available for everyone else, even before CI had a chance to build them.
 

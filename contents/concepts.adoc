@@ -1,6 +1,6 @@
 == Important concepts
 
-As we said before, how much of your build gets loaded from cache depends on many factors. In this section we'll review some of the tools that are essential for well-cached builds.
+As we said before, how much of your build gets loaded from cache depends on many factors. In this section we'll review some of the tools that are essential for well-cached builds. https://gradle.com/build-scans[Build scans] give valuable insights to your builds and we will use them throughout this guide.
 
 [[concepts_repeatable_task_outputs]]
 === Repeatable task outputs
@@ -114,12 +114,12 @@ This will not change the runtime behavior of the `test` task -- i.e. any test is
 
 When two tasks write to the same output directory or output file, it is difficult for Gradle to determine which output belongs to which task.
 There are many edge cases, and executing the tasks in parallel cannot be done safely.
-It is also hard to automatically remove stale output files for the same reason.
+It is also hard to automatically remove {user-manual}more_about_tasks.html#sec:stale_task_outputs[stale output files] for the same reason.
 Tasks that have dedicated, non-overlapping outputs can always be handled in a safe fashion by Gradle.
 For the aforementioned reasons, task output caching is automatically disabled for tasks whose output directories overlap with another task.
 Removing any overlapping outputs is important for good caching performance.
 
-Gradle Enterprise will show tasks where caching was disabled for overlapping outputs in the timeline:
+Build scans show tasks where caching was disabled for overlapping outputs in the timeline:
 
 [.screenshot]
 image::overlapping-outputs-timeline.png[]

@@ -18,7 +18,7 @@ First, you should start out with running a fully up-to-date build.
 You do not even have to enable the build cache for this exercise.
 The expected outcome is that that all incremental tasks are up-to-date.
 Tasks which have no output or no inputs will always be executed, but that shouldn't be a problem.
-If you find some tasks which are out of date then use the methods from <<diagnosing_cache_miss>> to determine the changed inputs for the tasks and use the methods from <<common-problems>> to fix those tasks.
+If you find some tasks which are out of date then use the same methods as described below for <<diagnosing_cache_miss,diagnosing>> and <<common-problems,fixing>> cache misses to address this problems.
 The goal is to achieve <<stable_task_inputs>> for cacheable tasks.
 If you find a task which is out of date but no cacheable tasks depend on its outcome then you don't have to do anything about it.
 

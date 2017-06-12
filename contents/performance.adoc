@@ -38,7 +38,7 @@ image::sanity-check-graph.png[single build comparison]
 Measuring complex pipelines requires some more work, and some external tool to collect and process measurements.
 It's important to distinguish those parts of the pipeline that caching has no effect on, for example the time builds spend waiting in the CI system's queue, or time taken by checking out source code from version control.
 
-You can use the build statistics if you use Teamcity for your CI builds.
+You can use https://confluence.jetbrains.com/display/TCD10/Statistic+Charts[statistic charts] if you use Teamcity for your CI builds.
 Most of time you will end up extracting data from your CI server via the corresponding REST API (see https://wiki.jenkins-ci.org/display/JENKINS/Remote+access+API[Jenkins remote access API] and https://confluence.jetbrains.com/display/TCD10/REST+API[Teamcity REST API]).
 When using Gradle Enterprise, you can use the https://docs.gradle.com/enterprise/export-api/[export API] to access the necessary data and run your analytics on them.
 
