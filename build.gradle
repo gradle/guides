@@ -4,7 +4,7 @@ plugins {
 }
 
 guide {
-    repoPath 'gradle-guides/build-cache-practices'
+    repoPath 'gradle-guides/using-build-cache'
     mainAuthor 'Stefan Wolf, Lóránt Pintér'
 
     // Uncomment this line to add support authors
