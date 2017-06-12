@@ -56,12 +56,11 @@ integTest {
 
 ==== Archives as inputs
 
-Depending on a zip or tar archive as an input file will lead to cache misses since rebuilding will probably change the metadata in the archive as described in <<concepts_repeatable_task_outputs>>.
-To avoid this problem altogether you can instead depend on the contents on the archive. See also the section on dealing with <<volatile_outputs,non-repeatable outputs>>.
-
-Let us assume that you ship an executable jar as a distribution.
-Instead of adding the jar itself as an input to your test task, you should depend on whatever makes up the jar.
-And that would most likely be the classes and some resources.
+It is common for the integration tests to depend on your packaged application.
+If this happens to be a zip or tar archive, then adding it as an input to the integration test task may lead to cache misses.
+This is because, as described in <<concepts_repeatable_task_outputs>>, rebuilding an archive often changes the metadata in the archive.
+You can depend on the exploded contents of the archive instead.
+See also the section on dealing with <<volatile_outputs,non-repeatable outputs>>.
 
 ==== Dealing with file paths
 
