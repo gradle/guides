@@ -1,4 +1,4 @@
-[[common-problems]]
+[[common-problems,"Solving common problems"]]
 == Solving common problems
 
 Small problems in a build, like forgetting to declare a configuration file as an input to your task, can be easily overlooked. The configuration file might change infrequently, or only change when some other (correctly tracked) input changes as well. The worst that could happen is that your task doesn't execute when it should be. Developers can always re-run the build with `clean`, and "fix" their builds for the price of a slow rebuild. In the end nobody gets blocked in their work, and the incident is chalked up to "Gradle acting up again."
@@ -91,7 +91,7 @@ Gradle does not store the symbolic link in the build cache but the actual file c
 As a consequence you might have a hard time when trying to re-use outputs which heavily use symbolic links.
 There currently is no workaround for this behavior.
 
-[[java_version_tracking]]
+[[java_version_tracking,"Java version tracking"]]
 === Java version tracking
 
 Gradle does track the major version of Java as an input for compilation and test execution.
@@ -153,7 +153,7 @@ One way of locking the changes would be to check the volatile resource into sour
 
 === Suggestions for authoring your build
 
-[[custom_actions]]
+[[custom_actions,"Review usages of `doFirst` and `doLast`"]]
 ==== Review usages of `doFirst` and `doLast`
 
 Using `doFirst` and `doLast` from a build script on a cacheable tasks ties you to build script changes since the implementation of the closure comes from the build script.
@@ -186,7 +186,7 @@ task configureJar {
 jar.dependsOn(configureJar)
 ----
 
-[[logic_based_on_task_outcome]]
+[[logic_based_on_task_outcome,"Build logic based on the outcome of a task"]]
 ==== Build logic based on the outcome of a task
 
 Do not base build logic on whether a task has been _executed_.
@@ -211,7 +211,7 @@ image::overlapping-outputs-input-comparison.png[]
 It is crucial to have <<stable_task_inputs,stable task inputs>> for every cacheable task.
 We will go through various situations which violate stable task inputs and look at possible solutions.
 
-[[volatile_inputs]]
+[[volatile_inputs,"Volatile task inputs"]]
 ==== Volatile task inputs
 
 If you use a volatile input like a timestamp as an input property for a task, then there is nothing Gradle can do to make the task cacheable.
@@ -226,7 +226,7 @@ If it is not an essential part of the output, then you should not declare it as 
 As long as the volatile input does not influence the output then there is nothing else to do.
 Most times though, the input will be part of the output.
 
-[[volatile_outputs]]
+[[volatile_outputs,"Non-repeatable task outputs"]]
 ==== Non-repeatable task outputs
 
 Having tasks which generate different outputs for the same inputs can pose a challenge for the effective use of task output caching as seen in <<concepts_repeatable_task_outputs>>.
@@ -267,7 +267,7 @@ If possible, you should avoid going down that route.
 ==== Limit the effect volative data
 
 If none of the described solutions for dealing with volatile data work for you, you should still be able to limit the effect of volatile data on effective use of the build cache.
-This can be done by adding the volatile data later to the outputs as described in [[volatile_inputs]].
+This can be done by adding the volatile data later to the outputs as described in <<volatile_inputs>>.
 Another option would be to move the volatile data so it affects less tasks.
 For example moving the dependency from the `compile` to the `runtime` configuration may already have quite an impact.
 

@@ -9,7 +9,7 @@ will share outputs between tasks that should have had a different output. If you
 This chapter is about finding out why a cache miss happened. If you have a cache hit which you didn't expect we
 suggest to declare whatever change you expected to trigger the cache miss as an input to the task.
 
-[[finding_problems]]
+[[finding_problems,"Finding problems with task output caching"]]
 === Finding problems with task output caching
 
 In order to find existing problems with your usage of task output caching you can do a variety of things.
@@ -93,7 +93,7 @@ When this happens the reason why caching was disabled for the task is reported o
 [.screenshot]
 image::caching-disabled.png[]
 
-[[diagnosing_cache_miss]]
+[[diagnosing_cache_miss,"Diagnosing the reasons for a cache miss"]]
 === Diagnosing the reasons for a cache miss
 
 Having the data from the last section at hand, you should be able to diagnose why the outputs of a certain task were not found in the build cache.
