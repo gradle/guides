@@ -18,7 +18,7 @@ This can happen if you have tasks in your build that are configured to produce t
 ====
 
 Normally, your _fully cached_ build should be significantly faster than the `clean` build: this is the theoretical limit of how much time using the build cache can save on your particular build when running the tasks that you were running.
-We'll be covering several common causes for why your build might not produce amazing numbers here for the first try, see <<finding_problems>>.
+We'll be covering several common causes for why your build might not produce amazing numbers here for the first try, see the chapter on <<finding_problems,diagnosing cache misses>>.
 Build scans provide a detailed performance breakdown which show you how effectively your build is using the build cache:
 
 [.screenshot]
