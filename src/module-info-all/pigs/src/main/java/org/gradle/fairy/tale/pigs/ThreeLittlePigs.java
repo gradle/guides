@@ -9,7 +9,7 @@ import org.gradle.fairy.tale.formula.FairyTale;
  * The classic tale of "The Three Little Pigs"
  */
 public class ThreeLittlePigs implements Tale {
-    private FairyTale fairyTale;
+    private Tale fairyTale;
 
     @Override
     public void tell() {

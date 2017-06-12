@@ -62,7 +62,7 @@ public class FairyTale implements Tale {
             this.events = events;
         }
 
-        public FairyTale weave() {
+        public Tale weave() {
             List<Actor> actors = new ArrayList<>();
             actors.addAll(actorSet);
             return new FairyTale(actors, events);

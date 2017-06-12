@@ -9,7 +9,7 @@ import org.gradle.fairy.tale.formula.FairyTale;
  * The classic tale of "Goldilocks and the Three Bears"
  */
 public class GoldilocksAndTheThreeBears implements Tale {
-    private FairyTale fairyTale;
+    private Tale fairyTale;
 
     @Override
     public void tell() {
