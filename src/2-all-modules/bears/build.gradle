@@ -3,7 +3,8 @@ plugins {
 }
 
 dependencies {
-    implementation project(':tale')
+    api project(':tale')
+    
     implementation project(':formula')
     implementation project(':actors')
 }
