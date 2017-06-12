@@ -1,4 +1,4 @@
-= Build Cache Practices image:https://travis-ci.org/gradle-guides/build-cache-practices.svg?branch=master["Build Status", link="https://travis-ci.org/gradle-guides/build-cache-practices?branch=master"]
+= Using the Build Cache image:https://travis-ci.org/gradle-guides/using-build-cache.svg?branch=master["Build Status", link="https://travis-ci.org/gradle-guides/using-build-cache?branch=master"]
 
 * Content for this guide is in Asciidoc format and the entry file is `contents/index.adoc`.
 * Place new images under `contents/images`.
