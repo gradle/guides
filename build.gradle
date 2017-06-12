@@ -11,6 +11,14 @@ guide {
     repoPath = 'gradle-guides/building-java-9-modules'
 }
 
+asciidoctor {
+    inputs.dir files('src/0-original', 'src/1-single-module', 'src/2-all-modules', 'src/3-application')
+    attributes originaldir: file('src/0-original')
+    attributes singledir: file('src/1-single-module')
+    attributes alldir: file('src/2-all-modules')
+    attributes appdir: file('src/3-application')
+}
+
 // Add in any generation steps.
 gradleRunner {
 

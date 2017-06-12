@@ -1,32 +1,57 @@
 = Building Java 9 Modules
+Pepper Lebeck-Jobe <pepper@gradle.com>
 
+== What you'll learn
 
-== What you'll build
+One of the most exciting features of Java 9 is its support for developing and
+deploying modular Java software. In this guide, you'll learn exactly what you
+need to change in your Java application to:
 
+* produce Java 9 modules for your java libraries.
+* consume Java 9 modules as your dependencies.
+* use Java's `ServiceLoader` pattern with Java 9 modules.
+* run an application using Java 9 modules.
+* distribute your application as an optimized Java 9 runtime image.
+
+While Gradle version {gradle-version} doesn't have first-class support for
+Java 9 modules, this guide shows you how to experiment with them before that
+support is added.
 
 == What you'll need
 
-* About +++<span class="time-to-complete-text"></span>+++
+* About +++<span class="time-to-complete-text">30 minutes</span>+++
 * A text editor
 * A command prompt
-* The Java Development Kit (JDK), version 1.7 or higher
-* A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
+* The Java Development Kit (JDK), version 1.9 (build 170) or newer
+* A https://gradle.org/install[Gradle distribution], version {gradle-version}
+  or newer
 
-== Step 1
+== Understanding the Example Project
 
-The first step is to create a folder for the new project and add a {user-manual}gradle_wrapper.html#sec:wrapper_generation[Gradle Wrapper] to the project.
+This guide explains step-by-step how to convert an example Java application
+which doesn't use any Java 9 features into a fully-modular Java 9 application.
+The source code for the original version of the application lives in the
+`src/0-original` directory. It is organized as multi-project Gradle build made
+up of six subprojects:
 
-[listing]
-----
-$ mkdir building-java-9-modules
-$ cd building-java-9-modules
-$ gradle wrapper // <1>
+* `fairy` - The entry point to the storyteller java application.
+* `tale` - A library which defines the public `Tale` interface.
+* `formula` - A library which makes it easy to weave a `Tale`.
+* `actors` - A library which represents the characters in a fairy tale.
+* `pigs` - A library which produces an instance of `Tale` which represents the
+  story of the three little pigs.
+* `bears` - A library which produces an instance of `Tale` which represents the
+  story of Goldilocks and the three bears.
 
-:wrapper
+The project hierarchy showing the dependency relationships between the six
+projects can be seen in the following illustration:
 
-BUILD SUCCESSFUL
-----
-<1> This allows a version of Gradle to be locked to a project and henceforth you can use `./gradlew` instead of `gradle`.
+.Project Graph
+[#fig-1]
+[caption="Figure 1: "]
+image::project-graph.png[Project Graph]
+
+== Adding `module-info.java` to your source code
 
 
 == Step 2
