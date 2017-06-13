@@ -2,6 +2,7 @@ package org.gradle.fairy.tale.formula;
 
 import org.gradle.actors.Actor;
 import org.gradle.actors.Imagination;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -14,6 +15,17 @@ public class ModularityTest {
     public void canReachActor() {
         Actor actor = Imagination.createActor("Sean Connery");
         assertEquals("Sean Connery", actor.toString());
+    }
+
+    @Test
+    @Ignore("Java 9 modularity even stops reflection.")
+    public void canDynamicallyReachDefaultActor() throws Exception {
+        Class clazz = ModularityTest
+            .class.getClassLoader()
+            .loadClass("org.gradle.actors.impl.DefaultActor");
+        Actor actor = (Actor) clazz.getConstructor(String.class)
+            .newInstance("Elliot Ness");
+        assertEquals("Elliot Ness", actor.toString());
     }
 
     /*

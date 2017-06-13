@@ -1,6 +1,7 @@
 package org.gradle.fairy.tale.formula;
 
 import org.gradle.actors.Actor;
+import org.gradle.actors.Imagination;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -9,6 +10,22 @@ import static org.junit.Assert.assertEquals;
  * Tests the visibility of objects to the formula module.
  */
 public class ModularityTest {
+    @Test
+    public void canReachActor() {
+        Actor actor = Imagination.createActor("Sean Connery");
+        assertEquals("Sean Connery", actor.toString());
+    }
+
+    @Test
+    public void canDynamicallyReachDefaultActor() throws Exception {
+        Class clazz = ModularityTest
+            .class.getClassLoader()
+            .loadClass("org.gradle.actors.impl.DefaultActor");
+        Actor actor = (Actor) clazz.getConstructor(String.class)
+            .newInstance("Elliot Ness");
+        assertEquals("Elliot Ness", actor.toString());
+    }
+
     @Test
     public void canReachDefaultActor() {
         Actor actor = new org.gradle.actors.impl.DefaultActor("Elliot Ness");
