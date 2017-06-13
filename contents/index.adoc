@@ -264,7 +264,7 @@ You can easily identify good candidates for incremental build or tasks that aren
 
 Incremental build works locally, based on the previous execution of a task. Gradle can also store task outputs in a _build cache,_ and retrieve them later when the same task with the same inputs is about to be executed. You can use a local cache to reuse task outputs on your computer. This helps reduce build times when switching branches.
 
-It is also possible to use a shared build cache service, like https://gradle.com/build-cache/[the one provided by Gradle Enterprise]. Shared caches  can reduce the number of tasks you need to execute by reusing outputs already generated elsewhere. This can significantly decrease build times for both CI and developer builds.
+It is also possible to use a shared build cache service, like https://gradle.com/build-cache/[the one provided by Gradle Enterprise]. Shared caches can reduce the number of tasks you need to execute by reusing outputs already generated elsewhere. This can significantly decrease build times for both CI and developer builds.
 
 We have a complete guide about https://guides.gradle.org/using-build-cache/[configuring and using the build cache]. It covers the different scenarios caching can improve, and detailed discussions of the different caveats you need to be aware of when enabling caching for a build.
 
