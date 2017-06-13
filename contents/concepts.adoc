@@ -4,6 +4,20 @@ How much of your build gets loaded from cache depends on many factors.
 In this section you will see some of the tools that are essential for well-cached builds.
 https://gradle.com/build-scans[Build scans] are part of that toolchain and will be used throughout this guide.
 
+=== Build cache key
+
+Artifacts in the build cache are uniquely identified by a _https://docs.gradle.org/nightly/userguide/build_cache.html#sec:task_output_caching_details[build cache key]._
+A build cache key is assigned to each cacheable task when running with the build cache enabled.
+It is used for loading and storing task outputs to the build cache.
+The following inputs contribute to the build cache key for a task:
+
+* The task implementation
+* The task action implementations
+* The names of the output properties
+* The names and values of task inputs
+
+Two tasks can re-use their outputs by using the build cache if their associated build cache keys are the same.
+
 [[concepts_repeatable_task_outputs,"Repeatable task outputs"]]
 === Repeatable task outputs
 
