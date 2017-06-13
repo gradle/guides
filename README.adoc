@@ -1,0 +1,11 @@
+= @@GUIDE_NAME@@ image:https://travis-ci.org/gradle-guides/@@GUIDE_SLUG@@.svg?branch=master["Build Status", link="https://travis-ci.org/gradle-guides/@@GUIDE_SLUG@@?branch=master"]
+
+* Content for this guide is in Asciidoc format and the entry file is `contents/index.adoc`.
+* Place new images under `contents/images`.
+* Add testable code snippets to `src` folder as appropriate for this guide.
+* Commits to `master` will automatically be published to `gh-pages` if the build is successful.
+* To build documentation run `./gradlew asciidoctor` and find the results in `build/asciidoc/html5`.
+* To test code snippets run `./gradlew check`.
+* To see which attributes are passed to the `asciidoctor` task, run `./gradlew asciidoctorAttributes`
+
+Before pushing your guide, please run `./gradlew checkLinks` to validate remote hyperlinks.
