@@ -1,22 +1,47 @@
-
 plugins {
-    id "org.ajoberstar.github-pages" version "1.4.2"
-    id "org.asciidoctor.convert" version "1.5.3"
-    id 'org.ysb33r.cloudci' version '1.0'
+    id 'org.gradle.guides.getting-started' version '0.5.3'
+    id 'org.gradle.guides.test-jvm-code' version '0.5.3'
 }
 
-
-ext {
-    repoPath = "gradle-guides/publishing-plugins-to-gradle-plugin-portal"
+guide {
+    repoPath 'gradle-guides/publishing-plugins-to-gradle-plugin-portal'
+    mainAuthor 'Schalk Cronjé'
 }
 
-apply from : 'gradle/build-documentation.gradle'
-apply from : 'gradle/publish-documentation.gradle'
-apply from : 'gradle/test-source.gradle'
+repositories {
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
+}
 
+configurations {
+    pluginClasspath
+}
 
+dependencies {
+    pluginClasspath 'com.gradle.publish:plugin-publish-plugin:0.9.7'
+}
 
 asciidoctor {
     attributes 'exampledir'  : file('src/publicationTest').absolutePath
+}
+
+test {
+    ext {
+        httpServerPort = 65000
+    }
+    systemProperties 'gradle.portal.url' : "http://localhost:${httpServerPort}"
+    systemProperties 'HTTPSERVER_PORT' : httpServerPort
+    systemProperties 'TEMPLATE_DIR' : file('src/publicationTest').absolutePath
+    systemProperties 'PLUGIN_CLASSPATH' : file("${buildDir}/pluginClasspath").absolutePath
+
+    inputs.dir 'src/publicationTest'
+
+    doFirst {
+        copy {
+            from configurations.pluginClasspath
+            into "${buildDir}/pluginClasspath"
+        }
+    }
 }
 
