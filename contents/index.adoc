@@ -22,8 +22,6 @@ support is added.
 * A text editor
 * A command prompt
 * The Java Development Kit (JDK), version 1.9 (build 170) or newer
-* A https://gradle.org/install[Gradle distribution], version {gradle-version}
-  or newer
 
 == Understanding the Example Project
 
