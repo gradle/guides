@@ -3,5 +3,13 @@ subprojects {
         repositories {
             jcenter()
         }
+
+        // tag::autoModuleName[]
+        jar {
+            manifest {
+                attributes('Automatic-Module-Name': moduleName)
+            }
+        }
+        // end::autoModuleName[]
     }
 }

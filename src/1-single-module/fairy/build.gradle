@@ -10,4 +10,8 @@ dependencies {
     runtimeOnly project(':bears')
 }
 
+// tag::moduleName[]
+ext.moduleName = 'org.gradle.fairy.app'
+// end::moduleName[]
+
 mainClassName = 'org.gradle.fairy.app.StoryTeller'
