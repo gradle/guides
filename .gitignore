@@ -1,9 +1,9 @@
 # mr-managed repositories
-build-cache-practices/
 building-android-apps/
 building-c-executables/
 building-cpp-executables/
 building-groovy-libraries/
+building-java-9-modules/
 building-java-applications/
 building-java-libraries/
 building-java-web-applications/
@@ -21,9 +21,12 @@ implementing-gradle-plugins/
 migrating-from-maven/
 performance/
 publishing-plugins-to-gradle-plugin-portal/
+running-webpack-with-gradle/
 style-guide/
 topical-template/
+tutorial-template/
 using-an-existing-gradle-build/
+using-build-cache/
 writing-getting-started-guides/
 writing-gradle-plugins/
 writing-gradle-tasks/

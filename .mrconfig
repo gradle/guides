@@ -1,6 +1,3 @@
-[build-cache-practices]
-checkout = git clone git@github.com:gradle-guides/build-cache-practices.git
-
 [building-android-apps]
 checkout = git clone git@github.com:gradle-guides/building-android-apps.git
 
@@ -12,6 +9,9 @@ checkout = git clone git@github.com:gradle-guides/building-cpp-executables.git
 
 [building-groovy-libraries]
 checkout = git clone git@github.com:gradle-guides/building-groovy-libraries.git
+
+[building-java-9-modules]
+checkout = git clone git@github.com:gradle-guides/building-java-9-modules.git
 
 [building-java-applications]
 checkout = git clone git@github.com:gradle-guides/building-java-applications.git
@@ -64,14 +64,23 @@ checkout = git clone git@github.com:gradle-guides/performance.git
 [publishing-plugins-to-gradle-plugin-portal]
 checkout = git clone git@github.com:gradle-guides/publishing-plugins-to-gradle-plugin-portal.git
 
+[running-webpack-with-gradle]
+checkout = git clone git@github.com:gradle-guides/running-webpack-with-gradle.git
+
 [style-guide]
 checkout = git clone git@github.com:gradle-guides/style-guide.git
 
 [topical-template]
 checkout = git clone git@github.com:gradle-guides/topical-template.git
 
+[tutorial-template]
+checkout = git clone git@github.com:gradle-guides/tutorial-template.git
+
 [using-an-existing-gradle-build]
 checkout = git clone git@github.com:gradle-guides/using-an-existing-gradle-build.git
+
+[using-build-cache]
+checkout = git clone git@github.com:gradle-guides/using-build-cache.git
 
 [writing-getting-started-guides]
 checkout = git clone git@github.com:gradle-guides/writing-getting-started-guides.git
