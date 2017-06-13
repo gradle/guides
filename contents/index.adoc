@@ -430,6 +430,92 @@ Java 9 module. Next, you'll centralize the gradle changes into the root
 
 == Step 2 - Produce Java 9 modules for all subprojects
 
+The goal of this step is to make all of the subprojects in our Gradle build
+produce Java 9 modules, and consume their dependencies as Java 9 modules. Since
+you already have the `moduleName` variable declaration separate from the other
+changes in the `build.gradle` file in the `actors` subproject. It's just a
+matter of cutting everything from below the `moduleName` declaration in that
+file and pasting it into the `afterEvaluate` block in the root `build.gradle`
+file.
+
+.build.gradle
+[source,groovy]
+----
+include::{alldir}/build.gradle[]
+----
+
+NOTE: If you did
+<<change_6_optional_add_code_atomatic_module_name_code_manifest_entries_for_all_other_projects,Change 6>>
+from Step 1, you should remove the `jar` block before pasting.
+
+If you haven't already added `moduleName` variable declarations for each of the
+subprojects, you should do that now. For example:
+
+.pigs/build.gradle
+[source,groovy]
+----
+include::{alldir}/build.gradle[tags=pigModule]
+----
+
+You also need to add a `module-info.java` file for each of your subprojects.
+For example:
+
+.bears/src/main/java/module-info.java
+[source,java]
+----
+include::{singledir}/bears/src/main/java/module-info.java[]
+----
+
+WARNING: You also have to add these `module-info.java` files for the `pigs`,
+`formula`, `fairy`, and `tale` subprojects in addition to the `bears`
+subproject. You can see what the end results should look like in
+`src/2-all-modules`.
+
+That's it, now Gradle's `test` task will fail to compile unless you've
+commented out the `canReachDefaultActor` test. Also, the
+`canDynamicallyReachDefaultActor` test will fail at test runtime unless you
+`@Ignore` it.
+
+[listing]
+----
+$ ./gradlew test
+
+> Task :formula:test
+
+org.gradle.fairy.tale.formula.ModularityTest > canDynamicallyReachDefaultActor FAILED
+    java.lang.IllegalAccessException at ModularityTest.java:28
+
+2 tests completed, 1 failed
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':formula:test'.
+> There were failing tests. See the report at: <link-to-report>
+
+* Try:
+Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output.
+
+BUILD FAILED
+----
+
+If you do comment out `canReachDefaultActor` and `@Ignore`
+`canDynamicallyReachDefaultActor` the tests should pass, and you'll have
+exactly the code in `src/2-all-modules`
+
+=== Step 2 - Summary
+
+At this point in the guide, you are now compiling and running tests for all six
+of the subprojects using Java 9 modules. The subprojects are appropriately
+encapsulated, and none of the tests from one package can see implementation
+details of any of their dependencies. However, there are a few features
+of Gradle's {user-manual}application_plugin.html[Application Plugin] which are
+relying on the classpath instead of the module path to load and resolve classes.
+
+Also, Java 9 adds a more convenient way to use the `ServiceLoader` feature.
+You'll handle all of these in Step 3.
+
 == Step 3 - Consume Java 9 modules in the `run` and `assemble` tasks
 
 == Summary

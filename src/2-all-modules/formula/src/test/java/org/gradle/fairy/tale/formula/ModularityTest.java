@@ -30,12 +30,14 @@ public class ModularityTest {
     }
 
     /*
+    // tag::canReachDefaultActor[]
     @Test
     public void canReachDefaultActor() {
         // With Java 9 modules, this line now fails to compile.
         Actor actor = new org.gradle.actors.impl.DefaultActor("Elliot Ness");
         assertEquals("Elliot Ness", actor.toString());
     }
+    // end::canReachDefaultActor[]
     */
 
     /*
