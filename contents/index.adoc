@@ -260,6 +260,14 @@ Incremental build is the name Gradle gives to this feature of checking inputs an
 
 You can easily identify good candidates for incremental build or tasks that aren’t up to date when they should be by looking at the timeline view in a build scan. The tasks are sorted by longest duration first, making it easy to pick out the slowest tasks. Pick the slowest of your custom tasks and make it incremental, then measure again and repeat.
 
+### Caching task outputs
+
+Incremental build works locally, based on the previous execution of a task. Gradle can also store task outputs in a _build cache,_ and retrieve them later when the same task with the same inputs is about to be executed. You can use a local cache to reuse task outputs on your computer. This helps reduce build times when switching branches.
+
+It is also possible to use a shared build cache service, like https://gradle.com/build-cache/[the one provided by Gradle Enterprise]. Shared caches  can reduce the number of tasks you need to execute by reusing outputs already generated elsewhere. This can significantly decrease build times for both CI and developer builds.
+
+We have a complete guide about https://guides.gradle.org/using-build-cache/[configuring and using the build cache]. It covers the different scenarios caching can improve, and detailed discussions of the different caveats you need to be aware of when enabling caching for a build.
+
 ### Partial builds
 
 Incremental build definitely improves build times, but you need to remember that the up-to-date checks still take time. This has important implications for multi-project builds that have a large number of subprojects. If the task you want to execute ultimately depends on the execution of twenty other subprojects, you have to wait until the build has finished checking those before it gets round to your task. Some of them may even have non-incremental tasks that end up running, even if nothing has changed.
