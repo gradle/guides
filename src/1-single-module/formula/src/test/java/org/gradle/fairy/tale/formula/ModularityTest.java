@@ -9,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Tests the visibility of objects to the formula module.
  */
+@SuppressWarnings("unchecked")
 public class ModularityTest {
     @Test
     public void canReachActor() {

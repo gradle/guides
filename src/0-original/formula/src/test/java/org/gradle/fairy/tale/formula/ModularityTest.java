@@ -9,7 +9,9 @@ import static org.junit.Assert.assertEquals;
 /**
  * Tests the visibility of objects to the formula module.
  */
+@SuppressWarnings("unchecked")
 public class ModularityTest {
+    // tag::tests[]
     @Test
     public void canReachActor() {
         Actor actor = Imagination.createActor("Sean Connery");
@@ -42,4 +44,5 @@ public class ModularityTest {
         assertTrue(strings.contains("Goodbye"));
     }
     */
+    // end::tests[]
 }
