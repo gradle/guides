@@ -28,13 +28,13 @@ When you are happy with the performance in the single workspace use-case, then, 
 - Use different workspaces on different machines using a remote build cache.
 - Use the cache populated by a CI build and a developer machine.
 
-After these experiments with fully cache builds you can go on and try to make typical changes to your project and see if enough tasks are still cached.
+After these experiments with fully cached builds you can go on and try to make typical changes to your project and see if enough tasks are still cached.
 If the results are not satisfactory you can think about restructuring your project to reduce dependencies between different tasks.
 
-We had good experiences with recording execution times of our builds, generate graphs of those and then look at the results.
-You then can look for certain patterns, like a rebuilding everything even though you expected compilation to be cached.
+Consider recording execution times of our builds, generating graphs, and anlyzing the results.
+Keep an eye out for certain patterns, like a build recompiling everything even though you expected compilation to be cached.
 
-You can also make certain changes to your code base manually or automatically and check that the expected set of tasks is cached.
+You can also make changes to your code base manually or automatically and check that the expected set of tasks is cached.
 
 If you have tasks that are re-executing instead of pulling their outputs from the cache, then it may point to a problem in your build.
 Techniques for debugging a cache miss are explained in the following section.
@@ -55,7 +55,7 @@ From most coarse grained to most fine grained, the items we will use to compare 
 * Individual task property input hashes
 * Hashes of files which are part of task input properties
 
-Currently, both the build cache key for the task and information down to the individual input property level is available in the info log:
+Currently, both the build cache key for the task and information down to the individual input property level is logged at the `INFO` level:
 
 [listing]
 ----
@@ -97,7 +97,7 @@ Having the data from the last section at hand, you should be able to diagnose wh
 Since you were expecting more tasks to be cached, you should be able to pinpoint a build which would have produced the artifact under question.
 
 Before diving into how to find out why one task has not been loaded from the cache we should first look into which task caused the cache misses.
-There is a cascade effect causing dependent tasks to be executed if one of the tasks earlier in the build is not loaded from the cache and has different outputs.
+There is a cascade effect which causes dependent tasks to be executed if one of the tasks earlier in the build is not loaded from the cache and has different outputs.
 Therefore, you should locate the first cacheable task which was executed and continue investigating from there.
 This can be done from the timeline view in a build scan or from the task input comparison directly:
 

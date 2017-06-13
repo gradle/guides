@@ -3,8 +3,8 @@ Gradle's {user-manual}more_about_tasks.html#sec:up_to_date_checks[incremental bu
 {user-manual}build_cache.html#sec:task_output_caching[Task output caching] extends on this by re-using task outputs produced with the same inputs anytime before, on any machine that is connected to the same build cache backend.
 
 This guide covers the different use cases for Gradle’s build cache, from local-only development to caching task outputs across large teams.
-Our intended audience are build engineers already familiar with the build cache who are looking to enable it for their existing builds.
-We will discuss ways to measure the advantages provided by the build cache, and methods to improve cache performance, or to diagnose and fix common problems.
+Our intended audience is build engineers already familiar with the build cache who are looking to enable it for their existing builds.
+This guide will discuss ways to measure the advantages provided by the build cache, methods to improve cache performance, and how to diagnose and fix common problems.
 Let’s dive in!
 
 == Use cases for the build cache
@@ -13,19 +13,19 @@ Gradle’s build cache is a versatile feature that can be used in different ways
 
 === Speed up developer builds with the local cache
 
-Even when used by a single developer only, the build cache can be pretty useful.
-Gradle's _incremental build_ feature helps to avoid work that is already done, but once you re-execute task, any previous results are forgotten.
+Even when used by a single developer only, the build cache can be very useful.
+Gradle's _incremental build_ feature helps to avoid work that is already done, but once you re-execute a task, any previous results are forgotten.
 When you are switching branches back and forth, the local results get rebuilt over and over again, even if you are building something that has already been built before.
-The build cache remembers the earlier build results, though, and heavily reduces the need to rebuild things when they were already built locally.
-In general it's also very useful when you need to rebuild different commits, like when running `git bisect`.
+The build cache remembers the earlier build results, and greatly reduces the need to rebuild things when they have already been built locally.
+This can also extend to rebuilding different commits, like when running `git bisect`.
 
-The local cache can also be useful when working with a project that has multiple variants dimensions, like in the case of Android applications. Each variant has a number of tasks associated with it, and some of those task variants, despite having different names, can end up doing the same things. With the local cache enabled re-use between task variants will happen automatically when applicable.
+The local cache can also be useful when working with a project that has multiple variants dimensions, as in the case of Android projects. Each variant has a number of tasks associated with it, and some of those task variants, despite having different names, can end up producing the same output. With the local cache enabled, re-use between task variants will happen automatically when applicable.
 
 === Share results between CI builds
 
-The build cache can do more than going back-and-forth in time: it can also bridge physical distance between computers, allowing results generated on one machine to be re-used by another.
-A usual first step when introducing the build cache within a team is to enable it for builds running as part of _continuous integration_ only. Using a shared HTTP build cache backend (such as https://gradle.com/build-cache/[the one provided by Gradle Enterprise]) can significantly reduce the work CI agents need to do.
-This translates into much faster feedback to developers, and less money spent on the CI infrastructure.
+The build cache can do more than go back-and-forth in time: it can also bridge physical distance between computers, allowing results generated on one machine to be re-used by another.
+A typical first step when introducing the build cache within a team is to enable it for builds running as part of _continuous integration_ only. Using a shared HTTP build cache backend (such as https://gradle.com/build-cache/[the one provided by Gradle Enterprise]) can significantly reduce the work CI agents need to do.
+This translates into much faster feedback for developers, and less money spent on the CI resources.
 Faster builds also mean fewer commits being part of each build, which makes debugging issues much more efficient.
 
 Beginning with the build cache on CI is a good first step as the environment on CI agents is usually more stable and predictable than developer machines.
@@ -33,10 +33,7 @@ This helps to identify any possible issues with the build that may affect cachea
 
 If you are subject to audit requirements regarding the artifacts you ship to your customers you may need to disable the build cache for certain builds.
 Gradle Enterprise 2017.4 may help you with fulfilling these requirements while still using the build cache for all your builds.
-It will allow you to easily find out which build produced an artifact coming from the build cache by clicking on the corresponding icon in the timeline:
-
-[.screenshot]
-image::from-cache-origin.png[]
+It will allow you to easily find out which build produced an artifact coming from the build cache via build scans.
 
 === Accelerate developer builds by reusing CI results
 
@@ -54,8 +51,8 @@ Developers can utilize both a local and a remote cache. While pulling results fr
 
 === Share results between developers
 
-It is also possible to allow developers to upload their results to a shared cache, thus making them available for everyone else, even before CI had a chance to build them.
-While sharing results from developer machines seems like a good idea at first sight, it might not always be what you are looking for:
+It is also possible to allow developers to upload their results to a shared cache, thus making them available for everyone else, even before CI has had a chance to build them.
+Before implementing such a strategy, there are some things to considering when sharing cached output between developers:
 
 * The environment on developer machines is usually not as strictly controlled as it is on CI. Gradle tries to track every relevant bit of information that can influence a task's output, but if there are tasks that are incorrectly defined, developers can pollute the cache with corrupted results.
 * Gradle is in general safe to be used with incremental builds. However, we recommend only uploading to a shared cache from `clean` builds.

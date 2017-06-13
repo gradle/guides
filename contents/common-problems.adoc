@@ -7,7 +7,7 @@ The worst that could happen is that your task doesn't execute when it should.
 Developers can always re-run the build with `clean`, and "fix" their builds for the price of a slow rebuild.
 In the end nobody gets blocked in their work, and the incident is chalked up to "Gradle acting up again."
 
-With cacheable tasks incorrect results are stored permanently, and can come back to haunt you later; re-running with `clean` won't achieve much either. When using a shared cache, these problems even cross machine boundaries. In the example above, Gradle might end up loading a result for your task that was produced with a different configuration. Resolving these problems with the build thus becomes even more important when task output caching is enabled.
+With cacheable tasks incorrect results are stored permanently, and can come back to haunt you later; re-running with `clean` won't help in this situation either. When using a shared cache, these problems even cross machine boundaries. In the example above, Gradle might end up loading a result for your task that was produced with a different configuration. Resolving these problems with the build therefore becomes even more important when task output caching is enabled.
 
 Other issues with the build won't cause it to produce incorrect results, but will lead to unnecessary cache misses.
 In this chapter you will learn about some typical problems and ways to avoid them.
@@ -38,7 +38,7 @@ org.gradle.jvmargs=-Dfile.encoding=UTF-8
 === Environment variable tracking
 
 Gradle does not track changes in environment variables for tasks.
-For example for the `Test` tasks it is completely possible that the outcome depends on a few environment variables.
+For example for `Test` tasks it is completely possible that the outcome depends on a few environment variables.
 To ensure that only the right artifacts are re-used between builds, you need to add environment variables as inputs to tasks depending on them.
 
 Absolute paths are often passed as environment variables, too.
@@ -93,15 +93,15 @@ If sharing the build cache across multiple operating systems is important in you
 
 === Symbolic links
 
-Gradle does not store the symbolic link in the build cache but the actual file contents of the destination of the link.
+When using symbolic links, Gradle does not store the link in the build cache but the actual file contents of the destination of the link.
 As a consequence you might have a hard time when trying to re-use outputs which heavily use symbolic links.
 There currently is no workaround for this behavior.
 
 [[java_version_tracking,"Java version tracking"]]
 === Java version tracking
 
-Gradle does track the major version of Java as an input for compilation and test execution.
-Currently, it does not track the vendor nor the minor version.
+Gradle tracks only the major version of Java as an input for compilation and test execution.
+Currently, it does _not _track the vendor nor the minor version.
 Still, the vendor and the minor version may influence the bytecode produced by compilation.
 
 If you use different JVM vendors for compiling or running Java we strongly suggest that you add the vendor as an input to the corresponding tasks.
@@ -148,12 +148,12 @@ Therefore, you can expect differences in the bytecode of compiled Groovy classes
 === Avoid changing inputs external to your build
 
 If your build is dependent on external dependencies like binary artifacts or dynamic data from a web page you need to make sure that these inputs are consistent throughout your infrastructure.
-When there are some variations between machines then there will be no cache hits.
+Any variations across machines will result in cache misses.
 
 Never re-release a non-changing binary dependency with the same version number but different contents: if this happens with a plugin dependency, you will never be able to explain why you don’t see cache re-use between machines (it’s because they have different versions of that artifact).
 
 Using ``SNAPSHOT``s or other changing dependencies in your build by design violates the <<stable_task_inputs,stable task inputs>> principle.
-To use of the build cache effectively, you should depend on fixed dependencies.
+To use the build cache effectively, you should depend on fixed dependencies.
 You may want to look into the https://github.com/nebula-plugins/gradle-dependency-lock-plugin[dependency lock plugin] or switch to using {user-manual}composite_builds.html[composite builds] instead.
 
 The same is true for depending on volatile external resources, for example a list of released versions.
@@ -271,7 +271,7 @@ Going down this road can lead to different problems with cache misses for increm
 Moreover, race conditions between different builds trying to store the same outputs in the build cache in parallel can lead to hard-to-diagnose cache misses.
 If possible, you should avoid going down that route.
 
-==== Limit the effect volative data
+==== Limit the effect of volatile data
 
 If none of the described solutions for dealing with volatile data work for you, you should still be able to limit the effect of volatile data on effective use of the build cache.
 This can be done by adding the volatile data later to the outputs as described in <<volatile_inputs>>.
@@ -280,7 +280,7 @@ For example moving the dependency from the `compile` to the `runtime` configurat
 
 Sometimes it is also possible to build two artifacts, one containing the volatile data and another one containing a constant representation of the volatile data.
 The non-volatile output would be used e.g. for testing while the volatile one would be published to an external repository.
-This is in conflict with the Continuous Delivery "build artifacts once" principle but can sometimes be the only option.
+While this conflicts with the Continuous Delivery "build artifacts once" principle it can sometimes be the only option.
 
 === Custom and third party tasks
 

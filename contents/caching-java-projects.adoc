@@ -17,12 +17,17 @@ If a developer now modifies a method's body in the library, the library will nee
 
 Compile avoidance works out of the box.
 There is one caveat though: when using annotation processors, Gradle uses the annotation processor classpath as an input.
-As this is a runtime classpath, less <<runtime_classpath,input normalization>> is taking place there.
-When the annotation processor classpath is not set explicitly, it defaults to the compile classpath, which in turn means the compile classpath is treated as a runtime classpath input.
+Unlike most compile dependencies, in which only the ABI influences compilation, the _implementation_ of annotation processors must be considered as an input to the compiler. For this reason Gradle will treat annotation processors as a _runtime_ classpath, meaning less <<runtime_classpath,input normalization>> is taking place there.
+If Gradle detects an annotation processor on the compile classpath, the annotation processor classpath defaults to the compile classpath when not explicitly set, which in turn means the entire compile classpath is treated as a runtime classpath input.
 
 For the example above this would mean the ABI extracted from the compile classpath would be unchanged, but the annotation processor classpath (because it's not treated with compile avoidance) would be different. Ultimately, the developer would end up having to recompile the application.
 
-The easiest way to avoid this performance penalty is to not use annotation processors. If you need to use them, make sure you set the annotation processor classpath explicitly to include only the libraries needed for annotation processing. The {user-manual}java_plugin.html#sec:java_compile_avoidance[user guide] describes how to do this.
+The easiest way to avoid this performance penalty is to not use annotation processors. However, if you need to use them, make sure you set the annotation processor classpath explicitly to include only the libraries needed for annotation processing. The {user-manual}java_plugin.html#sec:java_compile_avoidance[user guide] describes how to do this.
+
+[NOTE]
+====
+Some common Java dependencies (such as Log4j 2.x) come bundled with annotation processors. If you use these dependencies, but to not leverage the features of the bundled annotation processors, it's best to disable annotation processing entirely. This can be done by setting the annotation processor classpath to an empty set.
+====
 
 === Unit test execution
 
@@ -66,7 +71,7 @@ See also the section on dealing with <<volatile_outputs,non-repeatable outputs>>
 
 You will probably pass some information from the build environment to your integration test tasks by using system properties.
 When passing file locations, use only relative paths whenever possible, and add the input file as an input manually, so that Gradle can track changes to the contents of the file.
-(This works with directories as well.)
+The same should be applied to directories as well.
 Passing absolute paths will break <<relocatability,relocatability>> of the integration test task.
 For example, with a task called `integTest`, instead of this:
 

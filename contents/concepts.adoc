@@ -6,9 +6,8 @@ https://gradle.com/build-scans[Build scans] are part of that toolchain and will 
 
 === Build cache key
 
-Artifacts in the build cache are uniquely identified by a _https://docs.gradle.org/nightly/userguide/build_cache.html#sec:task_output_caching_details[build cache key]._
-A build cache key is assigned to each cacheable task when running with the build cache enabled.
-It is used for loading and storing task outputs to the build cache.
+Artifacts in the build cache are uniquely identified by a _https://docs.gradle.org/nightly/userguide/build_cache.html#sec:task_output_caching_details[build cache key].
+A build cache key is assigned to each cacheable task when running with the build cache enabled and is used for both loading and storing task outputs to the build cache.
 The following inputs contribute to the build cache key for a task:
 
 * The task implementation
@@ -30,16 +29,15 @@ Tasks that depend on the code generator's output will need to be re-executed.
 
 When a task is cacheable, then the very nature of task output caching makes sure that the task will have the same outputs for a given set of inputs.
 Therefore, cacheable tasks should have repeatable task outputs.
-If they don't, then the result of executing the task and loading the task from the cache may be different which can lead to hard-to-diagnose cache misses.
+If they don't, then the result of executing the task and loading the task from the cache may be different, which can lead to hard-to-diagnose cache misses.
 
-For non-cacheable tasks it not that important to have repeatable task outputs.
-The key here is that no cacheable task has non-repeatable task outputs as an input.
+The key here is that no cacheable task should have non-repeatable task outputs as an input.
 
 [[stable_task_inputs,"Stable task inputs"]]
 === Stable task inputs
 
 Having a task repeatably produce the same output is not enough if its inputs keep changing all the time.
-Such unstable inputs can be supplied directly to the task. Think of a version number that includes a timestamp being added to the jar file's manifest:
+Such unstable inputs can be supplied directly to the task. Consider a version number that includes a timestamp being added to the jar file's manifest:
 
 [source,groovy]
 ----
@@ -52,15 +50,17 @@ jar {
 }
 ----
 
+In the above example the inputs for the `jar` task will be different for each build execution since this timestamp will continually change.
+
 Another example for unstable inputs is the commit ID from version control.
 Maybe your version number is generated via `git describe` (and you include it in the jar manifest as shown above).
-Or maybe you include the commit hash directly in `version.properties` or a JAR manifest attribute.
+Or maybe you include the commit hash directly in `version.properties` or a jar manifest attribute.
 Either way, the outputs produced by any tasks depending on such data will only be re-usable by builds running against the exact same commit.
 
 Another common, but less obvious source of unstable inputs is when a task consumes the output of another task which produces non-repeatable results, such as the example before of a code generator that embeds timestamps in its output.
 
 A task can only be loaded from the cache if it has stable task inputs.
-Unstable task inputs result in the task having a unique set of inputs for every build, and cached outputs cannot be reused.
+Unstable task inputs result in the task having a unique set of inputs for every build, which will always result in a cache miss.
 
 [[normalization,"Better re-use via input normalization"]]
 === Better re-use via input normalization
@@ -87,7 +87,7 @@ Task properties declared with `ABSOLUTE` path sensitivity are considered non-rel
 This is the default for properties not declaring path sensitivity, too.
 
 For example, the class files produced by the Java compiler are dependent on the file names of the Java source files: renaming the source files with public classes would fail the build.
-However, moving the files around would have no effect on the result of the compilation.
+However, moving the files around has no effect on the result of the compilation.
 Therefore, the path sensitivity for the sources of the `JavaCompile` task is `NAME_ONLY`. Because of this only the normalized paths of the Java source files -- the file names -- are considered as inputs to the `JavaCompile` task.
 
 [NOTE]
@@ -110,7 +110,7 @@ For more information on compile avoidance see the corresponding section in the {
 [[runtime_classpath,"Runtime classpath normalization"]]
 ===== Runtime classpath normalization
 
-Similar to compile avoidance, Gradle does understand the concept of a runtime classpath, and uses tailored input normalization to avoid running e.g. tests.
+Similar to compile avoidance, Gradle also understands the concept of a runtime classpath, and uses tailored input normalization to avoid running e.g. tests.
 For runtime classpaths Gradle inspects the contents of jar files and ignores the timestamps and order of the entries in the jar file.
 This means that a rebuilt jar file would be considered the same runtime classpath input.
 For details on what level of understanding Gradle has for detecting changes to classpaths and what is considered as a classpath see the {user-manual}more_about_tasks.html#sec:task_input_using_classpath_annotations[user guide].
@@ -143,8 +143,8 @@ This will not change the runtime behavior of the `test` task -- i.e. any test is
 
 When two tasks write to the same output directory or output file, it is difficult for Gradle to determine which output belongs to which task.
 There are many edge cases, and executing the tasks in parallel cannot be done safely.
-It is also hard to automatically remove {user-manual}more_about_tasks.html#sec:stale_task_outputs[stale output files] for the same reason.
-Tasks that have dedicated, non-overlapping outputs can always be handled in a safe fashion by Gradle.
+For the same reason, Gradle cannot remove {user-manual}more_about_tasks.html#sec:stale_task_outputs[stale output files] for these tasks.
+Tasks that have discrete, non-overlapping outputs can always be handled in a safe fashion by Gradle.
 For the aforementioned reasons, task output caching is automatically disabled for tasks whose output directories overlap with another task.
 
 Build scans show tasks where caching was disabled due to overlapping outputs in the timeline:
@@ -168,6 +168,6 @@ These tasks can safely re-use each other's outputs.
 
 You've seen quite a bit about cacheable tasks, which implies there are non-cacheable ones, too. If caching task outputs is as awesome as it sounds, why not cache every task?
 
-There are tasks that are definitely worth caching: tasks that do complex, repeatable processing and produce moderate amounts of output. Compilation tasks are usually ideal candidates for caching. At the other end of the spectrum lie I/O-heavy tasks, like `Copy` and `Sync`. Moving files around locally typically cannot be sped up by copying them from a cache. Caching those tasks would even waste good resources on storing all those redundant results in the cache.
+There are tasks that are definitely worth caching: tasks that do complex, repeatable processing and produce moderate amounts of output. Compilation tasks are usually ideal candidates for caching. At the other end of the spectrum lie I/O-heavy tasks, like `Copy` and `Sync`. Moving files around locally typically cannot be sped up by copying them from a cache. Caching those tasks would even waste good resources by storing all those redundant results in the cache.
 
 Most tasks are either obviously worth caching, or obviously not. For those in-between a good rule of thumb is to see if downloading results would be significantly faster than producing them locally.
