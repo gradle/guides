@@ -266,7 +266,7 @@ Incremental build works locally, based on the previous execution of a task. Grad
 
 It is also possible to use a shared build cache service, like https://gradle.com/build-cache/[the one provided by Gradle Enterprise]. Shared caches can reduce the number of tasks you need to execute by reusing outputs already generated elsewhere. This can significantly decrease build times for both CI and developer builds.
 
-We have a complete guide about https://guides.gradle.org/using-build-cache/[configuring and using the build cache]. It covers the different scenarios caching can improve, and detailed discussions of the different caveats you need to be aware of when enabling caching for a build.
+We have a complete guide about https://guides.gradle.org/using-build-cache/[using the build cache]. It covers the different scenarios caching can improve, and detailed discussions of the different caveats you need to be aware of when enabling caching for a build.
 
 ### Partial builds
 
