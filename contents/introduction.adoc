@@ -25,12 +25,12 @@ A usual first step when introducing the build cache within a team is to enable i
 This translates into much faster feedback to developers, and less money spent on the CI infrastructure.
 Faster builds also mean fewer commits being part of each build, which makes debugging issues much more efficient.
 
-Using the build cache on CI first makes sense as the environment on CI agents is usually easier to control than developer machines.
-It helps to point out possible issues with the build that hurt cacheability.
+Beginning with the build cache on CI is a good first step as the environment on CI agents is usually more stable and predictable than developer machines.
+This helps to identify any possible issues with the build that may affect cacheability.
 
 If you are subject to audit requirements regarding the artifacts you ship to your customers you may need to disable the build cache for certain builds.
-Gradle Enterprise may help you with fulfilling these requirements while still using the build cache for all your builds.
-It allows you to easily find out which build produced an artifact coming from the build cache by clicking on the corresponding icon in the timeline:
+Gradle Enterprise 2017.4 may help you with fulfilling these requirements while still using the build cache for all your builds.
+It will allow you to easily find out which build produced an artifact coming from the build cache by clicking on the corresponding icon in the timeline:
 
 [.screenshot]
 image::from-cache-origin.png[]
@@ -51,13 +51,7 @@ Developers can utilize both a local and a remote cache. While pulling results fr
 
 === Share results between developers
 
-Using the local cache means that one build cache is used by one developer, while the HTTP cache typically has a one-to-many topology.
-Gradle also allows the use of distributed caches.
-The https://gradle.com/build-cache[Gradle enterprise build cache] will soon include support for multiple nodes.
-There is also a proof of concept build cache backend https://github.com/gradle/gradle-hazelcast-plugin/[using Hazelcast].
-
 It is also possible to allow developers to upload their results to a shared cache, thus making them available for everyone else, even before CI had a chance to build them.
-
 While sharing results from developer machines seems like a good idea at first sight, it might not always be what you are looking for:
 
 * The environment on developer machines is usually not as strictly controlled as it is on CI. Gradle tries to track every relevant bit of information that can influence a task's output, but if there are tasks that are incorrectly defined, developers can pollute the cache with corrupted results.

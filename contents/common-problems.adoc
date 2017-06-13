@@ -1,11 +1,17 @@
 [[common-problems,"Solving common problems"]]
 == Solving common problems
 
-Small problems in a build, like forgetting to declare a configuration file as an input to your task, can be easily overlooked. The configuration file might change infrequently, or only change when some other (correctly tracked) input changes as well. The worst that could happen is that your task doesn't execute when it should be. Developers can always re-run the build with `clean`, and "fix" their builds for the price of a slow rebuild. In the end nobody gets blocked in their work, and the incident is chalked up to "Gradle acting up again."
+Small problems in a build, like forgetting to declare a configuration file as an input to your task, can be easily overlooked.
+The configuration file might change infrequently, or only change when some other (correctly tracked) input changes as well.
+The worst that could happen is that your task doesn't execute when it should.
+Developers can always re-run the build with `clean`, and "fix" their builds for the price of a slow rebuild.
+In the end nobody gets blocked in their work, and the incident is chalked up to "Gradle acting up again."
 
 With cacheable tasks incorrect results are stored permanently, and can come back to haunt you later; re-running with `clean` won't achieve much either. When using a shared cache, these problems even cross machine boundaries. In the example above, Gradle might end up loading a result for your task that was produced with a different configuration. Resolving these problems with the build thus becomes even more important when task output caching is enabled.
 
-Other issues with the build won't cause it to produce incorrect results, but will lead to unnecessary cache misses. In this chapter we've compiled a list of some typical problems and ways to avoid them. Fixing these issues will have the side benefit that your build will stop "acting up," and developers can forget about running builds with `clean` altogether.
+Other issues with the build won't cause it to produce incorrect results, but will lead to unnecessary cache misses.
+In this chapter you will learn about some typical problems and ways to avoid them.
+Fixing these issues will have the added benefit that your build will stop "acting up," and developers can forget about running builds with `clean` altogether.
 
 === System file encoding
 
@@ -35,8 +41,8 @@ Gradle does not track changes in environment variables for tasks.
 For example for the `Test` tasks it is completely possible that the outcome depends on a few environment variables.
 To ensure that only the right artifacts are re-used between builds, you need to add environment variables as inputs to tasks depending on them.
 
-Absolute paths are often passed as environment variables, too. You need to pay attention what you add as an input to the task in this case.
-In this case you need to pay special attention to what you add as task inputs.
+Absolute paths are often passed as environment variables, too.
+You need to pay attention what you add as an input to the task in this case.
 You would need to ensure that the absolute path is the same between machines. Most times it makes sense to track the file or the contents of the directory the absolute path points to.
 If the absolute path represents a tool being used it probably makes sense to track the tool version as an input instead.
 
@@ -95,7 +101,7 @@ There currently is no workaround for this behavior.
 === Java version tracking
 
 Gradle does track the major version of Java as an input for compilation and test execution.
-Currently, it does neither track the vendor nor the minor version.
+Currently, it does not track the vendor nor the minor version.
 Still, the vendor and the minor version may influence the bytecode produced by compilation.
 
 If you use different JVM vendors for compiling or running Java we strongly suggest that you add the vendor as an input to the corresponding tasks.
@@ -116,16 +122,18 @@ tasks.withType(Test) {
 }
 ----
 
-With respect to tracking the Java minor version there are different competing aspects: support pulling results for developers and having "perfect" results on CI. There are basically two situations when you may want to track the minor version of Java: for compilation and for runtime.
-
-For compilation we saw sometimes differences in the produced bytecode for different minor versions. The bytecode should still expose the same runtime behavior.
+With respect to tracking the Java minor version there are different competing aspects: support pulling results for developers and having "perfect" results on CI.
+There are basically two situations when you may want to track the minor version of Java: for compilation and for runtime.
+In the case of compilation, there can sometimes be differences in the produced bytecode for different minor versions.
+However, the bytecode should still result in the same runtime behavior.
 
 [NOTE]
 ====
 {user-manual}java_plugin.html#sec:java_compile_avoidance[Java compile avoidance] will treat this bytecode the same since it extracts the ABI.
 ====
 
-Treating the minor number always as an input would it make very hard for developers to pull from the build cache. We saw that even in bigger companies different developers on the same team were using different Java minor versions. If you are able to control the environment in a way that everybody in your team and on CI is using exactly the same Java minor version then we suggest that you add the minor version as an input.
+Treating the minor number as an input can decrease the likelihood of a cache hit for developer builds.
+Depending on how standard development environments are across your team, it's common for many different Java minor version to be in use.
 
 Even without tracking the Java minor version you may have cache misses for developers due to some locally compiled class files which constitute an input to test execution.
 If these outputs made it into the local build cache on this developers machine even a clean will not solve the situation.
@@ -209,7 +217,7 @@ image::overlapping-outputs-input-comparison.png[]
 === Achieving stable task inputs
 
 It is crucial to have <<stable_task_inputs,stable task inputs>> for every cacheable task.
-We will go through various situations which violate stable task inputs and look at possible solutions.
+In the following section you will learn about different situations which violate stable task inputs and look at possible solutions.
 
 [[volatile_inputs,"Volatile task inputs"]]
 ==== Volatile task inputs
@@ -241,9 +249,8 @@ This can lead to hard-to-diagnose cache misses when the consuming build is not a
 For example, when doing incremental builds it is possible that the artifact on disk which is considered up-to-date and the artifact in the build cache are different even though they are essentially the same.
 A task depending on this task output would then not be able to load outputs from the build cache since the inputs are not exactly the same.
 
-As described <<stable_task_inputs,earlier>> you can either make the task outputs repeatable or use input normalization.
-
-We already talked about the possibilities with input normalization and the possibility to configure input normalization.
+As described in <<stable_task_inputs>> you can either make the task outputs repeatable or use input normalization.
+You already learned about the possibilities with <<filter_runtime_classpath,configurable input normalization>>.
 
 Gradle includes some support for creating repeatable output for archive tasks.
 For tar and zip files Gradle can be configured to create {user-manual}working_with_files.html#sec:reproducible_archives[reproducible archives].

@@ -1,13 +1,10 @@
 == Debugging and diagnosing cache misses
 
-For using task output caching efficiently it is essential to keep the balance between specifying all the inputs to your
-tasks while not over-specifying them. If you don't specify enough of your inputs then your build will be incorrect and you
-will share outputs between tasks that should have had a different output. If you specify unnecessary inputs to your tasks,
- you will have cache misses while you could have re-used earlier outputs.
- For Gradle's built-in tasks we prefer to err on the side of correctness and we suggest that you do the same.
+To make the most of task output caching, it is important that any necessary inputs to your tasks are specified correctly, while at the same time avoiding unneeded inputs.
+Failing to specify an input that affects the task's outputs can result in incorrect builds, while needlessly specifying inputs that do not affect the task's output can cause cache misses.
 
-This chapter is about finding out why a cache miss happened. If you have a cache hit which you didn't expect we
-suggest to declare whatever change you expected to trigger the cache miss as an input to the task.
+This chapter is about finding out why a cache miss happened.
+If you have a cache hit which you didn't expect we suggest to declare whatever change you expected to trigger the cache miss as an input to the task.
 
 [[finding_problems,"Finding problems with task output caching"]]
 === Finding problems with task output caching
@@ -25,29 +22,30 @@ If you find a task which is out of date but no cacheable tasks depend on its out
 When you are happy with the up-to-date performance then you can repeat the experiment above but this time with a clean build and the build cache turned on.
 The goal with clean builds and the build cache turned on is to retrieve all cacheable tasks from the cache.
 You should start out simple and use the same checkout for the consumer build.
-When you are happy with the performance in the single workspace use-case you can go further:
+When you are happy with the performance in the single workspace use-case, then, depending on your use-case, you can go further:
 
 - Use different workspaces on the same machine.
 - Use different workspaces on different machines using a remote build cache.
 - Use the cache populated by a CI build and a developer machine.
 
 After these experiments with fully cache builds you can go on and try to make typical changes to your project and see if enough tasks are still cached.
-If the results are not satisfactory you should think about restructuring your project to reduce dependencies between different tasks.
+If the results are not satisfactory you can think about restructuring your project to reduce dependencies between different tasks.
 
 We had good experiences with recording execution times of our builds, generate graphs of those and then look at the results.
 You then can look for certain patterns, like a rebuilding everything even though you expected compilation to be cached.
 
 You can also make certain changes to your code base manually or automatically and check that the expected set of tasks is cached.
 
-If these experiments point to a possible problem with your use of task output caching, you would need to go into diagnosing a cache miss as explained below.
+If you have tasks that are re-executing instead of pulling their outputs from the cache, then it may point to a problem in your build.
+Techniques for debugging a cache miss are explained in the following section.
 
 === Helpful data for diagnosing a cache miss
 
-A cache miss happens when Gradle calculates a build cache key for a task which is different from any of the build cache keys in the cache.
+A cache miss happens when Gradle calculates a build cache key for a task which is different from any existing build cache key in the cache.
 Only comparing the build cache key on its own does not give much information, so we need to look at some finer grained data to be able to diagnose the cache miss.
-All the things influencing the build cache key can be found in the {user-manual}build_cache.html#sec:task_output_caching_details[userguide].
+A list of all inputs to the computed build cache key can be found in the {user-manual}build_cache.html#sec:task_output_caching_details[user guide].
 
-Basically, we can compare the following data, listed from coarse grained to fine grained:
+From most coarse grained to most fine grained, the items we will use to compare two tasks are:
 
 * Build cache keys
 * Task and Task action implementations
@@ -57,8 +55,7 @@ Basically, we can compare the following data, listed from coarse grained to fine
 * Individual task property input hashes
 * Hashes of files which are part of task input properties
 
-Currently, the build cache key for the task is logged at the info level,
-while information down to the individual input property level is available in the info log:
+Currently, both the build cache key for the task and information down to the individual input property level is available in the info log:
 
 [listing]
 ----
@@ -82,7 +79,7 @@ If you want to go into the details of finding out e.g. which classes and jar fil
 task you need to resort to comparing those files on disk yourself.
 
 Luckily, you do not have to capture this data yourself - the build scan plugin already takes care of this for you.
-This means that Gradle Enterprise already has the necessary data to diagnose the cache miss when using the build scan plugin:
+This means that Gradle Enterprise 2017.4 will have the necessary data to diagnose the cache miss when comparing two build scans:
 
 [.screenshot]
 image::task-inputs-comparison.png[]
@@ -101,7 +98,7 @@ Since you were expecting more tasks to be cached, you should be able to pinpoint
 
 Before diving into how to find out why one task has not been loaded from the cache we should first look into which task caused the cache misses.
 There is a cascade effect causing dependent tasks to be executed if one of the tasks earlier in the build is not loaded from the cache and has different outputs.
-Therefore, you should therefore at the first cacheable task which was executed and continue investigating there.
+Therefore, you should locate the first cacheable task which was executed and continue investigating from there.
 This can be done from the timeline view in a build scan or from the task input comparison directly:
 
 [.screenshot]
@@ -140,7 +137,7 @@ Another option is that the task tracks absolute paths instead of relative paths 
 
 We will walk you through the process of diagnosing a cache miss.
 Let's say we have build `A` and build `B` and we expected all the test tasks for a sub-project `sub1` to be cached in build `B` since only a unit test for another sub-project `sub2` changed.
-Actually, all the tests for the sub-project have been executed.
+Instead, all the tests for the sub-project have been executed.
 Since we have the cascading effect when we have cache misses, we need to find the task which caused the caching chain to fail.
 This can easily be done by filtering for all cacheable tasks which have been executed and then select the first one.
 In our case, it turns out that the tests for the sub-project `internal-testing` were executed even though there was no code change to this project.
@@ -162,7 +159,7 @@ sourceSets.main.output.dir generatedResourcesDir, builtBy: currentVersionInfo
 ----
 
 Since properties files stored by Java's `Properties.store` method contain a timestamp, this will cause a change to the runtime classpath every time the build runs.
-In order to solve this problem see <<volatile_outputs>>.
+In order to solve this problem see <<volatile_outputs>> or use <<normalization,input normalization>>.
 
 [NOTE]
 ====
