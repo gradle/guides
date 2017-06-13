@@ -117,7 +117,7 @@ include::{originaldir}/fairy/build.gradle[tags=deps]
 ----
 
 In fact, comment out both of the lines that start, `runtimeOnly` and notice how
-the output of the `run` task changes:
+the output of Gradle's `run` task changes:
 
 [listing]
 ----
@@ -132,13 +132,59 @@ BUILD SUCCESSFUL
 
 === ModularityTest discussion
 
-== Adding `module-info.java` to your source code
+In the original project, there is a test class which attempts to highlight some
+of the problems with how modularity wasn't enforced in Java versions prior to 9.
+
+.formula/src/test/java/org/gradle/fairy/tale/formula/ModularityTest.java
+[source,java]
+----
+include::{originaldir}/formula/src/test/java/org/gradle/fairy/tale/formula/ModularityTest.java[tags=tests]
+----
+
+The four tests in this class serve different purposes:
+
+1. `canReachActor` - Shows appropriate access by a class in the `formula`
+   subproject using classes exposed as part of the `actors` project's public
+   api. This test should always pass.
+2. `canDynamicallyReachDefaultActor` - Attempts to use reflection at runtime
+   to load a class which is private to the `actors` subproject. This is possible
+   before Java 9 because the classpath leaks the implementation details of all
+   parts of the application to all other parts of the application.
+3. `canReachDefaultActor` - Attempts to use a class which is private to the
+   `actors` subproject directly. This will work before Java 9 because the
+   private implementation details of the `actors` subproject are built in the
+   same location as the public api of that subproject. So, they are available
+   at compile-time and at runtime.
+4. `canReachGuavaClasses` - Attempts to use a class which is a transitive
+   dependency of the `actors` subproject. However, since Gradle 3.5, these
+   `implementation` dependencies are not included on the `compileClasspath` of
+   the consumers of Java projects. So, the test is commented out because it
+   wouldn't compile with Gradle 3.5 and newer.
+
+As you progress through this guide, you'll see that Java 9 modules tighten down
+inappropriate access to implementation details of the module, and cause tests
+like `canDynamicallyReachDefaultActor` and `canReachDefaultActor` to fail at
+runtime and not compile, respectively.
+
+You can run Gradle's `check` task to see that the three tests pass for the
+`0-original` project (even though two of them are breaking good modular design.)
+
+[listing]
+----
+$ ./gradlew check
+
+BUILD SUCCESSFUL
+----
+
+You can view the results of an invocation of Gradle's `check` task at
+https://scans.gradle.com/s/l76lgbuizu4pm/tests/byProject?toggled=W1sxXSxbMSwwXSxbMSwwLDBdLFsxLDAsMCwwXV0%3D[this build scan.]
+
+== Step 1 - Produce a Java 9 module for a single subproject
 
 
-== Step 2
+== Step 2 - Produce Java 9 modules for all subprojects
 
 
-== Step N
-
+== Step 3 - Consume Java 9 modules in the `run` and `assemble` tasks
 
 == Summary
