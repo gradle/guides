@@ -295,7 +295,7 @@ The file makes it harder to understand the project at a glance without providing
 
 == Use of specific words
 
-* Prefer `re-use` over `reuse`.
+* Prefer `reuse` over `re-use`.
 * Prefer `sub-project` over `subproject`.
 
 == To be clarified/determined
