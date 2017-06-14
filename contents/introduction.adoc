@@ -57,3 +57,12 @@ Developers can make changes to task inputs or outputs while the task is executin
 They can do this unintentionally and without noticing, for example by making changes in their IDEs while a build is running.
 Currently, Gradle has no good way to defend against these changes, and will simply cache whatever is in the output directory once the task is finished.
 This again can lead to corrupted results being uploaded to the shared cache.
+This recommendation might change when Gradle has added the necessary safeguards against unintentional modification of task inputs and outputs.
+
+[WARNING]
+====
+If you want to share task output from incremental builds, i.e. non-clean builds, you have to make sure that all cacheable tasks are properly configured and implemented to deal with stale output.
+There are for example annotation processors that do not clean up stale files in the corresponding classes/resources directories.
+The cache is a great forcing function to fix these problems, which will also make your incremental builds much more reliable.
+At the same time, until you have confidence that the incremental build behavior is flawless, only use clean builds to upload content to the cache.
+====
