@@ -52,9 +52,8 @@ Developers can utilize both a local and a remote cache. While pulling results fr
 
 === Share results between developers
 
-It is also possible to allow developers to upload their results to a shared cache, thus making them available for everyone else, even before CI has had a chance to build them.
-Before implementing such a strategy, there are some things to be considered when sharing cached output between developers:
-
-* The environment on developer machines is usually not as strictly controlled as it is on CI. Gradle tries to track every relevant bit of information that can influence a task's output, but if there are tasks that are incorrectly defined, developers can pollute the cache with corrupted results.
-* Gradle is in general safe to be used with incremental builds. However, we recommend only uploading to a shared cache from `clean` builds.
-* Developers can make changes to task outputs while the task is running even unintentionally, or even unknowingly, like continuing making changes in their IDEs while the build is running. Currently, Gradle has no good way to defend against these changes, and will simply cache whatever is in the output directory once the task is finished. This again can lead to corrupted results being uploaded to the shared cache.
+Allowing developers to upload their results to a shared cache is possible, but not recommended.
+Developers can make changes to task inputs or outputs while the task is executing.
+They can do this unintentionally and without noticing, for example by making changes in their IDEs while a build is running.
+Currently, Gradle has no good way to defend against these changes, and will simply cache whatever is in the output directory once the task is finished.
+This again can lead to corrupted results being uploaded to the shared cache.
