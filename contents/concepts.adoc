@@ -15,7 +15,7 @@ The following inputs contribute to the build cache key for a task:
 * The names of the output properties
 * The names and values of task inputs
 
-Two tasks can re-use their outputs by using the build cache if their associated build cache keys are the same.
+Two tasks can reuse their outputs by using the build cache if their associated build cache keys are the same.
 
 [[concepts_repeatable_task_outputs,"Repeatable task outputs"]]
 === Repeatable task outputs
@@ -62,8 +62,8 @@ Another common, but less obvious source of unstable inputs is when a task consum
 A task can only be loaded from the cache if it has stable task inputs.
 Unstable task inputs result in the task having a unique set of inputs for every build, which will always result in a cache miss.
 
-[[normalization,"Better re-use via input normalization"]]
-=== Better re-use via input normalization
+[[normalization,"Better reuse via input normalization"]]
+=== Better reuse via input normalization
 
 Having stable inputs is crucial for cacheable tasks.
 However, achieving byte for byte identical inputs for each task can be challenging.
@@ -152,17 +152,17 @@ Build scans show tasks where caching was disabled due to overlapping outputs in 
 [.screenshot]
 image::overlapping-outputs-timeline.png[]
 
-=== Re-use of outputs between different tasks
+=== Reuse of outputs between different tasks
 
 Some builds exhibit a surprising characteristic: even when executed against an empty cache, they produce tasks loaded from cache. How is this possible? Rest assured that this is completely normal.
 
 When considering task outputs, Gradle only cares about the inputs to the task: the task type itself, input files and parameters etc., but it doesn't care about the task's name or which project it can be found in.
 Running `javac` will produce the same output regardless of the name of the `JavaCompile` task that invoked it.
-If your build includes two tasks that share every input, the one executing later will be able to re-use the output produced by the first.
+If your build includes two tasks that share every input, the one executing later will be able to reuse the output produced by the first.
 
 Having two tasks in the same build that do the same might sound like a problem to fix, but it is not necessarily something bad.
 For example, the Android plugin creates several tasks for each variant of the project; some of those tasks will potentially do the same thing.
-These tasks can safely re-use each other's outputs.
+These tasks can safely reuse each other's outputs.
 
 === Non-cacheable tasks
 

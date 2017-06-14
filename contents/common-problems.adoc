@@ -94,7 +94,7 @@ If sharing the build cache across multiple operating systems is important in you
 === Symbolic links
 
 When using symbolic links, Gradle does not store the link in the build cache but the actual file contents of the destination of the link.
-As a consequence you might have a hard time when trying to re-use outputs which heavily use symbolic links.
+As a consequence you might have a hard time when trying to reuse outputs which heavily use symbolic links.
 There currently is no workaround for this behavior.
 
 [[java_version_tracking,"Java version tracking"]]
@@ -150,7 +150,7 @@ Therefore, you can expect differences in the bytecode of compiled Groovy classes
 If your build is dependent on external dependencies like binary artifacts or dynamic data from a web page you need to make sure that these inputs are consistent throughout your infrastructure.
 Any variations across machines will result in cache misses.
 
-Never re-release a non-changing binary dependency with the same version number but different contents: if this happens with a plugin dependency, you will never be able to explain why you don’t see cache re-use between machines (it’s because they have different versions of that artifact).
+Never re-release a non-changing binary dependency with the same version number but different contents: if this happens with a plugin dependency, you will never be able to explain why you don’t see cache reuse between machines (it’s because they have different versions of that artifact).
 
 Using ``SNAPSHOT``s or other changing dependencies in your build by design violates the <<stable_task_inputs,stable task inputs>> principle.
 To use the build cache effectively, you should depend on fixed dependencies.

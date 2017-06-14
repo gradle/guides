@@ -23,7 +23,7 @@ The most straightforward way to get a feel for what the cache can do for you is 
 [NOTE]
 ====
 You may encounter a few cached tasks even in the first of the two builds, where no previously cached results should be available.
-This can happen if you have tasks in your build that are configured to produce the same results from the same inputs; in such a case once one of these tasks has finished, Gradle will simply re-use its output for the rest of the tasks.
+This can happen if you have tasks in your build that are configured to produce the same results from the same inputs; in such a case once one of these tasks has finished, Gradle will simply reuse its output for the rest of the tasks.
 ====
 
 Normally, your _fully cached_ build should be significantly faster than the `clean` build: this is the theoretical limit of how much time using the build cache can save on your particular build.
@@ -63,7 +63,7 @@ If you want to look at the measurement for the Gradle build itself you can have 
 
 === Measuring developer builds
 
-Gradle's build cache can be very useful in reducing CI infrastructure cost and feedback time, but it usually has the biggest impact when developers can re-use cached results in their local builds. This is also the hardest to quantify for a number of reasons:
+Gradle's build cache can be very useful in reducing CI infrastructure cost and feedback time, but it usually has the biggest impact when developers can reuse cached results in their local builds. This is also the hardest to quantify for a number of reasons:
 
 * developers run different builds
 * developers can have different hardware, or have different settings

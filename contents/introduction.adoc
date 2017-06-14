@@ -19,7 +19,7 @@ When you are switching branches back and forth, the local results get rebuilt ov
 The build cache remembers the earlier build results, and greatly reduces the need to rebuild things when they have already been built locally.
 This can also extend to rebuilding different commits, like when running `git bisect`.
 
-The local cache can also be useful when working with a project that has multiple variants dimensions, as in the case of Android projects. Each variant has a number of tasks associated with it, and some of those task variants, despite having different names, can end up producing the same output. With the local cache enabled, re-use between task variants will happen automatically when applicable.
+The local cache can also be useful when working with a project that has multiple variants dimensions, as in the case of Android projects. Each variant has a number of tasks associated with it, and some of those task variants, despite having different names, can end up producing the same output. With the local cache enabled, reuse between task variants will happen automatically when applicable.
 
 === Share results between CI builds
 
@@ -39,12 +39,12 @@ It will allow you to easily find out which build produced an artifact coming fro
 === Accelerate developer builds by reusing CI results
 
 When multiple developers work on the same project, they don't just need to build their own changes: whenever they pull from version control, they end up having to build each other's changes as well.
-Whenever a developer is working on something independent of the pulled changes, they can safely re-use outputs already generated on CI.
+Whenever a developer is working on something independent of the pulled changes, they can safely reuse outputs already generated on CI.
 Say, you're working on module "A", and you pull in some changes to module "B" (which does not depend on your module).
 If those changes were already built in CI, you can download the task outputs for module "B" from the cache instead of generating them locally.
 A typical use case for this is when developers start their day, pull all changes from version control and then run their first build.
 
-The changes don't need to be completely independent, either; we'll take a look at the strategies to re-use results when dependencies are involved in the section about the <<normalization,different forms of normalization>>.
+The changes don't need to be completely independent, either; we'll take a look at the strategies to reuse results when dependencies are involved in the section about the <<normalization,different forms of normalization>>.
 
 === Combine CI results with local caching on developer machines
 
