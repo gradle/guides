@@ -155,6 +155,68 @@ public class Generate extends DefaultTask {
 
 The first section of this guide talks about the <<plugin-development-plugin,Plugin Development plugin>>. As an added benefit of applying the plugin to your project, the task `validateTaskProperties` automatically checks for an existing input/output annotation for every public property define in a custom task type implementation.
 
+=== Modeling DSL-like APIs
+
+Capturing user input sometimes calls for a stronger modeling of exposed configuration elements with the goal to make the API more readable and easier to understand for consumers. For illustration let's consider the following extension exposed by a plugin. In its current form it simply exposes a "flat" list of properties for configuring the creation of a web site.
+
+.build.gradle
+[source,groovy]
+----
+site {
+    outputDir = file('build/mysite')
+    websiteUrl = 'http://gradle.org'
+    vcsUrl = 'https://github.com/gradle-guides/gradle-site-plugin'
+}
+----
+
+As the number of exposed properties grows, you might want to introduce a nested, more expressive structure. The following code snippet adds a new configuration block named `customData` as part of the extension. You might have noticed that it provides a stronger indication of what those properties mean. The indentation of the configuration block also serves as a natural enhancement of the existing DSL exposed by the extension.
+
+.build.gradle
+[source,groovy]
+----
+site {
+    outputDir = file('build/mysite')
+
+    customData {
+        websiteUrl = 'http://gradle.org'
+        vcsUrl = 'https://github.com/gradle-guides/gradle-site-plugin'
+    }
+}
+----
+
+It's fairly easy to implement the backing objects of such an extension. First of all, you'll need to introduce a new data object for managing the properties `websiteUrl` and `vcsUrl`.
+
+.CustomData.java
+[source,java]
+----
+public class CustomData {
+    private String websiteUrl;
+    private String vcsUrl;
+
+    // getter and setter methods
+}
+----
+
+In the extension, you'll need to create an instance of the `CustomData` class and a method that can delegate the captured values to the data instance. To ensure that the method can be used from a varity of languages, e.g. Groovy, Java and Kotlin, the parameter responsible for configuring the `CustomData` instance should _not_ be a `groovy.lang.Closure` as it would impose a dependency on the Groovy library. The better choice is to configure underlying data objects with the help of {api-reference}org/gradle/api/Action.html[org.gradle.api.Action]. The following example demonstrates the use of `Action` in an extension definition.
+
+.SiteExtension.java
+[source,java]
+----
+import org.gradle.api.Action;
+
+public class SiteExtension {
+    private final CustomData customData = new CustomData();
+    
+    public void customData(Action<? super CustomData> action) {
+        action.execute(customData);
+    }
+}
+----
+
+NOTE: When executed by Groovy in a `build.gradle` file, Gradle will automatically coerse the `Closure` parameter to the single interface method of `Action` via link:http://docs.groovy-lang.org/next/html/documentation/core-semantics.html#_calling_a_method_accepting_a_sam_type_with_a_closure[SAM type coercion].
+
+Please be aware that the same mechanism works for other domain objects in Gradle and is not limited to extensions. The same approach would work for custom tasks as well to give an example. A future of version of Gradle might also expose a public API for enabling arbitrary POJOs with the same capability.
+
 === Reacting to plugins
 
 Configuring the runtime behavior of existing plugins and tasks in a build is a common pattern in Gradle plugin implementations. For example a plugin could assume that it is applied to a Java-based project and automatically reconfigures the standard source directory.
