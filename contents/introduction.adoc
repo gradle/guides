@@ -34,6 +34,7 @@ This helps to identify any possible issues with the build that may affect cachea
 If you are subject to audit requirements regarding the artifacts you ship to your customers you may need to disable the build cache for certain builds.
 Gradle Enterprise 2017.4 may help you with fulfilling these requirements while still using the build cache for all your builds.
 It will allow you to easily find out which build produced an artifact coming from the build cache via build scans.
+// TODO: Add GE 2017.4 screenshot: from-cache-origin.png
 
 === Accelerate developer builds by reusing CI results
 
@@ -52,7 +53,7 @@ Developers can utilize both a local and a remote cache. While pulling results fr
 === Share results between developers
 
 It is also possible to allow developers to upload their results to a shared cache, thus making them available for everyone else, even before CI has had a chance to build them.
-Before implementing such a strategy, there are some things to considering when sharing cached output between developers:
+Before implementing such a strategy, there are some things to be considered when sharing cached output between developers:
 
 * The environment on developer machines is usually not as strictly controlled as it is on CI. Gradle tries to track every relevant bit of information that can influence a task's output, but if there are tasks that are incorrectly defined, developers can pollute the cache with corrupted results.
 * Gradle is in general safe to be used with incremental builds. However, we recommend only uploading to a shared cache from `clean` builds.

@@ -31,7 +31,7 @@ When you are happy with the performance in the single workspace use-case, then, 
 After these experiments with fully cached builds you can go on and try to make typical changes to your project and see if enough tasks are still cached.
 If the results are not satisfactory you can think about restructuring your project to reduce dependencies between different tasks.
 
-Consider recording execution times of our builds, generating graphs, and anlyzing the results.
+Consider recording execution times of your builds, generating graphs, and anlyzing the results.
 Keep an eye out for certain patterns, like a build recompiling everything even though you expected compilation to be cached.
 
 You can also make changes to your code base manually or automatically and check that the expected set of tasks is cached.

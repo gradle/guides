@@ -101,7 +101,7 @@ There currently is no workaround for this behavior.
 === Java version tracking
 
 Gradle tracks only the major version of Java as an input for compilation and test execution.
-Currently, it does _not _track the vendor nor the minor version.
+Currently, it does _not_ track the vendor nor the minor version.
 Still, the vendor and the minor version may influence the bytecode produced by compilation.
 
 If you use different JVM vendors for compiling or running Java we strongly suggest that you add the vendor as an input to the corresponding tasks.
