@@ -1,8 +1,8 @@
 == Summary
-You learned about the two ways Gradle can avoid work and we showed you the concepts which make up a build which is effectively using task output caching.
+This guide has described the two ways Gradle can avoid work and the concepts which make up a build that effectively leverages task output caching.
 You should now have the knowledge to adapt your own build so it can make effective use of the build cache.
 By doing so, you will improve incremental build performance while having fast clean builds when using the build cache.
-Remember, the best way to do work faster is to not do work that doesn’t need doing.
+Remember, the best way to do work faster is to simply avoid work that doesn’t need doing.
 
 Be aware that your journey does not end here.
 You should invest into keeping your build well behaved and check manually or automatically that you are still making effective use of the build cache.

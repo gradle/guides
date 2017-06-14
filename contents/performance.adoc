@@ -3,7 +3,7 @@
 The sole reason to use any build cache is to make builds faster.
 But how much faster can you go when using the cache?
 Measuring the impact is both important and complicated, as cache performance is determined by many factors.
-Initial measurements of the cache's impact can validate the extra effort (work, infrastructure) that was required to start using the cache.
+Performing measurements of the cache's impact can validate the extra effort (work, infrastructure) that is required to start using the cache.
 These measurements can later serve as baselines for future improvements, and to watch for signs of regressions.
 
 [NOTE]
@@ -17,16 +17,16 @@ The most straightforward way to get a feel for what the cache can do for you is 
 
 1. Clean the cache directory to avoid any hits from previous builds (`rm -rf $GRADLE_HOME/caches/build-cache-*`)
 2. Run the build (e.g. `./gradlew --build-cache clean assemble`), so that all the results from cacheable tasks get stored in the cache.
-3. Run the build again (e.g. `./gradlew --build-cache clean assemble`); depending on your build, this time you should see many of the tasks being cached.
+3. Run the build again (e.g. `./gradlew --build-cache clean assemble`); depending on your build, you should see many of the tasks being retrieved from the cache.
 4. Compare the execution time for the two builds
 
 [NOTE]
 ====
-You might have encountered a few cached tasks even in the first of the two builds, where no previously cached results should be available.
+You may encounter a few cached tasks even in the first of the two builds, where no previously cached results should be available.
 This can happen if you have tasks in your build that are configured to produce the same results from the same inputs; in such a case once one of these tasks has finished, Gradle will simply re-use its output for the rest of the tasks.
 ====
 
-Normally, your _fully cached_ build should be significantly faster than the `clean` build: this is the theoretical limit of how much time using the build cache can save on your particular build when running the tasks that you were running.
+Normally, your _fully cached_ build should be significantly faster than the `clean` build: this is the theoretical limit of how much time using the build cache can save on your particular build.
 If you do not see the expected performance gains here on the first try, see <<finding_problems>>.
 Build scans provide a detailed performance breakdown which show you how effectively your build is using the build cache:
 
@@ -36,7 +36,7 @@ image::performance-task-execution.png[]
 In everyday situations fully cached builds are rare, as the purpose of running a build is to process some new changes.
 The structure of the software being built (how many modules are there, how independent are its parts etc.), and the nature of the changes themselves ("big refactor in the core of the system" vs. "small change to a unit test" etc.) strongly influence the performance gains delivered by the build cache.
 As developers tend to submit different kinds of changes over time, caching performance is expected to vary with each change.
-As with any cache, the impact should thus be measured over time.
+As with any cache, the impact should therefore be measured over time.
 
 In a setup where a team uses a shared cache backend, there are two locations worth measuring cache impact at: on CI and on developer machines.
 
@@ -44,32 +44,32 @@ In a setup where a team uses a shared cache backend, there are two locations wor
 
 The best way to learn about the impact of caching on CI is to set up the same builds with the cache enabled and disabled, and compare the results over time. If you have a single Gradle build step that you want to enable caching for, it's easy to compare the results using your CI system's built-in statistical tools.
 
-Measuring complex pipelines requires some more work, and some external tool to collect and process measurements.
-It's important to distinguish those parts of the pipeline that caching has no effect on, for example the time builds spend waiting in the CI system's queue, or time taken by checking out source code from version control.
+Measuring complex pipelines may require more work or external tools to collect and process measurements.
+It's important to distinguish those parts of the pipeline that caching has no effect on, for example, the time builds spend waiting in the CI system's queue, or time taken by checking out source code from version control.
 
 You can use https://confluence.jetbrains.com/display/TCD10/Statistic+Charts[statistic charts] if you use Teamcity for your CI builds.
 Most of time you will end up extracting data from your CI server via the corresponding REST API (see https://wiki.jenkins-ci.org/display/JENKINS/Remote+access+API[Jenkins remote access API] and https://confluence.jetbrains.com/display/TCD10/REST+API[Teamcity REST API]).
-When using Gradle Enterprise, you can use the https://docs.gradle.com/enterprise/export-api/[export API] to access the necessary data and run your analytics on them.
+When using Gradle Enterprise, you can use the https://docs.gradle.com/enterprise/export-api/[export API] to access the necessary data and run your analytics.
 Gradle Enterprise provides richer data compared to what can be obtained from the CI server.
 For example, you can get insights into the execution of single tasks.
 
 Typically, CI builds above a certain size include parallel sections to utilize multiple agents. With parallel pipelines you can measure the wall-clock time it takes for a set of changes to go from having been pushed to version control to being built, verified and deployed. The build cache's effect in this case can be measured in the reduction of the time developers have to wait for feedback from CI.
 
-You can also measure the cumulative time it took to build a changeset, which will give you a sense of the amount of work the CI infrastructure has to exert. The cache's effect here is less money spent on CI infrastructure, as you don't need as many CI agents to maintain the same number of changes built.
+You can also measure the cumulative time your build agents spent building a changeset, which will give you a sense of the amount of work the CI infrastructure has to exert. The cache's effect here is less money spent on CI resources, as you don't need as many CI agents to maintain the same number of changes built.
 
 If you want to look at the measurement for the Gradle build itself you can have a look at the blog post https://blog.gradle.org/introducing-gradle-build-cache["Introducing the build cache"].
 
 === Measuring developer builds
 
-Gradle's build cache can be very useful in reducing CI infrastructure cost and feedback time, but it usually has the biggest impact when developers can re-use cached results in their local builds. This is also the hardest to quantize for a number of reasons:
+Gradle's build cache can be very useful in reducing CI infrastructure cost and feedback time, but it usually has the biggest impact when developers can re-use cached results in their local builds. This is also the hardest to quantify for a number of reasons:
 
 * developers run different builds
 * developers can have different hardware, or have different settings
 * developers run all kinds of other things on their machines that can slow them down
 
 When using Gradle Enterprise you can use the https://docs.gradle.com/enterprise/export-api/[export API] to extract data about developer builds, too.
-You can then create statistics on how many tasks where cached per developer or build.
-You can even compare the times it took to execute the task to pulling it from the cache and then estimate the time saved per developer.
+You can then create statistics on how many tasks were cached per developer or build.
+You can even compare the times it took to execute the task vs pulling it from the cache and then estimate the time saved per developer.
 
 When using the https://gradle.com/build-cache[Gradle Enterprise build cache backend] you should pay close attention to the hit rate in the admin UI.
 A rise in the hit rate there probably indicates better usage by developers:
