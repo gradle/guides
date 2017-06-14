@@ -1,0 +1,12 @@
+plugins {
+    id 'org.gradle.guides.topical' version '0.5.3'
+}
+
+guide {
+    repoPath 'gradle-guides/style-guide'
+    mainAuthor 'Peter Ledbrook'
+    supAuthors 'Chris Beams', 'Schalk Cronjé', 'Ken Kousen'
+}
+
+
+
