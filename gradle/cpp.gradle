@@ -1,0 +1,14 @@
+apply plugin: 'cpp' // <1>
+
+model { // <2>
+    components {
+        greeter(NativeLibrarySpec) { } // <3>
+        // Let's try using the library
+        main(NativeExecutableSpec) { // <4>
+            sources {
+                cpp.lib library: "greeter" // <5>
+            }
+        }
+    }
+}
+
