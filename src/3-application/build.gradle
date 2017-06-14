@@ -4,6 +4,7 @@ subprojects {
             jcenter()
         }
 
+        // tag::compileJava[]
         compileJava {
             doFirst {
                 classpath = files()
@@ -14,6 +15,7 @@ subprojects {
                 ]
             }
         }
+        // end::compileJava[]
 
         compileTestJava {
             doFirst {
@@ -27,12 +29,14 @@ subprojects {
             }
         }
 
+        // tag::jar[]
         jar {
             exclude moduleName
             with copySpec {
                 from file("${sourceSets.main.java.outputDir}/$moduleName")
             }
         }
+        // end::jar[]
 
         test {
             doFirst {

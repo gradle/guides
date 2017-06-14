@@ -14,33 +14,37 @@ dependencies {
 
 ext.moduleName = 'org.gradle.fairy.app'
 
-mainClassName = "$moduleName/org.gradle.fairy.app.StoryTeller"
+// tag::run[]
+mainClassName = "$moduleName/org.gradle.fairy.app.StoryTeller" // <1>
 
 run {
     doFirst {
         classpath = files()
         jvmArgs = [
             '--module-path', files(sourceSets.main.java.outputDir, configurations.runtimeClasspath).asPath,
-            '--module', mainClassName
+            '--module', mainClassName // <2>
         ]
     }
 }
+// end::run[]
 
+// tag::startScripts[]
 startScripts {
     doFirst {
         classpath = files()
         defaultJvmOpts = [
-            '--module-path', 'DOLLARSIGNAPP_HOME/lib',
+            '--module-path', 'APP_HOMElib',  // <1>
             '--module', mainClassName
         ]
     }
     doLast{
         def bashFile = new File(outputDir, applicationName)
         String bashContent = bashFile.text
-        bashFile.text = bashContent.replaceFirst('DOLLARSIGN', Matcher.quoteReplacement('$'))
+        bashFile.text = bashContent.replaceFirst('APP_HOME', Matcher.quoteReplacement('$APP_HOME/'))
 
         def batFile = new File(outputDir, applicationName + ".bat")
         String batContent = batFile.text
-        batFile.text = batContent.replaceFirst('DOLLARSIGNAPP_HOME', Matcher.quoteReplacement('%APP_HOME%'))
+        batFile.text = batContent.replaceFirst('APP_HOME', Matcher.quoteReplacement('%APP_HOME%\\'))
     }
 }
+// end::startScripts[]

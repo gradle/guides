@@ -454,7 +454,7 @@ subprojects, you should do that now. For example:
 .pigs/build.gradle
 [source,groovy]
 ----
-include::{alldir}/build.gradle[tags=pigModule]
+include::{alldir}/pigs/build.gradle[tags=pigModule]
 ----
 
 You also need to add a `module-info.java` file for each of your subprojects.
@@ -463,7 +463,7 @@ For example:
 .bears/src/main/java/module-info.java
 [source,java]
 ----
-include::{singledir}/bears/src/main/java/module-info.java[]
+include::{alldir}/bears/src/main/java/module-info.java[]
 ----
 
 WARNING: You also have to add these `module-info.java` files for the `pigs`,
@@ -518,4 +518,170 @@ You'll handle all of these in Step 3.
 
 == Step 3 - Consume Java 9 modules in the `run` and `assemble` tasks
 
-== Summary
+Now that you have all of the subprojects producing Java 9 modules, it's time to
+learn how to consume those modules when running the main class
+`org.gradle.fairy.app.StoryTeller` from the `fairy` project.
+
+There are technically two ways run the app. The first is to use Gradle's `run`
+task which is added by
+{user-manual}application_plugin.html[the Application Plugin].
+
+[listing]
+----
+$ ./gradlew run
+
+> Task :fairy:run
+Once upon a time, there lived the big bad wolf, and the 3 little pigs.
+
+<... elided ...>
+
+Goldilocks ran out of the house at top speed to escape the 3 bears.
+And they all lived happily ever after.
+
+
+BUILD SUCCESSFUL
+----
+
+The other way is to create a distribution of the application using Gradle's
+`assemble` task, then extract the distribution to some directory and run it
+from there.
+
+[listing]
+----
+$ ./gradlew assemble
+
+BUILD SUCCESSFUL
+$ cp fairy/build/distributions/fair.tar /tmp
+$ cd /tmp
+$ tar xvf fairy.tar
+x fairy/
+x fairy/lib/
+x fairy/lib/fairy.jar
+x fairy/lib/pigs.jar
+x fairy/lib/bears.jar
+x fairy/lib/formula.jar
+x fairy/lib/tale.jar
+x fairy/lib/actors.jar
+x fairy/lib/guava-22.0.jar
+x fairy/lib/jsr305-1.3.9.jar
+x fairy/lib/error_prone_annotations-2.0.18.jar
+x fairy/lib/j2objc-annotations-1.1.jar
+x fairy/lib/animal-sniffer-annotations-1.14.jar
+x fairy/bin/
+x fairy/bin/fairy
+x fairy/bin/fairy.bat
+$ ./bin/fairy
+Once upon a time, there lived the big bad wolf, and the 3 little pigs.
+
+<... elided ...>
+
+Goldilocks ran out of the house at top speed to escape the 3 bears.
+And they all lived happily ever after.
+----
+
+By the end of Step 2, both of those mechanisms are relying on modules which
+appear on the classpath which skips the modularity features of the Java 9
+module system. In this step, you will:
+
+1. Modify the `run` task to use modules.
+2. Modify the `startScript` task for both *nix and Windows to use modules.
+3. Remove the duplication of classes during Java compilation.
+4. Update the `ServiceLoader` mechanism to the Java 9 syntax.
+
+Once you've made changes 1 and 2, both mechanisms for running the program should
+continue working, so feel free to run those commands again to confirm you have
+correctly implemented each change.
+
+For the impatient, you can see all of the changes together in the
+`src/3-application` directory in the repository.
+
+=== Change 1 - Modify the `run` task to use modules
+
+To get the `run` task working with your new Java 9 modules, add the following
+to the `build.gadle` file in the `fairy` project.
+
+.fairy/build.gradle
+[source,groovy]
+----
+include::{appdir}/fairy/build.gradle[tags=run]
+----
+<1> Set the `mainClassName` to include the moduleName.
+<2> Explicitly tell Java 9 to use the module.
+
+=== Change 2 - Modify the `startScript` task for both *nix and Windows to use modules
+
+The tar and zip flies created in the `fairy/build/distributions` directory
+contain {user-manual}application_plugin.html#sec:the_distribution[start scripts]
+which allow the JVM to be started in a predictable way on all supported
+operating systems.
+
+To modify those generated `startScripts`, add the following to your
+`fairy/build.gradle` file:
+
+.fairy/build.gradle
+[source,groovy]
+----
+include::{appdir}/fairy/build.gradle[tags=run]
+----
+<1> Set the module path to a platform-independent placeholder value which is
+later replaced in a platform-specific way for the *nix shell script and Windows
+`.bat` file.
+
+=== Change 3 - Remove the duplication of classes during Java compilation
+
+Since the whole application is now using Java 9 modules both at compile and
+runtime, we no longer need to copy the class files generated during the
+`compileJava` task into their classpath-friendly location. Nor, should we
+consume them from that location when building the jar file.
+
+You can remove the `doLast` block from the `compileJava` task so that it looks
+like this:
+
+.build.gradle
+[source,groovy]
+----
+include::{appdir}/build.gradle[tags=compileJava]
+----
+
+You must also tell the `jar` task to consume the classes from the directory
+named the same as the module in the `main.java.outputDir` and tell it to
+continue ignoring that directory in it's default `copySpec`.
+
+.build.gradle
+[source,groovy]
+----
+include::{appdir}/build.gradle[tags=jar]
+----
+
+=== Change 4 - Update the `ServiceLoader` mechanism to the Java 9 syntax
+
+The Java 9 module system introduces a better way to specify which modules
+provide implementations of a service for the `ServiceLoader` mechanism.
+First, delete the `resources` directories from both `bears/src/main` and
+`pigs/src/main` as the new mechanism doesn't require the `META-INF/services`
+files.
+
+Then, adjust the `module-info.java` files for each of those projects.
+
+.bears/src/main/java/module-info.java
+[source,java]
+----
+include::{appdir}/bears/src/main/java/module-info.java[]
+----
+
+.pigs/src/main/java/module-info.java
+[source,java]
+----
+include::{appdir}/pigs/src/main/java/module-info.java[]
+----
+
+Since the `fairy` project's `module-info.java` declares that it
+`uses org.gradle.fairy.tale.Tale;`, the `ServiceLoader` instance will
+have access to any implementations provided at runtime by Java 9 modules
+which declare `provides org.gradle.fairy.tale.Tale`.
+
+=== Step 3 - Summary
+
+At this point, your application is taking advantage of all most all the
+features of the Java 9 module system. The only thing left to do is bundle
+the application with it's own isolated and optimized runtime environment.
