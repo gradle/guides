@@ -1,6 +1,6 @@
 == Important concepts
 
-How much of your build gets loaded from cache depends on many factors.
+How much of your build gets loaded from the cache depends on many factors.
 In this section you will see some of the tools that are essential for well-cached builds.
 https://gradle.com/build-scans[Build scans] are part of that toolchain and will be used throughout this guide.
 
