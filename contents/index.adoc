@@ -10,7 +10,6 @@ need to change in your Java application to:
 * consume Java 9 modules as your dependencies.
 * use Java's `ServiceLoader` pattern with Java 9 modules.
 * run an application using Java 9 modules.
-* distribute your application as an optimized Java 9 runtime image.
 
 While Gradle version {gradle-version} doesn't have first-class support for
 Java 9 modules, this guide shows you how to experiment with them before that
@@ -680,8 +679,11 @@ Since the `fairy` project's `module-info.java` declares that it
 have access to any implementations provided at runtime by Java 9 modules
 which declare `provides org.gradle.fairy.tale.Tale`.
 
-=== Step 3 - Summary
+== Summary
 
 At this point, your application is taking advantage of all most all the
-features of the Java 9 module system. The only thing left to do is bundle
-the application with it's own isolated and optimized runtime environment.
+features of the Java 9 module system. This guide has shown you how to modify
+the tasks added by the regular `java-library` and `application` plugins to get
+them work on with Java 9 modules. In the future, the Gradle team will be adding
+first-class support for the module system, but you can begin experimenting
+today!
