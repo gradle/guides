@@ -156,6 +156,66 @@ public class Generate extends DefaultTask {
 
 The first section of this guide talks about the <<plugin-development-plugin,Plugin Development plugin>>. As an added benefit of applying the plugin to your project, the task `validateTaskProperties` automatically checks for an existing input/output annotation for every public property define in a custom task type implementation.
 
+=== Modeling DSL-like APIs
+
+DSLs exposed by plugins should be readable and easy to understand. For illustration let's consider the following extension provided by a plugin. In its current form it offers a "flat" list of properties for configuring the creation of a web site.
+
+.build.gradle
+[source,groovy]
+----
+site {
+    outputDir = file('build/mysite')
+    websiteUrl = 'http://gradle.org'
+    vcsUrl = 'https://github.com/gradle-guides/gradle-site-plugin'
+}
+----
+
+As the number of exposed properties grows, you might want to introduce a nested, more expressive structure. The following code snippet adds a new configuration block named `customData` as part of the extension. You might have noticed that it provides a stronger indication of what those properties mean.
+
+.build.gradle
+[source,groovy]
+----
+site {
+    outputDir = file('build/mysite')
+
+    customData {
+        websiteUrl = 'http://gradle.org'
+        vcsUrl = 'https://github.com/gradle-guides/gradle-site-plugin'
+    }
+}
+----
+
+It's fairly easy to implement the backing objects of such an extension. First of all, you'll need to introduce a new data object for managing the properties `websiteUrl` and `vcsUrl`.
+
+.CustomData.java
+[source,java]
+----
+public class CustomData {
+    private String websiteUrl;
+    private String vcsUrl;
+
+    // getter and setter methods
+}
+----
+
+In the extension, you'll need to create an instance of the `CustomData` class and a method that can delegate the captured values to the data instance. To configure underlying data objects define a parameter of type {api-reference}org/gradle/api/Action.html[org.gradle.api.Action]. The following example demonstrates the use of `Action` in an extension definition.
+
+.SiteExtension.java
+[source,java]
+----
+import org.gradle.api.Action;
+
+public class SiteExtension {
+    private final CustomData customData = new CustomData();
+    
+    public void customData(Action<? super CustomData> action) {
+        action.execute(customData);
+    }
+}
+----
+
+NOTE: If you need second or third level nesting, you will also have to add overloads that take a `Closure`, because Gradle cannot instrument nested extensions at the moment.
+
 === Reacting to plugins
 
 Configuring the runtime behavior of existing plugins and tasks in a build is a common pattern in Gradle plugin implementations. For example a plugin could assume that it is applied to a Java-based project and automatically reconfigures the standard source directory.
