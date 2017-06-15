@@ -174,7 +174,7 @@ class BasePlugin implements Plugin<Project> {
             check.dependsOn CHECK_LINKS_TASK
 
             gitPublishPush {
-                enabled = System.getenv('TRAVIS_BRANCH') == 'master' && System.getenv('TRAVIS_PULL_REQUEST') == 'false'
+                enabled = System.getenv('TRAVIS_BRANCH') == 'master' && System.getenv('TRAVIS_PULL_REQUEST') == 'false' && System.getenv('TRAVIS_OS_NAME') == 'linux'
             }
         }
     }
