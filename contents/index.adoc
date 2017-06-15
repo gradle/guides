@@ -213,7 +213,7 @@ public class SiteExtension {
 }
 ----
 
-NOTE: When executed by Groovy in a `build.gradle` file, Gradle will automatically generate a custom `Closure`-taking method for every method that defines an `Action` as the last parameter in its signature. The enhancement mechanism isn't limited to extensions. It also applies to other domain objects in Gradle e.g. tasks. Please be aware that objects created with the `new` keyword are not automatically enhanced by this mechanism. In those cases users will have to explicitly use the `Action` parameter.
+NOTE: If you need second or third level nesting, you will also have to add overloads that take a `Closure`, because Gradle cannot instrument nested extensions at the moment.
 
 === Reacting to plugins
 
