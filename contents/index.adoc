@@ -157,7 +157,7 @@ The first section of this guide talks about the <<plugin-development-plugin,Plug
 
 === Modeling DSL-like APIs
 
-Capturing user input sometimes calls for a stronger modeling of exposed configuration elements with the goal to make the API more readable and easier to understand for consumers. For illustration let's consider the following extension exposed by a plugin. In its current form it simply exposes a "flat" list of properties for configuring the creation of a web site.
+DSLs exposed by plugins should be readable and easy to understand. For illustration let's consider the following extension provided by a plugin. In its current form it offers a "flat" list of properties for configuring the creation of a web site.
 
 .build.gradle
 [source,groovy]
@@ -169,7 +169,7 @@ site {
 }
 ----
 
-As the number of exposed properties grows, you might want to introduce a nested, more expressive structure. The following code snippet adds a new configuration block named `customData` as part of the extension. You might have noticed that it provides a stronger indication of what those properties mean. The indentation of the configuration block also serves as a natural enhancement of the existing DSL exposed by the extension.
+As the number of exposed properties grows, you might want to introduce a nested, more expressive structure. The following code snippet adds a new configuration block named `customData` as part of the extension. You might have noticed that it provides a stronger indication of what those properties mean.
 
 .build.gradle
 [source,groovy]
@@ -197,7 +197,7 @@ public class CustomData {
 }
 ----
 
-In the extension, you'll need to create an instance of the `CustomData` class and a method that can delegate the captured values to the data instance. To ensure that the method can be used from a varity of languages, e.g. Groovy, Java and Kotlin, the parameter responsible for configuring the `CustomData` instance should _not_ be a `groovy.lang.Closure` as it would impose a dependency on the Groovy library. The better choice is to configure underlying data objects with the help of {api-reference}org/gradle/api/Action.html[org.gradle.api.Action]. The following example demonstrates the use of `Action` in an extension definition.
+In the extension, you'll need to create an instance of the `CustomData` class and a method that can delegate the captured values to the data instance. To configure underlying data objects define a parameter of type {api-reference}org/gradle/api/Action.html[org.gradle.api.Action]. The following example demonstrates the use of `Action` in an extension definition.
 
 .SiteExtension.java
 [source,java]
@@ -213,9 +213,7 @@ public class SiteExtension {
 }
 ----
 
-NOTE: When executed by Groovy in a `build.gradle` file, Gradle will automatically coerse the `Closure` parameter to the single interface method of `Action` via link:http://docs.groovy-lang.org/next/html/documentation/core-semantics.html#_calling_a_method_accepting_a_sam_type_with_a_closure[SAM type coercion].
-
-Please be aware that the same mechanism works for other domain objects in Gradle and is not limited to extensions. The same approach would work for custom tasks as well to give an example. A future of version of Gradle might also expose a public API for enabling arbitrary POJOs with the same capability.
+NOTE: When executed by Groovy in a `build.gradle` file, Gradle will automatically generate a custom `Closure`-taking method for every method that defines an `Action` as the last parameter in its signature. The enhancement mechanism isn't limited to extensions. It also applies to other domain objects in Gradle e.g. tasks. Please be aware that objects created with the `new` keyword are not automatically enhanced by this mechanism. In those cases users will have to explicitly use the `Action` parameter.
 
 === Reacting to plugins
 
