@@ -7,25 +7,25 @@ subprojects {
         // tag::compileJava[]
         compileJava {
             doFirst {
-                classpath = files()
                 options.compilerArgs = [
-                    '--module-path', configurations.compileClasspath.asPath,
+                    '--module-path', classpath.asPath,
                     '--source-path', files(sourceSets.main.java.srcDirs).asPath,
-                    '-d', "${sourceSets.main.java.outputDir}/$moduleName"
+                    '-d', "$destinationDir/$moduleName"
                 ]
+                classpath = files()
             }
         }
         // end::compileJava[]
 
         compileTestJava {
             doFirst {
-                classpath = files()
                 options.compilerArgs = [
-                    '--module-path', files(sourceSets.main.java.outputDir, configurations.testCompileClasspath).asPath,
-                    '--add-modules', "junit",
+                    '--module-path', classpath.asPath,
+                    '--add-modules', 'junit',
                     '--add-reads', "$moduleName=junit",
                     '--patch-module', "$moduleName=" + files(sourceSets.test.java.srcDirs).asPath,
                 ]
+                classpath = files()
             }
         }
 
@@ -40,13 +40,13 @@ subprojects {
 
         test {
             doFirst {
-                classpath = files()
                 jvmArgs = [
-                    '--module-path', files(sourceSets.main.java.outputDir, configurations.testRuntimeClasspath).asPath,
+                    '--module-path', classpath.asPath,
                     '--add-modules', 'ALL-MODULE-PATH',
                     '--add-reads', "$moduleName=junit",
                     '--patch-module', "$moduleName=" + files(sourceSets.test.java.outputDir).asPath,
                 ]
+                classpath = files()
             }
         }
     }
