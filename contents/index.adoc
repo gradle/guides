@@ -214,7 +214,7 @@ public class SiteExtension {
 }
 ----
 
-NOTE: If you need second or third level nesting, you will also have to add overloads that take a `Closure`, because Gradle cannot instrument nested extensions at the moment.
+NOTE: If you need second- or third-level nesting, you will also have to add overloads that take a `Closure`, because Gradle cannot instrument nested extensions at the moment.
 
 === Reacting to plugins
 
