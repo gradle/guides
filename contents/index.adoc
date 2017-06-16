@@ -11,7 +11,7 @@ This guide assumes you have:
 - Basic understanding of software engineering practices
 - Knowledge of Gradle fundamentals like project organization, task creation and configuration as well as the Gradle build lifecycle
 
-If you happen to be a beginner to Gradle please start by working through the link:https://gradle.org/guides[Getting Started Guides on Gradle development] first while referencing the link:https://docs.gradle.org/current/userguide/userguide.html[Gradle User Manual] to go deeper.
+If you happen to be a beginner to Gradle please start by working through the link:https://gradle.org/guides#getting-started[Getting Started Guides on Gradle development] first while referencing the link:https://docs.gradle.org/current/userguide/userguide.html[Gradle User Manual] to go deeper.
 
 == Architecture
 
