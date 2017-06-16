@@ -376,8 +376,6 @@ The implementation of a plugin sometimes requires the use of an external depende
 
 Let’s have a look at an example. You wrote a plugin that downloads files containing data for further processing. The plugin implementation declares a custom configuration that allows for {user-manual}dependency_management.html#sec:configuration_defaults[assigning those external dependencies with default dependency coordinates].
 
-Please be aware that the code example below currently uses an internal API: convention mapping. Gradle 4.0 will provide a new public API for this purpose. This guide will be updated to reflect the use of the new public API as soon as the release goes out.
-
 .DataProcessingPlugin.java
 [source,java]
 ----
@@ -395,13 +393,9 @@ public class DataProcessingPlugin implements Plugin<Project> {
 
         project.getTasks().withType(DataProcessing.class, new Action<DataProcessing>() {
             public void execute(DataProcessing dataProcessing) {
-                dataProcessing.getConventionMapping().map("dataFiles", new Callable<FileCollection>() {
-                    public FileCollection call() throws Exception {
-                        return config;
-                    });
-                }
-            });
-        }
+                dataProcessing.setDataFiles(config);
+            }
+        });
     }
 }
 ----
@@ -410,7 +404,11 @@ public class DataProcessingPlugin implements Plugin<Project> {
 [source,java]
 ----
 public class DataProcessing extends DefaultTask {
-    private FileCollection dataFiles;
+    private final ConfigurableFileCollection dataFiles;
+    
+    public DataProcessing() {
+        dataFiles = getProject().files();
+    }
 
     @InputFiles
     public FileCollection getDataFiles() {
@@ -418,7 +416,7 @@ public class DataProcessing extends DefaultTask {
     }
 
     public void setDataFiles(FileCollection dataFiles) {
-        this.dataFiles = dataFiles;
+        this.dataFiles.setFrom(dataFiles);
     }
 
     @TaskAction
