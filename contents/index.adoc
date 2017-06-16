@@ -74,7 +74,7 @@ The build file adds the {user-manual}java_library_plugin.html[java-library] plug
 
 The file `src/main/java/Library.java` is shown here:
 
-.Generated src/main/groovy/Library.groovy
+.Generated src/main/java/Library.java
 [source,java]
 ----
 include::{gradle-outdir}/files/src/main/java/Library.java[tags=source-code]
