@@ -27,7 +27,7 @@ $ cd building-scala-libraries
 
 == Run the init task
 
-From inside the new project directory, run the `init` task with the `groovy-library` argument.
+From inside the new project directory, run the `init` task with the `scala-library` argument.
 
 [listing]
 ----
