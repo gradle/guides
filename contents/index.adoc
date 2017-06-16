@@ -10,7 +10,7 @@ The guide assumes you have:
 - Knowledge of Gradle fundamentals like project organization, task creation and configuration as well as the Gradle build lifecycle
 - Working knowledge in writing Java code
 
-If you happen to be a beginner to Gradle please start by working through the link:https://gradle.org/guides[Getting Started Guides on Gradle development] first while referencing the {user-manual}userguide.html[Gradle User Manual] to go deeper.
+If you happen to be a beginner to Gradle please start by working through the link:https://gradle.org/guides#getting-started[Getting Started Guides on Gradle development] first while referencing the {user-manual}userguide.html[Gradle User Manual] to go deeper.
 
 == Practices
 
