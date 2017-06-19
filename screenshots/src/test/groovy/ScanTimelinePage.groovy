@@ -5,5 +5,6 @@ class ScanTimelinePage extends Page {
     static at = { $('.TimelinePage').hasClass('loaded') }
     static content = {
         list { $('.TimelineList').module(TimelineList) }
+        taskDetails(required: false) { $('.TaskDetails__view').module(TimelineTaskDetailsModule) }
     }
 }

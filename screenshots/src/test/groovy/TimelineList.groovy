@@ -43,8 +43,7 @@ class TimelineListRow extends Module {
     }
 
     void showDetails() {
-        hoverOverRow()
-        showDetailsButton.click()
+        pathElement.click()
         waitFor { hasClass('TimelineListRow--showing-task-details') }
     }
 }

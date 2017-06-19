@@ -32,9 +32,11 @@ Beginning with the build cache on CI is a good first step as the environment on 
 This helps to identify any possible issues with the build that may affect cacheability.
 
 If you are subject to audit requirements regarding the artifacts you ship to your customers you may need to disable the build cache for certain builds.
-Gradle Enterprise 2017.4 may help you with fulfilling these requirements while still using the build cache for all your builds.
-It will allow you to easily find out which build produced an artifact coming from the build cache via build scans.
-// TODO: Add GE 2017.4 screenshot: from-cache-origin.png
+Gradle Enterprise may help you with fulfilling these requirements while still using the build cache for all your builds.
+It allows you to easily find out which build produced an artifact coming from the build cache via build scans.
+
+[.screenshot]
+image:from-cache-origin.png[]
 
 === Accelerate developer builds by reusing CI results
 

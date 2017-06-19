@@ -79,7 +79,7 @@ If you want to go into the details of finding out e.g. which classes and jar fil
 task you need to resort to comparing those files on disk yourself.
 
 Luckily, you do not have to capture this data yourself - the build scan plugin already takes care of this for you.
-This means that Gradle Enterprise 2017.4 will have the necessary data to diagnose the cache miss when comparing two build scans:
+This means that Gradle Enterprise has the necessary data to diagnose the cache miss when comparing two build scans:
 
 [.screenshot]
 image::task-inputs-comparison.png[]
