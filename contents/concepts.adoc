@@ -6,7 +6,7 @@ https://gradle.com/build-scans[Build scans] are part of that toolchain and will 
 
 === Build cache key
 
-Artifacts in the build cache are uniquely identified by a _https://docs.gradle.org/current/userguide/build_cache.html#sec:task_output_caching_details[build cache key]._
+Artifacts in the build cache are uniquely identified by a _{user-manual}build_cache.html#sec:task_output_caching_details[build cache key]._
 A build cache key is assigned to each cacheable task when running with the build cache enabled and is used for both loading and storing task outputs to the build cache.
 The following inputs contribute to the build cache key for a task:
 
