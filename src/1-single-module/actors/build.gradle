@@ -16,11 +16,10 @@ compileJava {
     doFirst {
         options.compilerArgs = [
             '--module-path', classpath.asPath,
-            '--source-path', files(sourceSets.main.java.srcDirs).asPath,
             '-d', "$destinationDir/$moduleName"
         ]
+        options.sourcepath = files(sourceSets.main.java.srcDirs)
         classpath = files()  // <2>
-        println options.compilerArgs
     }
     doLast {
         copy {
