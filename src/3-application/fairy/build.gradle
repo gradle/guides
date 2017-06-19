@@ -18,6 +18,7 @@ ext.moduleName = 'org.gradle.fairy.app'
 mainClassName = "$moduleName/org.gradle.fairy.app.StoryTeller" // <1>
 
 run {
+    inputs.property("moduleName", moduleName)
     doFirst {
         jvmArgs = [
             '--module-path', classpath.asPath,
@@ -30,6 +31,7 @@ run {
 
 // tag::startScripts[]
 startScripts {
+    inputs.property("moduleName", moduleName)
     doFirst {
         classpath = files()
         defaultJvmOpts = [

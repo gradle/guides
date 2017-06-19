@@ -6,6 +6,7 @@ subprojects {
 
         // tag::compileJava[]
         compileJava {
+            inputs.property("moduleName", moduleName)
             doFirst {
                 options.compilerArgs = [
                     '--module-path', classpath.asPath,
@@ -18,6 +19,7 @@ subprojects {
         // end::compileJava[]
 
         compileTestJava {
+            inputs.property("moduleName", moduleName)
             doFirst {
                 options.compilerArgs = [
                     '--module-path', classpath.asPath,
@@ -31,6 +33,7 @@ subprojects {
 
         // tag::jar[]
         jar {
+            inputs.property("moduleName", moduleName)
             exclude moduleName
             with copySpec {
                 from file("${sourceSets.main.java.outputDir}/$moduleName")
@@ -39,6 +42,7 @@ subprojects {
         // end::jar[]
 
         test {
+            inputs.property("moduleName", moduleName)
             doFirst {
                 jvmArgs = [
                     '--module-path', classpath.asPath,

@@ -12,6 +12,7 @@ dependencies {
 ext.moduleName = 'org.gradle.actors' // <1>
 
 compileJava {
+    inputs.property("moduleName", moduleName)
     doFirst {
         options.compilerArgs = [
             '--module-path', classpath.asPath,
@@ -19,6 +20,7 @@ compileJava {
             '-d', "$destinationDir/$moduleName"
         ]
         classpath = files()  // <2>
+        println options.compilerArgs
     }
     doLast {
         copy {
@@ -31,6 +33,7 @@ compileJava {
 
 // tag::compileTestJava[]
 compileTestJava {
+    inputs.property("moduleName", moduleName)
     doFirst {
         options.compilerArgs = [
             '--module-path', classpath.asPath, // <1>
@@ -45,12 +48,14 @@ compileTestJava {
 
 // tag::jar[]
 jar {
+    inputs.property("moduleName", moduleName)
     exclude moduleName
 }
 // end::jar[]
 
 // tag::test[]
 test {
+    inputs.property("moduleName", moduleName)
     doFirst {
         jvmArgs = [
             '--module-path', classpath.asPath, // <1>

@@ -5,6 +5,7 @@ subprojects {
         }
 
         compileJava {
+            inputs.property("moduleName", moduleName)
             doFirst {
                 options.compilerArgs = [
                     '--module-path', classpath.asPath,
@@ -22,6 +23,7 @@ subprojects {
         }
 
         compileTestJava {
+            inputs.property("moduleName", moduleName)
             doFirst {
                 options.compilerArgs = [
                     '--module-path', classpath.asPath,
@@ -34,10 +36,12 @@ subprojects {
         }
 
         jar {
+            inputs.property("moduleName", moduleName)
             exclude moduleName
         }
 
         test {
+            inputs.property("moduleName", moduleName)
             doFirst {
                 jvmArgs = [
                     '--module-path', classpath.asPath,
