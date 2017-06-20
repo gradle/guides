@@ -18,7 +18,6 @@ compileJava {
             '--module-path', classpath.asPath,
             '-d', "$destinationDir/$moduleName"
         ]
-        options.sourcepath = files(sourceSets.main.java.srcDirs)
         classpath = files()  // <2>
     }
     doLast {
