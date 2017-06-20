@@ -118,7 +118,7 @@ class BasePlugin implements Plugin<Project> {
         asciidoc.extensions {
             postprocessor { document, output ->
                 if (document.basebackend("html")) {
-                    def extra = """<div style="padding-top: 10px;"><a href="https://guides.gradle.org"><img src="http://guides.gradle.org/gradle-guides.svg" alt=""></a></div>"""
+                    def extra = """<div style="padding-top: 10px;"><a href="https://guides.gradle.org"><img src="https://guides.gradle.org/gradle-guides.svg" alt=""></a></div>"""
                     output.replaceAll( ~/<div id="header">\s*<h1>/, """<div id="header">${extra}<h1>""")
                 } else {
                     output
