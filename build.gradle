@@ -48,7 +48,7 @@ asciidoctor {
             }
             def doc = org.jsoup.Jsoup.parse(output, "UTF-8")
             def header = doc.getElementById("header")
-            header.prepend("""<div style="padding-top: 10px;"><a href="https://guides.gradle.org"><img src="http://guides.gradle.org/gradle-guides.svg" alt=""></a></div>""")
+            header.prepend("""<div style="padding-top: 10px;"><a href="https://guides.gradle.org"><img src="https://guides.gradle.org/gradle-guides.svg" alt=""></a></div>""")
             doc.html()
         }
     }
