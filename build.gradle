@@ -1,5 +1,5 @@
 plugins {
-    id 'org.gradle.guides.getting-started' version '0.5.3'
+    id 'org.gradle.guides.getting-started' version '0.5.5'
 }
 
 import org.apache.tools.ant.filters.*
