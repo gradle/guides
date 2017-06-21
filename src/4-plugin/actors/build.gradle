@@ -1,0 +1,12 @@
+plugins {
+    id 'java-library'
+    id 'org.gradle.java.experimental-jigsaw' version '0.1.0'
+}
+
+dependencies {
+    implementation 'com.google.guava:guava:22.0'
+
+    testImplementation 'junit:junit:4.12'
+}
+
+architecture.moduleName = 'org.gradle.actors'

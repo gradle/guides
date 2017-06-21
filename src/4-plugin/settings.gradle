@@ -1,0 +1,15 @@
+pluginManagement {
+    repositories {
+        maven { url '/tmp/localPlugins' }
+        gradlePluginPortal()
+    }
+}
+
+rootProject.name = "storyteller"
+
+include 'actors'
+include 'tale'
+include 'bears'
+include 'pigs'
+include 'fairy'
+include 'formula'
