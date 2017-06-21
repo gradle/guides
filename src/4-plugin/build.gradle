@@ -1,4 +1,9 @@
 subprojects {
+    buildscript {
+        dependencies {
+            classpath 'org.gradle.java:experimental-jigsaw:0.1.0'
+        }
+    }
     afterEvaluate {
         repositories {
             jcenter()
