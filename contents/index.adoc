@@ -20,7 +20,7 @@ support is added.
 * About +++<span class="time-to-complete-text">30 minutes</span>+++
 * A text editor
 * A command prompt
-* The Java Development Kit (JDK), version 1.9 (build 170) or newer
+* The Java Development Kit (JDK), version 1.9 (build 174) or newer
 
 == Understanding the Example Project
 
@@ -201,15 +201,19 @@ six changes you should to make to your project.
 
 1. Add a `module-info.java` describing the module.
 2. Modify the `compileJava` task to produce a module.
-3. Modify the `compileTestJava` task to patch the module.
-4. Modify the `test` task to consume the patched module.
+3. Modify the `compileTestJava` task to locally alter the module.
+4. Modify the `test` task to consume the locally altered module.
 5. Modify the 'jar' task to correctly assemble the module jar file.
-6. (Optional) Add `Atomatic-Module-Name` manifest entries for all other projects.
+6. (Optional) Add `Automatic-Module-Name` manifest entries for all other
+   projects.
 
-This guide recommends proactively adding an `Automatic-Module-Name` manifest
-entry in the `META-INF/MANIFEST.MF` file for all of the projects which make up
-your application, just so that the module names will be correct when consuming
-them as automatic modules. Doing this is described in the optional 6th change.
+We recommend proactively adding an `Automatic-Module-Name` manifest entry in the
+`META-INF/MANIFEST.MF` file for all of the projects which make up your
+application. Providing an `Automatic-Module-Name` allows library authors to
+reserve a module name for the future, without having to actually convert the
+library to a module. This ensures that consumers of the library know right now
+what the module name will be in the future. Doing this is described in the
+optional 6th change.
 
 Each of these changes is described in subsections below along with discussion
 of why the change is being made. But, you can also view the results of these
@@ -217,8 +221,8 @@ changes by exploring the `src/1-single-module` example project in the
 repository.
 
 Our goal in making the following six changes is to have the `actors` project
-produce a Java 9 module. The first five changes need to be be made together,
-and the sixth (optional) change can be made independently.
+produce a Java 9 module. The first five changes need to be made together, and
+the sixth (optional) change can be made independently.
 
 === Change 1 - Add a `module-info.java` describing the module.
 
@@ -234,7 +238,7 @@ This file declares the `org.gradle.actors` module which exports the
 `org.gradle.actors` package (but not the `org.gradle.actors.impl` package) and
 requires the `guava` module. So far, the Guava jar files are not Java 9 modules,
 so when you require them, you have to use the automatic module name `guava`
-which the JVM calculates from the filename of the jar file which contains the
+which the JVM infers from the filename of the jar file which contains the
 classes. For Guava, the jar file's name is
 http://central.maven.org/maven2/com/google/guava/guava/22.0/[guava-22.0.jar].
 According to the
@@ -268,11 +272,11 @@ arguments.
   the same as the module we are compiling in the output directory specified for
   the `main` source set.
 
-This last option warrants a little more explanation. Why, didn't you just set
-the `destinationDir` property of the `compileJava` task to the new value? You
-are trying to arrange the compiled classes such that the `destinationDir` can be
-used equally well as an element on a `--module-path` or a `--classpath` when
-consuming the outputs of this task. Gradle automatically adds the
+NOTE: This last option warrants a little more explanation. Why, didn't you just
+set the `destinationDir` property of the `compileJava` task to the new value?
+You are trying to arrange the compiled classes such that the `destinationDir`
+can be used equally well as an element on a `--module-path` or a `--classpath`
+when consuming the outputs of this task. Gradle automatically adds the
 `destinationDir` of the `compileJava` task for project dependencies to the
 `compileClasspath` of libraries that depend on a project. However, when using
 that `compileClasspath` as a `--module-path`, each element in the path is
@@ -293,7 +297,7 @@ subprojects in your project are converted to Java 9 modules.
 
 NOTE: The reason you modify `options.compilerArgs` inside the `doFirst` block
 instead of in the configuration block of the `compileJava` task is because you
-want to avoid causing the `comipleClasspath` configuration from being resolved
+want to avoid causing the `compileClasspath` configuration from being resolved
 during the configuration phase of the Gradle build.
 
 === Change 3 - Modify the `compileTestJava` task to patch the module
@@ -303,7 +307,8 @@ tests for code which is inside a Java 9 module. The recommended way to
 accomplish this is to "patch" the module, just during testing. Patching a module
 just means adding extra classes to the packages which make up the module. In
 the case of patching a module for running tests, you are adding the test classes
-to the module in the same package.
+to the module in the same package so that those test classes have access to
+everything else which makes up the module under test.
 
 Adding the following to your `build.gradle` accomplishes this compile-time
 patching of the `org.gradle.actors` module.
@@ -521,8 +526,8 @@ Now that you have all of the subprojects producing Java 9 modules, it's time to
 learn how to consume those modules when running the main class
 `org.gradle.fairy.app.StoryTeller` from the `fairy` project.
 
-There are technically two ways run the app. The first is to use Gradle's `run`
-task which is added by
+There are two ways run the app covered in this guide. The first is to use
+Gradle's `run` task which is added by
 {user-manual}application_plugin.html[the Application Plugin].
 
 [listing]
@@ -609,7 +614,7 @@ include::{appdir}/fairy/build.gradle[tags=run]
 
 === Change 2 - Modify the `startScript` task for both *nix and Windows to use modules
 
-The tar and zip flies created in the `fairy/build/distributions` directory
+The tar and zip files created in the `fairy/build/distributions` directory
 contain {user-manual}application_plugin.html#sec:the_distribution[start scripts]
 which allow the JVM to be started in a predictable way on all supported
 operating systems.
@@ -644,7 +649,7 @@ include::{appdir}/build.gradle[tags=compileJava]
 
 You must also tell the `jar` task to consume the classes from the directory
 named the same as the module in the `main.java.outputDir` and tell it to
-continue ignoring that directory in it's default `copySpec`.
+continue ignoring that directory in its default `copySpec`.
 
 .build.gradle
 [source,groovy]
