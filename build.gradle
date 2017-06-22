@@ -18,6 +18,7 @@ asciidoctor {
     attributes singledir: file('src/1-single-module')
     attributes alldir: file('src/2-all-modules')
     attributes appdir: file('src/3-application')
+    attributes plugindir: file('src/4-plugin')
 }
 
 // Add in any generation steps.
