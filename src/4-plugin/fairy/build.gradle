@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'application'
-    id 'org.gradle.java.experimental-jigsaw' version '0.1.0'
+    id 'org.gradle.java.experimental-jigsaw' version '0.1.1'
 }
 
 import java.util.regex.Matcher;
