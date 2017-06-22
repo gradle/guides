@@ -14,6 +14,6 @@ dependencies {
     runtimeOnly project(':bears')
 }
 
-architecture.moduleName = 'org.gradle.fairy.app'
+javaModule.name = 'org.gradle.fairy.app'
 
 mainClassName = 'org.gradle.fairy.app.StoryTeller'

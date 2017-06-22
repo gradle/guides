@@ -11,4 +11,4 @@ dependencies {
     implementation project(':actors')
 }
 
-architecture.moduleName = 'org.gradle.fairy.tale.pigs'
+javaModule.name = 'org.gradle.fairy.tale.pigs'

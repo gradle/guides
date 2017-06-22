@@ -10,4 +10,4 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
-architecture.moduleName = 'org.gradle.actors'
+javaModule.name = 'org.gradle.actors'

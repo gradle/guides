@@ -11,4 +11,4 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
-architecture.moduleName = 'org.gradle.fairy.tale.formula'
+javaModule.name = 'org.gradle.fairy.tale.formula'

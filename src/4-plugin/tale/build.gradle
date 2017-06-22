@@ -4,4 +4,4 @@ plugins {
 
 apply plugin: 'org.gradle.java.experimental-jigsaw'
 
-architecture.moduleName = 'org.gradle.fairy.tale'
+javaModule.name = 'org.gradle.fairy.tale'
