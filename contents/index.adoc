@@ -323,7 +323,7 @@ all of the modules in the module path visible.
 
 At this point, you can actually run the tests.
 
-=== Change 5 (Optional) - Add `Atomatic-Module-Name` manifest entries for all other projects
+=== Change 5 (Optional) - Add `Automatic-Module-Name` manifest entries for all other projects
 
 For backwards compatibility, Java 9's module system allows non-module jar files
 to appear on the module path. By default, these jar files are converted to
