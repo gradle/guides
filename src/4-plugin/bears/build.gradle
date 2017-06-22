@@ -1,9 +1,7 @@
 plugins {
     id 'java-library'
+    id 'org.gradle.java.experimental-jigsaw' version '0.1.0'
 }
-
-apply plugin: 'org.gradle.java.experimental-jigsaw'
-
 
 dependencies {
     api project(':tale')
