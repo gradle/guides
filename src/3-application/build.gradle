@@ -4,18 +4,14 @@ subprojects {
             jcenter()
         }
 
-        // tag::compileJava[]
         compileJava {
-            inputs.property("moduleName", moduleName)
             doFirst {
                 options.compilerArgs = [
                     '--module-path', classpath.asPath,
-                    '-d', "$destinationDir/$moduleName"
                 ]
                 classpath = files()
             }
         }
-        // end::compileJava[]
 
         compileTestJava {
             inputs.property("moduleName", moduleName)
@@ -29,16 +25,6 @@ subprojects {
                 classpath = files()
             }
         }
-
-        // tag::jar[]
-        jar {
-            inputs.property("moduleName", moduleName)
-            exclude moduleName
-            with copySpec {
-                from file("${sourceSets.main.java.outputDir}/$moduleName")
-            }
-        }
-        // end::jar[]
 
         test {
             inputs.property("moduleName", moduleName)

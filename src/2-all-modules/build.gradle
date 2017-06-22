@@ -9,15 +9,8 @@ subprojects {
             doFirst {
                 options.compilerArgs = [
                     '--module-path', classpath.asPath,
-                    '-d', "$destinationDir/$moduleName"
                 ]
                 classpath = files()
-            }
-            doLast {
-                copy {
-                    from "$destinationDir/$moduleName"
-                    into destinationDir
-                }
             }
         }
 
@@ -32,11 +25,6 @@ subprojects {
                 ]
                 classpath = files()
             }
-        }
-
-        jar {
-            inputs.property("moduleName", moduleName)
-            exclude moduleName
         }
 
         test {

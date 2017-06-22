@@ -192,19 +192,18 @@ This guide assumes that you already have familiarity with the following concepts
 One nice feature of the module system in Java 9, is that you can convert all
 of the libraries of your project to Java 9 modules in a bottom-up fashion.
 Since Java 9 modules can be consumed equally well from the classpath or the
-modulepath, we can convert a single leaf-node in our multi-project build to
+module path, we can convert a single leaf-node in our multi-project build to
 produce a Java 9 module, but, consume that module on the classpath when
 compiling or running projects which consume the outputs of that node.
 
 When converting a `java-library` project to produce a Java 9 module, there are
-six changes you should to make to your project.
+five changes you should to make to your project.
 
 1. Add a `module-info.java` describing the module.
 2. Modify the `compileJava` task to produce a module.
 3. Modify the `compileTestJava` task to locally alter the module.
 4. Modify the `test` task to consume the locally altered module.
-5. Modify the 'jar' task to correctly assemble the module jar file.
-6. (Optional) Add `Automatic-Module-Name` manifest entries for all other
+5. (Optional) Add `Automatic-Module-Name` manifest entries for all other
    projects.
 
 We recommend proactively adding an `Automatic-Module-Name` manifest entry in the
@@ -213,16 +212,16 @@ application. Providing an `Automatic-Module-Name` allows library authors to
 reserve a module name for the future, without having to actually convert the
 library to a module. This ensures that consumers of the library know right now
 what the module name will be in the future. Doing this is described in the
-optional 6th change.
+optional 5th change.
 
 Each of these changes is described in subsections below along with discussion
 of why the change is being made. But, you can also view the results of these
 changes by exploring the `src/1-single-module` example project in the
 repository.
 
-Our goal in making the following six changes is to have the `actors` project
-produce a Java 9 module. The first five changes need to be made together, and
-the sixth (optional) change can be made independently.
+Our goal in making the following five changes is to have the `actors` project
+produce a Java 9 module. The first four changes need to be made together, and
+the fifth (optional) change can be made independently.
 
 === Change 1 - Add a `module-info.java` describing the module.
 
@@ -260,47 +259,19 @@ reuse the same code later for other modules without having to change it.
 
 When compiling a Java 9 module, you want to use `--module-path` instead of
 `--classpath` to read your dependencies. So, in the `doFirst` block, you are
-clearing out the `classpath` property of the task, and adding three compiler
-arguments.
+clearing out the `classpath` property of the task, and adding a compiler
+argument.
 
 * `--module-path` is set to the value that would have been the `classpath`. This
   makes sense because the classpath already has any jars or class output
   directories of libraries you depend on.
-* `--source-path` tells `javac` where it should look for `.java` files which
-   define the module we are building.
-* `-d` sets the destination for the compiled classes to be a directory named
-  the same as the module we are compiling in the output directory specified for
-  the `main` source set.
-
-NOTE: This last option warrants a little more explanation. Why, didn't you just
-set the `destinationDir` property of the `compileJava` task to the new value?
-You are trying to arrange the compiled classes such that the `destinationDir`
-can be used equally well as an element on a `--module-path` or a `--classpath`
-when consuming the outputs of this task. Gradle automatically adds the
-`destinationDir` of the `compileJava` task for project dependencies to the
-`compileClasspath` of libraries that depend on a project. However, when using
-that `compileClasspath` as a `--module-path`, each element in the path is
-expected to either contain a jar file, or a directory which has module
-directories as children.  So, since you want to be able to use the
-`destinationDir` on the `--module-path`, it must contain a subdirectory named
-after the module. That's why you explicitly override `-d` instead of setting
-the `destinationDir`.
-
-However, you **also** want to be able to use the `destinationDir` as an element
-in a `--classpath` argument for projects which consume your project's outputs
-but are not yet themselves producing Java 9 modules. This is why you added the
-`doLast` block which copies the classes into the root of the `main` source set's
-`java.outputDir` (which is the default value of `destinationDir`). This has the
-slightly unfortunate side-effect of duplicating the classes in the output
-directory. But, don't worry, you can remove this duplication once all the
-subprojects in your project are converted to Java 9 modules.
 
 NOTE: The reason you modify `options.compilerArgs` inside the `doFirst` block
 instead of in the configuration block of the `compileJava` task is because you
 want to avoid causing the `compileClasspath` configuration from being resolved
 during the configuration phase of the Gradle build.
 
-=== Change 3 - Modify the `compileTestJava` task to patch the module
+=== Change 3 - Modify the `compileTestJava` task to locally alter the module
 
 One slightly confusing aspect of the Java 9 module system is how to run unit
 tests for code which is inside a Java 9 module. The recommended way to
@@ -329,7 +300,7 @@ These options cause the generated class files in the `test` source set's
 `java.outputDir` to contain appropriate metadata for being used to patch the
 `org.gradle.actors` module. Those class files are consumed in the next change.
 
-=== Change 4 - Modify the `test` task to consume the patched module
+=== Change 4 - Modify the `test` task to consume the locally altered module
 
 When running the tests, we have to configure the JVM that will be running the
 tests to know about our modules and how to patch the `org.gradle.actors` module
@@ -350,26 +321,9 @@ all of the modules in the module path visible.
 <3> Declares that `org.gradle.actors` reads the `junit` module.
 <4> Adds the test classes to the `org.gradle.actors` module.
 
-At this point, you can actually run the tests, but let's go ahead and fix
-the jar file so we don't forget to and publish confusing jars.
+At this point, you can actually run the tests.
 
-=== Change 5 - Modify the 'jar' task to correctly assemble the module jar file
-
-{user-manual}java_plugin.html#sec:jar[The Java Plugin] adds a `jar` task which
-bundles up the classes and resources generated from the `main` source set into
-a jar file. But,
-<<change_2_modify_the_code_compilejava_code_task_to_produce_a_module,Change 2>>
-created duplicate class files under a `org.gradle.actors` directory in the
-`main.java.outputDir`. You just need to tell the jar task to exclude those
-extra classes in the `build.gradle` file.
-
-.actors/build.gradle
-[source,groovy]
-----
-include::{singledir}/actors/build.gradle[tags=jar]
-----
-
-=== Change 6 (Optional) - Add `Atomatic-Module-Name` manifest entries for all other projects
+=== Change 5 (Optional) - Add `Atomatic-Module-Name` manifest entries for all other projects
 
 For backwards compatibility, Java 9's module system allows non-module jar files
 to appear on the module path. By default, these jar files are converted to
@@ -589,8 +543,7 @@ module system. In this step, you will:
 
 1. Modify the `run` task to use modules.
 2. Modify the `startScript` task for both *nix and Windows to use modules.
-3. Remove the duplication of classes during Java compilation.
-4. Update the `ServiceLoader` mechanism to the Java 9 syntax.
+3. Update the `ServiceLoader` mechanism to the Java 9 syntax.
 
 Once you've made changes 1 and 2, both mechanisms for running the program should
 continue working, so feel free to run those commands again to confirm you have
@@ -625,39 +578,13 @@ To modify those generated `startScripts`, add the following to your
 .fairy/build.gradle
 [source,groovy]
 ----
-include::{appdir}/fairy/build.gradle[tags=run]
+include::{appdir}/fairy/build.gradle[tags=startScripts]
 ----
 <1> Set the module path to a platform-independent placeholder value which is
 later replaced in a platform-specific way for the *nix shell script and Windows
 `.bat` file.
 
-=== Change 3 - Remove the duplication of classes during Java compilation
-
-Since the whole application is now using Java 9 modules both at compile and
-runtime, we no longer need to copy the class files generated during the
-`compileJava` task into their classpath-friendly location. Nor, should we
-consume them from that location when building the jar file.
-
-You can remove the `doLast` block from the `compileJava` task so that it looks
-like this:
-
-.build.gradle
-[source,groovy]
-----
-include::{appdir}/build.gradle[tags=compileJava]
-----
-
-You must also tell the `jar` task to consume the classes from the directory
-named the same as the module in the `main.java.outputDir` and tell it to
-continue ignoring that directory in its default `copySpec`.
-
-.build.gradle
-[source,groovy]
-----
-include::{appdir}/build.gradle[tags=jar]
-----
-
-=== Change 4 - Update the `ServiceLoader` mechanism to the Java 9 syntax
+=== Change 3 - Update the `ServiceLoader` mechanism to the Java 9 syntax
 
 The Java 9 module system introduces a better way to specify which modules
 provide implementations of a service for the `ServiceLoader` mechanism.

@@ -16,15 +16,8 @@ compileJava {
     doFirst {
         options.compilerArgs = [
             '--module-path', classpath.asPath,
-            '-d', "$destinationDir/$moduleName"
         ]
         classpath = files()  // <2>
-    }
-    doLast {
-        copy {
-            from "$destinationDir/$moduleName"
-            into destinationDir
-        }
     }
 }
 // end::compileJava[]
@@ -43,13 +36,6 @@ compileTestJava {
     }
 }
 // end::compileTestJava[]
-
-// tag::jar[]
-jar {
-    inputs.property("moduleName", moduleName)
-    exclude moduleName
-}
-// end::jar[]
 
 // tag::test[]
 test {
