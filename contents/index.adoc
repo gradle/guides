@@ -24,7 +24,7 @@ Setup a trivial web application by running these commands and copying sources to
 
 === Step 1.1: Create sample project
 
-NOTE: This demo project is derived from https://webpack.js.org/guides/get-started/[Webpack's Getting Started Guide]. Learn more Webpack usage at https://webpack.js.org/guides/.
+NOTE: This demo project is derived from https://webpack.js.org/guides/getting-started/[Webpack's Getting Started Guide]. Learn more Webpack usage at https://webpack.js.org/guides/.
 
 [listing]
 ----
@@ -183,12 +183,12 @@ task webpack(type: Exec) {
     commandLine "$projectDir/node_modules/.bin/webpack", "app/index.js", "$buildDir/js/bundle.js"
 }
 ----
-<1> Declare package-lock.json and app to be relocatable. https://guides.gradle.org/build-cache-practices/#relocatability[Learn why this is important for caching].
+<1> Declare package-lock.json and app to be relocatable. https://guides.gradle.org/using-build-cache/#relocatability[Learn why this is important for caching].
 <2> Tell Gradle to always cache this task's outputs if the build cache is enabled.
 
 It is strongly advised to use a https://docs.gradle.org/current/userguide/custom_tasks.html[custom task class] when writing cacheable tasks. An example of one for Webpack is provided in the Managing JavaScript topical guide (coming soon). Furthermore, you may want to declare property names for better diagnostics.
 
-Learn more about best practices of using the Gradle Build Cache from the https://guides.gradle.org/build-cache-practices/[Build Cache topical guide].
+Learn more about best practices of using the Gradle Build Cache from the https://guides.gradle.org/using-build-cache/[Build Cache topical guide].
 
 === Step 4.2: Run `webpack` to populate Gradle Build Cache
 
