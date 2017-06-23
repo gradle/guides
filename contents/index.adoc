@@ -17,7 +17,7 @@ support is added.
 
 == What you'll need
 
-* About +++<span class="time-to-complete-text">30 minutes</span>+++
+* About +++<span class="time-to-complete-text">60 minutes</span>+++
 * A text editor
 * A command prompt
 * The Java Development Kit (JDK), version 1.9 (build 174) or newer
