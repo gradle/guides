@@ -1,0 +1,307 @@
+= Style Guide for Gradle Guide Authors
+
+The Gradle Guides form a potentially large collection of learning material written by a variety of authors. From the perspective of the reader, though, they are all of one piece. Once they've read one guide, the next one should be familiar and hence easy to digest. This style guide is designed to satisfy that goal by helping authors keep their writing consistent with other guides.
+
+Each guide falls into one of the following three categories:
+
+ 1. **Getting Started Guides** – these are short (10-15 minute) task-focused guides that take the reader from zero to "hello world" with any given build automation task. You can think of these guides as being designed to rank well for Google searches like "How to publish to Maven Central"—because indeed there would be a Gradle Guide with that exact title or something quite similar. See the https://guides.gradle.org/gs-building-jvm-libraries/[Getting Started Building JVM Libraries] guide for an example.
+
+ 2. **Topical Guides** – These guides cover a given, usually cross-cutting topic in Gradle or build automation, and provide the reader with a "lay of the land" of that given topic. For example, see the https://github.com/gradle-guides/performance[Optimizing Gradle Performance] guide. You can see as you read through the guide that it is not narrative- or use-case driven; rather it provides a paragraph or two of information about each major topic we (the Gradle Team) think that Gradle users should have in mind when they're considering the broader topic of build performance optimization.
+
+ 3. **Tutorials** – These are longer-form guides that revolve around implementing a _real world_ build automation solution. For example, implementing a non-trivial plugin from end-to-end, making important design and implementation decisions all along the way.
+
+You will find guidelines in this document that are specific to each guide type as well as a general set applicable to all guide types.
+
+== Getting Started Guides
+
+The following guidelines explain the structure and required attributes of a Getting Started Guide.
+
+
+=== Focus on a single task
+
+Getting Started Guides take the reader through the minimum of steps—the equivalent of a hello-world example—required to complete a specific task. This is partially a value judgement, but ask yourself whether you can break down the proposed task into several tasks that still have value to the user on their own.
+
+For example, should a guide include both building and publishing a JVM library? We think not because building the JAR has value in itself: the library can be used directly. Publishing is a common requirement for JVM library projects, but it's not an _absolute_ requirement. It's an additional task that readers will often want to complete.
+
+=== Create a working build
+
+The user should have a working build after following the steps of a Getting Started Guide.
+
+=== Use a set grammar for the title
+
+The title of the guide should work when prefixed with "Getting Started" and start with a present participle where possible. The title should also ensure that it represents a capability the reader will learn rather than a task that they perform.
+
+For example, favor "Building JVM libraries" over "Building _a_ JVM library", since the capability is "I can build JVM libraries."
+
+=== Use standard sections
+
+A Getting Started Guide has a fixed outline:
+
+ - What you'll build (or What you'll create)
+ - What you'll need
+ - <The guide's specific steps>
+ - Summary
+ - Next steps
+
+External contributors will find these already in the skeleton project that they start with.
+
+=== Structure as a sequence of steps to complete
+
+Provide precise steps for the reader to follow, with commands and code that can be copied, pasted and executed. Each discrete step should have its own heading that takes the form of an imperative.
+
+=== Keep it short
+
+A reader should be able to complete a Getting Started Guide in 10-30 minues, including copying or writing the code and executing the build.
+
+=== Demonstrate that the guide has been successfully completed
+
+How does a user know that they followed the instructions correctly? Did they build something that works? A Getting Started Guide should always attempt to include a final step that _shows_ the user successful completion.
+
+As an example, https://guides.gradle.org/gs-building-jvm-libraries/#consume_the_library_jar[Getting Started Building JVM Libraries] has the user creating a class with a `main()` method that uses the library they just built. The user is then shown how to compile and run the class with the library's JAR on the classpath.
+
+=== Avoid unnecessary prior knowledge
+
+Every Getting Started Guide is a worked example. One difficulty is thinking of an example that isn't tied to a specific domain, such as file hashing, security, web applications, etc. If you were to use such an example, you would then have to work out how much extra information you should provide in case the user isn't familiar with the requirements and terminology of that domain.
+
+The example doesn't have to be useful in itself, so avoid one that requires unnecessary knowledge on the part of the user. On the other hand, if the task is specific to a domain, then assuming knowledge of that domain is expected. For example, if a guide's task relates to Docker, then use a Docker example and assume knowledge of what Docker is and the tools around it.
+
+=== Avoid instructions or commands that aren't strictly necessary
+
+Anything extra beyond the bare minimum acts as a potential distraction and digression from the main focus of the guide.
+
+=== Call out to places with more information
+
+Getting Started Guides are lean and shouldn't introduce discussion points if possible. However, they _should_ link to reliable external material—such as the Gradle User Manual—that covers important and relevant discussion points for the given task.
+
+As an example, https://guides.gradle.org/gs-building-jvm-libraries/#assemble_the_library_jar[Getting Started Building JVM Libraries] uses the standard Java project structure but links to the user manual to explain what that structure is and how to configure it, since that's relevant information.
+
+Such links can also go into the Next Steps section for relevant follow-on tasks. For example, users will often want to publish a JVM library after building it, so the above guide links to another guide covering that task.
+
+=== Address application developers and automation engineers new to the topic, not necessarily new to Gradle
+
+Getting Started Guides should not reproduce the same basic information on using the Gradle build tool. Assume that readers of your guide have at least read the more basic ones on writing custom tasks and building JVM libraries.
+
+=== Prefer the indefinite article for prerequisites
+
+This is with respect to software that the reader needs to have installed before going through the guide. Examples:
+
+ - A Java Development Kit, version X or better
+ - A Gradle distribution, version X or better
+
+=== Include installation links for software prerequisites
+
+It's all well and good telling a user what software to install, but it makes their lives much easier if those instructions also include links on how to do so.
+
+=== Never underestimate the time required to complete the guide
+
+Imagine you spend double the time completing a guide than is stated in the prerequisites. How would you feel? We want to avoid the potential for any negative reactions or feelings.
+
+=== Provide links to relevant documentation in Next Steps
+
+In many cases, a next step should link to another guide. In the cases where no suitable guide exists, link to the appropriate chapter or section of the User Manual. Otherwise we leave the reader stranded.
+
+=== Add comments for desirable next steps that don't have suitable material
+
+Following on from the previous guideline, we want to track and identify any content or guides that we think should exist for a Next Step. To do this, add an Asciidoc comment that links to the GitHub issue for that missing content:
+
+    ////
+    // - link to Working with a multi-project build - gradle-guides/gradle-guides.github.io#10
+    ////
+
+
+== Tutorials
+
+This section contains guidelines that are specific to long-form tutorials, as opposed to Getting Started Guides.
+
+=== Use an appropriate capability-oriented title
+
+As with Getting Started Guides, tutorial titles should take the form of a present participle describing a capability, such as "building JVM libraries" or "building for and deploying to Docker".
+
+=== Use a single worked example
+
+A tutorial should take a user through the same example as it evolves, rather than switching examples mid-guide. This is to avoid unnecessary context switching and disruption to the user. It means that you need to give due consideration as to what example you should used based on all the things you want to cover.
+
+== Topical guides
+
+A topical guide has very few special requirements, which we cover here.
+
+=== Use a title with a readable form of "On <topic>"
+
+For example, "_On_ Performance" or "_On_ Migrating from Maven to Gradle".
+
+Don't use the _On_ when creating the repository, just allow for the title to be readable in that way.
+
+
+== Structural elements
+
+The following guidelines relate to the structural elements of the guide, such as the headings.
+
+
+=== Use the imperative for headings of instructional sections
+
+If a guide section represents a step or set of steps that the reader should follow, use the imperative. Since you are telling the reader what to do, the imperative mood is appropriate.
+
+== General content
+
+This section contains miscellaneous guidelines for the content of the guides that are independent of any specific guide section.
+
+=== Write in US English
+
+US English is simply more common in technical writing and more users are familiar with it (probably).
+
+=== Avoid idioms, colloquialisms or other cultural references
+
+Gradle has an international audience, many of whom don't speak English as their first language. Although idioms and the like can inject color into a guide, they will often result in simple incomprehension due to the reader's lack of familiarity with a word or expression. Try to keep things clear and culturally-neutral.
+
+=== Prefer 'you' over 'we' where appropriate
+
+When walking a reader through something you want them to do, it's perfectly fine to use either the 'you' or 'we' forms. However, it's important to be consistent in order to avoid dissonance for the reader.
+
+With that in mind, use 'you' when referring to actions the reader should do or has already done, or for things that they should have or will have. For example:
+
+ - You will create a new project
+ - When you ran this task, …
+ - You should now have a package you can use in other projects
+ - By following these instructions, you will have a complete build for …
+
+The 'we' form should be limited to speaking from the perspective of the guide author or team, for example "we want to encourage you to experiment with this."
+
+=== Use 'they' for gender-neutral 3rd person singular pronoun
+
+You may occasionally refer to a third party, such as a build user or the user of an application, i.e. someone that is neither you nor the reader. When that happens and you want to use a pronoun, prefer 'they', 'them', 'their', etc. This avoids the problem of assigning a gender to that third party with 'he' or 'she'.
+
+=== Refer to the Gradle User Manual and Gradle Language Reference
+
+The first is to distinguish the user manual from the Gradle Guides project, while the second is because we want to deprecate the use of the term DSL when talking about that part of the reference documentation. It's not obvious to everyone what DSL means in this context.
+
+Note that you should only capitalize the complete names, i.e. Gradle User Manual and Gradle Language Reference. You can also refer to them as the _user manual_ and _language reference_ once it's clear to the reader that you're referring to the Gradle ones.
+
+=== Favor 'build script' over 'build file'
+
+This is to ensure consistency across guides.
+
+=== Use consistent terminology across prose, section headings and document titles
+
+It can be confusing to the reader if different terms are used for the same thing. How are they supposed to know if you're talking about the same thing or not.
+
+As an example, if a section heading talks about "assembling a library JAR", then the prose should not then say "building the project JAR file". Instead, go with "assembling the library JAR".
+
+== Formatting and links
+
+A common decision that a writer needs to make is whether to style a particular piece of text and if so, what style to use. This section tackles those decisions as well as those around the usage of hyperlinks.
+
+=== Use permalinks to external content
+
+Some URLs point to content that changes over time. For example, URLs to the current Gradle User Manual. Prefer permalinks in place of these. Such permalinks are typically tied to a snapshot in time, for example a specific release of Gradle.
+
+Following this guideline means that:
+
+ - linked content won't change in a way that adversely affects the integrity of the guide
+ - we force a controlled and intentional upgrade of the guide at a time of our choosing
+
+=== Use Asciidoctor attributes for commonly referenced base URLs
+
+Asciidoctor attributes allow us to parameterize the guides. This is particularly useful for URLs that share a common base URL, such as links into the Gradle User Manual or Language Reference.
+
+Using attributes in this way means that:
+
+ - we only have to change the base URL in one location if it becomes necessary
+ - the Asciidoc source is more readable
+
+Lastly:
+
+ - the base URL for an attribute should end with a slash - '/'
+ - don't use attributes for one-off or very infrequently used URLs
+
+=== Generate anchor links in the guide that don't have a leading underscore
+
+This is handled automatically by the guides' template build script, but if you're not using that for some reason—not recommended!—be sure to set the Asciidoctor `idprefix` attribute to an empty string in the build.
+
+=== Use monospace for code-like things
+
+This includes:
+
+ - any text that comes from source code or configuration data
+ - commands and command lines
+ - file and directory paths
+
+=== Use ASCII quotes rather than smart quotes
+
+This ensures the guide can be read on any system and the basic quotes render slightly better on GitHub too.
+
+=== Favor putting admonitions between paragraphs
+
+Admonitions are great for calling out information, but they also disrupt the flow of the page. You can minimize this effect by putting admonitions between paragraphs of text, as opposed to between a paragraph and a code block for example.
+
+It may not be possible to follow this guideline in every case. The admonition should also be as close to other relevant content as possible. When these two guidelines conflict, favor the latter.
+
+== Commands and code listings
+
+Almost all guides include commands to run and code listings to copy, so the following guidelines are generally applicable.
+
+=== Use command line snippets for reader-executed commands
+
+We want to avoid any confusion as to what bits of text need to be copied and pasted into a terminal or command prompt. To that end, use the following syntax for any commands that you want the reader to execute:
+
+    $ <command line>
+    <expected output>
+
+The expected output is optional, but it's useful for the reader in determining whether they correctly ran the given command line. Here's a simple example of the style we're want:
+
+    $ gradle hello
+    :hello
+    Hello World!
+
+You may also include multiple command lines, but they must all be prefixed with `$` and you should only include expected output for the last command line. Ideally, you should break the commands into separate blocks if you want to add expected output to any of them.
+
+=== Include the appropriate file paths in the titles of code listings
+
+Code listings typically represent the content of a file. In such cases, make the file path at least part of the listing caption, if not the whole of it. The path should not be included in the prose around the code listing. This makes the prose easier to read and the file path stands out in the listing caption.
+
+=== Use the appropriate language setting for code listings
+
+Asciidoctor allows you to specify the language used in a code listing, so use it! Alternatively, set the default language as a document attribute and only set the language on code listings that differ from that.
+
+=== Favor single quotes for plain strings in build script listings
+
+This is mostly to ensure consistency across guides, but single quotes are also a little less noisy than double quotes. Only use double quotes if you want to include an embedded expression in the string.
+
+=== Lowercase plugin in references.
+
+For consistency use capitalization in the name of a plugin, but lowercase the `plugin` at the end. For instance *Groovy VFS plugin*.
+
+== Process
+
+These guidelines are related to the processes around writing and publishing the guides.
+
+=== Include GitHub issue references into commit messages
+
+This ties the commit to a particular issue within the GitHub UI, making it easy to navigate between the two. Every commit should reference at least the issue covering the guide that you're working on.
+
+Use the text `Issue: <org>/<repo>#<issueNumber>` within the commit message, for example "Issue: gradle-guides/gradle-guides.github.io#12".
+
+=== Use proper git author metadata
+
+Make sure that git's `user.name` property is your full, real name. The `user.email` property should be a valid email address for you.
+
+For those with `gradle.com` addresses, make sure that `user.email` references that email address.
+
+=== Avoid putting a `settings.gradle` file in the guide project
+
+The file makes it harder to understand the project at a glance without providing any real benefit.
+
+== Use of specific words
+
+* Prefer `reuse` over `re-use`.
+* Prefer `sub-project` over `subproject`.
+
+////
+== To be clarified/determined
+
+ - Use the standard structure for commit messages
+ - Prefer SSH/HTTPS URLs over HTTPS/SSH ones
+ - When to use inline links to other guides and resources vs. when to call out other guides explicitly in the "Next Steps" area at the bottom of the page
+ - How to deal with bulleted and numbered lists (capitalization, use of fullstops/periods, etc.)
+ - What to use italics for
+ - Proper format of git commit messages
+////
