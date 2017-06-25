@@ -75,7 +75,7 @@ The end user of the task can now easily create multiple tasks of that type with 
 .build.gradle
 [source,groovy]
 ----
-apply plugin: 'BinaryRepositoryVersionPlugin'
+apply plugin: BinaryRepositoryVersionPlugin
 
 import com.company.gradle.binaryrepo.LatestArtifactVersion
 
@@ -216,6 +216,8 @@ public class SiteExtension {
 
 NOTE: If you need second- or third-level nesting, you will also have to add overloads that take a `Closure`, because Gradle cannot instrument nested extensions at the moment.
 
+=== Implementing 
+
 === Capturing user input to configure plugin runtime behavior
 
 Plugins often times come with default conventions that make sensible assumptions about the consuming project. The Java plugin, for example, searches for Java source files in the directory `src/main/java`. Default conventions are helpful to streamline project layouts but fall short when dealing with custom project structures, legacy project requirements or a different user preference.
@@ -227,7 +229,7 @@ The following example applies a plugin that exposes an extension with the name `
 .build.gradle
 [source,groovy]
 ----
-apply plugin: 'BinaryRepositoryVersionPlugin'
+apply plugin: BinaryRepositoryVersionPlugin
 
 binaryRepo {
     serverUrl = 'http://my.company.com/maven2'
