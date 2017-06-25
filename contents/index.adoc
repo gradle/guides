@@ -286,10 +286,6 @@ Make sure that git's `user.name` property is your full, real name. The `user.ema
 
 For those with `gradle.com` addresses, make sure that `user.email` references that email address.
 
-=== Avoid putting a `settings.gradle` file in the guide project
-
-The file makes it harder to understand the project at a glance without providing any real benefit.
-
 == Use of specific words
 
 * Prefer `reuse` over `re-use`.
