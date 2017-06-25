@@ -1,5 +1,5 @@
 plugins {
-    id 'org.gradle.guides.topical' version '0.5.3'
+    id 'org.gradle.guides.topical' version '0.5.5'
 }
 
 guide {
