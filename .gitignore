@@ -2,5 +2,9 @@
 .gradle/
 build/
 
+#IntelliJ
+.idea
+*.iml
+
 # Vim
 *.sw?

@@ -1,5 +1,4 @@
 = Style Guide for Gradle Guide Authors
-:toc: macro
 
 The Gradle Guides form a potentially large collection of learning material written by a variety of authors. From the perspective of the reader, though, they are all of one piece. Once they've read one guide, the next one should be familiar and hence easy to digest. This style guide is designed to satisfy that goal by helping authors keep their writing consistent with other guides.
 
@@ -12,8 +11,6 @@ Each guide falls into one of the following three categories:
  3. **Tutorials** – These are longer-form guides that revolve around implementing a _real world_ build automation solution. For example, implementing a non-trivial plugin from end-to-end, making important design and implementation decisions all along the way.
 
 You will find guidelines in this document that are specific to each guide type as well as a general set applicable to all guide types.
-
-toc::[]
 
 == Getting Started Guides
 
@@ -298,6 +295,7 @@ The file makes it harder to understand the project at a glance without providing
 * Prefer `reuse` over `re-use`.
 * Prefer `sub-project` over `subproject`.
 
+////
 == To be clarified/determined
 
  - Use the standard structure for commit messages
@@ -306,3 +304,4 @@ The file makes it harder to understand the project at a glance without providing
  - How to deal with bulleted and numbered lists (capitalization, use of fullstops/periods, etc.)
  - What to use italics for
  - Proper format of git commit messages
+////
