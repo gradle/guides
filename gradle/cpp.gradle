@@ -10,5 +10,13 @@ model { // <2>
             }
         }
     }
+
+    binaries {
+        withType(SharedLibraryBinarySpec) {
+            if (toolChain in VisualCpp) {
+                cCompiler.define "DLL_EXPORT" // <6>
+            }
+        }
+    }
 }
 
