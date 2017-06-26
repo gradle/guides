@@ -1,21 +1,28 @@
 plugins {
-    id 'org.gradle.guides.getting-started' version '0.5.3'
-
-    // Uncomment this line if you need test JVM code snippets
-    // id 'org.gradle.guides.test-jvm-code' version '0.5.3'
+    id 'org.gradle.guides.getting-started' version '0.5.4'
 }
 
 import org.apache.tools.ant.filters.*
 
 guide {
     repoPath 'gradle-guides/building-cpp-libraries'
-    mainAuthor 'EDIT build.gradle TO ADD AUTHOR'
-
-    // Uncomment this line to add support authors
-    // supAuthors 'Grumpy Gradlephant', 'Jane Doe'
+    mainAuthor 'Balachandran Sivakumar'
 }
 
 // Add in any generation steps.
-gradleRunner {
+// TODO: Learn how to use gradleRunner and put in the necessary steps.
+// gradleRunner {
+//
+// }
 
+// Temporary work around to have travis-ci builds passing.
+travisci  {
+  if(System.getenv('TRAVIS_OS_NAME') != 'linux') {
+    tasks.each { t ->
+      if( t.name.startsWith('gitPublish')) {
+        t.enabled = false
+      }
+    }
+  }
 }
+apply from: 'gradle/cpp.gradle'
