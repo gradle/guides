@@ -10,6 +10,7 @@ need to change in your Java application to:
 * consume Java 9 modules as your dependencies.
 * use Java's `ServiceLoader` pattern with Java 9 modules.
 * run an application using Java 9 modules.
+* use an experimental plugin to do all of this more simply.
 
 While Gradle version {gradle-version} doesn't have first-class support for
 Java 9 modules, this guide shows you how to experiment with them before that
@@ -610,6 +611,36 @@ Since the `fairy` project's `module-info.java` declares that it
 `uses org.gradle.fairy.tale.Tale;`, the `ServiceLoader` instance will
 have access to any implementations provided at runtime by Java 9 modules
 which declare `provides org.gradle.fairy.tale.Tale`.
+
+== Step 4 - Use the `experimental-jigsaw` plugin to do the same thing
+
+While Gradle does not yet support building Java 9 modules as a first-class
+feature of the java plugins, we are providing a plugin you can use to experiment
+with Java 9 modules on your projects while we're still building the first-class
+implementation.
+
+The `org.gradle.java.experimental-jigsaw` plugin is simply a convenient
+mechanism for applying all of the changes in steps 1 through 3 of this guide
+in one shot. It *may* work for your project, but, you should definitely
+consider it experimental and not fit for production builds.
+
+Here's how to use the plugin:
+
+.actors/build.gradle
+[source,groovy]
+----
+include::{plugindir}/actors/build.gradle[tags=plugins]
+----
+<1> Just use https://plugins.gradle.org/plugin/org.gradle.java.experimental-jigsaw[the plugin].
+
+and:
+
+.actors/build.gradle
+[source,groovy]
+----
+include::{plugindir}/actors/build.gradle[tags=moduleName]
+----
+<1> Change the line that specifies the module name to use the new `javaMoudle.name` settings.
 
 == Summary
 
