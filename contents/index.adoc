@@ -26,7 +26,7 @@ Add a `plugins` block to the `build.gradle` file with the following contents:
 [source, groovy]
 ----
 plugins {
-    id 'com.gradle.build-scan' version '1.6' // <1>
+    id 'com.gradle.build-scan' version '1.8' // <1>
 }
 ----
 <1> Use latest version of plugin which can be found from the https://plugins.gradle.org/plugin/com.gradle.build-scan[Gradle Plugin Portal].
