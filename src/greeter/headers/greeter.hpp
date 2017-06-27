@@ -11,11 +11,11 @@
 #endif
 
 
-class Greeter {
+class DECLSPEC Greeter {
 public:
     Greeter(std::string name_) : name(name_) {};
     Greeter() : name("World") {};
-    void DECLSPEC greet();
+    void greet();
 private:
     std::string name;
 };
