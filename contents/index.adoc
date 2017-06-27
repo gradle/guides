@@ -1,4 +1,4 @@
-= Writing Gradle Guides 
+= Writing Gradle Guides
 
 This guide walks you through the process of writing a new guide for inclusion at the https://guides.gradle.org/[Gradle Guides site]. These guides can take different forms—such as short, step-by-step tutorials or longer, more discussion-oriented pieces—but the process for writing and contributing them is the same.
 
@@ -95,7 +95,7 @@ NOTE: Edit `contents/index.adoc`, but preview `index.html` in the `build/html5` 
 
 Asciidoc is a pure ASCII text format, so you can use any text editor or IDE to work on `contens/index.adoc`. Many of them have support for Asciidoc syntax highlighting, which makes things easier. Once you've decided on an editor, just open the file and get writing!
 
-As you work on the main content of the guide, we recommend that you read the associated https://github.com/gradle-guides/style-guide/blob/master/README.adoc[style guide] and browse through a few of the existing https://guides.gradle.org/[guides] if you haven't done so already.
+As you work on the main content of the guide, we recommend that you read the associated https://guides.gradle.org/style-guide[style guide] and browse through a few of the existing https://guides.gradle.org/[guides] if you haven't done so already.
 
 [TIP]
 .New to Asciidoc?
