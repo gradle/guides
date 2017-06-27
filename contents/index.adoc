@@ -163,7 +163,7 @@ Now create a Java class file with a main function, which will consume the `Greet
 $ mkdir -p greeter/src/main/java/greeter
 ----
 
-.src/main/java/greeter/Greeter.java
+.greeter/src/main/java/greeter/Greeter.java
 [source,java]
 ----
 include::{exampledir}/greeter/src/main/java/greeter/Greeter.java[]
@@ -224,7 +224,7 @@ include::{exampledir}/spock.gradle[]
 
 Then add a test called `GreeterSpec` in the `greeter` package to the sub-project in the `src/test/groovy/greeter` directory (you'll have to create that directory if it does not already exist).
 
-.src/test/groovy/greeter/GreeterSpec.groovy
+.greeter/src/test/groovy/greeter/GreeterSpec.groovy
 [source,java]
 ----
 include::{exampledir}/greeter/src/test/groovy/greeter/GreeterSpec.groovy[]
