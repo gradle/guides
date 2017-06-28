@@ -4,7 +4,14 @@
 #include <iostream>
 #include <string>
 
-class Greeter {
+#if defined(DLL_EXPORT)
+#define DECLSPEC __declspec(dllexport)
+#else
+#define DECLSPEC
+#endif
+
+
+class DECLSPEC Greeter {
 public:
     Greeter(std::string name_) : name(name_) {};
     Greeter() : name("World") {};

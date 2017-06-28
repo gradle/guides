@@ -42,6 +42,7 @@ include::{projdir}/gradle/cpp.gradle[]
 <3> Native libraries are specified as a component of type `NativeLibrarySpec` and defined by a name - `greeter` in this case.
 <4> Native binaries are specified as a component of type `NativeBinarySpec` and defined by a name - `main` in this case.
 <5> The `main` binary uses the `greeter` {c++} library and is specified using `cpp.lib`
+<6> When using the VC++ compiler, the library methods should be declared with `__declspec(dllexport)` for shared library. This defines the macro `DLL_EXPORT` based on which the declaration is modified.
 
 Now run
 
