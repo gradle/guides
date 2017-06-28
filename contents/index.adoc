@@ -28,7 +28,7 @@ You don't have to specify which form the guide should take in the initial propos
 
 Once the proposal has been accepted, the Gradle Guides team will https://github.com/gradle/guides/blob/master/README.md[create a new GitHub repository] for your guide. You won't be able to commit directly to that repository. Instead, you will use the standard fork and pull request workflow described here.
 
-You will also need to complete a https://gradle.org/cla[Contributor's License Agreement] before your can submit your work.
+You will also need to complete a https://gradle.org/cla[Contributor License Agreement] before your can submit your work.
 
 == Fork and clone the repository
 
