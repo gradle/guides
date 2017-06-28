@@ -9,7 +9,7 @@ import org.apache.tools.ant.filters.*
 
 guide {
     repoPath 'gradle-guides/consuming-jvm-libraries'
-    mainAuthor 'EDIT build.gradle TO ADD AUTHOR'
+    mainAuthor 'Schalk Cronjé'
 
     // Uncomment this line to add support authors
     // supAuthors 'Grumpy Gradlephant', 'Jane Doe'
