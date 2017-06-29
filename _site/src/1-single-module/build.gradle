@@ -1,0 +1,16 @@
+subprojects {
+    afterEvaluate {
+        repositories {
+            jcenter()
+        }
+
+        // tag::autoModuleName[]
+        jar {
+            inputs.property("moduleName", moduleName)
+            manifest {
+                attributes('Automatic-Module-Name': moduleName)
+            }
+        }
+        // end::autoModuleName[]
+    }
+}

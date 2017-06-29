@@ -8,7 +8,7 @@ subprojects {
             inputs.property("moduleName", moduleName)
             doFirst {
                 options.compilerArgs = [
-                    '--module-path', classpath.asPath,
+                    '--module-path', classpath.asPath
                 ]
                 classpath = files()
             }
@@ -21,7 +21,7 @@ subprojects {
                     '--module-path', classpath.asPath,
                     '--add-modules', 'junit',
                     '--add-reads', "$moduleName=junit",
-                    '--patch-module', "$moduleName=" + files(sourceSets.test.java.srcDirs).asPath,
+                    '--patch-module', "$moduleName=" + files(sourceSets.test.java.srcDirs).asPath
                 ]
                 classpath = files()
             }
@@ -34,7 +34,7 @@ subprojects {
                     '--module-path', classpath.asPath,
                     '--add-modules', 'ALL-MODULE-PATH',
                     '--add-reads', "$moduleName=junit",
-                    '--patch-module', "$moduleName=" + files(sourceSets.test.java.outputDir).asPath,
+                    '--patch-module', "$moduleName=" + files(sourceSets.test.java.outputDir).asPath
                 ]
                 classpath = files()
             }

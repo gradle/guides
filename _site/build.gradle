@@ -1,0 +1,27 @@
+plugins {
+    id 'org.gradle.guides.getting-started' version '0.5.5'
+
+    // Uncomment this line if you need test JVM code snippets
+    // id 'org.gradle.guides.test-jvm-code' version '0.5.5'
+}
+
+import org.apache.tools.ant.filters.*
+
+guide {
+    repoPath = 'gradle-guides/building-java-9-modules'
+    mainAuthor = 'Pepper Lebeck-Jobe'
+}
+
+asciidoctor {
+    inputs.dir files('src/0-original', 'src/1-single-module', 'src/2-all-modules', 'src/3-application')
+    attributes originaldir: file('src/0-original')
+    attributes singledir: file('src/1-single-module')
+    attributes alldir: file('src/2-all-modules')
+    attributes appdir: file('src/3-application')
+    attributes plugindir: file('src/4-plugin')
+}
+
+// Add in any generation steps.
+gradleRunner {
+
+}
