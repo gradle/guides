@@ -15,7 +15,7 @@ compileJava {
     inputs.property("moduleName", moduleName)
     doFirst {
         options.compilerArgs = [
-            '--module-path', classpath.asPath
+            '--module-path', classpath.asPath,
         ]
         classpath = files()  // <2>
     }
@@ -45,7 +45,7 @@ test {
             '--module-path', classpath.asPath, // <1>
             '--add-modules', 'ALL-MODULE-PATH', // <2>
             '--add-reads', "$moduleName=junit", // <3>
-            '--patch-module', "$moduleName=" + files(sourceSets.test.java.outputDir).asPath // <4>
+            '--patch-module', "$moduleName=" + files(sourceSets.test.java.outputDir).asPath, // <4>
         ]
         classpath = files()
     }

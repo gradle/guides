@@ -262,8 +262,7 @@ clearing out the `classpath` property of the task and adding a compiler
 argument.
 
 * `--module-path` is set to the value that would have been the `classpath`. This
-  makes sense because the classpath already has all the jars and class output
-  directories you need.
+  makes sense because the classpath already has any jars or class output directories of libraries you depend on.
 
 NOTE: The reason you modify `options.compilerArgs` inside the `doFirst` block
 instead of in the configuration block of the `compileJava` task is because you
