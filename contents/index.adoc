@@ -13,8 +13,8 @@ need to change in your Java application to:
 * use an experimental plugin to do all of this more simply.
 
 While Gradle version {gradle-version} doesn't have first-class support for
-Java 9 modules, this guide shows you how to experiment with them before that
-support is added.
+Java 9 modules yet, this guide shows you how to experiment with them before that
+support is complete.
 
 == What you'll need
 
@@ -48,7 +48,7 @@ projects can be seen in the following illustration:
 [caption="Figure 1: "]
 image::project-graph.png[Project Graph]
 
-You can clone the project and run the original program to see it's output:
+You can clone the project and run the original program to see its output:
 
 [listing]
 ----
@@ -114,8 +114,7 @@ application.
 include::{originaldir}/fairy/build.gradle[tags=deps]
 ----
 
-In fact, comment out both of the lines that start, `runtimeOnly` and notice how
-the output of Gradle's `run` task changes:
+In fact, comment out both of the lines that start with `runtimeOnly` and notice how the output of Gradle's `run` task changes:
 
 [listing]
 ----
@@ -145,9 +144,7 @@ The four tests in this class serve different purposes:
    subproject using classes exposed as part of the `actors` project's public
    api. This test should always pass.
 2. `canDynamicallyReachDefaultActor` - Attempts to use reflection at runtime
-   to load a class which is private to the `actors` subproject. This is possible
-   before Java 9 because the classpath leaks the implementation details of all
-   parts of the application to all other parts of the application.
+   to load a class which is private to the `actors` subproject. This was possible before Java 9 because the classpath leaks the implementation details of all parts of the application to all other parts of the application.
 3. `canReachDefaultActor` - Attempts to use a class which is private to the
    `actors` subproject directly. This will work before Java 9 because the
    private implementation details of the `actors` subproject are built in the
@@ -156,7 +153,7 @@ The four tests in this class serve different purposes:
 4. `canReachGuavaClasses` - Attempts to use a class which is a transitive
    dependency of the `actors` subproject. However, since Gradle 3.5, these
    `implementation` dependencies are not included on the `compileClasspath` of
-   the consumers of Java projects. So, the test is commented out because it
+   the consumers of Java projects. So, this test is commented out because it
    wouldn't compile with Gradle 3.5 and newer.
 
 As you progress through this guide, you'll see that Java 9 modules tighten down
@@ -194,7 +191,7 @@ One nice feature of the module system in Java 9, is that you can convert all
 of the libraries of your project to Java 9 modules in a bottom-up fashion.
 Since Java 9 modules can be consumed equally well from the classpath or the
 module path, we can convert a single leaf-node in our multi-project build to
-produce a Java 9 module, but, consume that module on the classpath when
+produce a Java 9 module, but use that module on the classpath when
 compiling or running projects which consume the outputs of that node.
 
 When converting a `java-library` project to produce a Java 9 module, there are
@@ -216,7 +213,7 @@ what the module name will be in the future. Doing this is described in the
 optional 5th change.
 
 Each of these changes is described in subsections below along with discussion
-of why the change is being made. But, you can also view the results of these
+of why the change is being made. You can also view the results of these
 changes by exploring the `src/1-single-module` example project in the
 repository.
 
@@ -224,7 +221,9 @@ Our goal in making the following five changes is to have the `actors` project
 produce a Java 9 module. The first four changes need to be made together, and
 the fifth (optional) change can be made independently.
 
-=== Change 1 - Add a `module-info.java` describing the module.
+NOTE: As a reminder, all builds from this point on need to run on Java 9.
+
+=== Add a `module-info.java` describing the module.
 
 Add a `module-info.java` file to the project's `actors/src/main/java` directory.
 
@@ -236,16 +235,15 @@ include::{singledir}/actors/src/main/java/module-info.java[]
 
 This file declares the `org.gradle.actors` module which exports the
 `org.gradle.actors` package (but not the `org.gradle.actors.impl` package) and
-requires the `guava` module. So far, the Guava jar files are not Java 9 modules,
+requires the `guava` module. The Guava jar files are not yet Java 9 modules,
 so when you require them, you have to use the automatic module name `guava`
 which the JVM infers from the filename of the jar file which contains the
 classes. For Guava, the jar file's name is
-http://central.maven.org/maven2/com/google/guava/guava/22.0/[guava-22.0.jar].
-According to the
+http://central.maven.org/maven2/com/google/guava/guava/22.0/[guava-22.0.jar], so according to the
 http://openjdk.java.net/projects/jigsaw/spec/sotms/#automatic-modules[rules of automatic module names],
 you require `guava`.
 
-== Change 2 - Modify the `compileJava` task to produce a module.
+=== Modify the `compileJava` task to produce a module.
 
 In the `build.gradle` file for the `actors` subproject, add the following.
 
@@ -259,28 +257,21 @@ reuse the same code later for other modules without having to change it.
 <2> Clears the `classpath` property
 
 When compiling a Java 9 module, you want to use `--module-path` instead of
-`--classpath` to read your dependencies. So, in the `doFirst` block, you are
-clearing out the `classpath` property of the task, and adding a compiler
+`--classpath` to read your dependencies. So in the `doFirst` block, you are
+clearing out the `classpath` property of the task and adding a compiler
 argument.
 
 * `--module-path` is set to the value that would have been the `classpath`. This
-  makes sense because the classpath already has any jars or class output
-  directories of libraries you depend on.
+  makes sense because the classpath already has any jars or class output directories of libraries you depend on.
 
 NOTE: The reason you modify `options.compilerArgs` inside the `doFirst` block
 instead of in the configuration block of the `compileJava` task is because you
-want to avoid causing the `compileClasspath` configuration from being resolved
-during the configuration phase of the Gradle build.
+only want resolve the `compileClasspath` configuration when executing that task.
 
-=== Change 3 - Modify the `compileTestJava` task to locally alter the module
+=== Modify the `compileTestJava` task to locally alter the module
 
 One slightly confusing aspect of the Java 9 module system is how to run unit
-tests for code which is inside a Java 9 module. The recommended way to
-accomplish this is to "patch" the module, just during testing. Patching a module
-just means adding extra classes to the packages which make up the module. In
-the case of patching a module for running tests, you are adding the test classes
-to the module in the same package so that those test classes have access to
-everything else which makes up the module under test.
+tests for code inside a Java 9 module. The recommended way is to "patch" the module during testing. Patching a module means adding extra classes to the packages which make up the module. In the case of patching a module for running tests, you are adding the test classes to the module, using the same package so that the test classes have access to everything else in the module under test.
 
 Adding the following to your `build.gradle` accomplishes this compile-time
 patching of the `org.gradle.actors` module.
@@ -291,20 +282,20 @@ patching of the `org.gradle.actors` module.
 include::{singledir}/actors/build.gradle[tags=compileTestJava]
 ----
 <1> This is the default value for the `classpath` property used as the
-`--module-path`
+`--module-path`.
 <2> Explicitly adds the automatic `junit` module to the observable universe of
 modules.
 <3> Declares that `org.gradle.actors` reads the `junit` module.
 <4> Adds the test source files to the `org.gradle.actors` module.
 
 These options cause the generated class files in the `test` source set's
-`java.outputDir` to contain appropriate metadata for being used to patch the
+`java.outputDir` to contain appropriate metadata used to patch the
 `org.gradle.actors` module. Those class files are consumed in the next change.
 
-=== Change 4 - Modify the `test` task to consume the locally altered module
+=== Modify the `test` task to consume the locally altered module
 
 When running the tests, we have to configure the JVM that will be running the
-tests to know about our modules and how to patch the `org.gradle.actors` module
+tests to know about our modules and to patch the `org.gradle.actors` module
 to include the test classes.
 
 Add the following to the `build.gradle` file in the `actors` project.
@@ -315,40 +306,40 @@ Add the following to the `build.gradle` file in the `actors` project.
 include::{singledir}/actors/build.gradle[tags=test]
 ----
 <1> This is the default value for the `classpath` property at test runtime.
-<2> You have to use the special `ALL-MODULE-PATH` because the main class of the
+<2> Use the special `ALL-MODULE-PATH`, because the main class of the
 JVM that is running the tests is not part of a Java 9 module. It is Gradle's
-test runner. So, it declares no modules it needs to consume. This argument makes
+test runner, so it declares no modules it needs to consume. This argument makes
 all of the modules in the module path visible.
 <3> Declares that `org.gradle.actors` reads the `junit` module.
 <4> Adds the test classes to the `org.gradle.actors` module.
 
 At this point, you can actually run the tests.
 
-=== Change 5 (Optional) - Add `Automatic-Module-Name` manifest entries for all other projects
+=== (Optional) - Add `Automatic-Module-Name` manifest entries for all other projects
 
 For backwards compatibility, Java 9's module system allows non-module jar files
 to appear on the module path. By default, these jar files are converted to
-automatic modules which are named based on the filename of the jar file. This
+automatic modules whose names are based on the filename of the jar file. This
 creates a bit of complexity though. Many jar filenames have been created without
-any attempt to make the names globally unique. So, it is very likely that, when
+any attempt to make the names globally unique. So it is very likely that, when
 the developers responsible for maintaining some commonly used jar actually
 convert that jar to a Java 9 module, they'll choose a different module name than
 the one automatically chosen for a previous non-module version of their jar.
 
-For example, you might specify `requires guava;` in a `module-info.java` file
-today, but later, the developers responsible for the project decide to name
-their module `com.google.guava`. Now anyone who has specified `requires guava;`
+For example, you might specify `requires guava` in a `module-info.java` file
+today, but later the developers responsible for the project decide to name
+their module `com.google.guava`. Now anyone who has specified `requires guava`,
 or anyone who transitively depends on such a module, will have to wait for
-all of the modules they depend on to change to `requires com.google.guava;`
+all of the modules they depend on to change to `requires com.google.guava`
 before they can adopt any of those new modules, because Java 9 only allows
-exactly one module on the module path to include any specific package.
+one module on the module path to include any specific package.
 
 The whole situation can get quite messy. This is why
 http://blog.joda.org/2017/05/java-se-9-jpms-automatic-modules.html[Stephen Colebourne argues]
 that we should immediately start updating all of the jars we publish to public
 repositories to (at least) specify an `Automatic-Module-Name` attribute in
-the jar's manifest, and not to publish any artifacts to such a repository which
-contain modules which require automatic modules for which that attribute has not
+the jar's manifest, and not to publish any artifacts which
+contain modules that require automatic modules where that attribute has not
 been specified.
 
 So, in each `build.gradle` file for each subproject specify a `moduleName`
@@ -369,8 +360,8 @@ tell the `jar` task to include the manifest attribute.
 include::{singledir}/build.gradle[tags=autoModuleName]
 ----
 
-Now, it doesn't matter what you name your jar files when you publish them to
-an artifact repository like Maven Central, you'll be sure you get the Java 9
+Now it doesn't matter what you name your jar files when you publish them to
+an artifact repository like Maven Central; you'll be sure you get the Java 9
 module name you want.
 
 NOTE: You'll be getting rid of these manifest attributes in the next step, since
@@ -378,21 +369,21 @@ you will have converted each subproject into a proper Java 9 module.
 
 === Step 1 - Summary
 
-This first step is the most complicated. But, now, you have converted your
+This first step is the most complicated, but now you have converted your
 first `java-library` project into a Java 9 module. All of the other subprojects
-consume that module on the classpath. So, we haven't really addressed any of
+consume that module on the classpath. So we haven't really addressed any of
 the modularity violations demonstrated in
-<<modularitytest_discussion,ModularityTest>>, but, we didn't have to break
+<<modularitytest_discussion,ModularityTest>>, but we didn't have to break
 the project to convert one of its logical architectural units into a proper
-Java 9 module. Next, you'll centralize the gradle changes into the root
-`build.gradle` project and apply it to all of the subprojects.
+Java 9 module. Next you'll centralize the gradle changes into the root
+`build.gradle` project, and apply it to all of the subprojects.
 
 == Step 2 - Produce Java 9 modules for all subprojects
 
 The goal of this step is to make all of the subprojects in our Gradle build
 produce Java 9 modules, and consume their dependencies as Java 9 modules. Since
 you already have the `moduleName` variable declaration separate from the other
-changes in the `build.gradle` file in the `actors` subproject. It's just a
+changes in the `build.gradle` file in the `actors` subproject, it's just a
 matter of cutting everything from below the `moduleName` declaration in that
 file and pasting it into the `afterEvaluate` block in the root `build.gradle`
 file.
@@ -426,11 +417,9 @@ include::{alldir}/bears/src/main/java/module-info.java[]
 ----
 
 WARNING: You also have to add these `module-info.java` files for the `pigs`,
-`formula`, `fairy`, and `tale` subprojects in addition to the `bears`
-subproject. You can see what the end results should look like in
-`src/2-all-modules`.
+`formula`, `fairy`, and `tale` subprojects. The end results should look like the code in `src/2-all-modules`.
 
-That's it, now Gradle's `test` task will fail to compile unless you've
+Now Gradle's `test` task will fail to compile, unless you've
 commented out the `canReachDefaultActor` test. Also, the
 `canDynamicallyReachDefaultActor` test will fail at test runtime unless you
 `@Ignore` it.
@@ -459,9 +448,7 @@ Run with --stacktrace option to get the stack trace. Run with --info or --debug 
 BUILD FAILED
 ----
 
-If you do comment out `canReachDefaultActor` and `@Ignore`
-`canDynamicallyReachDefaultActor` the tests should pass, and you'll have
-exactly the code in `src/2-all-modules`
+If you do comment out `canReachDefaultActor` and add the `@Ignore` annotation to `canDynamicallyReachDefaultActor`, the remaining tests should pass, and you'll have exactly the code in `src/2-all-modules`
 
 === Step 2 - Summary
 
@@ -538,8 +525,8 @@ Goldilocks ran out of the house at top speed to escape the 3 bears.
 And they all lived happily ever after.
 ----
 
-By the end of Step 2, both of those mechanisms are relying on modules which
-appear on the classpath which skips the modularity features of the Java 9
+After Step 2, both of those mechanisms rely on modules which
+appear on the classpath. That skips the modularity features of the Java 9
 module system. In this step, you will:
 
 1. Modify the `run` task to use modules.
@@ -553,10 +540,10 @@ correctly implemented each change.
 For the impatient, you can see all of the changes together in the
 `src/3-application` directory in the repository.
 
-=== Change 1 - Modify the `run` task to use modules
+=== Modify the `run` task to use modules
 
 To get the `run` task working with your new Java 9 modules, add the following
-to the `build.gadle` file in the `fairy` project.
+to the `build.gradle` file in the `fairy` project.
 
 .fairy/build.gradle
 [source,groovy]
@@ -566,7 +553,7 @@ include::{appdir}/fairy/build.gradle[tags=run]
 <1> Set the `mainClassName` to include the moduleName.
 <2> Explicitly tell Java 9 to use the module.
 
-=== Change 2 - Modify the `startScript` task for both *nix and Windows to use modules
+=== Modify the `startScript` task for both *nix and Windows to use modules
 
 The tar and zip files created in the `fairy/build/distributions` directory
 contain {user-manual}application_plugin.html#sec:the_distribution[start scripts]
@@ -585,12 +572,12 @@ include::{appdir}/fairy/build.gradle[tags=startScripts]
 later replaced in a platform-specific way for the *nix shell script and Windows
 `.bat` file.
 
-=== Change 3 - Update the `ServiceLoader` mechanism to the Java 9 syntax
+=== Update the `ServiceLoader` mechanism to the Java 9 syntax
 
 The Java 9 module system introduces a better way to specify which modules
 provide implementations of a service for the `ServiceLoader` mechanism.
 First, delete the `resources` directories from both `bears/src/main` and
-`pigs/src/main` as the new mechanism doesn't require the `META-INF/services`
+`pigs/src/main`, since the new mechanism doesn't require the `META-INF/services`
 files.
 
 Then, adjust the `module-info.java` files for each of those projects.
@@ -608,20 +595,18 @@ include::{appdir}/pigs/src/main/java/module-info.java[]
 ----
 
 Since the `fairy` project's `module-info.java` declares that it
-`uses org.gradle.fairy.tale.Tale;`, the `ServiceLoader` instance will
+`uses org.gradle.fairy.tale.Tale`, the `ServiceLoader` instance will
 have access to any implementations provided at runtime by Java 9 modules
-which declare `provides org.gradle.fairy.tale.Tale`.
+that declare `provides org.gradle.fairy.tale.Tale`.
 
 == Step 4 - Use the `experimental-jigsaw` plugin to do the same thing
 
 While Gradle does not yet support building Java 9 modules as a first-class
-feature of the java plugins, we are providing a plugin you can use to experiment
-with Java 9 modules on your projects while we're still building the first-class
-implementation.
+feature of the Java plugins, an experimental plugin is available to allow you to experiment with Java 9 modules on your projects.
 
 The `org.gradle.java.experimental-jigsaw` plugin is simply a convenient
 mechanism for applying all of the changes in steps 1 through 3 of this guide
-in one shot. It *may* work for your project, but, you should definitely
+in one step. It *may* work for your project, but you should definitely
 consider it experimental and not fit for production builds.
 
 Here's how to use the plugin:
@@ -644,7 +629,7 @@ include::{plugindir}/actors/build.gradle[tags=moduleName]
 
 == Summary
 
-At this point, your application is taking advantage of all most all the
+At this point, your application is taking advantage of most of the
 features of the Java 9 module system. This guide has shown you how to modify
 the tasks added by the regular `java-library` and `application` plugins to get
 them work on with Java 9 modules. In the future, the Gradle team will be adding
