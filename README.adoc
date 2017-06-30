@@ -1,6 +1,7 @@
 = Writing Gradle Tasks image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"] 
+:repo-path: gradle-guides/writing-getting-started-guides
 
-* Content for this guide is in Asciidoc format and the entry file is `contents/index.adoc`.
+* Content for this guide is in AsciiDoc format and the entry file is `contents/index.adoc`.
 * Place new images under `contents/images`.
 * Add testable code snippets to `src` folder as appropriate for this guide.
 * Commits to `master` will automatically be published to `gh-pages` if the build is successful.
