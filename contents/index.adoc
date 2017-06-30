@@ -8,7 +8,7 @@ This guide walks you through the process of writing a new guide for inclusion at
  - A https://github.com[GitHub] account
  - A http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Runtime Environment], version 1.7 or better
  - A text editor
- - A basic familiarity with http://asciidoctor.org/docs/user-manual/[Asciidoc]
+ - A basic familiarity with http://asciidoctor.org/docs/user-manual/[AsciiDoc]
 
 == Create a GitHub issue
 
@@ -48,7 +48,7 @@ The project provides everything you need to generate the HTML version of your gu
 $ ./gradlew build                    <1>
 $ open build/html5/index.html        <2>
 ----
-<1> Run Gradle (via the Gradle Wrapper) to generate HTML from your guide's Asciidoc sources
+<1> Run Gradle (via the Gradle Wrapper) to generate HTML from your guide's AsciiDoc sources
 <2> Open the generated HTML file in your system's default browser
 
 TIP: The `open` command is only needed on Mac OS X and other Linux flavors. On Windows, the path to the HTML file in a command prompt should automatically open it in a browser
@@ -59,7 +59,7 @@ At this point, you should have an HTML page that has a title and some section he
 
 The structure of a Gradle guide repository is very simple, consisting of just two three components:
 
- 1. A directory called `contents` which contains an entry point Asciidoc source file called `index.adoc`.
+ 1. A directory called `contents` which contains an entry point AsciiDoc source file called `index.adoc`.
  2. A Gradle build script to process it into HTML (which later will publish it to the GitHub Pages site where the guides are hosted)
  3. A `src` folder where source code to support the guide is hosted. This source code would normally get build with the guide to ensure that the code snippets used inthe guide is up to date.
 
@@ -78,27 +78,27 @@ The file you'll interact with most as a guide author is `index.adoc`, but it's u
 └── gradlew.bat                      <9>
 ----
 <1> GitHub README with some instructions.
-<2> Asciidoc source for the guide.
+<2> AsciiDoc source for the guide.
 <3> Supporting images for the guide.
-<4> Supporting source code for the guide. Include these in the guide via the Asciidoc `include::` directive and `tag::` markup.
+<4> Supporting source code for the guide. Include these in the guide via the AsciiDoc `include::` directive and `tag::` markup.
 <5> Output directory for the build, where generated HTML for the guide can be found
-<6> Project build script, containing tasks for Asciidoc processing and GitHub Pages publication. Familiarize yourself with the Asciidoc attributes that the `asciidoctor` task will pass down during document generation.
+<6> Project build script, containing tasks for AsciiDoc processing and GitHub Pages publication. Familiarize yourself with the AsciiDoc attributes that the `asciidoctor` task will pass down during document generation.
 <7> Gradle Wrapper storage directory
 <8> Gradle Wrapper Unix shell script
 <9> Gradle Wrapper Windows batch file
 
-Now you're ready to work on your new guide's content. You will edit the `contents/index.adoc` file. You are welcome to create additional Asciidoc files inthe `contents` directory and include them via the Asciidoc `include::` directive.
+Now you're ready to work on your new guide's content. You will edit the `contents/index.adoc` file. You are welcome to create additional AsciiDoc files inthe `contents` directory and include them via the AsciiDoc `include::` directive.
 
 NOTE: Edit `contents/index.adoc`, but preview `index.html` in the `build/html5` directory.
 
 == Write your guide
 
-Asciidoc is a pure ASCII text format, so you can use any text editor or IDE to work on `contens/index.adoc`. Many of them have support for Asciidoc syntax highlighting, which makes things easier. Once you've decided on an editor, just open the file and get writing!
+AsciiDoc is a plain text-based, UTF-8 compliant writing format, so you can use any text editor or IDE to work on `contents/index.adoc`. Many of them have support for AsciiDoc syntax highlighting, which makes things easier. Once you've decided on an editor, just open the file and get writing!
 
 As you work on the main content of the guide, we recommend that you read the associated https://guides.gradle.org/style-guide[style guide] and browse through a few of the existing https://guides.gradle.org/[guides] if you haven't done so already.
 
 [TIP]
-.New to Asciidoc?
+.New to AsciiDoc?
 ====
 Refer to the http://asciidoctor.org/docs/user-manual/[Asciidoctor User Manual] while writing and you'll master the basics in no time. There is also a http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/[quick reference for syntax] that's particularly useful when you just want to know the syntax for something specific.
 ====
