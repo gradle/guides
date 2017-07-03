@@ -82,7 +82,7 @@ You can also inspect all of the dependencies you have added on a per-configurati
 ----
 ./gradlew dependencies --configuration implementation # <1>
 
-include::{gradle-outdir}/dependencies/out.txt[]
+include::{gradle-outdir}/clean-dependencies/out.txt[]
 ----
 <1> The `--configuration` parameter restricts inspection to a single configuration.
 
@@ -106,7 +106,7 @@ Build your application by using the `assemble` task.
 ----
 $ ./gradlew assemble
 
-include::{gradle-outdir}/assemble/out.txt[]
+include::{gradle-outdir}/clean-assemble/out.txt[]
 ----
 
 As this is an application, it will be useful to distribute it. Edit `build.gradle` again and add the Application plugin.

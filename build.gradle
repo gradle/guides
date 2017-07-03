@@ -20,6 +20,17 @@ asciidoctor {
 gradleRunner {
     inputs.dir 'src/example'
 
+    ext {
+        cleanBuildOutput = { stepName, info ->
+            File out = new File(getStepReportDir(stepName), 'out.txt')
+            new File(info.reportDir, 'out.txt').withWriter { w ->
+                out.filterLine { line ->
+                    !(line =~ /^(Download|Cleaned up|Total time)/)
+                }.writeTo(w)
+            }
+        }
+    }
+
     step 'create', {
         copy {
             from 'src/example', {
@@ -32,7 +43,11 @@ gradleRunner {
 
     step 'dependencies', 'dependencies', '--configuration=implementation'
 
+    step 'clean-dependencies', cleanBuildOutput.curry('dependencies')
+
     step 'assemble', 'assemble', '--console=rich'
+
+    step 'clean-assemble', cleanBuildOutput.curry('assemble')
 
     step 'build', 'build', '--console=rich'
 
