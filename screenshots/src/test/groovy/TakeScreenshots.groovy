@@ -24,9 +24,10 @@ class TakeScreenshots {
             }
 
             TimelineListRow row = page.list.rows[5]
-            row.hoverOverRow()
+            row.showDetails()
+
             interact {
-                moveToElement(row.scanLink)
+                moveToElement(page.taskDetails.originScanButton)
             }
         }
         extraActions.put('overlapping-outputs-timeline') {
@@ -57,7 +58,7 @@ class TakeScreenshots {
         ['task-inputs-comparison', 'overlapping-outputs-input-comparison'].each {
             extraActions.put(it) {
                 waitFor {
-                    $('.TaskInputs')
+                    $('.TaskInputs__tasks-list')
                 }
             }
         }
