@@ -45,7 +45,7 @@ gradleRunner {
 
     step 'clean-dependencies', cleanBuildOutput.curry('dependencies')
 
-    step 'assemble', 'assemble', '--console=rich'
+    step 'assemble', 'jar', '--console=rich'
 
     step 'clean-assemble', cleanBuildOutput.curry('assemble')
 

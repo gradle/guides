@@ -100,11 +100,11 @@ include::{example}/src/main/java/GreeterApp.java[]
 
 NOTE: Due to simplicity of this two line application, testing will be left from from this example.
 
-Build your application by using the `assemble` task.
+Build your application by using the `jar` task.
 
 [listing.terminal]
 ----
-$ ./gradlew assemble
+$ ./gradlew jar
 
 include::{gradle-outdir}/clean-assemble/out.txt[]
 ----
