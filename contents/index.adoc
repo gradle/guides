@@ -128,7 +128,7 @@ $ ./gradlew build
 include::{gradle-outdir}/build/out.txt[]
 ----
 
-If you inspect the `build/distributions` folder you will notice both `.zip` and `.tar` archives. This is the application ready for distribution. Now it is time to test your application manually. The Application plugin provides a useful `instalLDist`
+If you inspect the `build/distributions` folder you will notice both `.zip` and `.tar` archives. This is the application ready for distribution. Now it is time to test your application manually. The Application plugin provides a useful `instalLDist` task to install your application into the `build/install` folder for validation purposes.
 
 [listing.terminal]
 ----
@@ -137,7 +137,7 @@ $ ./gradlew installDist
 include::{gradle-outdir}/install/out.txt[]
 ----
 
-Look in `build/install` where you should find a `greeterApp` folder containing `lib` and `bin` folders. I fyou look inthe `lib` folder you will see both your application and the JFiglet JARs.
+Look in `build/install` where you should find a `greeterApp` folder containing `lib` and `bin` folders. If you look inthe `lib` folder you will see both your application and the JFiglet JARs.
 
 Run the application by changing to the `build/install/greeterApp` folder and executing the application.
 
