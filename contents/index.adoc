@@ -6,7 +6,8 @@
 
 == What you'll need
 
-* About +++<span class="time-to-complete-text"></span>+++
+// The TTC-value is automatically inserted at display-time.
+* About [.time-to-complete-text]#NN#
 * A text editor
 * A command prompt
 * The Java Development Kit (JDK), version 1.7 or higher
