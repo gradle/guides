@@ -7,6 +7,9 @@ checkout = git clone git@github.com:gradle-guides/building-c-executables.git
 [building-cpp-executables]
 checkout = git clone git@github.com:gradle-guides/building-cpp-executables.git
 
+[building-cpp-libraries]
+checkout = git clone git@github.com:gradle-guides/building-cpp-libraries.git
+
 [building-groovy-libraries]
 checkout = git clone git@github.com:gradle-guides/building-groovy-libraries.git
 
