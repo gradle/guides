@@ -72,11 +72,6 @@ p.lead,
     font-family: "Lato", Arial, sans-serif;
 }
 
-#header,
-#content {
-    padding-left: 2.4375em;
-}
-
 #header > h1 {
     margin-top: 2.25rem;
     margin-bottom: 0;
@@ -133,5 +128,10 @@ body.book #header > h1 {
     h1,
     h2 {
         font-size: 32px;
+    }
+
+    #header,
+    #content {
+        padding-left: 2.4375em;
     }
 }
