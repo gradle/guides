@@ -124,6 +124,13 @@ body.book #header > h1 {
     text-decoration: none;
 }
 
+.colist > table tr > td:first-of-type {
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+    line-height: 1.4;
+    vertical-align: baseline;
+}
+
 @media only screen and (min-width: 768px) {
     h1,
     h2 {
