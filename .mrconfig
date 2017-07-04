@@ -40,6 +40,9 @@ checkout = git clone git@github.com:gradle-guides/creating-multi-project-builds.
 [creating-new-gradle-builds]
 checkout = git clone git@github.com:gradle-guides/creating-new-gradle-builds.git
 
+[consuming-jvm-libraries]
+checkout = git clone git@github.com:gradle-guides/consuming-jvm-libraries.git
+
 [designing-gradle-plugins]
 checkout = git clone git@github.com:gradle-guides/designing-gradle-plugins.git
 
