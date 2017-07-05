@@ -218,7 +218,7 @@ NOTE: If you need second- or third-level nesting, you will also have to add over
 
 === Declaring a DSL configuration container
 
-DSLs exposed by a plugin come in different shapes and sizes. Sometimes you might want to expose a way for users to define multiple, named data objects of the same type. Let's consider the following build script for illustration purposes.
+Sometimes you might want to expose a way for users to define multiple, named data objects of the same type. Let's consider the following build script for illustration purposes.
 
 .build.gradle
 [source,groovy]
