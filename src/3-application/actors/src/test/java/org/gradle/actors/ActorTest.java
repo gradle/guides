@@ -20,7 +20,7 @@ public class ActorTest {
 
     @Test
     public void canReachDefaultActor() {
-        Actor actor = new org.gradle.actors.impl.DefaultActor("Elliot Ness");
-        assertEquals("Elliot Ness", actor.toString());
+        Actor actor = new org.gradle.actors.impl.DefaultActor("Kevin Costner");
+        assertEquals("Kevin Costner", actor.toString());
     }
 }

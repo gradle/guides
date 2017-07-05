@@ -24,14 +24,14 @@ public class ModularityTest {
             .class.getClassLoader()
             .loadClass("org.gradle.actors.impl.DefaultActor");
         Actor actor = (Actor) clazz.getConstructor(String.class)
-            .newInstance("Elliot Ness");
-        assertEquals("Elliot Ness", actor.toString());
+            .newInstance("Kevin Costner");
+        assertEquals("Kevin Costner", actor.toString());
     }
 
     @Test
     public void canReachDefaultActor() {
-        Actor actor = new org.gradle.actors.impl.DefaultActor("Elliot Ness");
-        assertEquals("Elliot Ness", actor.toString());
+        Actor actor = new org.gradle.actors.impl.DefaultActor("Kevin Costner");
+        assertEquals("Kevin Costner", actor.toString());
     }
 
     /*

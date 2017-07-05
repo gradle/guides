@@ -1,9 +1,9 @@
-// tags::plugins[]
+// tag::plugins[]
 plugins {
     id 'java-library'
     id 'org.gradle.java.experimental-jigsaw' version '0.1.1'  // <1>
 }
-// end: plugins[]
+// end::plugins[]
 
 dependencies {
     implementation 'com.google.guava:guava:22.0'
@@ -11,6 +11,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
-// tags::moduleName[]
+// tag::moduleName[]
 javaModule.name = 'org.gradle.actors'  // <1>
 // end::moduleName[]
