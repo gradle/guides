@@ -255,11 +255,15 @@ public class ServerEnvironment {
         this.name = name;
     }
     
+    public String getName() {
+        return name;
+    }
+    
     public void setUrl(String url) {
         this.url = url;
     }
     
-    public String getUrl(String url) {
+    public String getUrl() {
         return url;
     }
 }
@@ -270,33 +274,37 @@ Gradle exposes the convenience method {api-reference}org/gradle/api/Project.html
 .ServerEnvironmentPlugin.java
 [source,java]
 ----
+import org.gradle.api.Action;
+import org.gradle.api.Task;
 import org.gradle.api.Project;
 import org.gradle.api.Plugin;
 import org.gradle.api.NamedDomainObjectContainer;
 
 public class ServerEnvironmentPlugin implements Plugin<Project> {
+    @Override
     public void apply(Project project) {
         NamedDomainObjectContainer<ServerEnvironment> serverEnvironmentContainer = project.container(ServerEnvironment.class);
         project.getExtensions().add("environments", serverEnvironmentContainer);
+
+        serverEnvironmentContainer.all(new Action<ServerEnvironment>() {
+            public void execute(ServerEnvironment serverEnvironment) {
+                String env = serverEnvironment.getName();
+                String capitalizedServerEnv = env.substring(0, 1).toUpperCase() + env.substring(1);
+                String taskName = "deployTo" + capitalizedServerEnv;
+
+                Task deployTask = project.getTasks().create(taskName);
+                deployTask.doLast(new Action<Task>() {
+                    public void execute(Task task) {
+                        System.out.println("Deploying to URL " + serverEnvironment.getUrl());
+                    }
+                });
+            }
+        });
     }
 }
 ----
 
-It's fairly easy to navigate the data that has been captured by the end user. Let's say you'd want to iterate over the values in the build script then you could do so by getting a handle to the named extension `environments`. The following task demonstrates the use case.
-
-.build.gradle
-[source,groovy]
-----
-task printEnvironmentUrls {
-    doLast {
-        environments.each {
-            println "$it.name -> $it.url"
-        }
-    }
-}
-----
-
-It's very common for a plugin to post-process the captured values within the plugin implementation e.g. to configure tasks. Please consider the following section for more information.
+It's very common for a plugin to post-process the captured values within the plugin implementation e.g. to configure tasks. In the example above, a deployment task is created dynamically for every environment that was configured by the user.
 
 === Capturing user input to configure plugin runtime behavior
 
