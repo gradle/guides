@@ -242,16 +242,16 @@ environments {
 
 The DSL exposed by the plugin exposes a _container_ for defining a set of environments. Each environment configured by the user has an arbitrary but declaritive name and is represented with its own DSL configuration block. The example above instantiates a development, staging and production environment including its respective URL.
 
-Obviously, each of these environments needs to have a data representation in code to capture the values. The name of an environment is immutable and can be passed in as constructor parameter. At the moment the only other parameter stored by the data object is an URL. The POJO `ServerEnvironmentContainer` shown below fulfills those requirements.
+Obviously, each of these environments needs to have a data representation in code to capture the values. The name of an environment is immutable and can be passed in as constructor parameter. At the moment the only other parameter stored by the data object is an URL. The POJO `ServerEnvironment` shown below fulfills those requirements.
 
-.ServerEnvironmentContainer.java
+.ServerEnvironment.java
 [source,java]
 ----
-public class ServerEnvironmentContainer {
+public class ServerEnvironment {
     private final String name;
     private String url;
     
-    public ServerEnvironmentContainer(String name) {
+    public ServerEnvironment(String name) {
         this.name = name;
     }
     
@@ -276,7 +276,7 @@ import org.gradle.api.NamedDomainObjectContainer;
 
 public class ServerEnvironmentPlugin implements Plugin<Project> {
     public void apply(Project project) {
-        NamedDomainObjectContainer<ServerEnvironmentContainer> serverEnvironmentContainer = project.container(ServerEnvironmentContainer.class);
+        NamedDomainObjectContainer<ServerEnvironment> serverEnvironmentContainer = project.container(ServerEnvironment.class);
         project.getExtensions().add("environments", serverEnvironmentContainer);
     }
 }
