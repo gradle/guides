@@ -265,7 +265,7 @@ public class ServerEnvironment {
 }
 ----
 
-Gradle exposes the convenience method {api-reference}org/gradle/api/Project.html#container(java.lang.Class)[Project.html#container(java.lang.Class)] to create a container of data objects. The only parameter it takes is the class representing the data. Creating an instance of type {api-reference}org/gradle/api/NamedDomainObjectContainer.html[NamedDomainObjectContainer] is not enough though. You will also have to expose it to the end user. You can do so by adding it to the extension container with a specific name.
+Gradle exposes the convenience method {api-reference}org/gradle/api/Project.html#container(java.lang.Class)[Project.html#container(java.lang.Class)] to create a container of data objects. The only parameter it takes is the class representing the data. The created instance of type {api-reference}org/gradle/api/NamedDomainObjectContainer.html[NamedDomainObjectContainer] can be exposed to the end user by adding it to the extension container with a specific name.
 
 .ServerEnvironmentPlugin.java
 [source,java]
