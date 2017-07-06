@@ -17,3 +17,6 @@ to use. This should among others include {user-manual}, {guides}, {gradle-versio
 == Summary
 
 *TBC*
+
+
+include::contribute[]
