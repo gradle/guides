@@ -16,6 +16,7 @@ package org.gradle.guides
 
 import groovy.transform.CompileStatic
 import org.gradle.api.Project
+import org.gradle.util.CollectionUtils
 
 /**
  *
@@ -75,19 +76,31 @@ class GuidesExtension {
         ret + getSupAuthors()
     }
 
+    /** An Asciidoc-formatted section that can be inserted when
+     * {@code include::contribute[]} is encountered.
+     *
+     * @param msg Asciidoc-formatted code.
+     */
+    void setContributeMessage(Object msg) {
+
+    }
+
     /** Message that is printed at the end of the guide.
      *
      * @return Message in Asciidoc markup
      */
     String getContributeMessage() {
-        """
-
-==== Help improve this guide
-
-Have feedback or a question? Found a typo? Like all Gradle guides, help is just a GitHub issue away. Please add an issue or pull request to {guides}/${getRepoPath()}/[${getRepoPath()}] and we'll get back to you.
-"""
+        CollectionUtils.stringize([this.contributeMessage])
     }
 
     private List<String> supAuthors = []
+
+    private Object contributeMessage = """
+
+[.contribute]
+== Help improve this guide
+
+Have feedback or a question? Found a typo? Like all Gradle guides, help is just a GitHub issue away. Please add an issue or pull request to {guides}/${getRepoPath()}/[${getRepoPath()}] and we'll get back to you.
+"""
 
 }
