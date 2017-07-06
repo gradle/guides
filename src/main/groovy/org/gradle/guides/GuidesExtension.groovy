@@ -90,7 +90,7 @@ class GuidesExtension {
      * @return Message in Asciidoc markup
      */
     String getContributeMessage() {
-        CollectionUtils.stringize([this.contributeMessage])
+        CollectionUtils.stringize([this.contributeMessage])[0]
     }
 
     private List<String> supAuthors = []
