@@ -1,4 +1,4 @@
-apply plugin : 'org.gradle.guides.getting-started'
+apply plugin : 'org.gradle.guides.tutorial'
 apply plugin : 'org.gradle.guides.test-jvm-code'
 
 guide {
@@ -11,5 +11,5 @@ gradleRunner {
 }
 
 task runGradleTest {
-  dependsOn asciidoctor
+  dependsOn asciidoctorAttributes
 }
