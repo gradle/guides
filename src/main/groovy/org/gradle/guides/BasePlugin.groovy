@@ -176,6 +176,14 @@ class BasePlugin implements Plugin<Project> {
             gitPublishPush {
                 enabled = System.getenv('TRAVIS_BRANCH') == 'master' && System.getenv('TRAVIS_PULL_REQUEST') == 'false' && System.getenv('TRAVIS_OS_NAME') == 'linux'
             }
+
+            if(System.getenv('TRAVIS_OS_NAME') != 'linux') {
+                project.tasks.each { t ->
+                    if( t.name.startsWith('gitPublish')) {
+                        t.enabled = false
+                    }
+                }
+            }
         }
     }
 
