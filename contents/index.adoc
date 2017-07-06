@@ -37,3 +37,6 @@ BUILD SUCCESSFUL
 
 
 == Summary
+
+
+include::contribute[]
