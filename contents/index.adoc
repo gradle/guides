@@ -301,3 +301,6 @@ For those with `gradle.com` addresses, make sure that `user.email` references th
  - What to use italics for
  - Proper format of git commit messages
 ////
+
+
+include::contribute[]
