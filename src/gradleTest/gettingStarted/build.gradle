@@ -11,5 +11,5 @@ gradleRunner {
 }
 
 task runGradleTest {
-  dependsOn asciidoctorAttributes
+  dependsOn asciidoctor
 }
