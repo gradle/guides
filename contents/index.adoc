@@ -216,109 +216,6 @@ public class SiteExtension {
 
 NOTE: If you need second- or third-level nesting, you will also have to add overloads that take a `Closure`, because Gradle cannot instrument nested extensions at the moment.
 
-=== Declaring a DSL configuration container
-
-Sometimes you might want to expose a way for users to define multiple, named data objects of the same type. Let's consider the following build script for illustration purposes.
-
-.build.gradle
-[source,groovy]
-----
-apply plugin: ServerEnvironmentPlugin
-
-environments {
-    dev {
-        url = 'http://localhost:8080'
-    }
-    
-    staging {
-        url = 'http://staging.enterprise.com'
-    }
-    
-    production {
-        url = 'http://prod.enterprise.com'
-    }
-}
-----
-
-The DSL exposed by the plugin exposes a _container_ for defining a set of environments. Each environment configured by the user has an arbitrary but declaritive name and is represented with its own DSL configuration block. The example above instantiates a development, staging and production environment including its respective URL.
-
-Obviously, each of these environments needs to have a data representation in code to capture the values. The name of an environment is immutable and can be passed in as constructor parameter. At the moment the only other parameter stored by the data object is an URL. The POJO `ServerEnvironment` shown below fulfills those requirements.
-
-.ServerEnvironment.java
-[source,java]
-----
-import org.gradle.api.Project;
-import org.gradle.api.provider.PropertyState;
-import org.gradle.api.provider.Provider;
-
-public class ServerEnvironment {
-    private final String name;
-    private final PropertyState<String> url;
-
-    public ServerEnvironment(String name, Project project) {
-        this.name = name;
-        this.url = project.property(String.class);
-    }
-    
-    public String getName() {
-        return name;
-    }
-    
-    public void setUrl(String url) {
-        this.url.set(url);
-    }
-    
-    public String getUrl() {
-        return url.get();
-    }
-
-    public Provider<String> getUrlProvider() {
-        return url;
-    }
-}
-----
-
-Gradle exposes the convenience method {api-reference}org/gradle/api/Project.html#container(java.lang.Class)[Project.html#container(java.lang.Class)] to create a container of data objects. The only parameter it takes is the class representing the data. The created instance of type {api-reference}org/gradle/api/NamedDomainObjectContainer.html[NamedDomainObjectContainer] can be exposed to the end user by adding it to the extension container with a specific name.
-
-.ServerEnvironmentPlugin.java
-[source,java]
-----
-import org.gradle.api.*;
-
-public class ServerEnvironmentPlugin implements Plugin<Project> {
-    @Override
-    public void apply(Project project) {
-        NamedDomainObjectContainer<ServerEnvironment> serverEnvironmentContainer = project.container(ServerEnvironment.class, new ServerEnvironmentFactory(project));
-        project.getExtensions().add("environments", serverEnvironmentContainer);
-
-        serverEnvironmentContainer.all(new Action<ServerEnvironment>() {
-            public void execute(ServerEnvironment serverEnvironment) {
-                String env = serverEnvironment.getName();
-                String capitalizedServerEnv = env.substring(0, 1).toUpperCase() + env.substring(1);
-                String taskName = "deployTo" + capitalizedServerEnv;
-                Deploy deployTask = project.getTasks().create(taskName, Deploy.class);
-                deployTask.setUrl(serverEnvironment.getUrlProvider());
-            }
-        });
-    }
-
-    private class ServerEnvironmentFactory implements NamedDomainObjectFactory<ServerEnvironment> {
-        private final Project project;
-
-        public ServerEnvironmentFactory(Project project) {
-            this.project = project;
-        }
-
-        @Override
-        public ServerEnvironment create(String name) {
-            return new ServerEnvironment(name, project);
-        }
-    }
-}
-----
-
-It's very common for a plugin to post-process the captured values within the plugin implementation e.g. to configure tasks. In the example above, a deployment task is created dynamically for every environment that was configured by the user.
-
 === Capturing user input to configure plugin runtime behavior
 
 Plugins often times come with default conventions that make sensible assumptions about the consuming project. The Java plugin, for example, searches for Java source files in the directory `src/main/java`. Default conventions are helpful to streamline project layouts but fall short when dealing with custom project structures, legacy project requirements or a different user preference.
@@ -419,6 +316,110 @@ public class LatestArtifactVersion extends DefaultTask {
 ----
 
 NOTE: We encourage plugin developers to migrate their plugins to the public API as soon as possible. Plugins that are not based on Gradle 4.0 yet may continue to use the internal "convention mapping" API. Please be aware that the "convention mapping" API is undocumented and might be removed with later versions of Gradle.
+
+=== Declaring a DSL configuration container
+
+Sometimes you might want to expose a way for users to define multiple, named data objects of the same type. Let's consider the following build script for illustration purposes.
+
+.build.gradle
+[source,groovy]
+----
+apply plugin: ServerEnvironmentPlugin
+
+environments {
+    dev {
+        url = 'http://localhost:8080'
+    }
+    
+    staging {
+        url = 'http://staging.enterprise.com'
+    }
+    
+    production {
+        url = 'http://prod.enterprise.com'
+    }
+}
+----
+
+The DSL exposed by the plugin exposes a _container_ for defining a set of environments. Each environment configured by the user has an arbitrary but declaritive name and is represented with its own DSL configuration block. The example above instantiates a development, staging and production environment including its respective URL.
+
+Obviously, each of these environments needs to have a data representation in code to capture the values. The name of an environment is immutable and can be passed in as constructor parameter. At the moment the only other parameter stored by the data object is an URL. The POJO `ServerEnvironment` shown below fulfills those requirements.
+
+.ServerEnvironment.java
+[source,java]
+----
+import org.gradle.api.Project;
+import org.gradle.api.provider.PropertyState;
+import org.gradle.api.provider.Provider;
+
+public class ServerEnvironment {
+    private final String name;
+    private final PropertyState<String> url;
+
+    public ServerEnvironment(String name, Project project) {
+        this.name = name;
+        this.url = project.property(String.class);
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public void setUrl(String url) {
+        this.url.set(url);
+    }
+    
+    public String getUrl() {
+        return url.get();
+    }
+
+    public Provider<String> getUrlProvider() {
+        return url;
+    }
+}
+----
+
+Gradle exposes the convenience method {api-reference}org/gradle/api/Project.html#container(java.lang.Class)[Project.html#container(java.lang.Class)] to create a container of data objects. The only parameter it takes is the class representing the data. The created instance of type {api-reference}org/gradle/api/NamedDomainObjectContainer.html[NamedDomainObjectContainer] can be exposed to the end user by adding it to the extension container with a specific name.
+
+.ServerEnvironmentPlugin.java
+[source,java]
+----
+import org.gradle.api.*;
+
+public class ServerEnvironmentPlugin implements Plugin<Project> {
+    @Override
+    public void apply(Project project) {
+        NamedDomainObjectContainer<ServerEnvironment> serverEnvironmentContainer = project.container(ServerEnvironment.class, new ServerEnvironmentFactory(project));
+        project.getExtensions().add("environments", serverEnvironmentContainer);
+
+        serverEnvironmentContainer.all(new Action<ServerEnvironment>() {
+            @Override
+            public void execute(ServerEnvironment serverEnvironment) {
+                String env = serverEnvironment.getName();
+                String capitalizedServerEnv = env.substring(0, 1).toUpperCase() + env.substring(1);
+                String taskName = "deployTo" + capitalizedServerEnv;
+                Deploy deployTask = project.getTasks().create(taskName, Deploy.class);
+                deployTask.setUrl(serverEnvironment.getUrlProvider());
+            }
+        });
+    }
+
+    private class ServerEnvironmentFactory implements NamedDomainObjectFactory<ServerEnvironment> {
+        private final Project project;
+
+        public ServerEnvironmentFactory(Project project) {
+            this.project = project;
+        }
+
+        @Override
+        public ServerEnvironment create(String name) {
+            return new ServerEnvironment(name, project);
+        }
+    }
+}
+----
+
+It's very common for a plugin to post-process the captured values within the plugin implementation e.g. to configure tasks. In the example above, a deployment task is created dynamically for every environment that was configured by the user.
 
 === Reacting to plugins
 
