@@ -21,3 +21,6 @@ include::debugging.adoc[]
 include::common-problems.adoc[]
 
 include::summary.adoc[]
+
+
+include::contribute[]
