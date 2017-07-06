@@ -116,13 +116,15 @@ class BasePlugin implements Plugin<Project> {
     @CompileDynamic
     private void addAsciidocExtensions(AsciidoctorTask asciidoc) {
 
-        Closure contribute = { project, document, reader, target, attributes ->
-            reader.push_include(project.contributeMessage, target, target, 1, attributes)
+        GuidesExtension guide = (GuidesExtension)(asciidoc.project.extensions.getByName(org.gradle.guides.BasePlugin.GUIDE_EXTENSION_NAME))
+
+        Closure contribute = { GuidesExtension guides, document, reader, target, attributes ->
+            reader.push_include(guides.getContributeMessage(), target, target, 1, attributes)
         }
 
         asciidoc.extensions {
 
-            includeprocessor(filter: { it == 'contribute' },contribute.curry(asciidoc.project))
+            includeprocessor(filter: { it == 'contribute' },contribute.curry(guide))
 
             postprocessor { document, output ->
                 if (document.basebackend("html")) {
