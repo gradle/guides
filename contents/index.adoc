@@ -341,7 +341,7 @@ environments {
 }
 ----
 
-The DSL exposed by the plugin exposes a _container_ for defining a set of environments. Each environment configured by the user has an arbitrary but declaritive name and is represented with its own DSL configuration block. The example above instantiates a development, staging and production environment including its respective URL.
+The DSL exposed by the plugin exposes a _container_ for defining a set of environments. Each environment configured by the user has an arbitrary but declarative name and is represented with its own DSL configuration block. The example above instantiates a development, staging and production environment including its respective URL.
 
 Obviously, each of these environments needs to have a data representation in code to capture the values. The name of an environment is immutable and can be passed in as constructor parameter. At the moment the only other parameter stored by the data object is an URL. The POJO `ServerEnvironment` shown below fulfills those requirements.
 
