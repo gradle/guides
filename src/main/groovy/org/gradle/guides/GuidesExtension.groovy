@@ -100,7 +100,7 @@ class GuidesExtension {
 [.contribute]
 == Help improve this guide
 
-Have feedback or a question? Found a typo? Like all Gradle guides, help is just a GitHub issue away. Please add an issue or pull request to {guides}/{repo-path}/[{repo-path}] and we'll get back to you.
+Have feedback or a question? Found a typo? Like all Gradle guides, help is just a GitHub issue away. Please add an issue or pull request to https://github.com/{repo-path}/[{repo-path}] and we'll get back to you.
 """
 
 }
