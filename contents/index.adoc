@@ -448,3 +448,6 @@ In this guide, you learned how to:
 Gretty is a very powerful API. See the http://akhikhl.github.io/gretty-doc/[Gretty documentation] for details. Further details about Selenium can be found on the http://www.seleniumhq.org[Selenium website], and more about WebDriverManager system is available on the https://github.com/bonigarcia/webdrivermanager[WebdriverDriverManager GitHub repository].
 
 If you are interested in functional testing, check out the open source http://www.gebish.org[Geb] library, which provides a powerful Groovy DSL for browser automation that rests on top of Selenium and WebDriver.
+
+
+include::contribute[]
