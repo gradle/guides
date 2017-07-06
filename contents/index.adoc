@@ -127,3 +127,6 @@ In this guide, you learned how to:
 == Next Steps
 
 Additional information can be found in the https://docs.gradle.com/scans/[Build Scans User Manual].
+
+
+include::contribute[]
