@@ -115,7 +115,15 @@ class BasePlugin implements Plugin<Project> {
 
     @CompileDynamic
     private void addAsciidocExtensions(AsciidoctorTask asciidoc) {
+
+        Closure contribute = { project, document, reader, target, attributes ->
+            reader.push_include(project.contributeMessage, target, target, 1, attributes)
+        }
+
         asciidoc.extensions {
+
+            includeprocessor(filter: { it == 'contribute' },contribute.curry(asciidoc.project))
+
             postprocessor { document, output ->
                 if (document.basebackend("html")) {
                     def extra = """<div style="padding-top: 10px;"><a href="https://guides.gradle.org"><img src="https://guides.gradle.org/gradle-guides.svg" alt=""></a></div>"""
