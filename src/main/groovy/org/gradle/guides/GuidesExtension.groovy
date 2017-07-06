@@ -82,7 +82,7 @@ class GuidesExtension {
      * @param msg Asciidoc-formatted code.
      */
     void setContributeMessage(Object msg) {
-
+        this.contributeMessage = msg
     }
 
     /** Message that is printed at the end of the guide.
