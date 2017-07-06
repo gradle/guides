@@ -322,3 +322,6 @@ If you do need to implement custom logic, either via build files or plugins, the
 At this point, you should have a rough idea of how much work a migration is likely to be. Those that fit the standard Maven pattern without many extra plugins should be very straightforward to migrate. Builds that utilize common plugins involve a bit more work, but mostly consist of working out how to configure the Gradle equivalents.
 
 More complex builds will require an in-depth understanding of Gradle before the migration takes place. If that's the case, though, remember that we believe the resulting Gradle build will make more sense and be easier to maintain than the Maven one, and grow better with your changing requirements. In other words, the investment is worth it.
+
+
+include::contribute[]
