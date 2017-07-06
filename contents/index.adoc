@@ -226,3 +226,6 @@ That's it! You've worked through the steps necessary to create a custom Gradle T
 == Help improve this guide
 
 Have feedback or a question? Found a typo? Like all Gradle guides, help is just a GitHub Issue away. Please add an issue or pull request to the https://github.com/{repo-path}/[{repo-path}] and we'll get back to you.
+
+
+include::contribute[]
