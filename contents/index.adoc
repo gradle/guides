@@ -247,12 +247,17 @@ Obviously, each of these environments needs to have a data representation in cod
 .ServerEnvironment.java
 [source,java]
 ----
+import org.gradle.api.Project;
+import org.gradle.api.provider.PropertyState;
+import org.gradle.api.provider.Provider;
+
 public class ServerEnvironment {
     private final String name;
-    private String url;
-    
-    public ServerEnvironment(String name) {
+    private final PropertyState<String> url;
+
+    public ServerEnvironment(String name, Project project) {
         this.name = name;
+        this.url = project.property(String.class);
     }
     
     public String getName() {
@@ -260,10 +265,14 @@ public class ServerEnvironment {
     }
     
     public void setUrl(String url) {
-        this.url = url;
+        this.url.set(url);
     }
     
     public String getUrl() {
+        return url.get();
+    }
+
+    public Provider<String> getUrlProvider() {
         return url;
     }
 }
@@ -274,31 +283,36 @@ Gradle exposes the convenience method {api-reference}org/gradle/api/Project.html
 .ServerEnvironmentPlugin.java
 [source,java]
 ----
-import org.gradle.api.Action;
-import org.gradle.api.Task;
-import org.gradle.api.Project;
-import org.gradle.api.Plugin;
-import org.gradle.api.NamedDomainObjectContainer;
+import org.gradle.api.*;
 
 public class ServerEnvironmentPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
-        NamedDomainObjectContainer<ServerEnvironment> serverEnvironmentContainer = project.container(ServerEnvironment.class);
+        NamedDomainObjectContainer<ServerEnvironment> serverEnvironmentContainer = project.container(ServerEnvironment.class, new ServerEnvironmentFactory(project));
         project.getExtensions().add("environments", serverEnvironmentContainer);
 
-        project.afterEvaluate(new Action<Project>() {
-            public void execute(Project project) {
-                serverEnvironmentContainer.all(new Action<ServerEnvironment>() {
-                    public void execute(ServerEnvironment serverEnvironment) {
-                        String env = serverEnvironment.getName();
-                        String capitalizedServerEnv = env.substring(0, 1).toUpperCase() + env.substring(1);
-                        String taskName = "deployTo" + capitalizedServerEnv;
-                        Deploy deployTask = project.getTasks().create(taskName, Deploy.class);
-                        deployTask.setUrl(serverEnvironment.getUrl());
-                    }
-                });
+        serverEnvironmentContainer.all(new Action<ServerEnvironment>() {
+            public void execute(ServerEnvironment serverEnvironment) {
+                String env = serverEnvironment.getName();
+                String capitalizedServerEnv = env.substring(0, 1).toUpperCase() + env.substring(1);
+                String taskName = "deployTo" + capitalizedServerEnv;
+                Deploy deployTask = project.getTasks().create(taskName, Deploy.class);
+                deployTask.setUrl(serverEnvironment.getUrlProvider());
             }
         });
+    }
+
+    private class ServerEnvironmentFactory implements NamedDomainObjectFactory<ServerEnvironment> {
+        private final Project project;
+
+        public ServerEnvironmentFactory(Project project) {
+            this.project = project;
+        }
+
+        @Override
+        public ServerEnvironment create(String name) {
+            return new ServerEnvironment(name, project);
+        }
     }
 }
 ----
