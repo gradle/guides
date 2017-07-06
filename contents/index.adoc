@@ -422,3 +422,6 @@ Beyond those settings, remember that the two big contributors to build times are
 You have more control over task execution, since you can avoid running tasks or running them too often, and you can also code your own tasks to be as performant as possible. In the future, Gradle will offer more features to help with execution performance. Things like parallel task execution. You have plenty to look forward to!
 
 In the meantime, we hope the ideas in this guide help you cut your build times and improve the overall user experience.
+
+
+include::contribute[]

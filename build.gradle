@@ -1,8 +1,8 @@
 plugins {
-    id 'org.gradle.guides.topical' version '0.5.5'
+    id 'org.gradle.guides.topical' version '0.6.6'
 
     // Uncomment this line if you need test JVM code snippets
-    // id 'org.gradle.guides.test-jvm-code' version '0.5.5'
+    // id 'org.gradle.guides.test-jvm-code' version '0.6.6'
 }
 
 import org.apache.tools.ant.filters.*
