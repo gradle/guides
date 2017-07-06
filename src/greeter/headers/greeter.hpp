@@ -1,7 +1,6 @@
 #ifndef _GREETER_H_
 #define _GREETER_H_
 
-#include <iostream>
 #include <string>
 
 #if defined(DLL_EXPORT)

@@ -39,9 +39,9 @@ include::{projdir}/gradle/cpp.gradle[]
 ----
 <1> {cpp} libraries and binaries are built using the `cpp` plugin.
 <2> Native builds use the `model` block
-<3> Native libraries are specified as a component of type `NativeLibrarySpec` and defined by a name - `greeter` in this case.
-<4> Native binaries are specified as a component of type `NativeBinarySpec` and defined by a name - `main` in this case.
-<5> The `main` binary uses the `greeter` {c++} library and is specified using `cpp.lib`
+<3> Native libraries are specified as a component of type {language-reference}org.gradle.nativeplatform.NativeLibrarySpec.html[NativeLibrarySpec] and defined by a name - `greeter` in this case.
+<4> Native executables are specified as a component of type {language-reference}org.gradle.nativeplatform.NativeExecutableSpec.html[NativeExecutableSpec] and defined by a name - `main` in this case.
+<5> The `main` binaries use the `greeter` {c++} library and is specified using `cpp.lib`
 <6> When using the VC++ compiler, the library methods should be declared with `__declspec(dllexport)` for shared library. This defines the macro `DLL_EXPORT` based on which the declaration is modified.
 
 Now run
@@ -75,7 +75,7 @@ There are two things to note here
 
 == Add source code
 
-In build.gradle, there are two components. `greeter` is the library you will be building and `main` is a simple executable to consume this library. The sources are structured as below
+In `build.gradle`, there are two components. `greeter` is the library you will be building and `main` is a simple executable to consume this library. The sources are structured as below
 
 * `greeter` library - `src/greeter/cpp` for sources and _non-exported header files_ and `src/greeter/headers` for _exported header files_
 * `main` binary - `src/main/cpp` for sources.
@@ -124,7 +124,7 @@ $ ./gradlew greeterStaticLibrary
 BUILD SUCCESSFUL
 
 ----
-<1> Gradle does not show the compiler commands or the compiler output in order to keep the output from Gradle itself clean. But the compiler output can be found in `build/tmp/compileGreeterStaticLibraryGreeterCpp/output.txt` and the compiler flags can be found in `build/tmp/compileGreeterStaticLibraryGreeterCpp/options.txt`
+<1> Gradle does not show the compiler commands or only show an excert of the compiler output if the compilation failed in order to keep the output from Gradle itself clean. But the compiler output can be found in `build/tmp/compileGreeterStaticLibraryGreeterCpp/output.txt` and the compiler flags can be found in `build/tmp/compileGreeterStaticLibraryGreeterCpp/options.txt`
 
 This builds the static library under `build/libs/greeter/static`
 
@@ -155,7 +155,7 @@ build/libs/greeter/static
 build/libs/greeter/static/libgreeter.a
 ----
 
-Since the `main` component depends on the `greeter` library, running the `mainExecutable` task will generate the static and shared libraries and the binary as well.
+Since the `main` component depends on the `greeter` library, running the `mainExecutable` task will generate the static for exported symbols only and shared libraries and the executable binary as well.
 
 [listing]
 ----
@@ -174,7 +174,7 @@ You can run the binary that uses this library (you need to set the LD_LIBRARY_PA
 
 [listing]
 ----
-$ LD_LIBRARY_PATH=build/libs/greeter/shared/ ./build/exe/main/main 
+$ LD_LIBRARY_PATH=build/libs/greeter/shared/ ./build/exe/main/main
 Hello, Gradle User
 ----
 
