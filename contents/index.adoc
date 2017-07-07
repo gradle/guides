@@ -223,9 +223,4 @@ That's it! You've worked through the steps necessary to create a custom Gradle T
 * Having classes in a build script will soon lead to a messy and potentially unmaintainable build script. Learn how to {user-manual}organizing_build_logic.html[organize your build logic].
 * Read more about https://docs.gradle.org/current/userguide/tutorial_using_tasks.html[using tasks], and {language-reference}org.gradle.api.Task.html[predefined tasks and task types]
 
-== Help improve this guide
-
-Have feedback or a question? Found a typo? Like all Gradle guides, help is just a GitHub Issue away. Please add an issue or pull request to the https://github.com/{repo-path}/[{repo-path}] and we'll get back to you.
-
-
 include::contribute[]
