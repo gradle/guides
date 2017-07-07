@@ -635,3 +635,6 @@ the tasks added by the regular `java-library` and `application` plugins to get
 them work on with Java 9 modules. In the future, the Gradle team will be adding
 first-class support for the module system, but you can begin experimenting
 today!
+
+
+include::contribute[]
