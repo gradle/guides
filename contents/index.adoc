@@ -178,7 +178,4 @@ You now have JVM application that consumes an external library. In this process 
 * Read about finding artifacts without metadata in link:{user-manual}dependency_management.html#sec:flat_dir_resolver[local folders].
 * Read about link:{user-manual}dependency_management.html#sec:finetuning_the_dependency_resolution_process[advanced artifact resolution] and how to deal with version & dependency conflicts.
 
-// include::contribute[]
-
-
 include::contribute[]
