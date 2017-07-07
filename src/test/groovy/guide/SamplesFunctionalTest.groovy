@@ -58,7 +58,6 @@ class SamplesFunctionalTest extends Specification {
     
     private void copySample(String path) {
         FileUtils.copyDirectory(new File(SAMPLES_DIR, path), temporaryFolder.root)
-        println temporaryFolder.root.listFiles()
     }
     
     private BuildResult build(String... arguments) {
