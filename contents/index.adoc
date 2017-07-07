@@ -162,3 +162,6 @@ Once your plugin has been published, the instructions for others to use it will 
 == Next steps
 
 * Read the https://plugins.gradle.org/docs/publish-plugin[reference documentation for the {publishplugin}].
+
+
+include::contribute[]
