@@ -185,3 +185,6 @@ You have created a {cpp} library (both static and shared). In doing so, you saw
 * How to create gradle build scripts for {cpp} libraries.
 * How to generate static and/or shared libraries from {cpp} soruces.
 * How to use our library in a {cpp} binary.
+
+
+include::contribute[]
