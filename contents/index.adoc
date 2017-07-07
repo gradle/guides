@@ -124,7 +124,7 @@ $ ./gradlew greeterStaticLibrary
 BUILD SUCCESSFUL
 
 ----
-<1> Gradle does not show the compiler commands or only show an excert of the compiler output if the compilation failed in order to keep the output from Gradle itself clean. But the compiler output can be found in `build/tmp/compileGreeterStaticLibraryGreeterCpp/output.txt` and the compiler flags can be found in `build/tmp/compileGreeterStaticLibraryGreeterCpp/options.txt`
+<1> Gradle does not show the compiler commands or only show an excerpt of the compiler output if the compilation failed in order to keep the output from Gradle itself clean. But the compiler output can be found in `build/tmp/compileGreeterStaticLibraryGreeterCpp/output.txt` and the compiler flags can be found in `build/tmp/compileGreeterStaticLibraryGreeterCpp/options.txt`
 
 This builds the static library under `build/libs/greeter/static`
 
