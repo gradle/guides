@@ -348,17 +348,12 @@ Obviously, each of these environments needs to have a data representation in cod
 .ServerEnvironment.java
 [source,java]
 ----
-import org.gradle.api.Project;
-import org.gradle.api.provider.PropertyState;
-import org.gradle.api.provider.Provider;
-
 public class ServerEnvironment {
     private final String name;
-    private final PropertyState<String> url;
+    private String url;
 
-    public ServerEnvironment(String name, Project project) {
+    public ServerEnvironment(String name) {
         this.name = name;
-        this.url = project.property(String.class);
     }
     
     public String getName() {
@@ -366,20 +361,16 @@ public class ServerEnvironment {
     }
     
     public void setUrl(String url) {
-        this.url.set(url);
+        this.url = url;
     }
     
     public String getUrl() {
-        return url.get();
-    }
-
-    public Provider<String> getUrlProvider() {
         return url;
     }
 }
 ----
 
-Gradle exposes the convenience method {api-reference}org/gradle/api/Project.html#container(java.lang.Class, org.gradle.api.NamedDomainObjectFactory)[Project.html#container(java.lang.Class, org.gradle.api.NamedDomainObjectFactory)] to create a container of data objects. The parameters the method takes is the class representing the data and the factory for producing those instances. The created instance of type {api-reference}org/gradle/api/NamedDomainObjectContainer.html[NamedDomainObjectContainer] can be exposed to the end user by adding it to the extension container with a specific name.
+Gradle exposes the convenience method {api-reference}org/gradle/api/Project.html#container(java.lang.Class)[Project.html#container(java.lang.Class)] to create a container of data objects. The parameter the method takes is the class representing the data. The created instance of type {api-reference}org/gradle/api/NamedDomainObjectContainer.html[NamedDomainObjectContainer] can be exposed to the end user by adding it to the extension container with a specific name.
 
 .ServerEnvironmentPlugin.java
 [source,java]
@@ -389,32 +380,22 @@ import org.gradle.api.*;
 public class ServerEnvironmentPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
-        NamedDomainObjectContainer<ServerEnvironment> serverEnvironmentContainer = project.container(ServerEnvironment.class, new ServerEnvironmentFactory(project));
+        NamedDomainObjectContainer<ServerEnvironment> serverEnvironmentContainer = project.container(ServerEnvironment.class);
         project.getExtensions().add("environments", serverEnvironmentContainer);
 
-        serverEnvironmentContainer.all(new Action<ServerEnvironment>() {
-            @Override
-            public void execute(ServerEnvironment serverEnvironment) {
-                String env = serverEnvironment.getName();
-                String capitalizedServerEnv = env.substring(0, 1).toUpperCase() + env.substring(1);
-                String taskName = "deployTo" + capitalizedServerEnv;
-                Deploy deployTask = project.getTasks().create(taskName, Deploy.class);
-                deployTask.setUrl(serverEnvironment.getUrlProvider());
+        project.afterEvaluate(new Action<Project>() {
+            public void execute(Project project) {
+                serverEnvironmentContainer.all(new Action<ServerEnvironment>() {
+                    public void execute(ServerEnvironment serverEnvironment) {
+                        String env = serverEnvironment.getName();
+                        String capitalizedServerEnv = env.substring(0, 1).toUpperCase() + env.substring(1);
+                        String taskName = "deployTo" + capitalizedServerEnv;
+                        Deploy deployTask = project.getTasks().create(taskName, Deploy.class);
+                        deployTask.setUrl(serverEnvironment.getUrl());
+                    }
+                });
             }
         });
-    }
-
-    private class ServerEnvironmentFactory implements NamedDomainObjectFactory<ServerEnvironment> {
-        private final Project project;
-
-        public ServerEnvironmentFactory(Project project) {
-            this.project = project;
-        }
-
-        @Override
-        public ServerEnvironment create(String name) {
-            return new ServerEnvironment(name, project);
-        }
     }
 }
 ----
