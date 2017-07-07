@@ -317,6 +317,91 @@ public class LatestArtifactVersion extends DefaultTask {
 
 NOTE: We encourage plugin developers to migrate their plugins to the public API as soon as possible. Plugins that are not based on Gradle 4.0 yet may continue to use the internal "convention mapping" API. Please be aware that the "convention mapping" API is undocumented and might be removed with later versions of Gradle.
 
+=== Declaring a DSL configuration container
+
+Sometimes you might want to expose a way for users to define multiple, named data objects of the same type. Let's consider the following build script for illustration purposes.
+
+.build.gradle
+[source,groovy]
+----
+apply plugin: ServerEnvironmentPlugin
+
+environments {
+    dev {
+        url = 'http://localhost:8080'
+    }
+    
+    staging {
+        url = 'http://staging.enterprise.com'
+    }
+    
+    production {
+        url = 'http://prod.enterprise.com'
+    }
+}
+----
+
+The DSL exposed by the plugin exposes a _container_ for defining a set of environments. Each environment configured by the user has an arbitrary but declarative name and is represented with its own DSL configuration block. The example above instantiates a development, staging and production environment including its respective URL.
+
+Obviously, each of these environments needs to have a data representation in code to capture the values. The name of an environment is immutable and can be passed in as constructor parameter. At the moment the only other parameter stored by the data object is an URL. The POJO `ServerEnvironment` shown below fulfills those requirements.
+
+.ServerEnvironment.java
+[source,java]
+----
+public class ServerEnvironment {
+    private final String name;
+    private String url;
+
+    public ServerEnvironment(String name) {
+        this.name = name;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public void setUrl(String url) {
+        this.url = url;
+    }
+    
+    public String getUrl() {
+        return url;
+    }
+}
+----
+
+Gradle exposes the convenience method {api-reference}org/gradle/api/Project.html#container(java.lang.Class)[Project.html#container(java.lang.Class)] to create a container of data objects. The parameter the method takes is the class representing the data. The created instance of type {api-reference}org/gradle/api/NamedDomainObjectContainer.html[NamedDomainObjectContainer] can be exposed to the end user by adding it to the extension container with a specific name.
+
+.ServerEnvironmentPlugin.java
+[source,java]
+----
+import org.gradle.api.*;
+
+public class ServerEnvironmentPlugin implements Plugin<Project> {
+    @Override
+    public void apply(Project project) {
+        NamedDomainObjectContainer<ServerEnvironment> serverEnvironmentContainer = project.container(ServerEnvironment.class);
+        project.getExtensions().add("environments", serverEnvironmentContainer);
+
+        project.afterEvaluate(new Action<Project>() {
+            public void execute(Project project) {
+                serverEnvironmentContainer.all(new Action<ServerEnvironment>() {
+                    public void execute(ServerEnvironment serverEnvironment) {
+                        String env = serverEnvironment.getName();
+                        String capitalizedServerEnv = env.substring(0, 1).toUpperCase() + env.substring(1);
+                        String taskName = "deployTo" + capitalizedServerEnv;
+                        Deploy deployTask = project.getTasks().create(taskName, Deploy.class);
+                        deployTask.setUrl(serverEnvironment.getUrl());
+                    }
+                });
+            }
+        });
+    }
+}
+----
+
+It's very common for a plugin to post-process the captured values within the plugin implementation e.g. to configure tasks. In the example above, a deployment task is created dynamically for every environment that was configured by the user.
+
 === Reacting to plugins
 
 Configuring the runtime behavior of existing plugins and tasks in a build is a common pattern in Gradle plugin implementations. For example a plugin could assume that it is applied to a Java-based project and automatically reconfigures the standard source directory.
