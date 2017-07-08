@@ -106,7 +106,7 @@ class SamplesFunctionalTest extends Specification {
         copySample('react-to-task')
         
         when:
-        def result = build('printWarWebXml')
+        def result = build('assertWarWebXml')
         
         then:
         noExceptionThrown()
