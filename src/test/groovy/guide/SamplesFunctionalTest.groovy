@@ -145,6 +145,6 @@ class SamplesFunctionalTest extends Specification {
     }
     
     private GradleRunner createAndConfigureGradleRunner(String... arguments) {
-        GradleRunner.create().withProjectDir(temporaryFolder.root).withArguments(arguments).forwardOutput()
+        GradleRunner.create().withProjectDir(temporaryFolder.root).withArguments(arguments)
     }
 }
