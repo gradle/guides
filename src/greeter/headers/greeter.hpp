@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <algorithm>
 
 #if defined(DLL_EXPORT)
 #define DECLSPEC __declspec(dllexport)
@@ -16,6 +17,7 @@ public:
     Greeter(std::string name_) : name(name_) {};
     Greeter() : name("World") {};
     void greet();
+    int getNameLength();
 private:
     std::string name;
 };
