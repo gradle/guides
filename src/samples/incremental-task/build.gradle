@@ -1,0 +1,5 @@
+task generate(type: Generate) {
+    fileCount = 2
+    content = 'Hello World!'
+    generatedFileDir = file("$buildDir/generated-output")
+}
