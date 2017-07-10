@@ -269,3 +269,6 @@ You have created a {cpp} library (both static and shared) and written unit tests
 * How to generate static and/or shared libraries from {cpp} soruces.
 * How to use our library in a {cpp} binary.
 * How to build and run testsuites written for {cpp} libraries.
+
+
+include::contribute[]
