@@ -22,9 +22,7 @@ Setting up a Gradle plugin project should require as little boilerplate code as 
 .build.gradle
 [source,groovy]
 ----
-plugins {
-    id 'java-gradle-plugin'
-}
+include::{plugin-dev-plugin}/build.gradle[]
 ----
 
 By applying the plugin, necessary plugins are applied and relevant dependencies are added. It also helps with validating the plugin metadata before publishing the binary artifact to the Gradle plugin portal. Every plugin project should apply this plugin.
@@ -39,35 +37,7 @@ Let’s say you implemented a plugin that resolves the latest version of a depen
 .LatestArtifactVersion.java
 [source,java]
 ----
-package com.company.gradle.binaryrepo;
-
-public class LatestArtifactVersion extends DefaultTask {
-    private String coordinates;
-    private String serverUrl;
-
-    @Input
-    public String getCoordinates() {
-        return coordinates;
-    }
-
-    public void setCoordinates(String coordinates) {
-        this.coordinates = coordinates;
-    }
-
-    @Input
-    public String getServerUrl() {
-        return serverUrl;
-    }
-
-    public void setServerUrl(String serverUrl) {
-        this.serverUrl = serverUrl;
-    }
-
-    @TaskAction
-    public void resolveLatestVersion() {
-        // issue HTTP call and parse response
-    }
-}
+include::{custom-task}/buildSrc/src/main/java/com/company/gradle/binaryrepo/LatestArtifactVersion.java[]
 ----
 
 The end user of the task can now easily create multiple tasks of that type with different configuration. All the imperative, potentially complex logic is completely hidden in the custom task implementation.
@@ -75,19 +45,7 @@ The end user of the task can now easily create multiple tasks of that type with 
 .build.gradle
 [source,groovy]
 ----
-apply plugin: BinaryRepositoryVersionPlugin
-
-import com.company.gradle.binaryrepo.LatestArtifactVersion
-
-task latestVersionMavenCentral(type: LatestArtifactVersion) {
-    coordinates = 'commons-lang:commons-lang:1.5'
-    serverUrl = 'http://repo1.maven.org/maven2/'
-}
-
-task latestVersionInhouseRepo(type: LatestArtifactVersion) {
-    coordinates = 'commons-lang:commons-lang:1.5'
-    serverUrl = 'http://my.company.com/maven2'
-}
+include::{custom-task}/build.gradle[]
 ----
 
 === Benefiting from incremental tasks
@@ -101,57 +59,7 @@ Let’s consider the following sample task for illustration. The task generates 
 .Generate.java
 [source,java]
 ----
-public class Generate extends DefaultTask {
-    private int fileCount;
-    private String content;
-    private File generatedFileDir;
-
-    @Input
-    public int getFileCount() {
-        return fileCount;
-    }
-
-    public void setFileCount(int fileCount) {
-        this.fileCount = fileCount;
-    }
-
-    @Input
-    public int getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    @OutputDirectory
-    public File getGeneratedFileDir() {
-        return generatedFileDir;
-    }
-
-    public void setGeneratedFileDir(File generatedFileDir) {
-        this.generatedFileDir = generatedFileDir;
-    }
-
-    @TaskAction
-    public void perform() {
-        for (int i = 0; i < fileCount; i++) {
-            writeFile(new File(generatedFileDir, i + ".txt"), content);
-        }
-    }
-
-    private void writeFile(File destination, String content) throws IOException {
-        BufferedWriter output = null;
-        try {
-            output = new BufferedWriter(new FileWriter(destination));
-            output.write(content);
-        } finally {
-            if (output != null) {
-                output.close();
-            }
-        }
-    }
-}
+include::{incremental-task}/buildSrc/src/main/java/Generate.java[]
 ----
 
 The first section of this guide talks about the <<plugin-development-plugin,Plugin Development plugin>>. As an added benefit of applying the plugin to your project, the task `validateTaskProperties` automatically checks for an existing input/output annotation for every public property define in a custom task type implementation.
@@ -163,6 +71,8 @@ DSLs exposed by plugins should be readable and easy to understand. For illustrat
 .build.gradle
 [source,groovy]
 ----
+apply plugin: SitePlugin
+
 site {
     outputDir = file('build/mysite')
     websiteUrl = 'http://gradle.org'
@@ -175,14 +85,7 @@ As the number of exposed properties grows, you might want to introduce a nested,
 .build.gradle
 [source,groovy]
 ----
-site {
-    outputDir = file('build/mysite')
-
-    customData {
-        websiteUrl = 'http://gradle.org'
-        vcsUrl = 'https://github.com/gradle-guides/gradle-site-plugin'
-    }
-}
+include::{dsl-like-api}/build.gradle[]
 ----
 
 It's fairly easy to implement the backing objects of such an extension. First of all, you'll need to introduce a new data object for managing the properties `websiteUrl` and `vcsUrl`.
@@ -190,12 +93,7 @@ It's fairly easy to implement the backing objects of such an extension. First of
 .CustomData.java
 [source,java]
 ----
-public class CustomData {
-    private String websiteUrl;
-    private String vcsUrl;
-
-    // getter and setter methods
-}
+include::{dsl-like-api}/buildSrc/src/main/java/CustomData.java[]
 ----
 
 In the extension, you'll need to create an instance of the `CustomData` class and a method that can delegate the captured values to the data instance. To configure underlying data objects define a parameter of type {api-reference}org/gradle/api/Action.html[org.gradle.api.Action]. The following example demonstrates the use of `Action` in an extension definition.
@@ -203,15 +101,7 @@ In the extension, you'll need to create an instance of the `CustomData` class an
 .SiteExtension.java
 [source,java]
 ----
-import org.gradle.api.Action;
-
-public class SiteExtension {
-    private final CustomData customData = new CustomData();
-    
-    public void customData(Action<? super CustomData> action) {
-        action.execute(customData);
-    }
-}
+include::{dsl-like-api}/buildSrc/src/main/java/SiteExtension.java[]
 ----
 
 NOTE: If you need second- or third-level nesting, you will also have to add overloads that take a `Closure`, because Gradle cannot instrument nested extensions at the moment.
@@ -227,11 +117,7 @@ The following example applies a plugin that exposes an extension with the name `
 .build.gradle
 [source,groovy]
 ----
-apply plugin: BinaryRepositoryVersionPlugin
-
-binaryRepo {
-    serverUrl = 'http://my.company.com/maven2'
-}
+include::{capture-user-input}/build.gradle[]
 ----
 
 Let's assume that you'll also want to do something with the value of `serverUrl` once captured. In many cases the exposed extension property is directly mapped to a task property that actually uses the value when performing work. To avoid evaluation order problems you should use {user-manual}custom_plugins.html#mapExtensionPropertiesToTaskProperties[the public API `PropertyState`] which was introduced in Gradle 4.0.
@@ -241,17 +127,7 @@ Let's have a look at the internals of the plugin `BinaryRepositoryVersionPlugin`
 .BinaryRepositoryVersionPlugin.java
 [source,java]
 ----
-public class BinaryRepositoryVersionPlugin implements Plugin<Project> {
-    public void apply(Project project) {
-        final BinaryRepositoryExtension extension = project.getExtensions().create("binaryRepo", BinaryRepositoryExtension.class, project);
-
-        project.getTasks().create("latestArtifactVersion", LatestArtifactVersion.class, new Action<LatestArtifactVersion>() {
-            public void execute(LatestArtifactVersion latestArtifactVersion) {
-                latestArtifactVersion.setServerUrl(extension.getServerUrlProvider());
-            }
-        });
-    }
-}
+include::{capture-user-input}/buildSrc/src/main/java/BinaryRepositoryVersionPlugin.java[]
 ----
 
 Instead of using a plain `String` type, the extension defines the field `serverUrl` with type `PropertyState<String>`. The field is initialized in the constructor of the class. It's state can be set via the exposed setter methods.
@@ -259,25 +135,8 @@ Instead of using a plain `String` type, the extension defines the field `serverU
 .BinaryRepositoryExtension.java
 [source,java]
 ----
-public class BinaryRepositoryExtension {
-    private final PropertyState<String> serverUrl;
+include::{capture-user-input}/buildSrc/src/main/java/BinaryRepositoryExtension.java[]
 
-    public BinaryRepositoryExtension(Project project) {
-        serverUrl = project.property(String.class);
-    }
-
-    public String getServerUrl() {
-        return serverUrl.get();
-    }
-
-    public Provider<String> getServerUrlProvider() {
-        return serverUrl;
-    }
-
-    public void setServerUrl(String serverUrl) {
-        this.serverUrl.set(serverUrl);
-    }
-}
 ----
 
 The task property also defines the `serverUrl` with type `PropertyState`. It allows for mapping the state of the property without actually accessing its value until needed for processing - that is in the task action.
@@ -285,34 +144,8 @@ The task property also defines the `serverUrl` with type `PropertyState`. It all
 .LatestArtifactVersion.java
 [source,java]
 ----
-public class LatestArtifactVersion extends DefaultTask {
-    private final PropertyState<String> serverUrl;
+include::{capture-user-input}/buildSrc/src/main/java/LatestArtifactVersion.java[]
 
-    public LatestArtifactVersion() {
-        serverUrl = getProject().property(String.class);
-    }
-
-    @Input
-    public String getServerUrl() {
-        return serverUrl.get();
-    }
-
-    public void setServerUrl(String serverUrl) {
-        this.serverUrl.set(serverUrl);
-    }
-
-    public void setServerUrl(Provider<String> serverUrl) {
-        this.serverUrl.set(serverUrl);
-    }
-
-    @TaskAction
-    public void resolveLatestVersion() {
-        // Access the raw value during the execution phase of the build lifecycle
-        String serverUrl = getServerUrl();
-
-        // do additional work
-    }
-}
 ----
 
 NOTE: We encourage plugin developers to migrate their plugins to the public API as soon as possible. Plugins that are not based on Gradle 4.0 yet may continue to use the internal "convention mapping" API. Please be aware that the "convention mapping" API is undocumented and might be removed with later versions of Gradle.
@@ -324,21 +157,7 @@ Sometimes you might want to expose a way for users to define multiple, named dat
 .build.gradle
 [source,groovy]
 ----
-apply plugin: ServerEnvironmentPlugin
-
-environments {
-    dev {
-        url = 'http://localhost:8080'
-    }
-    
-    staging {
-        url = 'http://staging.enterprise.com'
-    }
-    
-    production {
-        url = 'http://prod.enterprise.com'
-    }
-}
+include::{named-domain-object-container}/build.gradle[]
 ----
 
 The DSL exposed by the plugin exposes a _container_ for defining a set of environments. Each environment configured by the user has an arbitrary but declarative name and is represented with its own DSL configuration block. The example above instantiates a development, staging and production environment including its respective URL.
@@ -348,26 +167,7 @@ Obviously, each of these environments needs to have a data representation in cod
 .ServerEnvironment.java
 [source,java]
 ----
-public class ServerEnvironment {
-    private final String name;
-    private String url;
-
-    public ServerEnvironment(String name) {
-        this.name = name;
-    }
-    
-    public String getName() {
-        return name;
-    }
-    
-    public void setUrl(String url) {
-        this.url = url;
-    }
-    
-    public String getUrl() {
-        return url;
-    }
-}
+include::{named-domain-object-container}/buildSrc/src/main/java/ServerEnvironment.java[]
 ----
 
 Gradle exposes the convenience method {api-reference}org/gradle/api/Project.html#container(java.lang.Class)[Project.html#container(java.lang.Class)] to create a container of data objects. The parameter the method takes is the class representing the data. The created instance of type {api-reference}org/gradle/api/NamedDomainObjectContainer.html[NamedDomainObjectContainer] can be exposed to the end user by adding it to the extension container with a specific name.
@@ -375,30 +175,7 @@ Gradle exposes the convenience method {api-reference}org/gradle/api/Project.html
 .ServerEnvironmentPlugin.java
 [source,java]
 ----
-import org.gradle.api.*;
-
-public class ServerEnvironmentPlugin implements Plugin<Project> {
-    @Override
-    public void apply(Project project) {
-        NamedDomainObjectContainer<ServerEnvironment> serverEnvironmentContainer = project.container(ServerEnvironment.class);
-        project.getExtensions().add("environments", serverEnvironmentContainer);
-
-        serverEnvironmentContainer.all(new Action<ServerEnvironment>() {
-            public void execute(ServerEnvironment serverEnvironment) {
-                String env = serverEnvironment.getName();
-                String capitalizedServerEnv = env.substring(0, 1).toUpperCase() + env.substring(1);
-                String taskName = "deployTo" + capitalizedServerEnv;
-                Deploy deployTask = project.getTasks().create(taskName, Deploy.class);
-                
-                project.afterEvaluate(new Action<Project>() {
-                    public void execute(Project project) {
-                        deployTask.setUrl(serverEnvironment.getUrl());
-                    }
-                });
-            }
-        });
-    }
-}
+include::{named-domain-object-container}/buildSrc/src/main/java/ServerEnvironmentPlugin.java[]
 ----
 
 It's very common for a plugin to post-process the captured values within the plugin implementation e.g. to configure tasks. In the example above, a deployment task is created dynamically for every environment that was configured by the user.
@@ -410,15 +187,7 @@ Configuring the runtime behavior of existing plugins and tasks in a build is a c
 .InhouseConventionJavaPlugin.java
 [source,java]
 ----
-public class InhouseConventionJavaPlugin implements Plugin<Project> {
-    public void apply(Project project) {
-        project.getPlugins().apply(JavaPlugin.class);
-        JavaPluginConvention javaConvention =
-            project.getConvention().getPlugin(JavaPluginConvention.class);
-        SourceSet main = javaConvention.getSourceSets().create(SourceSet.MAIN_SOURCE_SET_NAME);
-        main.getAllJava().setSrcDirs(Arrays.asList("src"));
-    }
-}
+include::{apply-configure-plugin}/buildSrc/src/main/java/InhouseConventionJavaPlugin.java[]
 ----
 
 The drawback to this approach is that it automatically forces the project to apply the Java plugin and therefore imposes a strong opinion on it. In practice, the project applying the plugin might not even deal with Java code. Instead of automatically applying the Java plugin the plugin could just react to the fact that the consuming project applies the Java plugin. Only if that is the case then certain configuration is applied.
@@ -426,18 +195,7 @@ The drawback to this approach is that it automatically forces the project to app
 .InhouseConventionJavaPlugin.java
 [source,java]
 ----
-public class InhouseConventionJavaPlugin implements Plugin<Project> {
-    public void apply(Project project) {
-        project.getPlugins().withType(JavaPlugin.class, new Action<JavaPlugin>() {
-            public void execute(JavaPlugin javaPlugin) {
-                JavaPluginConvention javaConvention =
-                    project.getConvention().getPlugin(JavaPluginConvention.class);
-                SourceSet main = javaConvention.getSourceSets().create(SourceSet.MAIN_SOURCE_SET_NAME);
-                main.getAllJava().setSrcDirs(Arrays.asList("src"));
-            }
-        }
-    });
-}
+include::{react-to-plugin}/buildSrc/src/main/java/InhouseConventionJavaPlugin.java[]
 ----
 
 Reacting to plugins should be preferred over blindly applying other plugins if there is not a good reason for assuming that the consuming project has the expected setup. The same concept applies to task types.
@@ -445,15 +203,7 @@ Reacting to plugins should be preferred over blindly applying other plugins if t
 .InhouseConventionWarPlugin.java
 [source,java]
 ----
-public class InhouseConventionWarPlugin implements Plugin<Project> {
-    public void apply(Project project) {
-        project.getTasks().withType(War.class, new Action<War>() {
-            public void execute(War war) {
-                war.setWebXml(project.file("src/someWeb.xml"));
-            }
-        });
-    }
-}
+include::{react-to-task}/buildSrc/src/main/java/InhouseConventionWarPlugin.java[]
 ----
 
 === Providing default dependencies for plugins
@@ -465,51 +215,13 @@ Let’s have a look at an example. You wrote a plugin that downloads files conta
 .DataProcessingPlugin.java
 [source,java]
 ----
-public class DataProcessingPlugin implements Plugin<Project> {
-    public void apply(Project project) {
-        final Configuration config = project.getConfigurations().create("dataFiles")
-            .setVisible(false)
-            .setDescription("The data artifacts to be processed for this plugin.");
-
-        config.defaultDependencies(new Action<DependencySet>() {
-            public void execute(DependencySet dependencies) {
-                dependencies.add(project.getDependencies().create("com.company:data:1.4.6"));
-            }
-        });
-
-        project.getTasks().withType(DataProcessing.class, new Action<DataProcessing>() {
-            public void execute(DataProcessing dataProcessing) {
-                dataProcessing.setDataFiles(config);
-            }
-        });
-    }
-}
+include::{default-dependency}/buildSrc/src/main/java/DataProcessingPlugin.java[]
 ----
 
 .DataProcessing.java
 [source,java]
 ----
-public class DataProcessing extends DefaultTask {
-    private final ConfigurableFileCollection dataFiles;
-    
-    public DataProcessing() {
-        dataFiles = getProject().files();
-    }
-
-    @InputFiles
-    public FileCollection getDataFiles() {
-        return dataFiles;
-    }
-
-    public void setDataFiles(FileCollection dataFiles) {
-        this.dataFiles.setFrom(dataFiles);
-    }
-
-    @TaskAction
-    public void process() {
-        System.out.println(getDataFiles().getFiles());
-    }
-}
+include::{default-dependency}/buildSrc/src/main/java/DataProcessing.java[]
 ----
 
 Now, this approach is very convenient for the end user as there’s no need to actively declare a dependency. The plugin already provides all the knowledge about this implementation detail. But what if the user would like to redefine the default dependency. No problem...the plugin also exposes the custom configuration that can be used to assign a different dependency. Effectively, the default dependency is overwritten.
@@ -517,11 +229,7 @@ Now, this approach is very convenient for the end user as there’s no need to a
 .build.gradle
 [source,groovy]
 ----
-apply plugin: DataProcessingPlugin
-
-dependencies {
-    dataFiles 'com.company:more-data:2.+'
-}
+include::{default-dependency}/build.gradle[]
 ----
 
 You will find that this pattern works well for tasks that require an external dependency when the action of the task is actually executed. The method is heavily used for custom tasks that execute an external Ant task like many of the {user-manual}standard_plugins.html#sec:software_development_plugins[Gradle core static analysis plugins] do e.g. the FindBugs and Checkstyle plugin. In fact those plugins even go further and abstract the version to be used for the external dependency by exposing an extension property (e.g. `toolVersion` {language-reference}org.gradle.testing.jacoco.plugins.JacocoPluginExtension.html#org.gradle.testing.jacoco.plugins.JacocoPluginExtension:toolVersion[in the JaCoCo plugin]).

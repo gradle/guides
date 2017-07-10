@@ -1,0 +1,9 @@
+apply plugin: InhouseConventionWarPlugin
+
+task war(type: War)
+
+task assertWarWebXml {
+    doLast {
+        assert war.webXml == file('src/someWeb.xml')
+    }
+}

@@ -1,0 +1,15 @@
+apply plugin: ServerEnvironmentPlugin
+
+environments {
+    dev {
+        url = 'http://localhost:8080'
+    }
+    
+    staging {
+        url = 'http://staging.enterprise.com'
+    }
+    
+    production {
+        url = 'http://prod.enterprise.com'
+    }
+}

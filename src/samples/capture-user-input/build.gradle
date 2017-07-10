@@ -1,0 +1,5 @@
+apply plugin: BinaryRepositoryVersionPlugin
+
+binaryRepo {
+    serverUrl = 'http://my.company.com/maven2'
+}
