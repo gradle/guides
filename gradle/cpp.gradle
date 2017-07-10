@@ -37,11 +37,6 @@ model { // <3>
                 linker.args '-pthread'
             }
         }
-        all {
-            if (toolChain in Gcc) {
-                cppCompiler.args "-std=c++11"
-            }
-        }
     }
 }
 
