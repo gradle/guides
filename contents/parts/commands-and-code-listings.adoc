@@ -6,16 +6,24 @@ Almost all guides include commands to run and code listings to copy, so the foll
 
 We want to avoid any confusion as to what bits of text need to be copied and pasted into a terminal or command prompt. To that end, use the following syntax for any commands that you want the reader to execute:
 
-    $ <command line>
-    <expected output>
+[listing.terminal]
+----
+$ <command line>
+<expected output>
+----
 
 The expected output is optional, but it's useful for the reader in determining whether they correctly ran the given command line. Here's a simple example of the style we're want:
 
-    $ gradle hello
-    :hello
-    Hello World!
+[listing.terminal]
+----
+$ gradle hello
+:hello
+Hello World!
+----
 
 You may also include multiple command lines, but they must all be prefixed with `$` and you should only include expected output for the last command line. Ideally, you should break the commands into separate blocks if you want to add expected output to any of them.
+
+Place all console listing in a `[listing.terminal]` block.
 
 === Include the appropriate file paths in the titles of code listings
 
