@@ -7,7 +7,10 @@ import org.apache.tools.ant.filters.*
 guide {
     repoPath 'gradle-guides/writing-gradle-plugins-in-java'
     mainAuthor 'Peter Ledbrook'
+    supAuthors 'Schalk Cronjéß'
 }
 
-
+asciidoctor {
+    attributes exampledir : file('src/example').absolutePath
+}
 

@@ -1,0 +1,6 @@
+apply plugin: org.example.greeting.GreetingPlugin
+
+hello { // <1>
+    message = "Hi"
+    recipient = "Gradle"
+}

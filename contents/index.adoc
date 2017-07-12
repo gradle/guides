@@ -35,19 +35,7 @@ Create the class `GreetingPlugin` in the directory you just created, setting its
 [source,java]
 .buildSrc/src/main/java/org/example/greeting/GreetingPlugin.java
 ----
-package org.example.greeting;
-
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
-
-public class GreetingPlugin implements Plugin<Project> {
-    public void apply(Project project) {
-        project.getTasks().create("hello", Greeting.class, (task) -> { <1>
-            task.setMessage("Hello");
-            task.setRecipient("World");                                <2>
-        });
-    }
-}
+include::{exampledir}/buildSrc/src/main/java/org/example/greeting/GreetingPlugin.java[]
 ----
 <1> Creates a new task named `hello` of type `Greeting` (which you will define shortly)
 <2> Sets default values for the new task
@@ -61,26 +49,7 @@ Next, you'll create the class for the task type that the plugin is using. Add a 
 [source,java]
 .buildSrc/src/main/java/org/example/greeting/Greeting.java
 ----
-package org.example.greeting;
-
-import org.gradle.api.DefaultTask;
-import org.gradle.api.tasks.TaskAction;
-
-public class Greeting extends DefaultTask {
-    private String message;
-    private String recipient;
-
-    public String getMessage() { return message; }
-    public void setMessage(String message) { this.message = message; }
-
-    public String getRecipient() { return recipient; }
-    public void setRecipient(String recipient) { this.recipient = recipient; }
-
-    @TaskAction
-    void sayGreeting() {
-        System.out.printf("%s, %s!\n", getMessage(), getRecipient()); <1>
-    }
-}
+include::{exampledir}/buildSrc/src/main/java/org/example/greeting/Greeting.java[]
 ----
 <1> Prints out the configured greeting when the task runs
 
@@ -102,6 +71,8 @@ apply plugin: org.example.greeting.GreetingPlugin // <1>
 TIP: The above syntax is all that's required because the plugin source resides in the `buildSrc` directory. Applying other, non-core Gradle plugins requires other syntax as described in the {user-manual}plugins.html#sec:binary_plugins[User Manual].
 
 You can now verify that your plugin is working by running its `hello` task in the main build:
+
+*TODO: Now include this output
 
 ----
 $ gradle hello
@@ -129,18 +100,15 @@ Your build is currently just using the default property values for the greeting,
 .build.gradle
 [source,groovy]
 ----
-apply plugin: org.example.greeting.GreetingPlugin
-
-hello { <1>
-    message = "Hi"
-    recipient = "Gradle"
-}
+include::{exampledir}/build.gradle[]
 ----
 <1> Configures multiple properties of the task named `hello`
 
 TIP: You can learn more about the syntax for configuring tasks in the {user-manual}more_about_tasks.html#sec:configuring_tasks[User Manual].
 
 Now when you run the `hello` task -- using `-q` to hide the `buildSrc` output this time -- you'll see the following:
+
+*TODO: Now include this output
 
 ----
 $ gradle -q hello
@@ -157,7 +125,7 @@ Create the following properties file:
 
 .buildSrc/src/main/resources/META-INF/gradle-plugins/org.example.greeting.properties
 ----
-implementation-class=org.example.greeting.GreetingPlugin
+include::{exampledir}/buildSrc/src/main/resources/META-INF/gradle-plugins/org.example.greeting.properties[]
 ----
 
 Gradle uses this file to determine which class implements the `Plugin` interface. The name of this properties file excluding the `.properties` extension becomes the identifier of the plugin.
