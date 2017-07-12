@@ -167,3 +167,9 @@ body.book #header > h1 {
 .listingblock pre[class]::after {
     content: "";
 }
+
+.quoteblock blockquote,
+.quoteblock blockquote p {
+    text-align: left;
+    text-align: start;
+}
