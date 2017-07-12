@@ -17,12 +17,18 @@ You'll write a simple plugin that adds a new task type and creates a task of tha
 
 You'll need to create a directory for this plugin project and switch to it:
 
-    $ mkdir greeting-plugin
-    $ cd greeting-plugin
+[listing.terminal]
+----
+$ mkdir greeting-plugin
+$ cd greeting-plugin
+----
 
 Next, you will create a special directory structure for the plugin code:
 
-    $ mkdir -p buildSrc/src/main/java/org/example/greeting
+[listing.terminal]
+----
+$ mkdir -p buildSrc/src/main/java/org/example/greeting
+----
 
 TIP: If you'd like to learn more about this `buildSrc` directory, you can read about how it allows you to organize your build logic {user-manual}organizing_build_logic.html#sec:build_sources[in the User Manual].
 
@@ -64,7 +70,7 @@ Create a `build.gradle` file in the root of the project with the following conte
 .build.gradle
 [source,groovy]
 ----
-apply plugin: org.example.greeting.GreetingPlugin // <1>
+include::{exampledir}/build.gradle[]
 ----
 <1> This applies your plugin to the current `Project` instance, adding the `hello` task to the build.
 
@@ -72,25 +78,9 @@ TIP: The above syntax is all that's required because the plugin source resides i
 
 You can now verify that your plugin is working by running its `hello` task in the main build:
 
-*TODO: Now include this output
-
 ----
 $ gradle hello
-:buildSrc:compileJava
-:buildSrc:compileGroovy UP-TO-DATE
-:buildSrc:processResources UP-TO-DATE
-:buildSrc:classes
-:buildSrc:jar
-:buildSrc:assemble
-:buildSrc:compileTestJava UP-TO-DATE
-:buildSrc:compileTestGroovy UP-TO-DATE
-:buildSrc:processTestResources UP-TO-DATE
-:buildSrc:testClasses UP-TO-DATE
-:buildSrc:test UP-TO-DATE
-:buildSrc:check UP-TO-DATE
-:buildSrc:build
-:hello
-Hello, World!
+include::{gradle-outdir}/hello/out.txt[]
 ----
 
 The bulk of the output reflects that the files in `buildSrc` are treated as a Java project, which needs to be built first. Once that happens, the classes inside that project become available in your main build and the main build can execute the task or tasks that you specified.
@@ -100,7 +90,7 @@ Your build is currently just using the default property values for the greeting,
 .build.gradle
 [source,groovy]
 ----
-include::{exampledir}/build.gradle[]
+include::{exampledir}/configure-hello.gradle[tags=configure-hello]
 ----
 <1> Configures multiple properties of the task named `hello`
 
@@ -108,11 +98,9 @@ TIP: You can learn more about the syntax for configuring tasks in the {user-manu
 
 Now when you run the `hello` task -- using `-q` to hide the `buildSrc` output this time -- you'll see the following:
 
-*TODO: Now include this output
-
 ----
 $ gradle -q hello
-Hi, Gradle!
+include::{gradle-outdir}/helloAgain/out.txt[]
 ----
 
 Your plugin is now functionally complete and you've seen it in action in the above build. There is just one more thing we want to show you, which helps make the build script a bit tidier and also helps when it comes to publishing your plugin: adding a plugin identifier.
@@ -136,14 +124,14 @@ That's all you need to do in your plugin, so now you can replace the following l
 
 [source,groovy]
 ----
-apply plugin: org.example.greeting.GreetingPlugin
+include::{exampledir}/build.gradle[]
 ----
 
 with one that uses the plugin ID:
 
 [source,groovy]
 ----
-apply plugin: "org.example.greeting"
+include::{exampledir}/configure-hello.gradle[tags=use-plugin-id]
 ----
 
 Note how the name of the properties file -- `org.example.greeting.properties` -- maps to the ID above.

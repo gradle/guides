@@ -1,6 +1,1 @@
-apply plugin: org.example.greeting.GreetingPlugin
-
-hello { // <1>
-    message = "Hi"
-    recipient = "Gradle"
-}
+apply plugin: org.example.greeting.GreetingPlugin // <1>

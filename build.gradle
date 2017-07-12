@@ -7,10 +7,39 @@ import org.apache.tools.ant.filters.*
 guide {
     repoPath 'gradle-guides/writing-gradle-plugins-in-java'
     mainAuthor 'Peter Ledbrook'
-    supAuthors 'Schalk Cronjéß'
+    supAuthors 'Schalk Cronjé'
 }
 
 asciidoctor {
     attributes exampledir : file('src/example').absolutePath
+    attributes 'gradle-outdir' : "${gradleRunner.reportsDir.absolutePath}"
 }
 
+gradleRunner {
+
+    step 'create', {
+        copy {
+            from 'src/example', {
+                include '*.gradle'
+                exclude 'configure-hello.gradle'
+                include 'buildSrc/**'
+            }
+            into workingDir
+        }
+    }
+
+    step 'hello', 'hello'
+
+    step 'configure-hello', {
+        copy {
+            from 'src/example', {
+                include 'configure-hello.gradle'
+                rename 'configure-hello.gradle', 'build.gradle'
+            }
+            into workingDir
+        }
+    }
+
+    step 'helloAgain', '-q', 'hello'
+
+}
