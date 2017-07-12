@@ -142,3 +142,28 @@ body.book #header > h1 {
         padding-left: 2.4375em;
     }
 }
+
+/*
+ * Ensure that blocks of code do not wrap by applying the behavior of `[listing%nowrap]` by default.
+ *
+ * These styles are copied from a CSS ruleset in asciidoctor.css that has the same group of
+ * selectors except that they end with `.nowrap`.
+ */
+.literalblock pre,
+.literalblock pre[class],
+.listingblock pre,
+.listingblock pre[class] {
+    overflow-x: auto;
+    white-space: pre;
+    word-wrap: normal;
+}
+
+/*
+ * This CSS ruleset solves: https://github.com/gradle/guides/issues/113#issuecomment-314826749.
+ */
+.literalblock pre::after,
+.literalblock pre[class]::after,
+.listingblock pre::after,
+.listingblock pre[class]::after {
+    content: "";
+}
