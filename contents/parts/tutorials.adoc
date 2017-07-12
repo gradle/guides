@@ -1,0 +1,12 @@
+== Tutorials
+
+This section contains guidelines that are specific to long-form tutorials, as opposed to Getting Started Guides.
+
+=== Use an appropriate capability-oriented title
+
+As with Getting Started Guides, tutorial titles should take the form of a present participle describing a capability, such as "building JVM libraries" or "building for and deploying to Docker".
+
+=== Use a single worked example
+
+A tutorial should take a user through the same example as it evolves, rather than switching examples mid-guide. This is to avoid unnecessary context switching and disruption to the user. It means that you need to give due consideration as to what example you should used based on all the things you want to cover.
+

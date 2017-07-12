@@ -1,0 +1,8 @@
+== Structural elements
+
+The following guidelines relate to the structural elements of the guide, such as the headings.
+
+=== Use the imperative for headings of instructional sections
+
+If a guide section represents a step or set of steps that the reader should follow, use the imperative. Since you are telling the reader what to do, the imperative mood is appropriate.
+

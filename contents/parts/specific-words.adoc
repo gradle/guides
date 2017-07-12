@@ -1,0 +1,4 @@
+== Use of specific words
+
+* Prefer `reuse` over `re-use`.
+* Prefer `sub-project` over `subproject`.

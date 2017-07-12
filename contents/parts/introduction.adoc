@@ -1,0 +1,11 @@
+The Gradle Guides form a potentially large collection of learning material written by a variety of authors. From the perspective of the reader, though, they are all of one piece. Once they've read one guide, the next one should be familiar and hence easy to digest. This style guide is designed to satisfy that goal by helping authors keep their writing consistent with other guides.
+
+Each guide falls into one of the following three categories:
+
+ 1. **Getting Started Guides** – these are short (10-15 minute) task-focused guides that take the reader from zero to "hello world" with any given build automation task. You can think of these guides as being designed to rank well for Google searches like "How to publish to Maven Central"—because indeed there would be a Gradle Guide with that exact title or something quite similar. See the https://guides.gradle.org/gs-building-jvm-libraries/[Getting Started Building JVM Libraries] guide for an example.
+
+ 2. **Topical Guides** – These guides cover a given, usually cross-cutting topic in Gradle or build automation, and provide the reader with a "lay of the land" of that given topic. For example, see the https://github.com/gradle-guides/performance[Optimizing Gradle Performance] guide. You can see as you read through the guide that it is not narrative- or use-case driven; rather it provides a paragraph or two of information about each major topic we (the Gradle Team) think that Gradle users should have in mind when they're considering the broader topic of build performance optimization.
+
+ 3. **Tutorials** – These are longer-form guides that revolve around implementing a _real world_ build automation solution. For example, implementing a non-trivial plugin from end-to-end, making important design and implementation decisions all along the way.
+
+You will find guidelines in this document that are specific to each guide type as well as a general set applicable to all guide types.

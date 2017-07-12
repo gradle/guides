@@ -1,0 +1,108 @@
+== Make guides testable
+
+A testable guide is not a guide that shows readers how to add tests, but is one where the included code snippets and even the console output is validated during the building of the guide. Having guides testable, results in lower maintenance for guide authors, especially when new versions of Gradle come out. Familiarize yourself with Asciidoctor's use of link:http://asciidoctor.org/docs/user-manual/#include-directive[file include] and link:http://asciidoctor.org/docs/user-manual/#by-tagged-regions[include tags] as they play a key role for including code tested code snippets and console output.
+
+There are three specific ways to make a guide testable. As an author you can select one of more of these methods. The exact ones you select will be determined by the context of the guide you are writing.
+
+=== Test method 1: Executed guide steps
+
+When writing a Getting Started guide with a set of distinct steps towards an objective, use the `gradleRunner` block to map out these steps.
+
+These can be Gradle build steps or any groovy closure. Each Gradle step will write output to a folder `build/reports/runners/gradleRunner/STEP-NAME`. These output files can then be included from asciidoctor. If any of the steps fail, it will terminate the build, thus preventing inaccurate building instruction from being written to the guide.
+
+Here is an example of telling the Gradle Build Tool to use the Build Init plugin and then build it.
+
+.build.gradle
+[source,groovy]
+----
+gradleRunner {
+    step 'initProject', 'init', '--type', 'scala' // <1>
+
+    step 'initOutput', { info -> // <2>
+        File out = new File(getStepReportDir('initProject'), 'out.txt')
+        new File(info.reportDir, 'out.txt').withWriter { w ->
+           out.filterLine { line ->
+               !(line =~ /^(Download|Total time)/)
+           }.writeTo(w)
+       }
+   }
+
+   step 'buildProject', 'build' // <3>
+
+}
+----
+<1> Runs `gradle init` to create a scala project. the first parameter is always the step name and the rest of the parameters are Gradle Build Tool command-line parameters. This is also the simplest way to run `gradle init` from within the documentation building process.
+<2> The output from a build step can be cleaned up by using a Closure step. In this case any mesages about downloading and execution time is removed from the text that will be displayed in the guide.
+<3> Builds the project that has just been created.
+
+In many cases your life will be made simpler, by placing a complete independent project in the `src/example` folder. You can then copy selectively from this project in order to build up the steps. Here is an example of copying files from `src/example` prior to running the steps.
+
+.build,gradle
+[source,groovy]
+----
+step 'create', {
+    copy {
+        from 'src/example', {
+            include '*.gradle' // <1>
+            include 'src/**' // <2>
+        }
+        into workingDir // <3>
+    }
+}
+----
+<1> Include `settings.gradle` and `build.gradle` from the example project.
+<2> Copy required source files to the working project directory.
+<3> `workingDir` is the folder where `gradleRunner` keeps the project it is performing the step upon.
+
+NOTE: Always place a `settings.gradle` in your example project, even if it is empty.
+
+You can get more information on using `gradleRunner` in the http://ysb33r.github.io/gradleTest/[GradleRunner plugin documentation].
+
+=== Test method 2: Include a testsuite
+
+Include a test suite in the project. When the guide has many code snippets. Place the test code in the `src/test` folder and follow the Gradle conventions for writing tests.
+
+For your convenience apply the the `org.gradle.guides.test-jvm-code` plugin when the code under test is JVM-based. You can use the Spock Framework for the testing, but are not limited to that. Configure the tests in the usual `test` block.
+
+Here is an example of a test environment that a guide author has created as part of validating a guide
+
+.build.gradle
+[source,groovy]
+----
+test {
+    systemProperties 'HTTPSERVER_PORT' : 65000
+    systemProperties 'TEMPLATE_DIR' : file('src/publicationTest').absolutePath
+
+    inputs.dir 'src/publicationTest'  // <1>
+}
+----
+<1> Ensure the test ran when the sources used internally by the test changed.
+
+=== Test method 3: Include a full project for native guides
+
+This is currently the best approach for guides about native projects. As the native support in Gradle is evolving no simplifying patterns about native guides have arisen yet. Even though some of the above steps might work for a native guide author, it is recommend to create a project in a gradle script and then apply it from the main `build.gradle` file. For convention place the project script in the `gradle` folder.
+
+Here is an example of including a basic C++ project.
+
+.gradle/cpp.gradle
+[source,groovy]
+----
+apply plugin : 'cpp'
+
+model {
+    components {
+        main(NativeExecutableSpec)
+    }
+}
+----
+
+Include this script in the main project.
+
+.build.gradle
+[source,groovy]
+----
+apply from: 'gradle/cpp.gradle'
+----
+
+Having the project script separate, make it easier to include code snippets back into the guide. It also leads to less clutter in the main `build.gradle` file, which main purpose it to express how the guide will be built.
+
