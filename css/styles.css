@@ -72,11 +72,6 @@ p.lead,
     font-family: "Lato", Arial, sans-serif;
 }
 
-#header,
-#content {
-    padding-left: 2.4375em;
-}
-
 #header > h1 {
     margin-top: 2.25rem;
     margin-bottom: 0;
@@ -129,9 +124,46 @@ body.book #header > h1 {
     text-decoration: none;
 }
 
+.colist > table tr > td:first-of-type {
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+    line-height: 1.4;
+    vertical-align: baseline;
+}
+
 @media only screen and (min-width: 768px) {
     h1,
     h2 {
         font-size: 32px;
     }
+
+    #header,
+    #content {
+        padding-left: 2.4375em;
+    }
+}
+
+/*
+ * Ensure that blocks of code do not wrap by applying the behavior of `[listing%nowrap]` by default.
+ *
+ * These styles are copied from a CSS ruleset in asciidoctor.css that has the same group of
+ * selectors except that they end with `.nowrap`.
+ */
+.literalblock pre,
+.literalblock pre[class],
+.listingblock pre,
+.listingblock pre[class] {
+    overflow-x: auto;
+    white-space: pre;
+    word-wrap: normal;
+}
+
+/*
+ * This CSS ruleset solves: https://github.com/gradle/guides/issues/113#issuecomment-314826749.
+ */
+.literalblock pre::after,
+.literalblock pre[class]::after,
+.listingblock pre::after,
+.listingblock pre[class]::after {
+    content: "";
 }
