@@ -90,8 +90,10 @@ In many cases, a next step should link to another guide. In the cases where no s
 
 Following on from the previous guideline, we want to track and identify any content or guides that we think should exist for a Next Step. To do this, add an Asciidoc comment that links to the GitHub issue for that missing content:
 
-    ////
-    // - link to Working with a multi-project build - gradle-guides/gradle-guides.github.io#10
-    ////
-
+[source]
+----
+////
+// - link to Working with a multi-project build - gradle-guides/gradle-guides.github.io#10
+////
+----
 
