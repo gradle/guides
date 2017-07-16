@@ -1,11 +1,13 @@
 plugins {
     id 'com.gradle.build-scan' version '1.8'
     id 'groovy'
-    id 'com.github.hierynomus.license' version '0.13.1'
+    id 'java-gradle-plugin'
     id 'com.gradle.plugin-publish' version '0.9.7'
     id 'org.ysb33r.cloudci' version '1.0'
     id 'org.ysb33r.gradletest' version '1.0-beta11'
 }
+
+apply from: "$rootDir/gradle/functional-test.gradle"
 
 buildScan {
     licenseAgreementUrl = 'https://gradle.com/terms-of-service'
@@ -28,9 +30,6 @@ ext {
 }
 
 dependencies {
-    compile localGroovy()
-    compile gradleApi()
-
     compile 'net.sourceforge.nekohtml:nekohtml:1.9.21'
     compile 'org.codehaus.groovy.modules:http-builder-ng-core:0.11.1'
 
@@ -40,24 +39,9 @@ dependencies {
     runtime 'org.ysb33r.gradle:gradle-cloudci-plugin:1.0'
     runtime 'org.ysb33r.gradle:gradletest:1.0-beta11'
 
-    testImplementation "org.spockframework:spock-core:1.0-groovy-${spockGroovyVer}", {
+    testCompile "org.spockframework:spock-core:1.0-groovy-${spockGroovyVer}", {
         exclude module : 'groovy-all'
     }
-}
-
-license {
-    header = rootProject.file('config/HEADER')
-    strictCheck = true
-    ignoreFailures = false
-    mapping {
-        groovy ='DOUBLESLASH_STYLE'
-    }
-    ext.year = '2017'
-    excludes([
-            '**/*.adoc', '**/*.md',
-            '**/*.properties',
-            '**/*CompatibilitySpec.groovy'
-    ])
 }
 
 pluginBundle {
