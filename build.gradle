@@ -39,7 +39,7 @@ dependencies {
     runtime 'org.ysb33r.gradle:gradle-cloudci-plugin:1.0'
     runtime 'org.ysb33r.gradle:gradletest:1.0-beta11'
 
-    testCompile "org.spockframework:spock-core:1.0-groovy-${spockGroovyVer}", {
+    testImplementation "org.spockframework:spock-core:1.0-groovy-${spockGroovyVer}", {
         exclude module : 'groovy-all'
     }
 }
