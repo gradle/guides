@@ -8,7 +8,7 @@ plugins {
 import org.apache.tools.ant.filters.*
 
 guide {
-    repoPath "gradle-guides/using-node-js-libraries"
+    repoPath "gradle-guides/running-webpack-with-gradle"
     mainAuthor 'Eric Wendelin'
 }
 
