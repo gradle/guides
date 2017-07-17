@@ -1,0 +1,23 @@
+apply plugin: 'maven-publish'
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            name 'LocalFile'
+            url rootProject.file('build/repo')
+        }
+        maven {
+            name 'GradleBuildInternal'
+            url 'https://gradle.artifactoryonline.com/gradle/gradle-build-internal'
+            credentials {
+                username = project.findProperty('artifactoryUsername')
+                password = project.findProperty('artifactoryPassword')
+            }
+        }
+    }
+}
