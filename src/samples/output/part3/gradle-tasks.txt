@@ -1,0 +1,4 @@
+Welcome tasks
+-------------
+hello - Produces a greeting
+gutenTag - Produces a German greeting
