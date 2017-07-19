@@ -43,7 +43,7 @@ Let’s have a look at an example for conventions introduced by a plugin. The pl
 .build.gradle
 [source,groovy]
 ----
-include::{convention-over-configuration}/build.gradle[]
+include::{samplescodedir}/convention-over-configuration/build.gradle[]
 ----
 
 As you can see, the user only declares the "what" - the server the plugin should reach out to. The actual inner workings - the "how" - is completely hidden from the end user.
@@ -67,13 +67,13 @@ You should consider using the same technique when designing your own plugins. Yo
 .MyBasePlugin.java
 [source,java]
 ----
-include::{capabilities-vs-conventions}/buildSrc/src/main/java/MyBasePlugin.java[]
+include::{samplescodedir}/capabilities-vs-conventions/buildSrc/src/main/java/MyBasePlugin.java[]
 ----
 
 .MyPlugin.java
 [source,java]
 ----
-include::{capabilities-vs-conventions}/buildSrc/src/main/java/MyPlugin.java[]
+include::{samplescodedir}/capabilities-vs-conventions/buildSrc/src/main/java/MyPlugin.java[]
 ----
 
 Here are two open-source plugins that apply the concept for inspiration:
@@ -98,7 +98,7 @@ To be able to build a Gradle plugin you’ll need to tell your project to use a 
 .build.gradle
 [source,groovy]
 ----
-include::{gradle-api}/build.gradle[tags=dependencies]
+include::{samplescodedir}/gradle-api/build.gradle[tags=dependencies]
 ----
 
 It’s important to understand that this dependency includes the full Gradle runtime. For historical reasons, public and internal Gradle API have not be separated yet. We are planning to work on a new way to clearly link:https://github.com/gradle/gradle/issues/1156[distinguish and declare individual portions of the Gradle API].
@@ -114,7 +114,7 @@ As application developers we have become quite accustomed to the use of external
 .build.gradle
 [source,groovy]
 ----
-include::{external-libraries}/build.gradle[]
+include::{samplescodedir}/external-libraries/build.gradle[]
 ----
 
 The output of the task clearly indicates the classpath of the `classpath` configuration:
@@ -122,16 +122,7 @@ The output of the task clearly indicates the classpath of the `classpath` config
 ----
 $ gradle buildEnvironment
 
-:buildEnvironment
-
-------------------------------------------------------------
-Root project
-------------------------------------------------------------
-
-classpath
-\--- org.asciidoctor:asciidoctor-gradle-plugin:1.5.1
-
-BUILD SUCCESSFUL
+include::{samplesoutputdir}/external-libraries/buildEnvironment.out[]
 ----
 
 It’s important to understand that a Gradle plugin does not run in its own, isolated classloader. In turn those dependencies might conflict with other versions of the same library being resolved from other plugins and might lead to unexpected runtime behavior. When writing Gradle plugins consider if you really need a specific library or if you could just implement a simple method yourself. A future version of Gradle will introduce proper classpath isolation for plugins.

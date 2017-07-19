@@ -1,0 +1,10 @@
+> Task :buildEnvironment
+
+------------------------------------------------------------
+Root project
+------------------------------------------------------------
+
+classpath
+\--- org.asciidoctor:asciidoctor-gradle-plugin:1.5.1
+
+BUILD SUCCESSFUL
