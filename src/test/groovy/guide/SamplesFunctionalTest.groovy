@@ -137,7 +137,7 @@ class SamplesFunctionalTest extends Specification {
     }
     
     private void copySample(String path) {
-        FileUtils.copyDirectory(new File(SAMPLES_DIR, path), temporaryFolder.root)
+        FileUtils.copyDirectory(new File(SAMPLES_DIR, "code/$path"), temporaryFolder.root)
     }
     
     private BuildResult build(String... arguments) {

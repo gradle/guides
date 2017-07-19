@@ -1,25 +1,9 @@
 plugins {
-    id 'org.gradle.guides.topical' version '0.6.6'
-    id 'org.gradle.guides.test-jvm-code' version '0.6.6'
+    id 'org.gradle.guides.topical' version '0.7.0'
+    id 'org.gradle.guides.test-jvm-code' version '0.7.0'
 }
 
 guide {
     repoPath 'gradle-guides/implementing-gradle-plugins'
     mainAuthor 'Benjamin Muschko'
-}
-
-ext.samples = file('src/samples').listFiles(new FileFilter() {
-    boolean accept(File file) {
-        file.isDirectory()
-    }
-}).collectEntries {
-    [(it.name): (it)]
-}
-
-asciidoctor {
-    attributes samples
-}
-
-test {
-    systemProperties 'samplesDir' : file('src/samples').absolutePath
 }

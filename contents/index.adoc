@@ -22,7 +22,7 @@ Setting up a Gradle plugin project should require as little boilerplate code as 
 .build.gradle
 [source,groovy]
 ----
-include::{plugin-dev-plugin}/build.gradle[]
+include::{samplescodedir}/plugin-dev-plugin/build.gradle[]
 ----
 
 By applying the plugin, necessary plugins are applied and relevant dependencies are added. It also helps with validating the plugin metadata before publishing the binary artifact to the Gradle plugin portal. Every plugin project should apply this plugin.
@@ -37,7 +37,7 @@ Let’s say you implemented a plugin that resolves the latest version of a depen
 .LatestArtifactVersion.java
 [source,java]
 ----
-include::{custom-task}/buildSrc/src/main/java/com/company/gradle/binaryrepo/LatestArtifactVersion.java[]
+include::{samplescodedir}/custom-task/buildSrc/src/main/java/com/company/gradle/binaryrepo/LatestArtifactVersion.java[]
 ----
 
 The end user of the task can now easily create multiple tasks of that type with different configuration. All the imperative, potentially complex logic is completely hidden in the custom task implementation.
@@ -45,7 +45,7 @@ The end user of the task can now easily create multiple tasks of that type with 
 .build.gradle
 [source,groovy]
 ----
-include::{custom-task}/build.gradle[]
+include::{samplescodedir}/custom-task/build.gradle[]
 ----
 
 === Benefiting from incremental tasks
@@ -59,7 +59,7 @@ Let’s consider the following sample task for illustration. The task generates 
 .Generate.java
 [source,java]
 ----
-include::{incremental-task}/buildSrc/src/main/java/Generate.java[]
+include::{samplescodedir}/incremental-task/buildSrc/src/main/java/Generate.java[]
 ----
 
 The first section of this guide talks about the <<plugin-development-plugin,Plugin Development plugin>>. As an added benefit of applying the plugin to your project, the task `validateTaskProperties` automatically checks for an existing input/output annotation for every public property define in a custom task type implementation.
@@ -85,7 +85,7 @@ As the number of exposed properties grows, you might want to introduce a nested,
 .build.gradle
 [source,groovy]
 ----
-include::{dsl-like-api}/build.gradle[]
+include::{samplescodedir}/dsl-like-api/build.gradle[]
 ----
 
 It's fairly easy to implement the backing objects of such an extension. First of all, you'll need to introduce a new data object for managing the properties `websiteUrl` and `vcsUrl`.
@@ -93,7 +93,7 @@ It's fairly easy to implement the backing objects of such an extension. First of
 .CustomData.java
 [source,java]
 ----
-include::{dsl-like-api}/buildSrc/src/main/java/CustomData.java[]
+include::{samplescodedir}/dsl-like-api/buildSrc/src/main/java/CustomData.java[]
 ----
 
 In the extension, you'll need to create an instance of the `CustomData` class and a method that can delegate the captured values to the data instance. To configure underlying data objects define a parameter of type {api-reference}org/gradle/api/Action.html[org.gradle.api.Action]. The following example demonstrates the use of `Action` in an extension definition.
@@ -101,7 +101,7 @@ In the extension, you'll need to create an instance of the `CustomData` class an
 .SiteExtension.java
 [source,java]
 ----
-include::{dsl-like-api}/buildSrc/src/main/java/SiteExtension.java[]
+include::{samplescodedir}/dsl-like-api/buildSrc/src/main/java/SiteExtension.java[]
 ----
 
 NOTE: If you need second- or third-level nesting, you will also have to add overloads that take a `Closure`, because Gradle cannot instrument nested extensions at the moment.
@@ -117,7 +117,7 @@ The following example applies a plugin that exposes an extension with the name `
 .build.gradle
 [source,groovy]
 ----
-include::{capture-user-input}/build.gradle[]
+include::{samplescodedir}/capture-user-input/build.gradle[]
 ----
 
 Let's assume that you'll also want to do something with the value of `serverUrl` once captured. In many cases the exposed extension property is directly mapped to a task property that actually uses the value when performing work. To avoid evaluation order problems you should use {user-manual}custom_plugins.html#mapExtensionPropertiesToTaskProperties[the public API `PropertyState`] which was introduced in Gradle 4.0.
@@ -127,7 +127,7 @@ Let's have a look at the internals of the plugin `BinaryRepositoryVersionPlugin`
 .BinaryRepositoryVersionPlugin.java
 [source,java]
 ----
-include::{capture-user-input}/buildSrc/src/main/java/BinaryRepositoryVersionPlugin.java[]
+include::{samplescodedir}/capture-user-input/buildSrc/src/main/java/BinaryRepositoryVersionPlugin.java[]
 ----
 
 Instead of using a plain `String` type, the extension defines the field `serverUrl` with type `PropertyState<String>`. The field is initialized in the constructor of the class. It's state can be set via the exposed setter methods.
@@ -135,7 +135,7 @@ Instead of using a plain `String` type, the extension defines the field `serverU
 .BinaryRepositoryExtension.java
 [source,java]
 ----
-include::{capture-user-input}/buildSrc/src/main/java/BinaryRepositoryExtension.java[]
+include::{samplescodedir}/capture-user-input/buildSrc/src/main/java/BinaryRepositoryExtension.java[]
 
 ----
 
@@ -144,7 +144,7 @@ The task property also defines the `serverUrl` with type `PropertyState`. It all
 .LatestArtifactVersion.java
 [source,java]
 ----
-include::{capture-user-input}/buildSrc/src/main/java/LatestArtifactVersion.java[]
+include::{samplescodedir}/capture-user-input/buildSrc/src/main/java/LatestArtifactVersion.java[]
 
 ----
 
@@ -157,7 +157,7 @@ Sometimes you might want to expose a way for users to define multiple, named dat
 .build.gradle
 [source,groovy]
 ----
-include::{named-domain-object-container}/build.gradle[]
+include::{samplescodedir}/named-domain-object-container/build.gradle[]
 ----
 
 The DSL exposed by the plugin exposes a _container_ for defining a set of environments. Each environment configured by the user has an arbitrary but declarative name and is represented with its own DSL configuration block. The example above instantiates a development, staging and production environment including its respective URL.
@@ -167,7 +167,7 @@ Obviously, each of these environments needs to have a data representation in cod
 .ServerEnvironment.java
 [source,java]
 ----
-include::{named-domain-object-container}/buildSrc/src/main/java/ServerEnvironment.java[]
+include::{samplescodedir}/named-domain-object-container/buildSrc/src/main/java/ServerEnvironment.java[]
 ----
 
 Gradle exposes the convenience method {api-reference}org/gradle/api/Project.html#container(java.lang.Class)[Project.html#container(java.lang.Class)] to create a container of data objects. The parameter the method takes is the class representing the data. The created instance of type {api-reference}org/gradle/api/NamedDomainObjectContainer.html[NamedDomainObjectContainer] can be exposed to the end user by adding it to the extension container with a specific name.
@@ -175,7 +175,7 @@ Gradle exposes the convenience method {api-reference}org/gradle/api/Project.html
 .ServerEnvironmentPlugin.java
 [source,java]
 ----
-include::{named-domain-object-container}/buildSrc/src/main/java/ServerEnvironmentPlugin.java[]
+include::{samplescodedir}/named-domain-object-container/buildSrc/src/main/java/ServerEnvironmentPlugin.java[]
 ----
 
 It's very common for a plugin to post-process the captured values within the plugin implementation e.g. to configure tasks. In the example above, a deployment task is created dynamically for every environment that was configured by the user.
@@ -187,7 +187,7 @@ Configuring the runtime behavior of existing plugins and tasks in a build is a c
 .InhouseConventionJavaPlugin.java
 [source,java]
 ----
-include::{apply-configure-plugin}/buildSrc/src/main/java/InhouseConventionJavaPlugin.java[]
+include::{samplescodedir}/apply-configure-plugin/buildSrc/src/main/java/InhouseConventionJavaPlugin.java[]
 ----
 
 The drawback to this approach is that it automatically forces the project to apply the Java plugin and therefore imposes a strong opinion on it. In practice, the project applying the plugin might not even deal with Java code. Instead of automatically applying the Java plugin the plugin could just react to the fact that the consuming project applies the Java plugin. Only if that is the case then certain configuration is applied.
@@ -195,7 +195,7 @@ The drawback to this approach is that it automatically forces the project to app
 .InhouseConventionJavaPlugin.java
 [source,java]
 ----
-include::{react-to-plugin}/buildSrc/src/main/java/InhouseConventionJavaPlugin.java[]
+include::{samplescodedir}/react-to-plugin/buildSrc/src/main/java/InhouseConventionJavaPlugin.java[]
 ----
 
 Reacting to plugins should be preferred over blindly applying other plugins if there is not a good reason for assuming that the consuming project has the expected setup. The same concept applies to task types.
@@ -203,7 +203,7 @@ Reacting to plugins should be preferred over blindly applying other plugins if t
 .InhouseConventionWarPlugin.java
 [source,java]
 ----
-include::{react-to-task}/buildSrc/src/main/java/InhouseConventionWarPlugin.java[]
+include::{samplescodedir}/react-to-task/buildSrc/src/main/java/InhouseConventionWarPlugin.java[]
 ----
 
 === Providing default dependencies for plugins
@@ -215,13 +215,13 @@ Let’s have a look at an example. You wrote a plugin that downloads files conta
 .DataProcessingPlugin.java
 [source,java]
 ----
-include::{default-dependency}/buildSrc/src/main/java/DataProcessingPlugin.java[]
+include::{samplescodedir}/default-dependency/buildSrc/src/main/java/DataProcessingPlugin.java[]
 ----
 
 .DataProcessing.java
 [source,java]
 ----
-include::{default-dependency}/buildSrc/src/main/java/DataProcessing.java[]
+include::{samplescodedir}/default-dependency/buildSrc/src/main/java/DataProcessing.java[]
 ----
 
 Now, this approach is very convenient for the end user as there’s no need to actively declare a dependency. The plugin already provides all the knowledge about this implementation detail. But what if the user would like to redefine the default dependency. No problem...the plugin also exposes the custom configuration that can be used to assign a different dependency. Effectively, the default dependency is overwritten.
@@ -229,7 +229,7 @@ Now, this approach is very convenient for the end user as there’s no need to a
 .build.gradle
 [source,groovy]
 ----
-include::{default-dependency}/build.gradle[]
+include::{samplescodedir}/default-dependency/build.gradle[]
 ----
 
 You will find that this pattern works well for tasks that require an external dependency when the action of the task is actually executed. The method is heavily used for custom tasks that execute an external Ant task like many of the {user-manual}standard_plugins.html#sec:software_development_plugins[Gradle core static analysis plugins] do e.g. the FindBugs and Checkstyle plugin. In fact those plugins even go further and abstract the version to be used for the external dependency by exposing an extension property (e.g. `toolVersion` {language-reference}org.gradle.testing.jacoco.plugins.JacocoPluginExtension.html#org.gradle.testing.jacoco.plugins.JacocoPluginExtension:toolVersion[in the JaCoCo plugin]).
