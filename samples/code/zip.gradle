@@ -1,0 +1,14 @@
+// tag::plugins[]
+plugins {
+    id 'base'
+}
+// end::plugins[]
+
+version = '1.0'
+
+// tag::zip[]
+task zip(type: Zip) {
+    from 'src'
+}
+// end::zip[]
+

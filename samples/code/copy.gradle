@@ -1,0 +1,4 @@
+task copy(type: Copy) {
+    from 'src'
+    into 'dest'
+}

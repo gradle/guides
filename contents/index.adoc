@@ -4,7 +4,7 @@ When encountering a project that uses Gradle for the first time, many developers
 
 == What you'll need
 
-* About +++<span class="time-to-complete-text"></span>+++
+* About [.time-to-complete-text]#NN#
 * A text editor or IDE
 * A Java Development Kit (JDK), version 1.7 or better (only necessary to run Gradle)
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
@@ -15,7 +15,7 @@ You can start a new project simply by creating a `build.gradle` file and adding 
 
 NOTE: Shell commands will shown for Unix-based systems. Windows has analogous commands for each.
 
-[listing]
+[listing.terminal]
 ----
 $ mkdir basic-demo
 $ cd basic-demo
@@ -31,38 +31,11 @@ By default, the name of the build file is called `build.gradle`. A `Project` inc
 
 To see what tasks are available even in this otherwise empty project, run the `tasks` command at the command prompt.
 
-[listing]
+[listing.terminal]
 ----
 $ gradle tasks
-:tasks
 
-------------------------------------------------------------
-All tasks runnable from root project
-------------------------------------------------------------
-
-Build Setup tasks
------------------
-init - Initializes a new Gradle build.
-wrapper - Generates Gradle wrapper files.
-
-Help tasks
-----------
-buildEnvironment - Displays all buildscript dependencies declared in root project 'basic-demo'.
-components - Displays the components produced by root project 'basic-demo'. [incubating]
-dependencies - Displays all dependencies declared in root project 'basic-demo'.
-dependencyInsight - Displays the insight into a specific dependency in root project 'basic-demo'.
-dependentComponents - Displays the dependent components of components in root project 'basic-demo'. [incubating]
-help - Displays a help message.
-model - Displays the configuration model of root project 'basic-demo'. [incubating]
-projects - Displays the sub-projects of root project 'basic-demo'.
-properties - Displays the properties of root project 'basic-demo'.
-tasks - Displays the tasks runnable from root project 'basic-demo'.
-
-To see all tasks and more detail, run gradle tasks --all
-
-To see more detail about a task, run gradle help --task <task>
-
-BUILD SUCCESSFUL
+include::{samplesoutputdir}/gradle-tasks.txt[]
 ----
 
 As the output shows, Gradle tasks are organized into categories, like `Build Setup` or `Help`, and each has a name and an optional description. You can define your own (known as _ad hoc_) tasks, configure tasks provided by the Gradle library, or use tasks that are added by plugins.
@@ -75,40 +48,16 @@ TIP: While Gradle versions are very good about supporting backward compatibility
 
 Details about the `wrapper` task can be seen through the `help` task.
 
-[listing]
+[listing.terminal]
 ----
 $ gradle help --task wrapper
-:help
-Detailed task information for wrapper
 
-Path
-     :wrapper
-
-Type
-     Wrapper (org.gradle.api.tasks.wrapper.Wrapper)
-
-Options
-     --distribution-type     The type of the Gradle distribution to be used by the wrapper.
-                             Available values are:
-                                  ALL
-                                  BIN
-
-     --gradle-distribution-url     The URL to download the Gradle distribution from.
-
-     --gradle-version     The version of the Gradle distribution required by the wrapper.
-
-Description
-     Generates Gradle wrapper files.
-
-Group
-     Build Setup
-
-BUILD SUCCESSFUL
+include::{samplesoutputdir}/gradle-help-wrapper.txt[]
 ----
 
 By default, the `wrapper` task will generate a wrapper that uses the binary distribution of the same version as the Gradle command. Generate that wrapper now.
 
-[listing]
+[listing.terminal]
 ----
 $ gradle wrapper
 :wrapper
@@ -171,20 +120,19 @@ You can change many of the properties. Add the following lines to your `build.gr
 
 [source,groovy]
 ----
-description = 'A trivial Gradle build'
-version = '1.0'
+include::{samplescodedir}/gradle-properties.gradle[]
 ----
 
 Now run the `properties` task again and see the updated values of the `description` and `version` fields.
 
-[listing]
+[listing.terminal]
 ----
 $ ./gradlew properties
 :properties
 ...
-description: A trivial Gradle build
+include::{samplesoutputdir}/description.txt[]
 ...
-version: 1.0
+include::{samplesoutputdir}/version.txt[]
 ....
 ----
 
@@ -195,26 +143,21 @@ Gradle comes with a library of tasks that you can configure in your own projects
 . Create a directory called `src`.
 . Add a file called `myfile.txt` in the `src` directory. The contents are arbitrary (it can even be empty), but for convenience add the single line `Hello, World!` to it.
 . Define a task called `copy` of type `Copy` (note the capital letter) that copies the `src` directory to a new directory called `dest`. (You don't have to create the `dest` directory -- the task will do it for you.) The syntax is:
-+
+
 [source,groovy]
 ----
-task copy(type: Copy) {
-    from 'src'
-    into 'dest'
-}
+include::{samplescodedir}/copy.gradle[]
 ----
-+
 
 Now you can run the `tasks` command with the `--all` flag to see the new task:
 
-[listing]
+[listing.terminal]
 ----
 $ ./gradlew tasks --all
+
 :tasks
 ...
-Other tasks
------------
-copy
+include::{samplesoutputdir}/gradle-copy-tasks.txt[]
 ----
 
 Execute the `copy` task:
@@ -222,9 +165,8 @@ Execute the `copy` task:
 [listing]
 ----
 $ ./gradlew copy
-:copy
 
-BUILD SUCCESSFUL
+include::{samplesoutputdir}/gradle-copy.txt[]
 ----
 
 Verify that it worked as expected by checking that there is now a file called `myfile.txt` in the `dest` directory, and that its contents match the contents of the same one in the `src` directory.
@@ -237,9 +179,7 @@ Add the `base` plugin to your `build.gradle` file using the `plugins` syntax. Be
 
 [source,groovy]
 ----
-plugins {
-    id 'base'
-}
+include::{samplescodedir}/zip.gradle[tags=plugins]
 
 ... rest of the build file ...
 ----
@@ -248,21 +188,18 @@ Now add a task that creates a zip archive from the `src` directory.
 
 [source,groovy]
 ----
-task zip(type: Zip) {
-    from 'src'
-}
+include::{samplescodedir}/zip.gradle[tags=zip]
 ----
 
-The `base` plugin works with the settings to create an archive file called `basic-demo-1.0.zip` in the `libraries` folder under `build\distributions`.
+The `base` plugin works with the settings to create an archive file called `basic-demo-1.0.zip` in the `build/distributions` folder.
 
 In this case, simply run the new `zip` task and see that the generated zip file is where you expect.
 
 [listing]
 ----
 $ ./gradlew zip
-zip:
 
-BUILD SUCCESSFUL
+include::{samplesoutputdir}/gradle-zip.txt[]
 ----
 
 Run the `tasks` command again to see the tasks added by the `basic` plugin.
@@ -272,18 +209,11 @@ Run the `tasks` command again to see the tasks added by the `basic` plugin.
 $ ./gradlew tasks --all
 tasks:
 
-Build tasks
------------
-assemble - Assembles the outputs of this project.
-build - Assembles and tests this project.
-clean - Deletes the build directory.
+include::{samplesoutputdir}/gradle-zip-tasks-1.txt[]
 
 ...
 
-Other tasks
------------
-copy
-zip
+include::{samplesoutputdir}/gradle-zip-tasks-2.txt[]
 ----
 
 The `assemble` and `build` tasks aren't useful in this project, because they are associated with compilation and generation of a release artifact. Many of the language plugins, like the `java` plugin, are created on top the `base` plugin.
