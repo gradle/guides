@@ -1,7 +1,7 @@
 import org.apache.tools.ant.filters.ConcatFilter
 
 plugins {
-    id 'org.gradle.guides.getting-started' version '0.5.5'
+    id 'org.gradle.guides.getting-started' version '0.6.6'
 }
 
 guide {
