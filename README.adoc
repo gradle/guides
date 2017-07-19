@@ -74,7 +74,23 @@ repo-path: gradle-guides/creating-multi-project-builds
 
 == Test JVM Code plugin
 
-Adds `groovy` plugin, as well Spock Framework so that JVM code snippets can be tested.
+* Adds `groovy` plugin, as well Spock Framework so that JVM code snippets can be tested.
+* Adds `samples` convention.
+
+=== Samples convention
+
+Samples code can be placed in `src/samples/code` and expected output in `src/samples/output` i.e.
+
+```
+.
+└── samples
+    ├── code
+    └── output
+```
+
+These files can be accessed from test code via system property `samplesDir`.
+
+They can also be accessed from Asciidoc documents via the `{samplescodedir}` and `{samplesoutputdir}` attributes.
 
 == Getting Started plugin
 
