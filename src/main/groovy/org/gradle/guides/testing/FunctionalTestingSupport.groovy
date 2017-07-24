@@ -1,99 +1,98 @@
 package org.gradle.guides.testing
 
+import groovy.transform.CompileStatic
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.After
 import org.junit.Before
-import org.junit.rules.TemporaryFolder
 
 /**
  * Provides functional testing support with GradleRunner.
  */
-trait FunctionalTestingSupport {
+@CompileStatic
+trait FunctionalTestingSupport implements FunctionalTestFixture {
 
-    final TemporaryFolder temporaryFolder = new TemporaryFolder()
-    GradleRunner gradleRunner
+    private final FunctionalTestFixture delegate = new DefaultFunctionalTestFixture()
 
+    /**
+     * {@inheritDoc}
+     */
     @Before
-    def setupTestingSupport() {
-        temporaryFolder.create()
-        gradleRunner = GradleRunner.create().withProjectDir(temporaryFolder.root)
+    @Override
+    void initialize() {
+        delegate.initialize()
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @After
-    def cleanupTestingSupport() {
-        temporaryFolder.delete()
+    @Override
+    void tearDown() {
+        delegate.tearDown()
     }
 
     /**
-     * Executes build for provided arguments and expects it finish successfully.
-     *
-     * @param arguments Arguments
-     * @return Build result
+     * {@inheritDoc}
      */
+    @Override
+    GradleRunner getGradleRunner() {
+        delegate.gradleRunner
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     BuildResult succeeds(String... arguments) {
-        withArguments(arguments).build()
+        delegate.succeeds(arguments)
     }
 
     /**
-     * Executes build for provided arguments and expects it fail.
-     *
-     * @param arguments Arguments
-     * @return Build result
+     * {@inheritDoc}
      */
+    @Override
     BuildResult fails(String... arguments) {
-        withArguments(arguments).buildAndFail()
-    }
-
-    private GradleRunner withArguments(String... arguments) {
-        gradleRunner.withArguments(arguments)
-        gradleRunner
+        delegate.fails(arguments)
     }
 
     /**
-     * Returns the root directory for a test.
-     *
-     * @return Root test directory
+     * {@inheritDoc}
      */
+    @Override
     File getTestDirectory() {
-        temporaryFolder.root
+        delegate.testDirectory
     }
 
     /**
-     * Creates build file if it doesn't exist yet and returns it.
-     *
-     * @return The build file
+     * {@inheritDoc}
      */
-    File getBuildFile() {
-        temporaryFolder.newFile('build.gradle')
-    }
-
-    /**
-     * Creates settings file if it doesn't exist yet and returns it.
-     *
-     * @return The build file
-     */
-    File getSettingsFile() {
-        temporaryFolder.newFile('settings.gradle')
-    }
-
-    /**
-     * Create a new file with the given path.
-     *
-     * @param path Path
-     * @return The created file
-     */
+    @Override
     File file(String path) {
-        temporaryFolder.newFile(path)
+        delegate.file(path)
     }
 
     /**
-     * Create a new directory with the given path.
-     *
-     * @param path Path
-     * @return The created directory
+     * {@inheritDoc}
      */
+    @Override
     File dir(String... path) {
-        temporaryFolder.newFolder(path)
+        delegate.dir(path)
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    File getBuildFile() {
+        delegate.buildFile
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    File getSettingsFile() {
+        delegate.settingsFile
     }
 }
