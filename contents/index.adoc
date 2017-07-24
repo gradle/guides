@@ -275,3 +275,6 @@ Gradle is a very powerful tool, which means you need a good understanding of the
 * *Tasks*: {user-manual}more_about_tasks.html[Tasks]
 * *File handling*: {user-manual}working_with_files.html[File handling]
 * *Dependency management*: {user-manual}artifact_dependencies_tutorial.html[Dependency management]
+
+
+include::contribute[]
