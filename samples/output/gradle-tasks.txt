@@ -1,0 +1,27 @@
+:tasks
+
+------------------------------------------------------------
+All tasks runnable from root project
+------------------------------------------------------------
+
+Build Setup tasks
+-----------------
+init - Initializes a new Gradle build.
+wrapper - Generates Gradle wrapper files.
+
+Help tasks
+----------
+buildEnvironment - Displays all buildscript dependencies declared in root project 'basic-demo'.
+components - Displays the components produced by root project 'basic-demo'. [incubating]
+dependencies - Displays all dependencies declared in root project 'basic-demo'.
+dependencyInsight - Displays the insight into a specific dependency in root project 'basic-demo'.
+dependentComponents - Displays the dependent components of components in root project 'basic-demo'. [incubating]
+help - Displays a help message.
+model - Displays the configuration model of root project 'basic-demo'. [incubating]
+projects - Displays the sub-projects of root project 'basic-demo'.
+properties - Displays the properties of root project 'basic-demo'.
+tasks - Displays the tasks runnable from root project 'basic-demo'.
+
+To see all tasks and more detail, run gradle tasks --all
+
+To see more detail about a task, run gradle help --task <task>
