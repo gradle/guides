@@ -3,6 +3,10 @@ package org.gradle.guides.testing
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 
+import static org.gradle.guides.testing.fixtures.HelloWorldProjectFixture.failingHelloWorldTask
+import static org.gradle.guides.testing.fixtures.HelloWorldProjectFixture.successfulHelloWorldTask
+import static org.gradle.guides.testing.fixtures.JavaProjectFixture.basicTestableJavaProject
+import static org.gradle.guides.testing.fixtures.JavaProjectFixture.simpleJavaClass
 import static org.gradle.testkit.runner.TaskOutcome.FAILED
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
@@ -28,13 +32,7 @@ class SamplesFunctionalTest extends AbstractSamplesFunctionalTest {
 
     def "can execute build and expect successful result"() {
         given:
-        samplesBuildFile << """
-task helloWorld {
-    doLast {
-        println 'Hello World!'
-    }
-}
-"""
+        samplesBuildFile << successfulHelloWorldTask()
         copySampleCode(SAMPLE_CODE_PROJECT_DIR_NAME)
 
         when:
@@ -47,13 +45,7 @@ task helloWorld {
 
     def "can execute build and expect failed result"() {
         setup:
-        samplesBuildFile << """
-task helloWorld {
-    doLast {
-        throw new GradleException('expected failure')
-    }
-}
-"""
+        samplesBuildFile << failingHelloWorldTask()
         copySampleCode(SAMPLE_CODE_PROJECT_DIR_NAME)
 
         when:
@@ -66,24 +58,10 @@ task helloWorld {
 
     def "can copy sample directory recursively"() {
         setup:
-        samplesBuildFile << """
-apply plugin: 'java'
-
-repositories {
-    jcenter()
-}
-
-dependencies {
-    testCompile 'junit:junit:4.12'
-}
-"""
+        samplesBuildFile << basicTestableJavaProject()
         File javaSrcDir = new File(samplesCodeDir, 'src/main/java/com/company')
         javaSrcDir.mkdirs()
-        new File(javaSrcDir, 'MyClass.java') << """
-package com.company;
-
-public class MyClass {}
-"""
+        new File(javaSrcDir, 'MyClass.java') << simpleJavaClass()
         copySampleCode(SAMPLE_CODE_PROJECT_DIR_NAME)
 
         when:

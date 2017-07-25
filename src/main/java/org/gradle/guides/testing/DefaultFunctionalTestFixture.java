@@ -104,6 +104,17 @@ public class DefaultFunctionalTestFixture implements FunctionalTestFixture {
     }
 
     private File createNewFile(String fileName) {
+        File targetFile = new File(temporaryFolder.getRoot(), fileName);
+        File parentDir = new File(temporaryFolder.getRoot(), fileName).getParentFile();
+
+        if (!parentDir.exists() && !parentDir.mkdirs()) {
+            throw new RuntimeException(String.format("Unable to create directory '%s' in temporary directory", parentDir));
+        }
+
+        if (targetFile.isFile()) {
+            return targetFile;
+        }
+
         try {
             return temporaryFolder.newFile(fileName);
         } catch (IOException e) {
@@ -112,6 +123,12 @@ public class DefaultFunctionalTestFixture implements FunctionalTestFixture {
     }
 
     private File createNewFolder(String... folderNames) {
+        File targetDir = new File(temporaryFolder.getRoot(), join(folderNames, "/"));
+
+        if (targetDir.isDirectory()) {
+            return targetDir;
+        }
+
         try {
             return temporaryFolder.newFolder(folderNames);
         } catch (IOException e) {
