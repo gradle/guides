@@ -23,6 +23,8 @@ class DefaultFunctionalTestFixtureTest extends Specification {
         expect:
         fixture.gradleRunner
         fixture.testDirectory.isDirectory()
+        !new File(fixture.testDirectory, 'build.gradle').exists()
+        !new File(fixture.testDirectory, 'settings.gradle').exists()
     }
 
     def "can create and append to build file"() {
