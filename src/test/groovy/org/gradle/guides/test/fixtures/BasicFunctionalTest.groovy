@@ -1,7 +1,7 @@
-package org.gradle.guides.testing
+package org.gradle.guides.test.fixtures
 
-import static org.gradle.guides.testing.fixtures.JavaProjectFixture.basicTestableJavaProject
-import static org.gradle.guides.testing.fixtures.JavaProjectFixture.simpleJavaClass
+import static org.gradle.guides.test.fixtures.JavaProjectFixture.basicTestableJavaProject
+import static org.gradle.guides.test.fixtures.JavaProjectFixture.simpleJavaClass
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 class BasicFunctionalTest extends AbstractFunctionalTest {

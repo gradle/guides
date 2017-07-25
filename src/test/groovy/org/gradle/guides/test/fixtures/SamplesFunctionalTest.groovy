@@ -1,12 +1,12 @@
-package org.gradle.guides.testing
+package org.gradle.guides.test.fixtures
 
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 
-import static org.gradle.guides.testing.fixtures.HelloWorldProjectFixture.failingHelloWorldTask
-import static org.gradle.guides.testing.fixtures.HelloWorldProjectFixture.successfulHelloWorldTask
-import static org.gradle.guides.testing.fixtures.JavaProjectFixture.basicTestableJavaProject
-import static org.gradle.guides.testing.fixtures.JavaProjectFixture.simpleJavaClass
+import static org.gradle.guides.test.fixtures.HelloWorldProjectFixture.failingHelloWorldTask
+import static org.gradle.guides.test.fixtures.HelloWorldProjectFixture.successfulHelloWorldTask
+import static org.gradle.guides.test.fixtures.JavaProjectFixture.basicTestableJavaProject
+import static org.gradle.guides.test.fixtures.JavaProjectFixture.simpleJavaClass
 import static org.gradle.testkit.runner.TaskOutcome.FAILED
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 

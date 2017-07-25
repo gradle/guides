@@ -1,7 +1,7 @@
-package org.gradle.guides.testing
+package org.gradle.guides.test.fixtures
 
 import groovy.transform.CompileStatic
-import org.gradle.guides.testing.utils.CopyDirVisitor
+import org.gradle.guides.test.fixtures.utils.CopyDirVisitor
 
 import java.nio.file.Files
 import java.nio.file.Path

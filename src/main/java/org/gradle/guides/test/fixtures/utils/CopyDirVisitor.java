@@ -1,4 +1,4 @@
-package org.gradle.guides.testing.utils;
+package org.gradle.guides.test.fixtures.utils;
 
 import java.io.IOException;
 import java.nio.file.*;

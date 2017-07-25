@@ -1,4 +1,4 @@
-package org.gradle.guides.testing;
+package org.gradle.guides.test.fixtures;
 
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;

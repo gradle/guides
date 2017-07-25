@@ -1,4 +1,4 @@
-package org.gradle.guides.testing.fixtures
+package org.gradle.guides.test.fixtures
 
 final class JavaProjectFixture {
 
