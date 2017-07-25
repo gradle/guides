@@ -1,7 +1,11 @@
 package org.gradle.guides.testing
 
 import groovy.transform.CompileStatic
-import org.apache.commons.io.FileUtils
+import org.gradle.guides.testing.utils.CopyDirVisitor
+
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 
 @CompileStatic
 class AbstractSamplesFunctionalTest extends AbstractFunctionalTest {
@@ -11,6 +15,8 @@ class AbstractSamplesFunctionalTest extends AbstractFunctionalTest {
     }
 
     private void copySampleDirRecursively(String path) {
-        FileUtils.copyDirectory(new File(System.getProperty('samplesDir'), path), testDirectory)
+        Path sourceDir = Paths.get(new File(System.getProperty('samplesDir'), path).toURI())
+        Path targetDir = Paths.get(testDirectory.toURI())
+        Files.walkFileTree(sourceDir, new CopyDirVisitor(sourceDir, targetDir))
     }
 }

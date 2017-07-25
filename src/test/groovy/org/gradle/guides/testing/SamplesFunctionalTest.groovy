@@ -1,15 +1,25 @@
 package org.gradle.guides.testing
 
+import org.junit.Rule
+import org.junit.rules.TemporaryFolder
+
 import static org.gradle.testkit.runner.TaskOutcome.FAILED
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 class SamplesFunctionalTest extends AbstractSamplesFunctionalTest {
 
-    File samplesDir
+    private static final String SAMPLE_CODE_PROJECT_DIR_NAME = 'use-case'
+
+    @Rule
+    final TemporaryFolder samplesDirFolder = new TemporaryFolder()
+
+    private File samplesCodeDir
+    private File samplesBuildFile
 
     def setup() {
-        samplesDir = dir('samples', 'code')
-        System.properties['samplesDir'] = samplesDir.absolutePath
+        samplesCodeDir = samplesDirFolder.newFolder('code', SAMPLE_CODE_PROJECT_DIR_NAME)
+        samplesBuildFile = new File(samplesCodeDir, 'build.gradle')
+        System.properties['samplesDir'] = samplesDirFolder.root.absolutePath
     }
 
     def cleanup() {
@@ -17,15 +27,15 @@ class SamplesFunctionalTest extends AbstractSamplesFunctionalTest {
     }
 
     def "can execute build and expect successful result"() {
-        setup:
-        String helloWorldBuildFile = """
+        given:
+        samplesBuildFile << """
 task helloWorld {
     doLast {
         println 'Hello World!'
     }
 }
 """
-        createAndCopyHelloWorldSampleProject(helloWorldBuildFile)
+        copySampleCode(SAMPLE_CODE_PROJECT_DIR_NAME)
 
         when:
         def result = succeeds('helloWorld')
@@ -37,14 +47,14 @@ task helloWorld {
 
     def "can execute build and expect failed result"() {
         setup:
-        String helloWorldBuildFile = """
+        samplesBuildFile << """
 task helloWorld {
     doLast {
         throw new GradleException('expected failure')
     }
 }
 """
-        createAndCopyHelloWorldSampleProject(helloWorldBuildFile)
+        copySampleCode(SAMPLE_CODE_PROJECT_DIR_NAME)
 
         when:
         def result = fails('helloWorld')
@@ -54,18 +64,33 @@ task helloWorld {
         result.output.contains('expected failure')
     }
 
-    private void createAndCopyHelloWorldSampleProject(String buildFileContent) {
-        new File(createSampleDir('code/helloWorld'), 'build.gradle') << buildFileContent
-        copySampleCode('helloWorld')
-    }
+    def "can copy sample directory recursively"() {
+        setup:
+        samplesBuildFile << """
+apply plugin: 'java'
 
-    private File createSampleDir(String path) {
-        File sampleDir = new File(samplesDir, path)
+repositories {
+    jcenter()
+}
 
-        if (!sampleDir.mkdirs()) {
-            throw new IOException("Unable to create directory $sampleDir")
-        }
+dependencies {
+    testCompile 'junit:junit:4.12'
+}
+"""
+        File javaSrcDir = new File(samplesCodeDir, 'src/main/java/com/company')
+        javaSrcDir.mkdirs()
+        new File(javaSrcDir, 'MyClass.java') << """
+package com.company;
 
-        sampleDir
+public class MyClass {}
+"""
+        copySampleCode(SAMPLE_CODE_PROJECT_DIR_NAME)
+
+        when:
+        def result = succeeds('compileJava')
+
+        then:
+        result.task(':compileJava').outcome == SUCCESS
+        new File(testDirectory, 'build/classes/java/main/com/company/MyClass.class').exists()
     }
 }
