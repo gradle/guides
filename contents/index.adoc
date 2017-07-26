@@ -48,6 +48,11 @@ projects can be seen in the following illustration:
 [caption="Figure 1: "]
 image::project-graph.png[Project Graph]
 
+If the `api` and `implementation` configurations are new to you, read more
+about the
+[Java Library Plugin](https://docs.gradle.org/current/userguide/java_library_plugin.html)
+added in Gradle 3.5.
+
 You can clone the project and run the original program to see its output:
 
 [listing]
