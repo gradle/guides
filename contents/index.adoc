@@ -259,7 +259,7 @@ include::{singledir}/actors/build.gradle[tags=compileJava]
 ----
 <1> Defines a variable for the module name, which allows you to
 reuse the same code later for other modules without having to change it.
-<2> Clears the `classpath` property
+<2> Clears the `classpath` property by creating an empty file collection
 
 When compiling a Java 9 module, you want to use `--module-path` instead of
 `--classpath` to read your dependencies. So in the `doFirst` block, you are
