@@ -63,4 +63,38 @@ class MyTest extends Specification {
         then:
         noExceptionThrown()
     }
+
+    def "can use samples functional test fixtures"() {
+        def testDir = temporaryFolder.newFolder('src', 'test', 'groovy')
+        new File(testDir, 'MyTest.groovy') << """
+            import org.gradle.guides.test.fixtures.AbstractSamplesFunctionalTest
+            
+            class MyTest extends AbstractSamplesFunctionalTest {
+                def "can execute hello world sample"() {
+                    given:
+                    copySampleCode('hello-world')
+                
+                    when:
+                    def result = succeeds('helloWorld')
+                
+                    then:
+                    result.output.contains('Hello world')
+                }
+            }
+        """
+        def samplesCodeDir = temporaryFolder.newFolder('samples', 'code', 'hello-world')
+        new File(samplesCodeDir, 'build.gradle') << """
+            task helloWorld {
+                doLast {
+                    println 'Hello world'
+                }
+            }
+        """
+
+        when:
+        build('test')
+
+        then:
+        noExceptionThrown()
+    }
 }

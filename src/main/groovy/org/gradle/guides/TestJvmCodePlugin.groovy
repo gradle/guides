@@ -17,10 +17,13 @@
 package org.gradle.guides
 
 import groovy.transform.CompileStatic
+import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ModuleDependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
+import org.gradle.api.artifacts.dsl.RepositoryHandler
+import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.api.plugins.GroovyPlugin
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPluginConvention
@@ -37,6 +40,7 @@ import static org.gradle.api.plugins.JavaPlugin.TEST_COMPILE_CONFIGURATION_NAME
  *     <li>Gradle TestKit</li>
  *     <li>Spock core 1.0</li>
  *     <li>Apache Commons IO 2.5</li>
+ *     <li>Guides test fixtures</li>
  * </ul>
  * <p>
  * Passes the system property {@literal "samplesDir"} with the value {@literal "$projectDir/samples"} to {@code "test"} task.
@@ -53,6 +57,7 @@ class TestJvmCodePlugin implements Plugin<Project> {
         project.plugins.apply(BasePlugin)
 
         setJDKVersion(project)
+        addRepositories(project)
         addDependencies(project)
         configureSamplesConventions(project)
     }
@@ -61,6 +66,16 @@ class TestJvmCodePlugin implements Plugin<Project> {
         JavaPluginConvention javaConvention = project.convention.getPlugin(JavaPluginConvention)
         javaConvention.sourceCompatibility = 1.7
         javaConvention.targetCompatibility = 1.7
+    }
+
+    private void addRepositories(Project project) {
+        RepositoryHandler repositoryHandler = project.repositories
+        repositoryHandler.maven(new Action<MavenArtifactRepository>() {
+            @Override
+            void execute(MavenArtifactRepository mavenArtifactRepository) {
+                mavenArtifactRepository.setUrl('https://repo.gradle.org/gradle/libs-releases-local')
+            }
+        })
     }
 
     private void addDependencies(Project project) {
@@ -72,6 +87,8 @@ class TestJvmCodePlugin implements Plugin<Project> {
         ModuleDependency spockDependency = (ModuleDependency)dependencies.add(TEST_COMPILE_CONFIGURATION_NAME, "org.spockframework:spock-core:1.0-groovy-${spockGroovyVer}")
         spockDependency.exclude(module : 'groovy-all')
         dependencies.add(TEST_COMPILE_CONFIGURATION_NAME, 'commons-io:commons-io:2.5')
+        ModuleDependency testFixturesDependency = (ModuleDependency)dependencies.add(TEST_COMPILE_CONFIGURATION_NAME, 'org.gradle.guides:test-fixtures:0.1')
+        testFixturesDependency.exclude(module : 'spock-core')
     }
 
     private void configureSamplesConventions(Project project) {
