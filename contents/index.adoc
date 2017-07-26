@@ -149,7 +149,9 @@ The four tests in this class serve different purposes:
    subproject using classes exposed as part of the `actors` project's public
    api. This test should always pass.
 2. `canDynamicallyReachDefaultActor` - Attempts to use reflection at runtime
-   to load a class which is private to the `actors` subproject. This was possible before Java 9 because the classpath leaks the implementation details of all parts of the application to all other parts of the application.
+   to load a class which is private to the `actors` subproject. This was
+   possible before Java 9 because the classpath leaks the implementation details
+   of all parts of the application to all other parts of the application.
 3. `canReachDefaultActor` - Attempts to use a class which is private to the
    `actors` subproject directly. This will work before Java 9 because the
    private implementation details of the `actors` subproject are built in the
@@ -194,9 +196,9 @@ This guide assumes that you already have familiarity with the following concepts
 
 One nice feature of the module system in Java 9, is that you can convert all
 of the libraries of your project to Java 9 modules in a bottom-up fashion.
-Since Java 9 modules can be consumed equally well from the classpath or the
+Since Java 9 module jars can be consumed equally well from the classpath or the
 module path, we can convert a single leaf-node in our multi-project build to
-produce a Java 9 module, but use that module on the classpath when
+produce a Java 9 module, but use that module jar on the classpath when
 compiling or running projects which consume the outputs of that node.
 
 When converting a `java-library` project to produce a Java 9 module, there are
@@ -267,7 +269,8 @@ clearing out the `classpath` property of the task and adding a compiler
 argument.
 
 * `--module-path` is set to the value that would have been the `classpath`. This
-  makes sense because the classpath already has any jars or class output directories of libraries you depend on.
+  makes sense because the classpath already has any jars or class output
+  directories of libraries on which you depend.
 
 NOTE: The reason you modify `options.compilerArgs` inside the `doFirst` block
 instead of in the configuration block of the `compileJava` task is because you
@@ -276,7 +279,11 @@ only want resolve the `compileClasspath` configuration when executing that task.
 === Modify the `compileTestJava` task to locally alter the module
 
 One slightly confusing aspect of the Java 9 module system is how to run unit
-tests for code inside a Java 9 module. The recommended way is to "patch" the module during testing. Patching a module means adding extra classes to the packages which make up the module. In the case of patching a module for running tests, you are adding the test classes to the module, using the same package so that the test classes have access to everything else in the module under test.
+tests for code inside a Java 9 module. The recommended way is to "patch" the
+module during testing. Patching a module means adding extra classes to the
+packages which make up the module. In the case of patching a module for running
+tests, you are adding the test classes to the module, using the same package so
+that the test classes have access to everything else in the module under test.
 
 Adding the following to your `build.gradle` accomplishes this compile-time
 patching of the `org.gradle.actors` module.
@@ -422,7 +429,8 @@ include::{alldir}/bears/src/main/java/module-info.java[]
 ----
 
 WARNING: You also have to add these `module-info.java` files for the `pigs`,
-`formula`, `fairy`, and `tale` subprojects. The end results should look like the code in `src/2-all-modules`.
+`formula`, `fairy`, and `tale` subprojects. The end results should look like
+the code in `src/2-all-modules`.
 
 Now Gradle's `test` task will fail to compile, unless you've
 commented out the `canReachDefaultActor` test. Also, the
@@ -453,7 +461,9 @@ Run with --stacktrace option to get the stack trace. Run with --info or --debug 
 BUILD FAILED
 ----
 
-If you do comment out `canReachDefaultActor` and add the `@Ignore` annotation to `canDynamicallyReachDefaultActor`, the remaining tests should pass, and you'll have exactly the code in `src/2-all-modules`
+If you do comment out `canReachDefaultActor` and add the `@Ignore` annotation to
+ `canDynamicallyReachDefaultActor`, the remaining tests should pass, and you'll
+ have exactly the code in `src/2-all-modules`
 
 === Step 2 - Summary
 
@@ -607,7 +617,8 @@ that declare `provides org.gradle.fairy.tale.Tale`.
 == Step 4 - Use the `experimental-jigsaw` plugin to do the same thing
 
 While Gradle does not yet support building Java 9 modules as a first-class
-feature of the Java plugins, an experimental plugin is available to allow you to experiment with Java 9 modules on your projects.
+feature of the Java plugins, an experimental plugin is available to allow you to
+experiment with Java 9 modules on your projects.
 
 The `org.gradle.java.experimental-jigsaw` plugin is simply a convenient
 mechanism for applying all of the changes in steps 1 through 3 of this guide
