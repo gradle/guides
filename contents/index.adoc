@@ -283,7 +283,7 @@ include::{singledir}/actors/build.gradle[tags=compileTestJava]
 ----
 <1> This is the default value for the `classpath` property used as the
 `--module-path`.
-<2> Explicitly adds the automatic `junit` module to the observable universe of
+<2> Explicitly adds the automatic `junit` module to the set of observable
 modules.
 <3> Declares that `org.gradle.actors` reads the `junit` module.
 <4> Adds the test source files to the `org.gradle.actors` module.
