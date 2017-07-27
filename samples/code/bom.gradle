@@ -1,0 +1,11 @@
+// tag::bom[]
+plugins {
+    id 'nebula.dependency-recommender' version '4.5.0'
+    id 'java'
+}
+
+dependencies {
+    nebulaRecommenderBom 'netflix:platform:latest.release@pom'
+    implementation 'com.google.guava:guava'
+}
+// end::bom[]
