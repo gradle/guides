@@ -147,6 +147,13 @@ class DefaultFunctionalTestFixtureTest extends Specification {
         then:
         result.task(':helloWorld').outcome == FAILED
         result.output.contains('expected failure')
+
+        when:
+        result = fixture.fails(['helloWorld'])
+
+        then:
+        result.task(':helloWorld').outcome == FAILED
+        result.output.contains('expected failure')
     }
 
     def "can configure GradleRunner instance"() {
@@ -157,6 +164,14 @@ class DefaultFunctionalTestFixtureTest extends Specification {
         when:
         fixture.gradleRunner.forwardStdOutput(output)
         def result = fixture.succeeds('helloWorld')
+
+        then:
+        result.task(':helloWorld').outcome == SUCCESS
+        output.toString().contains('Hello World!')
+
+        when:
+        fixture.gradleRunner.forwardStdOutput(output)
+        result = fixture.succeeds(['helloWorld'])
 
         then:
         result.task(':helloWorld').outcome == SUCCESS
