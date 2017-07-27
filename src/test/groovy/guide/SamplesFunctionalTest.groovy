@@ -1,23 +1,15 @@
-import org.apache.commons.io.FileUtils
-import org.gradle.testkit.runner.BuildResult
-import org.gradle.testkit.runner.GradleRunner
-import org.junit.Rule
-import org.junit.rules.TemporaryFolder
-import spock.lang.Specification
 import spock.lang.Unroll
 
-class SamplesFunctionalTest extends Specification {
-    private static final File SAMPLES_DIR = new File(System.getProperty('samplesDir'))
+import org.gradle.guides.test.fixtures.AbstractSamplesFunctionalTest
 
-    @Rule
-    TemporaryFolder temporaryFolder = new TemporaryFolder()
-    
+class SamplesFunctionalTest extends AbstractSamplesFunctionalTest {
+
     def "can execute plugin dev plugin sample"() {
         given:
-        copySample('plugin-dev-plugin')
+        copySampleCode('plugin-dev-plugin')
         
         when:
-        build('classes')
+        succeeds('classes')
         
         then:
         noExceptionThrown()
@@ -25,10 +17,10 @@ class SamplesFunctionalTest extends Specification {
     
     def "can execute custom task sample"() {
         given:
-        copySample('custom-task')
+        copySampleCode('custom-task')
         
         when:
-        def result = build('latestVersionMavenCentral', 'latestVersionInhouseRepo')
+        def result = succeeds('latestVersionMavenCentral', 'latestVersionInhouseRepo')
         
         then:
         result.output.contains("Retrieving artifact commons-lang:commons-lang:1.5 from http://repo1.maven.org/maven2/")
@@ -37,23 +29,23 @@ class SamplesFunctionalTest extends Specification {
     
     def "can execute incremental task sample"() {
         given:
-        copySample('incremental-task')
+        copySampleCode('incremental-task')
         
         when:
-        build('generate')
+        succeeds('generate')
         
         then:
-        def outputDir = new File(temporaryFolder.root, 'build/generated-output')
+        def outputDir = new File(testDirectory, 'build/generated-output')
         new File(outputDir, '1.txt').text == 'Hello World!'
         new File(outputDir, '2.txt').text == 'Hello World!'
     }
     
     def "can execute DSL-like API sample"() {
         given:
-        copySample('dsl-like-api')
+        copySampleCode('dsl-like-api')
         
         when:
-        build('tasks')
+        succeeds('tasks')
         
         then:
         noExceptionThrown()
@@ -61,10 +53,10 @@ class SamplesFunctionalTest extends Specification {
     
     def "can execute capture user input sample"() {
         given:
-        copySample('capture-user-input')
+        copySampleCode('capture-user-input')
         
         when:
-        def result = build('latestArtifactVersion')
+        def result = succeeds('latestArtifactVersion')
         
         then:
         result.output.contains("Retrieving latest artifact version from URL http://my.company.com/maven2")
@@ -72,10 +64,10 @@ class SamplesFunctionalTest extends Specification {
     
     def "can execute named domain object container sample"() {
         given:
-        copySample('named-domain-object-container')
+        copySampleCode('named-domain-object-container')
         
         when:
-        def result = build('deployToDev', 'deployToStaging', 'deployToProduction')
+        def result = succeeds('deployToDev', 'deployToStaging', 'deployToProduction')
         
         then:
         result.output.contains("Deploying to URL http://localhost:8080")
@@ -86,13 +78,13 @@ class SamplesFunctionalTest extends Specification {
     @Unroll
     def "can execute #description sample"() {
         given:
-        copySample(sampleDir)
+        copySampleCode(sampleDir)
         
         when:
-        build('classes')
+        succeeds('classes')
         
         then:
-        new File(temporaryFolder.root, 'build/classes/java/main/MyClass.class').isFile()
+        new File(testDirectory, 'build/classes/java/main/MyClass.class').isFile()
         
         where:
         sampleDir                | description
@@ -103,10 +95,10 @@ class SamplesFunctionalTest extends Specification {
     @Unroll
     def "can execute react to task sample"() {
         given:
-        copySample('react-to-task')
+        copySampleCode('react-to-task')
         
         when:
-        def result = build('assertWarWebXml')
+        def result = succeeds('assertWarWebXml')
         
         then:
         noExceptionThrown()
@@ -114,10 +106,10 @@ class SamplesFunctionalTest extends Specification {
     
     def "can execute default dependency sample"() {
         given:
-        copySample('default-dependency')
+        copySampleCode('default-dependency')
         
         when:
-        def result = build('dependencies')
+        def result = succeeds('dependencies')
         
         then:
         result.output.contains("""dataFiles - The data artifacts to be processed for this plugin.
@@ -126,25 +118,13 @@ class SamplesFunctionalTest extends Specification {
     
     def "can execute plugin identifier sample"() {
         given:
-        copySample('plugin-identifier')
+        copySampleCode('plugin-identifier')
         
         when:
-        def result = build('tasks')
+        def result = succeeds('tasks')
         
         then:
         result.output.contains("Applying Android application plugin")
         result.output.contains("Applying Android library plugin")
-    }
-    
-    private void copySample(String path) {
-        FileUtils.copyDirectory(new File(SAMPLES_DIR, "code/$path"), temporaryFolder.root)
-    }
-    
-    private BuildResult build(String... arguments) {
-        createAndConfigureGradleRunner(arguments).build()
-    }
-    
-    private GradleRunner createAndConfigureGradleRunner(String... arguments) {
-        GradleRunner.create().withProjectDir(temporaryFolder.root).withArguments(arguments)
     }
 }
