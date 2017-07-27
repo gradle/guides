@@ -20,9 +20,10 @@ Before you start, it's useful to have some idea of how much work a migration is 
 * Less common Maven plugins
 * Custom plugins
 
-Some of these can be handled without too much trouble and we'll be discussing potential solutions later. Solutions that are often much more straightforward and easier to be used and maintained by the developers.
+Some of these can be handled without too much trouble and we'll be discussing potential solutions later. These solutions are often much more straightforward and easier to be used and maintained by the developers.
 
 Once you've decided to go ahead with the migration, what should you do next? The best starting point is setting up a mechanism to validate your new build.
+
 
 == Build validation
 
