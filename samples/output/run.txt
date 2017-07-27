@@ -1,0 +1,5 @@
+:compileJava UP-TO-DATE
+:processResources NO-SOURCE
+:classes UP-TO-DATE
+:run
+Hello world.
