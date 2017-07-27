@@ -1,14 +1,15 @@
 plugins {
-    id 'org.gradle.guides.topical' version '0.6.6'
-    // id 'org.gradle.guides.test-jvm-code' version '0.6.6'
+    id 'org.gradle.guides.topical' version '0.7.1'
+    id 'org.gradle.guides.test-jvm-code' version '0.7.1'
 }
-
-import org.apache.tools.ant.filters.*
 
 guide {
     repoPath 'gradle-guides/migrating-from-maven'
     mainAuthor 'Peter Ledbrook'
 }
 
+test {
+    inputs.file 'samples'
+}
 
 

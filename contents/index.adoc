@@ -20,9 +20,10 @@ Before you start, it's useful to have some idea of how much work a migration is 
 * Less common Maven plugins
 * Custom plugins
 
-Some of these can be handled without too much trouble and we'll be discussing potential solutions later. Solutions that are often much more straightforward and easier to be used and maintained by the developers.
+Some of these can be handled without too much trouble and we'll be discussing potential solutions later. These solutions are often much more straightforward and easier to be used and maintained by the developers.
 
 Once you've decided to go ahead with the migration, what should you do next? The best starting point is setting up a mechanism to validate your new build.
+
 
 == Build validation
 
@@ -38,7 +39,7 @@ Once you're able to validate the Gradle build, you can start the migration. The 
 
 Not only will the Gradle `init` task allow you to create a new skeleton project, but it will also automatically convert an existing Maven one to Gradle. All you have to do is run the command
 
-[listing]
+[listing.terminal]
 ----
 $ gradle init
 ----
@@ -51,7 +52,7 @@ One thing to bear in mind is that assemblies are not automatically converted. Th
 
 If you're lucky and don't have many plugins or much in the way of customisation in your Maven build, you can simply run
 
-[listing]
+[listing.terminal]
 ----
 $ gradle build
 ----
@@ -70,41 +71,32 @@ Gradle does not support BOMs directly, but you can make use of them in your Grad
 
 Once in place, you'll be able to import a BOM into your build file using the following syntax:
 
+.build.gradle
 [source,groovy]
 ----
-dependencyManagement {
-    imports {
-        mavenBom 'io.spring.platform:platform-bom:1.0.1.RELEASE'
-    }
-}
+include::{samplescodedir}/bom.gradle[tags=plugins]
 
-dependencies {
-   compile 'org.springframework.integration:spring-integration-core'
-}
+include::{samplescodedir}/bom.gradle[tags=bom]
 ----
+<1> Recommend a version for this artifact
+<2> Do not recommend a version for this artifact.
 
-**Note:** Gradle doesn't support the `import` scope in the POMs of dependencies, so you'll have to manually import them using the above syntax.
+NOTE: Gradle doesn't support the `import` scope in the POMs of dependencies, so you'll have to manually import them using the above syntax.
 
 === Provided scope and optional dependencies
 
 Gradle has a lot of flexibility in the way that dependencies are managed, particularly through configurations. However, it doesn't have a scope named `provided` out of the box unless you use the `war` plugin. The same basic behavior can be had from the https://blog.gradle.org/introducing-compile-only-dependencies[compileOnly] configuration added in Gradle 2.12.
 
-If you need optional-like behavior or you're using an older version of Gradle than 2.12, it is very easy to model these concepts in Gradle and various members of the community have produced plugins that do just that. Two well-used ones are Netflix's Nebula https://plugins.gradle.org/plugin/nebula.provided-base[provided-base] and https://plugins.gradle.org/plugin/nebula.optional-base[optional-base] plugins. You can apply and use them like this:
+If you need optional-like behavior you can use the https://plugins.gradle.org/plugin/nebula.optional-base[optional-base] plugin from Netflix. You can apply and use these configurations like this:
 
+.build.gradle
 [source,groovy]
 ----
-plugins {
-    id 'nebula.provided-base' version '2.2.2'
-    id 'nebula.optional-base' version '2.2.2'
-}
+include::{samplescodedir}/provided.gradle[tags=plugins]
 
-dependencies {
-    provided 'org.apache.commons:commons-lang3:3.3.2'
-    provided group: 'log4j', name: 'log4j', version: '1.2.17'
-    compile 'org.apache.commons:commons-lang3:3.3.2', optional
-    compile group: 'log4j', name: 'log4j', version: '1.2.17', optional
-}
+include::{samplescodedir}/provided.gradle[tags=dependencies]
 ----
+<1> Use `compileOnly` instead of `provided`.
 
 They also work with the new, preferred publishing mechanism, which is something that you would have to handle yourself if you wanted to implement your own configurations.
 
@@ -134,7 +126,7 @@ apply from: "profile-${buildProfile}.gradle"
 
 All you have to do then is put the environment-specific configuration, such as project properties, dependencies, etc., in the corresponding build file. To activate a particular profile, you can just pass in the relevant project property on the command line:
 
-[listing]
+[listing.terminal]
 ----
 $ gradle -PbuildProfile=test build
 ----
@@ -151,11 +143,10 @@ Maven has a phase called `process-resources` that has the goal `resources:resour
 
 The Java plugin for Gradle provides a `processResources` task to do the same thing. Here's an example configuration:
 
+.build.gradle
 [source,groovy]
 ----
-processResources {
-    expand(version: version, buildNumber: currentBuildNumber)
-}
+include::{samplescodedir}/processResources.gradle[tags=process-resources]
 ----
 
 So the left hand side of each colon is the token name and the right hand side is a project property. This variable substitution will apply to all your resource files (the ones under `src/main/resources` usually).
@@ -176,46 +167,28 @@ By declaring a new source set, Gradle automatically sets you up with correspondi
 
 Let's now take a look at an example so you can see what's involved in practice:
 
+.build.gradle
 [source,groovy]
 ----
-sourceSets {
-    integTest {
-        compileClasspath += main.output + test.output
-        runtimeClasspath += main.output + test.output
-    }
-}
-configurations {
-    integTestCompile.extendsFrom testCompile
-    integTestRuntime.extendsFrom testRuntime
-}
+include::{samplescodedir}/integTest.gradle[tags=sourcesets]
 ----
 
 In the above example, I create a new source set called `integTest`. I also make sure that the application or library classes, as well as their dependencies, are included on the classpath when compiling the integration tests.
 
 Your integration tests will probably use some third party libraries of their own, so you'll want to add those the compilation classpath too. That's done in the normal way in the `dependencies` block:
 
+.build.gradle
 [source,groovy]
 ----
-dependencies {
-   // ...
-   integTestCompile 'org.codehaus.groovy:groovy-all:2.4.3'
-   integTestCompile 'org.spockframework:spock-core:0.7-groovy-2.0', {
-      exclude module: 'groovy-all'
-   }
-}
+include::{samplescodedir}/integTest.gradle[tags=dependencies]
 ----
 
 The integration tests will now compile, but there is currently no way to run them. That's where the custom `Test` task comes in:
 
+.build.gradle
 [source,groovy]
 ----
-task integTest(type: Test) {
-    dependsOn startApp
-    finalizedBy stopApp
-    testClassesDir = sourceSets.integTest.output.classesDir
-    classpath = sourceSets.integTest.runtimeClasspath
-    mustRunAfter test
-}
+include::{samplescodedir}/integTest.gradle[tags=testtask]
 ----
 
 In the above example, I'm assuming that the integration tests run against an application server that needs to be started and shut down at the appropriate times. You can learn more about how and what to configure on the `Test` task in Gradle's {language-reference}org.gradle.api.tasks.testing.Test.html[DSL Reference].
@@ -265,18 +238,14 @@ Everything outside of the configuration block can safely be ignored when migrati
 
 [source,groovy]
 ----
-checkstyle {
-    config = resources.text.fromFile('checkstyle.xml', 'UTF-8')
-    showViolations = true
-    ignoreFailures = false
-}
+include::{samplescodedir}/checkstyle.gradle[tags=checkstyle]
 ----
 
 The Checkstyle tasks are automatically added as dependencies of the `check` task, which also includes `test`. If you want to ensure that Checkstyle runs before the tests, then just specify an ordering with the mustRunAfter() method:
 
 [source,groovy]
 ----
-test.mustRunAfter checkstyleMain, checkstyleTest
+include::{samplescodedir}/checkstyle.gradle[tags=dependsOn]
 ----
 
 As you can see, the Gradle configuration is often much shorter than the Maven equivalent. You also have a much more flexible execution model since we are not longer constrained by Maven's fixed phases.
@@ -289,11 +258,7 @@ Many Maven builds rely on the AntRun plugin to customize the build without the o
 
 [source,groovy]
 ----
-task sayHello {
-    doLast {
-        ant.echo message: 'Hello!'
-    }
-}
+include::{samplescodedir}/ant.gradle[]
 ----
 
 Even Ant properties and filesets are supported natively. To learn more, check out the {user-manual}ant.html[Ant chapter] of the user guide.
