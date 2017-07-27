@@ -74,8 +74,12 @@ Once in place, you'll be able to import a BOM into your build file using the fol
 .build.gradle
 [source,groovy]
 ----
+include::{samplescodedir}/bom.gradle[tags=plugins]
+
 include::{samplescodedir}/bom.gradle[tags=bom]
 ----
+<1> Recommend a version for this artifact
+<2> Do not recommend a version for this artifact.
 
 NOTE: Gradle doesn't support the `import` scope in the POMs of dependencies, so you'll have to manually import them using the above syntax.
 

@@ -28,7 +28,7 @@ class ValidateSpec extends AbstractSamplesFunctionalTest {
 
         where:
         source             | task
-        'bom'              | ['dependencies']
+        'bom'              | ['dependencies','--console=plain']
         'provided'         | ['dependencies']
         'processResources' | ['processResources']
         'integTest'        | ['tasks']

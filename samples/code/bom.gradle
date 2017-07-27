@@ -1,11 +1,21 @@
-// tag::bom[]
+// tag::plugins[]
 plugins {
-    id 'nebula.dependency-recommender' version '4.5.0'
+    id 'nebula.dependency-recommender' version '4.1.2'
     id 'java'
+}
+// end::plugins[]
+
+// tag::bom[]
+repositories {
+    jcenter()
+}
+
+dependencyRecommendations {
+    mavenBom module: 'io.spring.platform:platform-bom:1.0.1.RELEASE'
 }
 
 dependencies {
-    nebulaRecommenderBom 'netflix:platform:latest.release@pom'
-    implementation 'com.google.guava:guava'
+    implementation 'org.springframework.integration:spring-integration-core' // <1>
+    implementation 'commons-lang:commons-lang:2.6' // <2>
 }
 // end::bom[]

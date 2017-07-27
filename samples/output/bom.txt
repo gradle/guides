@@ -1,1 +1,2 @@
-FOO
+nebulaRecommenderBom
+\--- io.spring.platform:platform-bom:1.0.1.RELEASE
