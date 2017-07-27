@@ -1,3 +1,5 @@
+package org.gradle.guides
+
 import spock.lang.Unroll
 
 import org.gradle.guides.test.fixtures.AbstractSamplesFunctionalTest
