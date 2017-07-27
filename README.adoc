@@ -17,9 +17,10 @@ The class `AbstractFunctionalTest` provide basic functionality.
 - Provides convenience methods for execution of test project with `GradleRunner`.
 - Provides convenience methods for directory and file creation.
 
+_src/test/groovy/guide/MyFunctionalTest.groovy_
 [source,groovy]
 ----
-org.gradle.guides.test.fixtures.AbstractFunctionalTest
+import org.gradle.guides.test.fixtures.AbstractFunctionalTest
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
@@ -48,9 +49,10 @@ The class `AbstractSamplesFunctionalTest` extends `AbstractFunctionalTest` and a
 
 The following class executes the sample found in the directory `samples/code/hello-world`.
 
+_src/test/groovy/guide/MySamplesFunctionalTest.groovy_
 [source,groovy]
 ----
-org.gradle.guides.test.fixtures.AbstractSamplesFunctionalTest
+import org.gradle.guides.test.fixtures.AbstractSamplesFunctionalTest
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
