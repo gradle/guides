@@ -1,6 +1,9 @@
 # Gradle
 .gradle/
+.idea/
 build/
+out/
+*.iml
 
 # Vim
 *.sw?

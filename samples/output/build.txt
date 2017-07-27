@@ -1,0 +1,14 @@
+:compileJava
+:processResources NO-SOURCE
+:classes
+:jar
+:startScripts
+:distTar
+:distZip
+:assemble
+:compileTestJava
+:processTestResources NO-SOURCE
+:testClasses
+:test
+:check
+:build

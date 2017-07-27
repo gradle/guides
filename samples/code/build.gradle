@@ -1,0 +1,13 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+repositories {
+    jcenter()  // <1>
+}
+
+dependencies {
+    compile 'com.google.guava:guava:21.0'  // <2>
+    testCompile 'junit:junit:4.12'         // <3>
+}
+
+mainClassName = 'App'  // <4>

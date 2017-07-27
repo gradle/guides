@@ -8,7 +8,7 @@ You'll generate a Java application with the standard layout.
 
 == What you'll need
 
-* About +++<span class="time-to-complete-text"></span>+++
+* About [.time-to-complete-text]#NN#
 * A text editor
 * A command prompt
 * The Java Development Kit (JDK), version 1.7 or higher
@@ -22,6 +22,7 @@ The plugin has one task, called `init`, that generates the project. The `init` t
 
 To run the `init` task, you run the following from a command prompt:
 
+[listing.terminal]
 ----
 $ gradle init --type <name>
 ----
@@ -38,6 +39,7 @@ This guide uses the `java-application` type.
 
 The first step is to create a folder for the new project and change directory into it.
 
+[listing.terminal]
 ----
 $ mkdir java-demo
 $ cd java-demo
@@ -47,18 +49,18 @@ $ cd java-demo
 
 From inside the new project directory, run the `init` task with the `java-application` argument.
 
+[listing.terminal]
 ----
 $ gradle init --type java-application
 Starting a Gradle Daemon (subsequent builds will be faster)
-:wrapper
-:init
+include::{samplesoutputdir}/init.txt[]
 
 BUILD SUCCESSFUL
 ----
 
 The `init` task runs the `wrapper` task first, which generates the `gradlew` and `gradlew.bat` wrapper scripts. Then it creates the new project with the following structure:
 
-====
+[listing]
 ----
 ├── build.gradle
 ├── gradle    // <1>
@@ -79,84 +81,49 @@ The `init` task runs the `wrapper` task first, which generates the `gradlew` and
 <1> Generated folder for wrapper files
 <2> Default Java source folder
 <3> Default Java test folder
-====
 
 == Review the generated project files
 
 The `settings.gradle` file is heavily commented, but has only one active line:
 
+.settings.gradle
 [source,groovy]
 ----
-rootProject.name = 'java-demo'
+include::{samplescodedir}/settings.gradle[]
 ----
 
 This assigns the name of the root project to `java-demo`, which is the default.
 
 The generated `build.gradle` file also has many comments. The active portion is reproduced here (note version numbers for the dependencies may be updated in later versions of Gradle):
 
-.Generated build.gradle
-====
+.build.gradle
 [source,groovy]
 ----
-apply plugin: 'java'
-apply plugin: 'application'
-
-repositories {
-    jcenter()  // <1>
-}
-
-dependencies {
-    compile 'com.google.guava:guava:20.0'  // <2>
-    testCompile 'junit:junit:4.12'         // <3>
-}
-
-mainClassName = 'App'  <4>
+include::{samplescodedir}/build.gradle[]
 ----
 <1> public Bintray Artifactory repository
 <2> Google Guava library
 <3> JUnit testing library
 <4> Class with "main" method (used by Application plugin)
-====
 
 The build file adds the `java` and `application` plugins. The former support Java projects. The latter lets you designate one class as having a `main` method, which can be executed by the build from the command line. In the demo, the name of the `main` class is `App`.
 
 The file `src/main/java/App.java` is shown here:
 
-.The generated App.java class
-====
+.src/main/java/App.java
 [source,java]
 ----
-public class App {
-    public String getGreeting() {
-        return "Hello world.";
-    }
-
-    public static void main(String[] args) {  // <1>
-        System.out.println(new App().getGreeting());
-    }
-}
+include::{samplescodedir}/src/main/java/App.java[]
 ----
 <1> Called by Application plugin "run" task
-====
 
 The test class, `src/test/java/AppTest.java` is shown next:
 
-.The JUnit test, AppTest
-====
+.src/test/java/AppTest.java
 [source,java]
 ----
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-public class AppTest {
-    @Test public void testAppHasAGreeting() {
-        App classUnderTest = new App();
-        assertNotNull("app should have a greeting",
-                       classUnderTest.getGreeting());
-    }
-}
+include::{samplescodedir}/src/test/java/AppTest.java[]
 ----
-====
 
 The generated test class has a single test annotated with JUnit's `@Test` annotation. The test instantiates the `App` class, invokes the `getGreeting` method, and checks that the returned value is not null.
 
@@ -164,25 +131,10 @@ The generated test class has a single test annotated with JUnit's `@Test` annota
 
 To build the project, run the `build` command. You can use the regular `gradle` command, but when a project includes a wrapper script, it is considered good form to use it instead.
 
-[listing]
+[listing.terminal]
 ----
 $ ./gradlew build
-:compileJava
-// Download of Guava if not already cached...
-:processResources UP-TO-DATE
-:classes
-:jar
-:startScripts
-:distTar
-:distZip
-:assemble
-:compileTestJava
-// Download of JUnit if not already cached...
-:processTestResources UP-TO-DATE
-:testClasses
-:test
-:check
-:build
+include::{samplesoutputdir}/build.txt[]
 
 BUILD SUCCESSFUL
 ----
@@ -220,11 +172,8 @@ The `run` task tells Gradle to execute the `main` method in the class assigned t
 
 ----
 $ ./gradlew run
-:compileJava UP-TO-DATE
-:processResources UP-TO-DATE
-:classes UP-TO-DATE
-:run
-Hello world.
+include::{samplesoutputdir}/run.txt[]
+
 
 BUILD SUCCESSFUL
 ----
