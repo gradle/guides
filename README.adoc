@@ -1,10 +1,10 @@
 = Guides Test Fixtures image:https://travis-ci.org/gradle-guides/guides-test-fixtures.svg?branch=master["Build Status", link="https://travis-ci.org/gradle-guides/guides-test-fixtures?branch=master"]
 
-Provides functional tests fixtures for any of the guides project in the link:https://github.com/gradle-guides[gradle-guides GitHub organization]. Fixtures assume the use of the Spock framework. The library is automatically available on the test classpath if the plugin `org.gradle.guides.test-jvm-code` with version >= 0.7.0 is applied. Please see the link:https://github.com/gradle-guides/gradle-guides-plugin[gradle-guides-plugin] for more information.
+Provides functional tests fixtures for any of the guides project in the link:https://github.com/gradle-guides[gradle-guides GitHub organization]. Fixtures assume the use of the Spock framework. The library is automatically available on the test classpath if the plugin `org.gradle.guides.test-jvm-code` with version >= 0.7.1 is applied. Please see the link:https://github.com/gradle-guides/gradle-guides-plugin[gradle-guides-plugin] for more information.
 
 ----
 plugins {
-    id 'org.gradle.guides.test-jvm-code' version '0.7.0'
+    id 'org.gradle.guides.test-jvm-code' version '0.7.1'
 }
 ----
 
