@@ -1,0 +1,29 @@
+apply plugin : 'java'
+
+// tag::parallel-4[]
+test.maxParallelForks = 4
+// end::parallel-4[]
+
+// tag::parallel-calculated[]
+test.maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+// end::parallel-calculated[]
+
+// tag::fork-every[]
+test.forkEvery = 100
+// end::fork-every[]
+
+// tag::disable-reports[]
+test {
+    reports.html.enabled = false
+    reports.junitXml.enabled = false
+}
+// end::disable-reports[]
+
+// tag::fork-java[]
+tasks.withType(JavaCompile) {
+    options.fork = true
+}
+// end::fork-java[]
+
+
+
