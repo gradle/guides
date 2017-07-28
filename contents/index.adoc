@@ -25,7 +25,7 @@ Most builds consist of more than one project and some of those projects are usua
 
 You could see big improvements in build times as soon as you enable parallel builds. The extent of those improvements depends on your project structure and how many dependencies you have between them. A build whose execution time is dominated by a single project won't benefit much at all, for example. Or one that has lots of inter-project dependencies resulting in few tasks that can be executed in parallel. But most multi-project builds should see a worthwhile boost to build times.
 
-NOTE: Parallel builds require projects to be decoupled at execution time, i.e. tasks in different projects must not modify shared state. Read more about that topic in https://docs.gradle.org/current/userguide/multi_project_builds.html#sec:parallel_execution[the User Manual] before using `--parallel` extensively. Also be aware that Gradle versions up until 3.5 can run `clean` and `build` tasks in parallel, resulting in failures. This will be fixed in Gradle 4.0. Until then it is best to call `clean` separately.
+NOTE: Parallel builds require projects to be decoupled at execution time, i.e. tasks in different projects must not modify shared state. Read more about that topic in https://docs.gradle.org/current/userguide/multi_project_builds.html#sec:parallel_execution[the User Manual] before using `--parallel` extensively. Also be aware that Gradle versions before 4.0 could run `clean` and `build` tasks in parallel, resulting in failures. On these older versions it is best to call `clean` separately.
 
 You can also make building in parallel the default for a project by adding the following setting to the project's _gradle.properties_ file:
 
