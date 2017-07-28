@@ -1,0 +1,8 @@
+apply plugin : 'java'
+
+// tag::copy[]
+project.tasks.create("copyFiles", Copy) { Task t ->
+    t.into "${project.buildDir}/output"
+    t.from project.configurations.getByName("compile")
+}
+// end::copy[]

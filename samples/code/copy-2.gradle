@@ -1,0 +1,9 @@
+apply plugin : 'java'
+
+// tag::copy[]
+task copyFiles(type: Copy) {
+    println ">> Compilation deps: ${configurations.compile.files}"
+    into "$buildDir/output"
+    from configurations.compile
+}
+// end::copy[]

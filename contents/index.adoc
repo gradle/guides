@@ -1,7 +1,4 @@
 = Improving the performance of Gradle builds
-:toclevels: 2
-:numbered:
-:source-language: groovy
 
 Build performance is critical to your productivity. The longer the build takes to complete, the more likely you'll be taken out of your development flow. On top of that, since you run the build many times a day, even small periods of waiting can add up to significant disruption. The same is true for CI builds: The faster they are, the faster you can react to new issues and the more capacity you will have to do innovative experiments.
 
@@ -29,8 +26,11 @@ NOTE: Parallel builds require projects to be decoupled at execution time, i.e. t
 
 You can also make building in parallel the default for a project by adding the following setting to the project's _gradle.properties_ file:
 
-[source]
+.gradle.properties
+[source,java]
+----
 org.gradle.parallel=true
+----
 
 ### Configure on demand
 
@@ -42,9 +42,11 @@ Configure on demand will only work reliably when you have decoupled projects. Yo
 
 You can make configure on demand the default for a project by adding the following setting to its _gradle.properties_ file:
 
+.gradle.properties
 [source,java]
+----
 org.gradle.configureondemand=true
-
+----
 
 ### Enable the daemon on old Gradle versions
 
@@ -57,8 +59,11 @@ On CI machines the benefit you can expect from the daemon depends on your setup.
 By default Gradle will reserve 1GB of heap space for your build, which is plenty for most projects, especially if you follow
 our advice on forked compilation further down in this guide. However, some very large builds might need more memory to hold Gradle's model and caches. If this is the case for you, you can check in this larger memory requirement in your _gradle.properties_ file:
 
-    org.gradle.jvmargs=-Xmx2048M
-
+.gradle.properties
+[source,java]
+----
+org.gradle.jvmargs=-Xmx2048M
+----
 
 That’s the end of our quick wins. From here on out, improving your build performance will require some elbow grease. We start with perhaps the most important step: finding out which bits of your build are slow and why.
 
@@ -96,7 +101,10 @@ We will look into the different categories presented in the report shortly. You 
 
 If you don't have internet access or have some other reason not to use build scans, you can use the `--profile` command-line option:
 
-    gradle --profile <tasks>
+[listing.terminal]
+----
+$ gradle --profile <tasks>
+----
 
 This will result in the generation of an HTML report that you can find in the _build/reports/profile_ directory of the _root_ project. Each profile report has a timestamp in its name to avoid overwriting existing ones.
 
@@ -160,12 +168,10 @@ In general, we recommend that you use either `@CompileStatic` on your Groovy cla
 
 *Note* The DSL you’re used to in the build script relies heavily on Groovy’s dynamic features, so if you want to use static compilation in your plugins, you will have to switch to more traditional Java-like syntax. For example, to create a new copy task, you would use code like this:
 
-[source]
+.build.gradle
+[source,groovy]
 ----
-project.tasks.create("copyFiles", Copy) { Task t ->
-    t.into "${project.buildDir}/output"
-    t.from project.configurations.getByName("compile")
-}
+include::{samplescodedir}/copy-1.gradle[tags=copy]
 ----
 
 You can see how this example uses the `create()` and `getByName()` methods, which are available on all Gradle “domain object containers”, like tasks, configurations, dependencies, extensions, etc. Some collections have dedicated types, `TaskContainer` being one of them, that have useful extra methods like the `create()` method above that takes a task type.
@@ -188,29 +194,27 @@ Dependency resolution is an expensive process, both in terms of IO and computati
 
 The key question to answer is what triggers dependency resolution? The most common cause is the evaluation of the files that make up a configuration. This is normally a job for tasks, since you typically don’t need the files until you’re ready to do something with them in a task action. However, imagine you’re doing some debugging and want to display the files that make up a configuration through judicious caching. One way you can do this is by injecting a print statement:
 
-[source]
-task copyFiles(type: Copy) {
-    println ">> Compilation deps: ${configurations.compile.files}"
-    into "$buildDir/output"
-    from configurations.compile
-}
-
+.build.gradle
+[source,groovy]
+----
+include::{samplescodedir}/copy-2.gradle[tags=copy]
+----
 The `files` property will force Gradle to resolve the dependencies, and in this example that’s happening during the configuration phase. Now every time you run the build, no matter what tasks you execute, you'll take a hit from the dependency resolution on that configuration. It would be better to add this in a `doFirst()` action.
 
-[source]
-task copyFiles(type: Copy) {
-    into "$buildDir/output"
-    from configurations.compile
-    doFirst {
-      println ">> Compilation deps: ${configurations.compile.files}"
-    }
-}
+.build.gradle
+[source,groovy]
+----
+include::{samplescodedir}/copy-3.gradle[tags=copy]
+----
 
 Note that the `from()` declaration doesn’t resolve the dependencies because you’re using the https://docs.gradle.org/current/userguide/artifact_dependencies_tutorial.html#configurations[dependency configuration] itself as an argument, not its files. The `Copy` task handles the resolution of the configuration itself during task execution, which is exactly what you want.
 
 The performance page of build scans explicitly shows how dependency resolution time is split across project configuration and task execution, so it's easy to identify this particular issue. If you're using the older profile reports, a simple way to determine whether you’re resolving dependencies during configuration is to run
 
-    gradle --profile help
+[listing.terminal]
+----
+$ gradle --profile help
+----
 
 and look at the time spent on dependency resolution. This should be zero, so if it’s not, you’re resolving dependencies at configuration time. The report will also tell you which configurations are being resolved, which should help in diagnosing the source of the configuration-time resolution.
 
@@ -299,13 +303,19 @@ Let’s look at each of these in turn.
 
 Gradle will happily run multiple test cases in parallel, which is useful when you have several CPU cores and don’t want to waste most of them. To enable this feature, just use the following configuration setting on the relevant `Test` task(s):
 
-[source]
-test.maxParallelForks = 4
+.build.gradle
+[source,groovy]
+----
+include::{samplescodedir}/maxParallelForks.gradle[tags=parallel-4]
+----
 
 The normal approach is to use some number less than or equal to the number of CPU cores you have. We recommend you use the following algorithm by default:
 
-[source]
-test.maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+.build.gradle
+[source,groovy]
+----
+include::{samplescodedir}/maxParallelForks.gradle[tags=parallel-calculated]
+----
 
 Note that if you do run the tests in parallel, you will have to ensure that they are independent, i.e. don’t share resources, be that files, databases or something else. Otherwise there is a chance that the tests will interfere with each other in random and unpredictable ways.
 
@@ -315,8 +325,11 @@ Gradle will run all tests in a single forked VM by default. This can be problema
 
 Another option is to fork a new test VM after a certain number of tests have run. You can do this with the `forkEvery` setting:
 
-[source]
-test.forkEvery = 100
+.build.gradle
+[source,groovy]
+----
+include::{samplescodedir}/maxParallelForks.gradle[tags=fork-every]
+----
 
 Just be aware that forking a VM is a relatively expensive operation, so a small value here will severely handicap the performance of your tests.
 
@@ -327,22 +340,25 @@ Gradle will automatically create test reports by default regardless of whether y
 
 To disable the test reports, simply add this configuration:
 
-[source]
-test {
-    reports.html.enabled = false
-    reports.junitXml.enabled = false
-}
+.build.gradle
+[source,groovy]
+----
+include::{samplescodedir}/maxParallelForks.gradle[tags=disable-reports]
+----
 
 This example applies to the default `Test` task added by the Java plugin, but you can also apply the configuration to any other `Test` tasks you have.
 
 One thing to bear in mind is that you will probably want to conditionally disable or enable the reports, otherwise you will have to edit the build file just to see them. For example, you could enable the reports based on a project property:
 
-[source]
+.build.gradle
+[source,groovy]
+----
 test {
     if (!project.hasProperty("createReports")) {
         reports...
     }
 }
+----
 
 ### Compiling Java
 
@@ -356,13 +372,18 @@ The Java compiler is quite fast, especially compared to other languages on the J
 
 The Gradle Java plugin allows you to run the compiler as a separate process by using the following configuration for any `JavaCompile` task:
 
-    <taskname>.options.fork = true
+[source,groovy]
+----
+<taskname>.options.fork = true
+----
 
 or, more commonly, to apply the configuration to _all_ Java compilation tasks:
 
-    tasks.withType(JavaCompile) {
-        options.fork = true
-    }
+.build.gradle
+[source,groovy]
+----
+include::{samplescodedir}/maxParallelForks.gradle[tags=fork-java]
+----
 
 This process is reused for the duration of a build, so the forking overhead is minimal. The benefit of forking is that the memory-intensive compilation happens
 in a different process, leading to much less garbage collection in the main Gradle daemon. Less garbage collection in the daemon means that Gradle's infrastructure can run faster, especially if you are also using `--parallel`.
@@ -382,10 +403,13 @@ For a long time, you would declare your compile time dependencies using the `com
 Since Gradle 3.4, you can now clearly separate which dependencies are part of your `api` and which are only `implementation` details. Implementation dependencies
 are not leaked into the compile classpath of downstream projects, which means that they will no longer be recompiled when such an implementation detail changes.
 
-    dependencies {
-       api project("myUtils")
-       implementation "com.google.guava:guava:21.0"
-    }
+[source,groovy]
+----
+dependencies {
+   api project("myUtils")
+   implementation "com.google.guava:guava:21.0"
+}
+----
 
 This can significantly reduce the "ripple" effect of a single change in large multi-project builds. The `implementation` Configuration is available in the `java`
 plugin. `api` dependencies can only be defined by libraries, which should use the new https://docs.gradle.org/current/userguide/java_library_plugin.html[`java-library`] plugin.
@@ -395,9 +419,10 @@ plugin. `api` dependencies can only be defined by libraries, which should use th
 Gradle can analyze dependencies down to the individual class level in order to recompile only the classes that were affected by a change. This option
 will soon become the default setting, but you can already use it today to significantly speed up your incremental build times:
 
-    tasks.withType(JavaCompile) {
-        options.incremental = true
-    }
+[source,groovy]
+----
+include::{samplescodedir}/compileAvoidance.gradle[tags=incremental]
+----
 
 ## Low level profiling
 
