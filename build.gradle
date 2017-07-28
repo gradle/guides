@@ -17,4 +17,6 @@ asciidoctor {
             into 'images'
         }
     }
+
+    inputs.dir 'samples' withPropertyName('samplesDir') withPathSensitivity(PathSensitivity.RELATIVE)
 }
