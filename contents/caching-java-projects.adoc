@@ -52,11 +52,7 @@ For example, declaring the operating system in use by Gradle as an input to a `T
 
 [source,groovy]
 ----
-integTest {
-    inputs.property("operatingSystem") {
-        System.getProperty("os.name")
-    }
-}
+include::{samplescodedir}/integration-tests/build.gradle[tags=integTest]
 ----
 
 ==== Archives as inputs
@@ -77,19 +73,14 @@ For example, with a task called `integTest`, instead of this:
 
 [source,groovy]
 ----
-integTest {
-    systemProperty "distribution.location", file("build/dist").absolutePath
-}
+include::{samplescodedir}/integration-tests/build.gradle[tags=distributionPathInput]
 ----
 
 ...it is better to do this:
 
 [source,groovy]
 ----
-integTest {
-    systemProperty "distribution.location", "build/dist" // <1>
-    inputs.dir("build/dist").withPropertyName("distDir").withPathSensitivity(PathSensitivity.RELATIVE) // <2>
-}
+include::{samplescodedir}/integration-tests/build.gradle[tags=distributionDirInput]
 ----
 <1> Adding the relative path as system property.
 <2> Adding all the files under the distribution directory as an input.
@@ -101,14 +92,7 @@ This is possible by overriding the `systemProperties` input property via the run
 
 [source,groovy]
 ----
-integTest {
-    def ciProperties = [agentNumber: (System.getenv().get("AGENT_NUMBER") ?: 1] // <1>
-    systemProperties(ciProperties) // <2>
-
-    inputs.property('systemProperties') { // <3>
-        systemProperties - ciProperties // <4>
-    }
-}
+include::{samplescodedir}/integration-tests/build.gradle[tags=ignoreSystemProperties]
 ----
 <1> This property does not influence the output of the integration tests.
 <2> Set the system properties for the actual test execution.

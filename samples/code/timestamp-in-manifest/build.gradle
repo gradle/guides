@@ -1,0 +1,11 @@
+apply plugin: 'java'
+
+// tag::timestamp[]
+version = "3.2-${System.currentTimeMillis()}"
+
+jar {
+    manifest {
+        attributes("Implementation-Version": version)
+    }
+}
+// end::timestamp[]

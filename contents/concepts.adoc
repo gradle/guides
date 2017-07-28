@@ -41,13 +41,7 @@ Such unstable inputs can be supplied directly to the task. Consider a version nu
 
 [source,groovy]
 ----
-version = "3.2-${System.currentTimeMillis()}"
-
-jar {
-    manifest {
-        attributes("Implementation-Version": version)
-    }
-}
+include::{samplescodedir}/timestamp-in-manifest/build.gradle[tags=timestamp]
 ----
 
 In the above example the inputs for the `jar` task will be different for each build execution since this timestamp will continually change.
@@ -127,11 +121,7 @@ To fix this you can ignore `build-info.properties` on any runtime classpath by a
 
 [source,groovy]
 ----
-normalization {
-    runtimeClasspath {
-        ignore "build-info.properties"
-    }
-}
+include::{samplescodedir}/normalization/build.gradle[tags=normalization]
 ----
 
 The effect of this configuration would be that changes to `build-info.properties` would be ignored for both up-to-date checks and task output caching.
