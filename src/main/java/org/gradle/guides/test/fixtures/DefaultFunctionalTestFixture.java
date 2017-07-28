@@ -6,6 +6,8 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class DefaultFunctionalTestFixture implements FunctionalTestFixture {
 
@@ -46,7 +48,7 @@ public class DefaultFunctionalTestFixture implements FunctionalTestFixture {
      * {@inheritDoc}
      */
     @Override
-    public BuildResult succeeds(String... arguments) {
+    public BuildResult succeeds(List<String> arguments) {
         return withArguments(arguments).build();
     }
 
@@ -54,11 +56,27 @@ public class DefaultFunctionalTestFixture implements FunctionalTestFixture {
      * {@inheritDoc}
      */
     @Override
-    public BuildResult fails(String... arguments) {
+    public BuildResult succeeds(String... arguments) {
+        return succeeds(Arrays.asList(arguments));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BuildResult fails(List<String> arguments) {
         return withArguments(arguments).buildAndFail();
     }
 
-    private GradleRunner withArguments(String... arguments) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BuildResult fails(String... arguments) {
+        return fails(Arrays.asList(arguments));
+    }
+
+    private GradleRunner withArguments(List<String> arguments) {
         gradleRunner.withArguments(arguments);
         return gradleRunner;
     }

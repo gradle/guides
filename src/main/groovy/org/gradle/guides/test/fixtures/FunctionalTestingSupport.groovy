@@ -44,8 +44,24 @@ trait FunctionalTestingSupport implements FunctionalTestFixture {
      * {@inheritDoc}
      */
     @Override
+    BuildResult succeeds(List<String> arguments) {
+        delegate.succeeds(arguments)
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     BuildResult succeeds(String... arguments) {
         delegate.succeeds(arguments)
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    BuildResult fails(List<String> arguments) {
+        delegate.fails(arguments)
     }
 
     /**

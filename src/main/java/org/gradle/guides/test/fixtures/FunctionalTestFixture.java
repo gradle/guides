@@ -4,6 +4,7 @@ import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 
 import java.io.File;
+import java.util.List;
 
 public interface FunctionalTestFixture {
 
@@ -29,6 +30,16 @@ public interface FunctionalTestFixture {
      *
      * @param arguments Arguments
      * @return Build result
+     * @see #succeeds(String...)
+     */
+    BuildResult succeeds(List<String> arguments);
+
+    /**
+     * Executes build for provided arguments and expects it finish successfully.
+     *
+     * @param arguments Arguments
+     * @return Build result
+     * @see #succeeds(List)
      */
     BuildResult succeeds(String... arguments);
 
@@ -37,6 +48,16 @@ public interface FunctionalTestFixture {
      *
      * @param arguments Arguments
      * @return Build result
+     * @see #fails(String...)
+     */
+    BuildResult fails(List<String> arguments);
+
+    /**
+     * Executes build for provided arguments and expects it fail.
+     *
+     * @param arguments Arguments
+     * @return Build result
+     * @see #fails(List)
      */
     BuildResult fails(String... arguments);
 
