@@ -5,7 +5,7 @@ plugins {
 apply from: "$rootDir/gradle/publishing.gradle"
 
 group = 'org.gradle.guides'
-version = '0.1'
+version = '0.2'
 
 sourceCompatibility = '1.7'
 targetCompatibility = '1.7'
