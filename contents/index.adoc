@@ -213,9 +213,9 @@ Hello, Gradle User, your name has 11 chars.
 == Test the project
 
 As mentioned earlier, the `google-test` plugin automatically adds the testsuite components and verification tasks to the project. When you run the `build` task, gradle runs the compile tasks for source code and the test suites.
-It then runs the testsutie binary as well. The test binary in this case will be named greeterTest and the task will be named `runGreeterTestGoogleTestExe`.
+It then runs the testsuite binary as well. The test binary in this case will be named `greeterTest` and the task will be named `runGreeterTestGoogleTestExe`.
 
-[listing]
+[listing.terminal]
 ----
 $ ./gradlew build
 :compileGreeterSharedLibraryGreeterCpp
@@ -257,7 +257,6 @@ Hello, Gradle User, your name has 11 chars.
 :checkMainExecutable
 :check
 :build
-
 ----
 
 You should see the output from the `GoogleTest` testsuite that you had written for the `greeter` library as part of the output for the `build` task.
@@ -269,7 +268,7 @@ You have created a {cpp} library (both static and shared) and written unit tests
 * How to create gradle build scripts for {cpp} libraries.
 * How to generate static and/or shared libraries from {cpp} soruces.
 * How to use our library in a {cpp} binary.
-* How to build and run testsuites written for {cpp} libraries.
+* How to build and run testsuites written with GoogleTest
 
 
 include::contribute[]
