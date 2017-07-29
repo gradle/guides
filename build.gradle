@@ -1,5 +1,15 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'commons-httpclient:commons-httpclient:3.1'
+    }
+}
+
 plugins {
     id 'org.gradle.guides.getting-started' version '0.6.6'
+    id 'org.ysb33r.vfs' version '1.0'
 }
 
 import org.apache.tools.ant.filters.*
@@ -25,4 +35,7 @@ travisci  {
     }
   }
 }
+
+apply from: 'gradle/setup-googletest.gradle'
 apply from: 'gradle/cpp.gradle'
+
