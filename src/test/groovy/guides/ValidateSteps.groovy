@@ -27,9 +27,7 @@ class ValidateSteps extends Specification {
     String runGradle(final String task,Iterable<String> args) {
         List<String> gradleArgs = [task]
         gradleArgs.addAll(args)
-        StringWriter output = new StringWriter()
-        GradleRunner.create().forwardStdOutput(output).withProjectDir(workingDir).withArguments(gradleArgs).build()
-        output.toString()
+        GradleRunner.create().withProjectDir(workingDir).withArguments(gradleArgs).build().output
     }
 
     @Unroll
