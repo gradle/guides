@@ -8,7 +8,7 @@ You'll start by creating an ad-hoc Gradle task that prints _Hello, World_ to the
 
 == What you’ll need
 
-* About +++<span class="time-to-complete-text"></span>+++
+* About [.time-to-complete-text]#NN#
 * A text editor or IDE
 * A Java Development Kit (JDK), version 1.7 or better
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
@@ -20,44 +20,32 @@ In a new folder create a `build.gradle` and enter the following
 .build.gradle
 [source,groovy]
 ----
-task hello { // <1>
-  doLast { // <2>
-      println 'Hello, World!'
-  }
-}
+include::{samplescodedir}/part1/custom-hello.gradle[]
 ----
 <1> Create a new ad-hoc task called `hello`.
 <2> Add a task action to print to the console.
 
 Save the file and on the command-line and type:
 
-[listing]
-----
-gradle tasks
-----
-
 Save the file and on the command-line type `gradle tasks --all`. Your new task will appear under `Other tasks`.
 
 .Verifying that your task has been created
-[listing]
+[listing.terminal]
 ----
-Other tasks
------------
-hello
+$ gradle tasks --all
+
+include::{samplesoutputdir}/part1/gradle-tasks.txt[]
 ----
 
-Run your task
+NOTE: If you are using Gradle 4.0 or later you may see less output from the console that you might see in this guide. This is because in this guide output is shown as when `--console-plain` is also passed to Gradle as a command-line. This is done to show the tasks that Gradle is executing.
 
-[listing]
-----
-gradle hello
-----
-
-It will produce a simple output.
+Run your task.
 
 .Output from executing your ad-hoc task
-[listing]
+[listing.terminal]
 ----
+$ gradle hello
+
 :hello // <1>
 Hello, World // <2>
 ----
@@ -88,12 +76,9 @@ Although you have tested your new ad-hoc task and know that it works, it is good
 When you ran `gradle tasks --all` earlier you would have seen other tasks in the listing which contain descriptions and are grouped according to function. Also (and since Gradle 3.3) if a task does not have a group it will not be listed unless `--all` is specified.
 
 .Well-documented tasks
-[listing]
+[listing.terminal]
 ----
-Build Setup tasks
------------------
-init - Initializes a new Gradle build. [incubating]
-wrapper - Generates Gradle wrapper files. [incubating]
+include::{samplesoutputdir}/part1/gradle-tasks-setup.txt[]
 ----
 
 This is achieved by setting the `group` and `description` properties on the task.  Edit your ad-hoc task and add the following:
@@ -101,24 +86,17 @@ This is achieved by setting the `group` and `description` properties on the task
 .build.gradle
 [source,groovy]
 ----
-task hello {
-  group 'Welcome'
-  description 'Produces a greeting'
-
-  doLast {
-      println 'Hello, World'
-  }
-}
+include::{samplescodedir}/part2/custom-hello.gradle[]
 ----
 
 Run `gradle tasks` again.
 
 .Output from 'tasks' task
-[listing]
+[listing.terminal]
 ----
-Welcome tasks
--------------
-hello - Produces a greeting
+$ gradle tasks
+
+include::{samplesoutputdir}/part2/gradle-tasks.txt[]
 ----
 
 Well done!
@@ -132,22 +110,7 @@ Return to your build script and add the following class and refactor your `hello
 .build.gradle
 [source,groovy]
 ----
-class Greeting extends DefaultTask { // <1> <2>
-    String message // <3>
-    String recipient
-
-    @TaskAction // <4>
-    void sayGreeting() {
-        println "${message}, ${recipient}!" // <5>
-    }
-}
-
-task hello ( type : Greeting ) { // <6>
-    group 'Welcome'
-    description 'Produces a world greeting'
-    message 'Hello' // <7>
-    recipient 'World'
-}
+include::{samplescodedir}/part3/custom-hello.gradle[]
 ----
 <1> As the build DSL in a `build.gradle` file is a Groovy-base DSL, the class will be a Groovy class.
 <2> Although other task classes from the Gradle API can be used in specific circumstances, extending {javadoc}/org/gradle/api/DefaultTask.html[DefaultTask] is the most common scenario.
@@ -157,20 +120,14 @@ task hello ( type : Greeting ) { // <6>
 <6> Specify the task type by referencing the class type `Greeting` you have added above.
 <7> Configure the message and the recipient.
 
-Test your modification.
-
-[listing]
-----
-gradle hello
-----
-
-You should see the same output
+Test your modification. You should see the same output.
 
 .Output after conversion to a custom task type
-[listing]
+[listing.terminal]
 ----
-:hello
-Hello, World!
+$ gradle hello
+
+include::{samplesoutputdir}/part3/gradle-hello.txt[]
 ----
 
 Now that you have the custom task type, you can add additional tasks. Add a German version of the greeting by just creating an additional task.
@@ -178,12 +135,7 @@ Now that you have the custom task type, you can add additional tasks. Add a Germ
 .Adding a second task
 [source,groovy]
 ----
-task gutenTag( type : Greeting ) {
-    group 'Welcome'
-    description 'Produces a German greeting'
-    message 'Guten Tag'
-    recipient 'Welt'
-}
+include::{samplescodedir}/part3/german-hello.gradle[tags=german]
 ----
 
 NOTE: No assignment is required during configuration as Gradle decorates the properties to allow for a more declarative DSL.
@@ -191,21 +143,21 @@ NOTE: No assignment is required during configuration as Gradle decorates the pro
 Run `gradle tasks` again to verify that the new task has been added.
 
 .Output of 'gradle tasks' after adding second task.
-[listing]
+[listing.terminal]
 ----
-Welcome tasks
--------------
-hello - Produces a greeting
-gutenTag - Produces a German greeting
+$ gradle tasks
+
+include::{samplesoutputdir}/part3/gradle-tasks.txt[]
 ----
 
 Finally, run the new task by doing `gradle gutenTag`
 
 .Output of your second task.
-[listing]
+[listing.terminal]
 ----
-:gutenTag
-Guten Tag, Welt!
+$ gradle gutenTag
+
+include::{samplesoutputdir}/part3/gradle-gutentag.txt[]
 ----
 
 == Summary
@@ -219,8 +171,7 @@ That's it! You've worked through the steps necessary to create a custom Gradle T
 
 == Next steps
 
-// TODO: This should point to a GS guide on organizing build logic (gradle/guides#45)
 * Having classes in a build script will soon lead to a messy and potentially unmaintainable build script. Learn how to {user-manual}organizing_build_logic.html[organize your build logic].
-* Read more about https://docs.gradle.org/current/userguide/tutorial_using_tasks.html[using tasks], and {language-reference}org.gradle.api.Task.html[predefined tasks and task types]
+* Read more about https://docs.gradle.org/current/userguide/tutorial_using_tasks.html[using tasks], and {language-reference}org.gradle.api.Task.html[predefined tasks and task types].
 
 include::contribute[]
