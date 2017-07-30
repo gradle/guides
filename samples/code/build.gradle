@@ -1,0 +1,1 @@
+apply plugin: org.example.greeting.GreetingPlugin // <1>
