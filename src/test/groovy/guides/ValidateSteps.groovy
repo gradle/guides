@@ -18,7 +18,6 @@ class ValidateSteps extends Specification {
 
     void setup() {
         workingDir = temporaryFolder.root
-        workingDir.mkdirs()
         new File(workingDir,'settings.gradle').text=''
     }
 
