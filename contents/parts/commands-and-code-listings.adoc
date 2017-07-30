@@ -1,7 +1,5 @@
 == Commands and code listings
 
-Almost all guides include commands to run and code listings to copy, so the following guidelines are generally applicable.
-
 === Use command line snippets for reader-executed commands
 
 We want to avoid any confusion as to what bits of text need to be copied and pasted into a terminal or command prompt. To that end, use the following syntax for any commands that you want the reader to execute:
@@ -41,3 +39,13 @@ This is mostly to ensure consistency across guides, but single quotes are also a
 
 For consistency use capitalization in the name of a plugin, but lowercase the `plugin` at the end. For instance *Groovy VFS plugin*.
 
+=== Do not use spaces around Gradle task parameters
+
+To be consistent for the user guide, do not place space around parameter when defining tasks.
+
+[source,groovy]
+----
+task hello(type : Greeter) { // <1>
+}
+----
+<1> No space after the `(` or before the `)`.
