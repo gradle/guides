@@ -18,7 +18,6 @@ class ValidateSteps extends Specification {
 
     void setup() {
         workingDir = temporaryFolder.root
-        new File(workingDir,'settings.gradle').text=''
     }
 
     void createBuildScript(final String relativeCodePath) {
