@@ -1,0 +1,51 @@
+== Commands and code listings
+
+=== Use command line snippets for reader-executed commands
+
+We want to avoid any confusion as to what bits of text need to be copied and pasted into a terminal or command prompt. To that end, use the following syntax for any commands that you want the reader to execute:
+
+[listing.terminal]
+----
+$ <command line>
+<expected output>
+----
+
+The expected output is optional, but it's useful for the reader in determining whether they correctly ran the given command line. Here's a simple example of the style we're want:
+
+[listing.terminal]
+----
+$ gradle hello
+:hello
+Hello World!
+----
+
+You may also include multiple command lines, but they must all be prefixed with `$` and you should only include expected output for the last command line. Ideally, you should break the commands into separate blocks if you want to add expected output to any of them.
+
+Place all console listing in a `[listing.terminal]` block.
+
+=== Include the appropriate file paths in the titles of code listings
+
+Code listings typically represent the content of a file. In such cases, make the file path at least part of the listing caption, if not the whole of it. The path should not be included in the prose around the code listing. This makes the prose easier to read and the file path stands out in the listing caption.
+
+=== Use the appropriate language setting for code listings
+
+Asciidoctor allows you to specify the language used in a code listing, so use it! Alternatively, set the default language as a document attribute and only set the language on code listings that differ from that.
+
+=== Favor single quotes for plain strings in build script listings
+
+This is mostly to ensure consistency across guides, but single quotes are also a little less noisy than double quotes. Only use double quotes if you want to include an embedded expression in the string.
+
+=== Lowercase plugin in references.
+
+For consistency use capitalization in the name of a plugin, but lowercase the `plugin` at the end. For instance *Groovy VFS plugin*.
+
+=== Do not use spaces around Gradle task parameters
+
+To be consistent for the user guide, do not place space around parameter when defining tasks.
+
+[source,groovy]
+----
+task hello(type : Greeter) { // <1>
+}
+----
+<1> No space after the `(` or before the `)`.

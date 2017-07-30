@@ -1,0 +1,49 @@
+== Formatting and links
+
+A common decision that a writer needs to make is whether to style a particular piece of text and if so, what style to use. This section tackles those decisions as well as those around the usage of hyperlinks.
+
+=== Use permalinks to external content
+
+Some URLs point to content that changes over time. For example, URLs to the current Gradle User Manual. Prefer permalinks in place of these. Such permalinks are typically tied to a snapshot in time, for example a specific release of Gradle.
+
+Following this guideline means that:
+
+ - linked content won't change in a way that adversely affects the integrity of the guide
+ - we force a controlled and intentional upgrade of the guide at a time of our choosing
+
+=== Use Asciidoctor attributes for commonly referenced base URLs
+
+Asciidoctor attributes allow us to parameterize the guides. This is particularly useful for URLs that share a common base URL, such as links into the Gradle User Manual or Language Reference.
+
+Using attributes in this way means that:
+
+ - we only have to change the base URL in one location if it becomes necessary
+ - the Asciidoc source is more readable
+
+Lastly:
+
+ - the base URL for an attribute should end with a slash - '/'
+ - don't use attributes for one-off or very infrequently used URLs
+
+=== Generate anchor links in the guide that don't have a leading underscore
+
+This is handled automatically by the guides' template build script, but if you're not using that for some reason—not recommended!—be sure to set the Asciidoctor `idprefix` attribute to an empty string in the build.
+
+=== Use monospace for code-like things
+
+This includes:
+
+ - any text that comes from source code or configuration data
+ - commands and command lines
+ - file and directory paths
+
+=== Use ASCII quotes rather than smart quotes
+
+This ensures the guide can be read on any system and the basic quotes render slightly better on GitHub too.
+
+=== Favor putting admonitions between paragraphs
+
+Admonitions are great for calling out information, but they also disrupt the flow of the page. You can minimize this effect by putting admonitions between paragraphs of text, as opposed to between a paragraph and a code block for example.
+
+It may not be possible to follow this guideline in every case. The admonition should also be as close to other relevant content as possible. When these two guidelines conflict, favor the latter.
+
