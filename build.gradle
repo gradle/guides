@@ -10,31 +10,3 @@ guide {
     mainAuthor 'Schalk Cronjé'
 }
 
-gradleRunner {
-    ext {
-        samplesDir = file('samples')
-
-        createBuildScript = { String sourcePath ->
-            copy {
-                from "${samplesDir}/code/${sourcePath}"
-                into workingDir
-                rename '.+','build.gradle'
-            }
-        }
-        validateOutput = { String stepName, String expectedPath ->
-            assert new File( getStepReportDir(stepName), 'out.txt' ).text.contains( new File(samplesDir,"output/${expectedPath}").text )
-        }
-    }
-
-    step 'one-copy', {
-        createBuildScript 'part1/custom-hello.gradle'
-        new File(workingDir,'settings.gradle').text=''
-    }
-
-    step 'one-tasks-all', 'tasks', '--all'
-
-    step 'one-check', {
-        validateOutput 'one-tasks-all', 'part1/gradle-tasks.txt'
-    }
-}
-
