@@ -70,7 +70,7 @@ include::{gradle-outdir}/files/build.gradle[]
 <3> This is an exampe of a dependency which is used internally, and not exposed to consumers on their own compile classpath.
 <4> JUnit testing library
 
-The build file adds the {user-manual}java_library_plugin.html[java-library] plugin. This is an extension of the `java-base` plugin and adds additional tasks for compiling Java source code.
+The `build.gradle` adds the {user-manual}java_library_plugin.html[java-library] plugin. This is an extension of the `java-base` plugin and adds additional tasks for compiling Java source code.
 
 The file `src/main/java/Library.java` is shown here:
 
@@ -205,7 +205,7 @@ You can view the generated `javadoc` files by opening the HTML file located at `
 That's it! You've now successfully built a Java library project, packaged it as a JAR and consumed it within a separate application. Along the way, you've learned how to:
 
 * Generate a Java library
-* Adapt the generated build file and sample Java files are structured
+* Adapt the generated `build.gradle` and sample Java files are structured
 * Run the build and view the test report
 * Customize the name of a JAR file and the content of its manifest
 * Generate API documentation.
