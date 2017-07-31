@@ -4,7 +4,7 @@ A testable guide is not a guide that shows readers how to add tests, but is one 
 
 There are two specific ways to make a guide testable. As an author you can select one of more of these methods. The exact ones you select will be determined by the context of the guide you are writing.
 
-Runner` in the http://ysb33r.github.io/gradleTest/[GradleRunner plugin documentation].
+NOTE: You might still find references to `gradleRunner` in some guides, which is from the link:http://ysb33r.github.io/gradleTest/[GradleRunner plugin]. Usage of this has been deprecated and current usages are being removed from all guides. Please do not use this, but rather follow the test methods as described next.
 
 === Test method 1: Include a test suite
 
