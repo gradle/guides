@@ -204,11 +204,11 @@ You can view the generated `javadoc` files by opening the HTML file located at `
 
 That's it! You've now successfully built a Java library project, packaged it as a JAR and consumed it within a separate application. Along the way, you've learned how to:
 
-* How to generate a Java library
-* How the generated build file and sample Java files are structured
-* How to run the build and view the test report
+* Generate a Java library
+* Adapt the generated build file and sample Java files are structured
+* Run the build and view the test report
 * Customize the name of a JAR file and the content of its manifest
-* Generating API documentation.
+* Generate API documentation.
 
 == Next steps
 
