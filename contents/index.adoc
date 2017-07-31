@@ -127,7 +127,7 @@ You should see the required manifest file—`MANIFEST.MF`—and the compiled `Li
 All of this happens without any additional configuration in `build.gradle` because Gradle's `java-library` plugin assumes your project sources are arranged in a {user-manual}java_plugin.html#sec:java_project_layout[conventional project layout]. You can customize the project layout if you wish {user-manual}java_plugin.html#sec:changing_java_project_layout[as described in the user manual].
 ====
 
-Congratulations, you have just completed the step from creating a Java library! You can can now customize this to your own project needs.
+Congratulations, you have just completed the first step of creating a Java library! You can can now customize this to your own project needs.
 
 == Customize the library JAR
 
