@@ -1,5 +1,7 @@
 package org.gradle.guides.test.fixtures;
 
+import org.gradle.guides.test.fixtures.validation.DefaultOutputValidator;
+import org.gradle.guides.test.fixtures.validation.OutputValidator;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 import org.junit.rules.TemporaryFolder;
@@ -9,9 +11,12 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.gradle.guides.test.fixtures.utils.StringUtils.join;
+
 public class DefaultFunctionalTestFixture implements FunctionalTestFixture {
 
     private final TemporaryFolder temporaryFolder = new TemporaryFolder();
+    private final OutputValidator outputValidator = new DefaultOutputValidator();
     private GradleRunner gradleRunner;
 
     /**
@@ -49,7 +54,9 @@ public class DefaultFunctionalTestFixture implements FunctionalTestFixture {
      */
     @Override
     public BuildResult succeeds(List<String> arguments) {
-        return withArguments(arguments).build();
+        BuildResult buildResult = withArguments(arguments).build();
+        outputValidator.validate(buildResult.getOutput());
+        return buildResult;
     }
 
     /**
@@ -65,7 +72,9 @@ public class DefaultFunctionalTestFixture implements FunctionalTestFixture {
      */
     @Override
     public BuildResult fails(List<String> arguments) {
-        return withArguments(arguments).buildAndFail();
+        BuildResult buildResult = withArguments(arguments).buildAndFail();
+        outputValidator.validate(buildResult.getOutput());
+        return buildResult;
     }
 
     /**
@@ -74,11 +83,6 @@ public class DefaultFunctionalTestFixture implements FunctionalTestFixture {
     @Override
     public BuildResult fails(String... arguments) {
         return fails(Arrays.asList(arguments));
-    }
-
-    private GradleRunner withArguments(List<String> arguments) {
-        gradleRunner.withArguments(arguments);
-        return gradleRunner;
     }
 
     /**
@@ -121,6 +125,11 @@ public class DefaultFunctionalTestFixture implements FunctionalTestFixture {
         return createNewFile("settings.gradle");
     }
 
+    private GradleRunner withArguments(List<String> arguments) {
+        gradleRunner.withArguments(arguments);
+        return gradleRunner;
+    }
+
     private File createNewFile(String fileName) {
         File targetFile = new File(temporaryFolder.getRoot(), fileName);
         File parentDir = new File(temporaryFolder.getRoot(), fileName).getParentFile();
@@ -152,19 +161,5 @@ public class DefaultFunctionalTestFixture implements FunctionalTestFixture {
         } catch (IOException e) {
             throw new RuntimeException(String.format("Unable to create directory '%s' in temporary directory", join(folderNames, ",")), e);
         }
-    }
-
-    private String join(String[] array, String separator) {
-        StringBuilder joinedString = new StringBuilder();
-
-        for (int i = 0; i < array.length; i++) {
-            if (i > 0) {
-                joinedString.append(separator);
-            }
-
-            joinedString.append(array[i]);
-        }
-
-        return joinedString.toString();
     }
 }

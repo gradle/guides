@@ -27,6 +27,8 @@ public interface FunctionalTestFixture {
 
     /**
      * Executes build for provided arguments and expects it finish successfully.
+     * <p>
+     * Throws an {@link java.lang.AssertionError} if the output contains a deprecation message or an unexpected stack trace.
      *
      * @param arguments Arguments
      * @return Build result
@@ -36,6 +38,8 @@ public interface FunctionalTestFixture {
 
     /**
      * Executes build for provided arguments and expects it finish successfully.
+     * <p>
+     * Throws an {@link java.lang.AssertionError} if the output contains a deprecation message or an unexpected stack trace.
      *
      * @param arguments Arguments
      * @return Build result
@@ -45,6 +49,8 @@ public interface FunctionalTestFixture {
 
     /**
      * Executes build for provided arguments and expects it fail.
+     * <p>
+     * Throws an {@link java.lang.AssertionError} if the output contains a deprecation message or an unexpected stack trace.
      *
      * @param arguments Arguments
      * @return Build result
@@ -54,6 +60,8 @@ public interface FunctionalTestFixture {
 
     /**
      * Executes build for provided arguments and expects it fail.
+     * <p>
+     * Throws an {@link java.lang.AssertionError} if the output contains a deprecation message or an unexpected stack trace.
      *
      * @param arguments Arguments
      * @return Build result
