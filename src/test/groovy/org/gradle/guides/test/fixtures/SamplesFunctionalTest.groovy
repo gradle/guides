@@ -30,6 +30,13 @@ class SamplesFunctionalTest extends AbstractSamplesFunctionalTest {
         System.clearProperty('samplesDir')
     }
 
+    def "can get a handle to samples directories"() {
+        expect:
+        getSamplesDir() == samplesDirFolder.root
+        getSamplesCodeDir() == new File(samplesDirFolder.root, 'code')
+        getSamplesOutputDir() == new File(samplesDirFolder.root, 'output')
+    }
+
     def "can execute build and expect successful result"() {
         given:
         samplesBuildFile << successfulHelloWorldTask()

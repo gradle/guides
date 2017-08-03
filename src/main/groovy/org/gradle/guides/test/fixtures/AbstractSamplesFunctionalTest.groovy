@@ -10,12 +10,24 @@ import java.nio.file.Paths
 @CompileStatic
 class AbstractSamplesFunctionalTest extends AbstractFunctionalTest {
 
-    void copySampleCode(String path) {
-        copySampleDirRecursively("code/$path")
+    protected void copySampleCode(String path) {
+        copySampleDirRecursively(new File(getSamplesCodeDir(), path))
     }
 
-    private void copySampleDirRecursively(String path) {
-        Path sourceDir = Paths.get(new File(System.getProperty('samplesDir'), path).toURI())
+    protected File getSamplesDir() {
+        new File(System.getProperty('samplesDir'))
+    }
+
+    protected File getSamplesCodeDir() {
+        new File(getSamplesDir(), 'code')
+    }
+
+    protected File getSamplesOutputDir() {
+        new File(getSamplesDir(), 'output')
+    }
+
+    private void copySampleDirRecursively(File dir) {
+        Path sourceDir = Paths.get(dir.toURI())
         Path targetDir = Paths.get(testDirectory.toURI())
         Files.walkFileTree(sourceDir, new CopyDirVisitor(sourceDir, targetDir))
     }
