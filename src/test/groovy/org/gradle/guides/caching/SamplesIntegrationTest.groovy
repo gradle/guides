@@ -18,7 +18,7 @@ class SamplesIntegrationTest extends AbstractSamplesFunctionalTest {
         def tasks = TASKS_TO_RUN[source] ?: ['jar']
 
         when:
-        def result = succeeds(*tasks)
+        def result = succeeds(tasks)
 
         then:
         result.output.readLines().every {
