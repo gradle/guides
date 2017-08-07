@@ -10,21 +10,31 @@ normalization {
 }
 // end::normalization[]
 
-def generatedResourcesDir = file("$buildDir/generated-resources")
+ext.generatedResourcesDir = file("$buildDir/generated-resources")
 // tag::versionInfo[]
-task currentVersionInfo() {
-    doLast {
+task currentVersionInfo(type: CurrentVersionInfo) {
+    version = project.version
+    versionInfoFile = new File(generatedResourcesDir, "currentVersion.properties")
+}
+
+sourceSets.main.output.dir generatedResourcesDir, builtBy: currentVersionInfo
+
+class CurrentVersionInfo extends DefaultTask {
+    @Input
+    String version
+
+    @OutputFile
+    File versionInfoFile
+
+    @TaskAction
+    void writeVersionInfo() {
         def properties = new Properties()
         properties.setProperty("latestMilestone", version)
-        def outputFile = new File(generatedResourcesDir, "currentVersion.properties")
-        outputFile.parentFile.mkdirs()
-        outputFile.withOutputStream { out ->
+        versionInfoFile.withOutputStream { out ->
             properties.store(out, null)
         }
     }
 }
-
-sourceSets.main.output.dir generatedResourcesDir, builtBy: currentVersionInfo
 // end::versionInfo[]
 
 
