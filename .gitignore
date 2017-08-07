@@ -10,7 +10,6 @@ building-java-libraries/
 building-java-web-applications/
 building-scala-libraries/
 creating-build-scans/
-creating-composite-builds/
 creating-multi-project-builds/
 creating-new-gradle-builds/
 consuming-jvm-libraries/
