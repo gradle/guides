@@ -116,7 +116,9 @@ body.book #header > h1 {
 }
 
 #toc a:hover,
-#toc a:focus {
+#toc a:focus,
+#toc a:hover code,
+#toc a:focus code {
     color: #00C489;
 }
 
