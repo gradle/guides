@@ -20,3 +20,7 @@ asciidoctor {
 
     inputs.dir 'samples' withPropertyName('samplesDir') withPathSensitivity(PathSensitivity.RELATIVE)
 }
+
+test {
+    inputs.dir 'samples' withPropertyName('samplesDir') withPathSensitivity(PathSensitivity.RELATIVE)
+}
