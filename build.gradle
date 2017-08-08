@@ -1,19 +1,11 @@
 plugins {
-    id 'org.gradle.guides.topical' version '0.6.6'
-    id 'org.gradle.guides.test-jvm-code' version '0.6.6'
+    id 'org.gradle.guides.topical' version '0.7.2'
+    id 'org.gradle.guides.test-jvm-code' version '0.7.2'
 }
 
 guide {
     repoPath 'gradle-guides/using-build-cache'
     mainAuthor 'Stefan Wolf, Lóránt Pintér'
-
-    // Uncomment this line to add support authors
-    // supAuthors 'Grumpy Gradlephant', 'Jane Doe'
-}
-
-// Add in any generation steps.
-gradleRunner {
-
 }
 
 asciidoctor {
@@ -25,4 +17,10 @@ asciidoctor {
             into 'images'
         }
     }
+
+    inputs.dir 'samples' withPropertyName('samplesDir') withPathSensitivity(PathSensitivity.RELATIVE)
+}
+
+test {
+    inputs.dir 'samples' withPropertyName('samplesDir') withPathSensitivity(PathSensitivity.RELATIVE)
 }

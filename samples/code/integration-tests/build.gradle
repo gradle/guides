@@ -1,0 +1,44 @@
+apply plugin: 'java'
+
+task integTest(type: Test) {
+}
+
+// tag::integTest[]
+integTest {
+    inputs.property("operatingSystem") {
+        System.getProperty("os.name")
+    }
+}
+// end::integTest[]
+
+// tag::distributionPathInput[]
+integTest {
+    systemProperty "distribution.location", file("build/dist").absolutePath
+}
+// end::distributionPathInput[]
+
+// tag::distributionDirInput[]
+integTest {
+    systemProperty "distribution.location", "build/dist" // <1>
+    inputs.dir("build/dist").withPropertyName("distDir").withPathSensitivity(PathSensitivity.RELATIVE) // <2>
+}
+// end::distributionDirInput[]
+
+// tag::ignoreSystemProperties[]
+integTest {
+    def ciProperties = [agentNumber: (System.getenv().get("AGENT_NUMBER") ?: 1)] // <1>
+    systemProperties(ciProperties) // <2>
+
+    inputs.property('systemProperties') { // <3>
+        systemProperties - ciProperties // <4>
+    }
+}
+// end::ignoreSystemProperties[]
+
+// tag::environment[]
+integTest {
+    inputs.property("langEnvironment") {
+        System.getenv("LANG")
+    }
+}
+// end::environment[]

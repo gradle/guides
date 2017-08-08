@@ -147,15 +147,7 @@ Finally, we find this in our build file:
 
 [source,groovy]
 ----
-task currentVersionInfo() {
-    doLast {
-        def properties = new Properties()
-        properties.latestMilestone = version
-        properties.store(new File(generatedResourcesDir, "currentVersion.properties"))
-    }
-}
-
-sourceSets.main.output.dir generatedResourcesDir, builtBy: currentVersionInfo
+include::{samplescodedir}/normalization/build.gradle[tags=versionInfo]
 ----
 
 Since properties files stored by Java's `Properties.store` method contain a timestamp, this will cause a change to the runtime classpath every time the build runs.

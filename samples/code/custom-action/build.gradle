@@ -1,0 +1,11 @@
+allprojects {
+    apply plugin: 'java'
+}
+
+// tag::customAction[]
+jar {
+    doFirst {
+        jar.manifest.mainAttributes('Class-Path': "${project(':core').jar.archivePath.name} ${project(':baseServices').jar.archivePath.name}")
+    }
+}
+// end::customAction[]

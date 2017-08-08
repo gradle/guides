@@ -50,11 +50,7 @@ For example, if you are using tools in your `Test` task called `integTest` which
 
 [source,groovy]
 ----
-integTest {
-    inputs.property("langEnvironment") {
-        System.getenv("LANG")
-    }
-}
+include::{samplescodedir}/integration-tests/build.gradle[tags=environment]
 ----
 
 If you add conditional logic to distinguish CI builds from local development builds, you have to ensure that this does not break the loading of task outputs from CI onto developer machines.
@@ -62,24 +58,14 @@ For example, the following setup would break caching of `Test` tasks, since Grad
 
 [source, groovy]
 ----
-if (System.getenv().containsKey("CI") {
-    test.doFirst {
-            println "Running test on CI"
-        }
-    }
-}
+include::{samplescodedir}/conditional-action/build.gradle[tags=conditionalAction]
 ----
 
 You should always add the action unconditionally:
 
 [source, groovy]
 ----
-test.doFirst {
-    if (System.getenv().containsKey("CI") {
-            println "Running test on CI"
-        }
-    }
-}
+include::{samplescodedir}/conditional-action/build.gradle[tags=unconditionalAction]
 ----
 
 This way, the task has the same custom action on CI and on developer builds and its outputs can be re-used if the remaining inputs are the same.
@@ -109,17 +95,7 @@ This can be achieved by using the {user-manual}more_about_tasks.html#sec:task_in
 
 [source,groovy]
 ----
-tasks.withType(AbstractCompile) {
-    inputs.property("java.vendor") {
-        System.getProperty("java.vendor")
-    }
-}
-
-tasks.withType(Test) {
-    inputs.property("java.vendor") {
-        System.getProperty("java.vendor")
-    }
-}
+include::{samplescodedir}/java-version-tracking/build.gradle[tags=trackVendor]
 ----
 
 With respect to tracking the Java minor version there are different competing aspects: support pulling results for developers and having "perfect" results on CI.
@@ -174,24 +150,14 @@ E.g., instead of doing
 
 [source,groovy]
 ----
-jar {
-    doFirst {
-        jar.manifest.mainAttributes('Class-Path': "${project(':core').jar.archivePath.name} ${project(':baseServices').jar.archivePath.name}")
-    }
-}
+include::{samplescodedir}/custom-action/build.gradle[tags=customAction]
 ----
 
 do
 
 [source,groovy]
 ----
-task configureJar {
-    doLast {
-        jar.manifest.mainAttributes('Class-Path': "${project(':core').jar.archivePath.name} ${project(':baseServices').jar.archivePath.name}")
-    }
-}
-
-jar.dependsOn(configureJar)
+include::{samplescodedir}/configure-task/build.gradle[tags=configureTask]
 ----
 
 [[logic_based_on_task_outcome,"Build logic based on the outcome of a task"]]
@@ -258,11 +224,7 @@ This is done by configuring e.g. the `Zip` task via the following snippet.
 
 [source,groovy]
 ----
-task createZip(type: Zip) {
-    preserveFileTimestamps = false
-    reproducibleFileOrder = true
-...
-}
+include::{samplescodedir}/reproducible-archives/build.gradle[tags=reproducibleZip]
 ----
 
 Another way to make the outputs repeatable is to activate caching for a task with non-repeatable outputs.
