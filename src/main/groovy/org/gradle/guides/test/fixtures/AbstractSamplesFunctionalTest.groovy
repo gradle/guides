@@ -14,15 +14,15 @@ class AbstractSamplesFunctionalTest extends AbstractFunctionalTest {
         copySampleDirRecursively(new File(getSamplesCodeDir(), path))
     }
 
-    protected File getSamplesDir() {
+    protected static File getSamplesDir() {
         new File(System.getProperty('samplesDir'))
     }
 
-    protected File getSamplesCodeDir() {
+    protected static File getSamplesCodeDir() {
         new File(getSamplesDir(), 'code')
     }
 
-    protected File getSamplesOutputDir() {
+    protected static File getSamplesOutputDir() {
         new File(getSamplesDir(), 'output')
     }
 
