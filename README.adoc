@@ -1,4 +1,4 @@
-= Writing Gradle Tasks image:https://travis-ci.org/gradle-guides/creating-new-gradle-builds.svg?branch=master["Build Status", link="https://travis-ci.org/gradle-guides/creating-new-gradle-builds?branch=master"]
+= Creating new Gradle builds image:https://travis-ci.org/gradle-guides/creating-new-gradle-builds.svg?branch=master["Build Status", link="https://travis-ci.org/gradle-guides/creating-new-gradle-builds?branch=master"]
 
 * Content for this guide is in Asciidoc format and the entry file is `contents/index.adoc`.
 * Place new images under `contents/images`.
