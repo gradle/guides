@@ -1,4 +1,4 @@
-= Gradle Guides Style Guide image:https://travis-ci.org/{repo-path}.svg?branch=master["Build Status", link="https://travis-ci.org/{repo-path}"] 
+= Gradle Guides Style Guide image:https://travis-ci.org/gradle-guides/style-guide.svg?branch=master["Build Status", link="https://travis-ci.org/gradle-guides/style-guide"]
 
 * Content for this guide is in Asciidoc format and the entry file is `contents/index.adoc`.
 * Place new images under `contents/images`.
