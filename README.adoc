@@ -1,4 +1,4 @@
-= Creating Java Applications image:https://travis-ci.org/gradle-guides/creating-java-applications.svg?branch=master["Build Status", link="https://travis-ci.org/gradle-guides/creating-java-applications?branch=master"]
+= Building Java Applications image:https://travis-ci.org/gradle-guides/building-java-applications.svg?branch=master["Build Status", link="https://travis-ci.org/gradle-guides/building-java-applications?branch=master"]
 
 * Content for this guide is in Asciidoc format and the entry file is `contents/index.adoc`.
 * Place new images under `contents/images`.
