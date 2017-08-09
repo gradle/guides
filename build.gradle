@@ -1,13 +1,8 @@
 plugins {
-    id 'org.gradle.guides.getting-started' version '0.6.6'
+    id 'org.gradle.guides.getting-started' version '0.7.2'
 }
-
-import org.apache.tools.ant.filters.*
 
 guide {
     repoPath 'gradle-guides/creating-build-scans'
     mainAuthor 'Ken Kousen'
 }
-
-
-
