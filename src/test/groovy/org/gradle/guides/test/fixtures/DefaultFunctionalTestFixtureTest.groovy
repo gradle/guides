@@ -2,6 +2,7 @@ package org.gradle.guides.test.fixtures
 
 import spock.lang.Specification
 
+import static org.gradle.guides.test.fixtures.FlawedProjectFixture.*
 import static org.gradle.guides.test.fixtures.HelloWorldProjectFixture.failingHelloWorldTask
 import static org.gradle.guides.test.fixtures.HelloWorldProjectFixture.successfulHelloWorldTask
 import static org.gradle.testkit.runner.TaskOutcome.FAILED
@@ -176,5 +177,48 @@ class DefaultFunctionalTestFixtureTest extends Specification {
         then:
         result.task(':helloWorld').outcome == SUCCESS
         output.toString().contains('Hello World!')
+    }
+
+    def "throws exception if use of deprecated API is detected"() {
+        given:
+        def expectedMessage = 'Line 1 contains a deprecation warning: The Task.leftShift(Closure) method has been deprecated and is scheduled to be removed in Gradle 5.0. Please use Task.doLast(Action) instead.'
+        fixture.buildFile << deprecatedGradleApiInSuccessfulBuild()
+
+        when:
+        fixture.gradleRunner.withGradleVersion('4.0')
+        fixture.succeeds('helloWorld')
+
+        then:
+        Throwable t = thrown(AssertionError)
+        t.message.contains(expectedMessage)
+
+        when:
+        fixture.buildFile << deprecatedGradleApiInFailingBuild()
+        fixture.fails('byeWorld')
+
+        then:
+        t = thrown(AssertionError)
+        t.message.contains(expectedMessage)
+    }
+
+    def "throws exception if unexpected stack trace is detected"() {
+        given:
+        def expectedMessage = 'Line 2 contains an unexpected stack trace: \tat sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)'
+        fixture.buildFile << unexpectedStackTraceInSuccessfulBuild()
+
+        when:
+        fixture.succeeds('helloWorld')
+
+        then:
+        Throwable t = thrown(AssertionError)
+        t.message.contains(expectedMessage)
+
+        when:
+        fixture.buildFile << unexpectedStackTraceInFailingBuild()
+        fixture.fails('byeWorld')
+
+        then:
+        t = thrown(AssertionError)
+        t.message.contains(expectedMessage)
     }
 }
