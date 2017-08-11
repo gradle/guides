@@ -14,9 +14,32 @@ If you happen to be a beginner to Gradle please start by working through the lin
 
 == The sample project
 
+All discussions around testing in this guide are based on a sample project called URL verifier plugin. You can inspect and download the link:https://github.com/gradle-guides/testing-gradle-plugins/tree/master/samples/code/url-verifier-plugin[source code of the plugin] in the corresponding GitHub repository. The plugin creates a task named `verifyUrl` that checks whether a given URL can be resolved via HTTP GET. The URL can be provided through an extension named `verification` in the consuming build script.
+
+The following build script demonstrates how a consuming build script could look like.
+
+.build.gradle
+[source,groovy]
+----
+apply plugin: 'org.gradle.sample.urlverifier'
+
+verification {
+    url = 'http://www.google.com/'
+}
+----
+
+Executing the command `gradle verifyUrl` would render a success message in case the URL can be resolved.
+
+[source,shell]
+----
+include::{samplesoutputdir}/consumer/verify-url.out[]
+----
+
+The following sections will discuss how to effectively debug and test the plugin from different angles.
+
 == Manual verification and debugging
 
-=== Using composite builds
+=== Rapid development for plugins
 
 One way to test a plugin in a consuming project is to publish the plugin JAR file to a local repository and point the project it. Granted this technique is cumbersome - every change to the plugin code requires the developer to publish a new artifact.
 
@@ -48,6 +71,8 @@ The following code snippet demonstrates the use of the settings file.
 include::{samplescodedir}/include-plugin-build/settings.gradle[tags=include-build]
 ----
 
+=== Debugging from the IDE
+
 == Defining and implementing appropriate tests types
 
 === The testing pyramid
@@ -69,11 +94,11 @@ image::testing-pyramid.png[align="center"]
     └── test
         └── groovy      // <5>
 ----
-<1> Source directory holding functional tests
-<2> Source directory holding integration tests
-<3> Source directory holding production source code
-<4> Source directory holding production resource files
-<5> Source directory holding unit tests
+<1> Source directory containing functional tests
+<2> Source directory containing integration tests
+<3> Source directory containing production source code
+<4> Source directory containing production resource files
+<5> Source directory containing unit tests
 
 .integration-test.gradle
 [source,groovy]

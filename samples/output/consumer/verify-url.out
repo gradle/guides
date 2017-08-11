@@ -1,0 +1,7 @@
+Parallel execution is an incubating feature.
+
+> Task :verifyUrl
+Successfully resolved URL 'http://www.google.com/'
+
+BUILD SUCCESSFUL in 0s
+1 actionable task: 1 executed
