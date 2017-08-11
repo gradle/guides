@@ -2,12 +2,6 @@ package org.gradle.guides.test.fixtures
 
 final class FlawedProjectFixture {
 
-    private static final String STACK_TRACE = """
-Exception in thread "main" java.lang.NullPointerException
-        at com.example.myproject.Book.getTitle(Book.java:16)
-        at com.example.myproject.Author.getBookTitles(Author.java:25)
-        at com.example.myproject.Bootstrap.main(Bootstrap.java:14)"""
-
     private FlawedProjectFixture() {}
 
     static String deprecatedGradleApiInSuccessfulBuild() {
@@ -30,7 +24,7 @@ Exception in thread "main" java.lang.NullPointerException
         """
             task helloWorld {
                 doLast {
-                    println '''$STACK_TRACE'''
+                    new Exception().printStackTrace()
                 }
             }
         """
@@ -40,7 +34,7 @@ Exception in thread "main" java.lang.NullPointerException
         """
             task byeWorld {
                 doLast {
-                    println '''$STACK_TRACE'''
+                    new Exception().printStackTrace()
                     throw new GradleException('Expected')
                 }
             }
