@@ -1,3 +1,4 @@
+// tag::test-type-setup[]
 sourceSets {
     integrationTest {
         groovy.srcDir file('src/integTest/groovy')
@@ -21,7 +22,10 @@ task integrationTest(type: Test) {
 }
 
 check.dependsOn integrationTest
+// end::test-type-setup[]
 
+// tag::gradle-api[]
 dependencies {
     integrationTestCompile gradleApi()
 }
+// end::gradle-api[]

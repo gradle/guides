@@ -22,6 +22,8 @@ task functionalTest(type: Test) {
 
 check.dependsOn functionalTest
 
+// tag::source-set-config[]
 gradlePlugin {
     testSourceSets sourceSets.functionalTest
 }
+// tag::source-set-config[]

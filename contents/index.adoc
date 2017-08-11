@@ -2,7 +2,7 @@
 :toclevels: 2
 :numbered:
 
-With practice writing Gradle plugins comes easy especially with the knowledge of the link:https://guides.gradle.org/implementing-gradle-plugins/[implementing Gradle plugins] guide under your belt. Part of every development process is testing whether that’s in a manual or automated fashion. The same is true for Gradle plugin code. Before letting any consumer use a plugin its functionality should be verified on different levels. In this guide you will learn how to debug plugin code during development. You will also getting to know the techniques used to write and execute different types of tests.
+With practice writing Gradle plugins comes easy especially with the knowledge of the link:https://guides.gradle.org/implementing-gradle-plugins/[Implementing Gradle plugins] guide under your belt. Part of every development process is testing whether that’s in a manual or automated fashion. The same is true for Gradle plugin code. Before letting any consumer use a plugin its functionality should be verified on different levels. In this guide you will learn how to debug plugin code during development. You will also getting to know the techniques used to write and execute different types of tests.
 
 This guide assumes you have:
 
@@ -10,7 +10,7 @@ This guide assumes you have:
 - Knowledge of Gradle plugin implementation techniques
 - Working knowledge in writing Java code
 
-If you happen to be a beginner to Gradle please start by working through the Getting Started Guides on Gradle development first while referencing the Gradle User Manual to go deeper.
+If you happen to be a beginner to Gradle please start by working through the link:https://gradle.org/guides#getting-started[Getting Started Guides on Gradle development] first while referencing the {user-manual}userguide.html[Gradle User Manual] to go deeper.
 
 == Manual verification and debugging
 
@@ -25,13 +25,112 @@ With the introduction of the composite builds feature, plugin developers have a 
 ----
 ----
 
-== Implementing tests types
+== Defining and implementing appropriate tests types
 
-=== Writing and executing unit tests
+=== The testing pyramid
 
-=== Writing and executing integration tests
+=== Setting up dedicated source sets
 
-=== Implementing functional tests
+----
+.
+└── src
+    ├── functTest
+    │   └── groovy      <= Functional tests
+    ├── integTest
+    │   └── groovy      <= Integration tests
+    ├── main
+    │   ├── java        <= Production source code
+    │   └── resources   <= Production resource files
+    └── test
+        └── groovy      <= Unit tests
+----
+
+.integration-test.gradle
+[source,groovy]
+----
+include::{samplescodedir}/url-verifier-plugin/gradle/integration-test.gradle[tags=test-type-setup]
+----
+
+=== Tooling for every test type
+
+[cols="20%,80%",options="header"]
+|======================
+|Test type                               |Tooling
+|<<unit-tests,Unit tests>>               |Any JVM-based test framework
+|<<integration-tests,Integration tests>> |Any JVM-based test framework and Gradle's `ProjectBuilder` API
+|<<functional-tests,Functional tests>>   |Any JVM-based test framework and Gradle TestKit
+|======================
+
+== Implementing tests
+
+[[unit-tests]]
+=== Unit tests
+
+.HttpResponse.java
+[source,java]
+----
+include::{samplescodedir}/url-verifier-plugin/src/main/java/org/gradle/sample/http/HttpResponse.java[]
+----
+
+.HttpResponseTest.groovy
+[source,groovy]
+----
+include::{samplescodedir}/url-verifier-plugin/src/test/groovy/org/gradle/sample/http/HttpResponseTest.groovy[]
+----
+
+[[integration-tests]]
+=== Integration tests
+
+.DefaultHttpCaller.java
+[source,java]
+----
+include::{samplescodedir}/url-verifier-plugin/src/main/java/org/gradle/sample/http/DefaultHttpCaller.java[]
+----
+
+.DefaultHttpCallerIntegrationTest.groovy
+[source,groovy]
+----
+include::{samplescodedir}/url-verifier-plugin/src/integTest/groovy/org/gradle/sample/http/DefaultHttpCallerIntegrationTest.groovy[]
+----
+
+.UrlVerify.java
+[source,java]
+----
+include::{samplescodedir}/url-verifier-plugin/src/main/java/org/gradle/sample/tasks/UrlVerify.java[]
+----
+
+.integration-test.gradle
+[source,groovy]
+----
+include::{samplescodedir}/url-verifier-plugin/gradle/integration-test.gradle[tags=gradle-api]
+----
+
+.UrlVerifyIntegrationTest.groovy
+[source,groovy]
+----
+include::{samplescodedir}/url-verifier-plugin/src/integTest/groovy/org/gradle/sample/tasks/UrlVerifyIntegrationTest.groovy[]
+----
+
+[[functional-tests]]
+=== Functional tests
+
+.UrlVerifierPlugin.java
+[source,java]
+----
+include::{samplescodedir}/url-verifier-plugin/src/main/java/org/gradle/sample/UrlVerifierPlugin.java[]
+----
+
+.functional-test.gradle
+[source,groovy]
+----
+include::{samplescodedir}/url-verifier-plugin/gradle/functional-test.gradle[tags=source-set-config]
+----
+
+.UrlVerifierPluginFunctionalTest.groovy
+[source,groovy]
+----
+include::{samplescodedir}/url-verifier-plugin/src/functTest/groovy/org/gradle/sample/UrlVerifierPluginFunctionalTest.groovy[]
+----
 
 == Summary
 
@@ -43,5 +142,5 @@ Wrote an awesome plugin? Write a tweet to link:https://twitter.com/gradle[@gradl
 
 Testing Gradle plugins builds upon best practices and development strategies. You may be interested in:
 
-link:https://guides.gradle.org/designing-gradle-plugins/[Designing Gradle plugins]
-link:https://guides.gradle.org/implementing-gradle-plugins/[Implementing Gradle plugins]
+- link:https://guides.gradle.org/designing-gradle-plugins/[Designing Gradle plugins]
+- link:https://guides.gradle.org/implementing-gradle-plugins/[Implementing Gradle plugins]
