@@ -15,6 +15,7 @@ The class `AbstractFunctionalTest` provide basic functionality.
 - Sets up and tears down a temporary directory for test execution.
 - Creates a `GradleRunner` instance and makes it available.
 - Provides convenience methods for execution of test project with `GradleRunner`.
+- Verifies that build result output for a `GradleRunner` execution does not contain deprecation warnings or stack traces.
 - Provides convenience methods for directory and file creation.
 
 _src/test/groovy/org/gradle/guides/MyFunctionalTest.groovy_
