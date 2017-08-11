@@ -27,6 +27,7 @@ import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.api.plugins.GroovyPlugin
 import org.gradle.api.plugins.JavaPlugin
 import org.gradle.api.plugins.JavaPluginConvention
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.testing.Test
 
 import static org.gradle.api.plugins.JavaPlugin.TEST_COMPILE_CONFIGURATION_NAME
@@ -93,6 +94,9 @@ class TestJvmCodePlugin implements Plugin<Project> {
 
     private void configureSamplesConventions(Project project) {
         Test testTask = (Test)project.tasks.getByName(JavaPlugin.TEST_TASK_NAME)
-        testTask.systemProperties('samplesDir': project.file(SAMPLES_BASE_DIR).absolutePath)
+        def samplesBaseDir = project.file(SAMPLES_BASE_DIR)
+        testTask.inputs.dir(samplesBaseDir).withPropertyName('samplesDir').withPathSensitivity(PathSensitivity.RELATIVE)
+        // This breaks relocatability of the test task. If caching becomes important we should consider redefining the inputs for the test task
+        testTask.systemProperties('samplesDir': samplesBaseDir.absolutePath)
     }
 }

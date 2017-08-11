@@ -16,6 +16,8 @@
 
 package org.gradle.guides
 
+import org.gradle.testkit.runner.TaskOutcome
+
 class TestJvmCodePluginFunctionalTest extends AbstractFunctionalTest {
 
     def setup() {
@@ -96,5 +98,47 @@ class MyTest extends Specification {
 
         then:
         noExceptionThrown()
+    }
+
+    def "test is out of date if samples change"() {
+        def testDir = temporaryFolder.newFolder('src', 'test', 'groovy')
+        new File(testDir, 'MyTest.groovy') << """
+import spock.lang.Specification
+
+class MyTest extends Specification {
+    def "always passes"() {
+        expect:
+        true
+    }
+}
+"""
+        def samplesCodeDir = temporaryFolder.newFolder('samples', 'code', 'hello-world')
+        def sampleCode = new File(samplesCodeDir, 'build.gradle')
+        sampleCode << """
+            task helloWorld {
+                doLast {
+                    println 'Hello world'
+                }
+            }
+        """
+
+        when:
+        def result = build("test")
+
+        then:
+        result.task(":test").outcome == TaskOutcome.SUCCESS
+
+        when:
+        sampleCode << 'task otherTask {}'
+        result = build("test")
+
+        then:
+        result.task(":test").outcome == TaskOutcome.SUCCESS
+
+        when:
+        result = build("test")
+
+        then:
+        result.task(":test").outcome == TaskOutcome.UP_TO_DATE
     }
 }

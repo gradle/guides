@@ -24,6 +24,7 @@ import org.asciidoctor.gradle.AsciidoctorTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.tasks.PathSensitivity
 
 /**
  * The guides base plugin provides conventions for all Gradle guides.
@@ -92,6 +93,7 @@ class BasePlugin implements Plugin<Project> {
             sourceDir 'contents'
             outputDir { project.buildDir }
             backends 'html5'
+            inputs.dir('samples').withPropertyName('samplesDir').withPathSensitivity(PathSensitivity.RELATIVE)
 
             attributes "source-highlighter": "coderay",
                     "coderay-linenums-mode": "table",

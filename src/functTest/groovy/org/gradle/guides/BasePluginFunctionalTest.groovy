@@ -16,6 +16,8 @@
 
 package org.gradle.guides
 
+import org.gradle.testkit.runner.TaskOutcome
+
 class BasePluginFunctionalTest extends AbstractFunctionalTest {
 
     def "adds Asciidoctor attributes for samples code and output directory"() {
@@ -87,6 +89,42 @@ include::{samplesoutputdir}/helloWorld/build.out[]
         def htmlFile = new File(temporaryFolder.root, 'build/html5/index.html').text
         htmlFile.contains("Unresolved directive in index.adoc - include::${temporaryFolder.root.canonicalPath}/samples/code/helloWorld/build.gradle[]")
         htmlFile.contains("Unresolved directive in index.adoc - include::${temporaryFolder.root.canonicalPath}/samples/output/helloWorld/build.out[]")
+    }
+
+    def "asciidoctor is out of date if samples change"() {
+        given:
+        def asciiDoctorTask = ":asciidoctor"
+        def contentsDir = createContentsDir()
+        new File(contentsDir, "index.adoc") << 'This is some sample ascii source'
+        def samplesCodeDir = createSamplesCodeDir()
+        def samplesOutputDir = createSamplesOutputDir()
+
+        when:
+        def result = build(asciiDoctorTask)
+
+        then:
+        result.task(asciiDoctorTask).outcome == TaskOutcome.SUCCESS
+
+        when:
+        new File(samplesCodeDir, "build.gradle") << 'apply plugin: java'
+        result = build(asciiDoctorTask)
+
+        then:
+        result.task(asciiDoctorTask).outcome == TaskOutcome.SUCCESS
+
+        when:
+        new File(samplesOutputDir, "my-task-output.log") << 'Build SUCCESSFUL'
+        result = build(asciiDoctorTask)
+
+        then:
+        result.task(asciiDoctorTask).outcome == TaskOutcome.SUCCESS
+
+        when:
+        result = build(asciiDoctorTask, '--info')
+
+        then:
+        result.task(asciiDoctorTask).outcome == TaskOutcome.UP_TO_DATE
+
     }
 
     private File createSamplesCodeDir() {
