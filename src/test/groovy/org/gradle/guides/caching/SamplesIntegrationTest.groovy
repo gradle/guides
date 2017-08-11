@@ -17,20 +17,14 @@ class SamplesIntegrationTest extends AbstractSamplesFunctionalTest {
         copySampleCode(source)
         def tasks = TASKS_TO_RUN[source] ?: ['jar']
 
-        when:
-        def result = succeeds(tasks)
-
-        then:
-        result.output.readLines().every {
-            !it.matches(/.*\s+deprecated.*/)
-        }
+        expect:
+        succeeds(tasks)
 
         where:
         source << samples()
     }
 
     private static List<String> samples() {
-        def samplesDir = new File(System.getProperty("samplesDir"), "code")
-        samplesDir.listFiles().findAll { it.isDirectory() }.collect { it.name }
+        samplesCodeDir.listFiles().findAll { it.isDirectory() }.collect { it.name }
     }
 }
