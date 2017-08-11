@@ -1,6 +1,10 @@
 *.iml
+*.ipr
+*.iws
 .idea
+out
 .gradle
 build
 hs_err_pid*.log
 replay_pid*.log
+.DS_Store
