@@ -12,22 +12,47 @@ This guide assumes you have:
 
 If you happen to be a beginner to Gradle please start by working through the link:https://gradle.org/guides#getting-started[Getting Started Guides on Gradle development] first while referencing the {user-manual}userguide.html[Gradle User Manual] to go deeper.
 
+== The sample project
+
 == Manual verification and debugging
 
 === Using composite builds
 
 One way to test a plugin in a consuming project is to publish the plugin JAR file to a local repository and point the project it. Granted this technique is cumbersome - every change to the plugin code requires the developer to publish a new artifact.
 
-With the introduction of the composite builds feature, plugin developers have a more powerful mechanism at their disposal. The standalone plugin project and the project consuming the plugin can be combined together into a single unit.
+With the introduction of the {user-manual}composite_builds.html[composite builds] feature, plugin developers have a more powerful mechanism at their disposal. The standalone plugin project and the project consuming the plugin can be combined together into a single unit making it much more straight forward to try out or debug changes without the hassle of publishing.
 
-.build.gradle
+----
+.
+├── include-plugin-build   // <1>
+│   ├── build.gradle
+│   └── settings.gradle
+└── url-verifier-plugin    // <2>
+    ├── build.gradle
+    ├── settings.gradle
+    └── src
+----
+<1> Consuming project that includes the plugin project
+<2> The plugin project
+
+There are two ways to include a plugin project into a consuming project.
+
+1. By using the command line option `--include-build`.
+2. By using the method `includeBuild` in `settings.gradle`.
+
+The following code snippet demonstrates the use of the settings file.
+
+.settings.gradle
 [source,groovy]
 ----
+include::{samplescodedir}/include-plugin-build/settings.gradle[tags=include-build]
 ----
 
 == Defining and implementing appropriate tests types
 
 === The testing pyramid
+
+image::testing-pyramid.png[align="center"]
 
 === Setting up dedicated source sets
 
@@ -35,15 +60,20 @@ With the introduction of the composite builds feature, plugin developers have a 
 .
 └── src
     ├── functTest
-    │   └── groovy      <= Functional tests
+    │   └── groovy      // <1>
     ├── integTest
-    │   └── groovy      <= Integration tests
+    │   └── groovy      // <2>
     ├── main
-    │   ├── java        <= Production source code
-    │   └── resources   <= Production resource files
+    │   ├── java        // <3>
+    │   └── resources   // <4>
     └── test
-        └── groovy      <= Unit tests
+        └── groovy      // <5>
 ----
+<1> Source directory holding functional tests
+<2> Source directory holding integration tests
+<3> Source directory holding production source code
+<4> Source directory holding production resource files
+<5> Source directory holding unit tests
 
 .integration-test.gradle
 [source,groovy]
@@ -51,14 +81,14 @@ With the introduction of the composite builds feature, plugin developers have a 
 include::{samplescodedir}/url-verifier-plugin/gradle/integration-test.gradle[tags=test-type-setup]
 ----
 
-=== Tooling for every test type
+=== Tooling support for every test type
 
 [cols="20%,80%",options="header"]
 |======================
-|Test type                               |Tooling
+|Test type                               |Tooling support
 |<<unit-tests,Unit tests>>               |Any JVM-based test framework
-|<<integration-tests,Integration tests>> |Any JVM-based test framework and Gradle's `ProjectBuilder` API
-|<<functional-tests,Functional tests>>   |Any JVM-based test framework and Gradle TestKit
+|<<integration-tests,Integration tests>> |Any JVM-based test framework and {api-reference}org/gradle/testfixtures/ProjectBuilder.html[Gradle's ProjectBuilder API]
+|<<functional-tests,Functional tests>>   |Any JVM-based test framework and {user-manual}test_kit.html[Gradle TestKit]
 |======================
 
 == Implementing tests

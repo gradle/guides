@@ -1,0 +1,11 @@
+buildscript {
+    dependencies {
+        classpath 'org.gradle.sample:url-verifier-plugin:1.0'
+    }
+}
+
+apply plugin: 'org.gradle.sample.urlverifier'
+
+verification {
+    url = 'http://www.google.com/'
+}
