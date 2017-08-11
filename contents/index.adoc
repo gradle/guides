@@ -1,22 +1,47 @@
-= testing-gradle-plugins
+= Testing Gradle plugins
+:toclevels: 2
 :numbered:
 
-*INTRO_TBC*
+With practice writing Gradle plugins comes easy especially with the knowledge of the link:https://guides.gradle.org/implementing-gradle-plugins/[implementing Gradle plugins] guide under your belt. Part of every development process is testing whether that’s in a manual or automated fashion. The same is true for Gradle plugin code. Before letting any consumer use a plugin its functionality should be verified on different levels. In this guide you will learn how to debug plugin code during development. You will also getting to know the techniques used to write and execute different types of tests.
 
-== CONTENT_TBC
+This guide assumes you have:
 
-////
-Write your content using a selection of section levels as you wish.
-You can also use include blocks to split your topical guide into more manageable
-chunks. Have a look in build.gradle to see which attributes are already available
-to use. This should among others include {user-manual}, {guides}, {gradle-version}.
-////
+- Basic understanding of software engineering practices
+- Knowledge of Gradle plugin implementation techniques
+- Working knowledge in writing Java code
 
-*TBC*
+If you happen to be a beginner to Gradle please start by working through the Getting Started Guides on Gradle development first while referencing the Gradle User Manual to go deeper.
+
+== Manual verification and debugging
+
+=== Using composite builds
+
+One way to test a plugin in a consuming project is to publish the plugin JAR file to a local repository and point the project it. Granted this technique is cumbersome - every change to the plugin code requires the developer to publish a new artifact.
+
+With the introduction of the composite builds feature, plugin developers have a more powerful mechanism at their disposal. The standalone plugin project and the project consuming the plugin can be combined together into a single unit.
+
+.build.gradle
+[source,groovy]
+----
+----
+
+== Implementing tests types
+
+=== Writing and executing unit tests
+
+=== Writing and executing integration tests
+
+=== Implementing functional tests
 
 == Summary
 
-*TBC*
+Please let us know on the link:https://discuss.gradle.org/[Gradle forum] if you are still having difficulties understanding any of the covered testing strategies. Which one works the best for your plugin? Let us know!
 
+Wrote an awesome plugin? Write a tweet to link:https://twitter.com/gradle[@gradle] with the link to the documentation or code.
 
-include::contribute[]
+== Next steps
+
+Testing Gradle plugins builds upon best practices and development strategies. You may be interested in:
+
+link:https://guides.gradle.org/designing-gradle-plugins/[Designing Gradle plugins]
+link:https://guides.gradle.org/implementing-gradle-plugins/[Implementing Gradle plugins]

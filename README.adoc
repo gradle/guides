@@ -1,4 +1,4 @@
-= testing-gradle-plugins image:https://travis-ci.org/gradle-guides/testing-gradle-plugins.svg?branch=master["Build Status", link="https://travis-ci.org/gradle-guides/testing-gradle-plugins?branch=master"]
+= Testing Gradle Plugins image:https://travis-ci.org/gradle-guides/testing-gradle-plugins.svg?branch=master["Build Status", link="https://travis-ci.org/gradle-guides/testing-gradle-plugins?branch=master"]
 
 * Content for this guide is in Asciidoc format and the entry file is `contents/index.adoc`.
 * Place new images under `contents/images`.
