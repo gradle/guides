@@ -1,0 +1,11 @@
+:url-verifier-plugin:compileJava
+:url-verifier-plugin:compileGroovy NO-SOURCE
+:url-verifier-plugin:pluginDescriptors
+:url-verifier-plugin:processResources
+:url-verifier-plugin:classes
+:url-verifier-plugin:jar
+:verifyUrl
+Successfully resolved URL 'http://www.google.com/'
+
+BUILD SUCCESSFUL in 1s
+1 actionable task: 1 executed
