@@ -11,7 +11,6 @@ import spock.lang.Specification
 import spock.lang.Subject
 
 class UrlVerifyIntegrationTest extends Specification {
-
     private static final String EXAMPLE_URL = 'http://www.google.com/'
 
     @Rule TemporaryFolder temporaryFolder = new TemporaryFolder()

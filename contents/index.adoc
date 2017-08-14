@@ -21,11 +21,7 @@ The following build script demonstrates a build script consuming the plugin.
 .build.gradle
 [source,groovy]
 ----
-apply plugin: 'org.gradle.sample.urlverifier'   // <1>
-
-verification {                                  // <2>
-    url = 'http://www.google.com/'
-}
+include::{samplescodedir}/include-plugin-build/build.gradle[tags=apply-configure-plugin]
 ----
 <1> Applies the plugin to the project
 <2> Configures the URL to be verified through the exposed extension
@@ -59,7 +55,9 @@ In contrast to manual testing, other types of tests can be fully automated and r
 
 **Functional testing** is used to test the system from an end user's perspective. End-to-end tests for Gradle plugins stand up a build script, apply the plugin under test and execute the build with a specific task. The outcome of the build (e.g. standard output/error or generated artifacts) verfies the correctness of the functionality.
 
-Implementing manual and automated testing for Gradle plugins is straight forward - it just requires the right tooling. The table below gives you a brief overview on how to approach each test type. For a detailed discussion and code example please refer to the dedicated section in this guide.
+=== Tooling support
+
+Implementing manual and automated testing for Gradle plugins is straight forward - it just requires the right tooling. The table below gives you a brief overview on how to approach each test type. Please be aware that you have the free choice of using the test framework you are most familiar with. For a detailed discussion and code example please refer to the dedicated section in this guide.
 
 [cols="20%,80%",options="header"]
 |======================
@@ -114,11 +112,13 @@ include::{samplesoutputdir}/composite-build/verify-url.out[]
 
 Next up, you'll learn how to implement automated tests for Gradle plugins.
 
-== Implementing automated tests
+== Setting up automated tests
 
-Setting up a suite of tests earlier on the project lifecycle is crucial to the success of your plugin. You will encounter various situations that make your tests invaluable e.g. when upgrading the plugin to a new version of Gradle or enhancing and refactoring the code.
+Setting up a suite of tests earlier on the project lifecycle is crucial to the success of your plugin. You will encounter various situations that make your tests an invaluable safety net e.g. when upgrading the plugin to a new Gradle version and enhancing or refactoring the code.
 
 === Organizing test source code
+
+To cover the most important use cases with test code a good distribution of unit, integration and functional tests is recommended. Separating the source code for each test type automatically results in a more maintainable and manageable project. By default the Java project already creates a convention for organizing unit tests, the directory `src/test/java`, or if the Groovy plugin is applied, `src/test/groovy`. Consequently, source code directories for other test types should follow a similar pattern. Below you can find an exemplary project layout for a plugin project that chooses to use a Groovy-based testing approach.
 
 ----
 .
@@ -139,22 +139,56 @@ Setting up a suite of tests earlier on the project lifecycle is crucial to the s
 <4> Source directory containing production resource files
 <5> Source directory containing unit tests
 
-=== Setting up dedicated source sets
+NOTE: The directories `src/integTest/groovy` and `src/functTest/groovy` are not based on an existing standard convention for Gradle projects. You can free to choose any project layout that works best for you.
+
+In the next section, you will learn how to configure those source directories for compilation and test execution.
+
+=== Modeling test types
+
+Gradle models source code directories with the help of the {user-manual}java_plugin.html#sec:working_with_java_source_sets[source set concept]. By pointing an instance of a source set to one or many source code directories, Gradle will automatically creating a corresponding compilation task out-of-the-box. The following script plugin demonstrates the creation of a source set for integration tests.
 
 .integration-test.gradle
 [source,groovy]
 ----
-include::{samplescodedir}/url-verifier-plugin/gradle/integration-test.gradle[tags=test-type-setup]
+include::{samplescodedir}/url-verifier-plugin/gradle/integration-test.gradle[tags=test-source-set]
 ----
 
+Source sets are only responsible for compiling source code but do not deal with executing the byte code. For the purpose of test execution, a corresponding task of type {api-reference}org/gradle/api/tasks/testing/Test.html[Test] needs to be established. The following task demonstrate the setup for executing integration tests. As you can see in the task configuring the classes and runtime classpath of the integration test source set is referenced.
+
+.integration-test.gradle
+[source,groovy]
+----
+include::{samplescodedir}/url-verifier-plugin/gradle/integration-test.gradle[tags=test-task]
+----
+
+=== Configuring a test framework
+
+Writing test code for Gradle plugin is not bound to a specific test framework. Popular choices include link:http://junit.org/junit4/[JUnit], link:http://testng.org/[TestNG] and link:http://spockframework.org/[Spock]. Once you choose an option, you have to add it to the compile classpath for your tests. The following code snippet shows how to use Spock for implementing tests.
+
+.build.gradle
+[source,groovy]
+----
+include::{samplescodedir}/url-verifier-plugin/build.gradle[tags=test-framework]
+----
+
+NOTE: Spock is a Groovy-based BDD test framework that even includes APIs for creating Stubs and Mocks. The Gradle team prefers the Spock over other options for its expressiveness and conciseness.
+
+With the knowledge of setting up test source sets and tasks, let's also discuss an concrete example for unit, integration and functional tests. All examples are based on Spock.
+
+== implementing automated tests
+
 [[unit-tests]]
-=== Unit tests
+=== Implementing unit tests
+
+The URL verifier plugin emits HTTP GET calls to check if a URL can be resolved successfully. The method `DefaultHttpCaller.get(String)` is responsible for calling a given URL and returns with an instance of type `HttpResponse`. `HttpResponse` is a POJO containing information about the HTTP response code and message.
 
 .HttpResponse.java
 [source,java]
 ----
 include::{samplescodedir}/url-verifier-plugin/src/main/java/org/gradle/sample/http/HttpResponse.java[]
 ----
+
+The class `HttpResponse` represents a good candidate to be tested by a unit test. It does not reach out to any other classes nor does it use the Gradle API.
 
 .HttpResponseTest.groovy
 [source,groovy]
@@ -163,7 +197,13 @@ include::{samplescodedir}/url-verifier-plugin/src/test/groovy/org/gradle/sample/
 ----
 
 [[integration-tests]]
-=== Integration tests
+=== Implementing integration tests
+
+Integration tests might or might not use the Gradle API. This section of the guide explains solutions for both situations. 
+
+==== Class under test does not use Gradle API
+
+First, we'll have a look at a class that reaches out to a another system, the piece of code that emits the HTTP calls. At the time of executing a test for the class `DefaultHttpCaller`, the runtime environment needs to be able to reach out to the internet.
 
 .DefaultHttpCaller.java
 [source,java]
@@ -171,11 +211,17 @@ include::{samplescodedir}/url-verifier-plugin/src/test/groovy/org/gradle/sample/
 include::{samplescodedir}/url-verifier-plugin/src/main/java/org/gradle/sample/http/DefaultHttpCaller.java[]
 ----
 
+Implementing an integration test for `DefaultHttpCaller` doesn't look much different from the unit test shown in the previous section. In fact there's nothing special to it.
+
 .DefaultHttpCallerIntegrationTest.groovy
 [source,groovy]
 ----
 include::{samplescodedir}/url-verifier-plugin/src/integTest/groovy/org/gradle/sample/http/DefaultHttpCallerIntegrationTest.groovy[]
 ----
+
+==== Class under test uses Gradle API
+
+The task type responsible for verifying a URL is actually a more interesting example. It not only calls an URL via HTTP and verifies the response but also heavily leverages the Gradle API. The Gradle task is created by the plugin. However, if you wanted to create an integration test for just the task type then you don't necessarily want to test the plugin implementation as well.
 
 .UrlVerify.java
 [source,java]
@@ -183,11 +229,17 @@ include::{samplescodedir}/url-verifier-plugin/src/integTest/groovy/org/gradle/sa
 include::{samplescodedir}/url-verifier-plugin/src/main/java/org/gradle/sample/tasks/UrlVerify.java[]
 ----
 
+An effective way to creating task instance in an integration is the `ProjectBuilder` API. `ProjectBuilder` is a public API that gives you an entry point for creating a `Project` instance. To be able to use the `ProjectBuilder` API the test setup needs to declare a references to the Gradle API.
+
 .integration-test.gradle
 [source,groovy]
 ----
 include::{samplescodedir}/url-verifier-plugin/gradle/integration-test.gradle[tags=gradle-api]
 ----
+
+WARNING: The created `Project` instance acts as a stand-in object that _almost_ behaves like a real instance. There are certain limitations for this `Project` instance e.g. it doesn't automatically invoke project lifecycle hooks like `afterEvaluate`. If you happen to run into those limitations then writing a <<functional-tests,functional test>> is likely the better option. In the long run, `ProjectBuilder` might become a more powerful API.
+
+The following integration tests demonstrates the use of `ProjectBuilder`. The `setup` method first creates a `Project` instance and then a task instance of type `UrlVerify`. The test code mocks the HTTP communication so that each test code can solely concentrate on verifying the correct behavior of the task.
 
 .UrlVerifyIntegrationTest.groovy
 [source,groovy]
@@ -196,7 +248,9 @@ include::{samplescodedir}/url-verifier-plugin/src/integTest/groovy/org/gradle/sa
 ----
 
 [[functional-tests]]
-=== Functional tests
+=== Implementing functional tests
+
+Functional tests verify the correctness of the plugin end-to-end. Practically that means applying, configuring and executing the functionality the plugin implementation. The class `UrlVerifierPlugin` shows the actual plugin implementation of the URL verifier. As you can see, the class exposes an extension and a task instances that uses the URL value confiured bt the end user.
 
 .UrlVerifierPlugin.java
 [source,java]
@@ -204,11 +258,15 @@ include::{samplescodedir}/url-verifier-plugin/src/integTest/groovy/org/gradle/sa
 include::{samplescodedir}/url-verifier-plugin/src/main/java/org/gradle/sample/UrlVerifierPlugin.java[]
 ----
 
+Every Gradle plugin project should apply the {user-manual}javaGradle_plugin.html[plugin development plugin] to reduce boilerplate code. By applying the plugin development plugin, the project is preconfigured to use TestKit. Now that we use a different source set for functional tests than then standard one, you have to point it to it.
+
 .functional-test.gradle
 [source,groovy]
 ----
 include::{samplescodedir}/url-verifier-plugin/gradle/functional-test.gradle[tags=source-set-config]
 ----
+
+Functional tests for Gradle plugins use a instance of `GradleRunner` to execute the build under test. `GradleRunner` is an API provided by TestKit which internally uses the Tooling API to execute the build. The following example applies the plugin to the build script under test, configures the extension and executes the build with the task `verifyUrl`. Please see the {user-manual}test_kit.html[TestKit documentation] to get more familiar with the functionality of TestKit.
 
 .UrlVerifierPluginFunctionalTest.groovy
 [source,groovy]

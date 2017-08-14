@@ -1,4 +1,4 @@
-// tag::test-type-setup[]
+// tag::test-source-set[]
 sourceSets {
     integrationTest {
         groovy.srcDir file('src/integTest/groovy')
@@ -7,22 +7,19 @@ sourceSets {
         runtimeClasspath += output + compileClasspath
     }
 }
+// end::test-source-set[]
 
+// tag::test-task[]
 task integrationTest(type: Test) {
     description = 'Runs the integration tests.'
     group = 'verification'
     testClassesDirs = sourceSets.integrationTest.output.classesDirs
     classpath = sourceSets.integrationTest.runtimeClasspath
     mustRunAfter test
-
-    reports {
-        html.destination = project.file("$html.destination/integration")
-        junitXml.destination = project.file("$junitXml.destination/integration")
-    }
 }
 
 check.dependsOn integrationTest
-// end::test-type-setup[]
+// end::test-task[]
 
 // tag::gradle-api[]
 dependencies {

@@ -1,8 +1,8 @@
 package org.gradle.sample.http;
 
 public class HttpResponse {
-    private String message;
     private int code;
+    private String message;
     
     public HttpResponse(int code, String message) {
         this.code = code;

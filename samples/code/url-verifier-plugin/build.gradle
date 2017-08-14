@@ -6,6 +6,7 @@ apply from: "$rootDir/gradle/functional-test.gradle"
 group = 'org.gradle.sample'
 version = '1.0'
 
+// tag::test-framework[]
 repositories {
     jcenter()
 }
@@ -15,3 +16,4 @@ dependencies {
         exclude group: 'org.codehaus.groovy'
     }
 }
+// tag::test-framework[]
