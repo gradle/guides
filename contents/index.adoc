@@ -51,7 +51,7 @@ image::testing-pyramid.png[float=right]
 
 Probably the easiest way to test software is to manually exercise it. **Manual testing** can occur at any time is is not bound to writing automation code. However, manual testing is error-prone and cumbersome as it requires a human to walk through a set of predefined test cases.
 
-In contrast to manual testing, other types of tests can be fully automated and run with every change to the code. The testing pyramid introduced by Mike Cohen in his book link:https://www.amazon.com/gp/product/0321579364?ie=UTF8&tag=martinfowlerc-20&linkCode=as2&camp=1789&creative=9325&creativeASIN=0321579364[Succeeding with Agile: Software Development Using Scrum] describes three types of automated tests with tradeoffs in regards to the quantity of those tests, their maintaince costs and the time it takes to execute them.
+In contrast to manual testing, other types of tests can be fully automated and run with every change to the code. The testing pyramid introduced by Mike Cohen in his book link:https://www.mountaingoatsoftware.com/books/succeeding-with-agile-software-development-using-scrum[Succeeding with Agile: Software Development Using Scrum] describes three types of automated tests with tradeoffs in regards to the quantity of those tests, their maintaince costs and the time it takes to execute them.
 
 **Unit testing** aims to verify the smallest unit of code. In Java-based projects this unit is a method. Unit tests usually do not interact with other parts of the system e.g. a database or the file system. Any references are isolated by replacing the interaction with Stubs or Mocks. For Gradle plugin implementations, the unit under test is a POJO or utility class that doesn't use the Gradle API.
 
