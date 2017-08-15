@@ -78,4 +78,22 @@ class SamplesFunctionalTest extends AbstractSamplesFunctionalTest {
         result.task(':compileJava').outcome == SUCCESS
         new File(testDirectory, 'build/classes/java/main/com/company/MyClass.class').exists()
     }
+
+    def "can copy sample directory recursively to a target subdirectory"() {
+        setup:
+        samplesBuildFile << basicTestableJavaProject()
+        File javaSrcDir = new File(samplesCodeDir, 'src/main/java/com/company')
+        javaSrcDir.mkdirs()
+        new File(javaSrcDir, 'MyClass.java') << simpleJavaClass()
+        String targetPath = 'my-example'
+        File targetDir = new File(testDirectory, targetPath)
+        copySampleCode(SAMPLE_CODE_PROJECT_DIR_NAME, targetPath)
+
+        when:
+        def result = gradleRunner.withProjectDir(targetDir).withArguments('compileJava').build()
+
+        then:
+        result.task(':compileJava').outcome == SUCCESS
+        new File(targetDir, 'build/classes/java/main/com/company/MyClass.class').exists()
+    }
 }
