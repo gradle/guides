@@ -2,12 +2,12 @@
 :toclevels: 2
 :numbered:
 
-With practice, writing Gradle plugins comes easy especially with the knowledge of the link:https://guides.gradle.org/implementing-gradle-plugins/[Implementing Gradle plugins] guide under your belt. Testing plays a crucial role in the development process as it ensures reliable and high-quality software. The same principles apply to build code and more specifically Gradle plugins. In this guide you will learn effective techniques for testing plugin code.
+Testing plays a crucial role in the development process as it ensures reliable and high-quality software. The same principles apply to build code and more specifically Gradle plugins. In this guide you will learn effective techniques for testing plugin code.
 
 This guide assumes you have:
 
 - Basic understanding of software engineering practices
-- Knowledge of Gradle plugin implementation techniques
+- Knowledge of link:https://guides.gradle.org/implementing-gradle-plugins/[Gradle plugin implementation techniques]
 - Working knowledge in writing Java code
 
 If you happen to be a beginner to Gradle please start by working through the link:https://gradle.org/guides#getting-started[Getting Started Guides on Gradle development] first while referencing the {user-manual}userguide.html[Gradle User Manual] to go deeper.
@@ -28,6 +28,7 @@ include::{samplescodedir}/include-plugin-build/build.gradle[tags=apply-configure
 
 Executing the task renders a success message if the HTTP GET call to the configured URL returns with a 200 response code.
 
+[[verify-url-cmd-output]]
 [source,shell]
 ----
 $ gradle verifyUrl
@@ -39,20 +40,20 @@ Before diving into the code, let's first revisit the different types of tests an
 
 == On the importance of testing
 
-Testing is a foundational activity in the software development lifecycle. Appropriate testing ensures that the software works on a functional and non-functional level before it is released to the end user. As a by product, automated testing also enables the development team to refactor and evolve the code without fearing to introduce regressions in the process.
+Testing is a foundational activity in the software development life cycle. Appropriate testing ensures that the software works on a functional and non-functional level before it is released to the end user. As a by product, automated testing also enables the development team to refactor and evolve the code without fearing to introduce regressions in the process.
 
 [[testing-pyramid]]
 === The testing pyramid
 
 image::testing-pyramid.png[float=right]
 
-Probably the easiest way to test software is to manually exercise it. **Manual testing** can occur at any time and is not bound to writing automation code. However, manual testing is error-prone and cumbersome as it requires a human to walk through a set of predefined test cases. Manually testing Gradle plugins usually requires publishing the binary artifact to a repository and consuming it from a build script.
+Probably the easiest way to test software is to manually exercise it. **Manual testing** can occur at any time and is not bound to writing automation code. However, manual testing is error-prone and cumbersome as it requires a human to walk through a set of predefined test cases. Manually testing Gradle plugins requires consuming the plugin binary in a consuming build script.
 
 Other types of tests can be fully automated and exercised with every change to the source code. The testing pyramid introduced by Mike Cohen in his book link:https://www.mountaingoatsoftware.com/books/succeeding-with-agile-software-development-using-scrum[Succeeding with Agile: Software Development Using Scrum] describes three types of automated tests.
 
 **Unit testing** aims to verify the smallest unit of code. In Java-based projects this unit is a method. Unit tests usually do not interact with other parts of the system e.g. a database or the file system. Interactions with other parts of the system are usually cut off with the help of Stubs or Mocks. You will find that POJOs and utility classes are good candidates for unit tests as they are self-contained and do not use the Gradle API.
 
-**Integration testing** verifies that multiple classes or components work together as a whole. The code under test may reach out to external subsystems or use the Gradle API.
+**Integration testing** verifies that multiple classes or components work together as a whole. The code under test may reach out to external subsystems.
 
 **Functional testing** is used to test the system from the end user's perspective. End-to-end tests for Gradle plugins stand up a build script, apply the plugin under test and execute the build with a specific task. The outcome of the build (e.g. standard output/error or generated artifacts) verifies the correctness of the functionality.
 
@@ -65,21 +66,14 @@ Implementing manual and automated testing for Gradle plugins is straight forward
 |Test type                               |Tooling support
 |<<manual-tests,Manual tests>>           |{user-manual}composite_builds.html[Gradle composite builds]
 |<<unit-tests,Unit tests>>               |Any JVM-based test framework
-|<<integration-tests,Integration tests>> |Any JVM-based test framework and {api-reference}org/gradle/testfixtures/ProjectBuilder.html[Gradle's ProjectBuilder API]
+|<<integration-tests,Integration tests>> |Any JVM-based test framework
 |<<functional-tests,Functional tests>>   |Any JVM-based test framework and {user-manual}test_kit.html[Gradle TestKit]
 |======================
 
 [[manual-tests]]
 == Setting up manual tests
 
-The typical way to manually test a Gradle plugin follows this workflow:
-
-1. Make a change to the plugin code.
-2. Publish a new version of the plugin artifact to a local repository.
-3. Resolve the plugin from the repository and apply it to a sample project.
-4. Rinse and repeat.
-
-Granted this technique is cumbersome - every change to the plugin code requires the developer to publish a new version of the artifact. With the introduction of the {user-manual}composite_builds.html[composite builds] feature, plugin developers have a more convenient and powerful mechanism at their disposal. The standalone plugin project and the consuming project can be combined together into a single unit making it much more straight forward to try out or debug changes without the hassle of re-publishing the binary file.
+The {user-manual}composite_builds.html[composite builds] feature introduced in Gradle 3.1 makes it very easy to test a plugin manually. The standalone plugin project and the consuming project can be combined together into a single unit making it much more straight forward to try out or debug changes without the hassle of re-publishing the binary file.
 
 ----
 .
@@ -107,14 +101,7 @@ The following code snippet demonstrates the use of the settings file.
 include::{samplescodedir}/include-plugin-build/settings.gradle[tags=include-build]
 ----
 
-The execution of the project `include-plugin-build` in plain console mode clearly shows that the plugin project became part of a multi-project build.
-
-[source,shell]
-----
-$ gradle verifyUrl --console=plain
-
-include::{samplesoutputdir}/composite-build/verify-url.out[]
-----
+The command line output of task `verifyUrl` from the project `include-plugin-build` <<verify-url-cmd-output,looks exactly the same as shown in the introduction>> except that it now executed as part of a multi-project build.
 
 Manual testing has its place in the development process. By no means it is a replacement for automated testing. Next up, you'll learn how to organize and implement automated tests for Gradle plugins.
 
@@ -124,7 +111,7 @@ Setting up a suite of tests earlier on is crucial to the success of your plugin.
 
 === Organizing test source code
 
-It is recommended to implement a good distribution of unit, integration and functional tests to cover the most important use cases. Separating the source code for each test type automatically results in a project that is more maintainable and manageable.
+We recommended to implement a good distribution of unit, integration and functional tests to cover the most important use cases. Separating the source code for each test type automatically results in a project that is more maintainable and manageable.
 
 By default the Java project already creates a convention for organizing unit tests, the directory `src/test/java`. Additionally, if you apply the Groovy plugin source code under the directory `src/test/groovy` is taken under consideration for compilation. Consequently, source code directories for other test types should follow a similar pattern. Below you can find an exemplary project layout for a plugin project that chooses to use a Groovy-based testing approach.
 
@@ -149,11 +136,11 @@ By default the Java project already creates a convention for organizing unit tes
 
 NOTE: The directories `src/integTest/groovy` and `src/functTest/groovy` are not based on an existing standard convention for Gradle projects. You can free to choose any project layout that works best for you.
 
-In the next section, you will learn how to configure those source directories for compilation and test execution.
+In the next section, you will learn how to configure those source directories for compilation and test execution. You can also rely on third-party plugins for convience e.g. the link:https://github.com/nebula-plugins/nebula-project-plugin#nebula-facet-plugin[Nebula Facet plugin] or the link:https://github.com/unbroken-dome/gradle-testsets-plugin[TestSets plugin].
 
 === Modeling test types
 
-Gradle models source code directories with the help of the {user-manual}java_plugin.html#sec:working_with_java_source_sets[source set concept]. By pointing an instance of a source set to one or many source code directories, Gradle will automatically create a corresponding compilation task out-of-the-box. The following script plugin demonstrates the creation of a source set for integration tests.
+Gradle models source code directories with the help of the {user-manual}java_plugin.html#sec:working_with_java_source_sets[source set concept]. By pointing an instance of a source set to one or many source code directories, _Gradle will automatically create a corresponding compilation task out-of-the-box_. The following script plugin demonstrates the creation of a source set for integration tests.
 
 .integration-test.gradle
 [source,groovy]
@@ -161,7 +148,7 @@ Gradle models source code directories with the help of the {user-manual}java_plu
 include::{samplescodedir}/url-verifier-plugin/gradle/integration-test.gradle[tags=test-source-set]
 ----
 
-Source sets are only responsible for compiling source code but do not deal with executing the byte code. For the purpose of test execution, a corresponding task of type {api-reference}org/gradle/api/tasks/testing/Test.html[Test] needs to be established. The following task demonstrate the setup for executing integration tests. As you can see below, the task references the classes and runtime classpath of the integration test source set.
+Source sets are only responsible for compiling source code, but do not deal with executing the byte code. For the purpose of test execution, a corresponding task of type {api-reference}org/gradle/api/tasks/testing/Test.html[Test] needs to be established. The following task demonstrate the setup for executing integration tests. As you can see below, the task references the classes and runtime classpath of the integration test source set.
 
 .integration-test.gradle
 [source,groovy]
@@ -204,14 +191,12 @@ The class `HttpResponse` represents a good candidate to be tested by a unit test
 include::{samplescodedir}/url-verifier-plugin/src/test/groovy/org/gradle/sample/http/HttpResponseTest.groovy[]
 ----
 
+IMPORTANT: When writing unit tests, it's important to test boundary conditions and various forms of invalid input. Furthermore, try to extract as much logic as possible from classes that use the Gradle API to make it testable as unit tests. It will buy you the benefit of maintainable code and faster test execution.
+
 [[integration-tests]]
 === Implementing integration tests
 
-Integration tests might or might not use the Gradle API. This section of the guide explains solutions for both situations. 
-
-==== Class under test does not use Gradle API
-
-First, we'll have a look at a class that reaches out to a another system, the piece of code that emits the HTTP calls. At the time of executing a test for the class `DefaultHttpCaller`, the runtime environment needs to be able to reach out to the internet.
+Let's have a look at a class that reaches out to a another system, the piece of code that emits the HTTP calls. At the time of executing a test for the class `DefaultHttpCaller`, the runtime environment needs to be able to reach out to the internet.
 
 .DefaultHttpCaller.java
 [source,java]
@@ -225,34 +210,6 @@ Implementing an integration test for `DefaultHttpCaller` doesn't look much diffe
 [source,groovy]
 ----
 include::{samplescodedir}/url-verifier-plugin/src/integTest/groovy/org/gradle/sample/http/DefaultHttpCallerIntegrationTest.groovy[]
-----
-
-==== Class under test uses Gradle API
-
-The task implementation responsible for verifying a URL is a more interesting example as it requires a dependency on the Gradle API.
-
-.UrlVerify.java
-[source,java]
-----
-include::{samplescodedir}/url-verifier-plugin/src/main/java/org/gradle/sample/tasks/UrlVerify.java[]
-----
-
-Creating a task in an integration test requires a reference to the `Project` instance. To be able to use the `ProjectBuilder` API the test setup needs to declare a reference to the Gradle API.
-
-.integration-test.gradle
-[source,groovy]
-----
-include::{samplescodedir}/url-verifier-plugin/gradle/integration-test.gradle[tags=gradle-api]
-----
-
-WARNING: The created `Project` instance acts as a stand-in object that _almost_ behaves like a real instance. There are certain limitations for this `Project` instance e.g. it doesn't automatically invoke project lifecycle hooks like `afterEvaluate`. If you happen to run into those limitations then writing a <<functional-tests,functional test>> is likely the better option. In the long run, `ProjectBuilder` might become a more powerful API.
-
-The following integration test demonstrates the use of `ProjectBuilder`. The `setup` method first creates a `Project` instance. From the `Project`, the test creates a task of type `UrlVerify`. Any HTTP communication has been mocked. All test cases can solely concentrate on verifying the correct behavior of the task implementation.
-
-.UrlVerifyIntegrationTest.groovy
-[source,groovy]
-----
-include::{samplescodedir}/url-verifier-plugin/src/integTest/groovy/org/gradle/sample/tasks/UrlVerifyIntegrationTest.groovy[]
 ----
 
 [[functional-tests]]
@@ -282,11 +239,7 @@ Functional tests for Gradle plugins use a instance of `GradleRunner` to execute 
 include::{samplescodedir}/url-verifier-plugin/src/functTest/groovy/org/gradle/sample/UrlVerifierPluginFunctionalTest.groovy[]
 ----
 
-== Summary
-
-Please let us know on the link:https://discuss.gradle.org/[Gradle forum] if you are still having difficulties understanding any of the covered testing strategies. Which one works the best for your plugin? Let us know!
-
-Wrote an awesome plugin? Write a tweet to link:https://twitter.com/gradle[@gradle] with the link to the documentation or code.
+include::contribute[]
 
 == Next steps
 
@@ -294,3 +247,4 @@ Testing Gradle plugins builds upon best practices and development strategies. Yo
 
 - link:https://guides.gradle.org/designing-gradle-plugins/[Designing Gradle plugins]
 - link:https://guides.gradle.org/implementing-gradle-plugins/[Implementing Gradle plugins]
+- link:https://guides.gradle.org/publishing-plugins-to-gradle-plugin-portal/[Publishing Plugins to Gradle Plugin Portal]

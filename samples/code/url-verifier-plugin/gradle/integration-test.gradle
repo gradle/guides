@@ -20,9 +20,3 @@ task integrationTest(type: Test) {
 
 check.dependsOn integrationTest
 // end::test-task[]
-
-// tag::gradle-api[]
-dependencies {
-    integrationTestCompile gradleApi()
-}
-// end::gradle-api[]
