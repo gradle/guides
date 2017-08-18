@@ -138,3 +138,4 @@ include::contribute[]
 Now that you’re familiar with the basics of designing Gradle plugins, you may be interested in:
 
 - link:https://guides.gradle.org/implementing-gradle-plugins[Implementing Gradle plugins]
+- link:https://guides.gradle.org/testing-gradle-plugins[Testing Gradle plugins]
