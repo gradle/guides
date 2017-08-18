@@ -257,10 +257,11 @@ Writing plugins doesn’t have to be hard. With the right techniques you can eas
 
 The content of this guide will be expanded over time as new functionality becomes available in Gradle core. Please let us know on the link:https://discuss.gradle.org/[Gradle forum] if you are still having difficulties implementing specific use cases in your plugin or if you’d like to see other use case covered in this guide.
 
-Wrote an awesome plugin? Write a tweet to link:https://twitter.com/gradle[@gradle] with the link to the documentation or code.
+include::contribute[]
 
 == Next steps
 
 There’s far more to Gradle plugins than the actual implementation. You may be interested in:
 
 - {guides}/designing-gradle-plugins[Designing Gradle plugins]
+- {guides}/testing-gradle-plugins[Testing Gradle plugins]
