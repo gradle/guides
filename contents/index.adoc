@@ -131,9 +131,7 @@ It’s important to understand that a Gradle plugin does not run in its own, iso
 
 Designing the architecture of a plugin is an important and necessary step in the creation of a future-proof implementation. It’s crucial to remember the recipes and recommendations laid out in this guide before writing a single line of code. Now that you are equipped with good practices of plugin development, it’s time to apply those techniques to writing plugins.
 
-Please let us know on the link:https://discuss.gradle.org/[Gradle forum] if you are still having difficulties understanding any of the covered design aspects. While writing plugins you found yourself applying a technique over and over again. Let us know!
-
-Wrote an awesome plugin? Write a tweet to link:https://twitter.com/gradle[@gradle] with the link to the documentation or code.
+include::contribute[]
 
 == Next steps
 
