@@ -10,7 +10,7 @@ This is a collection of very opinionated plugins that support the authoring of g
 
 == Base plugin
 
-* Adds `guides` extension.
+* Adds `guide` extension.
 * Adds `asciidoctor` task with appropriate defaults for guide authoring. This task is also linked into the build lifecycle.
 * Adds `asciidoctorAttributes` task.
 * Adds `publishGhPages` task for publishing guide to `gh-pages`. (Used on Travis).
@@ -21,13 +21,13 @@ This is a collection of very opinionated plugins that support the authoring of g
 ** Postprocessor to add Gradle banner.
 ** Include processor so that `include::contribute[]` can be added to a guide.
 
-=== The guides extension
+=== The guide extension
 
-This `guides` extension always has to be configured for a guide. (The initial repository generation process will proably provide a suitable default).
+This `guide` extension always has to be configured for a guide. (The initial repository generation process will proably provide a suitable default).
 
 [source,groovy]
 ----
-guides {
+guide {
     repoPath 'gradle-guides/creating-multi-project-builds' // <1>
     mainAuthor   'John Doe' // <2>
     supAuthors 'Grumpy Gradlephant', 'Jane Doe' // <3>
