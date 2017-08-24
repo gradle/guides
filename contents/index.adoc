@@ -220,7 +220,7 @@ apply plugin : 'groovy' // <1>
 
 include::{exampledir}/spock.gradle[]
 ----
-<1> Having `groovy` plugin automatically applies the `java` plugin, so you could actually deleted the `pply plugin : 'java'` line. However for semantics it might be better to keep both as it indicates that you are primarily building a Java project.
+<1> Having `groovy` plugin automatically applies the `java` plugin, so you could actually deleted the `apply plugin : 'java'` line. However for semantics it might be better to keep both as it indicates that you are primarily building a Java project.
 
 Then add a test called `GreeterSpec` in the `greeter` package to the sub-project in the `src/test/groovy/greeter` directory (you'll have to create that directory if it does not already exist).
 
