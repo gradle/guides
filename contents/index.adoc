@@ -40,7 +40,7 @@ Open `settings.gradle`. There will be a number of auto-generated comments which 
 include::{exampledir}/settings.gradle[tags=after-init]
 ----
 
-Great! You are now ready to start development. (Remember to save your file).
+Great! You are now ready to start development. (Remember to save your file.)
 
 == Configure from above
 
