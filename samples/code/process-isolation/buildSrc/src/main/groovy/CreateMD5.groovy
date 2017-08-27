@@ -3,6 +3,7 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
 import org.gradle.workers.WorkerExecutor
 import org.gradle.workers.IsolationMode
 
@@ -20,6 +21,7 @@ class CreateMD5 extends SourceTask {
         this.workerExecutor = workerExecutor
     }
 
+    @Internal
     Set<File> getCodecClasspath() {
         return project.configurations.detachedConfiguration(
             project.dependencies.create("commons-codec:commons-codec:${codecVersion}")
