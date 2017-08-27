@@ -1,0 +1,11 @@
+plugins { id 'base' }
+
+repositories {
+    jcenter() // <1>
+}
+
+task md5(type: CreateMD5) {
+    destinationDir = file("${buildDir}/md5s")
+    source = file("src")
+    codecVersion = "1.10" // <2>
+}

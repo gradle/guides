@@ -25,20 +25,18 @@ isolation.  In the process, you'll learn about the basics of the Worker API and 
 
 First, you'll need to create a custom task that generates MD5 hashes of a configurable set of files.
 
+NOTE: This guide uses examples written in Groovy in order to keep the code simple and readable.  Most custom logic
+written for production use would likely be written in Java, which exhibits better performance and is the recommended
+language for custom tasks and plugins.
+
 In a new directory, create a `buildSrc/build.gradle` file.
 
 .buildSrc/build.gradle
 [source,groovy]
 ----
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    compile "commons-codec:commons-codec:1.9" // <1>
-}
+include::{samplescodedir}/custom-task/buildSrc/build.gradle[]
 ----
-<1> Our custom task class will use https://commons.apache.org/proper/commons-codec/[Apache Commons Codec] to generate
+<1> Your custom task class will use https://commons.apache.org/proper/commons-codec/[Apache Commons Codec] to generate
 MD5 hashes.
 
 TIP: If you are not familiar with `buildSrc`, this is a special directory that allows you to define and build
@@ -46,48 +44,26 @@ custom classes that should be available for use in your build script.  See
 {user-manual}organizing_build_logic.html#sec:build_sources[the user manual] for further information.
 
 
-Now, create a custom task class in our `buildSrc/src/main/groovy` directory.  You should name this class `CreateMD5`.
+Now, create a custom task class in your `buildSrc/src/main/groovy` directory.  You should name this class `CreateMD5`.
 
 .buildSrc/src/main/groovy/CreateMD5.groovy
 [source,groovy]
 ----
-import org.apache.commons.codec.digest.DigestUtils
-import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.SourceTask
-import org.gradle.api.tasks.TaskAction
-
-class CreateMD5 extends SourceTask { // <1>
-    @OutputDirectory
-    File destinationDir // <2>
-
-    @TaskAction
-    void createHashes() {
-        source.files.each { File sourceFile -> // <3>
-            sourceFile.withInputStream { InputStream stream ->
-                println "Generating MD5 for ${sourceFile.name}..."
-                new File(destinationDir, "${sourceFile.name}.md5").text = DigestUtils.md5Hex(stream) // <4>
-            }
-        }
-    }
-}
+include::{samplescodedir}/custom-task/buildSrc/src/main/groovy/CreateMD5.groovy[]
 ----
 <1> {api-reference}org/gradle/api/tasks/SourceTask.html[SourceTask] is a convenience type for tasks that operate on a
 set of source files.
 <2> The output of the task will go into a configured directory.
 <3> The task iterates over all of the files defined as "source files" and creates an MD5 has of each.
-<4> The MD5 hash of each file is written to the output directory into a file of the same name with an "md5" extension.
+<4> Insert an artificial sleep to simulate hashing a large file.
+<5> The MD5 hash of each file is written to the output directory into a file of the same name with an "md5" extension.
 
 Next, create a build.gradle that implements your new `CreateMD5` task.
 
 .build.gradle
 [source,groovy]
 ----
-plugins { id 'base' } // <1>
-
-task md5(type: CreateMD5) {
-    outputDir = "${buildSrc}/md5" // <2>
-    source file("src") // <3>
-}
+include::{samplescodedir}/custom-task/build.gradle[]
 ----
 <1> Apply the `base` plugin so that you'll have a `clean` task to use to remove the output.
 <2> MD5 hash files will be written to `build/md5`.
@@ -98,19 +74,19 @@ Now, you'll need some source to generate MD5 hashes from.  Create 3 files in the
 .src/einstein.txt
 [source,text]
 ----
-Intellectual growth should commence at birth and cease only at death.
+include::{samplescodedir}/custom-task/src/einstein.txt[]
 ----
 
 .src/feynman.txt
 [source,text]
 ----
-I was born not knowing and have had only a little time to change that here and there.
+include::{samplescodedir}/custom-task/src/feynman.txt[]
 ----
 
 .src/oppenheimer.txt
 [source,text]
 ----
-No man should escape our universities without knowing how little he knows.
+include::{samplescodedir}/custom-task/src/oppenheimer.txt[]
 ----
 
 At this point, you can give your task a try:
@@ -130,47 +106,28 @@ Generating MD5 for feynman.txt...
 Generating MD5 for oppenheimer.txt...
 
 
-BUILD SUCCESSFUL in 0s
+BUILD SUCCESSFUL in 12s
 ----
 
 In the `build/md5` directory, you should now see corresponding files with an `md5` extension containing MD5 hashes of the
-files from the src directory.
+files from the src directory.  Notice that the task takes at least 9 seconds to run because it hashes each file one at a time
+(i.e. 3 files at 3 seconds a piece).
 
 == Converting to the Worker API
 
-One issue with this task is that it processes each file in sequence.  However, the processing of each file is
-independent of any other file.  It would be really nice if this work was done in parallel and could take advantage
-of multiple processors.  This is where the Worker API can help.
+Although this task processes each file in sequence, the processing of each file is independent of any other file.  It
+would be really nice if this work was done in parallel and could take advantage of multiple processors.  This is where
+the Worker API can help.
 
-First, you'll need to refactor the part of our custom task that does the work for each individual file into a separate
-class.  This class is our "unit of work" implementation and should implement `java.lang.Runnable`.
+First, you'll need to refactor the part of your custom task that does the work for each individual file into a separate
+class.  This class is your "unit of work" implementation and should implement `java.lang.Runnable`.
 
 .buildSrc/src/main/groovy/GenerateMD5.groovy
 [source,groovy]
 ----
-import javax.inject.Inject
-import org.apache.commons.codec.digest.DigestUtils
-
-class GenerateMD5 implements Runnable {
-    File sourceFile
-    File md5File
-
-    @Inject // <1>
-    public GenerateMD5(File sourceFile, File md5File) { // <2>
-        this.sourceFile = sourceFile
-        this.md5File = md5File
-    }
-
-    @Override
-    public void run() {
-        println "Generating MD5 for ${sourceFile.name}..."
-        sourceFile.withInputStream { stream ->
-            md5File.text = DigestUtils.md5Hex(stream)
-        }
-    }
-}
+include::{samplescodedir}/no-isolation/buildSrc/src/main/groovy/GenerateMD5.groovy[]
 ----
-<1> This class must have a constructor annotated `javax.inject.Inject`.
+<1> This class must have a constructor annotated with `javax.inject.Inject`.
 <2> The parameters to the constructor are the parameters of the individual unit of work.
 
 Now, you should change your custom task class to submit work to the
@@ -179,35 +136,7 @@ Now, you should change your custom task class to submit work to the
 .buildSrc/src/main/groovy/CreateMD5.groovy
 [source,groovy]
 ----
-import javax.inject.Inject
-import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.SourceTask
-import org.gradle.api.tasks.TaskAction
-import org.gradle.workers.WorkerExecutor
-import org.gradle.workers.IsolationMode
-
-class CreateMD5 extends SourceTask {
-    WorkerExecutor workerExecutor // <1>
-
-    @OutputDirectory
-    File destinationDir
-
-    @Inject // <2>
-    public CreateMD5(WorkerExecutor workerExecutor) {
-        this.workerExecutor = workerExecutor
-    }
-
-    @TaskAction
-    void createHashes() {
-        source.files.each { File sourceFile ->
-            File md5File = new File(destinationDir, "${sourceFile.name}.md5")
-            workerExecutor.submit(GenerateMD5) { // <3>
-                isolationMode = IsolationMode.NONE // <4>
-                params = [ sourceFile, md5File ] // <5>
-            }
-        }
-    }
-}
+include::{samplescodedir}/no-isolation/buildSrc/src/main/groovy/CreateMD5.groovy[]
 ----
 <1> You'll need to have the {language-reference}org.gradle.workers.WorkerExecutor.html[WorkerExecutor] service in order
 to submit your work.
@@ -231,11 +160,13 @@ Generating MD5 for feynman.txt...
 Generating MD5 for oppenheimer.txt...
 
 
-BUILD SUCCESSFUL in 0s
+BUILD SUCCESSFUL in 4s
 ----
 
 The results should look the same as before, although the MD5 hash files may be generated in a different order due to
-the fact that the units of work are executed in parallel.
+the fact that the units of work are executed in parallel.  One thing you should notice, however, is that the task runs
+much faster.  This is because the Worker API executes the MD5 calculation for each file in parallel rather than in
+sequence.
 
 == Changing the isolation mode
 
@@ -252,64 +183,18 @@ should use this dependency when building the classes, but should not put it on t
 .buildSrc/build.gradle
 [source, groovy]
 ----
-repositories {
-    mavenCentral()
-}
-dependencies {
-    compileOnly "commons-codec:commons-codec:1.9"
-}
+include::{samplescodedir}/classloader-isolation/buildSrc/build.gradle[]
 ----
 
 Next, you'll want to change the `CreateMD5` task to allow the user to configure the version of the codec library that
 they want to use.  It'll resolve the appropriate version of the library at runtime and configure the workers to use
-this version.  The isolation mode `CLASSLOADER` tells Gradle to run this worker in a thread with an isolated
+this version.  The isolation mode `CLASSLOADER` tells Gradle to run this work in a thread with an isolated
 classloader.
 
 .buildSrc/src/main/groovy/CreateMD5.groovy
 [source, groovy]
 ----
-import javax.inject.Inject
-import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.SourceTask
-import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.Input
-import org.gradle.workers.WorkerExecutor
-import org.gradle.workers.IsolationMode
-
-class CreateMD5 extends SourceTask {
-    WorkerExecutor workerExecutor
-
-    @OutputDirectory
-    File destinationDir
-
-    @Input
-    String codecVersion = "1.9" // <1>
-
-    @Inject
-    public CreateMD5(WorkerExecutor workerExecutor) {
-        this.workerExecutor = workerExecutor
-    }
-
-    Set<File> getCodecClasspath() {
-        return project.configurations.detachedConfiguration(
-            project.dependencies.create("commons-codec:commons-codec:${codecVersion}") // <2>
-        ).files
-    }
-
-    @TaskAction
-    void createHashes() {
-        source.files.each { File sourceFile ->
-            File md5File = new File(destinationDir, "${sourceFile.name}.md5")
-            workerExecutor.submit(GenerateMD5) {
-                isolationMode = IsolationMode.CLASSLOADER
-                params = [ sourceFile, md5File ]
-                classpath getCodecClasspath() // <3>
-            }
-        }
-    }
-
-
-}
+include::{samplescodedir}/classloader-isolation/buildSrc/src/main/groovy/CreateMD5.groovy[]
 ----
 <1> Expose an input property for the codec library version with a default value.
 <2> Use the `codecVersion` input property to construct and resolve a configuration to a set of files.
@@ -322,17 +207,7 @@ time.
 .build.gradle
 [source,groovy]
 ----
-plugins { id 'base' }
-
-repositories {
-    jcenter() // <1>
-}
-
-task md5(type: CreateMD5) {
-    destinationDir = file("${buildDir}/md5s")
-    source = file("src")
-    codecVersion = "1.10" // <2>
-}
+include::{samplescodedir}/classloader-isolation/build.gradle[]
 ----
 <1> Add a repository to resolve the codec library - this can be a different repository than the one used to build the
 `CreateMD5` task class.
@@ -350,7 +225,7 @@ Generating MD5 for feynman.txt...
 Generating MD5 for oppenheimer.txt...
 
 
-BUILD SUCCESSFUL in 2s
+BUILD SUCCESSFUL in 9s
 ----
 
 == Creating a Worker Daemon
@@ -367,49 +242,7 @@ configure custom settings for the new process.
 .buildSrc/src/main/groovy/CreateMD5.groovy
 [source,groovy]
 ----
-import javax.inject.Inject
-import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.SourceTask
-import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.Input
-import org.gradle.workers.WorkerExecutor
-import org.gradle.workers.IsolationMode
-
-class CreateMD5 extends SourceTask {
-    WorkerExecutor workerExecutor
-
-    @OutputDirectory
-    File destinationDir
-
-    @Input
-    String codecVersion = "1.9"
-
-    @Inject
-    public CreateMD5(WorkerExecutor workerExecutor) {
-        this.workerExecutor = workerExecutor
-    }
-
-    @TaskAction
-    void createHashes() {
-        source.files.each { File sourceFile ->
-            File md5File = new File(destinationDir, "${sourceFile.name}.md5")
-            workerExecutor.submit(GenerateMD5) {
-                isolationMode = IsolationMode.PROCESS // <1>
-                forkOptions { options ->
-                    options.maxHeapSize = "64m" // <2>
-                }
-                params = [ sourceFile, md5File ]
-                classpath getCodecClasspath()
-            }
-        }
-    }
-
-    Set<File> getCodecClasspath() {
-        return project.configurations.detachedConfiguration(
-            project.dependencies.create("commons-codec:commons-codec:${codecVersion}")
-        ).files
-    }
-}
+include::{samplescodedir}/process-isolation/buildSrc/src/main/groovy/CreateMD5.groovy[]
 ----
 <1> Change the isolation mode to `PROCESS`.
 <2> Set up the {api-reference}org/gradle/process/JavaForkOptions.html[JavaForkOptions] for the new process.
@@ -426,12 +259,16 @@ Generating MD5 for feynman.txt...
 Generating MD5 for oppenheimer.txt...
 
 
-BUILD SUCCESSFUL in 2s
+BUILD SUCCESSFUL in 10s
 ----
 
 == Summary
 
-*TBC*
+In this guide you learned how to:
+
+* Introduce the Worker API to an existing custom task to execute work in parallel with minimum isolation
+* Use the Worker API classloader isolation mode to execute work using an isolated classpath
+* Configure your task to isolate work even further in a separate "worker daemon" process
 
 
 include::contribute[]

@@ -1,0 +1,7 @@
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compileOnly "commons-codec:commons-codec:1.9"
+}
