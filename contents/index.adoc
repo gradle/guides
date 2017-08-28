@@ -25,14 +25,10 @@ isolation.  In the process, you'll learn about the basics of the Worker API and 
 
 First, you'll need to create a custom task that generates MD5 hashes of a configurable set of files.
 
-NOTE: This guide uses examples written in Groovy in order to keep the code simple and readable.  Most custom logic
-written for production use would likely be written in Java, which exhibits better performance and is the recommended
-language for custom tasks and plugins.
-
 In a new directory, create a `buildSrc/build.gradle` file.
 
 .buildSrc/build.gradle
-[source,groovy]
+[source,java]
 ----
 include::{samplescodedir}/custom-task/buildSrc/build.gradle[]
 ----
@@ -44,24 +40,24 @@ custom classes that should be available for use in your build script.  See
 {user-manual}organizing_build_logic.html#sec:build_sources[the user manual] for further information.
 
 
-Now, create a custom task class in your `buildSrc/src/main/groovy` directory.  You should name this class `CreateMD5`.
+Now, create a custom task class in your `buildSrc/src/main/java` directory.  You should name this class `CreateMD5`.
 
-.buildSrc/src/main/groovy/CreateMD5.groovy
-[source,groovy]
+.buildSrc/src/main/java/CreateMD5.java
+[source,java]
 ----
-include::{samplescodedir}/custom-task/buildSrc/src/main/groovy/CreateMD5.groovy[]
+include::{samplescodedir}/custom-task/buildSrc/src/main/java/CreateMD5.java[]
 ----
 <1> {api-reference}org/gradle/api/tasks/SourceTask.html[SourceTask] is a convenience type for tasks that operate on a
 set of source files.
 <2> The output of the task will go into a configured directory.
-<3> The task iterates over all of the files defined as "source files" and creates an MD5 has of each.
-<4> Insert an artificial sleep to simulate hashing a large file.
+<3> The task iterates over all of the files defined as "source files" and creates an MD5 hash of each.
+<4> Insert an artificial sleep to simulate hashing a large file (the sample files won't be that large).
 <5> The MD5 hash of each file is written to the output directory into a file of the same name with an "md5" extension.
 
 Next, create a build.gradle that implements your new `CreateMD5` task.
 
 .build.gradle
-[source,groovy]
+[source,java]
 ----
 include::{samplescodedir}/custom-task/build.gradle[]
 ----
@@ -122,10 +118,10 @@ the Worker API can help.
 First, you'll need to refactor the part of your custom task that does the work for each individual file into a separate
 class.  This class is your "unit of work" implementation and should implement `java.lang.Runnable`.
 
-.buildSrc/src/main/groovy/GenerateMD5.groovy
-[source,groovy]
+.buildSrc/src/main/java/GenerateMD5.java
+[source,java]
 ----
-include::{samplescodedir}/no-isolation/buildSrc/src/main/groovy/GenerateMD5.groovy[]
+include::{samplescodedir}/no-isolation/buildSrc/src/main/java/GenerateMD5.java[]
 ----
 <1> This class must have a constructor annotated with `javax.inject.Inject`.
 <2> The parameters to the constructor are the parameters of the individual unit of work.
@@ -133,10 +129,10 @@ include::{samplescodedir}/no-isolation/buildSrc/src/main/groovy/GenerateMD5.groo
 Now, you should change your custom task class to submit work to the
 {language-reference}org.gradle.workers.WorkerExecutor.html[WorkerExecutor] instead of doing the work itself.
 
-.buildSrc/src/main/groovy/CreateMD5.groovy
-[source,groovy]
+.buildSrc/src/main/java/CreateMD5.java
+[source,java]
 ----
-include::{samplescodedir}/no-isolation/buildSrc/src/main/groovy/CreateMD5.groovy[]
+include::{samplescodedir}/no-isolation/buildSrc/src/main/java/CreateMD5.java[]
 ----
 <1> You'll need to have the {language-reference}org.gradle.workers.WorkerExecutor.html[WorkerExecutor] service in order
 to submit your work.
@@ -191,10 +187,10 @@ they want to use.  It'll resolve the appropriate version of the library at runti
 this version.  The isolation mode `CLASSLOADER` tells Gradle to run this work in a thread with an isolated
 classloader.
 
-.buildSrc/src/main/groovy/CreateMD5.groovy
+.buildSrc/src/main/java/CreateMD5.java
 [source, groovy]
 ----
-include::{samplescodedir}/classloader-isolation/buildSrc/src/main/groovy/CreateMD5.groovy[]
+include::{samplescodedir}/classloader-isolation/buildSrc/src/main/java/CreateMD5.java[]
 ----
 <1> Expose an input property for the codec library version with a default value.
 <2> Use the `codecVersion` input property to construct and resolve a configuration to a set of files.
@@ -205,7 +201,7 @@ Next, you'll need to configure your build so that it has a repository to look up
 time.
 
 .build.gradle
-[source,groovy]
+[source,java]
 ----
 include::{samplescodedir}/classloader-isolation/build.gradle[]
 ----
@@ -239,10 +235,10 @@ The Worker API can accommodate this with an isolation mode of `PROCESS` that cau
 To change to a worker daemon, you can simply change the isolation mode on the work items.  You may also want to
 configure custom settings for the new process.
 
-.buildSrc/src/main/groovy/CreateMD5.groovy
-[source,groovy]
+.buildSrc/src/main/java/CreateMD5.java
+[source,java]
 ----
-include::{samplescodedir}/process-isolation/buildSrc/src/main/groovy/CreateMD5.groovy[]
+include::{samplescodedir}/process-isolation/buildSrc/src/main/java/CreateMD5.java[]
 ----
 <1> Change the isolation mode to `PROCESS`.
 <2> Set up the {api-reference}org/gradle/process/JavaForkOptions.html[JavaForkOptions] for the new process.

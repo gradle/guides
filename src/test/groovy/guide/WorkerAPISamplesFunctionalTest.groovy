@@ -12,7 +12,7 @@ class WorkerAPISamplesFunctionalTest extends AbstractSamplesFunctionalTest {
         copySampleCode(sampleProject)
 
         when:
-        def result = succeeds("md5")
+        def result = succeeds("md5", "--stacktrace")
 
         then:
         println result.output
