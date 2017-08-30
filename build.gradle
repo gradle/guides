@@ -4,7 +4,7 @@ plugins {
     id 'java-gradle-plugin'
     id 'com.gradle.plugin-publish' version '0.9.7'
     id 'org.ysb33r.cloudci' version '1.0'
-    id 'org.ysb33r.gradletest' version '1.0-beta11'
+    id 'org.ysb33r.gradletest' version '1.0-beta12'
 }
 
 apply from: "$rootDir/gradle/functional-test.gradle"
