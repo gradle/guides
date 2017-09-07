@@ -76,6 +76,9 @@ checkout = git clone git@github.com:gradle-guides/running-webpack-with-gradle.gi
 [style-guide]
 checkout = git clone git@github.com:gradle-guides/style-guide.git
 
+[testing-gradle-plugins]
+checkout = git clone git@github.com:gradle-guides/testing-gradle-plugins.git
+
 [topical-template]
 checkout = git clone git@github.com:gradle-guides/topical-template.git
 
