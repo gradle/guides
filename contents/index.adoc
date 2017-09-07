@@ -132,9 +132,4 @@ This guide documented the process to:
 
 Now that you have some experience with it, we hope that you're inspired to contribute more guides in the future!
 
-== Help improve this guide
-
-Have feedback or a question? Found a typo? Like all Gradle guides, help is just a GitHub issue away. Please add an issue or pull request to https://github.com/gradle-guides/gs-writing-gs-guides/[gradle-guides/gs-writing-gs-guides] and we'll get back to you.
-
-
 include::contribute[]
