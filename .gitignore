@@ -8,6 +8,7 @@ building-java-9-modules/
 building-java-applications/
 building-java-libraries/
 building-java-web-applications/
+building-kotlin-jvm-libraries/
 building-scala-libraries/
 creating-build-scans/
 creating-multi-project-builds/
@@ -24,6 +25,7 @@ performance/
 publishing-plugins-to-gradle-plugin-portal/
 running-webpack-with-gradle/
 style-guide/
+testing-gradle-plugins/
 topical-template/
 tutorial-template/
 using-an-existing-gradle-build/
