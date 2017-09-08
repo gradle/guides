@@ -97,7 +97,7 @@ $ gradle compileKotlin
 include::{samplesoutputdir}/step-1/compileKotlin.out[]
 ----
 
-For example, it is important to know that the Kotlin plugin applies Gradle's Java plugin under the covers (we can see this in the "Plugins" section of the build scan). If we look at the {user-manual}/java_plugin.html[docs for the Java plugin], we learn about all of the conventions it applies for things like Javadocs and packaging we'll do later in this guide.
+For example, it is important to know that the Kotlin plugin applies Gradle's Java plugin under the covers (we can see this in the "Plugins" section of the build scan). If we look at the {user-manual}java_plugin.html[docs for the Java plugin], we learn about all of the conventions it applies for things like Javadocs and packaging we'll do later in this guide.
 
 image::build-scan-plugins.png[]
 
