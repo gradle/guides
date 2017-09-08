@@ -1,0 +1,9 @@
+plugins {
+    id "org.gradle.guides.getting-started" version "0.8.1"
+    id "org.gradle.guides.test-jvm-code" version "0.8.1"
+}
+
+guide {
+    repoPath "gradle-guides/building-kotlin-jvm-libraries"
+    mainAuthor "Eric Wendelin"
+}

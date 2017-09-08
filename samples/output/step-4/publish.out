@@ -1,0 +1,14 @@
+> Task :dokka
+No documentation for org.example.MyLibrary (MyLibrary.kt:11)
+No documentation for org.example.MyLibrary$<init>() (MyLibrary.kt:11)
+
+> Task :compileKotlin
+Using kotlin incremental compilation
+
+Could not find metadata org.example:my-kotlin-library/maven-metadata.xml in remote (file:$PROJECT_DIR/build/repository)
+
+BUILD SUCCESSFUL in 4s
+7 actionable tasks: 7 executed
+
+Publishing build scan...
+https://gradle.com/s/ideifb3epyoz6
