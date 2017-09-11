@@ -2,7 +2,7 @@ import org.gradle.kotlin.dsl.*
 
 plugins {
     `build-scan`
-    kotlin("jvm") version "1.1.4-3"
+    kotlin("jvm", "1.1.4-3")
 }
 
 repositories {
@@ -11,7 +11,7 @@ repositories {
 
 // tag::configure-dependencies[]
 dependencies {
-    implementation(kotlin("stdlib"))
+    implementation(kotlin("stdlib", "1.1.4-3"))
     testImplementation("junit:junit:4.12") // <1>
 }
 // tag::configure-dependencies[]

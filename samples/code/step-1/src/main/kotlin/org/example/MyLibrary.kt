@@ -10,8 +10,7 @@ data class Language(val name: String, val hotness: Int)
 
 class MyLibrary {
     /**
-     * @return data relating to the Kotlin language.
-     * @see Language
+     * @return data relating to the Kotlin {@code Lanugage}.
      */
     fun kotlinLanguage() = Language("Kotlin", 10)
 }

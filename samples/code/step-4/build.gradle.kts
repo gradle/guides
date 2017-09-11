@@ -1,7 +1,7 @@
-import org.gradle.api.plugins.JavaBasePlugin
 // tag::publishing-imports[]
-import org.gradle.api.publish.maven.MavenPublication
 // end::publishing-imports[]
+import org.gradle.api.plugins.JavaBasePlugin
+import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.jvm.tasks.Jar
 import org.gradle.kotlin.dsl.*
 import org.jetbrains.dokka.gradle.DokkaTask
@@ -27,13 +27,13 @@ plugins {
 // tag::apply-maven-publish[]
     `maven-publish` // <1>
 // end::apply-maven-publish[]
-    kotlin("jvm") version "1.1.4-3"
+    kotlin("jvm", "1.1.4-3")
 // tag::apply-maven-publish[]
 }
 // end::apply-maven-publish[]
 
 // tag::project-coordinates[]
-group = "org.example" // <1>
+group = "org.example"
 version = "0.0.1"
 // end::project-coordinates[]
 
@@ -42,7 +42,7 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
+    implementation(kotlin("stdlib", "1.1.4-3"))
     testImplementation("junit:junit:4.12")
 }
 

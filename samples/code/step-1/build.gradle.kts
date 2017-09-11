@@ -1,12 +1,11 @@
 // tag::apply-kotlin-plugin[]
-import org.gradle.kotlin.dsl.*
 
 // tag::apply-build-scan-plugin[]
 plugins {
 // end::apply-kotlin-plugin[]
     `build-scan`
 // tag::apply-kotlin-plugin[]
-    kotlin("jvm") version "1.1.4-3" // <1>
+    kotlin("jvm", "1.1.4-3") // <1>
 }
 // end::apply-kotlin-plugin[]
 // end::apply-build-scan-plugin[]
@@ -17,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib")) // <3>
+    implementation(kotlin("stdlib", "1.1.4-3")) // <3>
 }
 // end::configure-dependencies[]
 

@@ -1,7 +1,9 @@
 = Building Kotlin JVM Libraries
 :toclevels: 2
 
-This guide demonstrates how to create a https://kotlinlang.org[Kotlin] library targeted for the JVM. We will use https://github.com/gradle/kotlin-dsl[Gradle's Kotlin DSL] for build scripts.
+This guide demonstrates how to create a https://kotlinlang.org[Kotlin] library targeted for the JVM. We'll build a simple API with documentation, write and run tests, and package it all up into a something we can distribute.
+
+It makes sense to use https://github.com/gradle/kotlin-dsl[Gradle's Kotlin DSL] for build scripts since our library and tests are also in Kotlin.
 
 == What you’ll build
 
@@ -20,7 +22,7 @@ If you get stuck at any point, you can check out https://github.com/gradle-guide
 
 Let's develop the simplest of libraries with just one API class and method.
 
-=== Step 1.1 Create project directory
+=== Create project directory
 
 This is the conventional layout for a Kotlin project. Luckily, Gradle is flexible and would allow us to easily change it by https://kotlinlang.org/docs/reference/using-gradle.html#targeting-the-jvm[adjusting the `sourceSets {}`]. We won't worry about that today, though.
 
@@ -59,11 +61,11 @@ include::{samplescodedir}/step-1/build.gradle.kts[tags=configure-dependencies]
 <2> Declare a https://docs.gradle.org/current/dsl/org.gradle.api.artifacts.dsl.RepositoryHandler.html[dependency repository] on Bintray jcenter
 <3> Declare a dependency on the https://kotlinlang.org/api/latest/jvm/stdlib/index.html[Kotlin standard library]
 
-You'll notice that we're using the new `implementation` dependency configuration. We're declaring that we do not expose any of the Kotlin standard library through our API. This has https://blog.gradle.org/incremental-compiler-avoidance[architectural and performance benefits].
+We use the `implementation` dependency configuration so that we don't expose any of the Kotlin standard library through our API. This has https://blog.gradle.org/incremental-compiler-avoidance[architectural and performance benefits].
 
 We're nearly ready to start testing and packaging our software.
 
-=== Step 1.2: Digging deeper with a build scan
+=== Digging deeper with a build scan
 
 This is not strictly required to complete this guide, but using the https://gradle.com/build-scans#what-are-build-scans[build scan plugin] will be very helpful with understanding what is happening with our builds.
 
@@ -71,8 +73,8 @@ This is not strictly required to complete this guide, but using the https://grad
 [source,diff]
 ----
 plugins {
-+    `build-scan` // <1>
-     kotlin("jvm") version "1.1.4-3"
+    `build-scan` // <1>
+     kotlin("jvm", "1.1.4-3")
 }
 ----
 <1> Apply the build scan plugin in the `plugins {}` block at the top.
@@ -111,15 +113,15 @@ http://junit.org/junit4/[JUnit 4] is the simplest of testing libraries to add to
 [source,diff]
 ----
 dependencies {
-     implementation(kotlin("stdlib"))
-+    testImplementation("junit:junit:4.12") // <1>
+    implementation(kotlin("stdlib", "1.1.4-3"))
+    testImplementation("junit:junit:4.12") // <1>
 }
 ----
 <1> Add test implementation dependency on JUnit
 
 Now we are ready to add tests for our library. We will follow the Kotlin plugin conventions and put them under `src/test/kotlin`.
 
-.src/test/kotlin/org/example/MyLbraryTest.kt
+.src/test/kotlin/org/example/MyLibraryTest.kt
 [source,kotlin]
 ----
 include::{samplescodedir}/step-2/src/test/kotlin/org/example/MyLibraryTest.kt[]
@@ -141,7 +143,7 @@ Boom. Tests.
 
 A library isn't done until it's documented. https://github.com/Kotlin/dokka[Dokka] is a popular documentation engine for Kotlin projects. Let's use it.
 
-=== Step 3.1: Apply the Dokka plugin
+=== Apply the Dokka plugin
 
 The Dokka Gradle plugin cannot be resolved from the Gradle Plugin Portal as of v0.9.15, so we will use a `buildscript {}` block to apply the plugin to the build script classpath, and then apply it.
 
@@ -151,7 +153,7 @@ The Dokka Gradle plugin cannot be resolved from the Gradle Plugin Portal as of v
 include::{samplescodedir}/step-3/build.gradle.kts[tags=apply-dokka-plugin]
 ----
 
-=== Step 3.2: Configure Dokka plugin
+=== Configure Dokka plugin
 
 Now we can add configuration down below in our build script.
 
@@ -176,7 +178,7 @@ Dokka complains that we didn't document absolutely everything, but there's enoug
 
 image::dokka.png[]
 
-=== Step 3.3: Generate javadoc JAR
+=== Generate javadoc JAR
 
 .build.gradle.kts
 [source,kotlin]
@@ -196,28 +198,27 @@ We could optionally also generate a `"sources"` JAR using the same pattern from 
 
 Now our library is ready to share with the world. We're going to publish it locally with the {user-manual}publishing_maven.html[maven-publish plugin] just to keep things simple, but another popular choice is the https://plugins.gradle.org/plugin/com.jfrog.bintray[Gradle Bintray Plugin]. Their documentation has https://github.com/bintray/bintray-examples/tree/master/gradle-bintray-plugin-examples[several samples] you can use if you're interested.
 
-=== Step 4.1: Apply the maven-publish plugin
+=== Apply the maven-publish plugin
 
 .build.gradle.kts
 [source,diff]
 ----
 plugins {
-     `build-scan`
-+    `maven-publish`
-     kotlin("jvm") version "1.1.4-3"
+    `build-scan`
+    `maven-publish`
+    kotlin("jvm", "1.1.4-3")
 }
 ----
 
-=== Step 4.2: Set project coordinates
+=== Set project coordinates
 
-We need to set coordinates in our build script for publishing.
+Let us specify our project coordinates as `org.example:my-kotlin-library:0.0.1` in our build script for publishing.
 
 .build.gradle.kts
 [source,kotlin]
 ----
 include::{samplescodedir}/step-4/build.gradle.kts[tags=project-coordinates]
 ----
-<1> Configure project coordinates to `org.example:my-kotlin-library:0.0.1`
 
 The project name is set by the root project directory name by default, but it is best practice to make it explicit. This is done in a `settings.gradle` file at the project root.
 
@@ -227,7 +228,7 @@ The project name is set by the root project directory name by default, but it is
 include::{samplescodedir}/step-4/settings.gradle[]
 ----
 
-=== Step 4.3: Configure Maven publication
+=== Configure Maven publication
 
 For the `maven-publish` plugin to have any effect, a https://docs.gradle.org/current/dsl/org.gradle.api.publish.maven.MavenPublication.html[MavenPublication] must be added to the set of publications. This publication determines which artifacts are actually published as well as the details included in the associated POM file.
 

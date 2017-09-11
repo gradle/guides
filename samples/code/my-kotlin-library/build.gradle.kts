@@ -1,3 +1,4 @@
+
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.jvm.tasks.Jar
@@ -21,7 +22,7 @@ apply {
 plugins {
     `build-scan`
     `maven-publish`
-    kotlin("jvm") version "1.1.4-3"     // <1>
+    kotlin("jvm", "1.1.4-3")     // <1>
 }
 
 group = "org.example"
@@ -32,7 +33,7 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
+    implementation(kotlin("stdlib", "1.1.4-3"))
     testImplementation("junit:junit:4.12")
 }
 
