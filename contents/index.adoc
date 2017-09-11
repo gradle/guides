@@ -268,7 +268,7 @@ Congratulations! You've successfully built a Kotlin library, tested it, document
 We hope you found this fun and enlightening. Let us know what you thought of this guide via https://twitter.com/gradle[@gradle on Twitter].
 
  - You can learn more about the https://kotlinlang.org/docs/reference/using-gradle.html[Gradle Kotlin Plugin with the official docs].
- - Jetbrains has developed a series of https://github.com/JetBrains/kotlin-examples[Kotlin example projects] the demonstrate working with Kotlin and Gradle, including https://github.com/JetBrains/kotlin-examples/tree/master/gradle/dokka-gradle-example[one for advanced Dokka usage].
+ - JetBrains has developed a series of https://github.com/JetBrains/kotlin-examples[Kotlin example projects] the demonstrate working with Kotlin and Gradle, including https://github.com/JetBrains/kotlin-examples/tree/master/gradle/dokka-gradle-example[one for advanced Dokka usage].
  - There are lots of https://github.com/gradle/kotlin-dsl/tree/master/samples[Kotlin DSL samples] available in the gradle/kotlin-dsl repository on GitHub, as well as additional https://github.com/gradle/kotlin-dsl/tree/master/doc/getting-started[getting started docs]
 
 include::contribute[]
