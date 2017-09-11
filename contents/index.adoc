@@ -1,5 +1,6 @@
 = Building Kotlin JVM Libraries
 :toclevels: 2
+:source-highlighter: highlightjs
 
 This guide demonstrates how to create a https://kotlinlang.org[Kotlin] library targeted for the JVM. We'll build a simple API with documentation, write and run tests, and package it all up into a something we can distribute.
 
@@ -27,14 +28,14 @@ Let's develop the simplest of libraries with just one API class and method.
 This is the conventional layout for a Kotlin project. Luckily, Gradle is flexible and would allow us to easily change it by https://kotlinlang.org/docs/reference/using-gradle.html#targeting-the-jvm[adjusting the `sourceSets {}`]. We won't worry about that today, though.
 
 .Kotlin project structure
-[source,shell]
+[source,console]
 ----
 include::{samplesoutputdir}/step-1/tree.out[]
 ----
 
 The first step is to create a folder for the new project and change directory into it. In a *nix shell this would be:
 
-[source,shell]
+[source,console]
 ----
 $ mkdir -p my-kotlin-library/src/main/kotlin/org/example
 $ cd my-kotlin-library
@@ -73,8 +74,8 @@ This is not strictly required to complete this guide, but using the https://grad
 [source,diff]
 ----
 plugins {
-    `build-scan` // <1>
-    kotlin("jvm", "1.1.4-3")
++    `build-scan` // <1>
+     kotlin("jvm", "1.1.4-3")
 }
 ----
 <1> Apply the build scan plugin in the `plugins {}` block at the top.
@@ -92,7 +93,7 @@ include::{samplescodedir}/step-1/build.gradle.kts[tags=configure-build-scan]
 Now we can compile our project.
 
 .Compile Kotlin sources
-[source,shell]
+[source,console]
 ----
 $ gradle compileKotlin
 
@@ -113,8 +114,8 @@ http://junit.org/junit4/[JUnit 4] is the simplest of testing libraries to add to
 [source,diff]
 ----
 dependencies {
-    implementation(kotlin("stdlib", "1.1.4-3"))
-    testImplementation("junit:junit:4.12") // <1>
+     implementation(kotlin("stdlib", "1.1.4-3"))
++    testImplementation("junit:junit:4.12") // <1>
 }
 ----
 <1> Add test implementation dependency on JUnit
@@ -130,7 +131,7 @@ include::{samplescodedir}/step-2/src/test/kotlin/org/example/MyLibraryTest.kt[]
 Nothing unexpected here. Now let's run them.
 
 .Execute tests
-[source,shell]
+[source,console]
 ----
 $ gradle test
 
@@ -167,7 +168,7 @@ include::{samplescodedir}/step-3/build.gradle.kts[tags=configure-dokka-plugin]
 There are many more configuration options available for Dokka, documented https://github.com/Kotlin/dokka#using-dokka[here], but this gets the job done for us right now. Let's run it.
 
 .Generate docs with Dokka
-[source,shell]
+[source,console]
 ----
 $ gradle dokka
 
@@ -204,9 +205,9 @@ Now our library is ready to share with the world. We're going to publish it loca
 [source,diff]
 ----
 plugins {
-    `build-scan`
-    `maven-publish`
-    kotlin("jvm", "1.1.4-3")
+     `build-scan`
++    `maven-publish`
+     kotlin("jvm", "1.1.4-3")
 }
 ----
 
@@ -223,7 +224,7 @@ include::{samplescodedir}/step-4/build.gradle.kts[tags=project-coordinates]
 The project name is set by the root project directory name by default, but it is best practice to make it explicit. This is done in a `settings.gradle` file at the project root.
 
 .settings.gradle
-[source,groovy]
+[source,kotlin]
 ----
 include::{samplescodedir}/step-4/settings.gradle[]
 ----
@@ -247,7 +248,7 @@ include::{samplescodedir}/step-4/build.gradle.kts[tags=configure-publishing]
 Now we are ready to `publish`!
 
 .Publish to local repository
-[source,shell]
+[source,console]
 ----
 $ gradle publish
 
@@ -257,7 +258,7 @@ include::{samplesoutputdir}/step-4/publish.out[]
 Your Maven repository should now have the published artifacts.
 
 .Local Maven repository
-[source,shell]
+[source,console]
 ----
 include::{samplesoutputdir}/step-4/repo.out[]
 ----
