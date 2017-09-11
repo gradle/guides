@@ -74,7 +74,7 @@ This is not strictly required to complete this guide, but using the https://grad
 ----
 plugins {
     `build-scan` // <1>
-     kotlin("jvm", "1.1.4-3")
+    kotlin("jvm", "1.1.4-3")
 }
 ----
 <1> Apply the build scan plugin in the `plugins {}` block at the top.
