@@ -70,7 +70,7 @@ val dokkaJar by tasks.creating(Jar::class) {
 publishing {
     publications {
         create("default", MavenPublication::class.java) { // <1>
-            from(components.getByName("java"))
+            from(components["java"])
             artifact(dokkaJar) // <2>
         }
     }
