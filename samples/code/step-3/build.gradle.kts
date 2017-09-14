@@ -1,5 +1,4 @@
 // tag::dokka-imports[]
-import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.jvm.tasks.Jar
 // end::dokka-imports[]
 
