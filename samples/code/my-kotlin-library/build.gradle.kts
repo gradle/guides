@@ -64,13 +64,13 @@ val sourcesJar by tasks.creating(Jar::class) {
     group = JavaBasePlugin.DOCUMENTATION_GROUP
     description = "Assembles sources JAR"
     classifier = "sources"
-    from(java.sourceSets.getByName("main").allSource)
+    from(java.sourceSets["main"].allSource)
 }
 
 publishing {
     publications {
         create("default", MavenPublication::class.java) {
-            from(components.getByName("java"))
+            from(components["java"])
             artifact(sourcesJar)
             artifact(dokkaJar)
         }

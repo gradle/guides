@@ -193,7 +193,7 @@ include::{samplescodedir}/step-3/build.gradle.kts[tags=configure-dokka-jar]
 
 Try running `gradle dokkaJar` and see if you can find the javadoc JAR based on what you know so far.
 
-We could optionally also generate a `"sources"` JAR using the same pattern from `java.sourceSets.getByName("main").allSource`.
+We could optionally also generate a `"sources"` JAR using the same pattern from `java.sourceSets["main"].allSource`.
 
 == Step 4: Publish to local repo
 
