@@ -1,8 +1,5 @@
 
-import org.gradle.api.plugins.JavaBasePlugin
-import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.jvm.tasks.Jar
-import org.gradle.kotlin.dsl.*
 import org.jetbrains.dokka.gradle.DokkaTask
 
 // Use of buildscript {} necessary due to https://github.com/Kotlin/dokka/issues/146

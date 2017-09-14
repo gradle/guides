@@ -1,5 +1,3 @@
-import org.gradle.kotlin.dsl.*
-
 plugins {
     `build-scan`
     kotlin("jvm", "1.1.4-3")
