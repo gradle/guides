@@ -297,7 +297,7 @@ include::{singledir}/actors/build.gradle[tags=compileTestJava]
 `--module-path`.
 <2> Explicitly adds the automatic `junit` module to the set of observable
 modules.
-<3> Declares that `org.gradle.actors` reads the `junit` module.
+<3> Declares that `junit` reads the `org.gradle.actors` module.
 <4> Adds the test source files to the `org.gradle.actors` module.
 
 These options cause the generated class files in the `test` source set's
@@ -322,7 +322,7 @@ include::{singledir}/actors/build.gradle[tags=test]
 JVM that is running the tests is not part of a Java 9 module. It is Gradle's
 test runner, so it declares no modules it needs to consume. This argument makes
 all of the modules in the module path visible.
-<3> Declares that `org.gradle.actors` reads the `junit` module.
+<3> Declares that `junit` reads the `org.gradle.actors` module.
 <4> Adds the test classes to the `org.gradle.actors` module.
 
 At this point, you can actually run the tests.
