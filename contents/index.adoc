@@ -50,7 +50,7 @@ image::project-graph.png[Project Graph]
 
 If the `api` and `implementation` configurations are new to you, read more
 about the
-[Java Library Plugin](https://docs.gradle.org/current/userguide/java_library_plugin.html)
+https://docs.gradle.org/current/userguide/java_library_plugin.html[Java Library Plugin]
 added in Gradle 3.5.
 
 You can clone the project and run the original program to see its output:
@@ -186,7 +186,7 @@ https://scans.gradle.com/s/l76lgbuizu4pm/tests/byProject?toggled=W1sxXSxbMSwwXSx
 If you aren't already familiar with the Java 9 module system, you should read:
 
 * http://openjdk.java.net/projects/jigsaw/quick-start[Module System Quick-Start Guide] (at least)
-* http://openjdk.java.net/projects/jigsaw/spec/sotms/ [The State of The Module System] (for more details)
+* http://openjdk.java.net/projects/jigsaw/spec/sotms/[The State of The Module System] (for more details)
 
 This guide assumes that you already have familiarity with the following concepts:
 
