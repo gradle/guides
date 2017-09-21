@@ -152,11 +152,11 @@ In the above xref:build-scan-performance[], we can see that Configuration is tak
 
 image::build-scan-configuration-breakdown.png[title="Build scan configuration breakdown"]
 
-Here, we can see the scripts and plugins that were applied to the project in descending order of how long they took to apply. Taking the top offender, `script-b.gradle`, it can be expanded to see where this script is applied to the build.
+Here, it is possible to see the scripts and plugins that were applied to the project in descending order of how long they took to apply. Taking, as an example, the plugin `com.example.bar` which was applied once but took seven seconds, the row can be expanded to see how and where this plugin was applied to the build.
 
-image::script-b-application.png[title="Showing the application of script-b to our build"]
+image::bar-plugin-application.png[title="Showing the application of com.example.bar to the build"]
 
-So we can see that this script is applied once, by the project `:app1` from inside of that project's `build.gradle` file, and would be a good place to start trying to optimize our build.
+So it can be seen that this plugin is applied once, by the project `:app1` from inside of that project's `build.gradle` file.
 
 Hopefully you can see how the ability to drill into the data provided by build scans can really help in optimizing a build.
 
@@ -166,11 +166,11 @@ The next few subsections introduce techniques that can help improve the configur
 
 Every plugin that you apply to a project adds to the overall configuration time. Some plugins have a greater impact than others. That doesn’t mean you should avoid using plugins, but you should take care to only apply them where they’re needed. For example, it’s easy to apply plugins to all projects via `allprojects {}` or `subprojects {}` even if not every project needs them.
 
-In our above build scan example, we can see that `script-a.gradle` is applied to 3 projects inside the build:
+In our above build scan example, we can see that the plugin `com.example.foo` is applied to 3 projects inside the build:
 
-image::script-a-application.png[title="Showing the application of script-a to our build"]
+image::foo-plugin-application.png[title="Showing the application of com.example.foo to the build"]
 
-This script takes a second to run, and we can see it is applied to 3 projects from the root `build.gradle` file, and so is introducing a 3 second delay to our configuration.
+This plugin takes a three seconds to run, and as it is applied to 3 projects from the root `build.gradle` file, it is introducing a 3 second delay to the configuration phase.
 
 Ideally, plugins should not incur a significant configuration-time cost. If they do, the focus should be on improving the plugin. Nonetheless, in projects with many modules and a significant configuration time, you should spend a little time identifying any plugins that have a notable impact.
 
