@@ -307,7 +307,7 @@ Again, build scans can help you investigate how well your tasks are caching. In 
 
 image::cache-performance.png[title="Inspecting the performance of the build cache for a build."]
 
-This shows you statistics about how many tasks were fetched from a cache, which cache was used, along with transfer and pack/unpack rates for these cache entries.
+This shows you statistics about how many tasks interacted with a cache, which cache was used, along with transfer and pack/unpack rates for these cache entries.
 
 There is also a _"Task execution"_&nbsp; tab which shows details including cacheablity on the tasks that were executed. Clicking on any of the categories wil take you to the Timeline screen with just tasks of that category highlighted.
 
