@@ -1,3 +1,4 @@
+:xrefstyle: full
 = Improving the performance of Gradle builds
 
 Build performance is critical to your productivity. The longer the build takes to complete, the more likely you'll be taken out of your development flow. On top of that, since you run the build many times a day, even small periods of waiting can add up to significant disruption. The same is true for CI builds: The faster they are, the faster you can react to new issues and the more capacity you will have to do innovative experiments.
@@ -73,7 +74,7 @@ As with any attempt to optimize, your first instinct should be to profile the sy
 
 ### Using Gradle build scans
 
-Build scans are a feature provided by Gradle Inc. that aggregate information across multiple build runs and make those diagnostics available to you online as a report. You can
+Build scans are a feature provided by Gradle that aggregate information across multiple build runs and make those diagnostics available to you online as a report. You can
 
 * Easily share scans between developers and build masters
 * Track build performance over time
@@ -93,6 +94,7 @@ image::build-scan-home.png[title="Performance page link on build scan home page"
 
 The performance page gives you a breakdown of how long different stages of your build took to complete. As you can see from the following screenshot, you get to see how long Gradle took to start up, configure the build's projects, resolve dependencies, and execute the tasks. You also get details about environmental properties, such as whether a daemon was used or not.
 
+[[build-scan-performance]]
 image::build-scan-performance-page.png[title="Build scan performance page"]
 
 We will look into the different categories presented in the report shortly. You can also learn more about build scans https://gradle.com[at Gradle.com].
@@ -108,13 +110,11 @@ $ gradle --profile <tasks>
 
 This will result in the generation of an HTML report that you can find in the _build/reports/profile_ directory of the _root_ project. Each profile report has a timestamp in its name to avoid overwriting existing ones.
 
-The report displays a breakdown of the time taken to run the build, though less detailed than a build scan. Here’s a screenshot of a real profile report showing the different categories that Gradle uses:
+The report displays a breakdown of the time taken to run the build, though much less detailed than a build scan. Here’s a screenshot of a real profile report showing the different categories that Gradle uses:
 
 image::gradle-profile-report.png[title="An example profile report", alt="Sample Gradle profile report"]
 
-Each of the main categories - _Configuration_, _Dependency Resolution_, and _Task Execution_ - may reveal different time sinks that you may want to tackle. We’ll go through those categories in later sections, detailing the types of issue you may encounter for each one. Before then, let’s take a look at some of the items in the summary.
-
-### Understanding the profile report categories
+### Understanding the performance categories
 
 Both build scans and the local profile reports break build execution down into the same categories. We'll now look at those categories, what they mean, and what sorts of problems you can identify with them.
 
@@ -147,11 +147,31 @@ The rest of the summary relates to the main categories, which we cover in detail
 
 As the user guide describes in https://docs.gradle.org/current/userguide/build_lifecycle.html[the build lifecycle chapter], a Gradle build goes through three phases: initialization, configuration, and execution. The important thing to understand here is that configuration code always executes regardless of which tasks will run. That means any expensive work performed during configuration will slow every invocation down, even simple ones like `gradle help` and `gradle tasks`.
 
-The profile report will help you identify which projects take the most time to configure, but that’s all. The next few subsections introduce techniques that can help improve the configuration time and explain why they work.
+A profile report will help you identify which projects take the most time to configure, but that’s all. The advantage of using a build scan is that it lets you drill down into this configuration time, and see what is causing any slowness.
+
+In the above xref:build-scan-performance[] we can see that Configuration is taking over 14 seconds. Clicking on the _"Configuration"_&nbsp; tab at the top of the page will break this down for us.
+
+image::build-scan-configuration-breakdown.png[title="Build scan configuration breakdown"]
+
+Here we can see the scripts and plugins that were applied to our project in descending order of how long they took to apply. If we take the top offender, `script-b.gradle`, we can expand it up to see where this script is applied to our build
+
+image::script-b-application.png[title="Showing the application of script-b to our build"]
+
+So we can see that this script is applied once, by the project `:app1` from inside of that project's `build.gradle` file, and would be a good place to start trying to optimize our build.
+
+Hopefully you can see how the ability to drill into the data provided by build scans can really help in optimizing a build.
+
+The next few subsections introduce techniques that can help improve the configuration time and explain why they work.
 
 ### Apply plugins judiciously
 
 Every plugin that you apply to a project adds to the overall configuration time. Some plugins have a greater impact than others. That doesn’t mean you should avoid using plugins, but you should take care to only apply them where they’re needed. For example, it’s easy to apply plugins to all projects via `allprojects {}` or `subprojects {}` even if not every project needs them.
+
+In our above build scan example, we can see that `script-a.gradle` is applied to 3 projects inside the build:
+
+image::script-a-application.png[title="Showing the application of script-a to our build"]
+
+This script takes a second to run, and we can see it is applied to 3 projects from the root `build.gradle` file, and so is introducing a 3 second delay to our configuration.
 
 Ideally, plugins should not incur a significant configuration-time cost. If they do, the focus should be on improving the plugin. Nonetheless, in projects with many modules and a significant configuration time, you should spend a little time identifying any plugins that have a notable impact. The only reliable way to do this is by running a build twice: once with the plugin applied and once without.
 
@@ -209,7 +229,13 @@ include::{samplescodedir}/copy-3.gradle[tags=copy]
 
 Note that the `from()` declaration doesn’t resolve the dependencies because you’re using the https://docs.gradle.org/current/userguide/artifact_dependencies_tutorial.html#configurations[dependency configuration] itself as an argument, not its files. The `Copy` task handles the resolution of the configuration itself during task execution, which is exactly what you want.
 
-The performance page of build scans explicitly shows how dependency resolution time is split across project configuration and task execution, so it's easy to identify this particular issue. If you're using the older profile reports, a simple way to determine whether you’re resolving dependencies during configuration is to run
+The performance page of build scans explicitly shows how dependency resolution time is split across project configuration and task execution:
+
+image::bad-dependency-resolution.png[title="Bad dependency resolution at configuration time."]
+
+Here, it's easy to identify this particular issue; we should have a "Project configuration" time of zero, and this example shows we seem to be resolving dependencies too early in the lifecycle.
+
+If you are using the profiler, a similar (but much less detailed) result can be seen by running;
 
 [listing.terminal]
 ----
@@ -262,7 +288,13 @@ You can can avoid executing tasks, even if they’re required by a user. If neit
 
 Incremental build is the name Gradle gives to this feature of checking inputs and outputs to determine whether a task needs to run again or not. Most tasks provided by Gradle take part in incremental build because they have been defined that way. You can also make your own tasks integrate with incremental build, as described in the user guide. The basic idea is to mark the task’s properties that have an impact on whether a task needs to run. You can learn more https://docs.gradle.org/current/userguide/more_about_tasks.html#sec:up_to_date_checks[in the user guide].
 
-You can easily identify good candidates for incremental build or tasks that aren’t up to date when they should be by looking at the timeline view in a build scan. The tasks are sorted by longest duration first, making it easy to pick out the slowest tasks. Pick the slowest of your custom tasks and make it incremental, then measure again and repeat.
+You can easily identify good candidates for incremental build or tasks that aren’t up to date when they should be by looking at the timeline view in a build scan:
+
+image::timeline.png[title="The timeline view can help with incremental build inspection."]
+
+As can be seen above, a task which we expected to be incremental (and up-to-date) wasn't, and the build scan shows us why -- one of its inputs _"timestamp"_&nbsp; has changed, and is forcing the task to be re-run.
+
+The tasks can also be sorted by longest duration first, making it easy to pick out the slowest tasks. Pick the slowest of your custom tasks and make it incremental, then measure again and repeat.
 
 ### Caching task outputs
 
@@ -271,6 +303,16 @@ Incremental build works locally, based on the previous execution of a task. Grad
 It is also possible to use a shared build cache service, like https://gradle.com/build-cache/[the one provided by Gradle Enterprise]. Shared caches can reduce the number of tasks you need to execute by reusing outputs already generated elsewhere. This can significantly decrease build times for both CI and developer builds.
 
 We have a complete guide about https://guides.gradle.org/using-build-cache/[using the build cache]. It covers the different scenarios caching can improve, and detailed discussions of the different caveats you need to be aware of when enabling caching for a build.
+
+Again, build scans can help you investigate how well your tasks are caching. In the performance screen, we have a tab titled _"Build cache"_:
+
+image::cache-performance.png[title="Inspecting the performance of the build cache for a build."]
+
+This shows you statistics about how many tasks were fetched from a cache, which cache was used, along with download and unpack rates for these cache entries.
+
+There is also a _"Task execution"_&nbsp; tab which shows details including cacheablity on the tasks that were executed. Clicking on any of the categories wil take you to the Timeline screen with just tasks of that category highlighted.
+
+image::task-execution-cacheable.png[title="A task oriented view of performance."]
 
 ### Partial builds
 
@@ -284,6 +326,9 @@ Gradle also supports other forms of partial build via the _base_ plugin, which a
 * `buildDependents` - will execute the `build` task in the target project and all projects that depend on it. This checks that you haven't broken those projects after making some changes.
 
 These tasks are slower than just running `build` in the target project as they do more work, but they are an effective alternative to running `gradle build`, which runs `build` in _all_ the projects of a multi-project build.
+
+### Using build scans to trace un-cached tasks
+
 
 ## Suggestions for Java projects
 
