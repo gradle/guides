@@ -1,4 +1,3 @@
-:xrefstyle: full
 = Improving the performance of Gradle builds
 
 Build performance is critical to your productivity. The longer the build takes to complete, the more likely you'll be taken out of your development flow. On top of that, since you run the build many times a day, even small periods of waiting can add up to significant disruption. The same is true for CI builds: The faster they are, the faster you can react to new issues and the more capacity you will have to do innovative experiments.
@@ -83,7 +82,7 @@ Build scans are a feature provided by Gradle that aggregate information across m
 
 Gradle won't generate build scans automatically, but you can easily enable them by following these steps:
 
-1. Apply the _build-scan_ plugin https://scans.gradle.com/setup/step-1[as described on Gradle.com]
+1. Apply the _build-scan_ plugin https://scans.gradle.com/get-started[as described on Gradle.com]
 2. Run your builds with the `--scan` option, e.g. `gradle build --scan`
 
 At the end of the build, Gradle displays the URL where your build scan awaits your attention.
@@ -149,11 +148,11 @@ As the user guide describes in https://docs.gradle.org/current/userguide/build_l
 
 A profile report will help you identify which projects take the most time to configure, but that’s all. The advantage of using a build scan is that it lets you drill down into this configuration time, and see what is causing any slowness.
 
-In the above xref:build-scan-performance[] we can see that Configuration is taking over 14 seconds. Clicking on the _"Configuration"_&nbsp; tab at the top of the page will break this down for us.
+In the above xref:build-scan-performance[], we can see that Configuration is taking over 14 seconds. Clicking on the _"Configuration"_&nbsp; tab at the top of the page will break this stage down into its component parts.
 
 image::build-scan-configuration-breakdown.png[title="Build scan configuration breakdown"]
 
-Here we can see the scripts and plugins that were applied to our project in descending order of how long they took to apply. If we take the top offender, `script-b.gradle`, we can expand it up to see where this script is applied to our build
+Here, we can see the scripts and plugins that were applied to the project in descending order of how long they took to apply. Taking the top offender, `script-b.gradle`, it can be expanded to see where this script is applied to the build.
 
 image::script-b-application.png[title="Showing the application of script-b to our build"]
 
@@ -173,7 +172,7 @@ image::script-a-application.png[title="Showing the application of script-a to ou
 
 This script takes a second to run, and we can see it is applied to 3 projects from the root `build.gradle` file, and so is introducing a 3 second delay to our configuration.
 
-Ideally, plugins should not incur a significant configuration-time cost. If they do, the focus should be on improving the plugin. Nonetheless, in projects with many modules and a significant configuration time, you should spend a little time identifying any plugins that have a notable impact. The only reliable way to do this is by running a build twice: once with the plugin applied and once without.
+Ideally, plugins should not incur a significant configuration-time cost. If they do, the focus should be on improving the plugin. Nonetheless, in projects with many modules and a significant configuration time, you should spend a little time identifying any plugins that have a notable impact.
 
 ### Avoid expensive or blocking work
 
@@ -233,7 +232,7 @@ The performance page of build scans explicitly shows how dependency resolution t
 
 image::bad-dependency-resolution.png[title="Bad dependency resolution at configuration time."]
 
-Here, it's easy to identify this particular issue; we should have a "Project configuration" time of zero, and this example shows we seem to be resolving dependencies too early in the lifecycle.
+Here, it's easy to identify this particular issue; we should have a _"resolved dependencies during project configuration"_&nbsp; time of zero, and this example shows we seem to be resolving dependencies too early in the lifecycle.  Also on the _"Performance"_&nbsp; screen is a _"Settings and suggestions"_&nbsp; tab which will show you which dependencies were being resolved during project configuration.
 
 If you are using the profiler, a similar (but much less detailed) result can be seen by running;
 
@@ -304,11 +303,11 @@ It is also possible to use a shared build cache service, like https://gradle.com
 
 We have a complete guide about https://guides.gradle.org/using-build-cache/[using the build cache]. It covers the different scenarios caching can improve, and detailed discussions of the different caveats you need to be aware of when enabling caching for a build.
 
-Again, build scans can help you investigate how well your tasks are caching. In the performance screen, we have a tab titled _"Build cache"_:
+Again, build scans can help you investigate how well your tasks are caching. In the performance screen, there is a tab titled _"Build cache"_:
 
 image::cache-performance.png[title="Inspecting the performance of the build cache for a build."]
 
-This shows you statistics about how many tasks were fetched from a cache, which cache was used, along with download and unpack rates for these cache entries.
+This shows you statistics about how many tasks were fetched from a cache, which cache was used, along with transfer and pack/unpack rates for these cache entries.
 
 There is also a _"Task execution"_&nbsp; tab which shows details including cacheablity on the tasks that were executed. Clicking on any of the categories wil take you to the Timeline screen with just tasks of that category highlighted.
 
@@ -326,9 +325,6 @@ Gradle also supports other forms of partial build via the _base_ plugin, which a
 * `buildDependents` - will execute the `build` task in the target project and all projects that depend on it. This checks that you haven't broken those projects after making some changes.
 
 These tasks are slower than just running `build` in the target project as they do more work, but they are an effective alternative to running `gradle build`, which runs `build` in _all_ the projects of a multi-project build.
-
-### Using build scans to trace un-cached tasks
-
 
 ## Suggestions for Java projects
 
