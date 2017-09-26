@@ -8,7 +8,7 @@ Each individual Gradle guide is backed by its own repository under the [gradle-g
 
 ### Are you interested in contributing a guide?
 
-We want Gradle Guides to be a community project, so we encourage anyone that is interested in writing a guide to submit a proposal as an [issue](https://github.com/gradle/guides/issues) in this repository. Doing so triggers a discussion and review process with the Gradle Guides team that is designed to help you produce a high-quality guide. You can learn more about that process in [_Getting Started Writing Gradle Guides_](https://guides.gradle.org/writing-getting-started-guides/) and about the style we use in our [_Style Guide_](https://guides/gradle/org/style-guide/).
+We want Gradle Guides to be a community project, so we encourage anyone that is interested in writing a guide to submit a proposal as an [issue](https://github.com/gradle/guides/issues) in this repository. Doing so triggers a discussion and review process with the Gradle Guides team that is designed to help you produce a high-quality guide. You can learn more about that process in [_Getting Started Writing Gradle Guides_](https://guides.gradle.org/writing-getting-started-guides/) and about the style we use in our [_Style Guide_](https://guides.gradle.org/style-guide/).
 
 The rest of the README is written primarily for the [project team](https://github.com/orgs/gradle-guides/people), but you're welcome to read on if you want to learn what happens behind the scenes.
 
