@@ -297,6 +297,8 @@ A significant proportion of the build time for many projects consists of the tes
 
 image::tests-longest.png[title="Tests screen, with tests by project, sorted by duration"]
 
+As shown above, build scans provide an interactive test report, across all projects in which tests ran.
+
 Gradle has a few ways to help your tests complete faster:
 
 * Parallel test execution
