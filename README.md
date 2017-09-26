@@ -64,7 +64,7 @@ The author will then following the remaining steps laid out in _Getting Started 
 
 The following commands will check out this repository and all individual guide repositories into a single directory hierarchy. It will then generate HTML for each of the individual guides and start an nginx process to serve them all. This approach closely mirrors how GitHub Pages serves content.
 
-> NOTE: _You will need to install the `mr` and `nginx` utilities for the following commands to work. Your favorite package manager should have both._
+> NOTE: _You will need to install the [`mr`](https://myrepos.branchable.com/) and [`nginx`](https://nginx.org/en/) utilities for the following commands to work. Your favorite package manager should have both._
 
     git clone https://github.com/gradle/guides.git
     cd guides
