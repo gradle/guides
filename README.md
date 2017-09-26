@@ -55,7 +55,7 @@ In it's current format the Gradle `create` task will take care of creating the r
 
 Once this has been done, _paste the link for this new repository into the guide's GitHub issue_ and let the author know that they have everything they need to begin writing.
 
-The author will then following the remaining steps laid out in _Getting Started Writing Gradle Guides_, and will ultimately submit a pull request against the repository. When this happens, provide your feedback in the form of a [GitHub Review](https://help.github.com/articles/reviewing-changes-in-pull-requests/) and/or [additional commits on the author's pull request branch](https://help.github.com/articles/committing-changes-to-a-pull-request-branch-created-from-a-fork/)—whichever you deem to be the most efficient use of both your time.
+The author will then follow the remaining steps laid out in _Getting Started Writing Gradle Guides_, and will ultimately submit a pull request against the repository. When this happens, provide your feedback in the form of a [GitHub Review](https://help.github.com/articles/reviewing-changes-in-pull-requests/) and/or [additional commits on the author's pull request branch](https://help.github.com/articles/committing-changes-to-a-pull-request-branch-created-from-a-fork/)—whichever you deem to be the most efficient use of both your time.
 
 
 ## FAQ
