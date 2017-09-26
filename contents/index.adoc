@@ -215,6 +215,14 @@ Simple customizations -- such as forcing specific versions of a dependency or su
 
 You should use build scans or profile reports to check that any custom dependency resolution logic you have in your build doesn't adversely affect dependency resolution times in a big way. And note that this could be custom logic you have written yourself or it could be part of a plugin that you're using.
 
+=== Identify slow dependency downloads
+
+Slow dependency downloads (potentially caused by a slow internet connection, overloaded repository server, or similar) can impact your overall build performance. Build scans provide a "Network Activity" tab on the "Performance" page that lists helpful information such as the time spent downloading dependencies, overall transfer rate of dependency downloads across your build, and a list of downloads sorted by speed.
+
+Here you can see two slow dependency downloads that took 20 and 40 seconds and slowed down the overall performance in the build:
+
+image::slow-dependency-downloads.png[title="Identify slow dependency downloads"]
+
 == Task execution
 
 The fastest task is one that doesn’t execute. If you can find ways to skip tasks you don’t need to run, you’ll end up with a faster build overall. This section will discuss a few ways to achieve task avoidance in your Gradle build.
