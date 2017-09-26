@@ -38,7 +38,7 @@ Going up a major version is often just as easy. Only formerly deprecated APIs an
 
 As Gradle runs on the JVM, improvements in the performance of the latter will often benefit Gradle. Hence, you should consider running Gradle with the latest major version of the JVM.
 
-=== Parallel project execution
+=== Parallel execution
 
 Most builds consist of more than one project and some of those projects are usually independent of one another. Yet Gradle will only run one task at a time by default, regardless of the project structure (this will be improved soon). By using the `--parallel` switch, you can force Gradle to execute tasks in parallel as long as those tasks are in different projects.
 
@@ -53,6 +53,18 @@ You can also make building in parallel the default for a project by adding the f
 ----
 org.gradle.parallel=true
 ----
+
+With build scans you get a visual timeline of the parallel execution, allowing you to identify bottlenecks in your build's execution that could be optimized.
+
+For example, in this build you can see long-running tasks at the beginning and end of the build where they are the only tasks being executed:
+
+image::parallel-task-slow.png[title="Bottleneck in parallel execution"]
+
+Tweaking the build configuration to run the two slow tasks in parallel reduces the overall build time from 8 seconds down to 5 seconds:
+
+image::parallel-task-fast.png[title="Optimized parallel execution"]
+
+The visualization of build scans allows you to identify these types of bottlenecks more easily.
 
 === Configure on demand
 
