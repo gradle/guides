@@ -109,7 +109,7 @@ In the above build scan example, you can see that the plugin `com.example.foo` i
 
 image::foo-plugin-application.png[title="Showing the application of com.example.foo to the build"]
 
-This plugin takes a three seconds to run, and as it is applied to 3 projects from the root `build.gradle` file, it is introducing a 3 second delay to the configuration phase.
+This plugin takes three seconds to run, and as it is applied to 3 projects from the root `build.gradle` file, it is introducing a 3 second delay to the configuration phase.
 
 Ideally, plugins should not incur a significant configuration-time cost. If they do, the focus should be on improving the plugin. Nonetheless, in projects with many modules and a significant configuration time, you should spend a little time identifying any plugins that have a notable impact.
 
