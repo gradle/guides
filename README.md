@@ -73,7 +73,7 @@ The following commands will check out this repository and all individual guide r
     ./nginx.sh
     open http://localhost:8080
 
-When complete, http://localhost:8080 should mirror what's available at https://guides.gradle.org.
+When complete, http://localhost:8080 should list directories that you can click to serve guides locally. For example, click on the `building-android-apps` directory to serve the _Building Android Apps_ guide.
 
 ### How is the Gradle Guides site published?
 
