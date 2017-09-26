@@ -85,7 +85,7 @@ In addition to the top-level performance summary of your build execution, you ca
 
 == Configuration
 
-As the user guide describes in https://docs.gradle.org/current/userguide/build_lifecycle.html[the build lifecycle chapter], a Gradle build goes through three phases: initialization, configuration, and execution. The important thing to understand here is that configuration code always executes regardless of which tasks will run. That means any expensive work performed during configuration will slow every invocation down, even simple ones like `gradle help` and `gradle tasks`. One advantage of using a build scan is that it lets you drill down into this configuration time and see what is causing any slowness.
+As the user guide describes in https://docs.gradle.org/current/userguide/build_lifecycle.html[the build lifecycle chapter], a Gradle build goes through 3 phases: initialization, configuration, and execution. The important thing to understand here is that configuration code always executes regardless of which tasks will run. That means any expensive work performed during configuration will slow every invocation down, even simple ones like `gradle help` and `gradle tasks`. One advantage of using a build scan is that it lets you drill down into this configuration time and see what is causing any slowness.
 
 In the above xref:build-scan-performance[], you can see that Configuration is taking over 16 seconds. Clicking on the _"Configuration"_&nbsp; tab at the top of the page will break this stage down into its component parts.
 
@@ -109,7 +109,7 @@ In the above build scan example, you can see that the plugin `com.example.foo` i
 
 image::foo-plugin-application.png[title="Showing the application of com.example.foo to the build"]
 
-This plugin takes three seconds to run, and as it is applied to 3 projects from the root `build.gradle` file, it is introducing a 3 second delay to the configuration phase.
+This plugin takes 3 seconds to run, and as it is applied to 3 projects from the root `build.gradle` file, it is introducing a 3 second delay to the configuration phase.
 
 Ideally, plugins should not incur a significant configuration-time cost. If they do, the focus should be on improving the plugin. Nonetheless, in projects with many modules and a significant configuration time, you should spend a little time identifying any plugins that have a notable impact.
 
