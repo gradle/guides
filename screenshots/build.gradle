@@ -55,6 +55,10 @@ task unzipChromeDriver(type: Copy) {
 }
 
 test {
+    enabled = false
+}
+
+task takeScreenshots(type: Test) {
     ext.screenshotDir = file("${buildDir}/screenshots")
     outputs.dir(screenshotDir).withPropertyName('screenshotDir').withPathSensitivity(PathSensitivity.RELATIVE)
     outputs.doNotCacheIf('Depending on external service') { true }
