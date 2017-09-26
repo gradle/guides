@@ -429,7 +429,7 @@ inefficiencies in plugins and custom tasks or constrained resources. The best wa
 using the https://github.com/gradle/gradle-profiler[Gradle Profiler]. The Gradle Profiler allows you to define scenarios like "Running 'assemble' after making an ABI-breaking change" and then automatically runs your build several times to warm it up and collect profiling data. It can
 be used to produce build scans or together with other major profilers like JProfiler and YourKit. Using these method-level
 profilers can often help you find inefficient algorithms in custom plugins. If you find that something in Gradle itself is
-slowing down your build, don't hesitate to send us a profiler snapshot at performance@gradle.com.
+slowing down your build, don't hesitate to send a profiler snapshot at performance@gradle.com.
 
 === Profile report
 
