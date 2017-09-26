@@ -81,7 +81,7 @@ The performance page gives you a breakdown of how long different stages of your 
 [[build-scan-performance]]
 image::build-scan-performance-page.png[title="Build scan performance page"]
 
-In addition to the top-level performance summary of your build execution, you can drill down further into individual aspects that affect build performance in the different tabs on the performance page.
+In addition to the top-level performance summary of your build execution, you can drill down further into individual aspects that affect build performance in the different tabs of the performance page.
 
 == Configuration
 
