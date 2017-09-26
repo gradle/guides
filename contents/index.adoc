@@ -255,7 +255,6 @@ image::timeline-not-cacheable.png[title="Timeline screen with 'not cacheable' ta
 
 Subsequently sorting by task duration on the Timeline screen will highlight tasks with great potential for time saving. The build scan above shows that `:task1` and `:task3` could be improved and made cacheable, and clearly states the reason why they were considered not cacheable.
 
-
 === Partial builds
 
 Incremental build definitely improves build times, but you need to remember that the up-to-date checks still take time. This has important implications for multi-project builds that have a large number of subprojects. If the task you want to execute ultimately depends on the execution of twenty other subprojects, you have to wait until the build has finished checking those before it gets round to your task. Some of them may even have non-incremental tasks that end up running, even if nothing has changed.
@@ -294,7 +293,11 @@ The following suggestions are specific to projects using the `java` plugin or on
 
 === Running tests
 
-A significant proportion of the build time for many projects consists of the test tasks that run. These could be a mixture of unit and integration tests, with the latter often being significantly slower. Gradle has a few ways to help your tests complete faster:
+A significant proportion of the build time for many projects consists of the test tasks that run. These could be a mixture of unit and integration tests, with the latter often being significantly slower. Build scans can help you identify the slowest tests, which should be the primary focus of your performance improvements.
+
+image::tests-longest.png[title="Tests screen, with tests by project, sorted by duration"]
+
+Gradle has a few ways to help your tests complete faster:
 
 * Parallel test execution
 * Process forking options
