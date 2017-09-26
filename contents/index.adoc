@@ -247,9 +247,14 @@ image::cache-performance.png[title="Inspecting the performance of the build cach
 
 This shows you statistics about how many tasks interacted with a cache, which cache was used, along with transfer and pack/unpack rates for these cache entries.
 
-There is also a _"Task execution"_&nbsp; tab which shows details including cacheablity on the tasks that were executed. Clicking on any of the categories wil take you to the Timeline screen with just tasks of that category highlighted.
+There is also a _"Task execution"_&nbsp; tab which shows details including cacheablity on the tasks that were executed. Clicking on any of the categories will take you to the Timeline screen with just tasks of that category highlighted.
 
 image::task-execution-cacheable.png[title="A task oriented view of performance."]
+
+image::timeline-not-cacheable.png[title="Timeline screen with 'not cacheable' tasks only."]
+
+Subsequently sorting by task duration on the Timeline screen will highlight tasks with great potential for time saving. The build scan above shows that `:task1` and `:task3` could be improved and made cacheable, and clearly states the reason why they were considered not cacheable.
+
 
 === Partial builds
 
