@@ -474,9 +474,9 @@ Even if a build execution has a long startup time, a subsequent run will usually
 
 Soon after Gradle has got itself up and running, it initializes your project. This commonly just means processing your _settings.gradle_ file, but if you have custom build logic in a _buildSrc_ directory, that gets built as well.
 
-The sample profile report shows a time of just over 8 seconds for this category, the vast majority of which was spent building the _buildSrc_ project. This part fortunately won’t take so long once _buildSrc_ is built once as Gradle will consider it up to date. The up-to-date checks still take a little time, but nowhere near as much. If you do have problems with a persistently time consuming _buildSrc_ phase, you should consider breaking it out into a separate project whose JAR artifact is added to the build's classpath.
+The sample profile report shows a time over 1.6 second for this category, the vast majority of which was spent building the _buildSrc_ project. This part fortunately won’t take so long once _buildSrc_ is built once, as Gradle will consider it up to date. The up-to-date checks still take a little time, but nowhere near as much. If you do have problems with a persistently time consuming _buildSrc_ phase, you should consider breaking it out into a separate project whose JAR artifact is added to the build's classpath.
 
-The _settings.gradle_ file rarely has computationally or IO expensive code in it. If you find that Gradle is taking a significant amount of time to process it, you should use more traditional profiling methods, such as the Gradle Profiler to determine why.
+The _settings.gradle_ file rarely has computationally or IO expensive code in it. If you find that Gradle is taking a significant amount of time to process it, you should use more traditional profiling methods, such as https://github.com/gradle/gradle-profiler[the Gradle Profiler] to determine why.
 
 ==== Loading projects
 
@@ -488,7 +488,7 @@ Everything discussed thus far applies to Android builds too, since they're based
 
 == Summary
 
-Performance is not an afterthought in your build - it is a key feature affecting your team's productivity and happiness. The Gradle team is focused on making Gradle builds as fast as possible out of the box because they know that your time is valuable. Even so, Gradle supports a huge variety of builds which means that sometimes the default settings won't always be ideal for _your_ project. To help you optimize your build, the guide introduced you to setting and options that allow you to customize Gradle's behavior to best suite your particular build.
+Performance is not an afterthought in your build - it is a key feature affecting your team's productivity and happiness. The Gradle team is focused on making Gradle builds as fast as possible out of the box because they know that your time is valuable. Even so, Gradle supports a huge variety of builds which means that sometimes the default settings won't always be ideal for _your_ project. To help you optimize your build, this guide introduced you to settings and options that allow you to customize Gradle's behavior to best suite your particular build.
 
 Beyond those settings, remember that the two big contributors to build times are configuration and task execution, although the base cost of the former drops with almost every major Gradle release. And as far as the configuration phase goes, you should now have a good idea of the pitfalls you need to avoid. With task execution, you have more control since you can avoid running tasks or running them too often. You can also code your own tasks to be as performant as possible.
 
