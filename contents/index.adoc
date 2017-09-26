@@ -343,8 +343,7 @@ Just be aware that forking a VM is a relatively expensive operation, so a small 
 
 ==== Report generation
 
-Gradle will automatically create test reports by default regardless of whether you want to look at them. That report generation takes time, slowing down the overall build. Reports are definitely useful, but do you need them every time you run the build? Perhaps you only care if the tests succeed or not.
-
+Gradle will automatically create test reports by default regardless of whether you want to look at them. That report generation takes time, slowing down the overall build. Reports are definitely useful, but do you need them every time you run the build? Perhaps you only care if the tests succeed or not. Also, if you're using build scans, you don't need to generate reports locally.
 
 To disable the test reports, simply add this configuration:
 
