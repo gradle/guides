@@ -448,7 +448,7 @@ image::gradle-profile-report.png[title="An example profile report", alt="Sample 
 
 === Understanding the performance categories
 
-Both build scans and the local profile reports break build execution down into the same categories. We'll now look at those categories, what they mean, and what sorts of problems you can identify with them.
+Both build scans and the local profile reports break build execution down into the same categories, which are explained in more details below.
 
 ==== Startup
 
