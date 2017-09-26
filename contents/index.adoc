@@ -91,11 +91,11 @@ In the above xref:build-scan-performance[], you can see that Configuration is ta
 
 image::build-scan-configuration-breakdown.png[title="Build scan configuration breakdown"]
 
-Here you can see the scripts and plugins that were applied to the project in descending order of how long they took to apply. The slowest plugin and script applications are good candidates for optimization, and you can dig further into those items in the list. For example, the plugin `com.example.bar` was applied once but took seven seconds - you can expand that row to see how and where this plugin was applied to the build.
+Here you can see the scripts and plugins that were applied to the project in descending order of how long they took to apply. The slowest plugin and script applications are good candidates for optimization, and you can dig further into those items in the list. For example, the plugin `com.example.bar` was applied once but took 7 seconds - you can expand that row to see how and where this plugin was applied to the build.
 
 image::bar-plugin-application.png[title="Showing the application of com.example.bar to the build"]
 
-You can seen that this plugin is applied once, by the project `:app1` from inside of that project's `build.gradle` file.
+You can see that this plugin is applied once, by the project `:app1`, from inside of that project's `build.gradle` file.
 
 This ability to drill into the data provided by build scans can really help in optimizing a build.
 
@@ -115,7 +115,7 @@ Ideally, plugins should not incur a significant configuration-time cost. If they
 
 === Avoid expensive or blocking work
 
-This is fairly obvious based on what you’ve already said about the configuration phase, but it’s not hard to accidentally break this rule. It’s usually clear when you’re encrypting stuff or calling remote services during configuration if that code is in a build file. But logic like this is more often found in plugins and occasionally custom task classes. Any expensive work in a plugin's `apply()` method or a tasks's constructor should be a red flag. The most common and less obvious mistake is resolving dependencies at configuration time, which is covered in its own chapter further below.
+This is fairly obvious based on what was already said about the configuration phase, but it’s not hard to accidentally break this rule. It’s usually clear when you’re encrypting stuff or calling remote services during configuration if that code is in a build file. But logic like this is more often found in plugins and occasionally custom task classes. Any expensive work in a plugin's `apply()` method or a tasks's constructor should be a red flag. The most common and less obvious mistake is resolving dependencies at configuration time, which is covered in its own chapter further below.
 
 === Statically compile tasks and plugins
 
