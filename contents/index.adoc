@@ -139,9 +139,13 @@ If you do decide to use static compilation, using an IDE can quickly show errors
 
 Software projects rely on dependency resolution to simplify the integration of third-party libraries and other dependencies into the build. This does come at a cost as Gradle has to contact remote servers to find out about these dependencies and download them where necessary. Advanced caching helps speed things up tremendously, but you still need to watch out for a few pitfalls that are discussed next.
 
-=== Dynamic and snapshot versions
+=== Minimize dynamic and snapshot versions
 
 Dynamic versions, such as “2.+”, and snapshot (or changing) versions force Gradle to contact the remote repository to find out whether there’s a new version or snapshot available. By default, Gradle will only perform the check once every 24 hours, but this can be changed. Look out for `cacheDynamicVersionsFor` and `cacheChangingModulesFor` in your build files and initialization scripts in case they are set to very short periods or disabled completely. Otherwise you may be condemning your build users to frequent slower-than-normal builds rather than a single slower-than-normal build a day.
+
+With build scans, you can easily find which dependencies in your build are using dynamic versions:
+
+image::dependency-dynamic-versions.png[title="Find dependencies with dynamic versions"]
 
 You may be able to use fixed versions -&nbsp;like “1.2” and “3.0.3.GA”&nbsp;- in which case Gradle will always use the cached version. But if you need to use dynamic and snapshot versions, make sure you tune the cache settings to best meet your needs.
 
