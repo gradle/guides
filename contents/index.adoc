@@ -24,6 +24,8 @@ image::build-scan-url.png[title="Build scan link at end of build output"]
 
 Build scans are a powerful tool at your disposal to improve, amongst other things, the performance of your Gradle builds.
 
+Next, the guide will cover some quick improvements that can improve your build's performance. After that will be a deeper dive into profiling your build with build scans.
+
 == Easy improvements
 
 A guide on performance tuning would normally start with profiling and something about premature optimisation being the root of all evil. Profiling is definitely important and the guide discusses it later, but there are some things you can do that will impact all your builds for the better at the flick of a switch.
@@ -95,9 +97,7 @@ Here you can see the scripts and plugins that were applied to the project in des
 
 image::bar-plugin-application.png[title="Showing the application of com.example.bar to the build"]
 
-You can see that this plugin is applied once, by the project `:app1`, from inside of that project's `build.gradle` file.
-
-This ability to drill into the data provided by build scans can really help in optimizing a build.
+You can see that this plugin is applied once, by the project `:app1` from inside of that project's `build.gradle` file. This ability to drill into the data provided by build scans can really help in optimizing a build.
 
 The next few subsections introduce techniques that can help improve the configuration time and explain why they work.
 
@@ -115,7 +115,7 @@ Ideally, plugins should not incur a significant configuration-time cost. If they
 
 === Avoid expensive or blocking work
 
-This is fairly obvious based on what was already said about the configuration phase, but it’s not hard to accidentally break this rule. It’s usually clear when you’re encrypting stuff or calling remote services during configuration if that code is in a build file. But logic like this is more often found in plugins and occasionally custom task classes. Any expensive work in a plugin's `apply()` method or a tasks's constructor should be a red flag. The most common and less obvious mistake is resolving dependencies at configuration time, which is covered in its own chapter further below.
+As you've seen, you'll want to avoid doing time-intensive work in the configuration phase, but sometimes it can sneak into your build in non-obvious places. It’s usually clear when you’re encrypting data or calling remote services during configuration if that code is in a build file. But logic like this is more often found in plugins and occasionally custom task classes. Any expensive work in a plugin's `apply()` method or a tasks's constructor should be a red flag. The most common and less obvious mistake is resolving dependencies at configuration time, which is covered in its own chapter further below.
 
 === Statically compile tasks and plugins
 
@@ -137,17 +137,17 @@ If you do decide to use static compilation, using an IDE can quickly show errors
 
 == Dependency resolution
 
-Software projects rely on dependency resolution to simplify the integration of third-party libraries and other dependencies into the build. This does come at a cost as Gradle has to contact remote servers to find out about said dependencies and download them where necessary. Advanced caching helps speed things up tremendously, but you still need to watch out for a few pitfalls that are discussed next.
+Software projects rely on dependency resolution to simplify the integration of third-party libraries and other dependencies into the build. This does come at a cost as Gradle has to contact remote servers to find out about these dependencies and download them where necessary. Advanced caching helps speed things up tremendously, but you still need to watch out for a few pitfalls that are discussed next.
 
 === Dynamic and snapshot versions
 
 Dynamic versions, such as “2.+”, and snapshot (or changing) versions force Gradle to contact the remote repository to find out whether there’s a new version or snapshot available. By default, Gradle will only perform the check once every 24 hours, but this can be changed. Look out for `cacheDynamicVersionsFor` and `cacheChangingModulesFor` in your build files and initialization scripts in case they are set to very short periods or disabled completely. Otherwise you may be condemning your build users to frequent slower-than-normal builds rather than a single slower-than-normal build a day.
 
-You may be able to use fixed versions -&nbsp;like “1.2” and “3.0.3.GA”&nbsp;- in which case Gradle will always use the cached version. But if you want or need to use dynamic and snapshot versions, make sure you tune the cache settings according to your requirements.
+You may be able to use fixed versions -&nbsp;like “1.2” and “3.0.3.GA”&nbsp;- in which case Gradle will always use the cached version. But if you need to use dynamic and snapshot versions, make sure you tune the cache settings to best meet your needs.
 
 === Don't resolve dependencies at configuration time
 
-Dependency resolution is an expensive process, both in terms of IO and computation. Gradle reduces -&nbsp;and eliminates in some cases&nbsp;- the required network traffic through judicious caching, but there is still work it needs to do. Why is this important? Because if you trigger dependency resolution during the configuration phase, you’re going to add a penalty to every build that runs.
+Dependency resolution is an expensive process, both in terms of I/O and computation. Gradle reduces -&nbsp;and eliminates in some cases&nbsp;- the required network traffic through judicious caching, but there is still work it needs to do. Why is this important? Because if you trigger dependency resolution during the configuration phase, you’re going to add a penalty to every build that runs.
 
 The key question to answer is what triggers dependency resolution? The most common cause is the evaluation of the files that make up a configuration. This is normally a job for tasks, since you typically don’t need the files until you’re ready to do something with them in a task action. However, imagine you’re doing some debugging and want to display the files that make up a configuration through judicious caching. One way you can do this is by injecting a print statement:
 
@@ -156,7 +156,7 @@ The key question to answer is what triggers dependency resolution? The most comm
 ----
 include::{samplescodedir}/copy-2.gradle[tags=copy]
 ----
-The `files` property will force Gradle to resolve the dependencies, and in this example that’s happening during the configuration phase. Now every time you run the build, no matter what tasks you execute, you'll take a hit from the dependency resolution on that configuration. It would be better to add this in a `doFirst()` action.
+The `files` property will force Gradle to resolve the dependencies, and in this example that’s happening during the configuration phase. Now every time you run the build, no matter what tasks you execute, you'll take a performance hit from the dependency resolution on that configuration. It would be better to add this in a `doFirst()` action.
 
 .build.gradle
 [source,groovy]
@@ -166,13 +166,13 @@ include::{samplescodedir}/copy-3.gradle[tags=copy]
 
 Note that the `from()` declaration doesn’t resolve the dependencies because you’re using the https://docs.gradle.org/current/userguide/artifact_dependencies_tutorial.html#configurations[dependency configuration] itself as an argument, not its files. The `Copy` task handles the resolution of the configuration itself during task execution, which is exactly what you want.
 
-The performance page of build scans explicitly shows how dependency resolution time is split across project configuration and task execution:
+The "Dependency resolution" tab on the performance page of a build scan explicitly shows how dependency resolution time is split across project configuration and task execution:
 
-image::bad-dependency-resolution.png[title="Bad dependency resolution at configuration time."]
+image::bad-dependency-resolution.png[title="Dependency resolution at configuration time"]
 
-Here, it's easy to identify this particular issue; you should have a _"resolved dependencies during project configuration"_&nbsp; time of 0&nbsp;seconds, and this example shows the build seems to be resolving dependencies too early in the lifecycle.  Also on the _"Performance"_&nbsp; screen is a _"Settings and suggestions"_&nbsp; tab which will show you which dependencies were being resolved during project configuration.
+Here, you can quickly identify the cause of this particular performance issue. You should have a _"resolved dependencies during project configuration"_&nbsp; time of  0&nbsp;seconds, and this example shows the build is resolving dependencies too early in the lifecycle.  Also on the "Performance" page is a "Settings and suggestions" tab which will show you which dependencies were being resolved during project configuration.
 
-If you are using the profiler, a similar (but much less detailed) result can be seen by running:
+If you are using the profiler, you can see a similar (but much less detailed) result can by running this command:
 
 [listing.terminal]
 ----
@@ -227,7 +227,7 @@ You can easily identify good candidates for incremental build or tasks that aren
 
 image::timeline.png[title="The timeline view can help with incremental build inspection."]
 
-As can be seen above, build scans show why a task was not up-to-date -- one of its inputs _"timestamp"_&nbsp; has changed, and is forcing the task to be re-run.
+As you can see above, build scans show why a task was not up-to-date -- one of its inputs _"timestamp"_&nbsp; has changed, and is forcing the task to be re-run.
 
 The tasks can also be sorted by longest duration first, making it easy to pick out the slowest tasks. Pick the slowest of your custom tasks and make it incremental, then measure again and repeat.
 
