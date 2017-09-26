@@ -8,10 +8,10 @@ All this means that it’s worth investing some time and effort into making your
 
 https://gradle.com/build-scans[Build scans] are a feature provided by Gradle that aggregate information across multiple build runs and make those diagnostics available to you online. You can
 
-* Easily share scans between developers and build masters
-* Track build performance over time
-* More easily identify the source of a problem
-* Identify issues specific to a single developer site
+* Share build scans with colleagues to efficiently solve problems and improve things together
+* Track key build metrics for all of your builds, including local development builds and not just CI builds
+* Understand what happened in your build via a rich web interface instead of a text console and text files
+* Monitor builds by colleagues to proactively identify problems and improvement opportunities.
 
 You can easily enable build scans in your build by following these steps:
 
