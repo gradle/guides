@@ -270,7 +270,7 @@ Gradle also supports other forms of partial build via the _base_ plugin, which a
 
 These tasks are slower than just running `build` in the target project as they do more work, but they are an effective alternative to running `gradle build`, which runs `build` in _all_ the projects of a multi-project build.
 
-== Using the daemon
+== Daemon
 
 === Enable the daemon on old Gradle versions
 
