@@ -56,7 +56,7 @@ org.gradle.parallel=true
 
 With build scans you get a visual timeline of the parallel execution, allowing you to identify bottlenecks in your build's execution that could be optimized.
 
-For example, in this build you can see long-running tasks at the beginning and end of the build where they are the only tasks being executed:
+For example, in the following build scan you can see long-running tasks at the beginning and end of the build where they are the only tasks being executed:
 
 image::parallel-task-slow.png[title="Bottleneck in parallel execution"]
 
