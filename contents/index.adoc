@@ -215,13 +215,15 @@ Simple customizations -- such as forcing specific versions of a dependency or su
 
 You should use build scans or profile reports to check that any custom dependency resolution logic you have in your build doesn't adversely affect dependency resolution times in a big way. And note that this could be custom logic you have written yourself or it could be part of a plugin that you're using.
 
-=== Identify slow dependency downloads
+=== Identify slow or unexpected dependency downloads
 
 Slow dependency downloads (potentially caused by a slow internet connection, overloaded repository server, or similar) can impact your overall build performance. Build scans provide a "Network Activity" tab on the "Performance" page that lists helpful information such as the time spent downloading dependencies, overall transfer rate of dependency downloads across your build, and a list of downloads sorted by speed.
 
 Here you can see two slow dependency downloads that took 20 and 40 seconds and slowed down the overall performance in the build:
 
 image::slow-dependency-downloads.png[title="Identify slow dependency downloads"]
+
+You can also check the download list to make sure that there weren't any dependency downloads that you didn't expect during the build execution. For example, you might see an unexpected download caused by a dependency using a dynamic version.
 
 == Task execution
 
