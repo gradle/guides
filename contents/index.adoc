@@ -24,7 +24,7 @@ image::build-scan-url.png[title="Build scan link at end of build output"]
 
 Build scans are a powerful tool at your disposal to improve, amongst other things, the performance of your Gradle builds.
 
-Next, the guide will cover some quick improvements that can improve your build's performance. After that will be a deeper dive into profiling your build with build scans.
+Next, the guide will cover some quick improvements that can increase your build's performance. After that will be a deeper dive into profiling your build with build scans.
 
 == Easy improvements
 
