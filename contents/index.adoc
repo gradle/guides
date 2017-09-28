@@ -1,26 +1,26 @@
 = Improving the performance of Gradle builds
 
-Build performance is critical to your productivity. The longer the build takes to complete, the more likely you'll be taken out of your development flow. On top of that, since you run the build many times a day, even small periods of waiting can add up to significant disruption. The same is true for CI builds: The faster they are, the faster you can react to new issues and the more capacity you will have to do innovative experiments.
+Build performance is critical to your productivity. The longer the build takes to complete, the more likely you'll be taken out of your development flow. On top of that, since you run the build many times a day, even small periods of waiting can add up to significant disruption. The same is true for builds run on CI: the faster they are, the faster you can react to new issues and the more capacity you will have to do innovative experiments.
 
 All this means that it’s worth investing some time and effort into making your build as fast as possible. This guide offers several avenues you can explore to make a build faster, along with plenty of detail on what sorts of things can degrade the performance of a build and why.
 
 == Build scans
 
-https://gradle.com/build-scans[Build scans] are a feature provided by Gradle that aggregate information across multiple build runs and make those diagnostics available to you online. You can
+https://gradle.com/build-scans[Build scans] are a persistent, shareable record of what happened when running a build. With build scans you can
 
+* Understand what happened in your build via a rich web interface
+* Track key build metrics of your builds, for both CI builds and local development builds
 * Share build scans with colleagues to efficiently solve problems and improve things together
-* Track key build metrics for all of your builds, including local development builds and not just CI builds
-* Understand what happened in your build via a rich web interface instead of a text console and text files
-* Monitor builds by colleagues to proactively identify problems and improvement opportunities
+* Monitor your builds to proactively identify problems and opportunities for improvement
 
 You can easily enable build scans in your build by following these steps:
 
-1. Apply the https://scans.gradle.com/get-started[build-scan plugin]
+1. Apply the https://scans.gradle.com/get-started[build scan plugin]
 2. Run your builds with the `--scan` command line option, e.g. `gradle build --scan` or configure your build to https://docs.gradle.com/build-scan-plugin/#getting_set_up[automatically publish build scans]
 
 Gradle displays the URL where your build scan is available at the end of the build execution:
 
-image::build-scan-url.png[title="Build scan link at end of build output"]
+image::build-scan-url.png[title="Build scan link at end of the build output"]
 
 Build scans are a powerful tool at your disposal to improve, amongst other things, the performance of your Gradle builds.
 
@@ -34,7 +34,7 @@ A guide on performance tuning would normally start with profiling and something 
 
 The Gradle team works continuously on improving the performance of different aspects of Gradle builds. If you’re using an old version of Gradle, you’re missing out on the benefits of that work. Always keep up with Gradle version upgrades. Doing so is low risk because the Gradle team ensures backwards compatibility between minor versions of Gradle. Staying up-to-date also makes transitioning to the next major version easier, because you'll get early deprecation warnings.
 
-Going up a major version is often just as easy. Only formerly deprecated APIs and behavior become failures at these boundaries. So be sure to fix those deprecation warnings! If they are caused by a third party plugin, let the author know right away, so you are not blocked when the next major release comes out.
+Going up a major version is often just as easy. Only formerly deprecated APIs and deprecated behavior become failures at these boundaries. So be sure to fix those deprecation warnings! If they are caused by a third party plugin, let the author know right away, so you are not blocked when the next major release comes out.
 
 As Gradle runs on the JVM, improvements in the performance of the latter will often benefit Gradle. Hence, you should consider running Gradle with the latest major version of the JVM.
 
@@ -54,17 +54,15 @@ You can also make building in parallel the default for a project by adding the f
 org.gradle.parallel=true
 ----
 
-With build scans you get a visual timeline of the parallel execution, allowing you to identify bottlenecks in your build's execution that could be optimized.
+Build scans give you a visual timeline of task execution and a quick impression on the current degree of parallelism, allowing you to identify and remove bottlenecks.
 
-For example, in the following build scan you can see long-running tasks at the beginning and end of the build where they are the only tasks being executed:
+For example, in the following example build you can see long-running tasks at the beginning and end of the build where they are the only tasks being executed:
 
 image::parallel-task-slow.png[title="Bottleneck in parallel execution"]
 
-Tweaking the build configuration to run the two slow tasks in parallel reduces the overall build time from 8 seconds down to 5 seconds:
+Tweaking the build configuration to run the two slow tasks early on and in parallel reduces the overall build time from 8 seconds down to 5 seconds:
 
 image::parallel-task-fast.png[title="Optimized parallel execution"]
-
-The visualization of build scans allows you to identify these types of bottlenecks more easily.
 
 === Configure on demand
 
@@ -99,9 +97,9 @@ In addition to the top-level performance summary of your build execution, you ca
 
 == Configuration
 
-As the user guide describes in https://docs.gradle.org/current/userguide/build_lifecycle.html[the build lifecycle chapter], a Gradle build goes through 3 phases: initialization, configuration, and execution. The important thing to understand here is that configuration code always executes regardless of which tasks will run. That means any expensive work performed during configuration will slow every invocation down, even simple ones like `gradle help` and `gradle tasks`. One advantage of using a build scan is that it lets you drill down into this configuration time and see what is causing any slowness.
+As the user guide describes in https://docs.gradle.org/current/userguide/build_lifecycle.html[the build lifecycle chapter], a Gradle build goes through 3 phases: initialization, configuration, and execution. The important thing to understand here is that configuration code always executes regardless of which tasks will run. That means any expensive work performed during configuration will slow every invocation down, even simple ones like `gradle help` and `gradle tasks`.
 
-In the above xref:build-scan-performance[], you can see that Configuration is taking over 16 seconds. Clicking on the _"Configuration"_&nbsp; tab at the top of the page will break this stage down into its component parts.
+In the above xref:build-scan-performance[], you can see that build configuration is taking over 16 seconds. Clicking on the _"Configuration"_&nbsp; tab at the top of the page will break this stage down into its component parts, exposing what is causing any slowness.
 
 image::build-scan-configuration-breakdown.png[title="Build scan configuration breakdown"]
 
@@ -109,7 +107,7 @@ Here you can see the scripts and plugins that were applied to the project in des
 
 image::bar-plugin-application.png[title="Showing the application of com.example.bar to the build"]
 
-You can see that this plugin is applied once, by the project `:app1` from inside of that project's `build.gradle` file. This ability to drill into the data provided by build scans can really help in optimizing a build.
+You can see that this plugin is applied once, by the project `:app1` from inside of that project's `build.gradle` file.
 
 The next few subsections introduce techniques that can help improve the configuration time and explain why they work.
 
@@ -155,7 +153,7 @@ Software projects rely on dependency resolution to simplify the integration of t
 
 Dynamic versions, such as “2.+”, and snapshot (or changing) versions force Gradle to contact the remote repository to find out whether there’s a new version or snapshot available. By default, Gradle will only perform the check once every 24 hours, but this can be changed. Look out for `cacheDynamicVersionsFor` and `cacheChangingModulesFor` in your build files and initialization scripts in case they are set to very short periods or disabled completely. Otherwise you may be condemning your build users to frequent slower-than-normal builds rather than a single slower-than-normal build a day.
 
-With build scans, you can easily find which dependencies in your build are using dynamic versions:
+You can find all dependencies with dynamic versions via build scans:
 
 image::dependency-dynamic-versions.png[title="Find dependencies with dynamic versions"]
 
@@ -188,7 +186,7 @@ image::bad-dependency-resolution.png[title="Dependency resolution at configurati
 
 Here, you can quickly identify the cause of this particular performance issue. You should have a _"resolved dependencies during project configuration"_&nbsp; time of  0&nbsp;seconds, and this example shows the build is resolving dependencies too early in the lifecycle.  Also on the "Performance" page is a "Settings and suggestions" tab which will show you which dependencies were being resolved during project configuration.
 
-If you are using the profiler, you can see a similar (but much less detailed) result can by running this command:
+If you are using the profiler, you can get similar (but less detailed) information can by running this command:
 
 [listing.terminal]
 ----
@@ -217,7 +215,7 @@ You should use build scans or profile reports to check that any custom dependenc
 
 === Identify slow or unexpected dependency downloads
 
-Slow dependency downloads (potentially caused by a slow internet connection, overloaded repository server, or similar) can impact your overall build performance. Build scans provide a "Network Activity" tab on the "Performance" page that lists helpful information such as the time spent downloading dependencies, overall transfer rate of dependency downloads across your build, and a list of downloads sorted by speed.
+Slow dependency downloads (potentially caused by a slow internet connection, overloaded repository server, or similar) can impact your overall build performance. Build scans provide a "Network Activity" tab on the "Performance" page that lists helpful information such as the time spent downloading dependencies, overall transfer rate of dependency downloads across your build, and a list of downloads sorted by download time.
 
 Here you can see two slow dependency downloads that took 20 and 40 seconds and slowed down the overall performance in the build:
 
@@ -251,7 +249,7 @@ Incremental build is the name Gradle gives to this feature of checking inputs an
 
 You can easily identify good candidates for incremental build or tasks that aren’t up to date when they should be by looking at the timeline view in a build scan:
 
-image::timeline.png[title="The timeline view can help with incremental build inspection."]
+image::timeline.png[title="The timeline view can help with incremental build inspection"]
 
 As you can see above, build scans show why a task was not up-to-date -- one of its inputs _"timestamp"_&nbsp; has changed, and is forcing the task to be re-run.
 
@@ -267,15 +265,15 @@ For extensive information about leveraging the build cache in your build, check 
 
 Again, build scans can help you investigate how well your tasks are caching. In the performance screen, there is a tab titled _"Build cache"_:
 
-image::cache-performance.png[title="Inspecting the performance of the build cache for a build."]
+image::cache-performance.png[title="Inspecting the performance of the build cache for a build"]
 
 This shows you statistics about how many tasks interacted with a cache, which cache was used, along with transfer and pack/unpack rates for these cache entries.
 
-There is also a _"Task execution"_&nbsp; tab which shows details including cacheablity on the tasks that were executed. Clicking on any of the categories will take you to the Timeline screen with just tasks of that category highlighted.
+There is also a _"Task execution"_&nbsp; tab which shows details including cacheablity of the tasks that were executed. Clicking on any of the categories will take you to the Timeline screen with just tasks of that category highlighted.
 
-image::task-execution-cacheable.png[title="A task oriented view of performance."]
+image::task-execution-cacheable.png[title="A task oriented view of performance"]
 
-image::timeline-not-cacheable.png[title="Timeline screen with 'not cacheable' tasks only."]
+image::timeline-not-cacheable.png[title="Timeline screen with 'not cacheable' tasks only"]
 
 Subsequently sorting by task duration on the Timeline screen will highlight tasks with great potential for time saving. The build scan above shows that `:task1` and `:task3` could be improved and made cacheable, and clearly states the reason why they were considered not cacheable.
 
