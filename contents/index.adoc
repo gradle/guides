@@ -158,10 +158,10 @@ The four tests in this class serve different purposes:
    same location as the public api of that subproject. So, they are available
    at compile-time and at runtime.
 4. `canReachGuavaClasses` - Attempts to use a class which is a transitive
-   dependency of the `actors` subproject. However, since Gradle 3.5, these
+   dependency of the `actors` subproject. However, since Gradle 3.4, these
    `implementation` dependencies are not included on the `compileClasspath` of
    the consumers of Java projects. So, this test is commented out because it
-   wouldn't compile with Gradle 3.5 and newer.
+   wouldn't compile with Gradle 3.4 and newer.
 
 As you progress through this guide, you'll see that Java 9 modules tighten down
 inappropriate access to implementation details of the module, and cause tests
