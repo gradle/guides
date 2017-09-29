@@ -10,7 +10,7 @@ https://gradle.com/build-scans[Build scans] are a persistent, shareable record o
 
 * Understand what happened in your build via a rich web interface
 * Track key build metrics of your builds, for both CI builds and local development builds
-* Share build scans with colleagues to efficiently solve problems and improve things together
+* Collaborate with colleagues to efficiently solve problems and improve things together
 * Monitor your builds to proactively identify problems and opportunities for improvement
 
 You can easily enable build scans in your build by following these steps:
