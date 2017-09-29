@@ -6,5 +6,5 @@ plugins {
 guide {
     repoPath 'gradle-guides/performance'
     mainAuthor 'Peter Ledbrook'
-    supAuthors 'Stefan Oehme', 'Tim Yates', 'Francois Guillot', 'Craig Atkinson'
+    supAuthors 'Stefan Oehme', 'Tim Yates', 'François Guillot', 'Craig Atkinson'
 }
