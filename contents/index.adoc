@@ -247,13 +247,13 @@ You can can avoid executing tasks, even if they’re required by a user. If neit
 
 Incremental build is the name Gradle gives to this feature of checking inputs and outputs to determine whether a task needs to run again or not. Most tasks provided by Gradle take part in incremental build because they have been defined that way. You can also make your own tasks integrate with incremental build, as described in the user guide. The basic idea is to mark the task’s properties that have an impact on whether a task needs to run. You can learn more https://docs.gradle.org/current/userguide/more_about_tasks.html#sec:up_to_date_checks[in the user guide].
 
-You can easily identify good candidates for incremental build or tasks that aren’t up to date when they should be by looking at the timeline view in a build scan:
+You can easily identify good candidates for participation in incremental builds, and learn why tasks were not up to date when you expected them to be by looking at the timeline view in a build scan:
 
 image::timeline.png[title="The timeline view can help with incremental build inspection"]
 
-As you can see above, build scans show why a task was not up-to-date -- one of its inputs _"timestamp"_&nbsp; has changed, and is forcing the task to be re-run.
+As you can see in the build scan above, the task was not up-to-date because one of its inputs _"timestamp"_&nbsp; has changed, and is forcing the task to be re-run.
 
-The tasks can also be sorted by longest duration first, making it easy to pick out the slowest tasks. Pick the slowest of your custom tasks and make it incremental, then measure again and repeat.
+The tasks can also be sorted by longest duration first, making it easy to pick out the slowest tasks. Pick the slowest of your custom tasks and make it participate in incremental builds, then measure again and repeat.
 
 === Caching task outputs
 
