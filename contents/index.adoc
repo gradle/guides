@@ -597,6 +597,12 @@ files.
 
 Then, adjust the `module-info.java` files for each of those projects.
 
+.fairy/src/main/java/module-info.java
+[source,java]
+----
+include::{appdir}/fairy/src/main/java/module-info.java[]
+----
+
 .bears/src/main/java/module-info.java
 [source,java]
 ----
