@@ -107,7 +107,7 @@ BUILD SUCCESSFUL in 12s
 
 In the `build/md5` directory, you should now see corresponding files with an `md5` extension containing MD5 hashes of the
 files from the src directory.  Notice that the task takes at least 9 seconds to run because it hashes each file one at a time
-(i.e. 3 files at 3 seconds a piece).
+(i.e. 3 files at ~3 seconds a piece).
 
 == Converting to the Worker API
 
@@ -166,11 +166,15 @@ sequence.
 
 == Changing the isolation mode
 
-The isolation mode speaks to what lengths Gradle will go to isolate the items of work from each other as well as from
-the rest of the Gradle runtime.  `IsolationMode.NONE` creates the minimum of isolation and shares the classloader from
-the task.  This is the fastest isolation mode because it requires the least overhead to set up the work item to execute.
-But what if you wanted the user to be able to configure the task to run with a different (but compatible)
-version of the https://commons.apache.org/proper/commons-codec/[Apache Commons Codec] library?  The Worker API allows
+The isolation mode controls how strongly Gradle will isolate items of work from each other as well as from
+the rest of the Gradle runtime.  `IsolationMode.NONE` is the lowest level of isolation and will prevent a unit of work
+from changing the project state.  `NONE` is the fastest isolation mode because it requires the least overhead to set
+up the work item to execute, so you'll probably want to use this for simple cases.  However, it will use a single
+shared classloader for all units of work.  This means that every unit of work must use the same classes and can
+potentially affect each other through shared, static class state.  It also means that every unit of work must use the
+same version of libraries that are on the buildscript classpath.  But what if you wanted the user to be able to
+configure the task to run with a different (but compatible) version of the
+https://commons.apache.org/proper/commons-codec/[Apache Commons Codec] library?  The Worker API allows
 you to do that, too.
 
 First, you'll want to change the dependency in `buildSrc/build.gradle` to be `compileOnly`.  This tells Gradle that it
@@ -192,13 +196,12 @@ classloader.
 ----
 include::{samplescodedir}/classloader-isolation/buildSrc/src/main/java/CreateMD5.java[]
 ----
-<1> Expose an input property for the codec library version with a default value.
-<2> Use the `codecVersion` input property to construct and resolve a configuration to a set of files.
-<3> Configure the resolved classpath on the
+<1> Expose an input property for the codec library classpath.
+<2> Configure the classpath on the
 {language-reference}org.gradle.workers.WorkerConfiguration.html[WorkerConfiguration] when submitting the work item.
 
 Next, you'll need to configure your build so that it has a repository to look up the codec version at task execution
-time.
+time.  We'll also create a dependency to resolve our codec library from this repository.
 
 .build.gradle
 [source,java]
@@ -207,7 +210,10 @@ include::{samplescodedir}/classloader-isolation/build.gradle[]
 ----
 <1> Add a repository to resolve the codec library - this can be a different repository than the one used to build the
 `CreateMD5` task class.
-<2> Configure an alternate, compatible version of https://commons.apache.org/proper/commons-codec/[Apache Commons Codec].
+<2> Add a configuration to hold our codec library version.
+<3> Configure an alternate, compatible version of https://commons.apache.org/proper/commons-codec/[Apache Commons Codec].
+<4> Configure the `md5` task to use the configuration as its classpath.  Note that the configuration will not be
+resolved until the task is actually executed.
 
 Now, if you run your task, it should work as expected using the configured version of the codec library:
 
@@ -230,9 +236,10 @@ Sometimes it is desirable to create even further isolation when executing items 
 libraries may rely on certain system properties to be set which may conflict between work items.  Or a library might
 not be compatible with the version of JDK that Gradle is running with and may need to be run with a different version.
 The Worker API can accommodate this with an isolation mode of `PROCESS` that causes the work to execute in a separate
-"worker daemon".
+"worker daemon".  These worker daemon processes will persist across builds and can be reused during subsequent builds.
+If system resources get low, however, Gradle will stop any unused worker daemons.
 
-To change to a worker daemon, you can simply change the isolation mode on the work items.  You may also want to
+To utilize a worker daemon, you can simply change the isolation mode on the work items.  You may also want to
 configure custom settings for the new process.
 
 .buildSrc/src/main/java/CreateMD5.java
@@ -243,7 +250,7 @@ include::{samplescodedir}/process-isolation/buildSrc/src/main/java/CreateMD5.jav
 <1> Change the isolation mode to `PROCESS`.
 <2> Set up the {api-reference}org/gradle/process/JavaForkOptions.html[JavaForkOptions] for the new process.
 
-Now, you should be able to run your task, and it will work as expected but using worker processes instead:
+Now, you should be able to run your task, and it will work as expected but using worker daemons instead:
 
 [listing]
 ----
@@ -256,6 +263,24 @@ Generating MD5 for oppenheimer.txt...
 
 
 BUILD SUCCESSFUL in 10s
+----
+
+Note that the execution time may be somewhat high.  This is because Gradle has to start a new process for each worker
+daemon, which is expensive.  However, if you run your task again, you'll see that it runs much faster.  This is because
+the worker daemon(s) started during the initial build have persisted and are available for use immediately during
+subsequent builds.
+
+[listing]
+----
+$ gradle clean md5
+
+> Task :md5
+Generating MD5 for einstein.txt...
+Generating MD5 for feynman.txt...
+Generating MD5 for oppenheimer.txt...
+
+
+BUILD SUCCESSFUL in 5s
 ----
 
 == Summary

@@ -1,4 +1,5 @@
 import org.gradle.api.Action;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.tasks.*;
 import org.gradle.workers.*;
 
@@ -12,20 +13,13 @@ class CreateMD5 extends SourceTask {
     @OutputDirectory
     File destinationDir;
 
-    @Input
-    String codecVersion = "1.9"; // <1>
+    @InputFiles
+    FileCollection codecClasspath; // <1>
 
     @Inject
     public CreateMD5(WorkerExecutor workerExecutor) {
         super();
         this.workerExecutor = workerExecutor;
-    }
-
-    @Internal
-    Set<File> getCodecClasspath() {
-        return getProject().getConfigurations().detachedConfiguration(
-            getProject().getDependencies().create("commons-codec:commons-codec:" + codecVersion) // <2>
-        ).getFiles();
     }
 
     @TaskAction
@@ -37,7 +31,7 @@ class CreateMD5 extends SourceTask {
                 public void execute(WorkerConfiguration config) {
                     config.setIsolationMode(IsolationMode.CLASSLOADER);
                     config.params(sourceFile, md5File);
-                    config.classpath(getCodecClasspath()); // <3>
+                    config.classpath(codecClasspath); // <2>
                 }
             });
         }
