@@ -49,9 +49,9 @@ projects can be seen in the following illustration:
 image::project-graph.png[Project Graph]
 
 If the `api` and `implementation` configurations are new to you, read more
-about the https://docs.gradle.org/current/userguide/java_library_plugin.html
-[Java Library Plugin] 
-added in Gradle 3.4.
+about the
+https://docs.gradle.org/current/userguide/java_library_plugin.html[Java Library Plugin]
+added in Gradle 3.5.
 
 You can clone the project and run the original program to see its output:
 
