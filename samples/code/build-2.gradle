@@ -1,6 +1,5 @@
 // tag::add-gretty[]
 plugins {
-    id 'java'
     id 'war'
     id 'org.akhikhl.gretty' version '1.4.2' // <1>
 }
