@@ -17,7 +17,7 @@ This guide shows you how to modify a build script to enable build scans. Optiona
 
 == Select a sample project
 
-Gradle makes available a simple Java project that you can use to demonstrate build scan capabilities. If you wish to use it, clone or download the repository located at https://github.com/gradle/gradle-build-scan-quickstart . If you prefer to use your own build, you can skip this step.
+Gradle makes available a simple Java project that you can use to demonstrate build scan capabilities. If you wish to use it, clone or download the repository located at https://github.com/gradle/gradle-build-scan-quickstart. If you prefer to use your own build, you can skip this step.
 
 == Apply the build-scan plugin
 
