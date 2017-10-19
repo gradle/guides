@@ -16,4 +16,4 @@ dependencies {
         exclude group: 'org.codehaus.groovy'
     }
 }
-// tag::test-framework[]
+// end::test-framework[]

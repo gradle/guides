@@ -2,4 +2,4 @@ rootProject.name = 'consumer'
 
 // tag::include-build[]
 includeBuild '../url-verifier-plugin'
-// tag::include-build[]
+// end::include-build[]

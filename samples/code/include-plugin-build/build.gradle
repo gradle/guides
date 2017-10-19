@@ -10,4 +10,4 @@ apply plugin: 'org.gradle.sample.urlverifier'   // <1>
 verification {                                  // <2>
     url = 'http://www.google.com/'
 }
-// tag::apply-configure-plugin[]
+// end::apply-configure-plugin[]

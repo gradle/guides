@@ -21,4 +21,4 @@ check.dependsOn functionalTest
 gradlePlugin {
     testSourceSets sourceSets.functionalTest
 }
-// tag::source-set-config[]
+// end::source-set-config[]
