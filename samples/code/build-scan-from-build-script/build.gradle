@@ -1,0 +1,14 @@
+// tag::build-scan-plugin-plugins-apply[]
+plugins {
+    id 'com.gradle.build-scan' version '1.10' // <1>
+}
+// end::build-scan-plugin-plugins-apply[]
+
+// tag::build-scan-dsl[]
+buildScan {
+    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
+    licenseAgree = 'yes'
+}
+// end::build-scan-dsl[]
+
+apply plugin: 'base'

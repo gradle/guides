@@ -25,9 +25,7 @@ Add a `plugins` block to the `build.gradle` file with the following contents:
 
 [source, groovy]
 ----
-plugins {
-    id 'com.gradle.build-scan' version '1.1.0' // <1>
-}
+include::{samplescodedir}/build-scan-from-build-script/build.gradle[tags=build-scan-plugin-plugins-apply]
 ----
 <1> Use latest version of plugin which can be found from the https://plugins.gradle.org/plugin/com.gradle.build-scan[Gradle Plugin Portal].
 
@@ -41,10 +39,7 @@ In order to use the build-scan plugin, you need to agree to the terms of service
 
 [source,groovy]
 ----
-buildScan {
-    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
-    licenseAgree = 'yes'
-}
+include::{samplescodedir}/build-scan-from-build-script/build.gradle[tags=build-scan-dsl]
 ----
 
 The `buildScan` block allows you to configure the plugin. Here you are setting two properties necessary to agree to the terms of service. Other properties are available. See the https://docs.gradle.com/scans/[Build Scans User Manual] for details.
@@ -59,15 +54,8 @@ Run a `build` task with the `--scan` option. When the build is completed, after 
 
 ----
 $ ./gradlew build --scan
-// ... tasks related to the build ...
-:build
 
-BUILD SUCCESSFUL
-
-Total time: x.yz secs
-
-Publishing build information...
-https://gradle.com/s/7msdnpptouxg4
+include::{samplesoutputdir}/build-scan-from-build-script/buildScan.out[]
 ----
 
 == Access the scan online
@@ -90,24 +78,7 @@ You can avoid having to add the plugin and license agreement to every build by u
 
 [source, groovy]
 ----
-initscript {
-    repositories {
-        maven { url 'https://plugins.gradle.org/m2' }
-    }
-
-    dependencies {
-        classpath 'com.gradle:build-scan-plugin:1.10'
-    }
-}
-
-rootProject {
-    apply plugin: com.gradle.scan.plugin.BuildScanPlugin
-
-    buildScan {
-        licenseAgreementUrl = 'https://gradle.com/terms-of-service'
-        licenseAgree = 'yes'
-    }
-}
+include::{samplescodedir}/build-scan-from-init-script/buildScan.gradle[]
 ----
 
 The init script downloads the build-script plugin if necessary and applies it to every project, and approves the license agreement. Now you can use the `--scan` flag on any build on your system.
