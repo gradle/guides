@@ -19,6 +19,18 @@ This guide shows you how to modify a build script to enable build scans. Optiona
 
 Gradle makes available a simple Java project that you can use to demonstrate build scan capabilities. If you wish to use it, clone or download the repository located at https://github.com/gradle/gradle-build-scan-quickstart. If you prefer to use your own build, you can skip this step.
 
+== Auto-apply the build-scan plugin
+
+Starting with Gradle 4.3 you can generate a build scan without any additional configuration in your build script. By using the command line option `--scan`, the latest build scan plugin is applied automatically. The build will ask you to accept the license agreement on the command line. The following console output demonstrates the behavior.
+
+----
+$ ./gradlew build --scan
+
+include::{samplesoutputdir}/auto-applied-build-scan-plugin/autoAppliedBuildScanPlugin.out[]
+----
+
+This mechanism makes it very easy to generate ad-hoc, one-off build scans without having to configure the plugin in your build. If you need more fine-grained configuration, then you can configure the build-scan plugin in a build or init script as described in the following sections.
+
 == Apply the build-scan plugin
 
 Add a `plugins` block to the `build.gradle` file with the following contents:
