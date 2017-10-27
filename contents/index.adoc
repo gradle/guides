@@ -29,7 +29,7 @@ $ ./gradlew build --scan
 include::{samplesoutputdir}/auto-applied-build-scan-plugin/autoAppliedBuildScanPlugin.out[]
 ----
 
-This mechanism makes it very easy to generate ad-hoc, one-off build scans without having to configure the plugin in your build. If you need finer grained configuration, you can configure the build-scan plugin in a build or init script as described in the following sections.
+This mechanism makes it very easy to generate ad-hoc, one-off build scans without having to configure the build scan plugin in your build. If you need finer grained configuration, you can configure the build-scan plugin in a build or init script as described in the following sections.
 
 == Apply the build-scan plugin
 
