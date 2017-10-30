@@ -2,7 +2,7 @@ package org.gradle.sample.tasks;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
-import org.gradle.api.provider.PropertyState;
+import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
@@ -13,10 +13,10 @@ import org.gradle.sample.http.HttpResponse;
 
 public class UrlVerify extends DefaultTask {
     private HttpCaller httpCaller = new DefaultHttpCaller();
-    private final PropertyState<String> url;
+    private final Property<String> url;
 
     public UrlVerify() {
-        this.url = getProject().property(String.class);
+        this.url = getProject().getObjects().property(String.class);
     }
 
     public void setUrl(String url) {
