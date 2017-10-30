@@ -4,6 +4,7 @@ A sample Gradle plugin demonstrating established techniques and practices for pl
 
 - link:https://guides.gradle.org/designing-gradle-plugins/[Designing Gradle plugins]
 - link:https://guides.gradle.org/implementing-gradle-plugins/[Implementing Gradle plugins]
+- link:https://guides.gradle.org/testing-gradle-plugins/[Testing Gradle plugins]
 
 == Functionality
 
