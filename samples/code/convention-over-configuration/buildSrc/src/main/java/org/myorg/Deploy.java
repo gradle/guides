@@ -1,16 +1,16 @@
 package org.myorg;
 
 import org.gradle.api.DefaultTask;
-import org.gradle.api.provider.PropertyState;
+import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 
 public class Deploy extends DefaultTask {
-    private final PropertyState<String> url;
+    private final Property<String> url;
     
     public Deploy() {
-        this.url = getProject().property(String.class);
+        this.url = getProject().getObjects().property(String.class);
     }
     
     @Input

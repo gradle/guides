@@ -2,13 +2,13 @@ package org.myorg;
 
 import org.gradle.api.Project;
 import org.gradle.api.provider.Provider;
-import org.gradle.api.provider.PropertyState;
+import org.gradle.api.provider.Property;
 
 public class ServerExtension {
-    private final PropertyState<String> url;
+    private final Property<String> url;
     
     public ServerExtension(Project project) {
-        this.url = project.property(String.class);
+        this.url = project.getObjects().property(String.class);
     }
     
     public void setUrl(String url) {
