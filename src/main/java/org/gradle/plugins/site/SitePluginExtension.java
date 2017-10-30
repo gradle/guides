@@ -1,7 +1,7 @@
 package org.gradle.plugins.site;
 
 import org.gradle.api.Project;
-import org.gradle.api.provider.PropertyState;
+import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 
 import java.io.File;
@@ -22,14 +22,14 @@ import java.io.File;
  */
 public class SitePluginExtension {
 
-    private final PropertyState<File> outputDir;
-    private final PropertyState<String> websiteUrl;
-    private final PropertyState<String> vcsUrl;
+    private final Property<File> outputDir;
+    private final Property<String> websiteUrl;
+    private final Property<String> vcsUrl;
 
     public SitePluginExtension(Project project) {
-        outputDir = project.property(File.class);
-        websiteUrl = project.property(String.class);
-        vcsUrl = project.property(String.class);
+        outputDir = project.getObjects().property(File.class);
+        websiteUrl = project.getObjects().property(String.class);
+        vcsUrl = project.getObjects().property(String.class);
     }
 
     /**

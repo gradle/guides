@@ -1,7 +1,7 @@
 package org.gradle.plugins.site.data;
 
 import org.gradle.api.Project;
-import org.gradle.api.provider.PropertyState;
+import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Optional;
@@ -10,12 +10,12 @@ import org.gradle.api.tasks.Optional;
  * The data descriptor for user-provided information.
  */
 public class CustomData {
-    private final PropertyState<String> websiteUrl;
-    private final PropertyState<String> vcsUrl;
+    private final Property<String> websiteUrl;
+    private final Property<String> vcsUrl;
 
     public CustomData(Project project) {
-        this.websiteUrl = project.property(String.class);
-        this.vcsUrl = project.property(String.class);
+        this.websiteUrl = project.getObjects().property(String.class);
+        this.vcsUrl = project.getObjects().property(String.class);
     }
 
     @Input

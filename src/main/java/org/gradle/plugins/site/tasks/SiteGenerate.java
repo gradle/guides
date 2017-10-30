@@ -1,7 +1,7 @@
 package org.gradle.plugins.site.tasks;
 
 import org.gradle.api.DefaultTask;
-import org.gradle.api.provider.PropertyState;
+import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.OutputDirectory;
@@ -18,13 +18,13 @@ import java.io.File;
  */
 public class SiteGenerate extends DefaultTask {
 
-    private final PropertyState<ProjectDescriptor> projectDescriptor;
-    private final PropertyState<File> outputDir;
+    private final Property<ProjectDescriptor> projectDescriptor;
+    private final Property<File> outputDir;
     private final CustomData customData;
 
     public SiteGenerate() {
-        this.projectDescriptor = getProject().property(ProjectDescriptor.class);
-        this.outputDir = getProject().property(File.class);
+        this.projectDescriptor = getProject().getObjects().property(ProjectDescriptor.class);
+        this.outputDir = getProject().getObjects().property(File.class);
         customData = new CustomData(getProject());
     }
 
