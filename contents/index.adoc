@@ -120,7 +120,7 @@ The following example applies a plugin that exposes an extension with the name `
 include::{samplescodedir}/capture-user-input/build.gradle[]
 ----
 
-Let's assume that you'll also want to do something with the value of `serverUrl` once captured. In many cases the exposed extension property is directly mapped to a task property that actually uses the value when performing work. To avoid evaluation order problems you should use {user-manual}custom_plugins.html#mapExtensionPropertiesToTaskProperties[the public API `PropertyState`] which was introduced in Gradle 4.0.
+Let's assume that you'll also want to do something with the value of `serverUrl` once captured. In many cases the exposed extension property is directly mapped to a task property that actually uses the value when performing work. To avoid evaluation order problems you should use {user-manual}custom_plugins.html#mapExtensionPropertiesToTaskProperties[the public API `Property`] which was introduced in Gradle 4.0.
 
 Let's have a look at the internals of the plugin `BinaryRepositoryVersionPlugin` to give you a better idea. The plugin creates the extension of type `BinaryRepositoryExtension` and maps the extension property `serverUrl` to the task property `serverUrl.`
 
@@ -130,7 +130,7 @@ Let's have a look at the internals of the plugin `BinaryRepositoryVersionPlugin`
 include::{samplescodedir}/capture-user-input/buildSrc/src/main/java/BinaryRepositoryVersionPlugin.java[]
 ----
 
-Instead of using a plain `String` type, the extension defines the field `serverUrl` with type `PropertyState<String>`. The field is initialized in the constructor of the class. It's state can be set via the exposed setter methods.
+Instead of using a plain `String` type, the extension defines the field `serverUrl` with type `Property<String>`. The field is initialized in the constructor of the class. It's state can be set via the exposed setter methods.
 
 .BinaryRepositoryExtension.java
 [source,java]
@@ -138,8 +138,8 @@ Instead of using a plain `String` type, the extension defines the field `serverU
 include::{samplescodedir}/capture-user-input/buildSrc/src/main/java/BinaryRepositoryExtension.java[]
 
 ----
-
-The task property also defines the `serverUrl` with type `PropertyState`. It allows for mapping the state of the property without actually accessing its value until needed for processing - that is in the task action.
+ƒ
+The task property also defines the `serverUrl` with type `Property`. It allows for mapping the state of the property without actually accessing its value until needed for processing - that is in the task action.
 
 .LatestArtifactVersion.java
 [source,java]

@@ -1,14 +1,14 @@
 import org.gradle.api.DefaultTask;
-import org.gradle.api.provider.PropertyState;
+import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 
 public class LatestArtifactVersion extends DefaultTask {
-    private final PropertyState<String> serverUrl;
+    private final Property<String> serverUrl;
 
     public LatestArtifactVersion() {
-        serverUrl = getProject().property(String.class);
+        serverUrl = getProject().getObjects().property(String.class);
     }
 
     @Input
