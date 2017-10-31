@@ -2,26 +2,26 @@
 
 == Introduction
 
-A build scan is a shareable and centralized record of a build that provides insights into what happened and why. By applying the build scan plugin to your project, you can create a build scan in the Gradle Cloud for free.
+A build scan is a shareable and centralized record of a build that provides insights into what happened and why. By applying the build scan plugin to your project, you can publish build scans to https://scans.gradle.com for free.
 
 == What you'll create
 
-This guide shows you how to modify a build script to enable build scans. Optionally, you will also modify an `init` script to enable build scans for all of your applications.
+This guide shows you how to publish build scans ad-hoc without any build script modifications. You will also learn how to modify a build script to enable build scans for all builds of a given project. Optionally, you will also modify an init script to enable build scans for all of your projects.
 
 == What you'll need
 
-* Either your own sample project, or you can use the sample available from Gradle
+* Either your own sample project, or you can use the sample project available from Gradle
 * Access to the Internet
 * Access to your email
 * About +++<span class="time-to-complete-text"></span>+++
 
 == Select a sample project
 
-Gradle makes available a simple Java project that you can use to demonstrate build scan capabilities. If you wish to use it, clone or download the repository located at https://github.com/gradle/gradle-build-scan-quickstart. If you prefer to use your own build, you can skip this step.
+Gradle makes available a simple Java project that you can use to demonstrate build scan capabilities. If you wish to use it, clone or download the repository located at https://github.com/gradle/gradle-build-scan-quickstart. If you prefer to use your own project, you can skip this step.
 
-== Auto-apply the build-scan plugin
+== Auto-apply the build scan plugin
 
-Starting with Gradle 4.3 you can generate a build scan without any additional configuration in your build script. When using the command line option `--scan` to publish a build scan, the required build scan plugin is applied automatically. Before the end of the build, you are asked to accept the license agreement on the command line. The following console output demonstrates the behavior.
+Starting with Gradle 4.3, you can enable build scans without any additional configuration in your build script. When using the command line option `--scan` to publish a build scan, the required build scan plugin is applied automatically. Before the end of the build, you are asked to accept the license agreement on the command line. The following console output demonstrates the behavior.
 
 ----
 $ ./gradlew build --scan
@@ -29,9 +29,9 @@ $ ./gradlew build --scan
 include::{samplesoutputdir}/auto-applied-build-scan-plugin/autoAppliedBuildScanPlugin.out[]
 ----
 
-This mechanism makes it very easy to generate ad-hoc, one-off build scans without having to configure the build scan plugin in your build. If you need finer grained configuration, you can configure the build-scan plugin in a build or init script as described in the following sections.
+This mechanism makes it very easy to generate ad-hoc, one-off build scans without having to configure the build scan plugin in your build. If you need finer grained configuration, you can configure the build scan plugin in a build or init script as described in the following sections.
 
-== Apply the build-scan plugin
+== Enable build scans on all builds of your project
 
 Add a `plugins` block to the `build.gradle` file with the following contents:
 
@@ -39,15 +39,13 @@ Add a `plugins` block to the `build.gradle` file with the following contents:
 ----
 include::{samplescodedir}/build-scan-from-build-script/build.gradle[tags=build-scan-plugin-plugins-apply]
 ----
-<1> Use latest version of plugin which can be found from the https://plugins.gradle.org/plugin/com.gradle.build-scan[Gradle Plugin Portal].
+<1> Use latest plugin version which can be found on the https://plugins.gradle.org/plugin/com.gradle.build-scan[Gradle Plugin Portal].
 
-If you already have a `plugins` block, always put the build-scan plugin first. Adding it below any existing plugins will still work, but will miss useful information.
-
-Using the `plugins` block in this way will not only download the plugin, it will apply it as well.
+If you already have a `plugins` block, always put the build scan plugin first. Adding it below any existing plugins will still work, but will miss useful information.
 
 == Add the license agreement
 
-In order to use the build-scan plugin, you need to agree to the terms of service. This is an automated process that you can enable by adding the following section to your build file:
+In order to use the build scan plugin, you need to agree to the terms of service. This is an automated process that you can enable by adding the following section to your build file:
 
 [source,groovy]
 ----
@@ -56,9 +54,9 @@ include::{samplescodedir}/build-scan-from-build-script/build.gradle[tags=build-s
 
 The `buildScan` block allows you to configure the plugin. Here you are setting two properties necessary to agree to the terms of service. Other properties are available. See the https://docs.gradle.com/scans/[Build Scans User Manual] for details.
 
-== Run the build scan
+== Publish a build scan
 
-The scan is enabled using a command-line flag called `--scan`.
+A build scan is published using a command-line flag called `--scan`.
 
 NOTE: The `--scan` option replaces the older, deprecated `-Dscan` syntax, which you will still find in some documentation.
 
@@ -70,7 +68,7 @@ $ ./gradlew build --scan
 include::{samplesoutputdir}/build-scan-from-build-script/buildScan.out[]
 ----
 
-== Access the scan online
+== Access the build scan online
 
 The first time you follow the link, you will be asked to provide your email address so that a separate link can be sent to you. You will also have an opportunity to check a box to allow Gradle to remember you, so you won't have to go through the email process in the future.
 
@@ -101,7 +99,7 @@ There are additional capabilities you can add to the script, such as under what 
 
 In this guide, you learned how to:
 
-* Add the build-scan plugin to your build
+* Add the build scan plugin to your build
 * Add a `buildScan` block to agree to the terms of service
 * Generate a build scan
 * View the build scan information online
