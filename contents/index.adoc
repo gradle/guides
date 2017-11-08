@@ -239,6 +239,14 @@ Functional tests for Gradle plugins use a instance of `GradleRunner` to execute 
 include::{samplescodedir}/url-verifier-plugin/src/functTest/groovy/org/gradle/sample/UrlVerifierPluginFunctionalTest.groovy[]
 ----
 
+==== IDE integration
+
+TestKit determines the plugin classpath by running a specific Gradle task. You will need to execute the `assemble` task to initially generate the plugin classpath or to reflect changes to it even when running TestKit-based functional tests from the IDE.
+
+Some IDEs provide a convenience option to delegate the "test classpath generation and execution" to the build. In IntelliJ you can find this option under _Preferences... > Build, Execution, Deployment > Build Tools > Gradle > Runner > Delegate IDE build/run actions to gradle_.
+
+image::intellij-delegate-to-build.png[]
+
 include::contribute[]
 
 == Next steps
