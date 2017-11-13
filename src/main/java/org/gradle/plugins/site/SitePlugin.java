@@ -13,6 +13,8 @@ import org.gradle.plugins.site.data.ProjectDescriptor;
 import org.gradle.plugins.site.data.TaskDescriptor;
 import org.gradle.plugins.site.tasks.SiteGenerate;
 
+import java.util.concurrent.Callable;
+
 /**
  * A plugin for generating a web page containing derived project information.
  * <p>
@@ -35,18 +37,16 @@ public class SitePlugin implements Plugin<Project> {
     public static final String GENERATE_SITE_TASK_NAME = "generateSite";
 
     @Override
-    public void apply(Project project) {
+    public void apply(final Project project) {
         SitePluginExtension sitePluginExtension = project.getExtensions().create(EXTENSION_NAME, SitePluginExtension.class, project);
         sitePluginExtension.getOutputDir().set(project.getLayout().getBuildDirectory().dir("docs/site"));
-        final SiteGenerate siteGenerateTask = createSiteTask(project, sitePluginExtension);
-
-        project.afterEvaluate(new Action<Project>() {
+        SiteGenerate siteGenerateTask = createSiteTask(project, sitePluginExtension);
+        siteGenerateTask.getProjectDescriptor().set(project.provider(new Callable<ProjectDescriptor>() {
             @Override
-            public void execute(Project project) {
-                ProjectDescriptor projectDescriptor = deriveProjectDescription(project);
-                siteGenerateTask.getProjectDescriptor().set(projectDescriptor);
+            public ProjectDescriptor call() throws Exception {
+                return deriveProjectDescription(project);
             }
-        });
+        }));
     }
 
     private ProjectDescriptor deriveProjectDescription(Project project) {
