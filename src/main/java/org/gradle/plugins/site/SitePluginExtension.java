@@ -1,10 +1,8 @@
 package org.gradle.plugins.site;
 
 import org.gradle.api.Project;
+import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.provider.Property;
-import org.gradle.api.provider.Provider;
-
-import java.io.File;
 
 /**
  * Configuration options for the {@link org.gradle.plugins.site.SitePlugin}.
@@ -14,7 +12,7 @@ import java.io.File;
  * apply plugin: 'org.gradle.site'
  *
  * site {
- *     outputDir = file("$buildDir/site")
+ *     outputDir = layout.buildDirectory.dir("site")
  *     websiteUrl = 'http://gradle.org'
  *     vcsUrl = 'https://github.com/gradle-guides/gradle-site-plugin'
  * }
@@ -22,12 +20,12 @@ import java.io.File;
  */
 public class SitePluginExtension {
 
-    private final Property<File> outputDir;
+    private final DirectoryProperty outputDir;
     private final Property<String> websiteUrl;
     private final Property<String> vcsUrl;
 
     public SitePluginExtension(Project project) {
-        outputDir = project.getObjects().property(File.class);
+        outputDir = project.getLayout().directoryProperty();
         websiteUrl = project.getObjects().property(String.class);
         vcsUrl = project.getObjects().property(String.class);
     }
@@ -35,81 +33,27 @@ public class SitePluginExtension {
     /**
      * Returns the output directory for the generated web page.
      *
-     * @return The output directory.
+     * @return The output directory property.
      */
-    public File getOutputDir() {
-        return outputDir.get();
-    }
-
-    /**
-     * Returns the {@link org.gradle.api.provider.Provider} calculating the output directory for the generated web page.
-     *
-     * @return The provider calculating for the output directory.
-     */
-    public Provider<File> getOutputDirProvider() {
+    public DirectoryProperty getOutputDir() {
         return outputDir;
-    }
-
-    /**
-     * Configures the output directory for the generated web page.
-     *
-     * @param outputDir The output directory.
-     */
-    public void setOutputDir(File outputDir) {
-        this.outputDir.set(outputDir);
     }
 
     /**
      * Returns the website URL of the project linked in the generated web page.
      *
-     * @return The website URL of the project. Maybe be null.
+     * @return The website URL of the project property.
      */
-    public String getWebsiteUrl() {
-        return websiteUrl.getOrNull();
-    }
-
-    /**
-     * Returns the {@link org.gradle.api.provider.Provider} calculating the website URL of the project linked in the generated web page.
-     *
-     * @return The provider calculating the website URL of the project.
-     */
-    public Provider<String> getWebsiteUrlProvider() {
+    public Property<String> getWebsiteUrl() {
         return websiteUrl;
-    }
-
-    /**
-     * Configures the website URL of the project for the generated web page.
-     *
-     * @param websiteUrl The website URL of the project.
-     */
-    public void setWebsiteUrl(String websiteUrl) {
-        this.websiteUrl.set(websiteUrl);
     }
 
     /**
      * Returns the version control URL of the project linked in the generated web page.
      *
-     * @return The version control URL of the project. Maybe be null.
+     * @return The version control URL of the project property.
      */
-    public String getVcsUrl() {
-        return vcsUrl.getOrNull();
-    }
-
-    /**
-     * Returns the {@link org.gradle.api.provider.Provider} calculating the version control URL of the project linked in the generated web page.
-     *
-     * @return The provider calculating the version control URL of the project.
-     */
-    public Provider<String> getVcsUrlProvider() {
+    public Property<String> getVcsUrl() {
         return vcsUrl;
-    }
-
-    /**
-     * Configures the version control URL of the project for the generated web page.
-     *
-     * @param vcsUrl The version control URL of the project.
-     */
-    public void setVcsUrl(String vcsUrl) {
-        this.vcsUrl.set(vcsUrl);
     }
 }

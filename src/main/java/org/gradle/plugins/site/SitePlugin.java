@@ -13,8 +13,6 @@ import org.gradle.plugins.site.data.ProjectDescriptor;
 import org.gradle.plugins.site.data.TaskDescriptor;
 import org.gradle.plugins.site.tasks.SiteGenerate;
 
-import java.io.File;
-
 /**
  * A plugin for generating a web page containing derived project information.
  * <p>
@@ -39,14 +37,14 @@ public class SitePlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
         SitePluginExtension sitePluginExtension = project.getExtensions().create(EXTENSION_NAME, SitePluginExtension.class, project);
-        sitePluginExtension.setOutputDir(new File(project.getBuildDir(), "docs/site"));
+        sitePluginExtension.getOutputDir().set(project.getLayout().getBuildDirectory().dir("docs/site"));
         final SiteGenerate siteGenerateTask = createSiteTask(project, sitePluginExtension);
 
         project.afterEvaluate(new Action<Project>() {
             @Override
             public void execute(Project project) {
                 ProjectDescriptor projectDescriptor = deriveProjectDescription(project);
-                siteGenerateTask.setProjectDescriptor(projectDescriptor);
+                siteGenerateTask.getProjectDescriptor().set(projectDescriptor);
             }
         });
     }
@@ -93,9 +91,9 @@ public class SitePlugin implements Plugin<Project> {
         SiteGenerate generateSiteTask = project.getTasks().create(GENERATE_SITE_TASK_NAME, SiteGenerate.class);
         generateSiteTask.setGroup(JavaBasePlugin.DOCUMENTATION_GROUP);
         generateSiteTask.setDescription("Generates a web page containing information about the project.");
-        generateSiteTask.setOutputDir(sitePluginExtension.getOutputDirProvider());
-        generateSiteTask.getCustomData().setWebsiteUrl(sitePluginExtension.getWebsiteUrlProvider());
-        generateSiteTask.getCustomData().setVcsUrl(sitePluginExtension.getVcsUrlProvider());
+        generateSiteTask.getOutputDir().set(sitePluginExtension.getOutputDir());
+        generateSiteTask.getCustomData().setWebsiteUrl(sitePluginExtension.getWebsiteUrl());
+        generateSiteTask.getCustomData().setVcsUrl(sitePluginExtension.getVcsUrl());
         return generateSiteTask;
     }
 }
