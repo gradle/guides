@@ -70,7 +70,7 @@ task takeScreenshots(type: Test) {
     systemProperty "screenshot.dir", screenshotDir
 
 
-    ['dev', 'dogfood'].each { name ->
+    ['dev', 'dogfood', 'cache-admin'].each { name ->
         String prefix = "scans.${name}"
         systemProperty "${prefix}.host", findProperty("${prefix}.host")
         systemProperty "${prefix}.username", findProperty("${prefix}.username")

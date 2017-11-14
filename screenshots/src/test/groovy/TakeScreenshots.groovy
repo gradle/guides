@@ -25,6 +25,7 @@ class TakeScreenshots {
 
             TimelineListRow row = page.list.rows[5]
             row.showDetails()
+            page.taskDetails.toggleBuildCacheDetails()
 
             interact {
                 moveToElement(page.taskDetails.originScanButton)
@@ -36,8 +37,10 @@ class TakeScreenshots {
             }
 
             TimelineListRow row = page.list.rows[0]
+            row.showDetails()
+
             interact {
-                moveToElement(row.cacheableTypeCell)
+                moveToElement(page.taskDetails.notCacheableInfoIcon)
             }
         }
 
