@@ -60,7 +60,7 @@ test {
 
 task takeScreenshots(type: Test) {
     ext.screenshotDir = file("${buildDir}/screenshots")
-    outputs.dir(screenshotDir).withPropertyName('screenshotDir').withPathSensitivity(PathSensitivity.RELATIVE)
+    outputs.dir(screenshotDir).withPropertyName('screenshotDir')
     outputs.doNotCacheIf('Depending on external service') { true }
 
     dependsOn unzipChromeDriver
@@ -75,10 +75,5 @@ task takeScreenshots(type: Test) {
         systemProperty "${prefix}.host", findProperty("${prefix}.host")
         systemProperty "${prefix}.username", findProperty("${prefix}.username")
         systemProperty "${prefix}.password", findProperty("${prefix}.password")
-    }
-
-
-    doFirst {
-        screenshotDir.mkdirs()
     }
 }
