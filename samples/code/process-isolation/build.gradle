@@ -1,0 +1,19 @@
+plugins { id 'base' }
+
+repositories {
+    jcenter()
+}
+
+configurations {
+    codec
+}
+
+dependencies {
+    codec "commons-codec:commons-codec:1.10"
+}
+
+task md5(type: CreateMD5) {
+    destinationDir = file("${buildDir}/md5")
+    source = file("src")
+    codecClasspath = configurations.codec
+}
