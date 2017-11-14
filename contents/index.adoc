@@ -127,18 +127,18 @@ include::{samplescodedir}/no-isolation/buildSrc/src/main/java/GenerateMD5.java[]
 <2> The parameters to the constructor are the parameters of the individual unit of work.
 
 Now, you should change your custom task class to submit work to the
-{language-reference}org.gradle.workers.WorkerExecutor.html[WorkerExecutor] instead of doing the work itself.
+{api-reference}org/gradle/workers/WorkerExecutor.html[WorkerExecutor] instead of doing the work itself.
 
 .buildSrc/src/main/java/CreateMD5.java
 [source,java]
 ----
 include::{samplescodedir}/no-isolation/buildSrc/src/main/java/CreateMD5.java[]
 ----
-<1> You'll need to have the {language-reference}org.gradle.workers.WorkerExecutor.html[WorkerExecutor] service in order
+<1> You'll need to have the {api-reference}org/gradle/workers/WorkerExecutor.html[WorkerExecutor] service in order
 to submit your work.
-<2> To get a {language-reference}org.gradle.workers.WorkerExecutor.html[WorkerExecutor], create a constructor annotated
+<2> To get a {api-reference}org/gradle/workers/WorkerExecutor.html[WorkerExecutor], create a constructor annotated
 with `javax.inject.Inject`.  Gradle will inject the
-{language-reference}org.gradle.workers.WorkerExecutor.html[WorkerExecutor] at runtime when the task is created.
+{api-reference}org/gradle/workers/WorkerExecutor.html[WorkerExecutor] at runtime when the task is created.
 <3> When submitting the unit of work, specify the unit of work implementation, in this case `GenerateMD5`.
 <4> For now, use an isolation mode of `NONE`.  We'll talk more about isolation modes later.
 <5> For each unit of work, configure the `params` property appropriately.  These values should match up to the values
@@ -198,7 +198,7 @@ include::{samplescodedir}/classloader-isolation/buildSrc/src/main/java/CreateMD5
 ----
 <1> Expose an input property for the codec library classpath.
 <2> Configure the classpath on the
-{language-reference}org.gradle.workers.WorkerConfiguration.html[WorkerConfiguration] when submitting the work item.
+{api-reference}org/gradle/workers/WorkerConfiguration.html[WorkerConfiguration] when submitting the work item.
 
 Next, you'll need to configure your build so that it has a repository to look up the codec version at task execution
 time.  We'll also create a dependency to resolve our codec library from this repository.
