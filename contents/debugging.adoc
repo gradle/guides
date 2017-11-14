@@ -74,6 +74,10 @@ BUILD SUCCESSFUL in 1s
 <3> Build it again. This time everything cacheable should load from the just populated cache.
 
 You should see all cacheable tasks loaded from cache, while non-cacheable tasks should be executed.
+
+[.screenshot]
+image::fully-cached-task-execution.png[]
+
 Again, use the below methods to <<diagnosing_cache_miss,diagnose>> and <<common-problems,fix>> cacheability issues.
 
 [[caching_relocation_test]]
