@@ -11,6 +11,9 @@ Moreover, you need to define the locations and credentials for the GE dev and do
 scans.dogfood.host=e....
 scans.dogfood.username=<username>
 scans.dogfood.password=<password>
+scans.cache-admin.host=e....
+scans.cache-admin.username=<username>
+scans.cache-admin.password=<password>
 scans.dev.host=scans....
 scans.dev.username=<username>
 scans.dev.password=<password>

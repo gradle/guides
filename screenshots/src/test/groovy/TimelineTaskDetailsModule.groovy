@@ -2,15 +2,25 @@ import geb.Module
 
 class TimelineTaskDetailsModule extends Module {
     static content = {
-        startedAfter(required: true) { $('.TaskDetails__started-after').text() }
-        duration(required: true) { $('.TaskDetails__duration').text() }
-        className(required: true) { $('.TaskDetails__class').text() }
-        cacheKey(required: false) { $('.TaskDetails__cache-key')?.text() }
-        knownUpToDateMessages(required: false) { $('.TaskDetails__known-up-to-date-message')*.text()*.trim() }
-        unknownUpToDateMessages(required: false) { $('.TaskDetails__unknown-up-to-date-message')*.text()*.trim() }
+        startedAfter(required: true) { $('.SummaryDetails__started-after').text() }
+        duration(required: true) { $('.SummaryDetails__duration').text() }
+        className(required: true) { $('.SummaryDetails__class').text() }
 
-        originScanButton(required: false) { $('.TaskDetails__origin-scan-button') }
-        focusButton { $('.TaskDetails__focus-button') }
+        notCacheableInfoIcon(required: false) { $('.BuildCacheDetails__non-cacheable-info-icon') }
+        buildCacheResultRow(required: false) { $('.BuildCacheDetails__build-cache-outcome').module(TimelineTaskDetailsRow) }
+        buildCacheToggleLink(required: false) { buildCacheResultRow.labelCell }
+        cacheKey(required: false) { $('.BuildCacheDetails__cache-key')?.text() }
+
+        knownUpToDateMessages(required: false) { $('.UpToDateDetails__known-up-to-date-message')*.text()*.trim() }
+        unknownUpToDateMessages(required: false) { $('.UpToDateDetails__unknown-up-to-date-message')*.text()*.trim() }
+
+        originScanButton(required: false) { $('.TaskDetailsButtons__origin-scan-button') }
+        focusButton { $('.TaskDetailsButtons__focus-button') }
+    }
+
+    void toggleBuildCacheDetails() {
+        waitFor { buildCacheToggleLink.displayed }
+        buildCacheToggleLink.click()
     }
 
     void clickOriginScanButton() {
@@ -22,4 +32,15 @@ class TimelineTaskDetailsModule extends Module {
         waitFor { focusButton.displayed }
         focusButton.click()
     }
+}
+
+class TimelineTaskDetailsRow extends Module {
+
+    static content = {
+        labelCell { $('.TaskDetailsRow__label') }
+        label { $('td')[0].text() }
+        value(required: false) { $('td')[1].text() }
+        isFailed { hasClass('TaskDetailsRow--isFailed') }
+    }
+
 }
