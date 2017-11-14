@@ -65,6 +65,12 @@ class TakeScreenshots {
                 }
             }
         }
+
+        extraActions.put('fully-cached-task-execution') {
+            waitFor {
+                $('.PerformancePage').hasClass('loaded')
+            }
+        }
     }
 
     @Test
