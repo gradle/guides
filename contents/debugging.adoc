@@ -20,18 +20,16 @@ You should see something like this on the command-line:
 
 [listing]
 ----
-$ ./gradlew clean <1>
-
-BUILD SUCCESSFUL in 1s
-1 actionable tasks: 1 executed
+$ ./gradlew clean --quiet <1>
 $ ./gradlew assemble <2>
 
-BUILD SUCCESSFUL in 9s
-14 actionable tasks: 12 executed, 2 up-to-date
+BUILD SUCCESSFUL in 1s
+4 actionable tasks: 4 executed
+
 $ ./gradlew assemble <3>
 
 BUILD SUCCESSFUL in 1s
-14 actionable tasks: 14 up-to-date
+4 actionable tasks: 4 up-to-date
 ----
 <1> Make sure we start without any leftover results by running `clean` first.
 <2> We are assuming your build is represented by running the `assemble` task in these examples, but you can substitute whatever tasks make sense for your build.
@@ -49,7 +47,7 @@ The goal is to achieve <<stable_task_inputs>> for cacheable tasks.
 When you are happy with the up-to-date performance then you can repeat the experiment above, but this time with a clean build, and the build cache turned on.
 The goal with clean builds and the build cache turned on is to retrieve all cacheable tasks from the cache.
 
-[NOTE]
+[WARNING]
 ====
 When running this test make sure that you have no `remote` cache configured, and pushing to the `local` cache is enabled.
 These are the default settings.
@@ -60,18 +58,23 @@ This would look something like this on the command-line:
 [listing]
 ----
 $ rm -rf ~/.gradle/caches/build-cache-1 <1>
-$ ./gradlew assemble --build-cache <2>
-
-BUILD SUCCESSFUL in 9s
-15 actionable tasks: 13 executed, 2 up-to-date
-$ ./gradlew clean assemble --build-cache <3>
+$ ./gradlew clean --quiet <2>
+$ ./gradlew assemble --build-cache <3>
 
 BUILD SUCCESSFUL in 1s
-15 actionable tasks: 3 executed, 10 from cache, 2 up-to-date
+4 actionable tasks: 4 executed
+
+$ ./gradlew clean --quiet <4>
+$ ./gradlew assemble --build-cache <5>
+
+BUILD SUCCESSFUL in 1s
+4 actionable tasks: 1 executed, 3 from cache
 ----
 <1> We want to start with an empty local cache.
-<2> Build the project once to let it populate the cache.
-<3> Build it again. This time everything cacheable should load from the just populated cache.
+<2> Clean the project to remove any unwanted leftovers from previous builds.
+<2> Build it once to let it populate the cache.
+<2> Clean the project again.
+<3> Build it again: this time everything cacheable should load from the just populated cache.
 
 You should see all cacheable tasks loaded from cache, while non-cacheable tasks should be executed.
 
@@ -84,13 +87,14 @@ Again, use the below methods to <<diagnosing_cache_miss,diagnose>> and <<common-
 ==== Testing cache relocatability
 
 Once everything loads properly while building the same checkout with the local cache enabled, it's time to see if there are any _relocation problems._
-A task is considered _relocatable_ if its output can be reused when it is executed in a different location.
-Tasks that should be relocatable but aren't are usually caused by some of the task's inputs containing absolute paths.
+A task is considered _relocatable_ if its output can be reused when the task is executed in a different location.
 
-To shake these problems out, check out the same commit of your project in two different directories on your machine.
+NOTE: Tasks that should be relocatable but aren't are usually a result of absolute paths being present among the task's inputs.
+
+To discover these problems, first check out the same commit of your project in two different directories on your machine.
 For the following example let's assume we have a checkout in `\~/checkout-1` and `\~/checkout-2`.
 
-[NOTE]
+[WARNING]
 ====
 Like with the previous test, you should have no `remote` cache configured, and pushing to the `local` cache should be enabled.
 ====
@@ -99,21 +103,26 @@ Like with the previous test, you should have no `remote` cache configured, and p
 ----
 $ rm -rf ~/.gradle/caches/build-cache-1 <1>
 $ cd ~/checkout-1 <2>
-$ ./gradlew clean assemble --build-cache <3>
-
-BUILD SUCCESSFUL in 9s
-15 actionable tasks: 13 executed, 2 up-to-date
-$ cd ~/checkout-2 <4>
-$ ./gradlew clean assemble --build-cache <5>
+$ ./gradlew clean --quiet <3>
+$ ./gradlew assemble --build-cache <4>
 
 BUILD SUCCESSFUL in 1s
-15 actionable tasks: 3 executed, 10 from cache, 2 up-to-date
+4 actionable tasks: 4 executed
+
+$ cd ~/checkout-2 <5>
+$ ./gradlew clean --quiet <6>
+$ ./gradlew clean assemble --build-cache <7>
+
+BUILD SUCCESSFUL in 1s
+4 actionable tasks: 1 executed, 3 from cache
 ----
 <1> Remove all entries in the local cache first.
 <2> Go to the first checkout directory.
-<3> Run a clean build to populate the cache.
-<4> Go to the other checkout directory.
-<5> Run a clean build again.
+<3> Clean the project to remove any unwanted leftovers from previous builds.
+<4> Run a build to populate the cache.
+<5> Go to the other checkout directory.
+<6> Clean the project again.
+<7> Run a build again.
 
 You should see the exact same results as you saw with the previous <<in-place_caching_test,in place caching test>> step.
 
