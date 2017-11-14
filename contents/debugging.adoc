@@ -9,29 +9,126 @@ If you have a cache hit which you didn't expect we suggest to declare whatever c
 [[finding_problems,"Finding problems with task output caching"]]
 === Finding problems with task output caching
 
-In order to find existing problems with your usage of task output caching you can do a variety of things.
+Below we describe a step-by-step process that should help shake out any problems with caching in your build.
 
-First, you should start out with running a fully up-to-date build.
-You do not even have to enable the build cache for this exercise.
-The expected outcome is that that all incremental tasks are up-to-date.
-Tasks which have no output or no inputs will always be executed, but that shouldn't be a problem.
-If you find some tasks which are out of date then use the same methods as described below for <<diagnosing_cache_miss,diagnosing>> and <<common-problems,fixing>> cache misses to address this problems.
+==== Ensure incremental build works
+
+First, make sure your build does the right thing without the cache.
+Run a build twice without enabling the Gradle build cache.
+The expected outcome is that that all actionable tasks that produce file outputs are up-to-date.
+You should see something like this on the command-line:
+
+[listing]
+----
+$ ./gradlew clean <1>
+
+BUILD SUCCESSFUL in 1s
+1 actionable tasks: 1 executed
+$ ./gradlew assemble <2>
+
+BUILD SUCCESSFUL in 9s
+14 actionable tasks: 12 executed, 2 up-to-date
+$ ./gradlew assemble <3>
+
+BUILD SUCCESSFUL in 1s
+14 actionable tasks: 14 up-to-date
+----
+<1> Make sure we start without any leftover results by running `clean` first.
+<2> We are assuming your build is represented by running the `assemble` task in these examples, but you can substitute whatever tasks make sense for your build.
+<3> Run the build again without running `clean`.
+
+NOTE: Tasks that have no outputs or no inputs will always be executed, but that shouldn't be a problem.
+
+Use the methods as described below to <<diagnosing_cache_miss,diagnose>> and <<common-problems,fix>> tasks that should be up-to-date but aren't.
+If you find a task which is out of date, but no cacheable tasks depends on its outcome, then you don't have to do anything about it.
 The goal is to achieve <<stable_task_inputs>> for cacheable tasks.
-If you find a task which is out of date but no cacheable tasks depend on its outcome then you don't have to do anything about it.
 
-When you are happy with the up-to-date performance then you can repeat the experiment above but this time with a clean build and the build cache turned on.
+[[in-place_caching_test,"In-place caching with the local cache"]]
+==== In-place caching with the local cache
+
+When you are happy with the up-to-date performance then you can repeat the experiment above, but this time with a clean build, and the build cache turned on.
 The goal with clean builds and the build cache turned on is to retrieve all cacheable tasks from the cache.
-You should start out simple and use the same checkout for the consumer build.
-When you are happy with the performance in the single workspace use-case, then, depending on your use-case, you can go further:
 
-- Use different workspaces on the same machine.
-- Use different workspaces on different machines using a remote build cache.
-- Use the cache populated by a CI build and a developer machine.
+[NOTE]
+====
+When running this test make sure that you have no `remote` cache configured, and pushing to the `local` cache is enabled.
+These are the default settings.
+====
 
-After these experiments with fully cached builds you can go on and try to make typical changes to your project and see if enough tasks are still cached.
-If the results are not satisfactory you can think about restructuring your project to reduce dependencies between different tasks.
+This would look something like this on the command-line:
 
-Consider recording execution times of your builds, generating graphs, and anlyzing the results.
+[listing]
+----
+$ rm -rf ~/.gradle/caches/build-cache-1 <1>
+$ ./gradlew assemble --build-cache <2>
+
+BUILD SUCCESSFUL in 9s
+15 actionable tasks: 13 executed, 2 up-to-date
+$ ./gradlew clean assemble --build-cache <3>
+
+BUILD SUCCESSFUL in 1s
+15 actionable tasks: 3 executed, 10 from cache, 2 up-to-date
+----
+<1> We want to start with an empty local cache.
+<2> Build the project once to let it populate the cache.
+<3> Build it again. This time everything cacheable should load from the just populated cache.
+
+You should see all cacheable tasks loaded from cache, while non-cacheable tasks should be executed.
+Again, use the below methods to <<diagnosing_cache_miss,diagnose>> and <<common-problems,fix>> cacheability issues.
+
+[[caching_relocation_test]]
+==== Testing cache relocatability
+
+Once everything loads properly while building the same checkout with the local cache enabled, it's time to see if there are any _relocation problems._
+A task is considered _relocatable_ if its output can be reused when it is executed in a different location.
+Tasks that should be relocatable but aren't are usually caused by some of the task's inputs containing absolute paths.
+
+To shake these problems out, check out the same commit of your project in two different directories on your machine.
+For the following example let's assume we have a checkout in `\~/checkout-1` and `\~/checkout-2`.
+
+[NOTE]
+====
+Like with the previous test, you should have no `remote` cache configured, and pushing to the `local` cache should be enabled.
+====
+
+[listing]
+----
+$ rm -rf ~/.gradle/caches/build-cache-1 <1>
+$ cd ~/checkout-1 <2>
+$ ./gradlew clean assemble --build-cache <3>
+
+BUILD SUCCESSFUL in 9s
+15 actionable tasks: 13 executed, 2 up-to-date
+$ cd ~/checkout-2 <4>
+$ ./gradlew clean assemble --build-cache <5>
+
+BUILD SUCCESSFUL in 1s
+15 actionable tasks: 3 executed, 10 from cache, 2 up-to-date
+----
+<1> Remove all entries in the local cache first.
+<2> Go to the first checkout directory.
+<3> Run a clean build to populate the cache.
+<4> Go to the other checkout directory.
+<5> Run a clean build again.
+
+You should see the exact same results as you saw with the previous <<in-place_caching_test,in place caching test>> step.
+
+==== Cross-platform tests
+
+If your build passes the <<caching_relocation_test,relocation test>>, it is in good shape already.
+If your build requires support for multiple platforms, it is best to see if the required tasks get reused between platforms, too.
+A typical example of cross-platform builds is when CI runs on Linux VMs, while developers use macOS or Windows, or a different variety or version of Linux.
+
+To test cross-platform cache reuse, set up a `remote` cache (see <<share_results_between_ci_builds>>) and populate it from one platform and consume it from the other.
+
+==== Incremental cache usage
+
+After these experiments with fully cached builds, you can go on and try to make typical changes to your project and see if enough tasks are still cached.
+If the results are not satisfactory, you can think about restructuring your project to reduce dependencies between different tasks.
+
+==== Evaluating cache performance over time
+
+Consider recording execution times of your builds, generating graphs, and analyzing the results.
 Keep an eye out for certain patterns, like a build recompiling everything even though you expected compilation to be cached.
 
 You can also make changes to your code base manually or automatically and check that the expected set of tasks is cached.
