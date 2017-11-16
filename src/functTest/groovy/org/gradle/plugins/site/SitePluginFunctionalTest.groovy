@@ -69,9 +69,9 @@ $GENERATE_SITE_TASK_NAME - Generates a web page containing information about the
         buildFile << """
             task assertDefaultExtensionProperties {
                 doLast {
-                    assert project.extensions.site.outputDir == file("\$buildDir/docs/site")
-                    assert !project.extensions.site.websiteUrl
-                    assert !project.extensions.site.vcsUrl
+                    assert project.extensions.site.outputDir.get().asFile == file("\$buildDir/docs/site")
+                    assert !project.extensions.site.websiteUrl.present
+                    assert !project.extensions.site.vcsUrl.present
                 }
             }
         """
@@ -93,9 +93,9 @@ $GENERATE_SITE_TASK_NAME - Generates a web page containing information about the
             
             task assertCustomExtensionProperties {
                 doLast {
-                    assert project.extensions.site.outputDir == file('$customOutputDir')
-                    assert project.extensions.site.websiteUrl == '$websiteUrl'
-                    assert project.extensions.site.vcsUrl == '$vcsUrl'
+                    assert project.extensions.site.outputDir.get().asFile == file('$customOutputDir')
+                    assert project.extensions.site.websiteUrl.get() == '$websiteUrl'
+                    assert project.extensions.site.vcsUrl.get() == '$vcsUrl'
                 }
             }
         """
