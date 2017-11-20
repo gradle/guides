@@ -62,7 +62,7 @@ $ gradle wrapper --gradle-version={gradle-version}
 
 This will produce `gradlew` and `gradlew.bat` scripts and the `gradle` folder with the wrapper jar inside as described in the {user-manual}gradle_wrapper.html[wrapper section] of the User Manual.
 
-NOTE: If you are using Gradle 4.0 or later you may see less output from the console that you might see in this guide. In this guide, output is shown using the `--console-plain` flag on the command-line. This is done to show the tasks that Gradle is executing.
+NOTE: If you are using Gradle 4.0 or later you may see less output from the console that you might see in this guide. In this guide, output is shown using the `--console=plain` flag on the command-line. This is done to show the tasks that Gradle is executing.
 
 == Add a servlet and metadata to the project
 
