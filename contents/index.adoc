@@ -6,23 +6,14 @@ All this means that it’s worth investing some time and effort into making your
 
 == Build scans
 
-https://gradle.com/build-scans[Build scans] are a persistent, shareable record of what happened when running a build. With build scans you can
+https://gradle.com/build-scans[Build scans] are a persistent, shareable record of what happened when running a build. With build scans, you gain deep insights about your build to identify and fix performance bottlenecks.
 
-* Understand what happened in your build via a rich web interface
-* Track key build metrics of your builds, for both CI builds and local development builds
-* Collaborate with colleagues to efficiently solve problems and improve things together
-* Monitor your builds to proactively identify problems and opportunities for improvement
-
-You can easily enable build scans in your build by following these steps:
-
-1. Apply the https://scans.gradle.com/get-started[build scan plugin]
-2. Run your builds with the `--scan` command line option, e.g. `gradle build --scan` or configure your build to https://docs.gradle.com/build-scan-plugin/#getting_set_up[automatically publish build scans]
+If you are using Gradle 4.3+, you can easily create a build scan by using the `--scan` command line option, e.g. `gradle build --scan`.
+For older Gradle versions, see the https://docs.gradle.com/build-scan-plugin/#getting_set_up[Build Scan Plugin User Manual] on how to enable build scans.
 
 Gradle displays the URL where your build scan is available at the end of the build execution:
 
 image::build-scan-url.png[title="Build scan link at end of the build output"]
-
-Build scans are a powerful tool at your disposal to improve, amongst other things, the performance of your Gradle builds.
 
 Next, the guide will cover some quick improvements that can increase your build's performance. After that will be a deeper dive into profiling your build with build scans.
 
