@@ -119,7 +119,7 @@ Your guide enters the review process at this point. Each step of a review involv
 
 Whenever you have a new draft ready, push the changes to your fork and add a comment to the pull request saying what type of review you would like. The pull request will update automatically and the review will continue until both sides are happy with the result.
 
-In order for your contributions to be accepted, you must https://git-scm.com/docs/git-commit#git-commit---signoff[sign off] your Git commits to indicate that you agree to the terms of https://developercertificate.org/[Developer Certificate of Origin].
+In order for your contributions to be accepted, you must https://git-scm.com/docs/git-commit#git-commit---signoff[sign off] your Git commits to indicate that you agree to the terms of https://developercertificate.org/[Developer Certificate of Origin].
 
 You'll find your guide on the https://guides.gradle.org/[Gradle Guides site] soon after the pull request is accepted and merged. Well done and thank you for the valuable contribution!
 
