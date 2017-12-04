@@ -43,24 +43,24 @@ include::{samplescodedir}/build-scan-from-build-script/build.gradle[tags=build-s
 
 If you already have a `plugins` block, always put the build scan plugin first. Adding it below any existing plugins will still work, but will miss useful information.
 
-== Add the license agreement
+== Accept the license agreement
 
-In order to use the build scan plugin, you need to agree to the terms of service. This is an automated process that you can enable by adding the following section to your build file:
+In order to publish build scans to https://scans.gradle.com, you need to accept the license agreement.
+This can be done ad-hoc via the command line when publishing, but can also be specified in your Gradle build file, by adding the following section:
 
 [source,groovy]
 ----
 include::{samplescodedir}/build-scan-from-build-script/build.gradle[tags=build-scan-dsl]
 ----
 
-The `buildScan` block allows you to configure the plugin. Here you are setting two properties necessary to agree to the terms of service. Other properties are available. See the https://docs.gradle.com/scans/[Build Scans User Manual] for details.
+The `buildScan` block allows you to configure the plugin. Here you are setting two properties necessary to accept the license agreement.
+Other properties are available. See the https://docs.gradle.com/scans/[Build Scans User Manual] for details.
 
 == Publish a build scan
 
 A build scan is published using a command-line flag called `--scan`.
 
-NOTE: The `--scan` option replaces the older, deprecated `-Dscan` syntax, which you will still find in some documentation.
-
-Run a `build` task with the `--scan` option. When the build is completed, after uploading data to the Gradle servers, you will be presented with a link to follow to retrieve your report.
+Run a `build` task with the `--scan` option. When the build is completed, after uploading the build data to scans.gradle.com, you will be presented with a link to see your build scan.
 
 ----
 $ ./gradlew build --scan
@@ -70,13 +70,13 @@ include::{samplesoutputdir}/build-scan-from-build-script/buildScan.out[]
 
 == Access the build scan online
 
-The first time you follow the link, you will be asked to provide your email address so that a separate link can be sent to you. You will also have an opportunity to check a box to allow Gradle to remember you, so you won't have to go through the email process in the future.
+The first time you follow the link, you will be asked to activate the created build scan.
 
-The resulting email will look similar to:
+The email you receive to activate your build scan will look similar to:
 
-image::build_scan_email.png[]
+image::build_scan_email.png[width=600]
 
-Follow the link provided in the email, and you will see the resulting scan.
+Follow the link provided in the email, and you will see the created build scan.
 
 image::build_scan_page.png[]
 
@@ -91,21 +91,19 @@ You can avoid having to add the plugin and license agreement to every build by u
 include::{samplescodedir}/build-scan-from-init-script/buildScan.gradle[]
 ----
 
-The init script downloads the build-script plugin if necessary and applies it to every project, and approves the license agreement. Now you can use the `--scan` flag on any build on your system.
+The init script downloads the build scan plugin if necessary and applies it to every project, and accepts the license agreement. Now you can use the `--scan` flag on any build on your system.
 
-There are additional capabilities you can add to the script, such as under what conditions to publish the scan information. For details, see the Build Scans User Manual.
+There are additional capabilities you can add to the script, such as under what conditions to publish the scan information. For details, see the https://docs.gradle.com/scans/[Build Scans User Manual].
 
 == Summary
 
 In this guide, you learned how to:
 
-* Add the build scan plugin to your build
-* Add a `buildScan` block to agree to the terms of service
 * Generate a build scan
 * View the build scan information online
-* Create an init script to enable scans for all builds
+* Create an init script to enable build scans for all builds
 
-== Next Steps
+== Next steps
 
 Additional information can be found in the https://docs.gradle.com/scans/[Build Scans User Manual].
 
