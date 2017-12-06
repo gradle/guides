@@ -1,6 +1,5 @@
 import org.gradle.api.Project;
 import org.gradle.api.provider.Property;
-import org.gradle.api.provider.Provider;
 
 public class BinaryRepositoryExtension {
     private final Property<String> serverUrl;
@@ -9,15 +8,7 @@ public class BinaryRepositoryExtension {
         serverUrl = project.getObjects().property(String.class);
     }
 
-    public String getServerUrl() {
-        return serverUrl.get();
-    }
-
-    public Provider<String> getServerUrlProvider() {
+    public Property<String> getServerUrl() {
         return serverUrl;
-    }
-
-    public void setServerUrl(String serverUrl) {
-        this.serverUrl.set(serverUrl);
     }
 }

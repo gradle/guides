@@ -1,6 +1,5 @@
 import org.gradle.api.DefaultTask;
 import org.gradle.api.provider.Property;
-import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 
@@ -12,22 +11,14 @@ public class LatestArtifactVersion extends DefaultTask {
     }
 
     @Input
-    public String getServerUrl() {
-        return serverUrl.get();
-    }
-
-    public void setServerUrl(String serverUrl) {
-        this.serverUrl.set(serverUrl);
-    }
-
-    public void setServerUrl(Provider<String> serverUrl) {
-        this.serverUrl.set(serverUrl);
+    public Property<String> getServerUrl() {
+        return serverUrl;
     }
 
     @TaskAction
     public void resolveLatestVersion() {
         // Access the raw value during the execution phase of the build lifecycle
-        System.out.println("Retrieving latest artifact version from URL " + getServerUrl());
+        System.out.println("Retrieving latest artifact version from URL " + serverUrl.get());
 
         // do additional work
     }
