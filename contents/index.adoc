@@ -146,7 +146,7 @@ NOTE: The Gradle classloader automatically injects setter methods alongside all 
 include::{samplescodedir}/capture-user-input/buildSrc/src/main/java/BinaryRepositoryExtension.java[]
 
 ----
-ƒ
+
 The task property also defines the `serverUrl` with type `Property`. It allows for mapping the state of the property without actually accessing its value until needed for processing - that is in the task action.
 
 .LatestArtifactVersion.java
