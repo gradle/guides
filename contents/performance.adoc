@@ -79,7 +79,7 @@ A rise in the hit rate there probably indicates better usage by developers:
 [.screenshot]
 image::cache-admin-hit-rate.png[build cache hit rate]
 
-=== Build cache performance
+=== Using build scans
 
 When viewing the Build Scan for a cache enabled build, there is a _"Build cache"_ section in the _"Performance"_ page that shows useful information around how the cache is performing.
 From here it is possible to see all tasks that interacted with the cache, as well as a link to that task on the Timeline.
