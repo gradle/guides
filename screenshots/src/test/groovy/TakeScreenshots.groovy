@@ -64,11 +64,9 @@ class TakeScreenshots {
             }
         }
 
-        ['overlapping-outputs-input-comparison'].each {
-            extraActions.put(it) {
-                waitFor {
-                    $('.TaskInputs__tasks-list')
-                }
+        extraActions.put('overlapping-outputs-input-comparison') {
+            waitFor {
+                $('.TaskInputs__tasks-list')
             }
         }
 

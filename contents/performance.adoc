@@ -81,15 +81,14 @@ image::cache-admin-hit-rate.png[build cache hit rate]
 
 === Build cache performance
 
-When viewing the Build Scan for a cache enabled build, there is a Build cache section in the Performance page that shows
-useful information around how the cache is performing. From here it is possible to see all tasks that interacted with the
-cache, as well as a link to that task on the Timeline.
+When viewing the Build Scan for a cache enabled build, there is a _"Build cache"_ section in the _"Performance"_ page that shows useful information around how the cache is performing.
+From here it is possible to see all tasks that interacted with the cache, as well as a link to that task on the Timeline.
 
-If you are using a remote cache, this page will also shows downloads speeds from the remote cache for that build, and how
-long cache misses took to resolve. Sometimes you will notice that these speeds are continually slower for a single developer
-or team. One probable cause of this can be the network latency between that group of developers and the remote build cache.
+If you are using a remote cache, this page will also show download speeds from the remote cache for that build, and how long cache misses took to resolve.
+Sometimes you will notice that these speeds are continually slower for a single developer or team.
+One probable cause of this can be the network latency between that group of developers and the remote build cache.
 
-A cause for this increased latency can be the locality of the team.  A team on one continent might see a much reduced
-benefit from using a topographically distant build cache. A new feature of Gradle Enterprise since version 2017.7 is to
-allow you to create a cache node closer to that team, and have it replicate the data from the main build cache.  This is
-described in the https://gradle.com/enterprise/releases/2017.7#deploy-closer-build-cache-nodes-for-faster-builds[release notes for Gradle Enterprise 2017.7]
+A cause for this increased latency can be the geographical location of the team.
+A team on one continent might see a much reduced benefit from using a topographically distant build cache.
+A new feature of Gradle Enterprise since version 2017.7 is to allow you to create a cache node closer to that team, and have it replicate the data from the main build cache.
+This is described in the https://docs.gradle.com/enterprise/admin/2017.7/#replication[admin guide for Gradle Enterprise 2017.7]
