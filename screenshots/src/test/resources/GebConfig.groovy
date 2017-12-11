@@ -26,7 +26,7 @@ driver = {
     }
 
     options.addArguments("headless", "disable-gpu")
-    options.addArguments("window-size=1200,800")
+    options.addArguments("window-size=1400,800")
     capabilities.setCapability(ChromeOptions.CAPABILITY, options)
     new ChromeDriver(capabilities)
 }

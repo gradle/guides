@@ -72,9 +72,9 @@ BUILD SUCCESSFUL in 1s
 ----
 <1> We want to start with an empty local cache.
 <2> Clean the project to remove any unwanted leftovers from previous builds.
-<2> Build it once to let it populate the cache.
-<2> Clean the project again.
-<3> Build it again: this time everything cacheable should load from the just populated cache.
+<3> Build it once to let it populate the cache.
+<4> Clean the project again.
+<5> Build it again: this time everything cacheable should load from the just populated cache.
 
 You should see all cacheable tasks loaded from cache, while non-cacheable tasks should be executed.
 
@@ -189,10 +189,18 @@ If you want to go into the details of finding out e.g. which classes and jar fil
 task you need to resort to comparing those files on disk yourself.
 
 Luckily, you do not have to capture this data yourself - the build scan plugin already takes care of this for you.
-This means that Gradle Enterprise has the necessary data to diagnose the cache miss when comparing two build scans:
+
+To quickly compare two builds, open the build scans of interest, select the _"adjacent scan"_ icon at the top of the page, and
+click _"compare"_ next to the build you want to compare it to.
 
 [.screenshot]
-image::task-inputs-comparison.png[]
+image::adjacent-build-comparison.png[]
+
+Gradle Enterprise has the necessary data to diagnose the cache miss when comparing two build scans, and will show you the
+properties that caused a different cache key to be generated.
+
+[.screenshot]
+image::adjacent-builds-input-comparison.png[]
 
 It is also possible that task output caching for a cacheable task was disabled.
 When this happens the reason why caching was disabled for the task is reported on the info log level and in the build scan:

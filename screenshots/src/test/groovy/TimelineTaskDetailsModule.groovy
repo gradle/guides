@@ -15,6 +15,7 @@ class TimelineTaskDetailsModule extends Module {
         unknownUpToDateMessages(required: false) { $('.UpToDateDetails__unknown-up-to-date-message')*.text()*.trim() }
 
         originScanButton(required: false) { $('.TaskDetailsButtons__origin-scan-button') }
+        originScanPopup(required: false) { $('.TaskDetailsButtons__button-tooltip div.TooltipWrapper__tooltip')}
         focusButton { $('.TaskDetailsButtons__focus-button') }
     }
 

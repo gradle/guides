@@ -3,7 +3,10 @@ import geb.navigator.Navigator
 import geb.waiting.DefaultWaitingSupport
 import geb.waiting.Wait
 import org.junit.Test
+import org.openqa.selenium.Dimension
+import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.OutputType
+import org.openqa.selenium.chrome.ChromeDriver
 import ratpack.test.CloseableApplicationUnderTest
 
 import java.nio.file.Files
@@ -29,6 +32,9 @@ class TakeScreenshots {
 
             interact {
                 moveToElement(page.taskDetails.originScanButton)
+                waitFor {
+                    page.taskDetails.originScanPopup.displayed
+                }
             }
         }
         extraActions.put('overlapping-outputs-timeline') {
@@ -71,6 +77,35 @@ class TakeScreenshots {
                 $('.PerformancePage').hasClass('loaded')
             }
         }
+
+        extraActions.put('adjacent-build-comparison') {
+            waitFor {
+                at(ScanTimelinePage)
+            }
+
+            page.adjacentScans.toggleAdjacentScans()
+
+            interact {
+                moveToElement(page.adjacentScans.rows[1].compareButton)
+            }
+        }
+
+        extraActions.put('adjacent-builds-input-comparison') {
+            waitFor {
+                at(ScanTimelinePage)
+            }
+
+            page.adjacentScans.toggleAdjacentScans()
+            interact {
+                moveToElement(page.adjacentScans.rows[1].compareButton)
+            }
+            page.adjacentScans.loadComparison(1)
+
+            waitFor {
+                $('.TaskInputs__tasks-list')
+            }
+        }
+
     }
 
     @Test
@@ -97,7 +132,7 @@ class TakeScreenshots {
         Browser.drive {
             go url
 
-            waitFor(2000) { !find('.GradlephantLoadingIndicator') }
+            waitFor(2000) { !find('.LoadingIndicator') }
             waitForAnimation(delegate, '.LoadingWrapper', 'transition-opacity-slow')
             waitForScroll(delegate)
 
@@ -111,7 +146,7 @@ class TakeScreenshots {
             if (Files.exists(screenshot)) {
                 Files.delete(screenshot)
             }
-            Files.copy(delegate.driver.getScreenshotAs(OutputType.FILE).toPath(), screenshot)
+            Files.copy(((ChromeDriver)driver).getScreenshotAs(OutputType.FILE).toPath(), screenshot)
         }
     }
 

@@ -6,5 +6,6 @@ class ScanTimelinePage extends Page {
     static content = {
         list { $('.TimelineList').module(TimelineList) }
         taskDetails(required: false) { $('.TaskDetails').module(TimelineTaskDetailsModule) }
+        adjacentScans(required: false) { $('body').module(AdjacentScanModule) }
     }
 }

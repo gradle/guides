@@ -12,7 +12,7 @@ buildscript {
 
 apply plugin: 'groovy'
 
-ext.chromeDriverVersion = '2.29'
+ext.chromeDriverVersion = '2.33'
 
 repositories {
     jcenter()
