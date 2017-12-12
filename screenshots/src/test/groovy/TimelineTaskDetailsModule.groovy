@@ -1,4 +1,5 @@
 import geb.Module
+import geb.navigator.Navigator
 
 class TimelineTaskDetailsModule extends Module {
     static content = {
@@ -15,7 +16,7 @@ class TimelineTaskDetailsModule extends Module {
         unknownUpToDateMessages(required: false) { $('.UpToDateDetails__unknown-up-to-date-message')*.text()*.trim() }
 
         originScanButton(required: false) { $('.TaskDetailsButtons__origin-scan-button') }
-        originScanPopup(required: false) { $('.TaskDetailsButtons__button-tooltip div.TooltipWrapper__tooltip')}
+        originScanPopup(required: false) { popupFor(originScanButton) }
         focusButton { $('.TaskDetailsButtons__focus-button') }
     }
 
@@ -32,6 +33,10 @@ class TimelineTaskDetailsModule extends Module {
     void clickFocusButton() {
         waitFor { focusButton.displayed }
         focusButton.click()
+    }
+
+    private popupFor(Navigator element) {
+        element.parent().next('.TooltipWrapper__tooltip-section').$("div")
     }
 }
 

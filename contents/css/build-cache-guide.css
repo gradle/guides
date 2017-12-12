@@ -4,3 +4,7 @@ div.screenshot {
     margin-right: auto;
     width: 90%;
 }
+
+.image.inline-icon img {
+  vertical-align: sub;
+}

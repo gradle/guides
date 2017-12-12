@@ -32,9 +32,10 @@ class TakeScreenshots {
 
             interact {
                 moveToElement(page.taskDetails.originScanButton)
-                waitFor {
-                    page.taskDetails.originScanPopup.displayed
-                }
+            }
+
+            waitFor {
+                page.taskDetails.originScanPopup.displayed
             }
         }
         extraActions.put('overlapping-outputs-timeline') {
@@ -61,12 +62,6 @@ class TakeScreenshots {
         extraActions.put('performance-task-execution') {
             waitFor {
                 $('.PerformancePage').hasClass('loaded')
-            }
-        }
-
-        extraActions.put('overlapping-outputs-input-comparison') {
-            waitFor {
-                $('.TaskInputs__tasks-list')
             }
         }
 
@@ -104,6 +99,9 @@ class TakeScreenshots {
             }
         }
 
+        extraActions.put('build-cache-performance') {
+        }
+
     }
 
     @Test
@@ -112,6 +110,7 @@ class TakeScreenshots {
         properties.load(getClass().getResourceAsStream("/screenshots.properties"))
 
         properties.each { String name, String urls ->
+            println "Capturing $name"
             def (String instance, String subUrl) = urls.split(':')
             CloseableApplicationUnderTest proxy = AuthingProxy.to(*getCredentials(instance))
 
@@ -135,7 +134,7 @@ class TakeScreenshots {
             waitForScroll(delegate)
 
             if (extraActions.containsKey(screenshotName)) {
-                Closure extraAction = extraActions[screenshotName].clone()
+                Closure extraAction = extraActions[screenshotName]
                 extraAction.delegate = delegate
                 extraAction.call()
             }
