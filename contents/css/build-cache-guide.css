@@ -8,3 +8,7 @@ div.screenshot {
 .image.inline-icon img {
   vertical-align: sub;
 }
+
+p em, p i {
+  padding-right: 0.25em;
+}
