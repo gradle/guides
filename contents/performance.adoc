@@ -79,16 +79,23 @@ A rise in the hit rate there probably indicates better usage by developers:
 [.screenshot]
 image::cache-admin-hit-rate.png[build cache hit rate]
 
-=== Using build scans
+=== Analyzing performance in build scans
 
-When viewing the Build Scan for a cache enabled build, there is a _"Build cache"_ section in the _"Performance"_ page that shows useful information around how the cache is performing.
-From here it is possible to see all tasks that interacted with the cache, as well as a link to that task on the Timeline.
+Build scans provide a summary of all cache operations for a build via the _"Build cache"_ section of _"Performance"_ page.
 
-If you are using a remote cache, this page will also show download speeds from the remote cache for that build, and how long cache misses took to resolve.
-Sometimes you will notice that these speeds are continually slower for a single developer or team.
-One probable cause of this can be the network latency between that group of developers and the remote build cache.
+TODO - screenshot.
 
-A cause for this increased latency can be the geographical location of the team.
-A team on one continent might see a much reduced benefit from using a topographically distant build cache.
-A new feature of Gradle Enterprise since version 2017.7 is to allow you to create a cache node closer to that team, and have it replicate the data from the main build cache.
-This is described in the https://docs.gradle.com/enterprise/admin/2017.7/#replication[admin guide for Gradle Enterprise 2017.7]
+This page details which tasks were able to be avoided by cache hits, and which missed.
+It also indicates the hits and misses for the local and remote caches individually.
+For remote cache operations, the time taken to transfer artifacts to and from the cache is given, along with the transfer rate.
+This is particularly important for assessing the impact of network link quality on performance, as transfer times contribute to build time.
+
+=== Remote cache performance
+
+Improving the network link between the build and the remote cache can significantly improve build cache performance.
+How to do this depends on the remote cache in use and your network environment.
+
+The multi-node remote build cache provided by Gradle Enterprise is a fast and efficient, purpose built, remote build cache.
+In particular, if your development team is geographically distributed, its replication features can significantly improve performance
+by allowing developers to use a cache that is close to them that they have a good network link to.
+See the https://docs.gradle.com/enterprise/admin/current/#replication[“Build Cache Replication” section of the Gradle Enterprise Admin Manual] for more information.
