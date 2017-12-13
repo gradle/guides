@@ -18,6 +18,7 @@ asciidoctor {
         }
     }
 
+    // Can be removed after integration of https://github.com/gradle-guides/gradle-guides-plugin/pull/17
     if (System.getProperty("os.name").toLowerCase().contains("mac")) {
         doLast {
             ["osascript", "-e", """
