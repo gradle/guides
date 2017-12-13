@@ -61,6 +61,7 @@ test {
 task takeScreenshots(type: Test) {
     ext.screenshotDir = file("${buildDir}/screenshots")
     outputs.dir(screenshotDir).withPropertyName('screenshotDir')
+    outputs.upToDateWhen { false }
     outputs.doNotCacheIf('Depending on external service') { true }
 
     dependsOn unzipChromeDriver
