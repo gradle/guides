@@ -100,6 +100,13 @@ class TakeScreenshots {
         }
 
         extraActions.put('build-cache-performance') {
+            (delegate as Browser).js.exec("""
+                Array.from(document.getElementsByClassName("BuildCacheConfiguration__config-link")).forEach(e => { 
+                  if (e.innerText == "https://e.grdev.net/cache/") {
+                    e.innerText = "https://gradle.company.com/cache/";
+                  }
+                });
+            """)
         }
 
     }
