@@ -198,7 +198,7 @@ There are three ways to compare builds in Gradle Enterprise.
 
 1. Use the scan list to find the scans to compare, selecting them by clicking the respective image:compare-small.svg[compare,role="inline-icon",width="30"] or image:compare-small-b.svg[compare b,role="inline-icon",width="30"] icon.
 2. From a scan that you wish to compare with another, click the image:compare-small.svg[compare,role="inline-icon",width="30"] icon at the top of the scan, then select the second scan by clicking the  image:compare-small-b.svg[compare b,role="inline-icon",width="30"] icon from the list of scans.
-3. Select a previous or preceding build for the same project as a scan by clicking the image:previous-next-scan.svg[workspace,role="inline-icon", width="22"] icon and then clicking the image:compare-small-b.svg[compare b,role="inline-icon",width="30"] icon next to the build you want to compare.
+3. Click the image:previous-next-scan.svg[workspace,role="inline-icon", width="22"] icon in the header of a build scan to show previous and subsequent build scans of the same workspace, then click the image:compare-small-b.svg[compare b,role="inline-icon",width="30"] icon next to the build you want to compare.
 
 [.screenshot]
 image::adjacent-build-comparison.png[]
