@@ -154,6 +154,8 @@ Having two tasks in the same build that do the same might sound like a problem t
 For example, the Android plugin creates several tasks for each variant of the project; some of those tasks will potentially do the same thing.
 These tasks can safely reuse each other's outputs.
 
+As link:#share_results_between_ci_builds[discussed previously], you can use Gradle Enterprise to diagnose the source build of these unexpected cache-hits.
+
 === Non-cacheable tasks
 
 You've seen quite a bit about cacheable tasks, which implies there are non-cacheable ones, too. If caching task outputs is as awesome as it sounds, why not cache every task?

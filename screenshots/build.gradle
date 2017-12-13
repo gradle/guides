@@ -12,7 +12,7 @@ buildscript {
 
 apply plugin: 'groovy'
 
-ext.chromeDriverVersion = '2.29'
+ext.chromeDriverVersion = '2.33'
 
 repositories {
     jcenter()
@@ -61,6 +61,7 @@ test {
 task takeScreenshots(type: Test) {
     ext.screenshotDir = file("${buildDir}/screenshots")
     outputs.dir(screenshotDir).withPropertyName('screenshotDir')
+    outputs.upToDateWhen { false }
     outputs.doNotCacheIf('Depending on external service') { true }
 
     dependsOn unzipChromeDriver
