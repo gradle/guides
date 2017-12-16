@@ -146,7 +146,7 @@ BUILD SUCCESSFUL
 
 You can now access the web app at ++http://localhost:8080/webdemo++ and either click on the link to execute a GET request or submit the form to execute a POST request.
 
-Although the outputs says `Press any key to stop the server, standard input is intercepted by Gradle. To stop the process press `ctrl-C`.
+Although the output says `Press any key to stop the server`, standard input is not intercepted by Gradle. To stop the process, press `ctrl-C`.
 
 == Unit test the servlet using Mockito
 
