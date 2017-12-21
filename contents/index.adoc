@@ -75,7 +75,7 @@ That’s the end of the quick wins. From here on out, improving your build perfo
 
 == Profiling with build scans
 
-When using build scans in the context of profiling a build, the main area of interest in the early stages of diagnosis is the performance page. To get there, follow the link highlighted in the following screenshot of the build scan home page:
+When using build scans in the context of profiling a build, the main area of interest in the early stages of diagnosis is the performance page. To get there, click _"Performance"_&nbsp; in the left hand navigation menu, or follow the link highlighted in the following screenshot of the build scan home page:
 
 image::build-scan-home.png[title="Performance page link on build scan home page"]
 
@@ -94,25 +94,25 @@ In the above xref:build-scan-performance[], you can see that build configuration
 
 image::build-scan-configuration-breakdown.png[title="Build scan configuration breakdown"]
 
-Here you can see the scripts and plugins that were applied to the project in descending order of how long they took to apply. The slowest plugin and script applications are good candidates for optimization, and you can dig further into those items in the list. For example, the plugin `com.example.bar` was applied once but took 7 seconds - you can expand that row to see how and where this plugin was applied to the build.
+Here you can see the scripts and plugins that were applied to the project in descending order of how long they took to apply. The slowest plugin and script applications are good candidates for optimization, and you can dig further into those items in the list. For example, the script `script-b.gradle` was applied once but took 3 seconds - you can expand that row to see how and where this was applied to the build.
 
-image::bar-plugin-application.png[title="Showing the application of com.example.bar to the build"]
+image::script-b-application.png[title="Showing the application of script-b.gradle to the build"]
 
-You can see that this plugin is applied once, by the project `:app1` from inside of that project's `build.gradle` file.
+You can see that this script is applied once, by the project `:app1` from inside of that project's `build.gradle` file.
 
 The next few subsections introduce techniques that can help improve the configuration time and explain why they work.
 
 === Apply plugins judiciously
 
-Every plugin that you apply to a project adds to the overall configuration time. Some plugins have a greater impact than others. That doesn’t mean you should avoid using plugins, but you should take care to only apply them where they’re needed. For example, it’s easy to apply plugins to all projects via `allprojects {}` or `subprojects {}` even if not every project needs them.
+Every plugin and script that you apply to a project adds to the overall configuration time. Some plugins have a greater impact than others. That doesn’t mean you should avoid using plugins, but you should take care to only apply them where they’re needed. For example, it’s easy to apply plugins to all projects via `allprojects {}` or `subprojects {}` even if not every project needs them.
 
-In the above build scan example, you can see that the plugin `com.example.foo` is applied to 3 projects inside the build:
+In the above build scan example, you can see that the script `script-a.gradle` is applied to 3 projects inside the build:
 
-image::foo-plugin-application.png[title="Showing the application of com.example.foo to the build"]
+image::script-a-application.png[title="Showing the application of script-a.gradle to the build"]
 
-This plugin takes 3 seconds to run, and as it is applied to 3 projects from the root `build.gradle` file, it is introducing a 9 second delay to the configuration phase.
+This script takes 1 second to run, and as it is applied to 3 projects from the root `build.gradle` file, it is introducing a 3 second delay to the configuration phase.
 
-Ideally, plugins should not incur a significant configuration-time cost. If they do, the focus should be on improving the plugin. Nonetheless, in projects with many modules and a significant configuration time, you should spend a little time identifying any plugins that have a notable impact.
+Ideally, plugins and scripts should not incur a significant configuration-time cost. If they do, the focus should be on improving them. Nonetheless, in projects with many modules and a significant configuration time, you should spend a little time identifying any plugins that have a notable impact.
 
 === Avoid expensive or blocking work
 
@@ -175,7 +175,8 @@ The "Dependency resolution" tab on the performance page of a build scan explicit
 
 image::bad-dependency-resolution.png[title="Dependency resolution at configuration time"]
 
-Here, you can quickly identify the cause of this particular performance issue. You should have a _"resolved dependencies during project configuration"_&nbsp; time of  0&nbsp;seconds, and this example shows the build is resolving dependencies too early in the lifecycle.  Also on the "Performance" page is a "Settings and suggestions" tab which will show you which dependencies were being resolved during project configuration.
+Here, you can quickly identify the cause of this particular performance issue. The time spent resolving dependencies during _"project configuration"_&nbsp; should be 0&nbsp;seconds, and this example shows the build is resolving dependencies too early in the lifecycle.  Also on the "Performance" page is a "Settings and suggestions" tab which will show you which dependencies were being resolved during project configuration.
+
 
 If you are using the profiler, you can get similar (but less detailed) information can by running this command:
 
