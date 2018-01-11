@@ -137,7 +137,7 @@ include::{samplesoutputdir}/helloWorld/build.out[]
 
         then:
         def htmlFile = new File(temporaryFolder.root, 'build/html5/index.html').text
-        htmlFile.contains('<script defer src="https://guides.gradle.org/js/analytics.js"></script>')
+        htmlFile.contains('<script defer src="https://guides.gradle.org/js/guides.js"></script>')
         htmlFile.contains('<header class="site-layout__header site-header" itemscope="itemscope" itemtype="https://schema.org/WPHeader">')
         htmlFile.contains('<footer class="site-layout__footer site-footer" itemscope="itemscope" itemtype="https://schema.org/WPFooter">')
     }
