@@ -30,7 +30,7 @@ dependencies {
 task integTest(type: Test) {
     dependsOn startApp
     finalizedBy stopApp
-    testClassesDir = sourceSets.integTest.output.classesDir
+    testClassesDirs = files(sourceSets.integTest.output.classesDirs)
     classpath = sourceSets.integTest.runtimeClasspath
     mustRunAfter test
 }
