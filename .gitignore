@@ -29,7 +29,6 @@ style-guide/
 testing-gradle-plugins/
 topical-template/
 tutorial-template/
-using-an-existing-gradle-build/
 using-build-cache/
 writing-getting-started-guides/
 writing-gradle-plugins/
