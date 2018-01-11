@@ -38,11 +38,15 @@ import org.gradle.api.tasks.PathSensitivity
 @CompileStatic
 class BasePlugin implements Plugin<Project> {
 
-    private static final String COMMON_HEAD_HTML = Thread.currentThread().contextClassLoader.getResource("head-meta.html").text
-    private static final String COMMON_HEADER_HTML = Thread.currentThread().contextClassLoader.getResource("header.html").text
-    private static final String COMMON_FOOTER_HTML = Thread.currentThread().contextClassLoader.getResource("footer.html").text
+    private static final String COMMON_HEAD_HTML = loadResourceText("head-meta.html")
+    private static final String COMMON_HEADER_HTML = loadResourceText("header.html")
+    private static final String COMMON_FOOTER_HTML = loadResourceText("footer.html")
     static final String GUIDE_EXTENSION_NAME = 'guide'
     static final String CHECK_LINKS_TASK = 'checkLinks'
+
+    static String loadResourceText(final String resourcePath) {
+        Thread.currentThread().contextClassLoader.getResource(resourcePath).text
+    }
 
     void apply(Project project) {
         project.apply plugin : org.gradle.api.plugins.BasePlugin
