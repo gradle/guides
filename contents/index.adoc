@@ -75,7 +75,7 @@ This is not strictly required to complete this guide, but using the https://grad
 ----
 plugins {
 +    `build-scan` // <1>
-     kotlin("jvm", "1.1.4-3")
+     kotlin("jvm") version "1.2.10"
 }
 ----
 <1> Apply the build scan plugin in the `plugins {}` block at the top.
@@ -114,7 +114,7 @@ http://junit.org/junit4/[JUnit 4] is the simplest of testing libraries to add to
 [source,diff]
 ----
 dependencies {
-     implementation(kotlin("stdlib", "1.1.4-3"))
+     implementation(kotlin("stdlib", "1.2.10"))
 +    testImplementation("junit:junit:4.12") // <1>
 }
 ----
@@ -207,7 +207,7 @@ Now our library is ready to share with the world. We're going to publish it loca
 plugins {
      `build-scan`
 +    `maven-publish`
-     kotlin("jvm", "1.1.4-3")
+     kotlin("jvm") version "1.2.10"
 }
 ----
 

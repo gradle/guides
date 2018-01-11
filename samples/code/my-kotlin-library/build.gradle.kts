@@ -19,7 +19,7 @@ apply {
 plugins {
     `build-scan`
     `maven-publish`
-    kotlin("jvm", "1.1.4-3")     // <1>
+    kotlin("jvm") version "1.2.10"     // <1>
 }
 
 group = "org.example"
@@ -30,7 +30,7 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib", "1.1.4-3"))
+    implementation(kotlin("stdlib", "1.2.10"))
     testImplementation("junit:junit:4.12")
 }
 
