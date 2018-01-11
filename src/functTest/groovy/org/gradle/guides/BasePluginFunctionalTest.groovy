@@ -124,7 +124,22 @@ include::{samplesoutputdir}/helloWorld/build.out[]
 
         then:
         result.task(asciiDoctorTask).outcome == TaskOutcome.UP_TO_DATE
+    }
 
+    def "header and footer is injected during asciidoctor postprocessing"() {
+        given:
+        def asciiDoctorTask = ":asciidoctor"
+        def contentsDir = createContentsDir()
+        new File(contentsDir, "index.adoc") << 'This is some sample ascii source'
+
+        when:
+        build(asciiDoctorTask)
+
+        then:
+        def htmlFile = new File(temporaryFolder.root, 'build/html5/index.html').text
+        htmlFile.contains('<script defer src="https://guides.gradle.org/js/analytics.js"></script>')
+        htmlFile.contains('<header class="site-layout__header site-header" itemscope="itemscope" itemtype="https://schema.org/WPHeader">')
+        htmlFile.contains('<footer class="site-layout__footer site-footer" itemscope="itemscope" itemtype="https://schema.org/WPFooter">')
     }
 
     private File createSamplesCodeDir() {
