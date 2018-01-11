@@ -69,6 +69,10 @@ h5, h6 {
     font-size: 1rem;
 }
 
+b, strong {
+    font-weight: 500;
+}
+
 /* Layout */
 #header > h1:first-child {
     margin-top: 0;
