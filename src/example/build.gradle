@@ -2,9 +2,9 @@
 // tag::plugins[]
 plugins {
 // end::plugins[]
-  id 'com.gradle.build-scan' version '1.6'
+  id 'com.gradle.build-scan' version '1.11'
 // tag::plugins[]
-  id 'org.asciidoctor.convert' version '1.5.3' apply false // <1>
+  id 'org.asciidoctor.convert' version '1.5.6' apply false // <1>
 }
 // end::plugins[]
 
