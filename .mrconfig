@@ -58,6 +58,9 @@ checkout = git clone git@github.com:gradle-guides/greeting-plugin-example.git
 [gs-template]
 checkout = git clone git@github.com:gradle-guides/gs-template.git
 
+[guides-test-fixtures]
+checkout = git clone git@github.com:gradle-guides/guides-test-fixtures.git
+
 [implementing-gradle-plugins]
 checkout = git clone git@github.com:gradle-guides/implementing-gradle-plugins.git
 

@@ -19,6 +19,7 @@ gradle-guides-plugin/
 gradle-site-plugin/
 greeting-plugin-example/
 gs-template/
+guides-test-fixtures/
 implementing-gradle-plugins/
 migrating-from-maven/
 performance/
