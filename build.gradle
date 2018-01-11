@@ -8,11 +8,9 @@ buildscript {
 }
 
 plugins {
-    id 'org.gradle.guides.getting-started' version '0.6.6'
+    id "org.gradle.guides.getting-started" version "0.10.0"
     id 'org.ysb33r.vfs' version '1.0'
 }
-
-import org.apache.tools.ant.filters.*
 
 guide {
     repoPath 'gradle-guides/building-cpp-libraries'
