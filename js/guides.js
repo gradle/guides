@@ -8,7 +8,7 @@ if (!Element.prototype.closest) {
         var el = this;
         if (!document.documentElement.contains(el)) return null;
         do {
-            if (typeof el.matches === "function" &amp;&amp; el.matches(s)) return el;
+            if (typeof el.matches === "function" && el.matches(s)) return el;
             el = el.parentElement || el.parentNode;
         } while (el !== null);
         return null;
