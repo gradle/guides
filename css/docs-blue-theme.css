@@ -521,6 +521,15 @@ div.screenshot {
         z-index: 1;
     }
 
+    /*
+      Pushes the section headings to just below the top nav bar when a user
+      navigates directly to section anchors.
+     */
+    h2[id], h3[id] {
+        padding-top: 60px;
+        margin-top: -60px;
+    }
+
     .site-header__navigation {
         flex-direction: row;
     }
