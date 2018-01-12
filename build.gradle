@@ -1,17 +1,10 @@
 plugins {
-    id 'org.gradle.guides.getting-started' version '0.8.1'
-    id 'org.gradle.guides.test-jvm-code' version '0.8.1'
+    id "org.gradle.guides.getting-started" version "0.10.3"
+    id "org.gradle.guides.test-jvm-code" version "0.10.3"
 }
 
 guide {
     repoPath 'gradle-guides/using-the-worker-api'
     mainAuthor 'Gary Hale'
-
-    // Uncomment this line to add support authors
-    // supAuthors 'Grumpy Gradlephant', 'Jane Doe'
 }
 
-// Add in any generation steps.
-gradleRunner {
-
-}
