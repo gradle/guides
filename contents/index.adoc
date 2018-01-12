@@ -1,7 +1,5 @@
 = Building Java 9 Modules
 
-== What you'll learn
-
 One of the most exciting features of Java 9 is its support for developing and
 deploying modular Java software. In this guide, you'll learn exactly what you
 need to change in your Java application to:
