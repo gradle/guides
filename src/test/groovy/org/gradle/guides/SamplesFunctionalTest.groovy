@@ -1,6 +1,7 @@
 package org.gradle.guides
 
 import org.gradle.guides.test.fixtures.AbstractSamplesFunctionalTest
+import org.junit.Ignore
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
@@ -26,30 +27,5 @@ class SamplesFunctionalTest extends AbstractSamplesFunctionalTest {
 
         then:
         result.task(':test').outcome == SUCCESS
-    }
-
-    def "can document Kotlin sources"() {
-        given:
-        copySampleCode('step-3')
-
-        when:
-        def result = succeeds('dokkaJar')
-
-        then:
-        result.task(':dokka').outcome == SUCCESS
-        result.task(':dokkaJar').outcome == SUCCESS
-    }
-
-    def "can publish Kotlin library Jars"() {
-        given:
-        copySampleCode('step-4')
-
-        when:
-        def result = succeeds('publish')
-
-        then:
-        result.task(':jar').outcome == SUCCESS
-        result.task(':dokkaJar').outcome == SUCCESS
-        result.task(':publish').outcome == SUCCESS
     }
 }
