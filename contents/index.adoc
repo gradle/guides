@@ -1,5 +1,4 @@
 = Building Kotlin JVM Libraries
-:toclevels: 2
 :source-highlighter: highlightjs
 
 This guide demonstrates how to create a https://kotlinlang.org[Kotlin] library targeted for the JVM. We'll build a simple API with documentation, write and run tests, and package it all up into a something we can distribute.
