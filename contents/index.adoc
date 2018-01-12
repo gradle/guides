@@ -1,5 +1,4 @@
 = Using the Build Cache
-:numbered:
 
 ////
 Write your content using a selection of section levels as you wish.
