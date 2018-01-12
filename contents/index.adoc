@@ -1,8 +1,5 @@
 = Building {cpp} Executables
 
-
-== What you'll build
-
 This guide demonstrates how to create a minimalist {cpp} executable using Gradle's `cpp` plugin.
 
 == What you'll need
