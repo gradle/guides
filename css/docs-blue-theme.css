@@ -108,6 +108,8 @@ b, strong {
         left: 64rem;
         width: 16rem;
         padding-top: 15px;
+        height: calc(100% - 80px);
+        overflow-y: auto;
     }
 }
 
