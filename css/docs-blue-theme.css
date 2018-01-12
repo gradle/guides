@@ -87,13 +87,19 @@ b, strong {
 /* Content is left-aligned for thinner screens */
 @media screen and (min-width: 80rem) {
     #header, #content, #footnotes, #footer {
-        border-radius: 5px;
         margin: 0 1.5rem;
     }
 
     #header {
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
         margin-top: 75px;
         padding-bottom: 0;
+    }
+
+    #content {
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
     }
 
     #toc {
