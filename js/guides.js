@@ -78,7 +78,7 @@ function calculateActiveSubsectionFromLink(event) {
 }
 
 function calculateActiveSubsectionFromScrollPosition() {
-    var subsections = document.querySelectorAll("h2.title > a[name],h3.title > a[name]");
+    var subsections = document.querySelectorAll("h2[id] > a.link");
 
     // Assign active section: take advantage of fact that querySelectorAll returns elements in source order
     var activeSection = subsections[0];
