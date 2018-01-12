@@ -91,6 +91,9 @@ checkout = git clone git@github.com:gradle-guides/tutorial-template.git
 [using-build-cache]
 checkout = git clone git@github.com:gradle-guides/using-build-cache.git
 
+[using-the-worker-api]
+checkout = git clone git@github.com:gradle-guides/using-the-worker-api.git
+
 [writing-getting-started-guides]
 checkout = git clone git@github.com:gradle-guides/writing-getting-started-guides.git
 

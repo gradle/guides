@@ -30,6 +30,7 @@ testing-gradle-plugins/
 topical-template/
 tutorial-template/
 using-build-cache/
+using-the-worker-api/
 writing-getting-started-guides/
 writing-gradle-plugins/
 writing-gradle-tasks/
