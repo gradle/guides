@@ -1,8 +1,5 @@
 = Building and Testing C++ Libraries
 
-
-== What you'll build
-
 This guide shows how to
 
 . Build a simple {cpp} library using the Gradle `cpp` plugin, and
@@ -206,7 +203,7 @@ You can run the binary that uses this library (you need to set the LD_LIBRARY_PA
 
 [listing]
 ----
-$ LD_LIBRARY_PATH=build/libs/greeter/shared/ ./build/exe/main/main 
+$ LD_LIBRARY_PATH=build/libs/greeter/shared/ ./build/exe/main/main
 Hello, Gradle User, your name has 11 chars.
 ----
 
