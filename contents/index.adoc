@@ -1,5 +1,4 @@
 = Improving the Performance of Gradle Builds
-:toclevels: 1
 
 Build performance is critical to your productivity. The longer the build takes to complete, the more likely you'll be taken out of your development flow. On top of that, since you run the build many times a day, even small periods of waiting can add up to significant disruption. The same is true for builds run on CI: the faster they are, the faster you can react to new issues and the more capacity you will have to do innovative experiments.
 
