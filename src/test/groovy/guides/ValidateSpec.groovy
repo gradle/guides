@@ -1,8 +1,6 @@
 package guides
 
 import org.gradle.guides.test.fixtures.AbstractSamplesFunctionalTest
-import org.gradle.testkit.runner.BuildResult
-import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 
@@ -91,7 +89,7 @@ class ValidateSpec extends AbstractSamplesFunctionalTest {
     }
 
     private String runGradle(String... args) {
-        succeeds(args).output.replaceAll( ~/Download.+?\n/,'')
+        succeeds(args).output.replaceAll( ~/Download.+?\n/,'').replaceAll( ~/Picked up .+?\n/,'')
     }
 
     private String runInit() {
