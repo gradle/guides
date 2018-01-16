@@ -108,7 +108,7 @@ b, strong {
         left: 64rem;
         width: 16rem;
         padding-top: 15px;
-        height: calc(100% - 80px);
+        height: calc(100% - 350px);
         overflow-y: auto;
     }
 }
@@ -295,10 +295,10 @@ div.screenshot {
     text-decoration: none;
 }
 @media screen and (min-width: 77.5rem) {
-    #content .toc {
+    #content #toc {
         border: 0 none;
         font-size: 1rem;
-        background-color: #F7F7F8;
+        background-color: #f7f7f8;
     }
 
     #content #toctitle {
