@@ -134,7 +134,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     window.ga("create", "UA-4207603-1", "auto", "all");
     window.ga("create", "UA-4207603-11", "auto", "guides");
-    window.ga("set", "transport", "beacon");
+    window.ga("all.set", "transport", "beacon");
+    window.ga("guides.set", "transport", "beacon");
     window.ga("all.send", "pageview");
     window.ga("guides.send", "pageview");
 
