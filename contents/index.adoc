@@ -17,7 +17,7 @@ If you happen to be a beginner to Gradle please start by working through the lin
 [[plugin-development-plugin]]
 === Using the Plugin Development plugin for writing plugins
 
-Setting up a Gradle plugin project should require as little boilerplate code as possible. The {user-manual}javaGradle_plugin.html[Java Gradle Plugin Development plugin] provides aid in this concern. To get started add the following code to your _build.gradle_ file:
+Setting up a Gradle plugin project should require as little boilerplate code as possible. The {user-manual}java_plugin.html[Java Gradle Plugin Development plugin] provides aid in this concern. To get started add the following code to your _build.gradle_ file:
 
 .build.gradle
 [source,groovy]
