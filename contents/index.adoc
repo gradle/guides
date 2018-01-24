@@ -219,7 +219,7 @@ include::{samplescodedir}/react-to-task/buildSrc/src/main/java/InhouseConvention
 
 The implementation of a plugin sometimes requires the use of an external dependency. You might want to automatically download an artifact using Gradle’s dependency management mechanism and later use it in the action of a task type declared in the plugin. Optimally, the plugin implementation doesn’t need to ask the user for the coordinates of that dependency - it can simply predefine a sensible default version.
 
-Let’s have a look at an example. You wrote a plugin that downloads files containing data for further processing. The plugin implementation declares a custom configuration that allows for {user-manual}dependency_management.html#sec:configuration_defaults[assigning those external dependencies with default dependency coordinates].
+Let’s have a look at an example. You wrote a plugin that downloads files containing data for further processing. The plugin implementation declares a custom configuration that allows for {user-manual}declaring_dependencies.html#sub:scope_of_dependency_configurations[assigning those external dependencies with default dependency coordinates].
 
 .DataProcessingPlugin.java
 [source,java]
