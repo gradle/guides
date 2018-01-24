@@ -132,9 +132,14 @@ document.addEventListener("DOMContentLoaded", function() {
         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
     })(window,document,"script","https://www.google-analytics.com/analytics.js","ga");
 
-    window.ga("create", "UA-4207603-1", "auto", "all");
+    window.ga("create", "UA-4207603-1", "auto", "all", {
+        "allowLinker": true
+    });
+    window.ga("all.require", "linker");
+    window.ga("all.linker:autoLink", ["gradle.com", "gradle.org"], false, true);
     window.ga("create", "UA-4207603-11", "auto", "guides");
-    window.ga("set", "transport", "beacon");
+    window.ga("all.set", "transport", "beacon");
+    window.ga("guides.set", "transport", "beacon");
     window.ga("all.send", "pageview");
     window.ga("guides.send", "pageview");
 
