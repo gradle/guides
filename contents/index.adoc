@@ -223,7 +223,7 @@ Functional tests verify the correctness of the plugin end-to-end. In practice th
 include::{samplescodedir}/url-verifier-plugin/src/main/java/org/gradle/sample/UrlVerifierPlugin.java[]
 ----
 
-Every Gradle plugin project should apply the {user-manual}javaGradle_plugin.html[plugin development plugin] to reduce boilerplate code. By applying the plugin development plugin, the project is preconfigured for the use of TestKit. Let's point the plugin to the custom source set containing functional tests.
+Every Gradle plugin project should apply the {user-manual}java_plugin.html[plugin development plugin] to reduce boilerplate code. By applying the plugin development plugin, the project is preconfigured for the use of TestKit. Let's point the plugin to the custom source set containing functional tests.
 
 .functional-test.gradle
 [source,groovy]
