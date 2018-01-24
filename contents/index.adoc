@@ -57,7 +57,7 @@ include::{example}/build.gradle[tags=repositories]
 ----
 <1> Use JCenter as the repository.
 
-In order to find artifacts you have to tell Gradle where to look. Gradle supports two specialized repository types - link:{user-manual}dependency_management.html#sub:maven_central[Maven] & link:{user-manual}dependency_management.html#sec:ivy_repositories[Ivy], among others. In addition, Gradle supports simplified configuration for the most popular centralized repositories - JCenter, Maven Central, and Google's Android repository. In this guide you are using JCenter as it has access to all of the repositories hosted on Maven Central as well as many more that are published to Bintray.
+In order to find artifacts you have to tell Gradle where to look. Gradle supports two specialized repository types - link:{user-manual}epository_types.html#sub:maven_repo[Maven] & link:{user-manual}repository_types.html#sec:ivy_repositories[Ivy], among others. In addition, Gradle supports simplified configuration for the most popular centralized repositories - JCenter, Maven Central, and Google's Android repository. In this guide you are using JCenter as it has access to all of the repositories hosted on Maven Central as well as many more that are published to Bintray.
 
 The next step is to tell Gradle which external artifacts you need for your projects. As you are doing an Ascii-art application you will be using https://github.com/lalyos/jfiglet[JFiglet]. Add a `dependencies` block to `build.gradle` for the `JFiglet` library.
 
@@ -68,7 +68,7 @@ include::{example}/build.gradle[tags=dependencies]
 ----
 <1> Add the JFiglet dependency to the `implementation` configuration.
 
-Gradle supports a variety of link:{user-manual}dependency_management.html#sub:module_dependencies[notations]. The one used above is probably the most popular, which uses what is most commonly known as Maven coordinates.
+Gradle supports a variety of link:{user-manual}dependency_types.html[notations]. The one used above is probably the most popular, which uses what is most commonly known as Maven coordinates.
 
 Adding a dependency has two parts: one is the dependency itself and the other is the _configuration_ to which it is added. The latter term is used in Gradle to effectively group dependencies together by context. The current build uses the `implementation` configuration, which is provided by the Java Plugin.
 
@@ -173,9 +173,9 @@ You now have JVM application that consumes an external library. In this process 
 // TODO: If guide about artifact resolution is written, then this guide needs to point to that
 ////
 
-* Read about using your own {user-manual}dependency_management.html#sub:maven_repo[Maven repository] installations
-* Read about configuring link:{user-manual}dependency_management.html#sec:ivy_repositories[Ivy repositories].
-* Read about finding artifacts without metadata in link:{user-manual}dependency_management.html#sec:flat_dir_resolver[local folders].
-* Read about link:{user-manual}dependency_management.html#sec:finetuning_the_dependency_resolution_process[advanced artifact resolution] and how to deal with version & dependency conflicts.
+* Read about using your own {user-manual}repository_types.html#sub:maven_repo[Maven repository] installations
+* Read about configuring link:{user-manual}repository_types.html#sec:ivy_repositories[Ivy repositories].
+* Read about finding artifacts without metadata in link:{user-manual}repository_types.html#sec:flat_dir_resolver[local folders].
+* Read about link:{user-manual}customizing_dependency_resolution_behavior.html[advanced artifact resolution] and how to deal with version & dependency conflicts.
 
 include::contribute[]
