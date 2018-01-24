@@ -293,7 +293,8 @@ div.screenshot {
     z-index: 1;
 }
 
-#toc ul {
+#toc > ul {
+    margin-left: 0;
     font-family: inherit;
 }
 
@@ -553,14 +554,14 @@ div.screenshot {
       Pushes the section headings to just below the top nav bar when a user
       navigates directly to section anchors.
      */
-    h2[id], h3[id] {
+    h2[id], h3[id], h4[id] {
         padding-top: 60px;
     }
     h2[id] {
         /* Little extra room above h2s */
         margin-top: -44px;
     }
-    h3[id] {
+    h3[id], h4[id] {
         margin-top: -60px;
     }
 
