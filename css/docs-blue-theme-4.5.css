@@ -88,10 +88,9 @@ b, strong {
     margin: 0;
 }
 
-/* Content is centered for wide screens */
+/* Content is centered for thin screens */
 @media screen and (min-width: 64rem) {
     #header, #content, #footnotes, #footer {
-        max-width: 60rem;
         margin: 0 auto;
     }
 
@@ -108,10 +107,14 @@ b, strong {
     }
 }
 
-/* Content is left-aligned for thinner screens */
+/* Content is left-aligned for medium screens */
 @media screen and (min-width: 80rem) {
     #header, #content, #footnotes, #footer {
         margin: 0 1.5rem;
+    }
+    #header {
+        /* Needed due to overriding style above */
+        margin-top: 75px;
     }
 
     #content #toc {
@@ -132,6 +135,10 @@ b, strong {
     #header, #content, #footnotes, #footer {
         max-width: 60em;
         margin: 0 auto;
+    }
+    #header {
+        /* Needed due to overriding style above */
+        margin-top: 75px;
     }
 
     #content #toc {
