@@ -13,6 +13,8 @@ Options
                                   ALL
                                   BIN
 
+     --gradle-distribution-sha256-sum     The SHA-256 hash sum of the gradle distribution.
+
      --gradle-distribution-url     The URL to download the Gradle distribution from.
 
      --gradle-version     The version of the Gradle distribution required by the wrapper.
