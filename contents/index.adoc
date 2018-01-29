@@ -52,7 +52,7 @@ include::{samplescodedir}/build-scan-from-build-script/build.gradle[tags=build-s
 ----
 
 The `buildScan` block allows you to configure the plugin. Here you are setting two properties necessary to accept the license agreement.
-Other properties are available. See the https://docs.gradle.com/scans/[Build Scans User Manual] for details.
+Other properties are available. See the https://docs.gradle.com/build-scan-plugin/[Build Scans User Manual] for details.
 
 == Publish a build scan
 
@@ -91,7 +91,7 @@ include::{samplescodedir}/build-scan-from-init-script/buildScan.gradle[]
 
 The init script downloads the build scan plugin if necessary and applies it to every project, and accepts the license agreement. Now you can use the `--scan` flag on any build on your system.
 
-There are additional capabilities you can add to the script, such as under what conditions to publish the scan information. For details, see the https://docs.gradle.com/scans/[Build Scans User Manual].
+There are additional capabilities you can add to the script, such as under what conditions to publish the scan information. For details, see the https://docs.gradle.com/build-scan-plugin/[Build Scans User Manual].
 
 == Summary
 
@@ -103,7 +103,7 @@ In this guide, you learned how to:
 
 == Next steps
 
-Additional information can be found in the https://docs.gradle.com/scans/[Build Scans User Manual].
+Additional information can be found in the https://docs.gradle.com/build-scan-plugin/[Build Scans User Manual].
 
 
 include::contribute[]
