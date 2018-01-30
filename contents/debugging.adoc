@@ -165,10 +165,15 @@ From most coarse grained to most fine grained, the items we will use to compare 
 * Individual task property input hashes
 * Hashes of files which are part of task input properties
 
-Currently, both the build cache key for the task and information down to the individual input property level is logged at the `INFO` level:
+Currently, both the build cache key for the task and information down to the individual input property level is logged on the console when the Gradle property {user-manual}build_environment.html#sec:gradle_configuration_properties[`org.gradle.caching.debug`] is set to `true`:
 
 [listing]
 ----
+$ ./gradlew :compileJava --build-cache -Dorg.gradle.caching.debug=true
+
+.
+.
+.
 Appending taskClass to build cache key: org.gradle.api.tasks.compile.JavaCompile_Decorated
 Appending classLoaderHash to build cache key: da6eca52100422099189290bf68f200a
 Appending actionType to build cache key: org.gradle.api.internal.project.taskfactory.AbstractOutputPropertyAnnotationHandler$2$1
