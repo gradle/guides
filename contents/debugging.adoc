@@ -165,7 +165,7 @@ From most coarse grained to most fine grained, the items we will use to compare 
 * Individual task property input hashes
 * Hashes of files which are part of task input properties
 
-Currently, both the build cache key for the task and information down to the individual input property level is logged on the console when the Gradle property {user-manual}build_environment.html#sec:gradle_configuration_properties[`org.gradle.caching.debug`] is set to `true`:
+If you want information about the build cache key and individual input property hashes, use {user-manual}build_environment.html#sec:gradle_configuration_properties[`-Dorg.gradle.caching.debug=true`]:
 
 [listing]
 ----
