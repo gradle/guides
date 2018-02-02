@@ -154,7 +154,7 @@ You may be able to use fixed versions -&nbsp;like “1.2” and “3.0.3.GA”&n
 
 Dependency resolution is an expensive process, both in terms of I/O and computation. Gradle reduces -&nbsp;and eliminates in some cases&nbsp;- the required network traffic through judicious caching, but there is still work it needs to do. Why is this important? Because if you trigger dependency resolution during the configuration phase, you’re going to add a penalty to every build that runs.
 
-The key question to answer is what triggers dependency resolution? The most common cause is the evaluation of the files that make up a configuration. This is normally a job for tasks, since you typically don’t need the files until you’re ready to do something with them in a task action. However, imagine you’re doing some debugging and want to display the files that make up a configuration through judicious caching. One way you can do this is by injecting a print statement:
+The key question to answer is what triggers dependency resolution? The most common cause is the evaluation of the files that make up a configuration. This is normally a job for tasks, since you typically don’t need the files until you’re ready to do something with them in a task action. However, imagine you’re doing some debugging and want to display the files that make up a configuration. One way you can do this is by injecting a print statement:
 
 .build.gradle
 [source,groovy]
