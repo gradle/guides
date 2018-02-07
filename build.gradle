@@ -2,7 +2,7 @@ plugins {
     id 'com.gradle.build-scan' version '1.11'
     id 'groovy'
     id 'java-gradle-plugin'
-    id 'com.gradle.plugin-publish' version '0.9.8'
+    id 'com.gradle.plugin-publish' version '0.9.10'
     id 'org.ysb33r.cloudci' version '1.0'
     id 'org.ysb33r.gradletest' version '1.0-beta12'
 }
