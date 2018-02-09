@@ -152,7 +152,7 @@ This guide focuses on the essence of what a plugin is, but most plugins are far 
 
 Now that you're familiar with the basics of building Gradle plugins, you may be interested in:
 
- - {user-manual}java_plugin.html[Simplifying plugin development with the Java Gradle Plugin Development Plugin]
+ - {user-manual}java_gradle_plugin.html[Simplifying plugin development with the Java Gradle Plugin Development Plugin]
  - {guides}/publishing-plugins-to-gradle-plugin-portal/[Publishing plugins to the Gradle Plugin Portal]
  - {user-manual}custom_plugins.html#sec:getting_input_from_the_build[Modeling your domain with extensions]
  - {user-manual}test_kit.html[Testing plugins]
