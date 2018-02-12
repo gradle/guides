@@ -117,7 +117,7 @@ You now have a project that can copy sources and create a Zip archive.
 
 == Explore and debug your build
 
-Let's see what else we can do with Gradle in our new project. A full {user-manual}command-line-interface.html[reference to the command-line interface] is available as well.
+Let's see what else we can do with Gradle in our new project. A full {user-manual}command_line_interface.html[reference to the command-line interface] is available as well.
 
 === Discover available `tasks`
 
