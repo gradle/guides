@@ -1,181 +1,93 @@
 = Creating New Gradle Builds
 
-When encountering a project that uses Gradle for the first time, many developers don't know what Gradle can do for them. The purpose of this guide is to show some of the basic tasks that work in any Gradle build, regardless of type of project. In this guide, you'll create a trivial Gradle project, invoke some of the basic Gradle commands, and get a sense of how Gradle manages the project.
+Following this guide, you'll create a trivial Gradle project, invoke some of the basic Gradle commands, and get a sense of how Gradle manages the project.
 
 == What you'll need
 
 * About [.time-to-complete-text]#NN#
-* A text editor or IDE
+* A terminal or IDE application
 * A Java Development Kit (JDK), version 1.7 or better (only necessary to run Gradle)
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 
-== Create a project
-
-You can start a new project simply by creating a `build.gradle` file and adding build logic to it. To keep this example as simple as possible, create a new directory and add an empty file called `build.gradle` to it.
-
 NOTE: Shell commands will shown for Unix-based systems. Windows has analogous commands for each.
 
-[listing.terminal]
-----
-$ mkdir basic-demo
-$ cd basic-demo
-$ touch build.gradle // <1>
-----
-<1> Create an empty file called `build.gradle`
+== Initialize a project
 
-== Run the `tasks` command
-
-Gradle is a general-purpose build tool for projects. Gradle itself is built on an object-oriented API, which is made up of many classes and methods, along with a simple syntax for configuring them. The build file itself configures an instance of the `org.gradle.api.Project` class, which has many built-in properties and methods. From the `Project`, you have access to all of Gradle's features.
-
-By default, the name of the build file is called `build.gradle`. A `Project` includes a collection of _tasks_, each of which performs some basic operation.
-
-To see what tasks are available even in this otherwise empty project, run the `tasks` command at the command prompt.
+First, let's create a new directory where our project will go.
 
 [listing.terminal]
 ----
-$ gradle tasks
-
-include::{samplesoutputdir}/gradle-tasks.txt[]
+❯ mkdir basic-demo
+❯ cd basic-demo
 ----
 
-As the output shows, Gradle tasks are organized into categories, like `Build Setup` or `Help`, and each has a name and an optional description. You can define your own (known as _ad hoc_) tasks, configure tasks provided by the Gradle library, or use tasks that are added by plugins.
-
-== Generate a Gradle wrapper
-
-As the output from the `tasks` command shows, the `wrapper` task generates a Gradle wrapper file. The wrapper is a small script and supporting jar and properties file that allows a user to execute Gradle tasks even if they don't already have Gradle installed. Generating a wrapper also ensures that the user will use the same version of Gradle as the person who created the project.
-
-TIP: While Gradle versions are very good about supporting backward compatibility, using a wrapper ensures that the user is working with a version of Gradle that the project creator supports, and is therefore considered a good practice.
-
-Details about the `wrapper` task can be seen through the `help` task.
+Now we can use Gradle's `init` command to generate a simple project. We will explore everything that is generated so you know exactly what's going on.
 
 [listing.terminal]
 ----
-$ gradle help --task wrapper
-
-include::{samplesoutputdir}/gradle-help-wrapper.txt[]
+❯ gradle init
+include::{samplesoutputdir}/gradle-init.txt[]
 ----
 
-By default, the `wrapper` task will generate a wrapper that uses the binary distribution of the same version as the Gradle command. Generate that wrapper now.
+The command should show "BUILD SUCCESSFUL" and generate the following "empty" project. If it doesn't, please ensure that Gradle is link:https://gradle.org/install[installed properly], and that you have the `JAVA_HOME` environment variable set correctly.
 
-[listing.terminal]
-----
-$ gradle wrapper
-:wrapper
+This is what Gradle generated for you.
 
-BUILD SUCCESSFUL
-----
-
-This generates a Unix script called `gradlew` and a Windows command called `gradlew.bat`, along with a jar file and a properties file. The resulting directory structure looks like:
-
+[listing]
 ----
 .
-├── build.gradle
+├── build.gradle  // <1>
 ├── gradle
 │   └── wrapper
-│       ├── gradle-wrapper.jar
-│       └── gradle-wrapper.properties
-├── gradlew          // <1>
-└── gradlew.bat      // <2>
+│       ├── gradle-wrapper.jar  // <2>
+│       └── gradle-wrapper.properties  // <3>
+├── gradlew  // <4>
+├── gradlew.bat  // <5>
+└── settings.gradle  // <6>
 ----
-<1> Wrapper script for Unix-based systems
-<2> Wrapper script for Windows
+<1> Project configuration script for configuring tasks in the current project
+<2> {user-manual}gradle_wrapper.html[Gradle Wrapper] executable JAR
+<3> Gradle Wrapper configuration properties
+<4> Gradle Wrapper script for Unix-based systems
+<5> Gradle Wrapper script for Windows
+<6> Settings configuration script for configuring which Projects participate in the build
 
-All subsequent commands in this guide will use the wrapper.
+NOTE: `gradle init` can generate {user-manual}build_init_plugin.html#sec:build_init_types[various different types of projects], and even knows how to translate simple `pom.xml` files to Gradle.
 
-== Run the `properties` task
+Boom! Roasted. We could just end the guide here, but chances are you want to know how to _use_ Gradle in this project. Let's do that.
 
-If the `tasks` task tells you what tasks are available, the `properties` command does the same for the project's attributes. Try that command as well.
+== Create a task
 
-----
-$ ./gradlew properties
-----
+Gradle provides APIs for creating and configuring tasks through a Groovy or Kotlin-based DSL. A {language-reference}org.gradle.api.Project.html[`Project`] includes a collection of {language-reference}org.gradle.api.Task.html[`Task`]s, each of which performs some basic operation.
 
-NOTE: On Windows, you don't need the leading `./` in front of the `gradlew` command.
-
-The output is extensive. Here are just a few of the available properties:
-
-----
-:properties
-
-------------------------------------------------------------
-Root project
-------------------------------------------------------------
-
-buildDir: /Users/.../basic-demo/build
-buildFile: /Users/.../basic-demo/build.gradle
-description: null
-group:
-name: basic-demo
-projectDir: /Users/.../basic-demo
-version: unspecified
-
-BUILD SUCCESSFUL
-----
-
-The `name` of the project matches the name of the folder by default. You can also specify `group` and `version` properties, but at the moment they are taking their default values, as is `description`.
-
-The `buildFile` property is fully-qualified path name to `build.gradle`, which resides in the `buildDir` -- by default, the `build` subdirectory of the `projectDir`, the directory containing the `build.gradle` file.
-
-You can change many of the properties. Add the following lines to your `build.gradle` file:
-
-[source,groovy]
-----
-include::{samplescodedir}/gradle-properties.gradle[]
-----
-
-Now run the `properties` task again and see the updated values of the `description` and `version` fields.
-
-[listing.terminal]
-----
-$ ./gradlew properties
-:properties
-...
-include::{samplesoutputdir}/description.txt[]
-...
-include::{samplesoutputdir}/version.txt[]
-....
-----
-
-== Configure a Gradle core task
-
-Gradle comes with a library of tasks that you can configure in your own projects. For example, there is a core type called `Copy`, which copies files from one location to another. The `Copy` task is very powerful (see the documentation for details), but here, once again, keep it simple. Perform the following steps:
+Gradle comes with a library of tasks that you can configure in your own projects. For example, there is a core type called `Copy`, which copies files from one location to another. The `Copy` task is very useful ({language-reference}org.gradle.api.tasks.Copy.html[see the documentation] for details), but here, once again, let's keep it simple. Perform the following steps:
 
 . Create a directory called `src`.
 . Add a file called `myfile.txt` in the `src` directory. The contents are arbitrary (it can even be empty), but for convenience add the single line `Hello, World!` to it.
-. Define a task called `copy` of type `Copy` (note the capital letter) that copies the `src` directory to a new directory called `dest`. (You don't have to create the `dest` directory -- the task will do it for you.) The syntax is:
+. Define a task called `copy` of type `Copy` (note the capital letter) in the main build file, `build.gradle`, that copies the `src` directory to a new directory called `dest`. (You don't have to create the `dest` directory -- the task will do it for you.)
 
 [source,groovy]
 ----
 include::{samplescodedir}/copy.gradle[]
 ----
 
-Now you can run the `tasks` command with the `--all` flag to see the new task:
+Here, `group` and `description` can be anything you want. You can even omit them, but doing so will also omit them from the `tasks` report, used later.
 
-[listing.terminal]
-----
-$ ./gradlew tasks --all
-
-:tasks
-...
-include::{samplesoutputdir}/gradle-copy-tasks.txt[]
-----
-
-Execute the `copy` task:
+Now execute your new `copy` task:
 
 [listing]
 ----
-$ ./gradlew copy
-
+❯ ./gradlew copy
 include::{samplesoutputdir}/gradle-copy.txt[]
 ----
 
 Verify that it worked as expected by checking that there is now a file called `myfile.txt` in the `dest` directory, and that its contents match the contents of the same one in the `src` directory.
 
-== Configure a core task and use a plugin
+== Apply a plugin
 
-Gradle includes a range of plugins, and many, many more are available at http://plugins.gradle.org[the Gradle plugin portal]. One of the plugins included with the distribution is the `base` plugin. Combined with a core type called `Zip`, you can create a zip archive of your project with a configured name and location.
+Gradle includes a range of plugins, and many, many more are available at http://plugins.gradle.org[the Gradle plugin portal]. One of the plugins included with the distribution is the `base` plugin. Combined with a core type called `{language-reference}org.gradle.api.tasks.bundling.Zip.html[Zip]`, you can create a zip archive of your project with a configured name and location.
 
-Add the `base` plugin to your `build.gradle` file using the `plugins` syntax. Be sure to add the `plugins` block at the top of the file.
+Add the `base` plugin to your `build.gradle` file using the `plugins` syntax. Be sure to add the `plugins {}` block at the top of the file.
 
 [source,groovy]
 ----
@@ -197,84 +109,98 @@ In this case, simply run the new `zip` task and see that the generated zip file 
 
 [listing]
 ----
-$ ./gradlew zip
-
+❯ ./gradlew zip
 include::{samplesoutputdir}/gradle-zip.txt[]
 ----
 
-Run the `tasks` command again to see the tasks added by the `basic` plugin.
+You now have a project that can copy sources and create a Zip archive.
+
+== Explore and debug your build
+
+Let's see what else we can do with Gradle in our new project. A full {user-manual}command-line-interface.html[reference to the command-line interface] is available as well.
+
+=== Discover available `tasks`
+
+The `tasks` command lists Gradle tasks that you can invoke, including those added by the `base` plugin, and custom tasks you just added as well.
+
+[listing.terminal]
+----
+❯ ./gradlew tasks
+
+include::{samplesoutputdir}/gradle-tasks.txt[]
+----
+
+=== Analyze and debug your build
+
+Gradle also provides a rich, web-based view of your build called a link:https://scans.gradle.com/[build scan].
+
+By using the `--scan` option or applying the build scan plugin to your project, you can create a build scan at scans.gradle.com free of charge. Publishing build scans to scans.gradle.com transmits link:https://docs.gradle.com/scans/#captured_information[this] data to Gradle's servers. If you want to keep your data on your servers, check out link:https://gradle.com/enterprise[Gradle Enterprise].
+
+Try creating a build scan by adding `--scan` when executing a task.
 
 [listing]
 ----
-$ ./gradlew tasks --all
-tasks:
+❯ ./gradlew zip --scan
 
-include::{samplesoutputdir}/gradle-zip-tasks-1.txt[]
-
-...
-
-include::{samplesoutputdir}/gradle-zip-tasks-2.txt[]
+include::{samplesoutputdir}/gradle-zip-scan.txt[]
 ----
 
-The `assemble` and `build` tasks aren't useful in this project, because they are associated with compilation and generation of a release artifact. Many of the language plugins, like the `java` plugin, are created on top the `base` plugin.
+If you browse around your build scan, you should be able to easily find out what tasks where executed and how long they took, which plugins were applied, and much more. Consider sharing a build scan the next time you are debugging something on StackOverflow.
 
-The `clean` task, however, is an easy way to remove the `build` directory.
+Learn more about how to configure and use build scans in the link:https://docs.gradle.com/build-scan-plugin/[Build Scan Plugin User Manual].
 
-[listing]
+=== Discover available properties
+
+The `properties` command tells you about a project's attributes.
+
 ----
-$ ./gradlew clean
-clean:
+❯ ./gradlew properties
+----
+
+The output is extensive. Here are just a few of the available properties:
+
+----
+> Task :properties
+
+------------------------------------------------------------
+Root project
+------------------------------------------------------------
+
+buildDir: /Users/.../basic-demo/build
+buildFile: /Users/.../basic-demo/build.gradle
+description: null
+group:
+name: basic-demo
+projectDir: /Users/.../basic-demo
+version: unspecified
 
 BUILD SUCCESSFUL
 ----
 
-The `build` directory should now be gone.
+The `name` of the project matches the name of the folder by default. You can also specify `group` and `version` properties, but at the moment they are taking their default values, as is `description`.
 
-== Add a "Hello, World!" task
+The `buildFile` property is fully-qualified path name to `build.gradle`, which resides in the `buildDir` -- by default, the `build` subdirectory of the `projectDir`, the directory containing the `build.gradle` file.
 
-Since every technology needs a "Hello, World!" example, add an ad hoc task to your Gradle build. The syntax is:
+You can change many of the properties. For example, you might try adding the following lines to your `build.gradle` file, and re-execute `gradle properties`.
 
 [source,groovy]
 ----
-task hello {
-    doLast {
-        println 'Hello, World!'
-    }
-}
+include::{samplescodedir}/gradle-properties.gradle[]
 ----
-
-When executed, this task will print the string "Hello, World!" to the console.
-
-[listing]
-----
-$ ./gradlew hello
-:hello
-Hello, World!
-
-BUILD SUCCESSFUL
-----
-
-The contents of the `hello` task use commands from the Gradle DSL, like `task` and `doLast`. Writing your own tasks is an interesting topic, but beyond the scope of this guide. See {guides}writing-gradle-tasks[Writing Custom Gradle Tasks] for details.
 
 == Next Steps
 
-If you are specifically interested in building *Java* applications, read the {guides}creating-java-applications[Getting Started Building Java Applications] guide. You should also read the {user-manual}tutorial_java_projects.html[Java Quickstart] chapter of the user manual. To learn about creating other kinds of popular Gradle builds, follow these readings for the type of project you want:
+Congratulations! You have created a new Gradle build and learned how to inspect Gradle builds!
 
-.Documentation for other popular project types
-* *C*, *C++*, *Assembler*, *Objective-c*, *Objective-c++*: {user-manual}native_software.html[Native builds]
-* *Scala*: {guides}building-scala-libraries[Scala plugin]
-* *Groovy*: {guides}building-groovy-libraries[Groovy quickstart]
-* *Android*: http://tools.android.com/tech-docs/new-build-system/user-guide[Android userguide]
+Chances are you want to create a library or application for a specific platform, so here are some guides that will teach you more about creating builds in your platform of choice:
 
-=== Additional information
+* {guides}building-android-apps[Building Android Apps]
+* {guides}building-cpp-executables[Building C++ Executables]
+* {guides}building-groovy-libraries[Building Groovy Libraries]
+* {guides}building-java-libraries[Building Java Libraries]
+* {guides}building-kotlin-jvm-libraries[Building Kotlin JVM Libraries]
+* {guides}building-scala-libraries[Building Scala Libraries]
 
-Gradle is a very powerful tool, which means you need a good understanding of the underlying model to create maintainable builds. Fortunately, there are just a few core concepts to understand:
-
-* *Build phases*: read the first section of the {user-manual}build_lifecycle.html[build lifecycle chapter] for a description of these.
-* *Properties*: The project API and {user-manual}writing_build_scripts.html[properties]
-* *Tasks*: {user-manual}more_about_tasks.html[Tasks]
-* *File handling*: {user-manual}working_with_files.html[File handling]
-* *Dependency management*: {user-manual}artifact_dependencies_tutorial.html[Dependency management]
-
+You can also checkout many link:https://github.com/gradle/gradle/tree/master/subprojects/docs/src/samples[sample Gradle builds on GitHub].
 
 include::contribute[]

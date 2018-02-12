@@ -1,13 +1,27 @@
-:tasks
+> Task :tasks
 
 ------------------------------------------------------------
 All tasks runnable from root project
 ------------------------------------------------------------
 
+Archive tasks
+-------------
+zip - Archives sources in a zip file
+
+Build tasks
+-----------
+assemble - Assembles the outputs of this project.
+build - Assembles and tests this project.
+clean - Deletes the build directory.
+
 Build Setup tasks
 -----------------
 init - Initializes a new Gradle build.
 wrapper - Generates Gradle wrapper files.
+
+Custom tasks
+------------
+copy - Simply copies sources to a the build directory
 
 Help tasks
 ----------
@@ -22,6 +36,19 @@ projects - Displays the sub-projects of root project 'basic-demo'.
 properties - Displays the properties of root project 'basic-demo'.
 tasks - Displays the tasks runnable from root project 'basic-demo'.
 
-To see all tasks and more detail, run gradle tasks --all
+Verification tasks
+------------------
+check - Runs all checks.
 
-To see more detail about a task, run gradle help --task <task>
+Rules
+-----
+Pattern: clean<TaskName>: Cleans the output files of a task.
+Pattern: build<ConfigurationName>: Assembles the artifacts of a configuration.
+Pattern: upload<ConfigurationName>: Assembles and uploads the artifacts belonging to a configuration.
+
+To see all tasks and more detail, run gradlew tasks --all
+
+To see more detail about a task, run gradlew help --task <task>
+
+BUILD SUCCESSFUL in 0s
+1 actionable task: 1 executed
