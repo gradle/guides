@@ -134,6 +134,8 @@ include::{samplesoutputdir}/gradle-tasks.txt[]
 
 Gradle also provides a rich, web-based view of your build called a link:https://scans.gradle.com/[build scan].
 
+image::basic-demo-build-scan.png[link=https://gradle.com/s/repnge6srr5qs]
+
 By using the `--scan` option or applying the build scan plugin to your project, you can create a build scan at scans.gradle.com free of charge. Publishing build scans to scans.gradle.com transmits link:https://docs.gradle.com/scans/#captured_information[this] data to Gradle's servers. If you want to keep your data on your servers, check out link:https://gradle.com/enterprise[Gradle Enterprise].
 
 Try creating a build scan by adding `--scan` when executing a task.
