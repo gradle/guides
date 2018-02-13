@@ -645,7 +645,7 @@ and:
 ----
 include::{plugindir}/actors/build.gradle[tags=moduleName]
 ----
-<1> Change the line that specifies the module name to use the new `javaMoudle.name` settings.
+<1> Change the line that specifies the module name to use the new `javaModule.name` settings.
 
 == Summary
 
