@@ -68,10 +68,10 @@ There are two options for defining web application metadata. Prior to version 3.
 
 Create a package folder `org/gradle/demo` below the `src/main/java` folder. Add a servlet file `HelloServlet.java`, with the following contents:
 
-.src/main/java/com/gradle/demo/HelloServlet.java
+.src/main/java/org/gradle/demo/HelloServlet.java
 [source,java]
 ----
-include::{samplescodedir}/webdemo/src/main/java/com/gradle/demo/HelloServlet.java[]
+include::{samplescodedir}/webdemo/src/main/java/org/gradle/demo/HelloServlet.java[]
 ----
 <1> Annotation-based servlet
 <2> GET request returns a simple string
