@@ -202,7 +202,7 @@ $ ./gradlew zip
 include::{samplesoutputdir}/gradle-zip.txt[]
 ----
 
-Run the `tasks` command again to see the tasks added by the `basic` plugin.
+Run the `tasks` command again to see the tasks added by the `base` plugin.
 
 [listing]
 ----
