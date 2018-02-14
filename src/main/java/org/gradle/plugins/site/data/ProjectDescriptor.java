@@ -3,6 +3,7 @@ package org.gradle.plugins.site.data;
 import org.gradle.api.Plugin;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Nested;
+import org.gradle.api.tasks.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,7 @@ public class ProjectDescriptor {
     }
 
     @Input
+    @Optional
     public String getDescription() {
         return description;
     }
@@ -68,6 +70,7 @@ public class ProjectDescriptor {
     }
 
     @Nested
+    @Optional
     public JavaProjectDescriptor getJavaProject() {
         return javaProject;
     }

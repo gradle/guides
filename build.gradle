@@ -18,7 +18,16 @@ repositories {
 
 dependencies {
     compile 'org.freemarker:freemarker:2.3.26-incubating'
-    testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
+    testCompile('org.spockframework:spock-core:1.1-groovy-2.4') {
         exclude group: 'org.codehaus.groovy'
+    }
+}
+
+gradlePlugin {
+    plugins {
+        sitePlugin {
+            id = 'com.github.gradle-guides.site'
+            implementationClass = 'org.gradle.plugins.site.SitePlugin'
+        }
     }
 }

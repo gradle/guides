@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,20 +39,20 @@ public class FreemarkerSiteGenerator implements SiteGenerator {
         }
     }
 
-    private void copyCssResources() throws IOException, URISyntaxException {
+    private void copyCssResources() throws IOException {
         List<String> resources = new ArrayList<String>();
         resources.add("bootstrap.css");
         resources.add("bootstrap-responsive.css");
         copyResources("css", resources);
     }
 
-    private void copyImgResources() throws IOException, URISyntaxException {
+    private void copyImgResources() throws IOException {
         List<String> resources = new ArrayList<String>();
         resources.add("elephant-corner.png");
         copyResources("img", resources);
     }
 
-    private void copyResources(String subdir, List<String> resources) throws IOException, URISyntaxException {
+    private void copyResources(String subdir, List<String> resources) throws IOException {
         File targetDir = new File(outputDir, subdir);
         FileUtils.createDirectory(targetDir);
 
@@ -67,7 +66,7 @@ public class FreemarkerSiteGenerator implements SiteGenerator {
         return getClass().getClassLoader().getResourceAsStream(name);
     }
 
-    private void processIndexPageTemplate(ProjectDescriptor projectDescriptor, CustomData customData) throws IOException, URISyntaxException, TemplateException {
+    private void processIndexPageTemplate(ProjectDescriptor projectDescriptor, CustomData customData) throws IOException, TemplateException {
         Configuration cfg = new Configuration(Configuration.VERSION_2_3_25);
         cfg.setClassLoaderForTemplateLoading(getClass().getClassLoader(), "template");
         cfg.setDefaultEncoding("UTF-8");
