@@ -66,29 +66,29 @@ See also the section on dealing with <<volatile_outputs,non-repeatable outputs>>
 ==== Dealing with file paths
 
 You will probably pass some information from the build environment to your integration test tasks by using system properties.
-When passing file locations, use only relative paths whenever possible, and add the input file as an input manually, so that Gradle can track changes to the contents of the file.
-The same should be applied to directories as well.
 Passing absolute paths will break <<relocatability,relocatability>> of the integration test task.
-For example, with a task called `integTest`, instead of this:
 
 [source,groovy]
 ----
 include::{samplescodedir}/integration-tests/build.gradle[tags=distributionPathInput]
 ----
 
-...it is better to do this:
+There is a way out: instead of adding the absolute path directly as a system property, it is possible to add a properly
+annotated `{api-reference}org/gradle/process/CommandLineArgumentProvider.html[CommandLineArgumentProvider]` to the `integTest` task:
 
 [source,groovy]
 ----
 include::{samplescodedir}/integration-tests/build.gradle[tags=distributionDirInput]
 ----
-<1> Adding the relative path as system property.
-<2> Adding all the files under the distribution directory as an input.
+<1> Create a class implementing `{api-reference}org/gradle/process/CommandLineArgumentProvider.html[CommandLineArgumentProvider]`.
+<2> Declare the inputs and outputs with the corresponding path sensitivity.
+<3> `asArguments` needs to return the JVM arguments passing the desired system properties to the test JVM.
+<4> Add an instance of the newly created class as JVM argument provider to the integration test task.
 
 ==== Ignoring system properties
 
 It may be necessary to ignore some system properties as inputs as they do not influence the outcome of the integration tests.
-This is possible by overriding the `systemProperties` input property via the runtime API.
+In order to do so, add a `{api-reference}org/gradle/process/CommandLineArgumentProvider.html[CommandLineArgumentProvider]` to the `integTest` task:
 
 [source,groovy]
 ----
@@ -96,8 +96,8 @@ include::{samplescodedir}/integration-tests/build.gradle[tags=ignoreSystemProper
 ----
 <1> This property does not influence the output of the integration tests.
 <2> Set the system properties for the actual test execution.
-<3> Overwrite the `systemProperties` input property.
-<4> The new value for the `systemProperties` input without the ignored property.
+<3> `asArguments` needs to return the JVM arguments passing the desired system properties to the test JVM.
+<4> Add an instance of the newly created class as JVM argument provider to the integration test task.
 
 === Caching `buildSrc`
 
