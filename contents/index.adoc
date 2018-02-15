@@ -397,3 +397,5 @@ By following the steps you have seen how to
 
 * Remembering to type `./gradlew`, `../gradlew` or even `../../gradlew` can become an arduous task. If you are on a Unix-like operating system consider installing https://github.com/dougborg/gdub[gdub].
 * Read about multi-project in the link:{user-manual}multi_project_builds.html[{user-manual-name}]
+
+include::contribute[]
