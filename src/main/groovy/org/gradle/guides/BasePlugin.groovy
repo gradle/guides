@@ -24,6 +24,7 @@ import org.asciidoctor.gradle.AsciidoctorTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.internal.IConventionAware
 import org.gradle.api.tasks.PathSensitivity
 
 /**
@@ -135,6 +136,17 @@ class BasePlugin implements Plugin<Project> {
 
         addAsciidocExtensions(project, asciidoc)
         lazyConfigureMoreAsciidoc(asciidoc)
+
+        def viewTask = project.tasks.create("viewGuide", ViewGuide).with {
+            (it as IConventionAware).conventionMapping.map("outputDir") {
+                asciidoc.outputDir
+            }
+            dependsOn asciidoc
+        }
+
+        if (project.gradle.startParameter.continuous) {
+            asciidoc.finalizedBy viewTask
+        }
     }
 
     @CompileDynamic
@@ -198,7 +210,7 @@ class BasePlugin implements Plugin<Project> {
         githubPages.branch = 'gh-pages'
         githubPages.commitMessage = "Publish to GitHub Pages"
         githubPages.contents.from {"${asciidoc.outputDir}/${AsciidoctorBackend.HTML5.id}"}
-        
+
         project.afterEvaluate {
             if (ghToken) {
                 githubPages.repoUri = "https://github.com/${guide.repoPath}.git"
