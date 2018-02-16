@@ -2,6 +2,25 @@
 
 A common decision that a writer needs to make is whether to style a particular piece of text and if so, what style to use. This section tackles those decisions as well as those around the usage of hyperlinks.
 
+=== Write a sentence per line
+
+Asciidoctor provides the powerful ability to write a sentence per line.
+This is possible because it renders contiguous lines as a paragraph.
+The idea of this writing technique is to give every sentence, or independent clause, its own line.
+Some of the benefits to writing content this way are:
+
+* The Git diff of a sentence is easier to read when it is isolated to a single line
+** This helps reviewing changes faster
+* It calls attention to potentially long-winded sentences
+* Sentences containing long lists can be expanded to multiple lines
+** List items within these sentences can be easily added or removed
+* Individual sentences can be commented out using Asciidoctor's comments
+* Sentences can be swapped by swapping the content of two lines
+* It gives the source document a similar to feel code
+** Though it can be done, it is rare to write multiple statements per line in code
+
+Therefore, to improve the readability and user-friendliness of the guide's source, avoid writing a paragraph, or multiple sentences, on a single line.
+
 === Use permalinks to external content
 
 Some URLs point to content that changes over time. For example, URLs to the current Gradle User Manual. Prefer permalinks in place of these. Such permalinks are typically tied to a snapshot in time, for example a specific release of Gradle.
