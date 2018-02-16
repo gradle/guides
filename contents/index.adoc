@@ -20,7 +20,7 @@ You will create a Gradle task that bundles web assets with https://webpack.js.or
 
 == Step 1: Create sample project and install dependencies
 
-Setup a trivial web application by running these commands and copying sources to the files listed.
+Set up a trivial web application by running these commands and copying sources to the files listed.
 
 === Step 1.1: Create sample project
 
