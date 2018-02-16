@@ -73,7 +73,7 @@ Passing absolute paths will break <<relocatability,relocatability>> of the integ
 include::{samplescodedir}/integration-tests/build.gradle[tags=distributionPathInput]
 ----
 
-There is a way out: instead of adding the absolute path directly as a system property, it is possible to add a properly
+Instead of adding the absolute path directly as a system property, it is possible to add an
 annotated `{api-reference}org/gradle/process/CommandLineArgumentProvider.html[CommandLineArgumentProvider]` to the `integTest` task:
 
 [source,groovy]
