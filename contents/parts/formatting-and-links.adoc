@@ -21,7 +21,7 @@ Some of the benefits to writing content this way are:
 * Individual sentences can be commented out using Asciidoctor's comments.
 * Sentences can be swapped by swapping the content of two lines.
 * It gives the source document a similar to feel code.
-** Though it can be done, it is rare to write multiple statements per line in code.
+** Though it can be done, it is rare to write multiple statements per line of code.
 
 Therefore, to improve the readability and user-friendliness of the guide's source, avoid writing a paragraph, or multiple sentences, on a single line.
 
