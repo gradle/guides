@@ -11,7 +11,7 @@ Asciidoctor provides the powerful ability to write a sentence per line.
 The idea of this writing technique is to give every sentence, or independent clause, its own line.
 This is possible because Asciidoctor renders contiguous lines as a paragraph.
 More information about this technique can be learned from {link-adoc-zen}.
-Some of the benefits to writing content this way are:
+Some benefits of writing content this way are:
 
 * The Git diff of a sentence is easier to read when it is isolated to a single line.
 ** This helps reviewing changes faster.
