@@ -16,7 +16,6 @@ You will create a Gradle task that bundles web assets with https://webpack.js.or
 * A text editor or IDE
 * The Java Development Kit (JDK), version 1.7 or higher
 * Node.js, version 8.0 or higher
-* Node Package Manager, version 5.1.0 or higher
 * A https://gradle.org/install[Gradle distribution], version 4.0 or better
 
 == Step 1: Create sample project and install dependencies
