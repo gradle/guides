@@ -4,9 +4,13 @@ A common decision that a writer needs to make is whether to style a particular p
 
 === Write a sentence per line
 
+:uri-adoc-zen: https://youtu.be/Aq2USmIItrs?t=3505
+:link-adoc-zen: {uri-adoc-zen}[Dan Allen's "Discover the Zen of Writing With Asciidoctor" talk]
+
 Asciidoctor provides the powerful ability to write a sentence per line.
-This is possible because it renders contiguous lines as a paragraph.
 The idea of this writing technique is to give every sentence, or independent clause, its own line.
+This is possible because Asciidoctor renders contiguous lines as a paragraph.
+More information about this technique can be learned from {link-adoc-zen}.
 Some of the benefits to writing content this way are:
 
 * The Git diff of a sentence is easier to read when it is isolated to a single line.
