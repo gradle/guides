@@ -27,7 +27,7 @@ Some benefits of writing content this way are:
 * It gives the document's source a similar feel to code.
 ** Though it may be allowed, it is rare to write multiple statements per line of code.
 
-Therefore, to improve the readability and user-friendliness of the guide's source, avoid writing a paragraph, or multiple sentences, on a single line.
+Therefore, to improve the readability and user-friendliness of the guide's source, use the technique of writing one sentence per line.
 
 === Use permalinks to external content
 
