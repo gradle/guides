@@ -2,6 +2,33 @@
 
 A common decision that a writer needs to make is whether to style a particular piece of text and if so, what style to use. This section tackles those decisions as well as those around the usage of hyperlinks.
 
+=== Write one sentence per line
+
+:uri-adoc-spl: https://asciidoctor.org/docs/asciidoc-recommended-practices/#one-sentence-per-line
+:uri-adoc-zen: https://youtu.be/Aq2USmIItrs?t=3505
+
+:link-adoc-spl: {uri-adoc-spl}[AsciiDoc's Recommended Practices]
+:link-adoc-zen: {uri-adoc-zen}[Dan Allen's "Discover the Zen of Writing With Asciidoctor" talk]
+
+Writing one sentence per line is a recommended practice for composing documents in AsciiDoc.
+This writing technique gives every sentence, or independent clause, its own line.
+Since AsciiDoc renders contiguous lines as a paragraph, the resulting content will not include the line breaks.
+More information on this technique can be learned from {link-adoc-spl} as well as {link-adoc-zen}.
+
+Some benefits of writing content this way are:
+
+* The Git diff of a sentence is easier to read when it is isolated to a single line.
+** This helps reviewing changes faster.
+* It calls attention to potentially long-winded sentences.
+* Sentences containing long lists can be expanded to multiple lines.
+** List items within these sentences can be easily added or removed.
+* Individual sentences can be commented out using comments.
+* Sentences can be swapped by swapping the content of two lines.
+* It gives the document's source a similar feel to code.
+** Though it may be allowed, it is rare to write multiple statements per line of code.
+
+Therefore, to improve the readability and user-friendliness of the guide's source, use the technique of writing one sentence per line.
+
 === Use permalinks to external content
 
 Some URLs point to content that changes over time. For example, URLs to the current Gradle User Manual. Prefer permalinks in place of these. Such permalinks are typically tied to a snapshot in time, for example a specific release of Gradle.
