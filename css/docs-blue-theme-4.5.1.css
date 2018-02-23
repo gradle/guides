@@ -290,7 +290,6 @@ div.screenshot {
 /* TOC */
 #content #toc {
     border: 0 none;
-    z-index: 1;
 }
 
 #toc ul {
