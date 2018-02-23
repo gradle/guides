@@ -1,10 +1,6 @@
 = Building Java Web Applications
 
-Gradle includes a `war` plugin for building Java web applications, and the community supplies an excellent plugin called `gretty` for testing and deploying web applications on Jetty or Tomcat. This guide demonstrates how to build a simple web app and deploy it on Jetty. You'll also learn how to write a unit test for a servlet using the Mockito framework and how to write a functional test for the web app using `gretty` and Selenium.
-
-== What you'll build
-
-You will create a web application in the default Gradle structure, add dependencies for the Servlet API, add the `gretty` plugin, then build and test the application.
+Gradle includes a `war` plugin for building Java web applications, and the community supplies an excellent plugin called `gretty` for testing and deploying web applications on Jetty or Tomcat. This guide demonstrates how to build a simple web app and deploy it on Jetty using the `gretty` plugin. You'll also learn how to write a unit test for a servlet using the Mockito framework and how to write a functional test for the web app using `gretty` and Selenium.
 
 == What you'll need
 
