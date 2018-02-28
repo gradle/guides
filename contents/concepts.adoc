@@ -31,7 +31,11 @@ When a task is cacheable, then the very nature of task output caching makes sure
 Therefore, cacheable tasks should have repeatable task outputs.
 If they don't, then the result of executing the task and loading the task from the cache may be different, which can lead to hard-to-diagnose cache misses.
 
-The key here is that no cacheable task should have non-repeatable task outputs as an input.
+In some cases even well-trusted tools can produce non-repeatable outputs, and lead to cascading effects.
+One example is Oracle's Java compiler, which, https://bugs.java.com/bugdatabase/view_bug.do?bug_id=8067422[due to a bug], was producing different bytecode depending on the order source files to be compiled were presented to it.
+If you were using Oracle JDK 8u31 or earlier to compile code in the `buildSrc` subproject, this could lead to all of your custom tasks producing occasional cache misses, because of the difference in their classpaths (which include `buildSrc`).
+
+The key here is that cacheable tasks should not use non-repeatable task outputs as an input.
 
 [[stable_task_inputs,"Stable task inputs"]]
 === Stable task inputs
