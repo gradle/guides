@@ -17,9 +17,4 @@ asciidoctor {
             into 'images'
         }
     }
-    def gradleVersion = 'nightly'
-    attributes  'gradle-version'     : 'nightly',
-                'user-manual'        : "https://docs.gradle.org/${gradleVersion}/userguide/",
-                'language-reference' : "https://docs.gradle.org/${gradleVersion}/dsl/",
-                'api-reference'      : "https://docs.gradle.org/${gradleVersion}/javadoc/"
 }
