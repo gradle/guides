@@ -12,26 +12,45 @@ integTest {
 // end::integTest[]
 
 // tag::distributionPathInput[]
+// Don't do this! Breaks relocatability!
 integTest {
     systemProperty "distribution.location", file("build/dist").absolutePath
 }
 // end::distributionPathInput[]
 
 // tag::distributionDirInput[]
+class DistributionLocationProvider implements CommandLineArgumentProvider { // <1>
+    @InputDirectory @PathSensitive(PathSensitivity.RELATIVE)                // <2>
+    File distribution
+
+    @Override
+    Iterable<String> asArguments() {
+        ["-Ddistribution.location=${distribution.absolutePath}".toString()] // <3>
+    }
+}
+
 integTest {
-    systemProperty "distribution.location", "build/dist" // <1>
-    inputs.dir("build/dist").withPropertyName("distDir").withPathSensitivity(PathSensitivity.RELATIVE) // <2>
+    jvmArgumentProviders.add(
+        new DistributionLocationProvider(distribution: file("build/dist"))  // <4>
+    )
 }
 // end::distributionDirInput[]
 
 // tag::ignoreSystemProperties[]
-integTest {
-    def ciProperties = [agentNumber: (System.getenv().get("AGENT_NUMBER") ?: 1)] // <1>
-    systemProperties(ciProperties) // <2>
+class CiEnvironmentProvider implements CommandLineArgumentProvider {
+    @Internal                                                        // <1>
+    String agentNumber = System.getenv().get("AGENT_NUMBER") ?: "1"
 
-    inputs.property('systemProperties') { // <3>
-        systemProperties - ciProperties // <4>
+    @Override
+    Iterable<String> asArguments() {
+        ["-DagentNumber=${agentNumber}".toString()]                  // <2>
     }
+}
+
+integTest {
+    jvmArgumentProviders.add(
+        new CiEnvironmentProvider()                                  // <3>
+    )
 }
 // end::ignoreSystemProperties[]
 
