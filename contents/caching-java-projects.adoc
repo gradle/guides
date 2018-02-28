@@ -94,10 +94,9 @@ In order to do so, add a `{api-reference}org/gradle/process/CommandLineArgumentP
 ----
 include::{samplescodedir}/integration-tests/build.gradle[tags=ignoreSystemProperties]
 ----
-<1> This property does not influence the output of the integration tests.
-<2> Set the system properties for the actual test execution.
-<3> `asArguments` needs to return the JVM arguments passing the desired system properties to the test JVM.
-<4> Add an instance of the newly created class as JVM argument provider to the integration test task.
+<1> `@Internal` means that this property does not influence the output of the integration tests.
+<2> The system properties for the actual test execution.
+<3> Add an instance of the newly created class as JVM argument provider to the integration test task.
 
 === Caching `buildSrc`
 
