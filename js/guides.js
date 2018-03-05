@@ -190,9 +190,9 @@ document.addEventListener("DOMContentLoaded", function() {
             return false;
         }
 
-        if(href.indexOf(document.domain) === -1 || !document.domain) {
-            ga("guides.send", {hitType: "event", eventCategory: document.location.pathname, eventAction: "outbound referral", eventLabel: href});
-            ga("all.send", {hitType: "event", eventCategory: document.location.href, eventAction: "outbound referral", eventLabel: href});
+        if (href.indexOf(document.domain) === -1 || !document.domain) {
+            ga("guides.send", {hitType: "event", eventCategory: "Outbound Referral", eventAction: "Clicked", eventLabel: href});
+            ga("all.send", {hitType: "event", eventCategory: "Outbound Referral", eventAction: "Clicked", eventLabel: href});
             return true;
         }
         return false;
@@ -230,5 +230,4 @@ document.addEventListener("DOMContentLoaded", function() {
     registerNavigationActions();
     postProcessNavigation();
 });
-
 
