@@ -143,6 +143,15 @@ document.addEventListener("DOMContentLoaded", function() {
     window.ga("all.send", "pageview");
     window.ga("guides.send", "pageview");
 
+    ga("all.require", "maxScrollTracker", {
+        timeZone: "America/Los_Angeles",
+        maxScrollMetricIndex: 1
+    });
+    ga("guides.require", "maxScrollTracker", {
+        timeZone: "America/Los_Angeles",
+        maxScrollMetricIndex: 1
+    });
+
     /**
      * Given an event object, determine if the source element was a link, and track it with Google Analytics if it goes to another domain.
      * @param {Event} evt object that should be fired due to a link click.
