@@ -143,37 +143,6 @@ document.addEventListener("DOMContentLoaded", function() {
     window.ga("all.send", "pageview");
     window.ga("guides.send", "pageview");
 
-    var timer;
-    function trackReadPosition() {
-        // Use timeout to process read position only when the user is done scrolling.
-        if (timer) {
-            window.clearTimeout(timer);
-        }
-
-        timer = window.setTimeout(function() {
-            var sections = document.querySelectorAll("h2[id]");
-            var windowHeight = window.innerHeight;
-
-            // Assign active section: take advantage of fact that querySelectorAll returns elements in source order
-            var activeSection = sections[0];
-            Array.prototype.forEach.call(sections, function(section) {
-                // NOTE: Here we are considering the content 1/3rd from the top of the window to be in "focus"
-                if (Math.floor(section.offsetTop) <= (window.scrollY + (windowHeight / 3))) {
-                    activeSection = section;
-                }
-            });
-
-            if (activeSection != null && activeSection.hasAttribute("href")) {
-                var activeHref = activeSection.getAttribute("href");
-
-                // Send event of read section to Google Analytics
-                ga("guides.send", {hitType: "event", eventCategory: document.location.pathname, eventAction: "read", eventLabel: activeHref});
-            } else if (activeSection != null && activeSection.id) {
-                ga("guides.send", {hitType: "event", eventCategory: document.location.pathname, eventAction: "read", eventLabel: "#" + activeSection.id});
-            }
-        }, 150);
-    }
-
     /**
      * Given an event object, determine if the source element was a link, and track it with Google Analytics if it goes to another domain.
      * @param {Event} evt object that should be fired due to a link click.
@@ -209,9 +178,6 @@ document.addEventListener("DOMContentLoaded", function() {
         return false;
     }
 
-    window.addEventListener("scroll", trackReadPosition);
-    window.addEventListener("click", trackReadPosition);
-    trackReadPosition();
     document.addEventListener("click", trackOutbound, false);
     document.addEventListener("click", trackCustomEvent, false);
 
