@@ -1,21 +1,18 @@
 // tag::plugins[]
 plugins {
-    id 'nebula.dependency-recommender' version '4.1.2'
     id 'java'
 }
 // end::plugins[]
 
-// tag::bom[]
 repositories {
     jcenter()
 }
 
-dependencyRecommendations {
-    mavenBom module: 'io.spring.platform:platform-bom:1.0.1.RELEASE'
-}
-
+// tag::bom[]
 dependencies {
-    implementation 'org.springframework.integration:spring-integration-core' // <1>
-    implementation 'commons-lang:commons-lang:2.6' // <2>
+    implementation 'org.springframework.boot:spring-boot-dependencies:1.5.8.RELEASE' // <1>
+
+    implementation 'com.google.code.gson:gson' // <2>
+    implementation 'dom4j:dom4j'
 }
 // end::bom[]
