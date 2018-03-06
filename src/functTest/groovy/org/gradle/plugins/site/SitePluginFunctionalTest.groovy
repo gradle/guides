@@ -40,6 +40,7 @@ $GENERATE_SITE_TASK_NAME - Generates a web page containing information about the
         def websiteUrl = 'https://gradle.org'
         def vcsUrl = 'https://github.com/gradle/gradle'
         buildFile << """
+            description = 'My description'
             site {
                 outputDir = file('$customOutputDir')
                 websiteUrl = '$websiteUrl'
@@ -115,6 +116,8 @@ $GENERATE_SITE_TASK_NAME - Generates a web page containing information about the
             
             sourceCompatibility = '$sourceCompatibility'
             targetCompatibility = '$targetCompatibility'
+
+            description = 'My description'
         """
 
         when:
