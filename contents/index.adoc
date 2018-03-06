@@ -68,7 +68,7 @@ So we'll look at some common obstacles and their solutions next.
 
 == Bills of Materials (BOMs)
 
-Maven enables sharing constraints on dependencies by defining dependencies inside dependencyManagement section in a POM file with <packaging>pom</packaging>.
+Maven enables sharing constraints on dependencies by defining dependencies inside dependencyManagement section in a POM file with `<packaging>pom</packaging>`.
 This special type of POM (a BOM) can then be imported into other POMs so that you have consistent library versions across your projects.
 
 Gradle 4.6 and above supports importing BOMs, though in versions before Gradle 5.0 you must enable this explicitly by adding the following to your `settings.gradle` file:
