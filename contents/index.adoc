@@ -62,8 +62,6 @@ $ gradle build
 
 once the migration has completed.
 This will run the tests and produce the required artifacts without any extra intervention on your part.
-Of course, a big reason to switch to Gradle is because it has a richer and more powerful model, so many of you will already have extensively customized your Maven build.
-So we'll look at some common obstacles and their solutions next.
 
 
 == Bills of Materials (BOMs)
@@ -123,7 +121,6 @@ You can, for example, define properties in:
 * a `gradle.properties` file in the `$HOME/.gradle` directory
 
 Those aren't the only options, so if you are interested in finding out more about how and where you can define properties, {user-manual}build_environment.html[check out the user guide].
-Unlike with Maven, we recommend using camel case for your property names rather than dot-separated words.
 
 One important piece of behavior you need to be aware of is what happens when the same property is defined in both the build file and one of the external properties files: the build file value takes precedence.
 Always.
