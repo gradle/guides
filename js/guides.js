@@ -190,6 +190,12 @@ document.addEventListener("DOMContentLoaded", function() {
     document.addEventListener("click", trackOutbound, false);
     document.addEventListener("click", trackCustomEvent, false);
 
+    // Newsletter Submission
+    var newsletterForm = document.getElementById("newsletter-form");
+    if (newsletterForm) {
+        newsletterForm.addEventListener("submit", function() { track("Newsletter", "Subscribed", "Guides Footer") }, false);
+    }
+
     window.piAId = '69052';
     window.piCId = '2332';
     (function() {
