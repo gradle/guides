@@ -83,6 +83,11 @@ When using symbolic links, Gradle does not store the link in the build cache but
 As a consequence you might have a hard time when trying to reuse outputs which heavily use symbolic links.
 There currently is no workaround for this behavior.
 
+For operating systems supporting symbolic links, the content of the destination of the symbolic link will be added as an input.
+If the operating system does not support symbolic links, the actual symbolic link file is added as an input.
+Therefore, tasks which have symbolic links as input files, e.g. `Test` tasks having symbolic link as part of its runtime classpath, will not be cached between Windows and Linux.
+If caching between operating systems is desired, symbolic links should not be checked into version control.
+
 [[java_version_tracking,"Java version tracking"]]
 === Java version tracking
 
