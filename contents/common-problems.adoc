@@ -254,7 +254,7 @@ While this conflicts with the Continuous Delivery "build artifacts once" princip
 If your build contains custom or third party tasks, you should take special care that these don't influence the effectiveness of the build cache.
 Special care should also be taken for code generation tasks which may not have <<concepts_repeatable_task_outputs,repeatable task outputs>>.
 This can happen if the code generator includes e.g. a timestamp in the generated files or depends on the order of the input files.
-Other pitfalls can be the use of `HashMap`s or other data structures without order guarantees in the task's code.
+Other pitfalls can be the use of ``HashMap``s or other data structures without order guarantees in the task's code.
 
 [WARNING]
 ====
