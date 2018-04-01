@@ -89,7 +89,7 @@ Gradle doesn’t take a stance on the programming language you should chose for 
 
 It is recommended to use a statically-typed language like Java or Kotlin for implementing plugins to decrease the likelihood of binary incompatibilities. Should you decide on using Groovy for your plugin implementation then it is a good choice to use the annotation link:http://docs.groovy-lang.org/latest/html/gapi/groovy/transform/CompileStatic.html[@groovy.transform.CompileStatic].
 
-The recommendation to use a statically-typed language is independent from the language choice for writing tests for your plugin code. The use of dynamic Groovy and (its very capable testing and mocking frameworking) link:http://spockframework.org/spock/docs/1.1-rc-3/index.html[Spock] is a very viable and common option.
+The recommendation to use a statically-typed language is independent from the language choice for writing tests for your plugin code. The use of dynamic Groovy and (its very capable testing and mocking framework) link:http://spockframework.org/spock/docs/1.1-rc-3/index.html[Spock] is a very viable and common option.
 
 === Restricting the plugin implementation to Gradle’s public API
 
@@ -101,7 +101,7 @@ To be able to build a Gradle plugin you’ll need to tell your project to use a 
 include::{samplescodedir}/gradle-api/build.gradle[tags=dependencies]
 ----
 
-It’s important to understand that this dependency includes the full Gradle runtime. For historical reasons, public and internal Gradle API have not be separated yet. We are planning to work on a new way to clearly link:https://github.com/gradle/gradle/issues/1156[distinguish and declare individual portions of the Gradle API].
+It’s important to understand that this dependency includes the full Gradle runtime. For historical reasons, public and internal Gradle API have not been separated yet. We are planning to work on a new way to clearly link:https://github.com/gradle/gradle/issues/1156[distinguish and declare individual portions of the Gradle API].
 
 To ensure the best backward and forward compatibility with other Gradle versions you should only use the public API. In most cases it will support the use case your are trying to support with your plugin. Keep in mind that internal APIs are subject to change and can easily break your plugin from one Gradle version to another. Please link:https://github.com/gradle/gradle/issues[open an issue on GitHub] if you are looking for a public API that is currently internal-only.
 
