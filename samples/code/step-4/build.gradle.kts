@@ -6,20 +6,6 @@ import org.gradle.jvm.tasks.Jar
 import org.gradle.kotlin.dsl.*
 import org.jetbrains.dokka.gradle.DokkaTask
 
-// Use of buildscript {} necessary due to https://github.com/Kotlin/dokka/issues/146
-buildscript {
-    repositories {
-        jcenter()
-    }
-
-    dependencies {
-        classpath("org.jetbrains.dokka:dokka-gradle-plugin:0.9.15")
-    }
-}
-apply {
-    plugin("org.jetbrains.dokka")
-}
-
 // tag::apply-maven-publish[]
 plugins {
 // end::apply-maven-publish[]
@@ -27,8 +13,9 @@ plugins {
 // tag::apply-maven-publish[]
     `maven-publish` // <1>
 // end::apply-maven-publish[]
-    kotlin("jvm") version "1.2.10"
+    kotlin("jvm") version "1.2.31"
 // tag::apply-maven-publish[]
+    id("org.jetbrains.dokka") version "0.9.16"
 }
 // end::apply-maven-publish[]
 
@@ -42,7 +29,7 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib", "1.2.10"))
+    implementation(kotlin("stdlib", "1.2.31"))
     testImplementation("junit:junit:4.12")
 }
 

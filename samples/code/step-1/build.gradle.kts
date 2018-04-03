@@ -5,7 +5,7 @@ plugins {
 // end::apply-kotlin-plugin[]
     `build-scan`
 // tag::apply-kotlin-plugin[]
-    kotlin("jvm") version "1.2.10" // <1>
+    kotlin("jvm") version "1.2.31" // <1>
 }
 // end::apply-kotlin-plugin[]
 // end::apply-build-scan-plugin[]
@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib", "1.2.10")) // <3>
+    implementation(kotlin("stdlib", "1.2.31")) // <3>
 }
 // end::configure-dependencies[]
 

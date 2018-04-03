@@ -2,25 +2,12 @@
 import org.gradle.jvm.tasks.Jar
 // end::dokka-imports[]
 
-// tag::apply-dokka-plugin[]
-// Using buildscript {} instead of plugins {} due to https://github.com/Kotlin/dokka/issues/146
-buildscript {
-    repositories {
-        jcenter()
-    }
-
-    dependencies {
-        classpath("org.jetbrains.dokka:dokka-gradle-plugin:0.9.15")
-    }
-}
-apply {
-    plugin("org.jetbrains.dokka")
-}
-// end::apply-dokka-plugin[]
-
 plugins {
     `build-scan`
-    kotlin("jvm") version "1.2.10"
+    kotlin("jvm") version "1.2.31"
+    // tag::apply-dokka-plugin[]
+    id("org.jetbrains.dokka") version "0.9.16"
+    // end::apply-dokka-plugin[]
 }
 
 repositories {
@@ -28,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib", "1.2.10"))
+    implementation(kotlin("stdlib", "1.2.31"))
     testImplementation("junit:junit:4.12")
 }
 
