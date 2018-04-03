@@ -145,7 +145,7 @@ A library isn't done until it's documented. https://github.com/Kotlin/dokka[Dokk
 
 === Apply the Dokka plugin
 
-The Dokka Gradle plugin cannot be resolved from the Gradle Plugin Portal as of v0.9.15, so we will use a `buildscript {}` block to apply the plugin to the build script classpath, and then apply it.
+We can declare the Dokka plugin in our `plugins {}` block:
 
 .build.gradle.kts
 [source,kotlin]
