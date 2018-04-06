@@ -1,10 +1,9 @@
 = Executing Gradle builds on Travis CI
 
-== What you'll build
-
 Building Gradle projects doesn't stop with the developer's machine.
 https://en.wikipedia.org/wiki/Continuous_integration[Continuous Integration] (CI) has been a long-established practice for running a build for every single change committed to version control to tighten the feedback loop.
-In this blog post, we'll discuss how to configure Travis CI for a typical Gradle project.
+
+In this guide, we'll discuss how to configure link:https://travis-ci.org/[Travis CI] for a typical Gradle project.
 
 == What you'll need
 
@@ -14,15 +13,15 @@ In this blog post, we'll discuss how to configure Travis CI for a typical Gradle
 * The Java Development Kit (JDK), version 1.8 or higher
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 
-== Building a typical Java project
+== Setup a typical project
 
-As example, this post is going to discuss a Java-based project.
-More specifically, the project is a Gradle plugin written in Java and tested with the http://spockframework.org/[Spock framework].
+As example, this guide is going to focus on a Java-based project.
+More specifically, a Gradle plugin written in Java and tested with Spock.
 First, we'll get the project set up on your local machine before covering the same steps on CI.
 
 Just follow these steps:
 
-=== Clone https://github.com/gradle-guides/gradle-site-plugin[Gradle Site Plugin]
+=== Clone https://github.com/gradle-guides/gradle-site-plugin[Gradle Site Plugin] repository
 
 [listing]
 ----
@@ -30,7 +29,7 @@ git clone https://github.com/gradle-guides/gradle-site-plugin.git
 cd gradle-site-plugin
 ----
 
-=== Executing the build
+=== Build the project
 
 As a developer of a Java project, you'll typical want to compile the source code, run the tests and assemble the JAR artifact. That's no different for Gradle plugins. The following command achieves exactly that:
 
@@ -47,7 +46,7 @@ It is a recommended practice for any Gradle project as it enables your project t
 
 === Build scan integration
 
-The sample project is equipped with support for generating https://scans.gradle.com/[build scans].
+The sample project is equipped with support for generating link:https://scans.gradle.com/[build scans].
 Running the build with the command line option `--scan` renders a link in the console.
 
 [listing]
@@ -58,7 +57,7 @@ https://gradle.com/s/7mtynxxmesdio
 
 The following section will describe how to build the project with the help of Travis CI.
 
-== Using Travis CI
+== Configuring Travis CI
 
 Travis CI is a free, cloud-based CI solution provider making it an excellent choice for open source projects.
 You can build any project as long as it is hosted on GitHub as public repository.
@@ -79,7 +78,7 @@ install: true
 
 jdk:
   - oraclejdk8
-  
+
 script:
   - ./gradlew build --scan -s
 ----
@@ -89,13 +88,13 @@ After activating the repository from the dashboard, the project is ready to be b
 
 image::travis-enable-project.png[Enabling a project]
 
-Unfortunately, Travis CI does not render a convenience icon for build scans.
+NOTE: Configuring link:https://scans.gradle.com/[build scans] is especially helpful on cloud CI systems like Travis CI because it has additional environment and test results information that are difficult to obtain otherwise.
 
 === Enabling caching of downloaded artifacts
 
 Gradle's dependency management mechanism resolves declared modules and their corresponding artifacts from a binary repository.
 Once downloaded, the files will be re-used from the cache.
-You need to tell Travis CI explictly that you want to https://docs.travis-ci.com/user/languages/java/#Caching[store and use the Gradle cache and Wrapper] for successive invocations of the build.
+You need to tell Travis CI explicitly that you want to https://docs.travis-ci.com/user/languages/java/#Caching[store and use the Gradle cache and Wrapper] for successive invocations of the build.
 
 [listing]
 ----
@@ -120,7 +119,6 @@ You can learn more about advanced Travis CI usage through these resources:
 
 Executing Gradle builds on CI can be set up and configured with just a handful of steps.
 The benefit of receiving fast feedback clearly speaks for itself.
-You are not using Travis CI?
-No problem, many CI products tightly integrate with Gradle as a first-class citizen.
+If you are not using Travis CI, no problem, many CI products tightly integrate with Gradle as a first-class citizen.
 
 include::contribute[]
