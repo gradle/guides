@@ -63,7 +63,7 @@ The following section will describe how to build the project with the help of Je
 Jenkins is one of the most prominent players in the field.
 In the course of this section, you'll learn how to set up Jenkins, configure a job to pull the source code from GitHub and run the Gradle build.
 
-=== Installing and starting Jenkins
+=== Install and start Jenkins
 
 On the https://jenkins.io/download/[Jenkins website] you can pick from a variety of distributions.
 This post uses the runnable WAR file.
@@ -103,7 +103,7 @@ As mentioned before, we'll want to use the Wrapper to execute the build. In the 
 
 image::jenkins-build-step.png[]
 
-=== Executing the job
+=== Execute the job
 
 Save the configuration of job and execute an initial build by triggering the "Build Now" button.
 The build should finish successfully and render a "Gradle Build Scan" icon that brings you directly to the link:https://scans.gradle.com[build scan] for the given build.
