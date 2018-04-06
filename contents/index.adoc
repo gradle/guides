@@ -12,7 +12,7 @@ In this guide, we'll discuss how to configure Jenkins for a typical Gradle proje
 * A text editor
 * A command prompt
 * The Java Development Kit (JDK), version 1.7 or higher
-* A https://gradle.org/install[Gradle distribution], version 4.6 or better
+* A https://gradle.org/install[Gradle distribution], version {gradle-version or better
 * A Jenkins installation (setup steps explained in this post)
 
 == Building a typical Java project
@@ -59,7 +59,7 @@ https://gradle.com/s/7mtynxxmesdio
 
 The following section will describe how to build the project with the help of Jenkins.
 
-== Using  Jenkins
+== Using Jenkins
 
 Jenkins is one of the most prominent players in the field.
 In the course of this section, you'll learn how to set up Jenkins, configure a job to pull the source code from GitHub and run the Gradle build.
