@@ -75,7 +75,7 @@ A simple Java command brings up the Jenkins server.
 java -jar jenkins.war
 ----
 
-Navigate to the URL `http://localhost:8080/` in the browser to render the Jenkins dashboard.
+Navigate to `localhost` with port `8080` in the browser to render the Jenkins dashboard.
 You will be asked to set up an new administration user and which plugins to install.
 
 === Installation of plugins
