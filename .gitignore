@@ -15,6 +15,8 @@ creating-multi-project-builds/
 creating-new-gradle-builds/
 consuming-jvm-libraries/
 designing-gradle-plugins/
+executing-gradle-builds-on-jenkins/
+executing-gradle-builds-on-travisci/
 gradle-guides-plugin/
 gradle-site-plugin/
 greeting-plugin-example/
