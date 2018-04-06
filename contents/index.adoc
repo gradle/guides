@@ -57,14 +57,14 @@ https://gradle.com/s/7mtynxxmesdio
 
 The following section will describe how to build the project with the help of Travis CI.
 
-== Configuring Travis CI
+== Configure Travis CI
 
 Travis CI is a free, cloud-based CI solution provider making it an excellent choice for open source projects.
 You can build any project as long as it is hosted on GitHub as public repository.
 Travis CI doesn't not provide built-in options to post-process produced artifacts of the build e.g. host the JAR file or the HTML test reports.
 You will have to use external services (like S3) to https://docs.travis-ci.com/user/uploading-artifacts/[transfer the files].
 
-=== Creating the configuration file
+=== Create the configuration file
 
 Travis CI requires you to check in a https://docs.travis-ci.com/user/customizing-the-build/[configuration file] with your source code named `.travis-ci.yml`.
 This file contains all relevant instructions for building the project.
@@ -90,7 +90,7 @@ image::travis-enable-project.png[Enabling a project]
 
 NOTE: Configuring link:https://scans.gradle.com/[build scans] is especially helpful on cloud CI systems like Travis CI because it has additional environment and test results information that are difficult to obtain otherwise.
 
-=== Enabling caching of downloaded artifacts
+=== Enable caching of downloaded artifacts
 
 Gradle's dependency management mechanism resolves declared modules and their corresponding artifacts from a binary repository.
 Once downloaded, the files will be re-used from the cache.
