@@ -13,6 +13,10 @@ apply from: "$rootDir/gradle/local-publish.gradle"
 buildScan {
     licenseAgreementUrl = 'https://gradle.com/terms-of-service'
     licenseAgree = 'yes'
+    if (!System.getenv("CI")) {
+        publishAlways()
+        tag("CI")
+    }
 }
 
 group = 'org.gradle.guides'
