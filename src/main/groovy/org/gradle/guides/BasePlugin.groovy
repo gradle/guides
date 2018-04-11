@@ -103,8 +103,7 @@ class BasePlugin implements Plugin<Project> {
             backends 'html5'
             inputs.dir('samples').withPropertyName('samplesDir').withPathSensitivity(PathSensitivity.RELATIVE)
 
-            attributes "source-highlighter": "coderay",
-                    "coderay-linenums-mode": "table",
+            attributes 'source-highlighter': 'prettify',
                     imagesdir            : 'images',
                     stylesheet           : null,
                     linkcss              : true,
