@@ -1,0 +1,826 @@
+/* Lato (bold, regular) */
+@font-face {
+    font-display: swap;
+    font-family: Lato;
+    font-weight: 500;
+    font-style: normal;
+    text-rendering: optimizeLegibility;
+    src: url("https://assets.gradle.com/lato/fonts/lato-semibold/lato-semibold.woff2") format("woff2"),
+    url("https://assets.gradle.com/lato/fonts/lato-semibold/lato-semibold.woff") format("woff");
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+body {
+    color: #02303A;
+    background-color: #f7f7f8;
+    font-family: "Lato", "Helvetica Neue", Arial, sans-serif;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    color: #1DA2BD;
+    text-decoration: none;
+}
+
+a:hover,
+a:focus {
+    text-decoration: underline;
+}
+
+p {
+    font-size: 1rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+#toctitle,
+.sidebarblock > #content > .title {
+    font-family: inherit;
+    font-weight: 500;
+    color: inherit;
+}
+
+h1 {
+    font-size: 2rem;
+}
+h2 {
+    font-size: 1.5rem;
+}
+h3 {
+    font-size: 1.125rem;
+}
+h4 {
+    font-size: 1.0625rem;
+}
+h5, h6 {
+    font-size: 1rem;
+}
+
+b, strong {
+    font-weight: 500;
+}
+
+/* Layout */
+#header > h1:first-child {
+    margin-top: 0;
+}
+
+#header, #content, #footnotes, #footer {
+    background-color: white;
+    padding: 1.5rem;
+    margin: 0;
+}
+
+/* Content is centered for thin screens */
+@media screen and (min-width: 64rem) {
+    #header, #content, #footnotes, #footer {
+        margin: 0 auto;
+    }
+
+    #content {
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+
+    #header {
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        margin-top: 75px;
+        padding-bottom: 0;
+    }
+}
+
+/* Content is left-aligned for medium screens */
+@media screen and (min-width: 80rem) {
+    #header, #content, #footnotes, #footer {
+        margin: 0 1.5rem;
+    }
+    #header {
+        /* Needed due to overriding style above */
+        margin-top: 75px;
+    }
+
+    #content #toc {
+        position: fixed;
+        top: 60px;
+        left: 64rem;
+        width: 16rem;
+        padding-top: 15px;
+    }
+
+    #content #toctitle {
+        margin-bottom: 0.625rem;
+    }
+}
+
+/* Content is centered for wide screens */
+@media screen and (min-width: 90rem) {
+    #header, #content, #footnotes, #footer {
+        max-width: 60em;
+        margin: 0 auto;
+    }
+    #header {
+        /* Needed due to overriding style above */
+        margin-top: 75px;
+    }
+
+    #content #toc {
+        left: calc(50% + 30rem);
+    }
+}
+
+#header .details {
+    /* TODO: Pretty sure there's a way to avoid Asciidoc generating details */
+    display: none;
+}
+
+p {
+    color: #02303A;
+}
+
+.subheader,
+.admonitionblock td#content > .title,
+.audioblock > .title,
+.exampleblock > .title,
+.imageblock > .title,
+.listingblock > .title,
+.literalblock > .title,
+.stemblock > .title,
+.openblock > .title,
+.paragraph > .title,
+.quoteblock > .title,
+table.tableblock > .title,
+.verseblock > .title,
+.videoblock > .title,
+.dlist > .title,
+.olist > .title,
+.ulist > .title,
+.qlist > .title,
+.hdlist > .title {
+    color: inherit;
+    font-family: inherit;
+}
+
+p.lead,
+.paragraph.lead > p,
+#preamble > .sectionbody > .paragraph:first-of-type p {
+    font-size: 1.0625rem;
+}
+
+.paragraph.lead > p,
+#preamble > .sectionbody > .paragraph:first-of-type p {
+    color: inherit;
+}
+
+.sect1 {
+    padding-bottom: 0;
+}
+
+.sect1 + .sect1 {
+    border: 0 none;
+}
+
+.admonitionblock > table td.icon .title {
+    font-family: "Lato", Arial, sans-serif;
+}
+
+.verseblock pre {
+    font-family: "Lato", Arial, sans-serif;
+}
+
+body.book #header > h1 {
+    border: 0 !important;
+    margin: 2.5em 0 1em 0;
+}
+
+#content > h1:not([class]) {
+    color: #02303A;
+    padding-bottom: 8px;
+    margin-top: 0;
+    padding-top: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+#content a.link {
+    color: #02303A;
+}
+
+.listingblock pre.highlightjs > code {
+    overflow-x: auto;
+}
+
+.listingblock pre.highlight {
+    overflow-x: auto;
+}
+
+.listingblock pre.highlight > code {
+    white-space: pre;
+}
+
+.conum[data-value] {
+    font-family: "Lato", Arial, sans-serif;
+}
+
+.colist > table tr > td:first-of-type {
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+    line-height: 1.4;
+    vertical-align: baseline;
+}
+
+/*
+ * Multi-language selection
+ */
+.multi-language-selector {
+    display: block;
+}
+
+.multi-language-selector .language-option {
+    background-color: white;
+    border: 1px solid #f7f7f8;
+    border-radius: 4px 4px 0 0;
+    color: #777;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: normal;
+    margin: 0;
+    padding: 4px 20px 0;
+    min-width: 163px;
+    max-width: 320px;
+    text-align: center;
+}
+
+.multi-language-selector .language-option.selected {
+    background-color: #f7f7f8;
+    color: #02303a;
+    font-weight: bold;
+}
+
+.multi-language-selector ~ .multi-language-sample.hidden,
+.multi-language-selector ~ .multi-language-sample .title {
+    display: none;
+}
+
+.multi-language-sample {
+    border-radius: 0 0 4px 4px;
+}
+
+/*
+ * Ensure that blocks of code do not wrap by applying the behavior of `[listing%nowrap]` by default.
+ *
+ * These styles are copied from a CSS ruleset in asciidoctor.css that has the same group of
+ * selectors except that they end with `.nowrap`.
+ */
+.literalblock pre,
+.literalblock pre[class],
+.listingblock pre,
+.listingblock pre[class] {
+    overflow-x: auto;
+    white-space: pre;
+    word-wrap: normal;
+}
+
+/*
+ * This CSS ruleset solves: https://github.com/gradle/guides/issues/113#issuecomment-314826749.
+ */
+.literalblock pre::after,
+.literalblock pre[class]::after,
+.listingblock pre::after,
+.listingblock pre[class]::after {
+    content: "";
+}
+
+.quoteblock blockquote,
+.quoteblock blockquote p {
+    text-align: left;
+    text-align: start;
+}
+
+div.screenshot {
+    box-shadow: 0 0 20px 1px rgba(0,0,0,0.2);
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+}
+
+.image.inline-icon img {
+    vertical-align: sub;
+}
+
+/* TOC */
+#content #toc {
+    border: 0 none;
+}
+
+#toc > ul {
+    margin-left: 0;
+    font-family: inherit;
+}
+
+#toc li {
+    line-height: 1.0;
+    margin-top: 0;
+    padding-bottom: 0.625rem;
+}
+#toc li:last-of-type {
+    padding-bottom: 0;
+}
+
+#toc a {
+    color: #02303A;
+}
+
+#toc a:hover,
+#toc a:focus,
+#toc a:hover code,
+#toc a:focus code {
+    color: #1DA2BD;
+}
+
+#toc a:active {
+    text-decoration: none;
+}
+@media screen and (min-width: 77.5rem) {
+    #content #toc {
+        border: 0 none;
+        font-size: 1rem;
+        background-color: #f7f7f8;
+    }
+
+    #content #toctitle {
+        font-size: 1rem;
+    }
+
+    #content .toc p:first-of-type {
+        display: none;
+    }
+
+    #content .toc a {
+        color: #02303A;
+    }
+
+    #content .toc a.active {
+        color: #1BA8C4;
+    }
+}
+
+/* Site header specific styles */
+.hamburger {
+    background-color: transparent;
+    background-image: none;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: auto;
+    padding: 11px 10px;
+}
+
+.hamburger:focus {
+    outline: 0;
+}
+
+.hamburger__bar {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background-color: black;
+    border-radius: 1px;
+}
+
+.hamburger__bar + .hamburger__bar {
+    margin-top: 4px;
+}
+
+.site-header {
+    background-color: white;
+}
+
+/* Override javadoc styles */
+.site-header div {
+    font-family: 'Lato', Arial, sans-serif;
+}
+.site-header__navigation-header a {
+    align-self: center;
+    border-bottom: 0 none;
+    height: 36px;
+}
+
+.site-header__navigation {
+    display: flex;
+    flex-direction: column;
+}
+
+.site-header__navigation-header {
+    display: flex;
+    flex: 0 0 auto;
+    margin-left: 12px;
+}
+
+.site-header__navigation-collapsible {
+    flex: 1 1 auto;
+    height: 210px;
+    overflow: visible;
+    transition: height 0.3s ease;
+}
+
+.site-header__navigation-items {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    max-height: 170px;
+    margin: 0 20px;
+    padding-top: 12px;
+    padding-left: 0;
+    list-style-type: none;
+}
+
+.site-header__navigation-item {
+    flex: 0 1 auto;
+    font-size: 16px;
+    width: 250px;
+}
+
+.site-header__navigation-item .site-header__navigation-link {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    width: 100%;
+    padding: 5px;
+    line-height: 20px;
+    border: 0 none;
+    color: #02303A;
+    text-decoration: none;
+    transition: none;
+    -o-transition: none;
+    -moz-transition: none;
+    -webkit-transition: none;
+}
+
+.site-header__navigation-item .site-header__navigation-link:hover {
+    color: #1DA2BD;
+}
+
+.site-header__navigation-item .site-header__navigation-link.active {
+    font-weight: 500;
+}
+
+/* Navigation submenu styles */
+.site-header__navigation-submenu-section {
+    position: relative;
+}
+
+.site-header__navigation-submenu-section .site-header__down-arrow {
+    width: 8px;
+    height: 8px;
+    margin-left: 2px;
+    margin-top: 0;
+}
+
+.site-header__navigation-submenu-section .site-header__navigation-link:hover {
+    color: #02303A;
+}
+
+.site-header__navigation-submenu-section .site-header__navigation-link:hover path {
+    fill: none;
+}
+
+.site-header__navigation-submenu-section .site-header__navigation-submenu .site-header__navigation-submenu-item-link:hover {
+    color: #1DA2BD;
+}
+
+.site-header__navigation-submenu-section .site-header__navigation-submenu {
+    display: none;
+    width: 170px;
+    background-color: white;
+    top: 40px;
+    left: 21px; /* NOTE: This must match the padding of .site-header__navigation-link */
+    padding: 3px 10px 6px 10px;
+    z-index: 100;
+}
+
+.site-header__navigation-submenu-section .site-header__navigation-submenu .site-header__navigation-submenu-item-link {
+    width: 100%;
+    color: #02303A;
+    white-space: nowrap;
+    display: inline-block;
+    padding-top: 3px;
+    border: 0 none;
+    transition: none;
+    -o-transition: none;
+    -moz-transition: none;
+    -webkit-transition: none;
+}
+
+.site-header__navigation-submenu-section .site-header__navigation-submenu .site-header__navigation-submenu-item-link .site-header__navigation-submenu-item-link-text {
+    display: inline-block;
+    font-size: 16px;
+}
+
+.site-header__navigation-submenu-section.open .site-header__navigation-submenu {
+    display: block;
+}
+
+/* Top navigation mobile styles */
+@media (max-width: 1023px) {
+    .site-header__navigation-collapsible--collapse {
+        height: 0;
+        overflow-y: hidden;
+    }
+
+    .site-header__navigation-submenu-section .site-header__navigation-submenu {
+        display: block;
+        top: 30px !important;
+        left: 0 !important;
+    }
+
+    .site-header__navigation-item,
+    .site-header__navigation-submenu-section .site-header__navigation-submenu .site-header__navigation-submenu-item-link .site-header__navigation-submenu-item-link-text {
+        font-size: 18px;
+    }
+
+    .site-header-version {
+        display: none;
+    }
+
+    .site-footer__navigation {
+        flex-direction: column;
+    }
+
+    .site-footer__links {
+        flex-wrap: wrap;
+    }
+
+    .site-footer__link-group {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Top navigation desktop styles */
+@media (min-width: 1024px) {
+    .site-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        -webkit-box-shadow: 0 2px 4px 0 rgba(0,0,0,.15);
+        -moz-box-shadow: 0 2px 4px 0 rgba(0,0,0,.15);
+        box-shadow: 0 2px 4px 0 rgba(0,0,0,.15);
+        z-index: 1;
+    }
+
+    /*
+      Pushes the section headings to just below the top nav bar when a user
+      navigates directly to section anchors.
+     */
+    h2[id], h3[id], h4[id] {
+        padding-top: 60px;
+    }
+    h2[id] {
+        /* Little extra room above h2s */
+        margin-top: -44px;
+    }
+    h3[id], h4[id] {
+        margin-top: -60px;
+    }
+
+    .site-header__navigation {
+        flex-direction: row;
+    }
+
+    .site-header__navigation-button {
+        display: none;
+    }
+
+    .site-header__navigation-items {
+        flex-direction: row;
+        align-items: center;
+        float: right;
+        width: auto;
+        padding-top: 0;
+    }
+
+    .site-header__navigation-item {
+        width: auto;
+    }
+
+    .site-header__navigation-item .site-header__navigation-link {
+        padding: 15px 18px;
+    }
+
+    .site-header__navigation-item:last-of-type .site-header__navigation-link {
+        padding-right: 0;
+    }
+
+    .site-header__navigation-link--button {
+        padding: 6px 12px;
+    }
+
+    .site-header__navigation-collapsible {
+        height: auto;
+    }
+
+    .site-header__navigation-submenu-section .site-header__navigation-submenu {
+        position: absolute;
+        border: 1px solid #9a9a9a;
+        border-radius: 3px;
+    }
+
+    .site-header__navigation-submenu-section:hover .site-header__navigation-submenu {
+        display: block;
+    }
+}
+
+/* Footer styles */
+.site-footer {
+}
+
+.site-footer__navigation {
+    display: flex;
+    max-width: 75rem;
+    margin: 3rem auto 2.5rem auto;
+    padding: 0.5rem 0.75rem;
+}
+
+.site-footer__links {
+    display: flex;
+    flex: 1 1 auto;
+}
+
+.site-footer__links .site-footer__links-list {
+    list-style-type: none;
+    margin: 0;
+}
+
+.site-footer__links .site-footer__links-list a {
+    color: #666;
+}
+
+.site-footer__link-group {
+    flex: 1 1 auto;
+    flex-basis: 175px;
+}
+
+.site-footer__link-group header {
+    color: #555;
+}
+
+.site-footer__subscribe-newsletter {
+    flex: 0 0 auto;
+}
+
+.site-footer__subscribe-newsletter p {
+    font-size: 0.875rem;
+    margin-bottom: 0;
+    margin-left: 2px;
+    opacity: 0.7;
+}
+
+.site-footer__subscribe-newsletter .newsletter-form {
+    padding-top: 6px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.site-footer__subscribe-newsletter .email,
+.site-footer__subscribe-newsletter .submit {
+    height: 40px;
+}
+
+.site-footer__subscribe-newsletter .email {
+    line-height: 40px;
+    width: 250px;
+    color: #1DA2BD;
+    font-size: 16px;
+    padding-left: 20px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-style: none;
+}
+
+.site-footer__subscribe-newsletter .submit {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    width: 100px;
+    background-color: #1BA8CB;
+    color: white;
+    font-weight: 500;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-style: none;
+    cursor: pointer;
+    transition: all .3s ease;
+}
+
+/* Secondary footer (below) */
+.site-footer-secondary {
+    background-color: white;
+}
+
+.site-footer-secondary__contents {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 75rem;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+}
+
+/*
+ * 1. Value is the largest computed width among 'site-footer__copy' and 'site-footer__links'.
+ */
+.site-footer__copy,
+.site-footer__secondary-links {
+    flex-grow: 0;
+    flex-basis: 280px;
+    /* 1. */
+}
+
+/*
+ * 1. 'flex-shrink: 1' is applied to the element with the smallest computed width among
+ *    'site-footer__copy' and 'site-footer__links'.
+ */
+.site-footer__copy {
+    flex-shrink: 1;
+    /* 1. */
+}
+
+.site-footer__logo {
+    flex: 0 0 auto;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.site-footer__logo svg {
+    width: 35px;
+    height: 35px;
+}
+
+/*
+ * 1. 'flex-shrink: 0' is applied to the element with the largest computed width among
+ *    'site-footer__copy' and 'site-footer__links'.
+ */
+.site-footer__secondary-links {
+    flex-shrink: 0;
+    /* 1 */
+    text-align: right;
+    white-space: nowrap;
+}
+
+.site-footer-secondary a {
+    color: #999;
+}
+
+.site-footer-secondary__links a:not(:last-child) {
+    padding-right: 10px;
+}
+
+.site-footer-secondary__links a:not(:first-child) {
+    padding-left: 10px;
+}
+
+@media all and (max-width: 29.99rem) {
+    .site-footer__rights,
+    .site-footer-secondary__links {
+        display: none;
+    }
+
+    .site-footer__logo {
+        order: 1;
+        text-align: left;
+    }
+
+    .site-footer__copy {
+        order: 2;
+        text-align: right;
+    }
+}
+
+/* Avoid the footer taking up much of the screen on short displays */
+@media all and (max-height: 56.25rem) {
+    .site-footer__navigation {
+        margin: 1rem auto 1rem auto;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}
