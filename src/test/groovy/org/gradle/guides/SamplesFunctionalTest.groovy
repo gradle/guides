@@ -28,28 +28,28 @@ class SamplesFunctionalTest extends AbstractSamplesFunctionalTest {
         result.task(':test').outcome == SUCCESS
     }
 
-//    def "can document Kotlin sources"() {
-//        given:
-//        copySampleCode('step-3')
-//
-//        when:
-//        def result = succeeds('dokkaJar')
-//
-//        then:
-//        result.task(':dokka').outcome == SUCCESS
-//        result.task(':dokkaJar').outcome == SUCCESS
-//    }
-//
-//    def "can publish Kotlin library Jars"() {
-//        given:
-//        copySampleCode('step-4')
-//
-//        when:
-//        def result = succeeds('publish')
-//
-//        then:
-//        result.task(':jar').outcome == SUCCESS
-//        result.task(':dokkaJar').outcome == SUCCESS
-//        result.task(':publish').outcome == SUCCESS
-//    }
+    def "can document Kotlin sources"() {
+        given:
+        copySampleCode('step-3')
+
+        when:
+        def result = succeeds('dokkaJar')
+
+        then:
+        result.task(':dokka').outcome == SUCCESS
+        result.task(':dokkaJar').outcome == SUCCESS
+    }
+
+    def "can publish Kotlin library Jars"() {
+        given:
+        copySampleCode('step-4')
+
+        when:
+        def result = succeeds('publish')
+
+        then:
+        result.task(':jar').outcome == SUCCESS
+        result.task(':dokkaJar').outcome == SUCCESS
+        result.task(':publish').outcome == SUCCESS
+    }
 }
