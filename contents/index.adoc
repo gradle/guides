@@ -1,4 +1,4 @@
-= Migrating-build-logic-from-Groovy-to-Kotlin
+= Migrating build logic from Groovy to Kotlin
 :numbered:
 
 *INTRO_TBC*
