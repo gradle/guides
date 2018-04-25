@@ -1,4 +1,5 @@
 plugins {
+    `build-scan`
     id("org.gradle.guides.topical") version "0.11.5"
 
     // Uncomment this line if you need test JVM code snippets
