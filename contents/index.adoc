@@ -194,12 +194,12 @@ Congratulations! You have created a new Gradle build and learned how to inspect 
 
 Chances are you want to create a library or application for a specific platform, so here are some guides that will teach you more about creating builds in your platform of choice:
 
-* {guides}building-android-apps[Building Android Apps]
-* {guides}building-cpp-executables[Building C++ Executables]
-* {guides}building-groovy-libraries[Building Groovy Libraries]
-* {guides}building-java-libraries[Building Java Libraries]
-* {guides}building-kotlin-jvm-libraries[Building Kotlin JVM Libraries]
-* {guides}building-scala-libraries[Building Scala Libraries]
+* {guides}/building-android-apps[Building Android Apps]
+* {guides}/building-cpp-executables[Building C++ Executables]
+* {guides}/building-groovy-libraries[Building Groovy Libraries]
+* {guides}/building-java-libraries[Building Java Libraries]
+* {guides}/building-kotlin-jvm-libraries[Building Kotlin JVM Libraries]
+* {guides}/building-scala-libraries[Building Scala Libraries]
 
 You can also checkout many link:https://github.com/gradle/gradle/tree/master/subprojects/docs/src/samples[sample Gradle builds on GitHub].
 

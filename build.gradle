@@ -1,16 +1,31 @@
-plugins {
-    id "org.gradle.guides.getting-started" version "0.11.5"
-    id "org.gradle.guides.test-jvm-code" version "0.11.5"
+buildscript {
+    repositories {
+        mavenLocal()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'org.gradle.guides:gradle-guides-plugin:0.11.6-SNAPSHOT'
+        classpath "com.gradle:build-scan-plugin:1.13"
+    }
 }
+
+apply plugin: "com.gradle.build-scan"
+apply plugin: org.gradle.guides.GettingStartedPlugin
 
 guide {
     repoPath 'gradle-guides/creating-new-gradle-builds'
     mainAuthor 'Ken Kousen'
 }
 
-asciidoctor {
-    attributes guides : 'https://guides.gradle.org/'
+buildScan {
+    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
+    licenseAgree = 'yes'
+    if (System.getenv("CI")) {
+        publishAlways()
+        tag("CI")
+    }
 }
-
-
-
