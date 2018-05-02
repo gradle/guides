@@ -1,18 +1,99 @@
 = Migrating build logic from Groovy to Kotlin
 :numbered:
 
-*INTRO_TBC*
+TBD
 
-== CONTENT_TBC
+[NOTE]
+If you want to read on Kotlin the language before getting started or if you need some reference documentation along the way, the https://kotlinlang.org/docs/reference/[reference documentation] is the place to go.
+The https://kotlinlang.org/docs/tutorials/koans.html[Kotlin Koans] provide a fun way to learn Kotlin.
 
-////
-Write your content using a selection of section levels as you wish.
-You can also use include blocks to split your topical guide into more manageable
-chunks. Have a look in build.gradle to see which attributes are already available
-to use. This should among others include {user-manual}, {guides}, {gradle-version}.
-////
 
-*TBC*
+== Meet the Kotlin DSL
+
+Kotlin the language is statically typed and has null safety built-int.
+Groovy on the other hand is highly dynamic by nature.
+
+* Kotlin language more strict than Groovy language
+* Kotlin DSL more strict than Groovy DSL
+
+Both DSLs provide means to interact with the Gradle dynamic and extensible model, and runtime.
+
+With the Kotlin DSL:
+
+* more ceremony to do dynamic things, some limitations with helpers
+* more safety, more tooling
+
+
+Applying Gradle best practices tend towards more declarative builds, less dynamic constructs. This is where the Kotlin DSL shines with the less ceremony and the more tooling. In that sense, the Kotlin DSL encourages Gradle best practices.
+
+Applying Gradle best practices will make it much easier with the Kotlin DSL
+
+[TIP]
+--
+* link to Gradle Kotlin DSL presentation in manual
+* link to Gradle best practices in manual and guides
+--
+
+== A taste at the differences
+
+// Just a taste, with lots of small samples to contemplate
+
+* File names
+* Applying plugins
+* Working with tasks
+* Dependencies and configurations
+* Properties
+* Live collections and containers
+* Extensions
+
+[TIP]
+The Gradle link:{user-manual}[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
+This is the best place where to find how to do this and what with the Kotlin DSL ; and it covers all Gradle features.
+
+
+== Migrate a Gradle build
+
+Both scripts using the Kotlin DSL, `\*.gradle.kts`, and scripts using the Groovy DSL, `*.gradle`, can participate in the same build. Gradle plugins implemented in `./buildSrc`, an included build or externally fetched can use any JVM language. This makes it possible to migrate progressively, piece by piece, without blocking your team.
+
+// TODO define/link "constraints", should be present in the user manual
+
+Mechanical migration vs. restructuring towards best practices:
+
+* both possible
+* the former will be enough for simple builds
+* a complex and highly dynamic build logic will require some restructuring
+* external plugins might not provide a good Kotlin DSL experience, workarounds
+
+[NOTE]
+--
+Depending on your build structure you might be interested by the following samples built with the Kotlin DSL:
+
+* link to modularity sample
+* link to multi-project samples
+* link to gradle-plugin sample
+* link to composite-builds sample
+* link to source-control sample
+--
+
+Refactor towards the use of the `plugins {}` block using `pluginManagement {}` in `settings.gradle.kts` to control plugin resolution.
+
+Refactor towards the use of `buildSrc` using the `kotlin-dsl` plugin.
+// and pre-compiled scripts `buildSrc/src/main/kotlin/my-plugin.gradle.kts`
+
+
+== Call Java or Groovy from Kotlin
+
+* https://kotlinlang.org/docs/reference/java-interop.html[Calling Java from Kotlin]
+* https://github.com/gradle/kotlin-dsl/blob/master/doc/getting-started/Closures.md[Invoking methods taking Groovy Closures] and the https://github.com/gradle/kotlin-dsl/tree/master/samples/groovy-interop[groovy-interop] sample
+* `withGroovyBuilder {}` and the https://github.com/gradle/kotlin-dsl/tree/master/samples/maven-plugin[maven-plugin] sample
+
+
+== Call Kotlin from Java or Groovy
+
+* https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html[Calling Kotlin from Java]
+* To call a Kotlin extension function from Groovy, call it as a static function passing the receiver as the first parameter.
+* One can’t use kotlin functions with default parameters from groovy, one has to pass all parameters.
+
 
 == Summary
 
