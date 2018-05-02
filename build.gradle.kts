@@ -12,8 +12,8 @@ configure<org.gradle.guides.GuidesExtension> {
 }
 
 buildScan {
-    setLicenseAgreementUrl("https://gradle.com/terms-of-service")
-    setLicenseAgree("yes")
+    setTermsOfServiceUrl("https://gradle.com/terms-of-service")
+    setTermsOfServiceAgree("yes")
     if (!System.getenv("CI").isNullOrEmpty()) {
         publishAlways()
         tag("CI")
