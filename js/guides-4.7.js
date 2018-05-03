@@ -156,7 +156,7 @@ function postProcessCodeBlocks() {
             var currentCollection = [multiLanguageSampleElements[i]];
             var currentSampleElement = multiLanguageSampleElements[i];
             processSampleEl(currentSampleElement, languageId);
-            while (currentSampleElement.nextElementSibling.classList.contains("multi-language-sample")) {
+            while (currentSampleElement.nextElementSibling != null && currentSampleElement.nextElementSibling.classList.contains("multi-language-sample")) {
                 currentCollection.push(currentSampleElement.nextElementSibling);
                 currentSampleElement = currentSampleElement.nextElementSibling;
                 processSampleEl(currentSampleElement, languageId);
