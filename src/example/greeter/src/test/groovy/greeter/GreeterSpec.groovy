@@ -14,6 +14,6 @@ class GreeterSpec extends Specification {
         Greeter.main('gradlephant')
 
         then: 'The correct greeting is output'
-        buf.toString() == "Hello, Gradlephant\n"
+        buf.toString() == "Hello, Gradlephant\n".denormalize()
     }
 }
