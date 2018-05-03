@@ -25,27 +25,39 @@ class SamplesFunctionalTest extends AbstractSamplesFunctionalTest {
         result.output.contains(BUILD_SCAN_PUBLISHED_MESSAGE)
     }
 
-    def "can create build scan from build script"() {
+    @Unroll
+    def "can create build scan from #lang build script"() {
         given:
         copySampleCode('build-scan-from-build-script')
 
         when:
-        def result = succeeds('build', '--scan')
+        def result = succeeds('-b', buildScriptFilename, 'build', '--scan')
 
         then:
         result.task(':build').outcome == UP_TO_DATE
         result.output.contains(BUILD_SCAN_PUBLISHED_MESSAGE)
+
+        where:
+        lang     | buildScriptFilename
+        'Groovy' | 'build.gradle'
+        'Kotlin' | 'build.gradle.kts'
     }
 
-    def "can create build scan from init script"() {
+    @Unroll
+    def "can create build scan from #lang init script"() {
         given:
         copySampleCode('build-scan-from-init-script')
 
         when:
-        def result = succeeds('build', '--scan', '-I', 'buildScan.gradle')
+        def result = succeeds('-b', buildScriptFilename, 'build', '--scan', '-I', initScriptFilename)
 
         then:
         result.task(':build').outcome == UP_TO_DATE
         result.output.contains(BUILD_SCAN_PUBLISHED_MESSAGE)
+
+        where:
+        lang     | buildScriptFilename | initScriptFilename
+        'Groovy' | 'build.gradle'      | 'buildScan.gradle'
+        'Kotlin' | 'build.gradle.kts'  | 'buildScan.init.gradle.kts'
     }
 }
