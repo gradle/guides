@@ -1,6 +1,6 @@
 initscript {
     repositories {
-        maven { url 'https://plugins.gradle.org/m2' }
+        gradlePluginPortal()
     }
 
     dependencies {
@@ -12,7 +12,7 @@ rootProject {
     apply plugin: com.gradle.scan.plugin.BuildScanPlugin
 
     buildScan {
-        licenseAgreementUrl = 'https://gradle.com/terms-of-service'
-        licenseAgree = 'yes'
+        termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+        termsOfServiceAgree = 'yes'
     }
 }

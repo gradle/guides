@@ -6,8 +6,8 @@ plugins {
 
 // tag::build-scan-dsl[]
 buildScan {
-    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
-    licenseAgree = 'yes'
+    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+    termsOfServiceAgree = 'yes'
 }
 // end::build-scan-dsl[]
 
