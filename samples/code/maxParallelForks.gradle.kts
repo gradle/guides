@@ -1,12 +1,12 @@
 plugins {
-    id('java')
+    java
 }
 
 // tag::parallel-4[]
 // tag::parallel-calculated[]
 // tag::fork-every[]
 // tag::disable-reports[]
-tasks.withType(Test) {
+tasks.withType<Test> {
 // end::parallel-4[]
 // end::parallel-calculated[]
 // end::fork-every[]
@@ -17,16 +17,16 @@ tasks.withType(Test) {
 // end::parallel-4[]
 
 // tag::parallel-calculated[]
-    maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+    maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).takeIf { it > 0 } ?: 1
 // end::parallel-calculated[]
 
 // tag::fork-every[]
-    forkEvery = 100
+    setForkEvery(100)
 // end::fork-every[]
 
 // tag::disable-reports[]
-    reports.html.enabled = false
-    reports.junitXml.enabled = false
+    reports.html.isEnabled = false
+    reports.junitXml.isEnabled = false
 // end::disable-reports[]
 
 // tag::parallel-4[]
@@ -41,8 +41,8 @@ tasks.withType(Test) {
 
 
 // tag::fork-java[]
-tasks.withType(JavaCompile) {
-    options.fork = true
+tasks.withType<JavaCompile> {
+    options.isFork = true
 }
 // end::fork-java[]
 
