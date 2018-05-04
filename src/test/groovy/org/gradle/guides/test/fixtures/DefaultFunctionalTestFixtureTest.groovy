@@ -203,7 +203,7 @@ class DefaultFunctionalTestFixtureTest extends Specification {
 
     def "throws exception if unexpected stack trace is detected"() {
         given:
-        def expectedMessage = 'Line 2 contains an unexpected stack trace: \tat sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)'
+        def expectedMessage = 'Line 4 contains an unexpected stack trace: \tat sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)'
         fixture.buildFile << unexpectedStackTraceInSuccessfulBuild()
 
         when:
