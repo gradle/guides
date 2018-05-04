@@ -1,4 +1,4 @@
-package guides
+package org.gradle.guides.test.fixtures
 
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
@@ -33,7 +33,7 @@ class ValidateSteps extends Specification {
         GradleRunner.create().withProjectDir(workingDir).withArguments(gradleArgs).build().getOutput()
     }
 
-    void 'build'() {
+    def 'build output is as expected'() {
         setup:
         newBuildScript('build-3.gradle')
 
@@ -41,10 +41,7 @@ class ValidateSteps extends Specification {
         String out = build 'build'
 
         then:
-        out.contains('''
-:appAfterIntegrationTest
-Server stopped.
-:check UP-TO-DATE
-:build''')
+        out.contains('''> Task :appAfterIntegrationTest
+Server stopped.''')
     }
 }
