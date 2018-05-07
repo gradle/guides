@@ -338,8 +338,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (window.attachEvent) {
             window.attachEvent('onload', async_load);
-        }
-        else {
+        } else {
             window.addEventListener('load', async_load, false);
         }
     })();
