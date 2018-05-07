@@ -57,6 +57,34 @@ Once this has been done, _paste the link for this new repository into the guide'
 
 The author will then follow the remaining steps laid out in _Getting Started Writing Gradle Guides_, and will ultimately submit a pull request against the repository. When this happens, provide your feedback in the form of a [GitHub Review](https://help.github.com/articles/reviewing-changes-in-pull-requests/) and/or [additional commits on the author's pull request branch](https://help.github.com/articles/committing-changes-to-a-pull-request-branch-created-from-a-fork/)—whichever you deem to be the most efficient use of both your time.
 
+### Adding multi-language samples and text
+
+Gradle Guides have the ability to display different content based on the user's preferred Gradle DSL syntax: Groovy (default) or Kotlin.
+
+If you are authoring a guide, you can take advantage of this by adding:
+
+```asciidoc
+[.multi-language-text.lang-groovy]
+```
+
+where "groovy" or "kotlin" are the acceptable languages. Each guide will use JavaScript to show/hide the appropriate content based on DSL selection.
+
+Code examples should be handled like this:
+
+```asciidoc
+[source.multi-language-sample,groovy]
+.build.gradle
+----
+include::{samplescodedir}/foo/build.gradle
+----
+[source.multi-language-sample,kotlin]
+.build.gradle.kts
+----
+include::{samplescodedir}/foo/build.gradle.kts
+----
+```
+
+This will combine the Groovy and Kotlin samples into 1 block and provide tabs so a user can select their preferred DSL.
 
 ## FAQ
 
