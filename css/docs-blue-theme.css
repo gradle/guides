@@ -159,7 +159,7 @@ body.book #header > h1 {
     border: 0;
 }
 
-#header>h1:first-child {
+#header > h1:first-child {
     margin-top: 0;
 }
 
@@ -317,9 +317,6 @@ div.screenshot {
         font-size: 1rem;
         font-weight: 700;
         margin: 0.4rem 0 0.625rem 0;
-    }
-    #content #toc>:first-child {
-        margin-top: 0.4rem;
     }
 
     #content .toc a {
