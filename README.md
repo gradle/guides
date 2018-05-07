@@ -84,7 +84,7 @@ include::{samplescodedir}/foo/build.gradle.kts
 ----
 ```
 
-This will combine the Groovy and Kotlin samples into 1 block and provide tabs so a user can select their preferred DSL.
+This will combine the Groovy and Kotlin samples into 1 block and provide tabs so a user can select their preferred DSL. **Note:** when a language is selected, it applies changes to all parts of guides and saves the preference for later. 
 
 ## FAQ
 
