@@ -269,9 +269,15 @@ We start the input property comparison in Gradle Enterprise and see that the pro
 Looking deeper into this, we actually see that the inputs for the task `processResources` changed in that project, too.
 Finally, we find this in our build file:
 
-[source,groovy]
+.build.gradle
+[source.multi-language-sample,groovy]
 ----
 include::{samplescodedir}/normalization/build.gradle[tags=versionInfo]
+----
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{samplescodedir}/normalization/build.gradle.kts[tags=versionInfo]
 ----
 
 Since properties files stored by Java's `Properties.store` method contain a timestamp, this will cause a change to the runtime classpath every time the build runs.

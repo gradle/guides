@@ -1,0 +1,47 @@
+import java.util.Properties
+
+plugins {
+    java
+}
+
+version = "3.2-${System.currentTimeMillis()}"
+
+// tag::normalization[]
+normalization {
+    runtimeClasspath {
+        ignore("build-info.properties")
+    }
+}
+// end::normalization[]
+
+val generatedResourcesDir = file("$buildDir/generated-resources")
+// tag::versionInfo[]
+
+val currentVersionInfo by tasks.creating(CurrentVersionInfo::class) {
+    version = project.version.toString()
+    versionInfoFile = File(generatedResourcesDir, "currentVersion.properties")
+}
+
+java.sourceSets["main"].output.dir(
+    mapOf("builtBy" to currentVersionInfo),
+    generatedResourcesDir)
+
+open class CurrentVersionInfo : DefaultTask() {
+    @Input
+    lateinit var version: String
+
+    @OutputFile
+    lateinit var versionInfoFile: File
+
+    @TaskAction
+    fun writeVersionInfo() {
+        val properties = Properties()
+        properties["latestMilestone"] = version
+        versionInfoFile.outputStream().use { out ->
+            properties.store(out, null)
+        }
+    }
+}
+// end::versionInfo[]
+
+

@@ -1,4 +1,6 @@
-apply plugin: 'java'
+plugins {
+    id('java')
+}
 
 task integTest(type: Test) {
 }
@@ -20,7 +22,8 @@ integTest {
 
 // tag::distributionDirInput[]
 class DistributionLocationProvider implements CommandLineArgumentProvider { // <1>
-    @InputDirectory @PathSensitive(PathSensitivity.RELATIVE)                // <2>
+    @InputDirectory
+    @PathSensitive(PathSensitivity.RELATIVE)                                // <2>
     File distribution
 
     @Override
