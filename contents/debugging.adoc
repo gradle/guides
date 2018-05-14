@@ -146,7 +146,7 @@ Keep an eye out for certain patterns, like a build recompiling everything even t
 
 You can also make changes to your code base manually or automatically and check that the expected set of tasks is cached.
 
-If you have tasks that are re-executing instead of pulling their outputs from the cache, then it may point to a problem in your build.
+If you have tasks that are re-executing instead of loading their outputs from the cache, then it may point to a problem in your build.
 Techniques for debugging a cache miss are explained in the following section.
 
 === Helpful data for diagnosing a cache miss

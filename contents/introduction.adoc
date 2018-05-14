@@ -50,7 +50,7 @@ The changes don't need to be completely independent, either; we'll take a look a
 
 === Combine CI results with local caching on developer machines
 
-Developers can utilize both a local and a remote cache. While pulling results from a CI-filled remote cache helps to avoid work needed because of changes by other developers, the local cache can speed up switching branches and doing `git bisect`.
+Developers can utilize both a local and a remote cache. While loading results from a CI-filled remote cache helps to avoid work needed because of changes by other developers, the local cache can speed up switching branches and doing `git bisect`.
 
 === Share results between developers
 

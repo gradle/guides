@@ -71,7 +71,7 @@ Gradle's build cache can be very useful in reducing CI infrastructure cost and f
 
 When using Gradle Enterprise you can use the https://docs.gradle.com/enterprise/export-api/[Export API] to extract data about developer builds, too.
 You can then create statistics on how many tasks were cached per developer or build.
-You can even compare the times it took to execute the task vs pulling it from the cache and then estimate the time saved per developer.
+You can even compare the times it took to execute the task vs loading it from the cache and then estimate the time saved per developer.
 
 When using the https://gradle.com/build-cache[Gradle Enterprise build cache backend] you should pay close attention to the hit rate in the admin UI.
 A rise in the hit rate there probably indicates better usage by developers:
