@@ -49,7 +49,7 @@ The goal with clean builds and the build cache turned on is to retrieve all cach
 
 [WARNING]
 ====
-When running this test make sure that you have no `remote` cache configured, and pushing to the `local` cache is enabled.
+When running this test make sure that you have no `remote` cache configured, and storing in the `local` cache is enabled.
 These are the default settings.
 ====
 
@@ -96,7 +96,7 @@ For the following example let's assume we have a checkout in `\~/checkout-1` and
 
 [WARNING]
 ====
-Like with the previous test, you should have no `remote` cache configured, and pushing to the `local` cache should be enabled.
+Like with the previous test, you should have no `remote` cache configured, and storing in the `local` cache should be enabled.
 ====
 
 [listing]
