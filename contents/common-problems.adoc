@@ -103,7 +103,7 @@ This can be achieved by using the {user-manual}more_about_tasks.html#sec:task_in
 include::{samplescodedir}/java-version-tracking/build.gradle[tags=trackVendor]
 ----
 
-With respect to tracking the Java minor version there are different competing aspects: support pulling results for developers and having "perfect" results on CI.
+With respect to tracking the Java minor version there are different competing aspects: developers having cache hits and "perfect" results on CI.
 There are basically two situations when you may want to track the minor version of Java: for compilation and for runtime.
 In the case of compilation, there can sometimes be differences in the produced bytecode for different minor versions.
 However, the bytecode should still result in the same runtime behavior.
@@ -210,7 +210,7 @@ Most times though, the input will be part of the output.
 
 Having tasks which generate different outputs for the same inputs can pose a challenge for the effective use of task output caching as seen in <<concepts_repeatable_task_outputs>>.
 If the non-repeatable task output is not used by any other task then the effect is very limited.
-It basically means that pulling the task from the cache might produce a different result than executing the same task locally.
+It basically means that loading the task from the cache might produce a different result than executing the same task locally.
 If the only difference between the outputs is a timestamp, then you can either accept the effect of the build cache or decide that the task is not cacheable after all.
 
 Non-repeatable task outputs lead to non-stable task inputs as soon as another task depends on the non-repeatable output.

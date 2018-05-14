@@ -11,7 +11,7 @@ Since the cache key is only influenced by the ABI of dependencies (and not by th
 
 For example, take a project with two modules: an application depending on a library.
 Suppose the latest version is already built by CI and uploaded to the shared cache.
-If a developer now modifies a method's body in the library, the library will need to be rebuilt on their computer. But they will be able to pull the compiled classes for the application from the shared cache. Gradle can do this because the library used to compile the application on CI, and the modified library available locally share the same ABI.
+If a developer now modifies a method's body in the library, the library will need to be rebuilt on their computer. But they will be able to load the compiled classes for the application from the shared cache. Gradle can do this because the library used to compile the application on CI, and the modified library available locally share the same ABI.
 
 ==== Annotation processors
 
