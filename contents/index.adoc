@@ -54,7 +54,14 @@ To get started we will look at the main differences between the Groovy DSL and t
 * Extensions
 
 
-## File names
+=== Script file names
+
+[NOTE]
+--
+Groovy DSL script files are all named `*.gradle`.
+
+Kotlin DSL script files are all named `*.gradle.kts`.
+--
 
 To use the Kotlin DSL, simply name your files `build.gradle.kts` instead of `build.gradle`.
 
@@ -62,12 +69,14 @@ The `settings.gradle` file can also be renamed `settings.gradle.kts`.
 
 In a multi-project build, you can have some modules using the Groovy DSL (and thus use `build.gradle` files), and some other modules using the Kotlin DSL (and thus use `build.gradle.kts` files). So you're not forced to migrate everything at once.
 
-## Applying built-in plugins
+// TODO develop on other naming conventions for better IDE support
+
+
+=== Applying core plugins
 
 Using the `plugins` block:
 
-.Groovy
-[source, groovy]
+[source.multi-language-sample, groovy]
 ----
 plugins {
     id 'java'
@@ -75,8 +84,7 @@ plugins {
 }
 ----
 
-.Kotlin
-[source, kotlin]
+[source.multi-language-sample, kotlin]
 ----
 plugins {
     java
@@ -86,36 +94,32 @@ plugins {
 
 As you can see with the `jacoco` example, the same syntax can be used in Groovy and Kotlin (except for double quotes and parentheses that must be used in Kotlin, of course).
 
-But the Kotlin DSL also defines extension properties for all (AFAIK) built-in plugins, so you can use them, as shown above with the `java` example.
+But the Kotlin DSL also defines extension properties for all core Gradle plugins, so you can use them, as shown above with the `java` example.
 
 You can also use the older `apply` syntax:
 
-.Groovy
-[source, groovy]
+[source.multi-language-sample, groovy]
 ----
 apply plugin: 'checkstyle'
 ----
 
-.Kotlin
-[source, kotlin]
+[source.multi-language-sample, kotlin]
 ----
 apply(plugin = "checkstyle")
 ----
 
-## Applying external plugins
+=== Applying external plugins
 
 Using the `plugins` block:
 
-.Groovy
-[source, groovy]
+[source.multi-language-sample, groovy]
 ----
 plugins {
     id 'org.springframework.boot' version '2.0.1.RELEASE'
 }
 ----
 
-.Kotlin
-[source, kotlin]
+[source.multi-language-sample, kotlin]
 ----
 plugins {
     id("org.springframework.boot") version "2.0.1.RELEASE"
@@ -124,8 +128,7 @@ plugins {
 
 You can also use the older `apply` syntax, but then the plugin must be added to the classpath of the build script:
 
-.Groovy
-[source, groovy]
+[source.multi-language-sample, groovy]
 ----
 buildscript {
     repositories {
@@ -139,8 +142,7 @@ buildscript {
 apply plugin: 'org.flywaydb.flyway'
 ----
 
-.Kotlin
-[source, kotlin]
+[source.multi-language-sample, kotlin]
 ----
 buildscript {
     repositories {
@@ -154,68 +156,44 @@ buildscript {
 apply(plugin = "org.flywaydb.flyway")
 ----
 
-## Applying the Kotlin plugin
 
-If you're using Kotlin to write your build scripts, you probably also use Kotlin in your project. Applying the Kotlin plugin is no different from applying any external other plugin. But the DSL has an extension function to make it shorter:
-
-.Groovy
-[source, groovy]
-----
-plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.2.41'
-}
-----
-
-.Kotlin
-[source, kotlin]
-----
-plugins {
-    kotlin("jvm") version "1.2.41"
-}
-----
-
-## Customizing an existing task
+=== Configuring tasks
 
 This is where Groovy and Kotlin start to differ. Since Kotlin is a statically typed language, and since you want to benefit from this static typing by discovering available properties and methods using auto-completion, you need to know and provide the type of the task you want to configure.
 
 Here is how you can configure a single property of the existing `jar` task:
 
-.Groovy
-[source, groovy]
+[source.multi-language-sample, groovy]
 ----
 jar.archiveName = 'foo.jar'
 ----
 
-.Kotlin
-[source, kotlin]
+[source.multi-language-sample, kotlin]
 ----
-val jar: Jar by tasks
-jar.archiveName = "foo.jar"
+tasks.getByName<Jar>("jar").archiveName = "foo.jar"
 ----
 
-Note that specifying the type of the task explicitly is necessary. Otherwise, the script won't compile because the inferred type of `jar` will be `Task`, and the `archiveName` property is specific to the `Jar` task.
+Note that specifying the type of the task explicitly is necessary. Otherwise, the script won't compile because the inferred type of `jar` will be `Task`, and the `archiveName` property is specific to the `Jar` task type.
 
 You can, however, omit the type if you only need to configure properties or call methods declared in `Task`:
 
-.Groovy
-[source, groovy]
+[source.multi-language-sample, groovy]
 ----
 test.doLast {
     println("test completed")
 }
 ----
 
-.Kotlin
-[source, kotlin]
+[source.multi-language-sample, kotlin]
 ----
-val test by tasks
-test.doLast { println("test completed") }
+tasks["test"].doLast {
+    println("test completed")
+}
 ----
 
 If you need to configure several properties or call multiple methods on the same task you can group them in a block as follows:
 
-.Groovy
-[source, groovy]
+[source.multi-language-sample, groovy]
 ----
 jar {
     archiveName = 'foo.jar'
@@ -225,62 +203,38 @@ jar {
 }
 ----
 
-.Kotlin
-[source, kotlin]
+[source.multi-language-sample, kotlin]
+----
+tasks.getByName<Jar>("jar") {
+    archiveName = "foo.jar"
+    into("META-INF") {
+        from("bar")
+    }
+}
+----
+
+But there is another idiomatic way to configure tasks: using Kotlin link:https://kotlinlang.org/docs/reference/delegated-properties.html[delegated properties].
+It is particularly useful if you need a reference to the task for later usage:
+
+[source.multi-language-sample, groovy]
+----
+jar {
+    archiveName = 'foo.jar'
+}
+
+jar.into('META-INF') {
+    from('bar')
+}
+----
+
+[source.multi-language-sample, kotlin]
 ----
 val jar by tasks.getting(Jar::class) {
     archiveName = "foo.jar"
-    into("META-INF") {
-        from("bar")
-    }
-}
-----
-
-If you already have a `val` for the task you want to configure in scope, the Kotlin `apply` function is handy:
-
-.Kotlin
-[source, kotlin]
-----
-val jar: Jar by tasks
-jar.apply {
-    archiveName = "foo.jar"
-    into("META-INF") {
-        from("bar")
-    }
-}
-----
-
-But there is another idiomatic way to configure tasks: using a `tasks` block:
-
-.Groovy
-[source, groovy]
-----
-jar {
-    archiveName = 'foo.jar'
-    into('META-INF') {
-        from('bar')
-    }
 }
 
-test.doLast {
-    println("test completed")
-}
-----
-
-.Kotlin
-[source, kotlin]
-----
-tasks {
-    "jar"(Jar::class) {
-        archiveName = "foo.jar"
-        into("META-INF") {
-            from("bar")
-        }
-    }
-
-    "test" {
-        doLast { println("test completed") }
-    }
+jar.into("META-INF") {
+    from("bar")
 }
 ----
 
@@ -288,8 +242,11 @@ Once again, note that if you need to apply task-specific configurations, you nee
 
 This means that you'll sometimes need to dive in the documentation or source code of custom plugins to discover what the types of its custom tasks are, and to import them, or use their fully qualified name.
 
-.Groovy
-[source, groovy]
+Another way is to use the `tasks` task that display the list of available tasks. From there to get the type of a given task, say `jar`, use `./gradlew help --task jar`, this will tell you the type of that task.
+
+This is particularly true if you are using an external plugin:
+
+[source.multi-language-sample, groovy]
 ----
 plugins {
     id('java')
@@ -297,24 +254,23 @@ plugins {
 }
 
 repositories {
-    mavenCentral()
+    jcenter()
 }
 
 apply plugin: 'io.spring.dependency-management'
 
 bootJar {
     archiveName = 'app.jar'
-    mainClassName = 'com.ninja_squad.demo.Demo'
+    mainClassName = 'com.example.demo.Demo'
 }
 
 bootRun {
-    main = 'com.ninja_squad.demo.Demo'
+    main = 'com.example.demo.Demo'
     args '--spring.profiles.active=demo'
 }
 ----
 
-.Kotlin
-[source, kotlin]
+[source.multi-language-sample, kotlin]
 ----
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
@@ -325,54 +281,81 @@ plugins {
 }
 
 repositories {
-    mavenCentral()
+    jcenter()
 }
 
 apply(plugin = "io.spring.dependency-management")
 
 tasks {
-    "bootJar"(BootJar::class) {
+    getByName<BootJar>("bootJar") {
         archiveName = "app.jar"
-        mainClassName = "com.ninja_squad.demo.Demo"
+        mainClassName = "com.example.demo.Demo"
     }
 
-    "bootRun"(BootRun::class) {
-        main = "com.ninja_squad.demo.Demo"
+    getByName<BootRun>("bootRun") {
+        main = "com.example.demo.Demo"
         args("--spring.profiles.active=demo")
     }
 }
 ----
 
-## Creating a task
+In the Kotlin version of the snippet above we need to know that the `bootJar` task is of type `BootJar` and that the `bootRun` task is of type `BootRun`. The IDE then helps for adding the corresponding imports automatically.
 
-Creating a task can be done by declaring delegated property, delegating to `tasks.creating`:
 
-.Groovy
-[source, groovy]
+=== Creating tasks
+
+Creating tasks can be done on the `tasks` container:
+
+[source.multi-language-sample, groovy]
 ----
 task greeting {
-    println('always printed: configuration phase')
-    doLast {
-        println('only printed if executed: execution phase')
-    }
+    doLast { println("Hello, World!") }
 }
 ----
 
-.Kotlin
-[source, kotlin]
+[source.multi-language-sample, kotlin]
+----
+tasks.create("greeting") {
+    doLast { println("Hello, World!") }
+}
+----
+
+or directly from the top-level using the API functions available on `Project`:
+
+[source.multi-language-sample, groovy]
+----
+task greeting {
+    doLast { println("Hello, World!") }
+}
+----
+
+[source.multi-language-sample, kotlin]
+----
+task("greeting") {
+    doLast { println("Hello, World!") }
+}
+----
+
+or by using Kotlin delegated properties that are useful if you need a reference to the created task for later usage:
+
+[source.multi-language-sample, groovy]
+----
+task greeting {
+    doLast { println("Hello, World!") }
+}
+----
+
+[source.multi-language-sample, kotlin]
 ----
 val greeting by tasks.creating {
-    println("always printed: configuration phase")
-    doLast {
-        println("only printed if executed: execution phase")
-    }
+    doLast { println("Hello, World!") }
 }
 ----
 
-Sometimes you want to create a task of a given type (`Zip` in this example):
 
-.Groovy
-[source, groovy]
+Often you want to create a task of a given type (`Zip` in this example):
+
+[source.multi-language-sample, groovy]
 ----
 task docZip(type: Zip) {
     archiveName = 'doc.zip'
@@ -380,8 +363,43 @@ task docZip(type: Zip) {
 }
 ----
 
-.Kotlin
-[source, kotlin]
+[source.multi-language-sample, kotlin]
+----
+tasks.create<Zip>("docZip") {
+    archiveName = "doc.zip"
+    from("doc")
+}
+----
+
+The same thing can be done using the `Project` API:
+
+[source.multi-language-sample, groovy]
+----
+task docZip(type: Zip) {
+    archiveName = 'doc.zip'
+    from 'doc'
+}
+----
+
+[source.multi-language-sample, kotlin]
+----
+task<Zip>("docZip") {
+    archiveName = "doc.zip"
+    from("doc")
+}
+----
+
+Or Kotlin delegated properties:
+
+[source.multi-language-sample, groovy]
+----
+task docZip(type: Zip) {
+    archiveName = 'doc.zip'
+    from 'doc'
+}
+----
+
+[source.multi-language-sample, kotlin]
 ----
 val docZip by tasks.creating(Zip::class) {
     archiveName = "doc.zip"
@@ -389,68 +407,16 @@ val docZip by tasks.creating(Zip::class) {
 }
 ----
 
-The same things can also be done using the `tasks` block:
 
-.Groovy
-[source, groovy]
+=== Dependencies and configurations
+
+Declaring dependencies in the existing configurations is not much different from doing it in Groovy:
+
+[source.multi-language-sample, groovy]
 ----
-task greeting2 {
-    println('always printed: configuration phase')
-    doLast {
-        println('only printed if executed: execution phase')
-    }
+plugins {
+    id 'java'
 }
-
-task docZip2(type: Zip) {
-    archiveName = 'doc.zip'
-    from 'doc'
-}
-----
-
-.Kotlin
-[source, kotlin]
-----
-tasks {
-    "greeting2" {
-        println("always printed: configuration phase")
-        doLast {
-            println("only printed if executed: execution phase")
-        }
-    }
-
-    "docZip2"(Zip::class) {
-        archiveName = "doc2.zip"
-        from("doc")
-    }
-}
-----
-
-Notice that creating a task uses the exact same syntax as customizing an existing task. This can be confusing, and even lead to bugs: your intention might be to customize an existing task, but if you use the wrong task name, you will end up creating a new task rather than customizing the existing task. The reader might also not know if your intention is to customize an existing task, or to create a new one. For these two reasons, you might prefer using these slightly more verbose variants, which clearly show your intent and avoid the previously described bug:
-
-.Kotlin
-[source, kotlin]
-----
-tasks {
-    // get and customize the existing task named test. Fails if there is no test task.
-    val test by getting {
-        doLast { println("test completed") }
-    }
-
-    // create a new docZip3 task. Fails if a task docZip3 already exists.
-    val docZip3 by creating(Zip::class) {
-        archiveName = "doc3.zip"
-        from("doc")
-    }
-}
-----
-
-## Dependencies
-
-Declaring dependencies in the existing Java configurations is not much different from doing it in Groovy:
-
-.Groovy
-[source, groovy]
-----
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'io.jsonwebtoken:jjwt:0.9.0'
@@ -462,9 +428,11 @@ dependencies {
 }
 ----
 
-.Kotlin
-[source, kotlin]
+[source.multi-language-sample, kotlin]
 ----
+plugins {
+    java
+}
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("io.jsonwebtoken:jjwt:0.9.0")
@@ -476,12 +444,76 @@ dependencies {
 }
 ----
 
-## Custom configurations
+Note that if you do not use the `plugins {}` block to apply your plugins, then accessors to configurations contributed by the applied plugins won't be available. You'll then have to address them by name:
 
-Sometimes you need to add your own configuration, and add dependencies to that configuration:
+[source.multi-language-sample, groovy]
+----
+apply plugin: 'java'
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'io.jsonwebtoken:jjwt:0.9.0'
+    runtimeOnly 'org.postgresql:postgresql'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude(module: 'junit')
+    }
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+----
 
-.Groovy
-[source, groovy]
+[source.multi-language-sample, kotlin]
+----
+apply(plugin = "java")
+dependencies {
+    "implementation"("org.springframework.boot:spring-boot-starter-web")
+    "implementation"("io.jsonwebtoken:jjwt:0.9.0")
+    "runtimeOnly"("org.postgresql:postgresql")
+    "testImplementation"("org.springframework.boot:spring-boot-starter-test") {
+        exclude(module = "junit")
+    }
+    "testRuntimeOnly"("org.junit.jupiter:junit-jupiter-engine")
+}
+----
+
+or bring them into scope thanks to Kotlin delegated properties:
+
+[source.multi-language-sample, groovy]
+----
+apply plugin: 'java'
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'io.jsonwebtoken:jjwt:0.9.0'
+    runtimeOnly 'org.postgresql:postgresql'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude(module: 'junit')
+    }
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+----
+
+[source.multi-language-sample, kotlin]
+----
+apply(plugin = "java")
+val implementation by configurations
+val runtimeOnly by configurations
+val testImplementation by configurations
+val testRuntimeOnly by configurations
+dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("io.jsonwebtoken:jjwt:0.9.0")
+    runtimeOnly("org.postgresql:postgresql")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(module = "junit")
+    }
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+}
+----
+
+
+=== Custom configurations and dependencies
+
+Sometimes you need to add your own configuration, and add dependencies to them:
+
+[source.multi-language-sample, groovy]
 ----
 configurations {
     db
@@ -496,8 +528,7 @@ dependencies {
 }
 ----
 
-.Kotlin
-[source, kotlin]
+[source.multi-language-sample, kotlin]
 ----
 val db by configurations.creating
 val integTestImplementation by configurations.creating {
@@ -512,7 +543,7 @@ dependencies {
 
 Note that, in the above example, you can only use `db(...)` and `integTestImplementation(...)` because they're both declared as properties before. If they were defined elsewhere, you could get them by delegating to `configurations`, or you could use a string to add a dependency to the configuration:
 
-.Kotlin
+.kotlin
 [source, kotlin]
 ----
 // get the existing testRuntimeOnly configuration
@@ -525,14 +556,13 @@ dependencies {
 }
 ----
 
-## Extensions
+=== Extensions
 
-Many plugins come with extensions to configure them. If those plugins are applied using the `plugins` block (which is true for the jacoco and the Spring Boot plugins in the following example), then Kotlin extension functions are made available to configure their extension, the same way as in Groovy.
+Many plugins come with extensions to configure them. If those plugins are applied using the `plugins {}` block (which is true for the `jacoco` and the Spring Boot plugins in the following example), then Kotlin extension functions are made available to configure their extension, the same way as in Groovy.
 
 On the other hand, if you use the older `apply` function to apply a plugin (which is true for the checkstyle plugin in the following example), you'll have to use the `configure<T> {}` function to configure them:
 
-.Groovy
-[source, groovy]
+[source.multi-language-sample, groovy]
 ----
 jacoco {
     toolVersion = "0.8.1"
@@ -551,8 +581,7 @@ checkstyle {
 }
 ----
 
-.Kotlin
-[source, kotlin]
+[source.multi-language-sample, kotlin]
 ----
 jacoco {
     toolVersion = "0.8.1"
