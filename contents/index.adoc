@@ -1,14 +1,21 @@
 = Migrating build logic from Groovy to Kotlin
 :numbered:
 
-TBD
+Kotlin and Groovy languages are very different beasts, each with its own strengths.
+
+Kotlin is statically typed and has null safety built-int and comes with top-notch IDE tooling from auto-completion to refactoring and everything in-between.
+
+Groovy on the other hand is highly dynamic by nature, hence very flexible but lacking proper IDE tooling.
+
+Gradle is implemented in Java on top of the JVM.
+Both the Groovy DSL and the Kotlin DSL are implemented on top of the Gradle Java API.
 
 [NOTE]
 If you want to read on Kotlin the language before getting started or if you need some reference documentation along the way, the https://kotlinlang.org/docs/reference/[reference documentation] is the place to go.
 The https://kotlinlang.org/docs/tutorials/koans.html[Kotlin Koans] provide a fun way to learn Kotlin.
 
 
-== Meet the Kotlin DSL
+== Groovy meet Kotlin
 
 Kotlin the language is statically typed and has null safety built-int.
 Groovy on the other hand is highly dynamic by nature.
@@ -36,7 +43,7 @@ Applying Gradle best practices will make it much easier with the Kotlin DSL
 
 == A taste at the differences
 
-// Just a taste, with lots of small samples to contemplate
+To get started we will look at the main differences between the Groovy DSL and the Kotlin DSL from a scripting point of view. You can switch from Groovy script excerpts to Kotlin ones to see the differences.
 
 * File names
 * Applying plugins
@@ -48,10 +55,89 @@ Applying Gradle best practices will make it much easier with the Kotlin DSL
 
 [TIP]
 The Gradle link:{user-manual}[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
-This is the best place where to find how to do this and what with the Kotlin DSL ; and it covers all Gradle features.
+This is the best place where to find how to do this and what with the Kotlin DSL ; and it covers all Gradle features from link:#TODO[using plugins] to link:#TODO[customizing the dependency resolution behavior].
 
 
-== Migrate a Gradle build
+=== Going from dynamic to static
+
+Gradle core provides the base building blocks of the build model.
+Both build and plugins authors interact with that build model through scripts and plugins.
+Those interactions include contributing to the build model - e.g. adding configurations, tasks or extensions - and configuring elements of the build model - again, configurations, tasks, extensions etc…
+
+The Gradle Java API allows build and plugin authors to interact with the build model using any JVM language. When using the Java API you need to query the model for elements contributed by plugins, mostly either by name, type or both.
+
+On top of the Gradle Java API, the Gradle DSLs provide a more concise syntax.
+
+Let’s look at an example. Let’s say we create a Gradle plugin implemented in Java that applies the `distribution` plugin then creates a `samples` distribution and declare its conventional content:
+
+[source.java]
+----
+public class MyPlugin implements Plugin<Project> {
+   @Override
+   public void apply(final Project project) {
+
+        project.getPlugins().apply("distribution");
+
+        ExtensionContainer extensions = project.getExtensions();
+        DistributionContainer distributions = extensions.getByType(DistributionContainer.class);
+        Distribution samples = distributions.create("samples");
+        samples.getContents().from(project.getLayout().getProjectDirectory().dir("src/samples"));
+   }
+}
+----
+
+It's verbose, but let not focus on that.
+
+The `distribution` plugin contributes an extension to the project model named `distributions` and of type `DistributionContainer`.
+The sample above queries the project model for that extension by type and then use it.
+It could also have queried for the extension by name with `project.getExtensions().getByName("distributions")` but a cast to `DistributionContainer` would have been needed before interacting with it. In other words, models contributed by plugins are addressed by name, type or both.
+That's a lot of ceremony.
+
+The main goal of both Gradle DSLs is to reduce that ceremony. In both DSLs this is achieved by using a concise programming language, syntactic helpers plus constructs that make it easier to work with the Gradle extensible model.
+
+Let's now look at the very same intent but implemented using the Groovy DSL,
+
+[source, groovy]
+----
+plugins {
+    id 'distribution'
+}
+distributions {
+    samples {
+        contents {
+            from layout.projectDirectory.dir('src/samples')
+        }
+    }
+}
+----
+
+and the Kotlin DSL:
+
+[source, kotlin]
+----
+plugins {
+    id("distribution")
+}
+distributions {
+    create("samples") {
+        contents {
+            from(layout.projectDirectory.dir("src/samples"))
+        }
+    }
+}
+----
+
+In both scripts above, the `distributions` extension of type `DistributionContainer` contributed by the `distribution` plugin is simply called out by name.
+Both DSLs provide constructs to address model elements contributed by plugins.
+
+In both scripts above, the `samples` distribution is created and configured on the `distributions` extension which is a link:{user-manual}custom_plugins.html#sec:maintaining_multiple_domain_objects[collection of objects] for which both the Groovy DSL and the Kotlin DSL provide syntactic helpers.
+
+There are some differences, but the concerns are the same.
+
+// TODO explain what happens in each case to make things very clear
+
+
+== Migration strategies
 
 Both scripts using the Kotlin DSL, `\*.gradle.kts`, and scripts using the Groovy DSL, `*.gradle`, can participate in the same build. Gradle plugins implemented in `./buildSrc`, an included build or externally fetched can use any JVM language. This makes it possible to migrate progressively, piece by piece, without blocking your team.
 
