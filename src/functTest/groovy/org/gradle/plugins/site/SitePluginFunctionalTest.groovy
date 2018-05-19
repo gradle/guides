@@ -17,7 +17,7 @@ class SitePluginFunctionalTest extends AbstractFunctionalTest {
         then:
         buildResult.output.contains("""Documentation tasks
 -------------------
-$GENERATE_SITE_TASK_NAME - Generates a web page containing information about the project.""")
+$GENERATE_SITE_TASK_NAME - Generates a web page containing information about the project.""".replace("\n", System.getProperty("line.separator")))
     }
 
     def "can generate site for default conventions"() {
