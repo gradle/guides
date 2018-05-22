@@ -1,0 +1,20 @@
+= Executing Gradle builds on TeamCity
+
+(Introduction goes here :)
+
+== What you'll need
+
+* About [.time-to-complete-text]#NN#
+* A text editor
+* A command prompt
+* The Java Development Kit (JDK), version 1.7 or higher
+* A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
+* A Jenkins installation (setup steps explained in this post)
+
+== Other headers
+
+== Further reading
+
+== Summary
+
+include::contribute[]
