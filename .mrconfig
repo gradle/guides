@@ -49,6 +49,9 @@ checkout = git clone git@github.com:gradle-guides/designing-gradle-plugins.git
 [executing-gradle-builds-on-jenkins]
 checkout = git clone git@github.com:gradle-guides/executing-gradle-builds-on-jenkins.git
 
+[executing-gradle-builds-on-teamcity]
+checkout = git clone git@github.com:gradle-guides/executing-gradle-builds-on-teamcity.git
+
 [executing-gradle-builds-on-travisci]
 checkout = git clone git@github.com:gradle-guides/executing-gradle-builds-on-travisci.git
 
