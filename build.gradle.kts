@@ -8,7 +8,8 @@ plugins {
 
 configure<org.gradle.guides.GuidesExtension> {
     repoPath = "gradle-guides/migrating-build-logic-from-groovy-to-kotlin"
-    mainAuthor = "EDIT build.gradle TO ADD AUTHOR"
+    mainAuthor = "Paul Merlin"
+    supAuthors(listOf("Rodrigo B. de Oliveira", "Jean-Baptiste Nizet", "Jonathan Leitschuh"))
 }
 
 buildScan {
