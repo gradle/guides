@@ -10,46 +10,38 @@ The Gradle link:{user-manual}[user manual] and link:{guides}[guides] contain bui
 This is the best place where to find how to do this and what with each DSL  ; and it covers all Gradle features from link:#TODO[using plugins] to link:#TODO[customizing the dependency resolution behavior].
 
 
-== Groovy meet Kotlin - WIP
+== Groovy meet Kotlin
 
-// TODO redact
+Gradle is implemented in Java on top of the JVM.
+Both the Groovy DSL and the Kotlin DSL are implemented on top of the Gradle Java API.
 
 Kotlin and Groovy languages are very different beasts, each with its own strengths.
-
-Kotlin the language is statically typed, has null safety built-int and comes with top-notch IDE tooling from auto-completion to refactoring and everything in-between..
-
-Groovy on the other hand is highly dynamic by nature, hence very flexible but lacking proper IDE tooling.
+Kotlin is statically typed, has null safety built-in, hence is quite strict.
+Groovy on the other hand is highly dynamic by nature, hence is very flexible.
 
 [NOTE]
 If you want to read on Kotlin the language before getting started or if you need some reference documentation along the way, the https://kotlinlang.org/docs/reference/[reference documentation] is the place to go.
 The https://kotlinlang.org/docs/tutorials/koans.html[Kotlin Koans] provide a fun way to learn Kotlin.
 
+The Kotlin language being more strict than Groovy also means that the Gradle Kotlin DSL is more strict than the Gradle Groovy DSL.
+Both share the same ultimate goal though: provide means to interact with the dynamic and extensible Gradle model, and runtime.
 
-Gradle is implemented in Java on top of the JVM.
-Both the Groovy DSL and the Kotlin DSL are implemented on top of the Gradle Java API.
-
-* Kotlin language more strict than Groovy language
-* Kotlin DSL more strict than Groovy DSL
-
-Both DSLs provide means to interact with the Gradle dynamic and extensible model, and runtime.
-
-With the Kotlin DSL:
-
-* more ceremony to do dynamic things, some limitations with helpers
-* more safety, more tooling
-
+It takes more ceremony to do dynamic things with the Kotlin DSL.
+On the other hand it provides more safety and more tooling.
 
 Applying Gradle best practices tend towards more declarative builds, less dynamic constructs. This is where the Kotlin DSL shines with the less ceremony and the more tooling. In that sense, the Kotlin DSL encourages Gradle best practices.
 
-Applying Gradle best practices will make it much easier with the Kotlin DSL
+[TIP]
+--
+*Applying Gradle best practices will make it much easier with the Kotlin DSL*
 
-* link to Gradle Kotlin DSL presentation in manual
-* link to Gradle best practices in manual and guides
-
+Please refer to the link:{user-manual}authoring_maintainable_build_scripts.html[Authoring Maintainable Build Scripts] and link:{user-manual}organizing_build_logic.html[Organizing Build Logic] chapters.
+In general, follow the advices given in the Gradle link:{user-manual}[user manual] and link:{guides}[guides].
+--
 
 == IDE Support - WIP
 
-IntelliJ IDEA and Android Studio support the edition of Gradle Kotlin DSL scripts and provide auto-completion, content assist, quick documentation, navigation to sources, refactoring and more.
+IntelliJ IDEA and Android Studio both support the edition of Gradle Kotlin DSL scripts and provide auto-completion, content assist, quick documentation, navigation to sources, refactoring and more.
 
 // TODO Screenshots
 
@@ -63,7 +55,7 @@ Even though other IDEs have no support for code completion and content assist wh
 This is true for both link:https://www.eclipse.org/[Eclipse], thanks to the link:https://projects.eclipse.org/projects/tools.buildship[Buildship] project, and link:https://netbeans.apache.org/[Apache Netbeans], thanks to its link:https://github.com/kelemen/netbeans-gradle-project[Gradle plugin].
 
 
-== Script file names - WIP
+== Script file names
 
 [NOTE]
 --
@@ -78,7 +70,10 @@ The `settings.gradle` file can also be renamed `settings.gradle.kts`.
 
 In a multi-project build, you can have some modules using the Groovy DSL (and thus use `build.gradle` files), and some other modules using the Kotlin DSL (and thus use `build.gradle.kts` files). So you're not forced to migrate everything at once.
 
-// TODO more on other naming conventions for better IDE support
+On top of that, the following conventions apply for better IDE support:
+
+* scripts applied to `Settings` should be named `*.settings.gradle.kts`
+* init scripts should be named `*.init.gradle.kts`
 
 
 == Applying plugins
@@ -460,7 +455,7 @@ tasks {
 }
 ----
 
-In the Kotlin version of the snippet above we need to know that the `bootJar` task is of type `BootJar` and that the `bootRun` task is of type `BootRun`. The IDE then helps for adding the corresponding imports automatically.
+In the Kotlin version of the snippet above you need to know that the `bootJar` task is of type `BootJar` and that the `bootRun` task is of type `BootRun`. The IDE then helps for adding the corresponding imports automatically.
 
 
 == Creating tasks
