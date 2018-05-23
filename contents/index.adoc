@@ -10,7 +10,7 @@ The Gradle link:{user-manual}[user manual] and link:{guides}[guides] contain bui
 This is the best place where to find how to do this and what with each DSL  ; and it covers all Gradle features from link:#TODO[using plugins] to link:#TODO[customizing the dependency resolution behavior].
 
 
-== Groovy meet Kotlin
+== Groovy meet Kotlin - WIP
 
 // TODO redact
 
@@ -47,8 +47,14 @@ Applying Gradle best practices will make it much easier with the Kotlin DSL
 * link to Gradle best practices in manual and guides
 
 
+[TIP]
+--
+// TODO redact
+IDE support
+--
 
-== Script file names
+
+== Script file names - WIP
 
 [NOTE]
 --
@@ -689,7 +695,7 @@ dependencies {
 
 Note that, in the above example, you can only use `db(...)` and `integTestImplementation(...)` because they're both declared as properties before. If they were defined elsewhere, you could get them by delegating to `configurations`, or you could use a string to add a dependency to the configuration:
 
-.kotlin
+.build.gradle.kts
 [source, kotlin]
 ----
 // get the existing testRuntimeOnly configuration
@@ -703,7 +709,15 @@ dependencies {
 ----
 
 
-== Migration strategies
+== Multi project builds - WIP
+
+// TODO redact
+
+* project hierarchy == build scripts classpath
+* impact of configure-on-demand, evaluationDependsOn() and evaluationDependsOnChildren()
+
+
+== Migration strategies - WIP
 
 // TODO redact
 
@@ -727,7 +741,7 @@ Depending on your build structure you might be interested by the following sampl
 * link to source-control sample
 --
 
-Refactor towards the use of the `plugins {}` block using `pluginManagement {}` in `settings.gradle.kts` to control plugin resolution.
+Refactor towards the use of the `plugins {}` block. Use `pluginManagement {}` in `settings.gradle.kts` to control plugin resolution if needed.
 
 Refactor towards the use of `buildSrc` using the `kotlin-dsl` plugin.
 // and pre-compiled scripts `buildSrc/src/main/kotlin/my-plugin.gradle.kts`
@@ -748,7 +762,7 @@ The same mostly apply to interoperability with Groovy code.
 There are some gotchas though.
 The Kotlin DSL also provides with a way to opt-in to Groovy semantics.
 
-=== Static extensions
+=== Static extensions - WIP
 
 Both Groovy and Kotlin languages support extending existing classes, respectively with link:http://groovy-lang.org/metaprogramming.html#_extension_modules[Groovy Extension modules] and link:https://kotlinlang.org/docs/reference/extensions.html[Kotlin extensions].
 
@@ -761,7 +775,7 @@ To call a Groovy dynamic extension from Kotlin, the same applies, call it as a s
 // TODO sample
 
 
-=== Named parameters and default arguments
+=== Named parameters and default arguments - WIP
 
 Both Groovy and Kotlin languages support named function parameters and default arguments.
 They are link:https://kotlinlang.org/docs/reference/functions.html#named-arguments[natively] link:https://kotlinlang.org/docs/reference/functions.html#named-arguments[supported] by Kotlin.
@@ -882,14 +896,22 @@ native {
 ----
 
 
-== Troubleshooting
+== Tips and troubleshooting - WIP
 
-TBD
+// TODO redact
+
+* the `kotlinDslAccessorsReport` task prints the Kotlin code for accessing the currently available project extensions and conventions
 
 
-== Summary
+== Summary - WIP
 
-*TBD*
+// TODO redact
+
+Next steps
+
+* samples in user manual and guides
+* Kotlin DSL samples
+* Gradle best practices
 
 
 include::contribute[]
