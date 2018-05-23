@@ -1,10 +1,14 @@
 // tag::use-plugin-id[]
-apply plugin: 'org.example.greeting'
+apply {
+  plugin("org.example.greeting")
+}
 // end::use-plugin-id[]
 
 // tag::configure-hello[]
-hello { // <1>
+import org.example.greeting.Greeting
+
+tasks.getByName("hello", closureOf<Greeting> { // <1>
     message = "Hi"
     recipient = "Gradle"
-}
+})
 // end::configure-hello[]
