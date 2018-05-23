@@ -7,7 +7,7 @@ In this guide, we'll discuss how to configure link:https://www.jetbrains.com/tea
 
 == What you'll need
 
-* About [.time-to-complete-text]#NN#
+* About 6 min
 * A text editor
 * A command prompt
 * The Java Development Kit (JDK), version 1.8 or higher
