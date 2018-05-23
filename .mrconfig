@@ -76,6 +76,9 @@ checkout = git clone git@github.com:gradle-guides/implementing-gradle-plugins.gi
 [migrating-from-maven]
 checkout = git clone git@github.com:gradle-guides/migrating-from-maven.git
 
+[migrating-build-logic-from-groovy-to-kotlin]
+checkout = git clone git@github.com:gradle-guides/migrating-build-logic-from-groovy-to-kotlin.git
+
 [performance]
 checkout = git clone git@github.com:gradle-guides/performance.git
 

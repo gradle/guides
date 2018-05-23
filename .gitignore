@@ -24,6 +24,7 @@ greeting-plugin-example/
 gs-template/
 guides-test-fixtures/
 implementing-gradle-plugins/
+migrating-build-logic-from-groovy-to-kotlin/
 migrating-from-maven/
 performance/
 publishing-plugins-to-gradle-plugin-portal/
