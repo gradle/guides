@@ -1,5 +1,6 @@
 = Migrating build logic from Groovy to Kotlin
 :numbered:
+:figure-caption!:
 
 In this guide we will look at the main differences between Gradle's Groovy DSL and Kotlin DSL by comparing build scripts doing common things, introducing the main idioms of the Kotlin DSL.
 We'll also discuss possible migration strategies in the light of the structure of builds.
@@ -39,11 +40,11 @@ Please refer to the link:{user-manual}authoring_maintainable_build_scripts.html[
 In general, follow the advices given in the Gradle link:{user-manual}[user manual] and link:{guides}[guides].
 --
 
-== IDE Support - WIP
+== IDE Support
 
 IntelliJ IDEA and Android Studio both support the edition of Gradle Kotlin DSL scripts and provide auto-completion, content assist, quick documentation, navigation to sources, refactoring and more.
 
-// TODO Screenshots
+image::intellij-idea-android-studio.png[IntelliJ IDEA and Android Studio]
 
 [CAUTION]
 --
