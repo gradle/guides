@@ -3,19 +3,20 @@
 Building Gradle projects doesn't stop with the developer's machine.
 https://en.wikipedia.org/wiki/Continuous_integration[Continuous Integration] (CI) has been a long-established practice for running a build for every single change committed to version control to tighten the feedback loop.
 
-In this guide, we'll discuss how to configure link:https://www.jetbrains.com/teamcity/?fromMenu[TeamCity] for a typical Gradle project.
+In this guide, we'll discuss how to configure link:https://www.jetbrains.com/teamcity/[TeamCity] for a typical Gradle project.
+
 
 == What you'll need
 
-* About 6 min
-* A text editor
+* About [.time-to-complete-text]#NN#
 * A command prompt
 * The Java Development Kit (JDK), version 1.8 or higher
-* A TeamCity installation (setup steps explained in this post)
+* A TeamCity installation (setup steps explained in this guide)
+
 
 == Setup a typical project
 
-As example, this guide is going to focus on a Java-based project.
+For demonstration purposes, this guide is going to focus on building a Java-based project; however, this setup will work with any Gradle-compatible project.
 More specifically, a Gradle plugin written in Java and tested with Spock.
 First, we'll get the project set up on your local machine before covering the same steps on CI.
 
@@ -55,42 +56,47 @@ Publishing build scan...
 https://gradle.com/s/7mtynxxmesdio
 ----
 
-The following section will describe how to build the project with the help of TeamCity.
 
 == Setup TeamCity
 
 JetBrains TeamCity is a powerful and user-friendly Continuous Integration and Deployment server that works out of the box.
 JetBrains offers several licensing options that allow you to scale TeamCity to your needs.
-In this setup, we?ll use TeamCity Professional, a free fully functional edition suitable for average projects.
+In this setup, we'll use TeamCity Professional, a free fully functional edition suitable for average projects.
 In the course of this section, you'll learn how to set up TeamCity, create a build configuration to pull the source code from GitHub and run the Gradle build.
 
 === Install and start TeamCity
 
 On the https://www.jetbrains.com/teamcity/download/[TeamCity website] you can pick from a variety of distributions.
 This post uses TeamCity bundled with Tomcat servlet container and covers the evaluation setup of a TeamCity server and a default build agent running on the same machine.
+
 [start=1]
 . Make sure you have JRE or JDK installed and the JAVA_HOME environment variable is pointing to the Java installation directory. Oracle Java 1.8 JDK is required.
 . Download TeamCity .tar.gz distribution.
-Unpack the `TeamCity<version number>.tar.gz` archive, for example, using the WinZip, WinRar or a similar utility under Windows, or the following command under Linux:
+Unpack the `TeamCity<version number>.tar.gz` archive, for example, using the WinZip, WinRar or a similar utility under Windows, or the following command under Linux or macOS:
+
 [listing]
 ----
 tar xfz TeamCity<version number>.tar.gz
 ----
+
 [start=3]
 . Start the TeamCity server and one default agent at the same time, using the runAll script provided in the <TeamCity home>/bin directory, e.g.
+
 [listing]
 ----
 runAll.sh start
 ----
+
 [start=4]
-. To access the TeamCity Web UI, navigate to `http://localhost:8111/`. Follow the defaults of the TeamCity setup. You will be asked to set up a new administration user.
+. To access the TeamCity Web UI, navigate to `\http://localhost:8111/`. Follow the defaults of the TeamCity setup. You will be asked to set up a new administration user.
 
 Next, we can set up the project and run a build in TeamCity.
+
 
 == Create a TeamCity build
 
 Setting up a new Gradle build in TeamCity requires just a few clicks:
-TeamCity comes bundled with Gradle plugin, so you do not need to install plugins additionally.
+TeamCity comes bundled with a Gradle plugin, so you do not need to install plugins additionally. However, it is recommended that you install the https://plugins.jetbrains.com/plugin/9326-gradle-build-scan-integration[Gradle Build Scan plugin].
 
 On the *Administration | Projects* page click _Create project_,
 use the option _From the repository URL_ and enter the URL of the GitHub repository: `https://github.com/gradle-guides/gradle-site-plugin.git`.
@@ -118,7 +124,6 @@ image::teamcity-scan.png[]
 
 Save the settings and we’re ready to run the build.
 
-
 === Run the build in TeamCity
 Click the _Run_ button in the right top corner:
 
@@ -132,13 +137,16 @@ image::teamcity-results.png[]
 
 You can view the tests right here in TeamCity:
 
-image::teamcity-test.png[]
+image::teamcity-tests.png[]
 
 The information on parameters and environment of the build is available
 on the _Parameters_ tab of the build results.
 
-The link to the link:https://scans.gradle.com[build scan] for the given build is available
-in the build log:
+If you installed the https://plugins.jetbrains.com/plugin/9326-gradle-build-scan-integration[Gradle Build Scan plugin], you will see a link to the build scan in the Build Results view:
+
+image::teamcity-build-scan-plugin.png[]
+
+Otherwise, the link to the link:https://scans.gradle.com[build scan] for the given build is available in the build log:
 
 image::teamcity-log-link.png[]
 
@@ -146,6 +154,7 @@ There are various options to trigger TeamCity builds continuously:
 from link:https://confluence.jetbrains.com/display/TCDL/Configuring+Build+Triggers[polling the repository] periodically,
 to link:https://confluence.jetbrains.com/display/TCDL/Configuring+Schedule+Triggers[building on a set schedule],
 or via link:https://confluence.jetbrains.com/display/TCDL/Configuring+VCS+Post-Commit+Hooks+for+TeamCity[post-commit hook].
+
 
 == Further reading
 
