@@ -8,10 +8,10 @@ Last but not least we'll learn how the two DSLs inter-operate, and, go over a se
 
 [TIP]
 The Gradle link:{user-manual}[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
-This is the best place where to find how to do this and what with each DSL  ; and it covers all Gradle features from link:{user-manual}plugins.html[using plugins] to link:{user-manual}customizing_dependency_resolution_behavior.html[customizing the dependency resolution behavior].
+This is the best place where to find how to do this and what with each DSL ; and it covers all Gradle features from link:{user-manual}plugins.html[using plugins] to link:{user-manual}customizing_dependency_resolution_behavior.html[customizing the dependency resolution behavior].
 
 
-== Groovy meet Kotlin
+== Groovy vs. Kotlin DSL tradeoffs
 
 Gradle is implemented in Java on top of the JVM.
 Both the Groovy DSL and the Kotlin DSL are implemented on top of the Gradle Java API.
@@ -36,8 +36,10 @@ Applying Gradle best practices tend towards more declarative builds, less dynami
 --
 *Applying Gradle best practices will make it much easier with the Kotlin DSL*
 
-Please refer to the link:{user-manual}authoring_maintainable_build_scripts.html[Authoring Maintainable Build Scripts] and link:{user-manual}organizing_build_logic.html[Organizing Build Logic] chapters.
-In general, follow the advices given in the Gradle link:{user-manual}[user manual] and link:{guides}[guides].
+Your first move should be to link:{user-manual}gradle_wrapper.html#sec:upgrading_wrapper[upgrade to the latest stable Gradle release].
+
+Please refer to the link:{user-manual}authoring_maintainable_build_scripts.html[Authoring Maintainable Build Scripts] and link:{user-manual}organizing_build_logic.html[Organizing Build Logic] user manual chapters.
+In general, follow the advice given in the Gradle link:{user-manual}[user manual] and link:{guides}[guides].
 --
 
 == IDE Support
@@ -218,7 +220,7 @@ examine the plugins source code to determine which object is being used to confi
 There may be more than one object for some plugins.
 
 
-== Prefer the `plugins {}` block
+== Keeping build scripts declarative
 
 Plugins fetched from another source than the link:https://plugins.gradle.org[Gradle Plugin Portal] may or may not be usable with the `plugins {}` block depending on how they have been published.
 If you're publishing plugins, please use the Gradle built-in link:{user-manual}javaGradle_plugin.html[`java-gradle-plugin`] plugin that automates publication of the metadata necessary to make your plugins usable with the `plugins {}` block.
@@ -330,6 +332,7 @@ jar.archiveName = 'foo.jar'
 tasks.getByName<Jar>("jar").archiveName = "foo.jar"
 ----
 
+[NOTE]
 Note that specifying the type of the task explicitly is necessary. Otherwise, the script won't compile because the inferred type of `jar` will be `Task`, and the `archiveName` property is specific to the `Jar` task type.
 
 You can, however, omit the type if you only need to configure properties or call methods declared in `Task`:
@@ -601,7 +604,7 @@ dependencies {
 }
 ----
 
-Note that if you do not use the `plugins {}` block to apply your plugins, then accessors to configurations contributed by the applied plugins won't be available. You'll then have to address them by name:
+Note that if you do not use the `plugins {}` block to apply your plugins, then Kotlin extensions to reference the configurations contributed by the applied plugins won't be available. You'll then have to address them by name:
 
 [source.multi-language-sample, groovy]
 ----
