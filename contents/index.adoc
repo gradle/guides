@@ -717,12 +717,83 @@ dependencies {
 ----
 
 
-== Multi project builds - WIP
+== Multi project builds
 
-// TODO redact
+A multi-project build model and configuration are the same whether you use Groovy scripts, Kotlin scripts or a mix of the two:
 
-* project hierarchy == build scripts classpath
-* impact of configure-on-demand, evaluationDependsOn() and evaluationDependsOnChildren()
+Let's look at an example.
+The following is a settings script declaring some sub projects:
+
+.settings.gradle
+[source.multi-language-sample, groovy]
+----
+include 'core', 'cli'
+----
+.settings.gradle.kts
+[source.multi-language-sample, kotlin]
+----
+include("core", "cli")
+----
+
+and the corresponding root project build script configuring sub projects:
+
+.build.gradle
+[source.multi-language-sample, groovy]
+----
+subprojects {
+    apply plugin: 'java'
+}
+project(':cli') {
+    apply plugin: 'application'
+}
+----
+.build.gradle.kts
+[source.multi-language-sample, kotlin]
+----
+subprojects {
+    apply(plugin = "java")
+}
+project(":cli") {
+    apply(plugin = "application")
+}
+----
+
+[TIP]
+Please refer to the link:{user-manual}multi_project_builds.html[Authoring Multi-Project Builds] user manual chapter for more information.
+
+However there are some subtleties that can make your life easier or complicate things with the Kotlin DSL.
+
+In multi project builds, projects get configured top to bottom according to the project hierarchy.
+In other words, project build scripts are evaluated top to bottom according to the project hierarchy.
+
+This makes it possible for the Kotlin DSL to make Kotlin extensions to configure plugins applied by a parent project available in a sub project build script, just as if you used the `plugins {}` block directly in the sub project build script.
+
+Following up on our example multi project build, the `:cli` build script would look as follows:
+
+.cli/build.gradle
+[source.multi-language-sample, groovy]
+----
+mainClassName = "com.example.CliMain"
+----
+.cli/build.gradle.kts
+[source.multi-language-sample, kotlin]
+----
+application {
+    mainClassName = "com.example.CliMain"
+}
+----
+
+[IMPORTANT]
+--
+**Configuration on demand**
+
+Enabling the incubating link:{user-manual}multi_project_builds.html#sec:configuration_on_demand[configuration on demand] feature is not recommended as it can lead to very hard to diagnose problems.
+The strictness of the Gradle Kotlin DSL makes it even more likely that problems will arise.
+In order to save you some trouble you should disable it if you have it enabled.
+
+The same is true with `evaluationDependsOn(projectPath)` and `evaluationDependsOnChildren()`.
+Favor link:{user-manual}multi_project_builds.html#sec:decoupled_projects[decoupling your projects] instead.
+--
 
 
 == Migration strategies - WIP
