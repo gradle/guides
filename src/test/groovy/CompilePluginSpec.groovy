@@ -1,3 +1,5 @@
+import spock.lang.Unroll
+
 import org.apache.commons.io.FileUtils
 import org.gradle.guides.test.fixtures.AbstractSamplesFunctionalTest
 import org.gradle.testkit.runner.BuildResult
@@ -15,6 +17,7 @@ class CompilePluginSpec extends AbstractSamplesFunctionalTest {
         initialize()
     }
 
+    @Unroll
     void 'Validate example code runs with #lang'() {
 
         setup:
@@ -33,6 +36,7 @@ class CompilePluginSpec extends AbstractSamplesFunctionalTest {
         'Kotlin' | 'build.gradle.kts'
     }
 
+    @Unroll
     void 'Validate configure task runs with #lang'() {
 
         setup:
