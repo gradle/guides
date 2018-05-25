@@ -4,8 +4,8 @@ import org.example.greeting.Greeting
 // end::configure-hello[]
 
 // tag::use-plugin-id[]
-apply {
-  plugin("org.example.greeting")
+plugins {
+  id("org.example.greeting")
 }
 // end::use-plugin-id[]
 
