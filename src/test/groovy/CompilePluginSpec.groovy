@@ -15,17 +15,22 @@ class CompilePluginSpec extends AbstractSamplesFunctionalTest {
         initialize()
     }
 
-    void 'Validate example code runs'() {
+    void 'Validate example code runs with #lang'() {
 
         setup:
-        FileUtils.copyDirectory( SRC_CODE_DIR, testDirectory)
+        FileUtils.copyDirectory(SRC_CODE_DIR, testDirectory)
 
         when:
-        String output = runGradle 'hello'
+        def output = runGradle('-b', buildScriptFilename, 'hello')
 
         then:
         output.contains(':hello')
         output.contains('Hello, World')
+
+        where:
+        lang     | buildScriptFilename
+        'Groovy' | 'build.gradle'
+        'Kotlin' | 'build.gradle.kts'
     }
 
     private String runGradle(String... args) {
