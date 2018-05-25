@@ -1,11 +1,7 @@
 // tag::use-plugin-class-name-with-info[]
-apply {
-  plugin(org.example.greeting.GreetingPlugin::class.java) // <1>
-}
+apply<org.example.greeting.GreetingPlugin>() // <1>
 // end::use-plugin-class-name-with-info[]
 
 // tag::use-plugin-class-name[]
-apply {
-  plugin(org.example.greeting.GreetingPlugin::class.java)
-}
+apply<org.example.greeting.GreetingPlugin>()
 // end::use-plugin-class-name[]
