@@ -10,8 +10,8 @@ apply {
 // end::use-plugin-id[]
 
 // tag::configure-hello[]
-tasks.getByName("hello", closureOf<Greeting> { // <1>
+tasks.getByName<Greeting>("hello") { // <1>
     message = "Hi"
     recipient = "Gradle"
-})
+}
 // end::configure-hello[]
