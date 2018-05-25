@@ -33,6 +33,24 @@ class CompilePluginSpec extends AbstractSamplesFunctionalTest {
         'Kotlin' | 'build.gradle.kts'
     }
 
+    void 'Validate configure task runs with #lang'() {
+
+        setup:
+        FileUtils.copyDirectory(SRC_CODE_DIR, testDirectory)
+
+        when:
+        def output = runGradle('-b', buildScriptFilename, 'hello')
+
+        then:
+        output.contains(':hello')
+        output.contains('Hi, Gradle')
+
+        where:
+        lang     | buildScriptFilename
+        'Groovy' | 'configure-hello.gradle'
+        'Kotlin' | 'configure-hello.gradle.kts'
+    }
+
     private String runGradle(String... args) {
         succeeds(args).output.replaceAll( ~/Download.+?\n/,'')
     }
