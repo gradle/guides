@@ -65,7 +65,7 @@ You now have a plugin, but a plugin alone doesn't do anything. You need to apply
 
 == Use the plugin in the main project
 
-Create a `build.gradle` (or a `guild.gradle.kts` respectively) file in the root of the project with the following contents:
+Create a build script file in the root of the project with the following contents:
 
 [source.multi-language-sample,groovy]
 .build.gradle
