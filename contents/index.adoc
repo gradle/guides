@@ -1012,23 +1012,31 @@ target.withGroovyBuilder {                                          <1>
 The link:https://github.com/gradle/kotlin-dsl/tree/master/samples/maven-plugin[maven-plugin] sample demonstrates the use of the `withGroovyBuilder {}` utility extensions for configuring the `uploadArchives` task to link:{user-manual}maven_plugin.html#sec:deploying_to_a_maven_repository[deploy to a Maven repository] with a custom pom using the Gradle core `maven` plugin.
 Note that the recommended `maven-publish` plugin provides a type safe and Kotlin friendly DSL that allows to easily do link:{user-manual}publishing_maven.html#sec:modifying_the_generated_pom[the same and more].
 
+=== Using a Groovy script
+
 Another option is to keep the configuration for that particular plugin in a Groovy DSL build script applied from a Kotlin DSL build script:
 
 .build.gradle.kts
 [source, kotlin]
 ----
-apply(from = "groovy-configuration.gradle")
+plugins {
+    id("dynamic-groovy-plugin") version "1.0"               <1>
+}
+apply(from = "dynamic-groovy-plugin-configuration.gradle")  <2>
 ----
 
-.groovy-configuration.gradle
+.dynamic-groovy-plugin-configuration.gradle
 [source, groovy]
 ----
-native {
+native {                                                    <3>
     dynamic {
-        groovy
+        groovy as Usual
     }
 }
 ----
+<1> The Kotlin build script requests and applies the plugin
+<2> The Kotlin build script applies the Groovy script
+<3> The Groovy script uses dynamic Groovy to configure plugin
 
 
 == Summary - WIP
