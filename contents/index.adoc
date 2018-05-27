@@ -215,9 +215,15 @@ configure<CheckstyleExtension> {
 }
 ----
 
-In order to determine what class you need to use in your `configure<...>` call you may need to
-examine the plugins source code to determine which object is being used to configure the plugin.
-There may be more than one object for some plugins.
+[TIP]
+--
+**What is the type of available extensions?**
+
+In order to determine what type you need to use in your `configure<...>` call you can use the `:kotlinDslAccessorsReport` task. It prints the Kotlin code for accessing the extensions contributed by applied plugins and provides the name and type of all of them.
+--
+
+If the plugin you want to configure was written in Groovy and relies on `groovy.lang.Closure` or other dynamic Groovy semantics, a bit more gymnastic may be required.
+See the <<interop>> section for more information on how to call Groovy code from Kotlin code or keep that plugin's configuration in a Groovy script.
 
 
 == Keeping build scripts declarative
@@ -400,24 +406,48 @@ jar.into("META-INF") {
 
 Once again, note that if you need to apply task-specific configurations, you need to provide the type of the task (`Jar` in this example).
 
-This means that you'll sometimes need to dive in the documentation or source code of custom plugins to discover what the types of its custom tasks are, and to import them, or use their fully qualified name.
+Once you know the type of the task you want to configure, the IDE will assist you in configuring it with suggestions and by providing the task source if need be.
 
-Another way is to use the `tasks` task that display the list of available tasks. From there to get the type of a given task, say `jar`, use `./gradlew help --task jar`, this will tell you the type of that task.
+[TIP]
+--
+**What is the type of that task?**
 
-This is particularly true if you are using an external plugin:
+In order to determine the type you need to use to configure a task you can use the built-in `help` task, it displays the type of a task:
+
+[source]
+----
+❯ ./gradlew help --task jar
+...
+Type
+     Jar (org.gradle.api.tasks.bundling.Jar)
+----
+--
+
+Let's say we want to configure the `bootJar` and `bootRun` tasks of a Spring Boot project:
+
+[source]
+----
+❯ ./gradlew help --task bootJar
+...
+Type
+     BootJar (org.springframework.boot.gradle.tasks.bundling.BootJar)
+----
+
+[source]
+----
+❯ ./gradlew help --task bootRun
+...
+Type
+     BootRun (org.springframework.boot.gradle.tasks.run.BootRun)
+----
+
+We know now the type of the two tasks, the simple names (`BootJar` and `BootRun`) are enough, the IDE will assist you adding the required imports:
 
 [source.multi-language-sample, groovy]
 ----
 plugins {
-    id('java')
     id 'org.springframework.boot' version '2.0.1.RELEASE'
 }
-
-repositories {
-    jcenter()
-}
-
-apply plugin: 'io.spring.dependency-management'
 
 bootJar {
     archiveName = 'app.jar'
@@ -436,15 +466,8 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
-    java
     id("org.springframework.boot") version "2.0.1.RELEASE"
 }
-
-repositories {
-    jcenter()
-}
-
-apply(plugin = "io.spring.dependency-management")
 
 tasks {
     getByName<BootJar>("bootJar") {
@@ -458,8 +481,6 @@ tasks {
     }
 }
 ----
-
-In the Kotlin version of the snippet above you need to know that the `bootJar` task is of type `BootJar` and that the `bootRun` task is of type `BootRun`. The IDE then helps for adding the corresponding imports automatically.
 
 
 == Creating tasks
@@ -568,7 +589,7 @@ val docZip by tasks.creating(Zip::class) {
 ----
 
 
-== Configurations and dependencies
+== Configurations and dependencies - WIP
 
 Declaring dependencies in the existing configurations is not much different from doing it in Groovy:
 
@@ -603,6 +624,27 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 ----
+
+Each configuration contributed by applied plugins is also available as a member of the `configurations` container so you can reference it:
+
+[source.multi-language-sample, groovy]
+----
+// TODO
+----
+
+[source.multi-language-sample, kotlin]
+----
+// TODO
+----
+
+[TIP]
+--
+**What configurations are available?**
+
+You can ask your IDE for suggestions on the `configurations` container.
+
+You can also use the `:kotlinDslAccessorsReport` task. It prints the Kotlin code for accessing the configurations contributed by applied plugins and provides the name of all of them.
+--
 
 Note that if you do not use the `plugins {}` block to apply your plugins, then Kotlin extensions to reference the configurations contributed by the applied plugins won't be available. You'll then have to address them by name:
 
@@ -825,7 +867,7 @@ Refactor towards the use of the `plugins {}` block. Use `pluginManagement {}` in
 Refactor towards the use of `buildSrc` using the `kotlin-dsl` plugin.
 // and pre-compiled scripts `buildSrc/src/main/kotlin/my-plugin.gradle.kts`
 
-
+[[interop]]
 == Interoperability
 
 When mixing languages in your build logic you may have to cross language boundaries.
@@ -987,13 +1029,6 @@ native {
     }
 }
 ----
-
-
-== Tips and troubleshooting - WIP
-
-// TODO redact
-
-* the `kotlinDslAccessorsReport` task prints the Kotlin code for accessing the currently available project extensions and conventions
 
 
 == Summary - WIP
