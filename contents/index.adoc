@@ -86,11 +86,6 @@ Just like with the Groovy DSL, there are two ways to apply Gradle plugins:
 - declaratively, using the `plugins {}` block,
 - imperatively, using the `apply(..)` functions.
 
-But, the declarative nature of the `plugins {}` block enables the Kotlin DSL to provide type safe discoverable accessors to what the applied plugins contribute (extensions, configurations etc...).
-
-
-=== Applying core plugins
-
 Using the declarative `plugins {}` block:
 
 [source.multi-language-sample, groovy]
@@ -98,6 +93,7 @@ Using the declarative `plugins {}` block:
 plugins {
     id 'java'
     id 'jacoco'
+    id 'org.springframework.boot' version '2.0.1.RELEASE'
 }
 ----
 
@@ -106,6 +102,7 @@ plugins {
 plugins {
     java
     id("jacoco")
+    id("org.springframework.boot") version "2.0.1.RELEASE"
 }
 ----
 
@@ -116,37 +113,7 @@ As you can see with the `jacoco` example, the same syntax can be used in Groovy 
 
 The Kotlin DSL also defines Kotlin property extensions for all core Gradle plugins, so you can use them, as shown above with the `java` example.
 
-You can also use the imperative `apply` syntax:
-
-[source.multi-language-sample, groovy]
-----
-apply plugin: 'checkstyle'
-----
-
-[source.multi-language-sample, kotlin]
-----
-apply(plugin = "checkstyle")
-----
-
-=== Applying external plugins
-
-Using the `plugins` block:
-
-[source.multi-language-sample, groovy]
-----
-plugins {
-    id 'org.springframework.boot' version '2.0.1.RELEASE'
-}
-----
-
-[source.multi-language-sample, kotlin]
-----
-plugins {
-    id("org.springframework.boot") version "2.0.1.RELEASE"
-}
-----
-
-You can also use the older `apply` syntax, but then the plugin must be added to the classpath of the build script:
+You can also use the imperative `apply` syntax, but then non core plugins must be added to the classpath of the build script:
 
 [source.multi-language-sample, groovy]
 ----
@@ -155,11 +122,13 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath("gradle.plugin.com.boxfuse.client:gradle-plugin-publishing:5.0.3")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.1.RELEASE")
     }
 }
 
-apply plugin: 'org.flywaydb.flyway'
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'org.springframework.boot'
 ----
 
 [source.multi-language-sample, kotlin]
@@ -169,12 +138,19 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath("gradle.plugin.com.boxfuse.client:gradle-plugin-publishing:5.0.3")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.1.RELEASE")
     }
 }
 
-apply(plugin = "org.flywaydb.flyway")
+apply(plugin = "java")
+apply(plugin = "jacoco")
+apply(plugin = "org.springframework.boot")
 ----
+
+[IMPORTANT]
+--
+The declarative nature of the `plugins {}` block enables the Kotlin DSL to provide type safe discoverable accessors to what the applied plugins contribute (extensions, configurations etc...).
+--
 
 
 == Configuring plugins
