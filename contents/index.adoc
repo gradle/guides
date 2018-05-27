@@ -811,7 +811,10 @@ Favor link:{user-manual}multi_project_builds.html#sec:decoupled_projects[decoupl
 
 // TODO redact
 
-Both scripts using the Kotlin DSL, `\*.gradle.kts`, and scripts using the Groovy DSL, `*.gradle`, can participate in the same build. Gradle plugins implemented in `./buildSrc`, an included build or externally fetched can use any JVM language. This makes it possible to migrate progressively, piece by piece, without blocking your team.
+As we've seen above, both scripts using the Kotlin DSL, `\*.gradle.kts`, and scripts using the Groovy DSL, `*.gradle`, can participate in the same build.
+Gradle plugins implemented in `./buildSrc`, an included build or externally fetched can use any JVM language.
+This makes it possible to migrate progressively, piece by piece, without blocking your team.
+
 
 Mechanical migration vs. restructuring towards best practices:
 
@@ -820,21 +823,24 @@ Mechanical migration vs. restructuring towards best practices:
 * a complex and highly dynamic build logic will require some restructuring
 * external plugins might not provide a good Kotlin DSL experience, workarounds
 
-[NOTE]
---
-Depending on your build structure you might be interested by the following samples built with the Kotlin DSL:
-
-* link to modularity sample
-* link to multi-project samples
-* link to gradle-plugin sample
-* link to composite-builds sample
-* link to source-control sample
---
 
 Refactor towards the use of the `plugins {}` block. Use `pluginManagement {}` in `settings.gradle.kts` to control plugin resolution if needed.
 
 Refactor towards the use of `buildSrc` using the `kotlin-dsl` plugin.
 // and pre-compiled scripts `buildSrc/src/main/kotlin/my-plugin.gradle.kts`
+
+=== Kotlin DSL build structure samples
+
+Depending on your build structure you might be interested by the following samples built with the Kotlin DSL:
+
+* the link:{kotlin-dsl-samples}modularity[modularity] sample demonstrates the use of `apply(from = "")` to modularize build scripts,
+* the link:{kotlin-dsl-samples}multi-project-with-buildSrc[multi-project-with-buildSrc], link:{kotlin-dsl-samples}multi-kotlin-project[multi-kotlin-project], link:{kotlin-dsl-samples}multi-kotlin-project-with-buildSrc[multi-kotlin-project-with-buildSrc] and link:{kotlin-dsl-samples}multi-kotlin-project-config-injection[multi-kotlin-project-config-injection] samples demonstrate various multi-project build structures,
+* the link:{kotlin-dsl-samples}gradle-plugin[gradle-plugin] sample demonstrates a Gradle plugin implemented in Kotlin and taking advantage of the `kotlin-dsl` plugin,
+* the link:{kotlin-dsl-samples}composite-builds[composite-builds] sample demonstrates how to use link:{user-manual}composite_builds.html[Composite Builds],
+* the link:{kotlin-dsl-samples}source-control[source-control] sample demonstrates how to use external link:https://github.com/gradle/gradle-native/issues/42[source dependencies].
+
+See the samples link:{kotlin-dsl-samples}/README.md[README] for general instructions.
+
 
 [[interop]]
 == Interoperability
