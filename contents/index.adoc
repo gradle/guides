@@ -4,7 +4,7 @@
 
 In this guide we will look at the main differences between Gradle's Groovy DSL and Kotlin DSL by comparing build scripts doing common things, introducing the main idioms of the Kotlin DSL.
 We'll also discuss possible migration strategies in the light of the structure of builds.
-Last but not least we'll learn how the two DSLs inter-operate, and, go over a series of tips and troubleshooting techniques.
+Last but not least we'll learn how the two DSLs inter-operate.
 
 [TIP]
 The Gradle link:{user-manual}[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
@@ -589,7 +589,7 @@ val docZip by tasks.creating(Zip::class) {
 ----
 
 
-== Configurations and dependencies - WIP
+== Configurations and dependencies
 
 Declaring dependencies in the existing configurations is not much different from doing it in Groovy:
 
@@ -625,17 +625,7 @@ dependencies {
 }
 ----
 
-Each configuration contributed by applied plugins is also available as a member of the `configurations` container so you can reference it:
-
-[source.multi-language-sample, groovy]
-----
-// TODO
-----
-
-[source.multi-language-sample, kotlin]
-----
-// TODO
-----
+Each configuration contributed by applied plugins is also available as a member of the `configurations` container so you can reference it.
 
 [TIP]
 --
