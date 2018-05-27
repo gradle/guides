@@ -1,6 +1,7 @@
 = Migrating build logic from Groovy to Kotlin
 :numbered:
 :figure-caption!:
+:kotlin-dsl-samples: https://github.com/gradle/kotlin-dsl/tree/master/samples/
 
 In this guide we will look at the main differences between Gradle's Groovy DSL and Kotlin DSL by comparing build scripts doing common things, introducing the main idioms of the Kotlin DSL.
 We'll also discuss possible migration strategies in the light of the structure of builds.
@@ -944,7 +945,7 @@ There sometimes isn't a good way to tell, from looking at the source code, which
 Usually, if you get a `NullPointerException` with `closureOf<T> {}`, using `delegateClosureOf<T> {}`
 will resolve the problem.
 
-Also see the link:https://github.com/gradle/kotlin-dsl/tree/master/samples/groovy-interop[groovy-interop] sample.
+Also see the link:{kotlin-dsl-samples}groovy-interop[groovy-interop] sample.
 
 
 === The Kotlin DSL Groovy Builder
@@ -977,7 +978,7 @@ target.withGroovyBuilder {                                          <1>
 <4> Configure the `blockName` property, maps to a `Closure` taking method invocation
 <5> Invoke `another` method taking named arguments, maps to a Groovy named arguments `Map<String, ?>` taking method invocation
 
-The link:https://github.com/gradle/kotlin-dsl/tree/master/samples/maven-plugin[maven-plugin] sample demonstrates the use of the `withGroovyBuilder {}` utility extensions for configuring the `uploadArchives` task to link:{user-manual}maven_plugin.html#sec:deploying_to_a_maven_repository[deploy to a Maven repository] with a custom pom using the Gradle core `maven` plugin.
+The link:{kotlin-dsl-samples}maven-plugin[maven-plugin] sample demonstrates the use of the `withGroovyBuilder {}` utility extensions for configuring the `uploadArchives` task to link:{user-manual}maven_plugin.html#sec:deploying_to_a_maven_repository[deploy to a Maven repository] with a custom pom using the Gradle core `maven` plugin.
 Note that the recommended `maven-publish` plugin provides a type safe and Kotlin friendly DSL that allows to easily do link:{user-manual}publishing_maven.html#sec:modifying_the_generated_pom[the same and more].
 
 === Using a Groovy script
