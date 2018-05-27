@@ -791,7 +791,7 @@ application {
 }
 ----
 
-[IMPORTANT]
+[CAUTION]
 --
 **Configuration on demand**
 
@@ -801,6 +801,8 @@ In order to save you some trouble you should disable it if you have it enabled.
 
 The same is true with `evaluationDependsOn(projectPath)` and `evaluationDependsOnChildren()`.
 Favor link:{user-manual}multi_project_builds.html#sec:decoupled_projects[decoupling your projects] instead.
+
+// TODO note that these will be deprecated soon, for Gradle 5?, need an issue link
 --
 
 
