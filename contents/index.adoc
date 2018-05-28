@@ -179,7 +179,7 @@ BUILD SUCCESSFUL
 
 The `name` of the project matches the name of the folder by default. You can also specify `group` and `version` properties, but at the moment they are taking their default values, as is `description`.
 
-The `buildFile` property is fully-qualified path name to `build.gradle`, which resides in the `buildDir` -- by default, the `build` subdirectory of the `projectDir`, the directory containing the `build.gradle` file.
+The `buildFile` property is the fully-qualified path name to `build.gradle`, which resides in the `projectDir` -- by default.
 
 You can change many of the properties. For example, you might try adding the following lines to your `build.gradle` file, and re-execute `gradle properties`.
 
