@@ -6,10 +6,15 @@
 :kotlin-tutorials: https://kotlinlang.org/tutorials/
 :kotlin-dsl-samples: https://github.com/gradle/kotlin-dsl/tree/master/samples/
 
-// TODO rephrase
-In this guide we will look at the main differences between Gradle's Groovy DSL and Kotlin DSL by comparing build scripts doing common things, introducing the main idioms of the Kotlin DSL.
-We'll also discuss possible migration strategies in the light of the structure of builds.
-Last but not least we'll learn how the two DSLs inter-operate.
+
+// Summary for the guides list
+//   Learn how to migrate your build logic from Groovy to Kotlin using the Gradle Kotlin DSL.
+//   Discover pain points and discuss migration strategies.
+//   Includes solutions for common problems and interoperability recipes.
+
+
+*INTRO TBD*
+
 
 [TIP]
 The Gradle link:{user-manual}[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
