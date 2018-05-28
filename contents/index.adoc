@@ -3,6 +3,7 @@
 :figure-caption!:
 :kotlin-dsl-samples: https://github.com/gradle/kotlin-dsl/tree/master/samples/
 
+// TODO rephrase
 In this guide we will look at the main differences between Gradle's Groovy DSL and Kotlin DSL by comparing build scripts doing common things, introducing the main idioms of the Kotlin DSL.
 We'll also discuss possible migration strategies in the light of the structure of builds.
 Last but not least we'll learn how the two DSLs inter-operate.
@@ -1014,15 +1015,17 @@ native {                                                    <3>
 <3> The Groovy script uses dynamic Groovy to configure plugin
 
 
-== Summary - WIP
+== Summary
 
-// TODO redact
+In this guide you had a tour of the main differences between Gradle's Groovy DSL and Kotlin DSL by comparing build scripts doing common things, introducing the main idioms of the Kotlin DSL.
+You also took a glance at possible migration strategies in the light of the structure of builds.
+Last but not least you learnt how the two DSLs inter-operate.
 
-Next steps
+Next steps:
 
-* samples in user manual and guides
-* Kotlin DSL samples
-* Gradle best practices
+* The Gradle link:{user-manual}[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
+* The link:{user-manual}userguide.html#best-practices[Gradle Best Practices] user manual chapters contain reference documentation on how to structure your builds.
+* The link:kotlin-dsl-samples[`kotlin-dsl` samples] contain example of various build structures using the Kotlin DSL.
 
 
 include::contribute[]
