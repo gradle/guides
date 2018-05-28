@@ -834,14 +834,12 @@ Of course, applying Gradle best practices will make your builds easier to use an
 In any case, the more parts of your build logic rely on Groovy dynamism, the harder they will be to use from the Kotlin DSL.
 May it be local scripts, local plugins or external plugins relying too much on Groovy dynamism, you'll find recipes on how to cross the dynamic boundaries from static Kotlin in the <<interop>> section below.
 
-There are two key best practices that makes it easier with the static nature of the Kotlin DSL:
+There are two key best practices that makes it easier with the static nature of the Kotlin DSL: applying plugins with the `plugins {}` DSL and putting local build logic in `buildSrc`.
 
-* link:{user-manual}plugins.html#sec:plugins_block[Applying plugins with the `plugins {}` DSL]
-* link:{user-manual}organizing_build_logic.html#sec:build_sources[Build logic in `buildSrc`].
+The former, link:{user-manual}plugins.html#sec:plugins_block[explained in the Gradle User Manual], is about keeping your build scripts declarative in order to get the best out of the Kotlin DSL.
+We saw <<declarative-scripts,above>> how to apply this practice even with external plugins published without the required metadata.
 
-The former, <<declarative-scripts,explained above>>, is about keeping your build scripts declarative, including using the `pluginManagement {}` DSL in your `settings.gradle.kts` file to use the `plugins {}` DSL with external plugins published without the required metadata.
-
-The later, link:{user-manual}organizing_build_logic.html#sec:build_sources[explained in the Gradle User Manual], is about organizing your build logic into shared local plugins and conventions, easily testable, while providing good IDE support.
+The later, also link:{user-manual}organizing_build_logic.html#sec:build_sources[explained in the Gradle User Manual], is about organizing your build logic into shared local plugins and conventions, easily testable, while providing good IDE support.
 
 === Kotlin DSL build structure samples
 
