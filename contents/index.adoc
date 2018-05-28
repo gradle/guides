@@ -157,9 +157,9 @@ apply(plugin = "jacoco")
 apply(plugin = "org.springframework.boot")
 ----
 
-[IMPORTANT]
+[NOTE]
 --
-The declarative nature of the `plugins {}` block enables the Kotlin DSL to provide type safe discoverable accessors to what the applied plugins contribute (extensions, configurations etc...).
+The declarative nature of the `plugins {}` block enables the Kotlin DSL to provide type safe accessors to what the applied plugins contribute (extensions, configurations etc...), making plugins models discoverable from the IDE and easy to configure.
 --
 
 
@@ -203,9 +203,14 @@ configure<CheckstyleExtension> {
 
 [TIP]
 --
-**What is the type of available extensions?**
+**What extensions are available?**
 
-In order to determine what type you need to use in your `configure<...>` call you can use the `:kotlinDslAccessorsReport` task. It prints the Kotlin code for accessing the extensions contributed by applied plugins and provides the name and type of all of them.
+You can ask your IDE for suggestions on the extended object.
+Most plugin extensions are added to the `Project` object.
+Simply ask your IDE for suggestions at the top level of your build scripts.
+
+You can also use the `:kotlinDslAccessorsReport` task.
+It prints the Kotlin code for accessing the extensions contributed by applied plugins and provides the name and type of all of them.
 --
 
 If the plugin you want to configure was written in Groovy and relies on `groovy.lang.Closure` or other dynamic Groovy semantics, a bit more gymnastic may be required.
@@ -620,7 +625,8 @@ Each configuration contributed by applied plugins is also available as a member 
 
 You can ask your IDE for suggestions on the `configurations` container.
 
-You can also use the `:kotlinDslAccessorsReport` task. It prints the Kotlin code for accessing the configurations contributed by applied plugins and provides the name of all of them.
+You can also use the `:kotlinDslAccessorsReport` task.
+It prints the Kotlin code for accessing the configurations contributed by applied plugins and provides the name of all of them.
 --
 
 Note that if you do not use the `plugins {}` block to apply your plugins, then Kotlin extensions to reference the configurations contributed by the applied plugins won't be available. You'll then have to address them by name:
