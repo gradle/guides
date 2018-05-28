@@ -1,0 +1,14 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.0.1.RELEASE'
+}
+
+bootJar {
+    archiveName = 'app.jar'
+    mainClassName = 'com.example.demo.Demo'
+}
+
+bootRun {
+    main = 'com.example.demo.Demo'
+    args '--spring.profiles.active=demo'
+}

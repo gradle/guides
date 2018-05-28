@@ -100,20 +100,12 @@ Using the declarative `plugins {}` block:
 
 [source.multi-language-sample, groovy]
 ----
-plugins {
-    id 'java'
-    id 'jacoco'
-    id 'org.springframework.boot' version '2.0.1.RELEASE'
-}
+include::{samplescodedir}/applying-plugins/declarative.gradle[]
 ----
 
 [source.multi-language-sample, kotlin]
 ----
-plugins {
-    java
-    id("jacoco")
-    id("org.springframework.boot") version "2.0.1.RELEASE"
-}
+include::{samplescodedir}/applying-plugins/declarative.gradle.kts[]
 ----
 
 [TIP]
@@ -127,34 +119,12 @@ You can also use the imperative `apply` syntax, but then non core plugins must b
 
 [source.multi-language-sample, groovy]
 ----
-buildscript {
-    repositories {
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.1.RELEASE")
-    }
-}
-
-apply plugin: 'java'
-apply plugin: 'jacoco'
-apply plugin: 'org.springframework.boot'
+include::{samplescodedir}/applying-plugins/imperative.gradle[]
 ----
 
 [source.multi-language-sample, kotlin]
 ----
-buildscript {
-    repositories {
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.1.RELEASE")
-    }
-}
-
-apply(plugin = "java")
-apply(plugin = "jacoco")
-apply(plugin = "org.springframework.boot")
+include::{samplescodedir}/applying-plugins/imperative.gradle.kts[]
 ----
 
 [NOTE]
@@ -171,34 +141,12 @@ On the other hand, if you use the imperative `apply` function to apply a plugin 
 
 [source.multi-language-sample, groovy]
 ----
-plugins {
-    id("jacoco")
-}
-apply plugin: "checkstyle"
-
-jacoco {
-    toolVersion = "0.8.1"
-}
-
-checkstyle {
-    maxErrors = 10
-}
+include::{samplescodedir}/configuring-plugins/extensions.gradle[]
 ----
 
 [source.multi-language-sample, kotlin]
 ----
-plugins {
-    jacoco
-}
-apply(plugin = "checkstyle")
-
-jacoco {
-    toolVersion = "0.8.1"
-}
-
-configure<CheckstyleExtension> {
-    maxErrors = 10
-}
+include::{samplescodedir}/configuring-plugins/extensions.gradle.kts[]
 ----
 
 [TIP]
@@ -231,23 +179,7 @@ This means that the Kotlin DSL can't provide type safe Kotlin extensions to conf
 .build.gradle.kts
 [source, kotlin]
 ----
-import com.android.build.gradle.AppExtension
-
-buildscript {                               <1>
-    repositories {
-        google()
-    }
-    dependencies {
-        classpath("com.android.tools.build:gradle:3.1.0")
-    }
-}
-
-apply(plugin = "com.android.application")   <2>
-
-configure<AppExtension> {                   <3>
-    buildToolsVersion("27.0.0")
-    compileSdkVersion(27)
-}
+include::{samplescodedir}/declarative-scripts/imperative-android/build.gradle.kts[]
 ----
 <1> Bring the Android Gradle Plugin into the build script dependencies
 <2> Imperatively apply the `com.android.application` plugin
@@ -263,12 +195,7 @@ First add a plugin repository in your settings file for the whole build:
 .settings.gradle.kts
 [source, kotlin]
 ----
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        google()
-    }
-}
+include::{samplescodedir}/declarative-scripts/declarative-android/settings.gradle.kts[tags=repo]
 ----
 
 Then, map the plugin `id` to the corresponding artifact coordinates, still in your settings file:
@@ -276,16 +203,7 @@ Then, map the plugin `id` to the corresponding artifact coordinates, still in yo
 .settings.gradle.kts
 [source, kotlin]
 ----
-pluginManagement {
-    // ...
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.id == "com.android.application") {
-                useModule("com.android.tools.build:gradle:${requested.version}")
-            }
-        }
-    }
-}
+include::{samplescodedir}/declarative-scripts/declarative-android/settings.gradle.kts[tags=plugin]
 ----
 
 You can now apply the `com.android.application` plugin using the `plugins {}` block and benefit from the type-safe plugin extension accessors, in your build files:
@@ -293,14 +211,7 @@ You can now apply the `com.android.application` plugin using the `plugins {}` bl
 .build.gradle.kts
 [source, kotlin]
 ----
-plugins {
-    id("com.android.application") version "3.1.0"   <1>
-}
-
-android {                                           <2>
-    buildToolsVersion("27.0.0")
-    compileSdkVersion(27)
-}
+include::{samplescodedir}/declarative-scripts/declarative-android/build.gradle.kts[]
 ----
 <1> Declaratively request the `com.android.application` plugin
 <2> Configure the `android` extension using Kotlin DSL type safe accessor
@@ -437,41 +348,12 @@ We know now the type of the two tasks, the simple names (`BootJar` and `BootRun`
 
 [source.multi-language-sample, groovy]
 ----
-plugins {
-    id 'org.springframework.boot' version '2.0.1.RELEASE'
-}
-
-bootJar {
-    archiveName = 'app.jar'
-    mainClassName = 'com.example.demo.Demo'
-}
-
-bootRun {
-    main = 'com.example.demo.Demo'
-    args '--spring.profiles.active=demo'
-}
+include::{samplescodedir}/configuring-tasks/spring-boot.gradle[]
 ----
 
 [source.multi-language-sample, kotlin]
 ----
-import org.springframework.boot.gradle.tasks.bundling.BootJar
-import org.springframework.boot.gradle.tasks.run.BootRun
-
-plugins {
-    id("org.springframework.boot") version "2.0.1.RELEASE"
-}
-
-tasks {
-    getByName<BootJar>("bootJar") {
-        archiveName = "app.jar"
-        mainClassName = "com.example.demo.Demo"
-    }
-
-    getByName<BootRun>("bootRun") {
-        main = "com.example.demo.Demo"
-        args("--spring.profiles.active=demo")
-    }
-}
+include::{samplescodedir}/configuring-tasks/spring-boot.gradle.kts[]
 ----
 
 
