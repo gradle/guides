@@ -1,6 +1,9 @@
 = Migrating build logic from Groovy to Kotlin
 :numbered:
 :figure-caption!:
+:plugin-portal: https://plugins.gradle.org/
+:kotlin-reference: https://kotlinlang.org/docs/reference/
+:kotlin-tutorials: https://kotlinlang.org/tutorials/
 :kotlin-dsl-samples: https://github.com/gradle/kotlin-dsl/tree/master/samples/
 
 // TODO rephrase
@@ -23,7 +26,7 @@ Kotlin is statically typed, has null safety built-in, hence is quite strict.
 Groovy on the other hand is highly dynamic by nature, hence is very flexible.
 
 [NOTE]
-If you want to read on Kotlin the language before getting started or if you need some reference documentation along the way, the https://kotlinlang.org/docs/reference/[reference documentation] is the place to go.
+If you want to read on Kotlin the language before getting started or if you need some reference documentation along the way, the link:{kotlin-reference}[reference documentation] is the place to go.
 The https://kotlinlang.org/docs/tutorials/koans.html[Kotlin Koans] provide a fun way to learn Kotlin.
 
 The Kotlin language being more strict than Groovy also means that the Gradle Kotlin DSL is more strict than the Gradle Groovy DSL.
@@ -207,7 +210,7 @@ See the <<interop>> section for more information on how to call Groovy code from
 [[declarative-scripts]]
 == Keeping build scripts declarative
 
-Plugins fetched from another source than the link:https://plugins.gradle.org[Gradle Plugin Portal] may or may not be usable with the `plugins {}` block depending on how they have been published.
+Plugins fetched from another source than the link:{plugin-portal}[Gradle Plugin Portal] may or may not be usable with the `plugins {}` block depending on how they have been published.
 If you're publishing plugins, please use the Gradle built-in link:{user-manual}javaGradle_plugin.html[`java-gradle-plugin`] plugin that automates publication of the metadata necessary to make your plugins usable with the `plugins {}` block.
 
 For example, the Android Gradle Plugin plugins are not published to the Gradle Plugin Portal and the metadata required to resolve plugin identifiers to resolvable artifacts link:https://issuetracker.google.com/issues/64551265[is not published] to the Google repository.
@@ -295,7 +298,7 @@ android {                                           <2>
 See the link:{user-manual}plugins.html#sec:plugin_management[Plugin Management] section of the Gradle documentation for more information.
 
 The same can be applied to resolving plugins from composite builds.
-Composite builds https://github.com/gradle/gradle/issues/2528[do not expose plugin markers] yet.
+Composite builds link:https://github.com/gradle/gradle/issues/2528[do not expose plugin markers] yet.
 This can be worked around by mapping the plugin `id` to the corresponding artifact coordinates using a plugin resolution strategy, just like above.
 
 If you can't use the `plugins {}` block, you need to apply the plugin imperatively (using the `buildscript` block and `apply<PluginType>()` or `apply(plugin = "id")`) and to know the type of the extension(s) you want to configure as described previously.
@@ -358,7 +361,7 @@ tasks.getByName<Jar>("jar") {
 }
 ----
 
-But there is another idiomatic way to configure tasks: using Kotlin link:https://kotlinlang.org/docs/reference/delegated-properties.html[delegated properties].
+But there is another idiomatic way to configure tasks: using Kotlin link:link:{kotlin-reference}delegated-properties.html[delegated properties].
 It is particularly useful if you need a reference to the task for later usage:
 
 [source.multi-language-sample, groovy]
@@ -858,7 +861,7 @@ Quoting the Kotlin reference documentation:
 
 > Kotlin is designed with Java Interoperability in mind. Existing Java code can be called from Kotlin in a natural way, and Kotlin code can be used from Java rather smoothly as well.
 
-Both link:https://kotlinlang.org/docs/reference/java-interop.html[calling Java from Kotlin] and link:https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html[calling Kotlin from Java] are very well covered in the Kotlin reference documentation.
+Both link:link:{kotlin-reference}java-interop.html[calling Java from Kotlin] and link:link:{kotlin-reference}java-to-kotlin-interop.html[calling Kotlin from Java] are very well covered in the Kotlin reference documentation.
 
 The same mostly apply to interoperability with Groovy code.
 There are some gotchas though.
@@ -867,7 +870,7 @@ The Kotlin DSL also provides with a way to opt-in to Groovy semantics.
 
 === Static extensions
 
-Both Groovy and Kotlin languages support extending existing classes, respectively with link:http://groovy-lang.org/metaprogramming.html#_extension_modules[Groovy Extension modules] and link:https://kotlinlang.org/docs/reference/extensions.html[Kotlin extensions].
+Both Groovy and Kotlin languages support extending existing classes, respectively with link:http://groovy-lang.org/metaprogramming.html#_extension_modules[Groovy Extension modules] and link:link:{kotlin-reference}extensions.html[Kotlin extensions].
 
 To call a Kotlin extension function from Groovy, call it as a static function passing the receiver as the first parameter:
 
@@ -889,7 +892,7 @@ TheGroovyTypeExtension.groovyExtensionMethod(receiver, "parameters", 42, aRefere
 === Named parameters and default arguments
 
 Both Groovy and Kotlin languages support named function parameters and default arguments.
-They are link:https://kotlinlang.org/docs/reference/functions.html#named-arguments[natively] link:https://kotlinlang.org/docs/reference/functions.html#named-arguments[supported] by Kotlin.
+They are link:link:{kotlin-reference}functions.html#named-arguments[natively] link:link:{kotlin-reference}functions.html#named-arguments[supported] by Kotlin.
 Groovy supports link:http://groovy-lang.org/objectorientation.html#_named_arguments[named arguments] in a non type safe way based on a `Map<String, ?>` parameter, thus they cannot be combined with link:http://groovy-lang.org/objectorientation.html#_default_arguments[default arguments].
 
 *When calling Kotlin from Groovy*
@@ -931,7 +934,7 @@ To understand the difference between the two types of closures link:http://groov
 [NOTE]
 Gradle plugins written in any language should prefer the typed `Action<T>` that is automatically mapped to Groovy closures and Kotlin lambdas.
 
-Some plugins expect simple closures, here with the link:https://plugins.gradle.org/plugin/com.jfrog.bintray[Bintray] plugin:
+Some plugins expect simple closures, here with the link:{plugin-portal}plugin/com.jfrog.bintray[Bintray] plugin:
 
 [source, kotlin]
 ----
@@ -942,7 +945,7 @@ bintray {
 }
 ----
 
-In other cases, like with the link:https://plugins.gradle.org/plugin/org.gretty[Gretty Plugin] when configuring farms, the plugin expects a delegate closure:
+In other cases, like with the link:{plugin-portal}plugin/org.gretty[Gretty Plugin] when configuring farms, the plugin expects a delegate closure:
 
 [source, kotlin]
 ----
