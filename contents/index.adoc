@@ -204,6 +204,7 @@ If the plugin you want to configure was written in Groovy and relies on `groovy.
 See the <<interop>> section for more information on how to call Groovy code from Kotlin code or keep that plugin's configuration in a Groovy script.
 
 
+[[declarative-scripts]]
 == Keeping build scripts declarative
 
 Plugins fetched from another source than the link:https://plugins.gradle.org[Gradle Plugin Portal] may or may not be usable with the `plugins {}` block depending on how they have been published.
@@ -808,27 +809,31 @@ Favor link:{user-manual}multi_project_builds.html#sec:decoupled_projects[decoupl
 --
 
 
-== Migration strategies - WIP
-
-// TODO redact
+== Migration strategies
 
 As we've seen above, both scripts using the Kotlin DSL, `\*.gradle.kts`, and scripts using the Groovy DSL, `*.gradle`, can participate in the same build.
 Gradle plugins implemented in `./buildSrc`, an included build or externally fetched can use any JVM language.
 This makes it possible to migrate progressively, piece by piece, without blocking your team.
 
+At first sight, two approaches come to mind: mechanically migrating your build logic, translating to Kotlin piece by piece, as it is ; or, restructuring your build logic towards Gradle best practices while migrating.
 
-Mechanical migration vs. restructuring towards best practices:
+Both approaches are possible.
+A mechanical migration will be enough for simple builds.
+A complex and highly dynamic build logic may require some restructuring.
+A balance between the two approaches often is the right choice.
+Of course, applying Gradle best practices will make your builds easier to use and faster and should be favored.
 
-* both possible
-* the former will be enough for simple builds
-* a complex and highly dynamic build logic will require some restructuring
-* external plugins might not provide a good Kotlin DSL experience, workarounds
+In any case, the more parts of your build logic rely on Groovy dynamism, the harder they will be to use from the Kotlin DSL.
+May it be local scripts, local plugins or external plugins relying too much on Groovy dynamism, you'll find recipes on how to cross the dynamic boundaries from static Kotlin in the <<interop>> section below.
 
+There are two key best practices that makes it easier with the static nature of the Kotlin DSL:
 
-Refactor towards the use of the `plugins {}` block. Use `pluginManagement {}` in `settings.gradle.kts` to control plugin resolution if needed.
+* link:{user-manual}plugins.html#sec:plugins_block[Applying plugins with the `plugins {}` DSL]
+* link:{user-manual}organizing_build_logic.html#sec:build_sources[Build logic in `buildSrc`].
 
-Refactor towards the use of `buildSrc` using the `kotlin-dsl` plugin.
-// and pre-compiled scripts `buildSrc/src/main/kotlin/my-plugin.gradle.kts`
+The former, <<declarative-scripts,explained above>>, is about keeping your build scripts declarative, including using the `pluginManagement {}` DSL in your `settings.gradle.kts` file to use the `plugins {}` DSL with external plugins published without the required metadata.
+
+The later, link:{user-manual}organizing_build_logic.html#sec:build_sources[explained in the Gradle User Manual], is about organizing your build logic into shared local plugins and conventions, easily testable, while providing good IDE support.
 
 === Kotlin DSL build structure samples
 
