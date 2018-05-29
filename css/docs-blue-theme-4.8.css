@@ -99,6 +99,24 @@ b, strong {
     }
 }
 
+@media screen and (min-width: 84.375rem) {
+    .main-content > .appendix,
+    .main-content > .book,
+    .main-content > .chapter {
+        flex-basis: 50rem;
+        max-width: 50rem;
+    }
+}
+
+@media screen and (min-width: 93.75rem) {
+    .main-content > .appendix,
+    .main-content > .book,
+    .main-content > .chapter {
+        flex-basis: 60rem;
+        max-width: 60rem;
+    }
+}
+
 #header .details {
     /* TODO: Pretty sure there's a way to avoid Asciidoc generating details */
     display: none;
