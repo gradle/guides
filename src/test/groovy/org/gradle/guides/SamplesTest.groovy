@@ -35,8 +35,6 @@ class SamplesTest extends AbstractSamplesFunctionalTest {
         "configuring-tasks"               | "spring-boot"                     | ".gradle.kts"
         "creating-tasks"                  | "task-container"                  | ".gradle"
         "creating-tasks"                  | "task-container"                  | ".gradle.kts"
-        "creating-tasks"                  | "project-api"                     | ".gradle"
-        "creating-tasks"                  | "project-api"                     | ".gradle.kts"
         "creating-tasks"                  | "reference"                       | ".gradle"
         "creating-tasks"                  | "reference"                       | ".gradle.kts"
         "configurations-and-dependencies" | "declarative"                     | ".gradle"
