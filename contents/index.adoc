@@ -233,12 +233,12 @@ Here is how you can configure a single property of the existing `jar` task:
 
 [source.multi-language-sample, groovy]
 ----
-jar.archiveName = 'foo.jar'
+include::{samplescodedir}/configuring-tasks/basics.gradle[tags=single]
 ----
 
 [source.multi-language-sample, kotlin]
 ----
-tasks.getByName<Jar>("jar").archiveName = "foo.jar"
+include::{samplescodedir}/configuring-tasks/basics.gradle.kts[tags=single]
 ----
 
 [NOTE]
@@ -248,38 +248,24 @@ You can, however, omit the type if you only need to configure properties or call
 
 [source.multi-language-sample, groovy]
 ----
-test.doLast {
-    println("test completed")
-}
+include::{samplescodedir}/configuring-tasks/basics.gradle[tags=untyped]
 ----
 
 [source.multi-language-sample, kotlin]
 ----
-tasks["test"].doLast {
-    println("test completed")
-}
+include::{samplescodedir}/configuring-tasks/basics.gradle.kts[tags=untyped]
 ----
 
 If you need to configure several properties or call multiple methods on the same task you can group them in a block as follows:
 
 [source.multi-language-sample, groovy]
 ----
-jar {
-    archiveName = 'foo.jar'
-    into('META-INF') {
-        from('bar')
-    }
-}
+include::{samplescodedir}/configuring-tasks/basics.gradle[tags=config]
 ----
 
 [source.multi-language-sample, kotlin]
 ----
-tasks.getByName<Jar>("jar") {
-    archiveName = "foo.jar"
-    into("META-INF") {
-        from("bar")
-    }
-}
+include::{samplescodedir}/configuring-tasks/basics.gradle.kts[tags=config]
 ----
 
 But there is another idiomatic way to configure tasks: using Kotlin link:link:{kotlin-reference}delegated-properties.html[delegated properties].
@@ -287,24 +273,12 @@ It is particularly useful if you need a reference to the task for later usage:
 
 [source.multi-language-sample, groovy]
 ----
-jar {
-    archiveName = 'foo.jar'
-}
-
-jar.into('META-INF') {
-    from('bar')
-}
+include::{samplescodedir}/configuring-tasks/basics.gradle[tags=reference]
 ----
 
 [source.multi-language-sample, kotlin]
 ----
-val jar by tasks.getting(Jar::class) {
-    archiveName = "foo.jar"
-}
-
-jar.into("META-INF") {
-    from("bar")
-}
+include::{samplescodedir}/configuring-tasks/basics.gradle.kts[tags=reference]
 ----
 
 Once again, note that if you need to apply task-specific configurations, you need to provide the type of the task (`Jar` in this example).
@@ -363,48 +337,36 @@ Creating tasks can be done on the `tasks` container:
 
 [source.multi-language-sample, groovy]
 ----
-task greeting {
-    doLast { println("Hello, World!") }
-}
+include::{samplescodedir}/creating-tasks/task-container.gradle[tags=container-api]
 ----
 
 [source.multi-language-sample, kotlin]
 ----
-tasks.create("greeting") {
-    doLast { println("Hello, World!") }
-}
+include::{samplescodedir}/creating-tasks/task-container.gradle.kts[tags=container-api]
 ----
 
 or directly from the top-level using the API functions available on `Project`:
 
 [source.multi-language-sample, groovy]
 ----
-task greeting {
-    doLast { println("Hello, World!") }
-}
+include::{samplescodedir}/creating-tasks/project-api.gradle[tags=project-api]
 ----
 
 [source.multi-language-sample, kotlin]
 ----
-task("greeting") {
-    doLast { println("Hello, World!") }
-}
+include::{samplescodedir}/creating-tasks/project-api.gradle.kts[tags=project-api]
 ----
 
 or by using Kotlin delegated properties that are useful if you need a reference to the created task for later usage:
 
 [source.multi-language-sample, groovy]
 ----
-task greeting {
-    doLast { println("Hello, World!") }
-}
+include::{samplescodedir}/creating-tasks/reference.gradle[tags=reference]
 ----
 
 [source.multi-language-sample, kotlin]
 ----
-val greeting by tasks.creating {
-    doLast { println("Hello, World!") }
-}
+include::{samplescodedir}/creating-tasks/reference.gradle.kts[tags=reference]
 ----
 
 
@@ -412,54 +374,36 @@ Often you want to create a task of a given type (`Zip` in this example):
 
 [source.multi-language-sample, groovy]
 ----
-task docZip(type: Zip) {
-    archiveName = 'doc.zip'
-    from 'doc'
-}
+include::{samplescodedir}/creating-tasks/task-container.gradle[tags=typed-container-api]
 ----
 
 [source.multi-language-sample, kotlin]
 ----
-tasks.create<Zip>("docZip") {
-    archiveName = "doc.zip"
-    from("doc")
-}
+include::{samplescodedir}/creating-tasks/task-container.gradle.kts[tags=typed-container-api]
 ----
 
 The same can be done using the `Project` API,
 
 [source.multi-language-sample, groovy]
 ----
-task docZip(type: Zip) {
-    archiveName = 'doc.zip'
-    from 'doc'
-}
+include::{samplescodedir}/creating-tasks/project-api.gradle[tags=typed-project-api]
 ----
 
 [source.multi-language-sample, kotlin]
 ----
-task<Zip>("docZip") {
-    archiveName = "doc.zip"
-    from("doc")
-}
+include::{samplescodedir}/creating-tasks/project-api.gradle.kts[tags=typed-project-api]
 ----
 
 or using Kotlin delegated properties:
 
 [source.multi-language-sample, groovy]
 ----
-task docZip(type: Zip) {
-    archiveName = 'doc.zip'
-    from 'doc'
-}
+include::{samplescodedir}/creating-tasks/reference.gradle[tags=typed-reference]
 ----
 
 [source.multi-language-sample, kotlin]
 ----
-val docZip by tasks.creating(Zip::class) {
-    archiveName = "doc.zip"
-    from("doc")
-}
+include::{samplescodedir}/creating-tasks/reference.gradle.kts[tags=typed-reference]
 ----
 
 
@@ -469,34 +413,12 @@ Declaring dependencies in the existing configurations is not much different from
 
 [source.multi-language-sample, groovy]
 ----
-plugins {
-    id 'java'
-}
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'io.jsonwebtoken:jjwt:0.9.0'
-    runtimeOnly 'org.postgresql:postgresql'
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude(module: 'junit')
-    }
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-}
+include::{samplescodedir}/configurations-and-dependencies/declarative.gradle[]
 ----
 
 [source.multi-language-sample, kotlin]
 ----
-plugins {
-    java
-}
-dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("io.jsonwebtoken:jjwt:0.9.0")
-    runtimeOnly("org.postgresql:postgresql")
-    testImplementation("org.springframework.boot:spring-boot-starter-test") {
-        exclude(module = "junit")
-    }
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-}
+include::{samplescodedir}/configurations-and-dependencies/declarative.gradle.kts[]
 ----
 
 Each configuration contributed by applied plugins is also available as a member of the `configurations` container so you can reference it.
@@ -515,64 +437,24 @@ Note that if you do not use the `plugins {}` block to apply your plugins, then K
 
 [source.multi-language-sample, groovy]
 ----
-apply plugin: 'java'
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'io.jsonwebtoken:jjwt:0.9.0'
-    runtimeOnly 'org.postgresql:postgresql'
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude(module: 'junit')
-    }
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-}
+include::{samplescodedir}/configurations-and-dependencies/imperative.gradle[]
 ----
 
 [source.multi-language-sample, kotlin]
 ----
-apply(plugin = "java")
-dependencies {
-    "implementation"("org.springframework.boot:spring-boot-starter-web")
-    "implementation"("io.jsonwebtoken:jjwt:0.9.0")
-    "runtimeOnly"("org.postgresql:postgresql")
-    "testImplementation"("org.springframework.boot:spring-boot-starter-test") {
-        exclude(module = "junit")
-    }
-    "testRuntimeOnly"("org.junit.jupiter:junit-jupiter-engine")
-}
+include::{samplescodedir}/configurations-and-dependencies/imperative-string-reference.gradle.kts[]
 ----
 
 or bring them into scope thanks to Kotlin delegated properties:
 
 [source.multi-language-sample, groovy]
 ----
-apply plugin: 'java'
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'io.jsonwebtoken:jjwt:0.9.0'
-    runtimeOnly 'org.postgresql:postgresql'
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude(module: 'junit')
-    }
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-}
+include::{samplescodedir}/configurations-and-dependencies/imperative.gradle[]
 ----
 
 [source.multi-language-sample, kotlin]
 ----
-apply(plugin = "java")
-val implementation by configurations
-val runtimeOnly by configurations
-val testImplementation by configurations
-val testRuntimeOnly by configurations
-dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("io.jsonwebtoken:jjwt:0.9.0")
-    runtimeOnly("org.postgresql:postgresql")
-    testImplementation("org.springframework.boot:spring-boot-starter-test") {
-        exclude(module = "junit")
-    }
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-}
+include::{samplescodedir}/configurations-and-dependencies/imperative-delegated-properties.gradle.kts[]
 ----
 
 
@@ -582,30 +464,12 @@ Sometimes you need to add your own configuration, and add dependencies to them:
 
 [source.multi-language-sample, groovy]
 ----
-configurations {
-    db
-    integTestImplementation {
-        extendsFrom testImplementation
-    }
-}
-
-dependencies {
-    db 'org.postgresql:postgresql'
-    integTestImplementation 'com.ninja-squad:DbSetup:2.1.0'
-}
+include::{samplescodedir}/configurations-and-dependencies/custom.gradle[tags=custom]
 ----
 
 [source.multi-language-sample, kotlin]
 ----
-val db by configurations.creating
-val integTestImplementation by configurations.creating {
-    extendsFrom(configurations["testImplementation"])
-}
-
-dependencies {
-    db("org.postgresql:postgresql")
-    integTestImplementation("com.ninja-squad:DbSetup:2.1.0")
-}
+include::{samplescodedir}/configurations-and-dependencies/custom.gradle.kts[tags=delegated-properties]
 ----
 
 Note that, in the above example, you can only use `db(...)` and `integTestImplementation(...)` because they're both declared as properties before. If they were defined elsewhere, you could get them by delegating to `configurations`, or you could use a string to add a dependency to the configuration:
@@ -613,14 +477,7 @@ Note that, in the above example, you can only use `db(...)` and `integTestImplem
 .build.gradle.kts
 [source, kotlin]
 ----
-// get the existing testRuntimeOnly configuration
-val testRuntimeOnly by configurations
-
-dependencies {
-    testRuntimeOnly("org.postgresql:postgresql")
-    "db"("org.postgresql:postgresql")
-    "integTestImplementation"("com.ninja-squad:DbSetup:2.1.0")
-}
+include::{samplescodedir}/configurations-and-dependencies/custom.gradle.kts[tags=string-reference]
 ----
 
 
@@ -634,12 +491,12 @@ The following is a settings script declaring some sub projects:
 .settings.gradle
 [source.multi-language-sample, groovy]
 ----
-include 'core', 'cli'
+include::{samplescodedir}/multi-project-builds/groovy-dsl/settings.gradle[]
 ----
 .settings.gradle.kts
 [source.multi-language-sample, kotlin]
 ----
-include("core", "cli")
+include::{samplescodedir}/multi-project-builds/kotlin-dsl/settings.gradle.kts[]
 ----
 
 and the corresponding root project build script configuring sub projects:
@@ -647,22 +504,12 @@ and the corresponding root project build script configuring sub projects:
 .build.gradle
 [source.multi-language-sample, groovy]
 ----
-subprojects {
-    apply plugin: 'java'
-}
-project(':cli') {
-    apply plugin: 'application'
-}
+include::{samplescodedir}/multi-project-builds/groovy-dsl/build.gradle[]
 ----
 .build.gradle.kts
 [source.multi-language-sample, kotlin]
 ----
-subprojects {
-    apply(plugin = "java")
-}
-project(":cli") {
-    apply(plugin = "application")
-}
+include::{samplescodedir}/multi-project-builds/kotlin-dsl/build.gradle.kts[]
 ----
 
 [TIP]
@@ -680,14 +527,12 @@ Following up on our example multi project build, the `:cli` build script would l
 .cli/build.gradle
 [source.multi-language-sample, groovy]
 ----
-mainClassName = "com.example.CliMain"
+include::{samplescodedir}/multi-project-builds/groovy-dsl/cli/build.gradle[]
 ----
 .cli/build.gradle.kts
 [source.multi-language-sample, kotlin]
 ----
-application {
-    mainClassName = "com.example.CliMain"
-}
+include::{samplescodedir}/multi-project-builds/kotlin-dsl/cli/build.gradle.kts[]
 ----
 
 [CAUTION]

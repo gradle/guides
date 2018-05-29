@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+}
+
+// tag::custom[]
+configurations {
+    db
+    integTestImplementation {
+        extendsFrom testImplementation
+    }
+}
+
+dependencies {
+    db 'org.postgresql:postgresql'
+    integTestImplementation 'com.ninja-squad:DbSetup:2.1.0'
+}
+// end::custom[]
