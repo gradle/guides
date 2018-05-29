@@ -40,7 +40,42 @@ Both share the same ultimate goal though: provide means to interact with the dyn
 It takes more ceremony to do dynamic things with the Kotlin DSL.
 On the other hand it provides more safety and more tooling.
 
-Applying Gradle best practices tend towards more declarative builds, less dynamic constructs. This is where the Kotlin DSL shines with the less ceremony and the more tooling. In that sense, the Kotlin DSL encourages Gradle best practices.
+Because Kotlin is a statically-typed language with deep support in IntelliJ, it gives Gradle users proper IDE support from auto-completion to refactoring and everything in-between.
+
+At a glance, the Gradle Kotlin DSL doesn’t look too different from the Gradle build scripts you know today:
+
+[source,kotlin]
+----
+plugins {
+    application
+}
+
+application {
+    mainClassName = "com.example.Main"
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    testImplementation("junit:junit:4.12")
+}
+----
+
+But things get very interesting when you begin to explore what’s possible in the IDE.
+You’ll find that, suddenly, the things you usually expect from your IDE just work, including:
+
+* auto-completion and content assist
+* quick documentation
+* navigation to source
+* refactoring and more
+
+The effect is dramatic, and we think it’ll make a big difference for Gradle users.
+
+Applying Gradle best practices tend towards more declarative builds, less dynamic constructs.
+This is where the Kotlin DSL shines with the less ceremony and the more tooling.
+In that sense, the Kotlin DSL encourages Gradle best practices.
 
 [TIP]
 --
