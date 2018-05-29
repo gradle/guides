@@ -46,6 +46,9 @@ class SamplesTest extends AbstractSamplesFunctionalTest {
         "configurations-and-dependencies" | "imperative-delegated-properties" | ".gradle.kts"
         "configurations-and-dependencies" | "custom"                          | ".gradle"
         "configurations-and-dependencies" | "custom"                          | ".gradle.kts"
+        "interoperability"                | "closureOf"                       | ".gradle.kts"
+        "interoperability"                | "delegateClosureOf"               | ".gradle.kts"
+        "interoperability"                | "withGroovyBuilder"               | ".gradle.kts"
     }
 
     @Unroll
@@ -58,9 +61,10 @@ class SamplesTest extends AbstractSamplesFunctionalTest {
         succeeds("help")
 
         where:
-        section                | sample       | dsl
-        "multi-project-builds" | "groovy-dsl" | "groovy"
-        "multi-project-builds" | "kotlin-dsl" | "kotlin"
+        section                | sample              | dsl
+        "multi-project-builds" | "groovy-dsl"        | "groovy"
+        "multi-project-builds" | "kotlin-dsl"        | "kotlin"
+        "interoperability"     | "static-extensions" | "mixed"
     }
 
     @Unroll

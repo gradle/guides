@@ -613,15 +613,17 @@ To call a Kotlin extension function from Groovy, call it as a static function pa
 .build.gradle
 [source, groovy]
 ----
-TheKotlinType.kotlinExtensionFunction(receiver, "parameters", 42, aReference)
+include::{samplescodedir}/interoperability/static-extensions/build.gradle[tags=kotlin-from-groovy]
 ----
+
+Kotlin extension functions are package-level functions, see the link:{kotlin-reference}java-to-kotlin-interop.html#package-level-functions[Package-Level Functions] section of the Kotlin reference documentation to learn how to locate the name of the type declaring a given Kotlin extension.
 
 To call a Groovy dynamic extension from Kotlin, the same applies, call it as a static function passing the receiver as the first parameter:
 
 .build.gradle.kts
 [source, kotlin]
 ----
-TheGroovyTypeExtension.groovyExtensionMethod(receiver, "parameters", 42, aReference)
+include::{samplescodedir}/interoperability/static-extensions/build.gradle.kts[tags=groovy-from-kotlin]
 ----
 
 
@@ -674,22 +676,14 @@ Some plugins expect simple closures, here with the link:{plugin-portal}plugin/co
 
 [source, kotlin]
 ----
-bintray {
-    pkg(closureOf<PackageConfig> {
-        // Config for the package here
-    })
-}
+include::{samplescodedir}/interoperability/closureOf.gradle.kts[tags=closureOf]
 ----
 
 In other cases, like with the link:{plugin-portal}plugin/org.gretty[Gretty Plugin] when configuring farms, the plugin expects a delegate closure:
 
 [source, kotlin]
 ----
-farms {
-    farm("OldCoreWar", delegateClosureOf<FarmExtension> {
-        // Config for the war here
-    })
-}
+include::{samplescodedir}/interoperability/delegateClosureOf.gradle.kts[tags=delegateClosureOf]
 ----
 
 There sometimes isn't a good way to tell, from looking at the source code, which version to use.
@@ -708,20 +702,7 @@ The Kotlin DSL provides a `withGroovyBuilder {}` utility extension that brings t
 .build.gradle.kts
 [source, kotlin]
 ----
-target.withGroovyBuilder {                                          <1>
-
-    // GroovyObject methods available                               <2>
-    val foo = getProperty("foo")
-    setProperty("foo", "bar")
-    invokeMethod("name", "parameters", 42, aReference)
-
-    // Kotlin DSL utilities
-    "methodName"("parameters", 42, aReference)                      <3>
-    "blockName" {                                                   <4>
-        // Same Groovy Builder semantics on `blockName`
-    }
-    "another"("name" to "example", "url" to "https://example.com/") <5>
-}
+include::{samplescodedir}/interoperability/withGroovyBuilder.gradle.kts[tags=withGroovyBuilder]
 ----
 <1> The receiver is a link:http://docs.groovy-lang.org/latest/html/api/groovy/lang/GroovyObject.html[GroovyObject] and provides Kotlin helpers
 <2> The `GroovyObject` api is available
