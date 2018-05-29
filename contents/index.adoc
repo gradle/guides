@@ -318,7 +318,7 @@ Type
      BootRun (org.springframework.boot.gradle.tasks.run.BootRun)
 ----
 
-We know now the type of the two tasks, the simple names (`BootJar` and `BootRun`) are enough, the IDE will assist you adding the required imports:
+We now know the type of the two tasks, the simple names (`BootJar` and `BootRun`) are enough, the IDE will assist you adding the required imports:
 
 [source.multi-language-sample, groovy]
 ----

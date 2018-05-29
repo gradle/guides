@@ -10,17 +10,17 @@ val integTestImplementation by configurations.creating {
 
 dependencies {
     db("org.postgresql:postgresql")
-    integTestImplementation("com.ninja-squad:DbSetup:2.1.0")
+    integTestImplementation("com.example:integ-test-support:1.3")
 }
 // end::delegated-properties[]
 
 // tag::string-reference[]
-// get the existing testRuntimeOnly configuration
+// get the existing 'testRuntimeOnly' configuration
 val testRuntimeOnly by configurations
 
 dependencies {
-    testRuntimeOnly("org.postgresql:postgresql")
+    testRuntimeOnly("com.example:test-junit-jupiter-runtime:1.3")
     "db"("org.postgresql:postgresql")
-    "integTestImplementation"("com.ninja-squad:DbSetup:2.1.0")
+    "integTestImplementation"("com.example:integ-test-support:1.3")
 }
 // end::string-reference[]

@@ -1,5 +1,5 @@
 plugins {
     java
     id("jacoco")
-    id("org.springframework.boot") version "2.0.1.RELEASE"
+    id("org.springframework.boot") version "2.0.2.RELEASE"
 }
