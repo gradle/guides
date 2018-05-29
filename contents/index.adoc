@@ -268,7 +268,7 @@ include::{samplescodedir}/configuring-tasks/basics.gradle[tags=config]
 include::{samplescodedir}/configuring-tasks/basics.gradle.kts[tags=config]
 ----
 
-But there is another idiomatic way to configure tasks: using Kotlin link:link:{kotlin-reference}delegated-properties.html[delegated properties].
+But there is another idiomatic way to configure tasks: using Kotlin link:{kotlin-reference}delegated-properties.html[delegated properties].
 It is particularly useful if you need a reference to the task for later usage:
 
 [source.multi-language-sample, groovy]
@@ -597,7 +597,7 @@ Quoting the Kotlin reference documentation:
 
 > Kotlin is designed with Java Interoperability in mind. Existing Java code can be called from Kotlin in a natural way, and Kotlin code can be used from Java rather smoothly as well.
 
-Both link:link:{kotlin-reference}java-interop.html[calling Java from Kotlin] and link:link:{kotlin-reference}java-to-kotlin-interop.html[calling Kotlin from Java] are very well covered in the Kotlin reference documentation.
+Both link:{kotlin-reference}java-interop.html[calling Java from Kotlin] and link:{kotlin-reference}java-to-kotlin-interop.html[calling Kotlin from Java] are very well covered in the Kotlin reference documentation.
 
 The same mostly apply to interoperability with Groovy code.
 There are some gotchas though.
@@ -606,7 +606,7 @@ The Kotlin DSL also provides with a way to opt-in to Groovy semantics.
 
 === Static extensions
 
-Both Groovy and Kotlin languages support extending existing classes, respectively with link:http://groovy-lang.org/metaprogramming.html#_extension_modules[Groovy Extension modules] and link:link:{kotlin-reference}extensions.html[Kotlin extensions].
+Both Groovy and Kotlin languages support extending existing classes, respectively with link:http://groovy-lang.org/metaprogramming.html#_extension_modules[Groovy Extension modules] and link:{kotlin-reference}extensions.html[Kotlin extensions].
 
 To call a Kotlin extension function from Groovy, call it as a static function passing the receiver as the first parameter:
 
@@ -628,7 +628,7 @@ TheGroovyTypeExtension.groovyExtensionMethod(receiver, "parameters", 42, aRefere
 === Named parameters and default arguments
 
 Both Groovy and Kotlin languages support named function parameters and default arguments.
-They are link:link:{kotlin-reference}functions.html#named-arguments[natively] link:link:{kotlin-reference}functions.html#named-arguments[supported] by Kotlin.
+They are link:{kotlin-reference}functions.html#named-arguments[natively] link:{kotlin-reference}functions.html#named-arguments[supported] by Kotlin.
 Groovy supports link:http://groovy-lang.org/objectorientation.html#_named_arguments[named arguments] in a non type safe way based on a `Map<String, ?>` parameter, thus they cannot be combined with link:http://groovy-lang.org/objectorientation.html#_default_arguments[default arguments].
 
 *When calling Kotlin from Groovy*
