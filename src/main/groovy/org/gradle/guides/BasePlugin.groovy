@@ -39,15 +39,8 @@ import org.gradle.api.tasks.PathSensitivity
 @CompileStatic
 class BasePlugin implements Plugin<Project> {
 
-    private static final String COMMON_HEAD_HTML = loadResourceText("head-meta.html")
-    private static final String COMMON_HEADER_HTML = loadResourceText("header.html")
-    private static final String COMMON_FOOTER_HTML = loadResourceText("footer.html")
     static final String GUIDE_EXTENSION_NAME = 'guide'
     static final String CHECK_LINKS_TASK = 'checkLinks'
-
-    static String loadResourceText(final String resourcePath) {
-        Thread.currentThread().contextClassLoader.getResource(resourcePath).text
-    }
 
     void apply(Project project) {
         project.apply plugin : org.gradle.api.plugins.BasePlugin
@@ -72,7 +65,8 @@ class BasePlugin implements Plugin<Project> {
         CheckLinks task = project.tasks.create(CHECK_LINKS_TASK,CheckLinks)
 
         AsciidoctorTask asciidoc = (AsciidoctorTask)(project.tasks.getByName('asciidoctor'))
-        task.indexDocument = {  project.file("${asciidoc.outputDir}/html5/index.html") }
+
+        task.indexDocument = { project.file("${asciidoc.outputDir}/html5/index.html") }
         task.dependsOn asciidoc
     }
 
@@ -81,6 +75,8 @@ class BasePlugin implements Plugin<Project> {
         String gradleVersion = project.gradle.gradleVersion
 
         project.apply plugin: 'org.asciidoctor.convert'
+        project.repositories.mavenLocal()
+        project.dependencies.add("asciidoctor", "org.gradle:docs-asciidoctor-extensions:0.0.4")
 
         AsciidoctorTask asciidoc = (AsciidoctorTask) (project.tasks.getByName('asciidoctor'))
         project.tasks.getByName('build').dependsOn asciidoc
@@ -133,7 +129,6 @@ class BasePlugin implements Plugin<Project> {
 
         }
 
-        addAsciidocExtensions(project, asciidoc)
         lazyConfigureMoreAsciidoc(asciidoc)
 
         def viewTask = project.tasks.create("viewGuide", ViewGuide).with {
@@ -145,39 +140,6 @@ class BasePlugin implements Plugin<Project> {
 
         if (project.gradle.startParameter.continuous) {
             asciidoc.finalizedBy viewTask
-        }
-    }
-
-    @CompileDynamic
-    private void addAsciidocExtensions(Project project, AsciidoctorTask asciidoc) {
-
-        GuidesExtension guide = (GuidesExtension)(asciidoc.project.extensions.getByName(org.gradle.guides.BasePlugin.GUIDE_EXTENSION_NAME))
-
-        Closure contribute = { GuidesExtension guides, document, reader, target, attributes ->
-            reader.push_include(guides.getContributeMessage(), target, target, 1, attributes)
-        }
-
-        asciidoc.extensions {
-
-            includeprocessor(filter: { it == 'contribute' },contribute.curry(guide))
-
-            postprocessor { document, output ->
-                if (document.basebackend("html")) {
-                    String newOutput = output
-
-                    // Inject common styles/meta tags/analytics to head
-                    newOutput = newOutput.replaceAll( ~/<head>/, "<head>${COMMON_HEAD_HTML}")
-
-                    // Inject common header before page title
-                    newOutput = newOutput.replaceAll( ~/<div id="header">/, """${COMMON_HEADER_HTML}<div id="header">""")
-
-                    // Inject common footer at end of content
-                    newOutput = newOutput.replaceAll( ~/<\/body>/, """${COMMON_FOOTER_HTML}</body>""")
-
-                    return newOutput
-                }
-                return output
-            }
         }
     }
 
@@ -194,7 +156,6 @@ class BasePlugin implements Plugin<Project> {
 
         asciidoc.project.afterEvaluate {
             asciidoc.attributes 'repo-path' : guide.repoPath
-            asciidoc.attributes authors : guide.getAllAuthors().join(', ')
         }
     }
 

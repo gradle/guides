@@ -18,7 +18,6 @@ package org.gradle.guides
 
 import groovy.transform.CompileStatic
 import org.gradle.api.Project
-import org.gradle.util.CollectionUtils
 
 /**
  *
@@ -37,72 +36,8 @@ class GuidesExtension {
 
     /** Name of main author
      *
+     * @deprecated
      * @since 0.5
      */
     String mainAuthor
-
-    /** Get list of supporting authors
-     *
-     * @return List of strings
-     * @since 0.5
-     */
-    List<String> getSupAuthors() {
-        this.supAuthors
-    }
-
-    /** Add supporting authors.
-     *
-     * @param a List of authors
-     * @since 0.5
-     */
-    void supAuthors( Iterable<String> a ) {
-        supAuthors.addAll(a)
-    }
-
-    /** Add supporting authors.
-     *
-     * @param a List of authors
-     * @since 0.5
-     */
-    void supAuthors( String... a ) {
-        supAuthors.addAll(a as List)
-    }
-
-    /** Returns all collaborators
-     *
-     * @return List of authors & collaborators
-     * @since 0.5
-     */
-    List<String> getAllAuthors() {
-        List<String> ret = [ this.mainAuthor ]
-        ret + getSupAuthors()
-    }
-
-    /** An Asciidoc-formatted section that can be inserted when
-     * {@code include::contribute[]} is encountered.
-     *
-     * @param msg Asciidoc-formatted code.
-     */
-    void setContributeMessage(Object msg) {
-        this.contributeMessage = msg
-    }
-
-    /** Message that is printed at the end of the guide.
-     *
-     * @return Message in Asciidoc markup
-     */
-    String getContributeMessage() {
-        CollectionUtils.stringize([this.contributeMessage])[0]
-    }
-
-    private List<String> supAuthors = []
-
-    private Object contributeMessage = """
-
-[.contribute]
-== Help improve this guide
-
-Have feedback or a question? Found a typo? Like all Gradle guides, help is just a GitHub issue away. Please add an issue or pull request to https://github.com/{repo-path}/[{repo-path}] and we'll get back to you.
-"""
-
 }

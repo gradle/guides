@@ -32,8 +32,6 @@ class GuidesExtensionSpec extends Specification {
             guide {
                 repoPath   'foo/bar'
                 mainAuthor 'John Doe'
-                supAuthors 'abc', 'def'
-                supAuthors 'fgh'
             }
         }
         project.evaluate()
@@ -41,7 +39,5 @@ class GuidesExtensionSpec extends Specification {
         then:
         project.guide.repoPath == 'foo/bar'
         project.guide.mainAuthor == 'John Doe'
-        project.guide.supAuthors == ['abc', 'def', 'fgh']
-        project.guide.allAuthors == ['John Doe', 'abc', 'def', 'fgh']
     }
 }
