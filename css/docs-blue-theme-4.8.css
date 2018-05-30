@@ -180,6 +180,11 @@ body.book #header > h1 {
     border: 0;
 }
 
+#header > h1:only-child {
+    border: 0 none;
+    padding: 0;
+}
+
 #header > h1:first-child {
     margin-top: 0;
 }
@@ -296,6 +301,7 @@ div.screenshot {
     /* Asciidoc overrides */
     background: none;
     border: 0 none;
+    padding: 1.25em 0 0;
 }
 
 #content #toctitle {
