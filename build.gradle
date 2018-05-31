@@ -1,9 +1,4 @@
 plugins {
-    id "org.gradle.guides.getting-started" version "0.12.0"
-    id "org.gradle.guides.test-jvm-code" version "0.12.0"
-}
-
-guide {
-    repoPath 'gradle-guides/creating-build-scans'
-    mainAuthor 'Ken Kousen'
+    id "org.gradle.guides.getting-started" version "0.13.1"
+    id "org.gradle.guides.test-jvm-code" version "0.13.1"
 }
