@@ -70,13 +70,14 @@ class BasePlugin implements Plugin<Project> {
         task.dependsOn asciidoc
     }
 
+    @CompileDynamic
     private void addAsciidoctor(Project project) {
 
         String gradleVersion = project.gradle.gradleVersion
 
         project.apply plugin: 'org.asciidoctor.convert'
-        project.repositories.mavenLocal()
-        project.dependencies.add("asciidoctor", "org.gradle:docs-asciidoctor-extensions:0.0.4")
+        project.repositories.maven { url "https://repo.gradle.org/gradle/ext-releases-local" }
+        project.dependencies.add("asciidoctor", "org.gradle:docs-asciidoctor-extensions:0.1.0")
 
         AsciidoctorTask asciidoc = (AsciidoctorTask) (project.tasks.getByName('asciidoctor'))
         project.tasks.getByName('build').dependsOn asciidoc
