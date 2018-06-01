@@ -164,4 +164,4 @@ Once your plugin has been published, the instructions for others to use it will 
 * Read the https://plugins.gradle.org/docs/publish-plugin[reference documentation for the {publishplugin}].
 
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/publishing-plugins-to-gradle-plugin-portal"]
