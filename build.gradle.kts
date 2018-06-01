@@ -1,8 +1,8 @@
 plugins {
-    id("org.gradle.guides.getting-started") version "0.12.0"
+    id("org.gradle.guides.getting-started") version "0.13.2"
 
     // Uncomment this line if you need test JVM code snippets
-    // id("org.gradle.guides.test-jvm-code") version "0.12.0"
+    // id("org.gradle.guides.test-jvm-code") version "0.13.2"
 }
 
 configure<org.gradle.guides.GuidesExtension> {
