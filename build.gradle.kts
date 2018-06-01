@@ -1,6 +1,6 @@
 plugins {
-    id("com.gradle.build-scan") version "1.13.1"
-    id("org.gradle.guides.getting-started") version "0.12.0"
+    id("com.gradle.build-scan") version "1.13.4"
+    id("org.gradle.guides.getting-started") version "0.13.2"
 }
 
 configure<org.gradle.guides.GuidesExtension> {
