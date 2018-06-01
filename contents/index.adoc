@@ -219,4 +219,4 @@ Building a library is just one aspect of reusing code across project boundaries.
  - {user-manual}intro_multi_project_builds.html[Working with multi-project builds]
 
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/building-java-libraries"]
