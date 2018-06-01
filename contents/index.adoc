@@ -144,4 +144,4 @@ You now have a new Groovy project that you generated using Gradle's build init p
 * Get to know the configurations for the {language-reference}org.gradle.api.tasks.compile.GroovyCompile.html[GroovyCompile] and {language-reference}org.gradle.api.tasks.javadoc.Groovydoc.html[Groovydoc] task types.
 
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/building-groovy-libraries"]
