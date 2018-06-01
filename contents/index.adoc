@@ -247,7 +247,7 @@ Some IDEs provide a convenience option to delegate the "test classpath generatio
 
 image::intellij-delegate-to-build.png[]
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/testing-gradle-plugins"]
 
 == Next steps
 
