@@ -134,4 +134,4 @@ You have created an {cpp} project  that can be used as a foundation for somethin
 * As there is no 'standard' way of creating documentation for {cpp} projects, the `cpp` plugin does not offer a task to generate documentation. If you do use the popular Doxygen tool for documenting {cpp} code, you may want to have a look at the link:https://plugins.gradle.org/plugin/org.ysb33r.doxygen[Doxygen plugin] for Gradle
 
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/building-cpp-executables"]
