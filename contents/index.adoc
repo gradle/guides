@@ -39,4 +39,4 @@ BUILD SUCCESSFUL
 == Summary
 
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/repo-name-here"]
