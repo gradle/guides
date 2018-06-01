@@ -134,4 +134,4 @@ This guide documented the process to:
 
 Now that you have some experience with it, we hope that you're inspired to contribute more guides in the future!
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/writing-getting-started-guides"]
