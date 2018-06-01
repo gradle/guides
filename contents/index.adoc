@@ -315,4 +315,4 @@ Gretty is a very powerful API. See the http://akhikhl.github.io/gretty-doc/[Gret
 If you are interested in functional testing, check out the open source http://www.gebish.org[Geb] library, which provides a powerful Groovy DSL for browser automation that rests on top of Selenium and WebDriver.
 
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/building-java-web-applications"]
