@@ -272,4 +272,4 @@ We hope you found this fun and enlightening. Let us know what you thought of thi
  - JetBrains has developed a series of https://github.com/JetBrains/kotlin-examples[Kotlin example projects] the demonstrate working with Kotlin and Gradle, including https://github.com/JetBrains/kotlin-examples/tree/master/gradle/dokka-gradle-example[one for advanced Dokka usage].
  - There are lots of https://github.com/gradle/kotlin-dsl/tree/master/samples[Kotlin DSL samples] available in the gradle/kotlin-dsl repository on GitHub, as well as additional https://github.com/gradle/kotlin-dsl/tree/master/doc/getting-started[getting started docs]
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/building-kotlin-jvm-applications"]
