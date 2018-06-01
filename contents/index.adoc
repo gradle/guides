@@ -158,5 +158,5 @@ Now that you're familiar with the basics of building Gradle plugins, you may be 
  - {user-manual}test_kit.html[Testing plugins]
  - {user-manual}more_about_tasks.html#sec:up_to_date_checks[Adding incremental build support to new task types]
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/writing-gradle-plugins"]
 
