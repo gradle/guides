@@ -657,4 +657,4 @@ first-class support for the module system, but you can begin experimenting
 today!
 
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/building-java-9-modules"]
