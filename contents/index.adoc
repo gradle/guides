@@ -131,7 +131,7 @@ It’s important to understand that a Gradle plugin does not run in its own, iso
 
 Designing the architecture of a plugin is an important and necessary step in the creation of a future-proof implementation. It’s crucial to remember the recipes and recommendations laid out in this guide before writing a single line of code. Now that you are equipped with good practices of plugin development, it’s time to apply those techniques to writing plugins.
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/designing-gradle-plugins"]
 
 == Next steps
 
