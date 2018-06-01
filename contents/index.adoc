@@ -765,4 +765,4 @@ Next steps:
 * The link:kotlin-dsl-samples[`kotlin-dsl` samples] contain example of various build structures using the Kotlin DSL.
 
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/migrating-build-logic-from-groovy-to-kotlin"]
