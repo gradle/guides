@@ -178,4 +178,4 @@ You now have JVM application that consumes an external library. In this process 
 * Read about finding artifacts without metadata in link:{user-manual}repository_types.html#sec:flat_dir_resolver[local folders].
 * Read about link:{user-manual}customizing_dependency_resolution_behavior.html[advanced artifact resolution] and how to deal with version & dependency conflicts.
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/consuming-jvm-libraries"]
