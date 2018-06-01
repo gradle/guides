@@ -268,4 +268,4 @@ You have created a {cpp} library (both static and shared) and written unit tests
 * How to build and run testsuites written with GoogleTest
 
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/building-cpp-libraries"]
