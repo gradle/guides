@@ -234,7 +234,7 @@ body.book #header > h1 {
     margin: 0;
     padding: 4px 20px 0;
     min-width: 163px;
-    max-width: 320px;
+    max-width: 50%;
     text-align: center;
 }
 
