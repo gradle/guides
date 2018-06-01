@@ -185,4 +185,4 @@ You now have a new Java project that you generated using Gradle's build init plu
 * How to execute a Java application using the `run` task from the Application plugin
 
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/building-java-applications"]
