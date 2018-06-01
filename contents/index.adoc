@@ -214,7 +214,7 @@ Add a test to ensure your code in the application itself works. As Spock Framewo
 .greeter/build.gradle
 [source,groovy]
 ----
-apply plugin : 'groovy' // <1> 
+apply plugin : 'groovy' // <1>
 
 // then, add the following testCompile dependency to the dependencies block:
 
@@ -398,4 +398,4 @@ By following the steps you have seen how to
 * Remembering to type `./gradlew`, `../gradlew` or even `../../gradlew` can become an arduous task. If you are on a Unix-like operating system consider installing https://github.com/dougborg/gdub[gdub].
 * Read about multi-project in the link:{user-manual}multi_project_builds.html[{user-manual-name}]
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/creating-multi-project-builds"]
