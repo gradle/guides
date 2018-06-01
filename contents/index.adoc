@@ -148,4 +148,4 @@ You now have a new Scala project that you generated using Gradle's build init pl
 * Get to know the configurations for the {language-reference}org.gradle.api.tasks.scala.ScalaCompile.html[ScalaCompile] and {language-reference}org.gradle.api.tasks.scala.ScalaDoc.html[Scaladoc] task types.
 
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/building-scala-libraries"]
