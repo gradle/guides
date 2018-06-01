@@ -203,4 +203,4 @@ Chances are you want to create a library or application for a specific platform,
 
 You can also checkout many link:https://github.com/gradle/gradle/tree/master/subprojects/docs/src/samples[sample Gradle builds on GitHub].
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/creating-new-gradle-builds"]
