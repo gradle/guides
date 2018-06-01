@@ -22,4 +22,4 @@ include::common-problems.adoc[]
 include::summary.adoc[]
 
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/using-build-cache"]
