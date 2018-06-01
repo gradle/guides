@@ -14,6 +14,9 @@ While Gradle version {gradle-version} doesn't have first-class support for
 Java 9 modules yet, this guide shows you how to experiment with them before that
 support is complete.
 
+WARNING: Currently, this guide has been tested with IDEA but does not work with
+Eclipse Oxygen.3a Release (4.7.3a), due to classpath/modulepath https://github.com/eclipse/buildship/issues/708[issues].
+
 == What you'll need
 
 * About +++<span class="time-to-complete-text">60 minutes</span>+++
