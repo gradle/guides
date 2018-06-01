@@ -286,4 +286,4 @@ Chances are, your needs are more complex. There are 2 next steps from here:
 
 Happy bundling!
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/running-webpack-with-gradle"]
