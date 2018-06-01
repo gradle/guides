@@ -1,13 +1,12 @@
 import org.apache.tools.ant.filters.ConcatFilter
 
 plugins {
+    id "com.gradle.build-scan" version "1.13.4"
     id "org.gradle.guides.getting-started" version "0.13.2"
 }
 
 guide {
-    repoPath    'gradle-guides/building-java-libraries'
-    mainAuthor 'Chris Beams'
-    supAuthors  'Schalk Cronjé'
+    repoPath 'gradle-guides/building-java-libraries'
 }
 
 asciidoctor {
@@ -123,81 +122,11 @@ gradleRunner {
 
 }
 
-//copy {
-//    from tmpDir
-//    into destDir
-//
-//    exclude '.gradle/**'
-//    exclude 'build/**'
-//
-//    filesMatching (['build.gradle','**/*.java']) {
-//        filter { line ->
-//            if (line =~ /^(\/\*)|(\s*\*)|(\/\/)/) {
-//                null
-//            } else {
-//                line
-//            }
-//        }
-//    }
-//
-//    filesMatching (['settings.gradle']) {
-//        filter { line->
-//            if(line=~/^rootProject/) {
-//                "${line} // <1>"
-//            } else {
-//                null
-//            }
-//        }
-//    }
-//
-//    filesMatching (['build.gradle']) {
-//        filter { line ->
-//            if (line=~/\s*jcenter/) {
-//                "${line} // <1>"
-//            } else if (line=~/\s*api.+commons-math/) {
-//                "${line} // <2>"
-//            } else if (line=~/\s*implementation.+guava/) {
-//                "${line} // <3>"
-//            } else if (line=~/\s*testImplementation.+junit/) {
-//                "${line} // <4>"
-//            } else {
-//                line
-//            }
-//        }
-//    }
-//
-//    filesMatching( ['src/main/java/Library.java'] ) {
-//        filter ConcatFilter, prepend: file('contents/javadoc-prefix.txt'),
-//            append: file('contents/javadoc-postfix.txt')
-//    }
-//}
-//
-//copy {
-//    from tmpOutputDir
-//    into outputLogFileDir
-//
-//    filter { line ->
-//        if( line=~ /^Download|Total time/) {
-//            null
-//        } else {
-//            line
-//        }
-//    }
-//}
-//
-//File editBuildFile = new File(tmpDir,'build.gradle')
-//File jarConfig = project.file("contents/jar-postfix.txt")
-//editBuildFile.withWriterAppend { Writer writer ->
-//    writer.println jarConfig.text
-//}
-//
-//GradleRunner.create().withProjectDir(tmpDir).
-//    withArguments('jar').build()
-//
-//copy {
-//    from( zipTree(new File(tmpDir,'build/libs/building-java-libraries-0.1.0.jar')) ) {
-//        include 'META-INF/MANIFEST.MF'
-//    }
-//    into outputLogFileDir
-//}
-//}
+buildScan {
+    setLicenseAgreementUrl("https://gradle.com/terms-of-service")
+    setLicenseAgree("yes")
+    if (System.getenv("CI") != null) {
+        publishAlways()
+        tag("CI")
+    }
+}
