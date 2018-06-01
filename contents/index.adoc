@@ -19,4 +19,4 @@ to use. This should among others include {user-manual}, {guides}, {gradle-versio
 *TBC*
 
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/your-repo-here"]
