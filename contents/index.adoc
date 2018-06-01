@@ -32,4 +32,4 @@ include::parts/specific-words.adoc[]
 ////
 
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/style-guide"]
