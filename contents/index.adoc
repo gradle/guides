@@ -362,4 +362,4 @@ If you mailto:developer-experience@gradle.com[email us a build scan of your new 
 
 Finally, don't be afraid to ask for a build scan if another build user encounters trouble with the Gradle build.
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/migrating-from-maven"]
