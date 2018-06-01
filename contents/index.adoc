@@ -173,4 +173,4 @@ Executing Gradle builds on CI can be set up and configured with just a handful o
 The benefit of receiving fast feedback clearly speaks for itself.
 If you are not using TeamCity, no problem, many CI products tightly integrate with Gradle as a first-class citizen.
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/executing-gradle-builds-on-teamcity"]
