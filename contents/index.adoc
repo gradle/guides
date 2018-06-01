@@ -511,4 +511,4 @@ You can also leverage build scans to gain deep insights into performance hotspot
 Hopefully the ideas in this guide help you cut your build times and improve your overall build experience!
 
 
-include::contribute[]
+include::contribute[repo-path="gradle-guides/performance"]

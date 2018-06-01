@@ -6,7 +6,6 @@ plugins {
 
 configure<org.gradle.guides.GuidesExtension> {
     repoPath = "gradle-guides/performance"
-    mainAuthor = "Peter Ledbrook"
 }
 
 buildScan {
