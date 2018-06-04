@@ -16,9 +16,10 @@
 *INTRO TBD*
 
 
-[TIP]
-The Gradle link:{user-manual}[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
-This is the best place where to find how to do this and what with each DSL ; and it covers all Gradle features from link:{user-manual}plugins.html[using plugins] to link:{user-manual}customizing_dependency_resolution_behavior.html[customizing the dependency resolution behavior].
+// TODO Uncomment once this is true
+// [TIP]
+// The Gradle link:{user-manual}[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
+// This is the best place where to find how to do this and what with each DSL ; and it covers all Gradle features from link:{user-manual}plugins.html[using plugins] to link:{user-manual}customizing_dependency_resolution_behavior.html[customizing the dependency resolution behavior].
 
 
 == Groovy vs. Kotlin DSL tradeoffs
@@ -760,7 +761,8 @@ Last but not least you learnt how the two DSLs inter-operate.
 
 Next steps:
 
-* The Gradle link:{user-manual}[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
+// TODO Uncomment once this is true
+// * The Gradle link:{user-manual}[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
 * The link:{user-manual}userguide.html#best-practices[Gradle Best Practices] user manual chapters contain reference documentation on how to structure your builds.
 * The link:kotlin-dsl-samples[`kotlin-dsl` samples] contain example of various build structures using the Kotlin DSL.
 
