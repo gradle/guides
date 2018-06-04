@@ -84,7 +84,7 @@ In that sense, the Kotlin DSL encourages Gradle best practices.
 
 Your first move should be to link:{user-manual}gradle_wrapper.html#sec:upgrading_wrapper[upgrade to the latest stable Gradle release].
 
-Please refer to the link:{user-manual}authoring_maintainable_build_scripts.html[Authoring Maintainable Build Scripts] and link:{user-manual}organizing_build_logic.html[Organizing Build Logic] user manual chapters.
+Please refer to the link:{user-manual}authoring_maintainable_build_scripts.html[Authoring Maintainable Build Scripts] and link:{user-manual}organizing_gradle_projects.html[Organizing Build Logic] user manual chapters.
 In general, follow the advice given in the Gradle link:{user-manual}[user manual] and link:{guides}[guides].
 --
 
@@ -585,7 +585,7 @@ There are two key best practices that makes it easier with the static nature of 
 The former, link:{user-manual}plugins.html#sec:plugins_block[explained in the Gradle User Manual], is about keeping your build scripts declarative in order to get the best out of the Kotlin DSL.
 We saw <<declarative-scripts,above>> how to apply this practice even with external plugins published without the required metadata.
 
-The later, also link:{user-manual}organizing_build_logic.html#sec:build_sources[explained in the Gradle User Manual], is about organizing your build logic into shared local plugins and conventions, easily testable, while providing good IDE support.
+The later, also link:{user-manual}organizing_gradle_projects.html#sec:build_sources[explained in the Gradle User Manual], is about organizing your build logic into shared local plugins and conventions, easily testable, while providing good IDE support.
 
 === Kotlin DSL build structure samples
 
