@@ -115,14 +115,15 @@ Kotlin DSL script files use the `*.gradle.kts` file name extension.
 
 To use the Kotlin DSL, simply name your files `build.gradle.kts` instead of `build.gradle`.
 
-The `settings.gradle` file can also be renamed `settings.gradle.kts`.
+The link:{user-manual}build_lifecycle.html#sec:settings_file[settings file], `settings.gradle`, can also be renamed `settings.gradle.kts`.
 
-In a multi-project build, you can have some modules using the Groovy DSL (and thus use `build.gradle` files), and some other modules using the Kotlin DSL (and thus use `build.gradle.kts` files). So you're not forced to migrate everything at once.
+In a multi-project build, you can have some modules using the Groovy DSL (and thus use `build.gradle` files), and some other modules using the Kotlin DSL (and thus use `build.gradle.kts` files).
+You're not forced to migrate everything at once.
 
 On top of that, the following conventions apply for better IDE support:
 
-* scripts applied to `Settings` should be named `*.settings.gradle.kts`
-* init scripts should be named `*.init.gradle.kts`
+* scripts applied to `Settings` should be named `*.settings.gradle.kts`,
+* link:{user-manual}init_scripts.html[init scripts] should be named `*.init.gradle.kts`.
 
 
 == Applying plugins
