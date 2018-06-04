@@ -27,7 +27,7 @@
 Gradle is implemented in Java on top of the JVM.
 Both the Groovy DSL and the Kotlin DSL are implemented on top of the Gradle Java API.
 
-Kotlin and Groovy languages are very different beasts, each with its own strengths.
+Kotlin and Groovy languages are very different, each with its own strengths.
 Kotlin is statically typed, has null safety built-in, hence is quite strict.
 Groovy on the other hand is highly dynamic by nature, hence is very flexible.
 
@@ -613,7 +613,6 @@ Quoting the Kotlin reference documentation:
 Both link:{kotlin-reference}java-interop.html[calling Java from Kotlin] and link:{kotlin-reference}java-to-kotlin-interop.html[calling Kotlin from Java] are very well covered in the Kotlin reference documentation.
 
 The same mostly apply to interoperability with Groovy code.
-There are some gotchas though.
 The Kotlin DSL also provides with a way to opt-in to Groovy semantics.
 
 
@@ -685,7 +684,7 @@ To understand the difference between the two types of closures link:http://groov
 [NOTE]
 Gradle plugins written in any language should prefer the typed `Action<T>` that is automatically mapped to Groovy closures and Kotlin lambdas.
 
-Some plugins expect simple closures, here with the link:{plugin-portal}plugin/com.jfrog.bintray[Bintray] plugin:
+Some plugins expect simple closures, as with the link:{plugin-portal}plugin/com.jfrog.bintray[Bintray] plugin:
 
 [source, kotlin]
 ----
@@ -759,7 +758,7 @@ In this guide you had a tour of the main differences between Gradle's Groovy DSL
 You also took a glance at possible migration strategies in the light of the structure of builds.
 Last but not least you learnt how the two DSLs inter-operate.
 
-Next steps:
+=== Next steps
 
 // TODO Uncomment once this is true
 // * The Gradle link:{user-manual}[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
