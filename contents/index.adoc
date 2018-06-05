@@ -30,7 +30,7 @@ Next, you will create a special directory structure for the plugin code:
 $ mkdir -p buildSrc/src/main/java/org/example/greeting
 ----
 
-TIP: If you'd like to learn more about this `buildSrc` directory, you can read about how it allows you to organize your build logic {user-manual}organizing_build_logic.html#sec:build_sources[in the User Manual].
+TIP: If you'd like to learn more about this `buildSrc` directory, you can read about how it allows you to organize your build logic {user-manual}organizing_gradle_projects.html#sec:build_sources[in the User Manual].
 
 TIP: You will often want to publish the plugin so that it can be reused across multiple builds. You can learn about the options to do just that in <<Next steps>>.
 
