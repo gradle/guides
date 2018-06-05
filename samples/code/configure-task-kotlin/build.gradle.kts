@@ -4,8 +4,8 @@ allprojects {
 
 // tag::configureTask[]
 tasks {
-    val jar: Jar by getting
-    val configureJar by creating {
+    val jar = getByName<Jar>("jar")
+    val configureJar = create("configureJar") {
         doLast {
             jar.manifest {
                 val classPath = listOf(":core", ":baseServices").joinToString(" ") {

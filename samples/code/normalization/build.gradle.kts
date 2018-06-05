@@ -17,7 +17,7 @@ normalization {
 val generatedResourcesDir = file("$buildDir/generated-resources")
 // tag::versionInfo[]
 
-val currentVersionInfo by tasks.creating(CurrentVersionInfo::class) {
+val currentVersionInfo = tasks.create<CurrentVersionInfo>("currentVersionInfo") {
     version = project.version.toString()
     versionInfoFile = File(generatedResourcesDir, "currentVersion.properties")
 }
