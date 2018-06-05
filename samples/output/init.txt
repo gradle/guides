@@ -1,2 +1,2 @@
-:wrapper
-:init
+> Task :wrapper
+> Task :init

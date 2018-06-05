@@ -1,14 +1,16 @@
-:compileJava
-:processResources NO-SOURCE
-:classes
-:jar
-:startScripts
-:distTar
-:distZip
-:assemble
-:compileTestJava
-:processTestResources NO-SOURCE
-:testClasses
-:test
-:check
-:build
+> Task :compileJava
+> Task :processResources NO-SOURCE
+> Task :classes
+> Task :jar
+> Task :startScripts
+> Task :distTar
+> Task :distZip
+> Task :assemble
+> Task :compileTestJava
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+> Task :test
+
+> Task :check
+> Task :build
