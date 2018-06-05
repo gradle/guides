@@ -17,25 +17,19 @@ This is a collection of very opinionated plugins that support the authoring of g
 * Adds special Travis CI support via the `travisci` block.
 * Adds `checkLinks` task to check hyperlinks in generated pages. (In this current release on absolute URLs are supported).
 * Adds `gradleRunner` task to allow automating one set of steps described in a guide.
-* Adds two extension to Asciidoctor.
-** Postprocessor to add Gradle banner.
-** Include processor so that `include::contribute[]` can be added to a guide.
+* Adds docs-asciidoctor-extensions library responsible for injecting navigation and CSS/JS
 
 === The guide extension
 
-This `guide` extension always has to be configured for a guide. (The initial repository generation process will proably provide a suitable default).
+This `GuidesExtension` always has to be configured for a guide. (The initial repository generation process will probably provide a suitable default).
 
-[source,groovy]
+[source,kotlin]
 ----
 guide {
-    repoPath 'gradle-guides/creating-multi-project-builds' // <1>
-    mainAuthor   'John Doe' // <2>
-    supAuthors 'Grumpy Gradlephant', 'Jane Doe' // <3>
+    repoPath = "gradle-guides/creating-multi-project-builds" // <1>
 }
 ----
-<1> Set the Github below `github.com`.
-<2> Specify the main author
-<3> If there are supplementary authors, proofreaders etc. then you can add them as a list. This can be specified more than once.
+<1> Set the GitHub URL after `github.com`.
 
 === The asciidoctorAttributes task
 
@@ -103,6 +97,3 @@ This should be applied in the authoring of all new Topical guides
 == Tutorial plugin
 
 This should be applied in the authoring of all new Topical guides
-
-== Asciidoctor Extensions
-
