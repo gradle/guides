@@ -212,9 +212,9 @@ The `name` of the project matches the name of the folder by default. You can als
 
 The `buildFile` property is the fully-qualified path name to your build script, which resides in the `projectDir` -- by default.
 
-You can change many of the properties. For example, you might try adding the following lines to your `build.gradle` file, and re-execute `gradle properties`.
+You can change many of the properties. For example, you might try adding the following lines to your build script file, and re-execute `gradle properties`.
 
-[source,groovy]
+[source]
 ----
 include::{samplescodedir}/gradle-properties.gradle[]
 ----
