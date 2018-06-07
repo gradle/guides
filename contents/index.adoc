@@ -85,7 +85,7 @@ In that sense, the Kotlin DSL encourages Gradle best practices.
 Your first move should be to link:{user-manual}gradle_wrapper.html#sec:upgrading_wrapper[upgrade to the latest stable Gradle release].
 
 Please refer to the link:{user-manual}authoring_maintainable_build_scripts.html[Authoring Maintainable Build Scripts] and link:{user-manual}organizing_gradle_projects.html[Organizing Build Logic] user manual chapters.
-In general, follow the advice given in the Gradle link:{user-manual}[user manual] and link:{guides}[guides].
+In general, follow the advice given in the Gradle link:{user-manual}userguide.html[user manual] and link:{guides}[guides].
 --
 
 == IDE Support
