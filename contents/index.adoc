@@ -80,15 +80,15 @@ Gradle comes with a library of tasks that you can configure in your own projects
 
 . Create a directory called `src`.
 . Add a file called `myfile.txt` in the `src` directory. The contents are arbitrary (it can even be empty), but for convenience add the single line `Hello, World!` to it.
-. Define a task called `copy` of type `Copy` (note the capital letter) in the main build file, `build.gradle`, that copies the `src` directory to a new directory called `dest`. (You don't have to create the `dest` directory -- the task will do it for you.)
+. Define a task called `copy` of type `Copy` (note the capital letter) in your build file that copies the `src` directory to a new directory called `dest`. (You don't have to create the `dest` directory -- the task will do it for you.)
 
 [source.multi-language-sample,groovy]
-.copy.gradle
+.build.gradle
 ----
 include::{samplescodedir}/copy.gradle[]
 ----
 [source.multi-language-sample,kotlin]
-.copy.gradle.kts
+.build.gradle.kts
 ----
 include::{samplescodedir}/copy.gradle.kts[]
 ----
