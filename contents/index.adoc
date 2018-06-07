@@ -25,9 +25,10 @@ Now we can use Gradle's `init` command to generate a simple project. We will exp
 
 [listing.terminal]
 ----
-❯ gradle init
+❯ gradle init // <1>
 include::{samplesoutputdir}/gradle-init.txt[]
 ----
+<1> If you want to use the Kotlin DSL use `gradle init --dsl kotlin`
 
 The command should show "BUILD SUCCESSFUL" and generate the following "empty" project. If it doesn't, please ensure that Gradle is link:https://gradle.org/install[installed properly], and that you have the `JAVA_HOME` environment variable set correctly.
 
