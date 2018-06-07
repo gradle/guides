@@ -18,7 +18,7 @@
 
 // TODO Uncomment once this is true
 // [TIP]
-// The Gradle link:{user-manual}[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
+// The Gradle link:{user-manual}userguide.html[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
 // This is the best place where to find how to do this and what with each DSL ; and it covers all Gradle features from link:{user-manual}plugins.html[using plugins] to link:{user-manual}customizing_dependency_resolution_behavior.html[customizing the dependency resolution behavior].
 
 
@@ -206,7 +206,7 @@ See the <<interop>> section for more information on how to call Groovy code from
 == Keeping build scripts declarative
 
 Plugins fetched from another source than the link:{plugin-portal}[Gradle Plugin Portal] may or may not be usable with the `plugins {}` block depending on how they have been published.
-If you're publishing plugins, please use the Gradle built-in link:{user-manual}javaGradle_plugin.html[`java-gradle-plugin`] plugin that automates publication of the metadata necessary to make your plugins usable with the `plugins {}` block.
+If you're publishing plugins, please use the Gradle built-in link:{user-manual}java_gradle_plugin.html[`java-gradle-plugin`] plugin that automates publication of the metadata necessary to make your plugins usable with the `plugins {}` block.
 
 For example, the Android Gradle Plugin plugins are not published to the Gradle Plugin Portal and the metadata required to resolve plugin identifiers to resolvable artifacts link:https://issuetracker.google.com/issues/64551265[is not published] to the Google repository.
 
@@ -762,7 +762,7 @@ Last but not least you learnt how the two DSLs inter-operate.
 === Next steps
 
 // TODO Uncomment once this is true
-// * The Gradle link:{user-manual}[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
+// * The Gradle link:{user-manual}userguide.html[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
 * The link:{user-manual}userguide.html#best-practices[Gradle Best Practices] user manual chapters contain reference documentation on how to structure your builds.
 * The link:kotlin-dsl-samples[`kotlin-dsl` samples] contain example of various build structures using the Kotlin DSL.
 
