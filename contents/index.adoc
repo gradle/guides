@@ -195,22 +195,17 @@ The `properties` command tells you about a project's attributes.
 
 The output is extensive. Here are just a few of the available properties:
 
+[listing.multi-language-text.lang-groovy]
 ----
-> Task :properties
-
-------------------------------------------------------------
-Root project
-------------------------------------------------------------
-
-buildDir: /Users/.../basic-demo/build
+include::{samplesoutputdir}/gradle-properties.txt[tags=first]
 buildFile: /Users/.../basic-demo/build.gradle
-description: null
-group:
-name: basic-demo
-projectDir: /Users/.../basic-demo
-version: unspecified
-
-BUILD SUCCESSFUL
+include::{samplesoutputdir}/gradle-properties.txt[tags=second]
+----
+[listing.multi-language-text.lang-kotlin]
+----
+include::{samplesoutputdir}/gradle-properties.txt[tags=first]
+buildFile: /Users/.../basic-demo/build.gradle.kts
+include::{samplesoutputdir}/gradle-properties.txt[tags=second]
 ----
 
 The `name` of the project matches the name of the folder by default. You can also specify `group` and `version` properties, but at the moment they are taking their default values, as is `description`.
