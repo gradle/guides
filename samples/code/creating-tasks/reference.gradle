@@ -1,0 +1,12 @@
+// tag::reference[]
+def greeting = tasks.create('greeting') {
+    doLast { println("Hello, World!") }
+}
+// end::reference[]
+
+// tag::typed-reference[]
+def docZip = tasks.create(name: 'docZip', type: Zip) {
+    archiveName = 'doc.zip'
+    from 'doc'
+}
+// end::typed-reference[]
