@@ -37,28 +37,12 @@ This is what Gradle generated for you.
 [source.multi-language-sample,groovy]
 .Groovy
 ----
-.
-├── build.gradle  // <1>
-├── gradle
-│   └── wrapper
-│       ├── gradle-wrapper.jar  // <2>
-│       └── gradle-wrapper.properties  // <3>
-├── gradlew  // <4>
-├── gradlew.bat  // <5>
-└── settings.gradle  // <6>
+include::{samplesoutputdir}/file-tree.txt[tags=file-tree-all;file-tree-groovy]
 ----
 [source.multi-language-sample,kotlin]
 .Kotlin
 ----
-.
-├── build.gradle.kts  // <1>
-├── gradle
-│   └── wrapper
-│       ├── gradle-wrapper.jar  // <2>
-│       └── gradle-wrapper.properties  // <3>
-├── gradlew  // <4>
-├── gradlew.bat  // <5>
-└── settings.gradle.kts  // <6>
+include::{samplesoutputdir}/file-tree.txt[tags=file-tree-all;file-tree-kotlin]
 ----
 
 <1> Project configuration script for configuring tasks in the current project
