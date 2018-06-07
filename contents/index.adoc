@@ -34,7 +34,8 @@ The command should show "BUILD SUCCESSFUL" and generate the following "empty" pr
 
 This is what Gradle generated for you.
 
-[listing]
+[source.multi-language-sample,groovy]
+.Groovy
 ----
 .
 ├── build.gradle  // <1>
@@ -46,6 +47,20 @@ This is what Gradle generated for you.
 ├── gradlew.bat  // <5>
 └── settings.gradle  // <6>
 ----
+[source.multi-language-sample,kotlin]
+.Kotlin
+----
+.
+├── build.gradle.kts  // <1>
+├── gradle
+│   └── wrapper
+│       ├── gradle-wrapper.jar  // <2>
+│       └── gradle-wrapper.properties  // <3>
+├── gradlew  // <4>
+├── gradlew.bat  // <5>
+└── settings.gradle.kts  // <6>
+----
+
 <1> Project configuration script for configuring tasks in the current project
 <2> {user-manual}gradle_wrapper.html[Gradle Wrapper] executable JAR
 <3> Gradle Wrapper configuration properties
