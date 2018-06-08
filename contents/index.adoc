@@ -30,7 +30,7 @@ Next, you will create a special directory structure for the plugin code:
 $ mkdir -p buildSrc/src/main/java/org/example/greeting
 ----
 
-TIP: If you'd like to learn more about this `buildSrc` directory, you can read about how it allows you to organize your build logic {user-manual}organizing_build_logic.html#sec:build_sources[in the User Manual].
+TIP: If you'd like to learn more about this `buildSrc` directory, you can read about how it allows you to organize your build logic {user-manual}organizing_gradle_projects.html#sec:build_sources[in the User Manual].
 
 TIP: You will often want to publish the plugin so that it can be reused across multiple builds. You can learn about the options to do just that in <<Next steps>>.
 
@@ -65,12 +65,17 @@ You now have a plugin, but a plugin alone doesn't do anything. You need to apply
 
 == Use the plugin in the main project
 
-Create a `build.gradle` file in the root of the project with the following contents:
+Create a build script file in the root of the project with the following contents:
 
+[source.multi-language-sample,groovy]
 .build.gradle
-[source,groovy]
 ----
-include::{exampledir}/build.gradle[]
+include::{exampledir}/build.gradle[tags=use-plugin-class-name-with-info]
+----
+[source.multi-language-sample, kotlin]
+.build.gradle.kts
+----
+include::{exampledir}/build.gradle.kts[tags=use-plugin-class-name-with-info]
 ----
 <1> This applies your plugin to the current `Project` instance, adding the `hello` task to the build.
 
@@ -87,10 +92,15 @@ The bulk of the output reflects that the files in `buildSrc` are treated as a Ja
 
 Your build is currently just using the default property values for the greeting, hence why it prints out "Hello, World!". This doesn't have to be the case as you can configure the task directly in the build script:
 
+[source.multi-language-sample,groovy]
 .build.gradle
-[source,groovy]
 ----
 include::{exampledir}/configure-hello.gradle[tags=configure-hello]
+----
+[source.multi-language-sample,kotlin]
+.build.gradle.kts
+----
+include::{exampledir}/configure-hello.gradle.kts[tags=configure-hello]
 ----
 <1> Configures multiple properties of the task named `hello`
 
@@ -122,16 +132,28 @@ WARNING: You must put the properties file in the directory `META-INF/gradle-plug
 
 That's all you need to do in your plugin, so now you can replace the following line of the build script:
 
-[source,groovy]
+[source.multi-language-sample,groovy]
+.build.gradle
 ----
-include::{exampledir}/build.gradle[]
+include::{exampledir}/build.gradle[tags=use-plugin-class-name]
+----
+[source.multi-language-sample,kotlin]
+.build.gradle.kts
+----
+include::{exampledir}/build.gradle.kts[tags=use-plugin-class-name]
 ----
 
 with one that uses the plugin ID:
 
-[source,groovy]
+[source.multi-language-sample,groovy]
+.build.gradle
 ----
 include::{exampledir}/configure-hello.gradle[tags=use-plugin-id]
+----
+[source.multi-language-sample,kotlin]
+.build.gradle.kts
+----
+include::{exampledir}/configure-hello.gradle.kts[tags=use-plugin-id]
 ----
 
 Note how the name of the properties file -- `org.example.greeting.properties` -- maps to the ID above.
@@ -159,4 +181,3 @@ Now that you're familiar with the basics of building Gradle plugins, you may be 
  - {user-manual}more_about_tasks.html#sec:up_to_date_checks[Adding incremental build support to new task types]
 
 include::contribute[repo-path="gradle-guides/writing-gradle-plugins"]
-

@@ -1,3 +1,5 @@
+import spock.lang.Unroll
+
 import org.apache.commons.io.FileUtils
 import org.gradle.guides.test.fixtures.AbstractSamplesFunctionalTest
 import org.gradle.testkit.runner.BuildResult
@@ -15,17 +17,42 @@ class CompilePluginSpec extends AbstractSamplesFunctionalTest {
         initialize()
     }
 
-    void 'Validate example code runs'() {
+    @Unroll
+    void 'Validate example code runs with #lang'() {
 
         setup:
-        FileUtils.copyDirectory( SRC_CODE_DIR, testDirectory)
+        FileUtils.copyDirectory(SRC_CODE_DIR, testDirectory)
 
         when:
-        String output = runGradle 'hello'
+        def output = runGradle('-b', buildScriptFilename, 'hello')
 
         then:
         output.contains(':hello')
         output.contains('Hello, World')
+
+        where:
+        lang     | buildScriptFilename
+        'Groovy' | 'build.gradle'
+        'Kotlin' | 'build.gradle.kts'
+    }
+
+    @Unroll
+    void 'Validate configure task runs with #lang'() {
+
+        setup:
+        FileUtils.copyDirectory(SRC_CODE_DIR, testDirectory)
+
+        when:
+        def output = runGradle('-b', buildScriptFilename, 'hello')
+
+        then:
+        output.contains(':hello')
+        output.contains('Hi, Gradle')
+
+        where:
+        lang     | buildScriptFilename
+        'Groovy' | 'configure-hello.gradle'
+        'Kotlin' | 'configure-hello.gradle.kts'
     }
 
     private String runGradle(String... args) {
