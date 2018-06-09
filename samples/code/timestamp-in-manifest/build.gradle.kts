@@ -1,13 +1,13 @@
 plugins {
-    id('java')
+    java
 }
 
 // tag::timestamp[]
 version = "3.2-${System.currentTimeMillis()}"
 
-jar {
+tasks.getByName<Jar>("jar") {
     manifest {
-        attributes("Implementation-Version": version)
+        attributes(mapOf("Implementation-Version" to version))
     }
 }
 // end::timestamp[]

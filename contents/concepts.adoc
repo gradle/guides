@@ -43,9 +43,15 @@ The key here is that cacheable tasks should not use non-repeatable task outputs 
 Having a task repeatably produce the same output is not enough if its inputs keep changing all the time.
 Such unstable inputs can be supplied directly to the task. Consider a version number that includes a timestamp being added to the jar file's manifest:
 
-[source,groovy]
+.build.gradle
+[source.multi-language-sample,groovy]
 ----
 include::{samplescodedir}/timestamp-in-manifest/build.gradle[tags=timestamp]
+----
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{samplescodedir}/timestamp-in-manifest/build.gradle.kts[tags=timestamp]
 ----
 
 In the above example the inputs for the `jar` task will be different for each build execution since this timestamp will continually change.
@@ -123,9 +129,15 @@ This file is only used for auditing purposes, and has no effect on the outcome o
 Nonetheless, this file is part of the runtime classpath for the `test` task. Since the file changes on every build invocation, tests cannot be cached effectively.
 To fix this you can ignore `build-info.properties` on any runtime classpath by adding the following configuration to build script:
 
-[source,groovy]
+.build.gradle
+[source.multi-language-sample,groovy]
 ----
 include::{samplescodedir}/normalization/build.gradle[tags=normalization]
+----
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{samplescodedir}/normalization/build.gradle.kts[tags=normalization]
 ----
 
 The effect of this configuration would be that changes to `build-info.properties` would be ignored for both up-to-date checks and task output caching.

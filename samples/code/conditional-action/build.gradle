@@ -2,16 +2,20 @@ apply plugin: 'java'
 
 // tag::conditionalAction[]
 if (System.getenv().containsKey("CI")) {
-    test.doFirst {
-        println "Running test on CI"
+    tasks.withType(Test) {
+        doFirst {
+            println "Running test on CI"
+        }
     }
 }
 // end::conditionalAction[]
 
 // tag::unconditionalAction[]
-test.doFirst {
-    if (System.getenv().containsKey("CI")) {
-        println "Running test on CI"
+tasks.withType(Test) {
+    doFirst {
+        if (System.getenv().containsKey("CI")) {
+            println "Running test on CI"
+        }
     }
 }
 // end::unconditionalAction[]

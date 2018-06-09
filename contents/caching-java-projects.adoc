@@ -50,9 +50,15 @@ These external factors can be for example:
 You need to be careful to declare these additional inputs for your integration test in order to avoid incorrect cache hits.
 For example, declaring the operating system in use by Gradle as an input to a `Test` task called `integTest` would work as follows:
 
-[source,groovy]
+.build.gradle
+[source.multi-language-sample,groovy]
 ----
 include::{samplescodedir}/integration-tests/build.gradle[tags=integTest]
+----
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{samplescodedir}/integration-tests/build.gradle.kts[tags=integTest]
 ----
 
 ==== Archives as inputs
@@ -68,17 +74,29 @@ See also the section on dealing with <<volatile_outputs,non-repeatable outputs>>
 You will probably pass some information from the build environment to your integration test tasks by using system properties.
 Passing absolute paths will break <<relocatability,relocatability>> of the integration test task.
 
-[source,groovy]
+.build.gradle
+[source.multi-language-sample,groovy]
 ----
 include::{samplescodedir}/integration-tests/build.gradle[tags=distributionPathInput]
+----
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{samplescodedir}/integration-tests/build.gradle.kts[tags=distributionPathInput]
 ----
 
 Instead of adding the absolute path directly as a system property, it is possible to add an
 annotated `{api-reference}org/gradle/process/CommandLineArgumentProvider.html[CommandLineArgumentProvider]` to the `integTest` task:
 
-[source,groovy]
+.build.gradle
+[source.multi-language-sample,groovy]
 ----
 include::{samplescodedir}/integration-tests/build.gradle[tags=distributionDirInput]
+----
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{samplescodedir}/integration-tests/build.gradle.kts[tags=distributionDirInput]
 ----
 <1> Create a class implementing `{api-reference}org/gradle/process/CommandLineArgumentProvider.html[CommandLineArgumentProvider]`.
 <2> Declare the inputs and outputs with the corresponding path sensitivity.
@@ -90,9 +108,15 @@ include::{samplescodedir}/integration-tests/build.gradle[tags=distributionDirInp
 It may be necessary to ignore some system properties as inputs as they do not influence the outcome of the integration tests.
 In order to do so, add a `{api-reference}org/gradle/process/CommandLineArgumentProvider.html[CommandLineArgumentProvider]` to the `integTest` task:
 
-[source,groovy]
+.build.gradle
+[source.multi-language-sample,groovy]
 ----
 include::{samplescodedir}/integration-tests/build.gradle[tags=ignoreSystemProperties]
+----
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{samplescodedir}/integration-tests/build.gradle.kts[tags=ignoreSystemProperties]
 ----
 <1> `@Internal` means that this property does not influence the output of the integration tests.
 <2> The system properties for the actual test execution.
@@ -100,7 +124,7 @@ include::{samplescodedir}/integration-tests/build.gradle[tags=ignoreSystemProper
 
 === Caching `buildSrc`
 
-The {user-manual}organizing_build_logic.html#sec:build_sources[`buildSrc` project] can be used to organize build logic in your Gradle build.
+The {user-manual}organizing_gradle_projects.html#sec:build_sources[`buildSrc` project] can be used to organize build logic in your Gradle build.
 While `buildSrc` typically does not change frequently, when it does every developer and CI agent needs to re-build and test it.
 Therefore, it is usually desirable to use task output caching for `buildSrc`, too.
 To use the same build cache configuration for `buildSrc` as for your root project, you can apply the same script both in `buildSrc/settings.gradle` and in `settings.gradle` as shown in the {user-manual}build_cache.html#buildCacheBuildSrc[user guide].
