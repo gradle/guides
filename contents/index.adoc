@@ -1,5 +1,4 @@
 = Migrating build logic from Groovy to Kotlin
-:numbered:
 :figure-caption!:
 :plugin-portal: https://plugins.gradle.org/
 :kotlin-reference: https://kotlinlang.org/docs/reference/
