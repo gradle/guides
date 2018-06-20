@@ -165,6 +165,8 @@ include::{samplescodedir}/applying-plugins/imperative.gradle.kts[]
 
 [NOTE]
 --
+**It is strongly recommended to apply plugins using the `plugins {}` block.**
+
 The declarative nature of the `plugins {}` block enables the Kotlin DSL to provide type safe accessors to what the applied plugins contribute (extensions, configurations etc...), making plugins models discoverable from the IDE and easy to configure.
 --
 
