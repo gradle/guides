@@ -40,7 +40,7 @@ Both share the same ultimate goal though: provide means to interact with the dyn
 It takes more ceremony to do dynamic things with the Kotlin DSL.
 On the other hand it provides more safety and more tooling.
 
-Because Kotlin is a statically-typed language with deep support in IntelliJ, it gives Gradle users proper IDE support from auto-completion to refactoring and everything in-between.
+Because Kotlin is a statically-typed language with deep support in IntelliJ IDEA, it gives Gradle users proper IDE support from auto-completion to refactoring and everything in-between.
 
 At a glance, the Gradle Kotlin DSL doesn’t look too different from the Gradle build scripts you know today:
 
