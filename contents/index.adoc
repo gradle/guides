@@ -202,6 +202,10 @@ It prints the Kotlin code for accessing the extensions contributed by applied pl
 If the plugin you want to configure was written in Groovy and relies on `groovy.lang.Closure` or other dynamic Groovy semantics, a bit more gymnastic may be required.
 See the <<interop>> section for more information on how to call Groovy code from Kotlin code or keep that plugin's configuration in a Groovy script.
 
+Plugins also contribute tasks that you may want to configure directly.
+This is covered in the following <<configuring-tasks>> section.
+But first, let's have a look at how one can keep using the declarative `plugins {}` block always.
+
 
 [[declarative-scripts]]
 == Keeping build scripts declarative
@@ -263,6 +267,7 @@ This can be worked around by mapping the plugin `id` to the corresponding artifa
 If you can't use the `plugins {}` block, you need to apply the plugin imperatively (using the `buildscript` block and `apply<PluginType>()` or `apply(plugin = "id")`) and to know the type of the extension(s) you want to configure as described previously.
 
 
+[[configuring-tasks]]
 == Configuring tasks
 
 This is where Groovy and Kotlin start to differ.
