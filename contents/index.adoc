@@ -12,7 +12,8 @@
 //   Includes solutions for common problems and interoperability recipes.
 
 
-*INTRO TBD*
+In this guide you'll learn how to migrate your build logic from Groovy to Kotlin using the Gradle Kotlin DSL, discover tradeoffs, pain points and discuss migration strategies.
+Solutions for common problems and interoperability recipes are included.
 
 
 // TODO Uncomment once this is true
