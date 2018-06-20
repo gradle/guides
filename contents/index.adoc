@@ -173,19 +173,31 @@ The declarative nature of the `plugins {}` block enables the Kotlin DSL to provi
 
 == Configuring plugins
 
-Many plugins come with extensions to configure them. If those plugins are applied using the declarative `plugins {}` block (which is true for the `jacoco` plugin in the following example), then Kotlin extension functions are made available to configure their extension, the same way as in Groovy.
+Many plugins come with extensions to configure them. If those plugins are applied using the declarative `plugins {}` block (which is true for the `jacoco` plugin in the following example), then Kotlin extension functions are made available to configure their extension, the same way as in Groovy:
+
+[source.multi-language-sample, groovy]
+----
+include::{samplescodedir}/configuring-plugins/declaratively-applied.gradle[]
+----
+
+[source.multi-language-sample, kotlin]
+----
+include::{samplescodedir}/configuring-plugins/declaratively-applied.gradle.kts[]
+----
 
 On the other hand, if you use the imperative `apply` function to apply a plugin (which is true for the checkstyle plugin in the following example), you'll have to use the `configure<T> {}` function to configure them:
 
 [source.multi-language-sample, groovy]
 ----
-include::{samplescodedir}/configuring-plugins/extensions.gradle[]
+include::{samplescodedir}/configuring-plugins/imperatively-applied.gradle[]
 ----
 
 [source.multi-language-sample, kotlin]
 ----
-include::{samplescodedir}/configuring-plugins/extensions.gradle.kts[]
+include::{samplescodedir}/configuring-plugins/imperatively-applied.gradle.kts[]
 ----
+
+Again, it is strongly recommended to apply plugins declaratively using the `plugins {}` block.
 
 [TIP]
 --
