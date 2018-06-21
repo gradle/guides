@@ -1,5 +1,4 @@
 = Migrating build logic from Groovy to Kotlin
-:numbered:
 :figure-caption!:
 :plugin-portal: https://plugins.gradle.org/
 :kotlin-reference: https://kotlinlang.org/docs/reference/
@@ -13,7 +12,8 @@
 //   Includes solutions for common problems and interoperability recipes.
 
 
-*INTRO TBD*
+In this guide you'll learn how to migrate your build logic from Groovy to Kotlin using the Gradle Kotlin DSL, discover tradeoffs, pain points and discuss migration strategies.
+Solutions for common problems and interoperability recipes are included.
 
 
 // TODO Uncomment once this is true
@@ -41,7 +41,7 @@ Both share the same ultimate goal though: provide means to interact with the dyn
 It takes more ceremony to do dynamic things with the Kotlin DSL.
 On the other hand it provides more safety and more tooling.
 
-Because Kotlin is a statically-typed language with deep support in IntelliJ, it gives Gradle users proper IDE support from auto-completion to refactoring and everything in-between.
+Because Kotlin is a statically-typed language with deep support in IntelliJ IDEA, it gives Gradle users proper IDE support from auto-completion to refactoring and everything in-between.
 
 At a glance, the Gradle Kotlin DSL doesn’t look too different from the Gradle build scripts you know today:
 
@@ -166,25 +166,39 @@ include::{samplescodedir}/applying-plugins/imperative.gradle.kts[]
 
 [NOTE]
 --
+**It is strongly recommended to apply plugins using the `plugins {}` block.**
+
 The declarative nature of the `plugins {}` block enables the Kotlin DSL to provide type safe accessors to what the applied plugins contribute (extensions, configurations etc...), making plugins models discoverable from the IDE and easy to configure.
 --
 
 
 == Configuring plugins
 
-Many plugins come with extensions to configure them. If those plugins are applied using the declarative `plugins {}` block (which is true for the `jacoco` plugin in the following example), then Kotlin extension functions are made available to configure their extension, the same way as in Groovy.
+Many plugins come with extensions to configure them. If those plugins are applied using the declarative `plugins {}` block (which is true for the `jacoco` plugin in the following example), then Kotlin extension functions are made available to configure their extension, the same way as in Groovy:
+
+[source.multi-language-sample, groovy]
+----
+include::{samplescodedir}/configuring-plugins/declaratively-applied.gradle[]
+----
+
+[source.multi-language-sample, kotlin]
+----
+include::{samplescodedir}/configuring-plugins/declaratively-applied.gradle.kts[]
+----
 
 On the other hand, if you use the imperative `apply` function to apply a plugin (which is true for the checkstyle plugin in the following example), you'll have to use the `configure<T> {}` function to configure them:
 
 [source.multi-language-sample, groovy]
 ----
-include::{samplescodedir}/configuring-plugins/extensions.gradle[]
+include::{samplescodedir}/configuring-plugins/imperatively-applied.gradle[]
 ----
 
 [source.multi-language-sample, kotlin]
 ----
-include::{samplescodedir}/configuring-plugins/extensions.gradle.kts[]
+include::{samplescodedir}/configuring-plugins/imperatively-applied.gradle.kts[]
 ----
+
+Again, it is strongly recommended to apply plugins declaratively using the `plugins {}` block.
 
 [TIP]
 --
@@ -200,6 +214,10 @@ It prints the Kotlin code for accessing the extensions contributed by applied pl
 
 If the plugin you want to configure was written in Groovy and relies on `groovy.lang.Closure` or other dynamic Groovy semantics, a bit more gymnastic may be required.
 See the <<interop>> section for more information on how to call Groovy code from Kotlin code or keep that plugin's configuration in a Groovy script.
+
+Plugins also contribute tasks that you may want to configure directly.
+This is covered in the following <<configuring-tasks>> section.
+But first, let's have a look at how one can keep using the declarative `plugins {}` block always.
 
 
 [[declarative-scripts]]
@@ -262,6 +280,7 @@ This can be worked around by mapping the plugin `id` to the corresponding artifa
 If you can't use the `plugins {}` block, you need to apply the plugin imperatively (using the `buildscript` block and `apply<PluginType>()` or `apply(plugin = "id")`) and to know the type of the extension(s) you want to configure as described previously.
 
 
+[[configuring-tasks]]
 == Configuring tasks
 
 This is where Groovy and Kotlin start to differ.

@@ -1,12 +1,7 @@
 plugins {
     id("jacoco")
 }
-apply plugin: "checkstyle"
 
 jacoco {
     toolVersion = "0.8.1"
-}
-
-checkstyle {
-    maxErrors = 10
 }
