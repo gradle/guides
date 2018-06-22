@@ -98,7 +98,7 @@ The embedded Kotlin compiler is known to work on Linux, macos, Windows, Cygwin, 
 
 Performance::
 In "everything is up-to-date" scenarios, the Groovy DSL and Kotlin DSL performance characteristics are similar.
-However, the embedded Kotlin compiler being slower than the Groovy compiler, the "first use" use case will be slower with the Kotlin DSL than with the Groovy DSL.
+However, the embedded Kotlin compiler being slower than the Groovy compiler, the "first use" use case is slower with the Kotlin DSL than with the Groovy DSL.
 The same applies to the "buildSrc change" use case which invalidates the caching of all build scripts.
 See link:{kotlin-dsl-issues}902[gradle/kotlin-dsl#902] for more information and some numbers.
 
@@ -136,7 +136,7 @@ You must link:https://www.jetbrains.com/help/idea/gradle.html#gradle_import[impo
 
 Even though other IDEs have no support for code completion and content assist when editing Kotlin DSL scripts, importing and working with a Gradle build using the Kotlin DSL works as usual.
 This is true for both link:https://www.eclipse.org/[Eclipse], thanks to the link:https://projects.eclipse.org/projects/tools.buildship[Buildship] project, and link:https://netbeans.apache.org/[Apache Netbeans], thanks to its link:https://github.com/kelemen/netbeans-gradle-project[Gradle plugin].
-Therefore, we do not recommend migrating your build to the Gradle Kotlin DSL if your team editing build logic is not using IntelliJ IDEA or Android Studio.
+Therefore, we do not recommend migrating your build to the Gradle Kotlin DSL at this time unless your build authoring team is using IntelliJ IDEA or Android Studio.
 
 If you encounter any IDE related issue, please report them to the corresponding issue tracker:
 
