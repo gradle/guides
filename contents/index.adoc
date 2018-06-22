@@ -4,6 +4,7 @@
 :kotlin-reference: https://kotlinlang.org/docs/reference/
 :kotlin-tutorials: https://kotlinlang.org/tutorials/
 :kotlin-dsl-samples: https://github.com/gradle/kotlin-dsl/tree/master/samples/
+:kotlin-dsl-issues: https://github.com/gradle/kotlin-dsl/issues/
 
 
 // Summary for the guides list
@@ -88,6 +89,39 @@ Please refer to the link:{user-manual}authoring_maintainable_build_scripts.html[
 In general, follow the advice given in the Gradle link:{user-manual}userguide.html[user manual] and link:{guides}[guides].
 --
 
+
+== Kotlin DSL Limitations
+
+Supported Platforms::
+A Java Development Kit (JDK), version 1.8 or better is required to run Gradle when using the Kotlin DSL.
+The embedded Kotlin compiler is known to work on Linux, macos, Windows, Cygwin, FreeBSD and Solaris on x86-64 architectures.
+
+Performance::
+In "everything is up-to-date" scenarios, the Groovy DSL and Kotlin DSL performance characteristics are similar.
+However, the embedded Kotlin compiler being slower than the Groovy compiler, the "first use" use case is slower with the Kotlin DSL than with the Groovy DSL.
+The same applies to the "buildSrc change" use case which invalidates the caching of all build scripts.
+See link:{kotlin-dsl-issues}902[gradle/kotlin-dsl#902] for more information and some numbers.
+
+Static DSL::
+The Gradle configuration model is dynamic.
+The Kotlin DSL provides a static view over this dynamic model.
+But not all use cases are supported.
+See the <<configuring-plugins>> and <<configurations-and-dependencies>> sections below for supported use cases and how to dynamically access the Gradle model.
+
+IDE support::
+IntelliJ IDEA and Android Studio both support editing Gradle Kotlin DSL scripts.
+Other IDEs might display such scripts as plain text or simply syntax highlighted.
+See the <<ide-support>> section below for more information.
+
+Software model::
+The DSL of the link:https://blog.gradle.org/state-and-future-of-the-gradle-software-model[discontinued Gradle Software Model] is not supported in Gradle Kotlin DSL scripts.
+However, declaring and using a `RuleSource` is supported, see the link:{kotlin-dsl-samples}model-rules[model-rules] sample that demonstrates how to write rules in Kotlin and how to use them from a Gradle Kotlin DSL script.
+
+Open issues::
+Please refer to the `gradle/kotlin-dsl` link:{kotlin-dsl-issues}[issue tracker] when facing an issue.
+
+
+[[ide-support]]
 == IDE Support
 
 IntelliJ IDEA and Android Studio both support the edition of Gradle Kotlin DSL scripts and provide auto-completion, content assist, quick documentation, navigation to sources, refactoring and more.
@@ -102,6 +136,12 @@ You must link:https://www.jetbrains.com/help/idea/gradle.html#gradle_import[impo
 
 Even though other IDEs have no support for code completion and content assist when editing Kotlin DSL scripts, importing and working with a Gradle build using the Kotlin DSL works as usual.
 This is true for both link:https://www.eclipse.org/[Eclipse], thanks to the link:https://projects.eclipse.org/projects/tools.buildship[Buildship] project, and link:https://netbeans.apache.org/[Apache Netbeans], thanks to its link:https://github.com/kelemen/netbeans-gradle-project[Gradle plugin].
+Therefore, we do not recommend migrating your build to the Gradle Kotlin DSL at this time unless your build authoring team is using IntelliJ IDEA or Android Studio.
+
+If you encounter any IDE related issue, please report them to the corresponding issue tracker:
+
+* IntelliJ IDEA issues go to link:https://youtrack.jetbrains.com/[JetBrains Youtrack issue tracker],
+* Android Studio issues go to link:https://source.android.com/setup/contribute/report-bugs[Google Android issue tracker].
 
 
 == Script file names
@@ -172,6 +212,7 @@ The declarative nature of the `plugins {}` block enables the Kotlin DSL to provi
 --
 
 
+[[configuring-plugins]]
 == Configuring plugins
 
 Many plugins come with extensions to configure them. If those plugins are applied using the declarative `plugins {}` block (which is true for the `jacoco` plugin in the following example), then Kotlin extension functions are made available to configure their extension, the same way as in Groovy:
@@ -440,6 +481,7 @@ include::{samplescodedir}/creating-tasks/reference.gradle.kts[tags=typed-referen
 ----
 
 
+[[configurations-and-dependencies]]
 == Configurations and dependencies
 
 Declaring dependencies in the existing configurations is not much different from doing it in Groovy:
