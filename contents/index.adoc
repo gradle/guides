@@ -238,7 +238,7 @@ include::{samplescodedir}/declarative-scripts/imperative-android/build.gradle.kt
 ----
 <1> Bring the Android Gradle Plugin into the build script dependencies
 <2> Imperatively apply the `com.android.application` plugin
-<3> Use the `configure<T> {}` api to configure the `android` extension of type `com.android.build.gradle.AppExtension`
+<3> Use the `configure<T> {}` API to configure the `android` extension of type `com.android.build.gradle.AppExtension`
 
 The following snippets will use the Android Gradle Plugin to demonstrate how to enable the use of the `plugins {}` block anyway in order to benefit from the Kotlin DSL type safe Kotlin extensions.
 
@@ -605,11 +605,11 @@ There are two key best practices that makes it easier with the static nature of 
 The former, link:{user-manual}plugins.html#sec:plugins_block[explained in the Gradle User Manual], is about keeping your build scripts declarative in order to get the best out of the Kotlin DSL.
 We saw <<declarative-scripts,above>> how to apply this practice even with external plugins published without the required metadata.
 
-The later, also link:{user-manual}organizing_gradle_projects.html#sec:build_sources[explained in the Gradle User Manual], is about organizing your build logic into shared local plugins and conventions, easily testable, while providing good IDE support.
+The latter, also link:{user-manual}organizing_gradle_projects.html#sec:build_sources[explained in the Gradle User Manual], is about organizing your build logic into shared local plugins and conventions, easily testable, while providing good IDE support.
 
 === Kotlin DSL build structure samples
 
-Depending on your build structure you might be interested by the following samples built with the Kotlin DSL:
+Depending on your build structure you might be interested in the following samples built with the Kotlin DSL:
 
 * the link:{kotlin-dsl-samples}modularity[modularity] sample demonstrates the use of `apply(from = "")` to modularize build scripts,
 * the link:{kotlin-dsl-samples}multi-project-with-buildSrc[multi-project-with-buildSrc], link:{kotlin-dsl-samples}multi-kotlin-project[multi-kotlin-project], link:{kotlin-dsl-samples}multi-kotlin-project-with-buildSrc[multi-kotlin-project-with-buildSrc] and link:{kotlin-dsl-samples}multi-kotlin-project-config-injection[multi-kotlin-project-config-injection] samples demonstrate various multi-project build structures,
@@ -737,7 +737,7 @@ The Kotlin DSL provides a `withGroovyBuilder {}` utility extension that brings t
 include::{samplescodedir}/interoperability/withGroovyBuilder.gradle.kts[tags=withGroovyBuilder]
 ----
 <1> The receiver is a link:http://docs.groovy-lang.org/latest/html/api/groovy/lang/GroovyObject.html[GroovyObject] and provides Kotlin helpers
-<2> The `GroovyObject` api is available
+<2> The `GroovyObject` API is available
 <3> Invoke the `methodName` method, passing some parameters
 <4> Configure the `blockName` property, maps to a `Closure` taking method invocation
 <5> Invoke `another` method taking named arguments, maps to a Groovy named arguments `Map<String, ?>` taking method invocation
