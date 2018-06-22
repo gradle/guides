@@ -137,6 +137,11 @@ You must link:https://www.jetbrains.com/help/idea/gradle.html#gradle_import[impo
 Even though other IDEs have no support for code completion and content assist when editing Kotlin DSL scripts, importing and working with a Gradle build using the Kotlin DSL works as usual.
 This is true for both link:https://www.eclipse.org/[Eclipse], thanks to the link:https://projects.eclipse.org/projects/tools.buildship[Buildship] project, and link:https://netbeans.apache.org/[Apache Netbeans], thanks to its link:https://github.com/kelemen/netbeans-gradle-project[Gradle plugin].
 
+If you encounter any IDE related issue, please report them to the corresponding issue tracker:
+
+* IntelliJ IDEA issues go to link:https://youtrack.jetbrains.com/[JetBrains Youtrack issue tracker],
+* Android Studio issues go to link:https://source.android.com/setup/contribute/report-bugs[Google Android issue tracker].
+
 
 == Script file names
 
