@@ -110,7 +110,7 @@ In the above build scan example, you can see that the script `script-a.gradle` i
 
 image::script-a-application.png[title="Showing the application of script-a.gradle to the build"]
 
-This script takes 1 second to run, and as it is applied to 3 projects from the root `build.gradle` file, it is introducing a 3 second delay to the configuration phase.
+This script takes 1 second to run, and as it is applied to 3 projects from the root build script, it is introducing a 3 second delay to the configuration phase.
 
 Ideally, plugins and scripts should not incur a significant configuration-time cost. If they do, the focus should be on improving them. Nonetheless, in projects with many modules and a significant configuration time, you should spend a little time identifying any plugins that have a notable impact.
 
@@ -120,13 +120,15 @@ As you've seen, you'll want to avoid doing time-intensive work in the configurat
 
 === Statically compile tasks and plugins
 
+TIP: If your build logic is comprised of plugins written in statically compiled JVM languages like Java or Kotlin and build scripts written using the Gradle Kotlin DSL, then you can skip this and move on to the <<dependency_resolution,next section>>.
+
 Plugins and occasionally tasks perform work during the configuration phase. These are often written in Groovy for its concise syntax, API extensions to the JDK, and functional methods using closures. However, it’s important to bear in mind that there is a small cost associated with method calls in dynamic Groovy. When you have lots of method calls repeated across lots of projects, the cost can add up.
 
 That cost can be reduced by using `@CompileStatic` on your Groovy classes (where possible) or writing those classes in a statically compiled language, such as Java. This only really applies to large projects or plugins that you publish publicly (because they may be applied to large projects by other users). If you do need dynamic Groovy at any point, simply use `@CompileDynamic` for the relevant methods.
 
 *Note:* The DSL you’re used to in the build script relies heavily on Groovy’s dynamic features, so if you want to use static compilation in your plugins, you will have to switch to more traditional Java-like syntax. For example, to create a new copy task, you would use code like this:
 
-.build.gradle
+.src/main/groovy/MyPlugin.groovy
 [source,groovy]
 ----
 include::{samplescodedir}/copy-1.gradle[tags=copy]
@@ -157,16 +159,27 @@ Dependency resolution is an expensive process, both in terms of I/O and computat
 The key question to answer is what triggers dependency resolution? The most common cause is the evaluation of the files that make up a configuration. This is normally a job for tasks, since you typically don’t need the files until you’re ready to do something with them in a task action. However, imagine you’re doing some debugging and want to display the files that make up a configuration. One way you can do this is by injecting a print statement:
 
 .build.gradle
-[source,groovy]
+[source.multi-language-sample,groovy]
 ----
 include::{samplescodedir}/copy-2.gradle[tags=copy]
 ----
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{samplescodedir}/copy-2.gradle.kts[tags=copy]
+----
+
 The `files` property will force Gradle to resolve the dependencies, and in this example that’s happening during the configuration phase. Now every time you run the build, no matter what tasks you execute, you'll take a performance hit from the dependency resolution on that configuration. It would be better to add this in a `doFirst()` action.
 
 .build.gradle
-[source,groovy]
+[source.multi-language-sample,groovy]
 ----
 include::{samplescodedir}/copy-3.gradle[tags=copy]
+----
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{samplescodedir}/copy-3.gradle.kts[tags=copy]
 ----
 
 Note that the `from()` declaration doesn’t resolve the dependencies because you’re using the https://docs.gradle.org/current/userguide/artifact_dependencies_tutorial.html#configurations[dependency configuration] itself as an argument, not its files. The `Copy` task handles the resolution of the configuration itself during task execution, which is exactly what you want.
@@ -326,17 +339,27 @@ Let’s look at each of these in turn.
 Gradle will happily run multiple test cases in parallel, which is useful when you have several CPU cores and don’t want to waste most of them. To enable this feature, just use the following configuration setting on the relevant `Test` task(s):
 
 .build.gradle
-[source,groovy]
+[source.multi-language-sample,groovy]
 ----
 include::{samplescodedir}/maxParallelForks.gradle[tags=parallel-4]
+----
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{samplescodedir}/maxParallelForks.gradle.kts[tags=parallel-4]
 ----
 
 The normal approach is to use some number less than or equal to the number of CPU cores you have, such as this algorithm:
 
 .build.gradle
-[source,groovy]
+[source.multi-language-sample,groovy]
 ----
 include::{samplescodedir}/maxParallelForks.gradle[tags=parallel-calculated]
+----
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{samplescodedir}/maxParallelForks.gradle.kts[tags=parallel-calculated]
 ----
 
 Note that if you do run the tests in parallel, you will have to ensure that they are independent, i.e. don’t share resources, be that files, databases or something else. Otherwise there is a chance that the tests will interfere with each other in random and unpredictable ways.
@@ -348,9 +371,14 @@ Gradle will run all tests in a single forked VM by default. This can be problema
 Another option is to fork a new test VM after a certain number of tests have run. You can do this with the `forkEvery` setting:
 
 .build.gradle
-[source,groovy]
+[source.multi-language-sample,groovy]
 ----
 include::{samplescodedir}/maxParallelForks.gradle[tags=fork-every]
+----
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{samplescodedir}/maxParallelForks.gradle.kts[tags=fork-every]
 ----
 
 Just be aware that forking a VM is a relatively expensive operation, so a small value here will severely handicap the performance of your tests.
@@ -362,9 +390,14 @@ Gradle will automatically create test reports by default regardless of whether y
 To disable the test reports, simply add this configuration:
 
 .build.gradle
-[source,groovy]
+[source.multi-language-sample,groovy]
 ----
 include::{samplescodedir}/maxParallelForks.gradle[tags=disable-reports]
+----
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{samplescodedir}/maxParallelForks.gradle.kts[tags=disable-reports]
 ----
 
 This example applies to the default `Test` task added by the Java plugin, but you can also apply the configuration to any other `Test` tasks you have.
@@ -372,9 +405,18 @@ This example applies to the default `Test` task added by the Java plugin, but yo
 One thing to bear in mind is that you will probably want to conditionally disable or enable the reports, otherwise you will have to edit the build file just to see them. For example, you could enable the reports based on a project property:
 
 .build.gradle
-[source,groovy]
+[source.multi-language-sample,groovy]
 ----
-test {
+tasks.withType(Test) {
+    if (!project.hasProperty("createReports")) {
+        reports...
+    }
+}
+----
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+tasks.withType<Test> {
     if (!project.hasProperty("createReports")) {
         reports...
     }
@@ -393,17 +435,28 @@ The Java compiler is quite fast, especially compared to other languages on the J
 
 The Gradle Java plugin allows you to run the compiler as a separate process by using the following configuration for any `JavaCompile` task:
 
-[source,groovy]
+.build.gradle
+[source.multi-language-sample,groovy]
 ----
-<taskname>.options.fork = true
+<task>.options.fork = true
+----
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+<task>.options.isFork = true
 ----
 
 or, more commonly, to apply the configuration to _all_ Java compilation tasks:
 
 .build.gradle
-[source,groovy]
+[source.multi-language-sample,groovy]
 ----
 include::{samplescodedir}/maxParallelForks.gradle[tags=fork-java]
+----
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{samplescodedir}/maxParallelForks.gradle.kts[tags=fork-java]
 ----
 
 This process is reused for the duration of a build, so the forking overhead is minimal. The benefit of forking is that the memory-intensive compilation happens
@@ -424,11 +477,20 @@ For a long time, you would declare your compile time dependencies using the `com
 Since Gradle 3.4, you can now clearly separate which dependencies are part of your `api` and which are only `implementation` details. Implementation dependencies
 are not leaked into the compile classpath of downstream projects, which means that they will no longer be recompiled when such an implementation detail changes.
 
-[source,groovy]
+.build.gradle
+[source.multi-language-sample,groovy]
 ----
 dependencies {
-   api project("myUtils")
-   implementation "com.google.guava:guava:21.0"
+   api project('myUtils')
+   implementation 'com.google.guava:guava:21.0'
+}
+----
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+dependencies {
+   api(project("myUtils"))
+   implementation("com.google.guava:guava:21.0")
 }
 ----
 
@@ -440,9 +502,15 @@ plugin. `api` dependencies can only be defined by libraries, which should use th
 Gradle can analyze dependencies down to the individual class level in order to recompile only the classes that were affected by a change. This option
 will soon become the default setting, but you can already use it today to significantly speed up your incremental build times:
 
-[source,groovy]
+.build.gradle
+[source.multi-language-sample,groovy]
 ----
 include::{samplescodedir}/compileAvoidance.gradle[tags=incremental]
+----
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{samplescodedir}/compileAvoidance.gradle.kts[tags=incremental]
 ----
 
 == Low level profiling
@@ -486,11 +554,11 @@ Even if a build execution has a long startup time, a subsequent run will usually
 
 ==== Settings and _buildSrc_
 
-Soon after Gradle has got itself up and running, it initializes your project. This commonly just means processing your _settings.gradle_ file, but if you have custom build logic in a _buildSrc_ directory, that gets built as well.
+Soon after Gradle has got itself up and running, it initializes your project. This commonly just means processing your settings file, but if you have custom build logic in a _buildSrc_ directory, that gets built as well.
 
 The sample profile report shows a time over 1.6 second for this category, the vast majority of which was spent building the _buildSrc_ project. This part fortunately won’t take so long once _buildSrc_ is built once, as Gradle will consider it up to date. The up-to-date checks still take a little time, but nowhere near as much. If you do have problems with a persistently time consuming _buildSrc_ phase, you should consider breaking it out into a separate project whose JAR artifact is added to the build's classpath.
 
-The _settings.gradle_ file rarely has computationally or IO expensive code in it. If you find that Gradle is taking a significant amount of time to process it, you should use more traditional profiling methods, such as https://github.com/gradle/gradle-profiler[the Gradle Profiler] to determine why.
+The settings file rarely has computationally or IO expensive code in it. If you find that Gradle is taking a significant amount of time to process it, you should use more traditional profiling methods, such as https://github.com/gradle/gradle-profiler[the Gradle Profiler] to determine why.
 
 ==== Loading projects
 
