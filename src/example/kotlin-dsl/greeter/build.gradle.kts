@@ -25,7 +25,7 @@ tasks.getByName<Zip>("distZip") {
 }
 tasks.getByName<Tar>("distTar") {
     from(project(":docs").tasks["asciidoctor"]) {
-        into("${project.name}-${version}")
+        into("${project.name}-$version")
     }
 }
 // end::link-docs[]
