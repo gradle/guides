@@ -6,7 +6,7 @@ Following this guide, you'll create a trivial Gradle project, invoke some of the
 
 * About [.time-to-complete-text]#NN#
 * A terminal or IDE application
-* A Java Development Kit (JDK), version 1.7 or better (only necessary to run Gradle)
+* A Java Development Kit (JDK), version 1.7 or better if using the Gradle Groovy DSL, version 1.8 or better if using the Gradle Kotlin DSL (only necessary to run Gradle)
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 
 NOTE: Shell commands will shown for Unix-based systems. Windows has analogous commands for each.
