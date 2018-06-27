@@ -1,0 +1,11 @@
+plugins {
+    id 'org.asciidoctor.convert' // <1>
+}
+
+asciidoctor {
+    sources {
+        include 'greeter.adoc'   // <2>
+    }
+}
+
+build.dependsOn 'asciidoctor'    // <3>

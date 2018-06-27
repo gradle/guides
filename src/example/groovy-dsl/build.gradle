@@ -2,9 +2,9 @@
 // tag::plugins[]
 plugins {
 // end::plugins[]
-  id 'com.gradle.build-scan' version '1.12.1'
+    id 'com.gradle.build-scan' version '1.12.1'
 // tag::plugins[]
-  id 'org.asciidoctor.convert' version '1.5.6' apply false // <1>
+    id 'org.asciidoctor.convert' version '1.5.6' apply false // <1>
 }
 // end::plugins[]
 
@@ -29,11 +29,11 @@ subprojects {
 // end::subproject-versions[]
 
 // tag::common-code-1[]
-configure(subprojects.findAll {it.name == 'greeter' || it.name == 'greeting-library'} ) { // <1>
+configure(subprojects.findAll { it.name == 'greeter' || it.name == 'greeting-library' }) { // <1>
 
-    apply plugin : 'groovy'
+    apply plugin: 'groovy'
 // end::common-code-1[]
-    apply from : "${rootProject.projectDir}/spock.gradle"
+    apply from: "${rootProject.projectDir}/spock.gradle"
 // tag::common-code-2[]
 }
 // end::common-code-2[]
