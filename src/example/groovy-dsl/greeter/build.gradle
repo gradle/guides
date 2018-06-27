@@ -1,6 +1,8 @@
 // tag::basic-script[]
-apply plugin : 'java' // <1>
-apply plugin : 'application' // <2>
+plugins {
+    id 'java'        // <1>
+    id 'application' // <2>
+}
 // end::basic-script[]
 
 // tag::main-class-name[]

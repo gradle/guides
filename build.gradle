@@ -12,8 +12,9 @@ guide {
 
 asciidoctor {
     inputs.dir 'src/example'
-    attributes exampledir : file('src/example')
-    attributes 'gradle-outdir' : "${gradleRunner.reportsDir.absolutePath}"
+    attributes 'groovy-example-dir': file('src/example/groovy-dsl')
+    attributes 'kotlin-example-dir': file('src/example/kotlin-dsl')
+    attributes 'gradle-outdir': "${gradleRunner.reportsDir.absolutePath}"
 }
 
 test {
@@ -23,171 +24,181 @@ test {
 gradleRunner {
     inputs.dir 'src/example'
 
-    step 'add-greeting-library', {
-        copy {
-            from 'src/example', {
-                include '*.gradle'
-                include 'greeting-library/**'
+    [
+        [name: 'groovy-dsl', srcDir: 'src/example/groovy-dsl', scriptExtension: '.gradle', greeterOffset: 0, applyGroovy: "apply plugin: 'groovy'"],
+        [name: 'kotlin-dsl', srcDir: 'src/example/kotlin-dsl', scriptExtension: '.gradle.kts', greeterOffset: 2, applyGroovy: 'apply(plugin = "groovy")']
+    ].each { sample ->
 
-                filesMatching 'settings.gradle', {
+        step "${sample.name}-add-greeting-library", {
+            copy {
+                from sample.srcDir, {
+                    include "*${sample.scriptExtension}"
+                    include 'greeting-library/**'
+
+                    filesMatching "settings${sample.scriptExtension}", {
+                        filter { line ->
+                            (line.startsWith('rootProject') || line.contains('greeting-library')) ? line : null
+                        }
+                    }
+                }
+
+                into getWorkingDir()
+            }
+        }
+
+        step "${sample.name}-build-greeting-library", 'build'
+
+        step "${sample.name}-clean-output-build-greeting-library", { info ->
+            File out = new File(getStepReportDir("${sample.name}-build-greeting-library"), 'out.txt')
+            new File(info.reportDir, 'out.txt').withWriter { w ->
+                out.filterLine { line ->
+                    !(line =~ /^(Download|Cleaned up|Total time)/)
+                }.writeTo(w)
+            }
+        }
+
+        step "${sample.name}-add-java-app", {
+            copy {
+                from sample.srcDir, {
+                    include "settings${sample.scriptExtension}"
                     filter { line ->
-                        (line.startsWith('rootProject') || line.contains('greeting-library') ) ? line : null
+                        line.contains('docs') ? null : line
+                    }
+                    filter StripJavaComments
+                }
+
+                from sample.srcDir, {
+                    include 'greeter/src/**'
+                }
+
+                from sample.srcDir, {
+                    include "greeter/build${sample.scriptExtension}"
+                    filter HeadFilter, lines: 10 + sample.greeterOffset
+                }
+                into getWorkingDir()
+            }
+        }
+
+        failingStep "${sample.name}-build-app-1", 'build'
+
+        step "${sample.name}-clean-error-message-1", { info ->
+            File out = new File(getStepReportDir("${sample.name}-build-app-1"), 'err.txt')
+            new File(info.reportDir, 'err.txt').withWriter { w ->
+                out.eachLine { line ->
+                    if (line =~ /error: cannot find symbol/) {
+                        w.println line.replaceAll(~/^.+java\/greeter/, '...')
+                    } else {
+                        w.println line
                     }
                 }
             }
-
-            into getWorkingDir()
         }
-    }
 
-    step 'build-greeting-library', 'build'
-
-    step 'clean-output-build-greeting-library', { info ->
-        File out =  new File( getStepReportDir('build-greeting-library'), 'out.txt' )
-        new File(info.reportDir,'out.txt').withWriter { w ->
-            out.filterLine { line ->
-                !(line =~ /^(Download|Cleaned up|Total time)/)
-            }.writeTo(w)
-        }
-    }
-
-    step 'add-java-app', {
-        copy {
-            from 'src/example', {
-                include 'settings.gradle'
-                filter { line ->
-                    line.contains ('docs') ? null : line
+        step "${sample.name}-add-project-dependency", {
+            copy {
+                from sample.srcDir, {
+                    include "greeter/build${sample.scriptExtension}"
+                    filter HeadFilter, lines: 16 + sample.greeterOffset
                 }
-                filter StripJavaComments
+                into getWorkingDir()
             }
-
-            from 'src/example', {
-                include 'greeter/src/**'
-            }
-
-            from 'src/example', {
-                include 'greeter/build.gradle'
-                filter HeadFilter, lines : 8
-            }
-            into getWorkingDir()
         }
-    }
 
-    failingStep 'build-app-1', 'build'
+        step "${sample.name}-build-app-3", 'build'
 
-    step 'clean-error-message-1', { info ->
-        File out =  new File( getStepReportDir('build-app-1'), 'err.txt' )
-        new File(info.reportDir,'err.txt').withWriter { w ->
-            out.eachLine { line ->
-                if( line =~ /error: cannot find symbol/) {
-                    w.println line.replaceAll(~/^.+java\/greeter/,'...')
-                } else {
-                    w.println line
+        step "${sample.name}-clean-output-greeter-app", { info ->
+            File out = new File(getStepReportDir("${sample.name}-build-app-3"), 'out.txt')
+            new File(info.reportDir, 'out.txt').withWriter { w ->
+                out.filterLine { line ->
+                    !(line =~ /^(Download|Cleaned up|Total time)/)
+                }.writeTo(w)
+            }
+        }
+
+        step "${sample.name}-add-test-case", { info ->
+            new File(getWorkingDir(), "greeter/build${sample.scriptExtension}").withWriterAppend { w ->
+                w.println sample.applyGroovy
+                w << file("${sample.srcDir}/spock${sample.scriptExtension}").text
+            }
+        }
+
+        step "${sample.name}-test-app", ':greeter:test'
+
+        step "${sample.name}-clean-output-test-app", { info ->
+            File out = new File(getStepReportDir("${sample.name}-test-app"), 'out.txt')
+            new File(info.reportDir, 'out.txt').withWriter { w ->
+                out.filterLine { line ->
+                    !(line =~ /^(Download|Cleaned up|Total time)/)
+                }.writeTo(w)
+            }
+        }
+
+        step "${sample.name}-add-asciidoctor", { info ->
+            copy {
+                from sample.srcDir, {
+                    include 'docs/**'
+                    include "settings${sample.scriptExtension}"
+                    include "build${sample.scriptExtension}"
                 }
+                into getWorkingDir()
             }
         }
-    }
 
-    step 'add-project-dependency', {
-        copy {
-            from 'src/example', {
-                include 'greeter/build.gradle'
-                filter HeadFilter, lines : 14
+        step "${sample.name}-run-asciidoctor", 'asciidoctor'
+
+        step "${sample.name}-clean-output-run-asciidoctor", { info ->
+            File out = new File(getStepReportDir("${sample.name}-run-asciidoctor"), 'out.txt')
+            new File(info.reportDir, 'out.txt').withWriter { w ->
+                out.filterLine { line ->
+                    !(line =~ /^(Download|Cleaned up|Total time)/)
+                }.writeTo(w)
             }
-            into getWorkingDir()
         }
-    }
 
-    step 'build-app-3', 'build'
-
-    step 'clean-output-greeter-app', { info ->
-        File out =  new File( getStepReportDir('build-app-3'), 'out.txt' )
-        new File(info.reportDir,'out.txt').withWriter { w ->
-            out.filterLine { line ->
-                !(line =~ /^(Download|Cleaned up|Total time)/)
-            }.writeTo(w)
-        }
-    }
-
-    step 'add-test-case', { info ->
-        new File( getWorkingDir(), 'greeter/build.gradle').withWriterAppend { w ->
-            w.println "apply plugin  : 'groovy'"
-            w << file('src/example/spock.gradle').text
-        }
-    }
-
-    step 'test-app', ':greeter:test'
-
-    step 'clean-output-test-app', { info ->
-        File out =  new File( getStepReportDir('test-app'), 'out.txt' )
-        new File(info.reportDir,'out.txt').withWriter { w ->
-            out.filterLine { line ->
-                !(line =~ /^(Download|Cleaned up|Total time)/)
-            }.writeTo(w)
-        }
-    }
-
-    step 'add-asciidoctor', { info ->
-        copy {
-            from 'src/example', {
-                include 'docs/**'
-                include 'settings.gradle'
-                include 'build.gradle'
+        step "${sample.name}-link-docs-to-app", {
+            copy {
+                from sample.srcDir, {
+                    include "greeter/build${sample.scriptExtension}"
+                }
+                into getWorkingDir()
             }
-            into getWorkingDir()
         }
-    }
 
-    step 'run-asciidoctor', 'asciidoctor'
+        step "${sample.name}-build-with-docs", 'build'
 
-    step 'clean-output-run-asciidoctor', { info ->
-        File out =  new File( getStepReportDir('run-asciidoctor'), 'out.txt' )
-        new File(info.reportDir,'out.txt').withWriter { w ->
-            out.filterLine { line ->
-                !(line =~ /^(Download|Cleaned up|Total time)/)
-            }.writeTo(w)
-        }
-    }
-
-    step 'link-docs-to-app', {
-        copy {
-            from 'src/example', {
-                include 'greeter/build.gradle'
+        step "${sample.name}-clean-output-build-with-docs", { info ->
+            File out = new File(getStepReportDir("${sample.name}-build-with-docs"), 'out.txt')
+            new File(info.reportDir, 'out.txt').withWriter { w ->
+                out.filterLine { line ->
+                    !(line =~ /^(Download|Cleaned up|Total time)/)
+                }.writeTo(w)
             }
-            into getWorkingDir()
         }
-    }
 
-    step 'build-with-docs', 'build'
+        step "${sample.name}-refactor-common-groovy", {
+            copy {
+                into getWorkingDir()
+                from sample.srcDir, {
+                    include "build${sample.scriptExtension}"
+                    include "greeter/build${sample.scriptExtension}"
+                }
 
-    step 'clean-output-build-with-docs', { info ->
-        File out =  new File( getStepReportDir('build-with-docs'), 'out.txt' )
-        new File(info.reportDir,'out.txt').withWriter { w ->
-            out.filterLine { line ->
-                !(line =~ /^(Download|Cleaned up|Total time)/)
-            }.writeTo(w)
-        }
-    }
+                from sample.srcDir, {
+                    include "greeting-library/build${sample.scriptExtension}"
 
-    step 'refactor-common-groovy', {
-        copy {
-            into getWorkingDir()
-            from 'src/example', {
-                include 'build.gradle'
-                include 'greeter/build.gradle'
-            }
-
-            from 'src/example', {
-                include 'greeting-library/build.gradle'
-
-                filter HeadFilter, lines : 6, skip : 2
-                filter { line ->
-                    (line =~ /testCompile|exclude/ ) ? null : line
+                    filter HeadFilter, lines: 6, skip: 4
+                    filter { line ->
+                        (line =~ /testCompile|exclude/) ? null : line
+                    }
                 }
             }
         }
-    }
 
-    step 'build-after-refactor', 'build'
+        step "${sample.name}-build-after-refactor", 'build'
+
+        step "${sample.name}-working-copy-cleanup", {
+            delete getWorkingDir()
+        }
+    }
 }
 
