@@ -6,18 +6,12 @@
 :kotlin-dsl-samples: https://github.com/gradle/kotlin-dsl/tree/master/samples/
 :kotlin-dsl-issues: https://github.com/gradle/kotlin-dsl/issues/
 
+[.lead]
+This guide will walk you through converting your Groovy-based Gradle build scripts to Kotlin.
 
-// Summary for the guides list
-//   Learn how to migrate your build logic from Groovy to Kotlin using the Gradle Kotlin DSL.
-//   Discover pain points and discuss migration strategies.
-//   Includes solutions for common problems and interoperability recipes.
+Gradle's newer Kotlin DSL provides a pleasant editing experience in supported IDEs: content-assist, refactoring, documentation, and more.
 
-
-In this guide you'll learn how to migrate your build logic from Groovy to Kotlin using the Gradle Kotlin DSL.
-Along the way, you'll discover potential trade-offs and pain points.
-We will also discuss migration strategies.
-The guide includes solutions for common problems and recipes for interoperability.
-
+image::intellij-idea-android-studio.png[IntelliJ IDEA and Android Studio]
 
 // TODO Uncomment once this is true
 // [TIP]
@@ -25,127 +19,23 @@ The guide includes solutions for common problems and recipes for interoperabilit
 // This is the best place where to find how to do this and what with each DSL ; and it covers all Gradle features from link:{user-manual}plugins.html[using plugins] to link:{user-manual}customizing_dependency_resolution_behavior.html[customizing the dependency resolution behavior].
 
 
-== Groovy vs. Kotlin DSL trade-offs
+== Before you start migrating
 
-Gradle is implemented in Java on top of the JVM.
-In turn, both the Groovy DSL and the Kotlin DSL are implemented on top of Gradle's Java API.
+**Please read:** It's helpful to keep the understand the following important information _before you migrate_:
 
-Kotlin and Groovy languages are very different, each with their own strengths:
+* Some IDEs, such as Eclipse or NetBeans, do not yet provide helpful tools for editing Gradle Kotlin DSL files, however, importing and working with Kotlin DSL-based builds work as usual.
+* In IntelliJ, you must link:https://www.jetbrains.com/help/idea/gradle.html#gradle_import[import your project from the Gradle model] to get content-assist and refactoring tools for Kotlin DSL scripts.
+* You must run Gradle with Java 8 or higher. Java 7 is not supported.
+* Knowledge of Kotlin syntax and basic language features is very helpful. The link:{kotlin-reference}[Kotlin reference documentation] and link:https://kotlinlang.org/docs/tutorials/koans.html[Kotlin Koans] should be useful to you.
+* Use of the `plugins {}` block to declare Gradle plugins significantly improves the editing experience, and is highly recommended. Consider adopting it in your Groovy build scripts before converting them Kotlin.
+* The Kotlin DSL will not support `model {}` elements. This is part of the link:https://blog.gradle.org/state-and-future-of-the-gradle-software-model[discontinued Gradle Software Model].
 
- * Kotlin is statically typed and has null safety built-in, hence it is quite strict.
- * Groovy is a dynamic language by nature, hence it is very flexible.
+If you run to trouble or a suspected bug, please take advantage of the `gradle/kotlin-dsl` link:{kotlin-dsl-issues}[issue tracker].
 
-[NOTE]
-If you want to read about Kotlin the language before getting started or you need to look up technical information along the way, the link:{kotlin-reference}[reference documentation] is the place to go.
-The https://kotlinlang.org/docs/tutorials/koans.html[Kotlin Koans] also provide a fun way to learn Kotlin.
-
-The Kotlin language being more strict than Groovy also means that the Gradle Kotlin DSL is more strict than the Gradle Groovy DSL.
-Both share the same ultimate goal, though: provide the means to interact with the dynamic and extensible Gradle model and runtime.
-
-In some cases, the Kotlin DSL is more verbose than the Groovy equivalent.
-On the other hand, it provides more safety and better tooling.
-
-Because Kotlin is a statically-typed language with deep support in IntelliJ IDEA, it gives Gradle users proper IDE support, from auto-completion to refactoring, as well as other benefits.
-
-From a quick glance, the Gradle Kotlin DSL doesn’t look too different from the Gradle build scripts you know today, as you can see from this example:
-
-[source,kotlin]
-----
-plugins {
-    application
-}
-
-application {
-    mainClassName = "com.example.Main"
-}
-
-repositories {
-    jcenter()
-}
-
-dependencies {
-    testImplementation("junit:junit:4.12")
-}
-----
-
-But things get very interesting when you begin to explore what’s possible in the IDE.
-You’ll find that the things you usually expect from your IDE just work, including:
-
-* Auto-completion and content assist
-* Quick documentation
-* Navigation to source
-* Refactoring
-
-The effect is dramatic and we think it’ll make a big difference for Gradle users.
-
-Gradle best practices tend towards more declarative builds with fewer dynamic constructs.
-This is where the Kotlin DSL shines with the less ceremony and the more tooling.
-In that sense, the Kotlin DSL encourages Gradle best practices.
-
-[TIP]
---
-*Applying Gradle best practices will make it much easier with the Kotlin DSL*
-
-Start by link:{user-manual}gradle_wrapper.html#sec:upgrading_wrapper[upgrading to the latest stable Gradle release].
-
-From there, follow the advice in the link:{user-manual}authoring_maintainable_build_scripts.html[_Authoring maintainable build scripts_] and link:{user-manual}organizing_gradle_projects.html[_Organizing build logic_] chapters of the user manual.
---
+_You don't have to migrate all at once!_ Both Groovy and Kotlin-based build scripts can `apply` other scripts of either language. You can find inspiration for any Gradle features not covered in the link:https://github.com/gradle/kotlin-dsl/tree/master/samples[Kotlin DSL samples].
 
 
-== Kotlin DSL Limitations
-
-Supported Platforms::
-A Java Development Kit (JDK), version 1.8 or better is required to run Gradle when using the Kotlin DSL.
-The embedded Kotlin compiler is known to work on Linux, macOS, Windows, Cygwin, FreeBSD and Solaris on x86-64 architectures.
-
-Performance::
-In "everything is up to date" scenarios, the Groovy DSL and Kotlin DSL performance characteristics are similar.
-However, the embedded Kotlin compiler is slower than the Groovy compiler, so the first-use case when running a build is slower with the Kotlin DSL than with the Groovy DSL.
-The same applies to the scenario in which something in the _buildSrc_ directory changes, which invalidates build-script caching.
-See link:{kotlin-dsl-issues}902[gradle/kotlin-dsl#902] for more information and some numbers.
-
-Static DSL::
-The Gradle configuration model is dynamic.
-The Kotlin DSL provides a static view over this dynamic model.
-However, not all use cases are supported: see the <<configuring-plugins>> and <<configurations-and-dependencies>> sections below for supported use cases and how to dynamically access the Gradle model when that's necessary.
-
-IDE support::
-IntelliJ IDEA and Android Studio both allow you to edit Gradle Kotlin DSL scripts.
-Other IDEs might display such scripts as plain text or with syntax highlighting, but without any additional features.
-See the <<ide-support>> section below for more information.
-
-Software model::
-The DSL of the link:https://blog.gradle.org/state-and-future-of-the-gradle-software-model[discontinued Gradle Software Model] is not supported in Gradle Kotlin DSL scripts.
-However, declaring and using a `RuleSource` _is_ supported: see the link:{kotlin-dsl-samples}model-rules[model-rules] sample that demonstrates how to write rules in Kotlin and how to use them from a Gradle Kotlin DSL script.
-
-Open issues::
-If you encounter an issue, please check the `gradle/kotlin-dsl` link:{kotlin-dsl-issues}[issue tracker] and raise an issue if one applicable to your situation doesn't already exist.
-
-
-[[ide-support]]
-== IDE Support
-
-IntelliJ IDEA and Android Studio both support the editing of Gradle Kotlin DSL scripts and provide auto-completion, content assist, quick documentation, navigation to sources, refactoring and more.
-
-image::intellij-idea-android-studio.png[IntelliJ IDEA and Android Studio]
-
-[CAUTION]
---
-Note that when using IDEA files generated by the Gradle `idea` plugin, the IDE will not provide auto-completion nor refactoring nor any other of the other features mentioned above.
-You must link:https://www.jetbrains.com/help/idea/gradle.html#gradle_import[import the project from the Gradle model] instead.
---
-
-Even though other IDEs have no support for code completion and content assist when editing Kotlin DSL scripts, they can still import and work with Gradle builds that use the Kotlin DSL.
-This is true for both link:https://www.eclipse.org/[Eclipse] — thanks to the link:https://projects.eclipse.org/projects/tools.buildship[Buildship] project — and link:https://netbeans.apache.org/[Apache Netbeans] — thanks to its link:https://github.com/kelemen/netbeans-gradle-project[Gradle plugin].
-Still, we do not recommend migrating your build to the Gradle Kotlin DSL at this time unless your build-authoring team is using IntelliJ IDEA or Android Studio.
-
-If you encounter any IDE related issue, please report them in the appropriate issue tracker:
-
-* IntelliJ IDEA issues go to link:https://youtrack.jetbrains.com/[JetBrains Youtrack issue tracker],
-* Android Studio issues go to link:https://source.android.com/setup/contribute/report-bugs[Google Android issue tracker].
-
-
-== Script file names
+== Script file naming
 
 [NOTE]
 --
@@ -159,7 +49,6 @@ To use the Kotlin DSL, simply name your files `build.gradle.kts` instead of `bui
 The link:{user-manual}build_lifecycle.html#sec:settings_file[settings file], `settings.gradle`, can also be renamed `settings.gradle.kts`.
 
 In a multi-project build, you can have some modules using the Groovy DSL (with `build.gradle`) and others using the Kotlin DSL (with `build.gradle.kts`).
-You're not forced to migrate everything at once.
 
 On top of that, apply the following conventions for better IDE support:
 
