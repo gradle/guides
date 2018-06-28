@@ -21,27 +21,29 @@ buildScan {
 }
 
 tasks {
-    val preProcessSamples = "preProcessSamples"(Copy::class) {
+    val preProcessSamples by creating(Copy::class) {
         into("$buildDir/samples")
         from("samples")
         dependsOn("configurePreProcessSamples")
     }
 
-    "configurePreProcessSamples" {
+    val configurePreProcessSamples by creating {
         doLast {
             val tokens = mapOf("scanPluginVersion" to resolveLatestBuildScanPluginVersion())
             preProcessSamples.inputs.properties(tokens)
             preProcessSamples.filter<ReplaceTokens>("tokens" to tokens)
         }
     }
+
     val asciidoctor by getting(AsciidoctorTask::class) {
-        dependsOn("preProcessSamples")
+        dependsOn(preProcessSamples)
         attributes.putAll(mapOf(
             "samplescodedir" to project.file("build/samples/code").absolutePath
         ))
     }
+
     val test by getting(Test::class) {
-        dependsOn("preProcessSamples")
+        dependsOn(preProcessSamples)
         systemProperty("samplesDir", "$buildDir/samples")
     }
 }
