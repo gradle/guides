@@ -1,7 +1,7 @@
 // tag::add-gretty[]
 plugins {
     id 'war'
-    id 'org.akhikhl.gretty' version '1.4.2' // <1>
+    id 'org.gretty' version '2.2.0' // <1>
 }
 // end::add-gretty[]
 
