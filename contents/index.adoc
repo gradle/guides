@@ -21,7 +21,7 @@ image::intellij-idea-android-studio.png[IntelliJ IDEA and Android Studio]
 
 == Before you start migrating
 
-**Please read:** It's helpful to keep the understand the following important information _before you migrate_:
+**Please read:** It's helpful to understand the following important information _before you migrate_:
 
 * Some IDEs, such as Eclipse or NetBeans, do not yet provide helpful tools for editing Gradle Kotlin DSL files, however, importing and working with Kotlin DSL-based builds work as usual.
 * In IntelliJ, you must link:https://www.jetbrains.com/help/idea/gradle.html#gradle_import[import your project from the Gradle model] to get content-assist and refactoring tools for Kotlin DSL scripts.
