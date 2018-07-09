@@ -96,7 +96,7 @@ From there, follow the advice in the link:{user-manual}authoring_maintainable_bu
 
 Supported Platforms::
 A Java Development Kit (JDK), version 1.8 or better is required to run Gradle when using the Kotlin DSL.
-The embedded Kotlin compiler is known to work on Linux, MacOS X, Windows, Cygwin, FreeBSD and Solaris on x86-64 architectures.
+The embedded Kotlin compiler is known to work on Linux, macOS, Windows, Cygwin, FreeBSD and Solaris on x86-64 architectures.
 
 Performance::
 In "everything is up to date" scenarios, the Groovy DSL and Kotlin DSL performance characteristics are similar.
@@ -209,7 +209,7 @@ include::{samplescodedir}/applying-plugins/imperative.gradle.kts[]
 --
 **We strongly recommend that you use the `plugins {}` block in preference to the `apply()` function.**
 
-The declarative nature of the `plugins {}` block enables the Kotlin DSL to provide type-safe accessors to the extensions, configurations and other features contributed by the applied plugins, which makes it easy for plugins IDEs to discover the details of the plugins' models and makes them easy to configure.
+The declarative nature of the `plugins {}` block enables the Kotlin DSL to provide type-safe accessors to the extensions, configurations and other features contributed by the applied plugins, which makes it easy for IDEs to discover the details of the plugins' models and makes them easy to configure.
 --
 
 
@@ -274,7 +274,7 @@ However, you _can_ use the `plugins {}` block if you configure your project appr
 We will show you in this section how to do that for the Android Plugin for Gradle.
 
 [NOTE]
-When publishing plugins, please use Gradle's built-in link:{user-manual}java_gradle_plugin.html[Java Gradle Plugin] Plugini. It automates the publication of the metadata necessary to make your plugins usable with the `plugins {}` block.
+When publishing plugins, please use Gradle's built-in link:{user-manual}java_gradle_plugin.html[Java Gradle Plugin] Plugin. It automates the publication of the metadata necessary to make your plugins usable with the `plugins {}` block.
 
 The goal is to instruct your build on how to map the `com.android.application` plugin identifier to a resolvable artifact.
 This is done in two steps:
@@ -549,7 +549,7 @@ include::{samplescodedir}/configurations-and-dependencies/custom.gradle[tags=cus
 include::{samplescodedir}/configurations-and-dependencies/custom.gradle.kts[tags=delegated-properties]
 ----
 
-Note that we can only use the `db(...)` and `integTestImplementation(...)` notation within the `dependencies {}` block in the above example because both configurations are declared as delegated properties beforehand via the `createing()` method.
+Note that we can only use the `db(...)` and `integTestImplementation(...)` notation within the `dependencies {}` block in the above example because both configurations are declared as delegated properties beforehand via the `creating()` method.
 If the configurations were defined elsewhere, you could only reference them either by first creating delegating properties via `configurations`  — as opposed to `configurations.creating()` — or by using string literals within the `dependencies {}` block.
 The following example demonstrates both approaches:
 
