@@ -29,20 +29,7 @@ Otherwise, once you have agreed on the title and other details above, move on to
 
 Each guide gets its own GitHub repository under the gradle-guides organization, so you will have to create one for each accepted proposal. A helper Gradle script, exists in the `create-guides` folder of the `gradle/guides` repository to aid in this process.
 
-Follow these steps on your local machine, replacing `Creating Java Projects` with the agreed-upon title for the guide, and replacing `49` with the number of the issue created in the step above:
-
-    git clone https://github.com/gradle/guides.git
-    cd guides/create-guides
-    # Use getting-started OR topical as the guide type
-    # The issue must be in the GitHub markup format organization/repository#number
-    ./gradlew create --guide-type getting-started --guide-name 'Creating Java Projects' --guide-issue 'gradle/guides#49'
-
-    # The command above will create a directory named `build/new-guide-repositories/creating-java-projects`
-    cd build/new-guide-repositories/creating-java-projects
-
-In case the guide name contains non-alpha characters other than spaces, dashes and underscores use `--guide-repo-name` to specify a repository name that is GitHub safe.
-
-In order for this to work a GitHub personal authentication token must be supplied. The token must have `repo` scope. It is passed as a project property called `gradle.guides.authToken`. This can be setup in the `gradle.properties` file or supplied via the command line using `-Pgradle.guides.authToken=<GITHUB-TOKEN>`.
+**NOTE:** In order for this to work a GitHub personal authentication token must be supplied. The token must have `repo` scope. It is passed as a project property called `gradle.guides.authToken`. This can be setup in the `gradle.properties` file or supplied via the command line using `-Pgradle.guides.authToken=<GITHUB-TOKEN>`.
 
 You might want to consider adding two more (optional) properties:
 
@@ -50,6 +37,17 @@ You might want to consider adding two more (optional) properties:
 - `gradle.guides.user.signingkey` - Set this to your GPG key for signing commits.
 
 Once again these can be set in `gradle.properties` or supplied on the command-line.
+
+Follow these steps on your local machine, replacing `Creating Java Projects` with the agreed-upon title for the guide, and replacing `49` with the number of the issue created in the step above:
+
+    git clone https://github.com/gradle/guides.git
+    cd guides/create-guides
+    # Use getting-started OR topical as the guide type
+    # The issue must be in the GitHub markup format organization/repository#number
+    ./gradlew create --guide-type getting-started --guide-name 'Creating Java Projects' --guide-issue 'gradle/guides#49' --guide-repo-name 'creating-java-projects'
+
+    # The command above will create a directory named `build/new-guide-repositories/creating-java-projects`
+    cd build/new-guide-repositories/creating-java-projects
 
 In it's current format the Gradle `create` task will take care of creating the repository on GitHub, cloning the appropriate template for the guide type, substituting appropriate values and finally pushing the content upstream. It will also take care of enabling the repository to be built by Travis.
 
