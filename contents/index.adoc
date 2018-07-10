@@ -55,22 +55,6 @@ Tweaking the build configuration to run the two slow tasks early on and in paral
 
 image::parallel-task-fast.png[title="Optimized parallel execution"]
 
-=== Configure on demand
-
-Imagine you have 300 subprojects all managed by a single Gradle build. Even if the configuration time for each project is just 50ms, that means every build will take at least 15s! That’s why it’s particularly crucial to keep a close eye on configuration times for projects that have a lot of modules.
-
-With that in mind, wouldn’t it be better if Gradle only configured the projects that were actually required to execute the requested task(s)? Of course, and that’s where the `--configure-on-demand` command line option comes in. It avoids a lot of unnecessary configuration at the cost of working out which projects are required. While not necessarily recommended if you only have a small number of quick-to-configure subprojects, it can be worth a try in larger builds.
-
-Configure on demand will only work reliably when you have decoupled projects. You can learn more about https://docs.gradle.org/current/userguide/multi_project_builds.html#sec:decoupled_projects[decoupled projects] in the User Manual. Most importantly, using `subprojects {}` or `allprojects {}` blocks will mostly negate the benefit of configure-on-demand, because those blocks are executed eagerly.
-
-You can make configure on demand the default for a project by adding the following setting to its _gradle.properties_ file:
-
-.gradle.properties
-[source,java]
-----
-org.gradle.configureondemand=true
-----
-
 That’s the end of the quick wins. From here on out, improving your build performance will require some elbow grease. First, perhaps the most important step: finding out which bits of your build are slow and why.
 
 == Profiling with build scans
