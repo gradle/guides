@@ -1,0 +1,68 @@
+= Building Spring Boot 2 Applications with Gradle
+
+TODO: Preamble goes here
+
+== What you'll build
+
+TODO
+
+== What you'll need
+
+* About +++<span class="time-to-complete-text"></span>+++
+* A text editor or IDE
+* The Java Development Kit (JDK), version 1.7 or higher
+* A https://gradle.org/install[Gradle distribution], version 4.6 or better
+
+== Step 1: TODO
+
+TODO
+
+=== Step 1.1: Create sample project
+
+NOTE: This demo project is derived from https://webpack.js.org/guides/getting-started/[Webpack's Getting Started Guide]. Learn more Webpack usage at https://webpack.js.org/guides/.
+
+[listing]
+----
+$ mkdir -p gradle-webpack-demo/app
+$ cd gradle-webpack-demo
+----
+
+.index.html
+[source,html]
+----
+<html>
+  <head>
+    <title>Gradle + Webpack Demo</title>
+  </head>
+  <body>
+    <script src="build/js/bundle.js"></script> // <1>
+  </body>
+</html>
+----
+<1> Webpack-generated JS bundle will include index.js and lodash
+
+== Step 2: TODO
+
+Command-line tools can be invoked through Gradle https://docs.gradle.org/current/dsl/org.gradle.api.tasks.Exec.html[Exec] tasks.
+
+NOTE: https://guides.gradle.org/writing-gradle-tasks/[Custom Task Classes] are highly recommended for any applications where configuration or reusability is desired; for example, to allow dev (debug with sourcemaps) and production variants.
+
+=== Step 2.1: Create Gradle task
+
+.build.gradle
+[source,groovy]
+----
+task webpack(type: Exec) { // <1>
+    commandLine "$projectDir/node_modules/.bin/webpack", "app/index.js", "$buildDir/js/bundle.js"
+}
+----
+<1> Declare an Exec task to invoke `webpack`
+
+
+You can now open `index.html` and see "Build together; not alone".
+
+
+== Next Steps
+Congratulations! You now have ...
+
+include::contribute[repo-path="gradle-guides/building-spring-boot-2-projects-with-gradle"]
