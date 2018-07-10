@@ -23,17 +23,18 @@ image::intellij-idea-android-studio.png[IntelliJ IDEA and Android Studio]
 
 **Please read:** It's helpful to understand the following important information _before you migrate_:
 
-* Using the latest versions of Gradle, applied plugins and your IDE should be your first move.
+* Using the latest versions of Gradle, applied plugins, and your IDE should be your first move.
 * Some IDEs, such as Eclipse or NetBeans, do not yet provide helpful tools for editing Gradle Kotlin DSL files, however, importing and working with Kotlin DSL-based builds work as usual.
 * In IntelliJ IDEA, you must link:https://www.jetbrains.com/help/idea/gradle.html#gradle_import[import your project from the Gradle model] to get content-assist and refactoring tools for Kotlin DSL scripts.
-* IntelliJ IDEA or Android Studio might spawn up to 3 Gradle daemons when editing scripts. One per each type of scripts: project scripts, settings scripts and initialization scripts. Also note that there are reports that on some builds with slow configuration time the IDE may feel unresponsive when editing scripts.
+* There are some situations where the Kotlin DSL is slower. First use, on clean checkouts or ephemeral CI agents for example, link:{kotlin-dsl-issues}902[are known to be slower].
+In addition, IntelliJ IDEA or Android Studio might spawn up to 3 Gradle daemons when editing scripts; one per each type of script: project scripts, settings scripts and initialization scripts.
+The same applies to the scenario in which something in the _buildSrc_ directory changes, which invalidates build-script caching.
+Some builds with slow configuration time (please check out the link:https://guides.gradle.org/performance/#configuration[performance guide]) the IDE may feel unresponsive when editing scripts.
 * You must run Gradle with Java 8 or higher. Java 7 is not supported.
 * The embedded Kotlin compiler is known to work on Linux, macOS, Windows, Cygwin, FreeBSD and Solaris on x86-64 architectures.
 * Knowledge of Kotlin syntax and basic language features is very helpful. The link:{kotlin-reference}[Kotlin reference documentation] and link:https://kotlinlang.org/docs/tutorials/koans.html[Kotlin Koans] should be useful to you.
 * Use of the `plugins {}` block to declare Gradle plugins significantly improves the editing experience, and is highly recommended. Consider adopting it in your Groovy build scripts before converting them Kotlin.
 * The Kotlin DSL will not support `model {}` elements. This is part of the link:https://blog.gradle.org/state-and-future-of-the-gradle-software-model[discontinued Gradle Software Model].
-* The performance characteristics of the Groovy and Kotlin DSLs are similar in "everything is up to date" scenarios. Statically compiled build logic is also faster at configuration as well as execution time. The performance difference can range from neglectable to substantial.
-* However, first use, on clean checkouts or ephemeral CI agents for example, link:{kotlin-dsl-issues}902[is slower]. The same applies to the scenario in which something in the _buildSrc_ directory changes, which invalidates build-script caching.
 
 If you run to trouble or a suspected bug, please take advantage of the `gradle/kotlin-dsl` link:{kotlin-dsl-issues}[issue tracker].
 
