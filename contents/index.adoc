@@ -23,6 +23,7 @@ image::intellij-idea-android-studio.png[IntelliJ IDEA and Android Studio]
 
 **Please read:** It's helpful to understand the following important information _before you migrate_:
 
+* Using the latest versions of Gradle, applied plugins and your IDE should be your first move.
 * Some IDEs, such as Eclipse or NetBeans, do not yet provide helpful tools for editing Gradle Kotlin DSL files, however, importing and working with Kotlin DSL-based builds work as usual.
 * In IntelliJ IDEA, you must link:https://www.jetbrains.com/help/idea/gradle.html#gradle_import[import your project from the Gradle model] to get content-assist and refactoring tools for Kotlin DSL scripts.
 * IntelliJ IDEA or Android Studio might spawn up to 3 Gradle daemons when editing scripts. One per each type of scripts: project scripts, settings scripts and initialization scripts. Also note that there are reports that on some builds with slow configuration time the IDE may feel unresponsive when editing scripts.
