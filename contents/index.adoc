@@ -33,7 +33,7 @@ On some builds with slow configuration time (please check out the link:https://g
 * You must run Gradle with Java 8 or higher. Java 7 is not supported.
 * The embedded Kotlin compiler is known to work on Linux, macOS, Windows, Cygwin, FreeBSD and Solaris on x86-64 architectures.
 * Knowledge of Kotlin syntax and basic language features is very helpful. The link:{kotlin-reference}[Kotlin reference documentation] and link:https://kotlinlang.org/docs/tutorials/koans.html[Kotlin Koans] should be useful to you.
-* Use of the `plugins {}` block to declare Gradle plugins significantly improves the editing experience, and is highly recommended. Consider adopting it in your Groovy build scripts before converting them Kotlin.
+* Use of the `plugins {}` block to declare Gradle plugins significantly improves the editing experience, and is highly recommended. Consider adopting it in your Groovy build scripts before converting them to Kotlin.
 * The Kotlin DSL will not support `model {}` elements. This is part of the link:https://blog.gradle.org/state-and-future-of-the-gradle-software-model[discontinued Gradle Software Model].
 
 If you run to trouble or a suspected bug, please take advantage of the `gradle/kotlin-dsl` link:{kotlin-dsl-issues}[issue tracker].
