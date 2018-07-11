@@ -1,0 +1,22 @@
+> Task :compileJava
+> Task :processResources NO-SOURCE
+> Task :classes
+> Task :bootJar
+> Task :bootStartScripts
+> Task :bootDistTar
+> Task :bootDistZip
+> Task :jar SKIPPED
+> Task :startScripts
+> Task :distTar
+> Task :distZip
+> Task :assemble
+> Task :compileTestJava
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+> Task :test
+> Task :check
+> Task :build
+
+10 actionable tasks: 10 executed
+
+Publishing build scan...
