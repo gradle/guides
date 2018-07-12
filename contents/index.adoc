@@ -174,7 +174,7 @@ Another way to run the application is by executing the following Gradle command:
 ----
 
 This command will run the Spring Boot application on the default port `8080` directly.
-After a successful startup you can open your browser and access `http://localhost:8080` and you should see the `Hello Gradle!` message in the browser window.
+After a successful startup you can open your browser and access ++http://localhost:8080++ and you should see the `Hello Gradle!` message in the browser window.
 
 == Migrate from an existing Spring Boot 1.5 project
 
