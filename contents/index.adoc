@@ -1,68 +1,190 @@
 = Building Spring Boot 2 Applications with Gradle
 
-TODO: Preamble goes here
+This guide shows how to build a new Gradle project for Spring Boot 2.0.
+First we show some noteworthy features of Spring Boot and its Gradle plugin.
+Next we’ll setup the Gradle project, apply the Spring Boot plugin, use the Gradle BOM support to define the dependencies and create an example project to show an integration with https://gradle.com/build-scans[Gradle Build Scans].
 
-== What you'll build
+== Noteworthy Spring Boot 2 features
 
-TODO
+As Spring Boot uses the Spring Framework 5.x, the minimum Java version was bumped to 8 with support for Java 9.
+With this release Spring also includes support for Kotlin 1.2.x.
+
+In addition to that, it now fully supports Reactive Spring with which you are able to build reactive applications.
+The whole autoconfiguration mechanism provided by Spring Boot has been enriched as well with several new reactive versions of for example MongoDB, Redis and others.
+
+The Spring Boot Gradle plugin went through a major overhaul with the following improvements:
+
+* To build executable jars and wars, the `bootRepackage` task has been replaced with `bootJar` and `bootWar` respectively.
+* The plugin itself does not automatically apply the Spring Dependency Management plugin anymore.
+Instead it does react to the Spring Dependency Management plugin being applied and configured with the `spring-boot-dependencies` BOM (bill of materials. We will go into more detail about the BOM support later in this post.)
 
 == What you'll need
 
 * About +++<span class="time-to-complete-text"></span>+++
 * A text editor or IDE
-* The Java Development Kit (JDK), version 1.7 or higher
+* The Java Development Kit (JDK), version 1.8 or higher
 * A https://gradle.org/install[Gradle distribution], version 4.6 or better
 
-== Step 1: TODO
+== Initializing the Gradle project
 
-TODO
+First we need to initialize the Gradle project.
+For that we use Gradle’s `init` task which creates a template project with an empty build file.
+The generated project includes the Gradle wrapper out of the box such that you can easily share the project with users that do not have Gradle locally installed.
+It also adds the default source directories, test dependencies and JCenter as default dependency repository.
+Please have a look at its https://docs.gradle.org/current/userguide/build_init_plugin.html[documentation] to read more about the `init` task.
 
-=== Step 1.1: Create sample project
-
-NOTE: This demo project is derived from https://webpack.js.org/guides/getting-started/[Webpack's Getting Started Guide]. Learn more Webpack usage at https://webpack.js.org/guides/.
+First we need to create the sample project folder in our home directory and initialize the project:
 
 [listing]
 ----
-$ mkdir -p gradle-webpack-demo/app
-$ cd gradle-webpack-demo
+$ mkdir ~/gradle-spring-boot-project
+$ cd ~/gradle-spring-boot-project
+$ gradle init  --type java-application
 ----
 
-.index.html
-[source,html]
+The generated project has the following structure:
+
+[listing]
 ----
-<html>
-  <head>
-    <title>Gradle + Webpack Demo</title>
-  </head>
-  <body>
-    <script src="build/js/bundle.js"></script> // <1>
-  </body>
-</html>
+gradle-spring-boot-project
+├── build.gradle
+├── gradle
+│   └── wrapper
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── gradlew
+├── gradlew.bat
+├── settings.gradle
+└── src
+    ├── main
+    │   └── java
+    │       └── App.java
+    └── test
+        └── java
+            └── AppTest.java
 ----
-<1> Webpack-generated JS bundle will include index.js and lodash
 
-== Step 2: TODO
+Next we need to apply the Spring Boot plugin and define the dependencies.
 
-Command-line tools can be invoked through Gradle https://docs.gradle.org/current/dsl/org.gradle.api.tasks.Exec.html[Exec] tasks.
+== Applying the Spring Boot plugin and configuring the dependencies
 
-NOTE: https://guides.gradle.org/writing-gradle-tasks/[Custom Task Classes] are highly recommended for any applications where configuration or reusability is desired; for example, to allow dev (debug with sourcemaps) and production variants.
-
-=== Step 2.1: Create Gradle task
+Spring provides a standalone Spring Boot Gradle plugin which adds some tasks and configurations to ease the work with Spring Boot based projects.
+To start off we first need to apply the plugin.
+For that open the `build.gradle` file and adapt the `plugin` block such that it looks like the following snippet:
 
 .build.gradle
 [source,groovy]
 ----
-task webpack(type: Exec) { // <1>
-    commandLine "$projectDir/node_modules/.bin/webpack", "app/index.js", "$buildDir/js/bundle.js"
-}
+include::{samplescodedir}/sample-project/build.gradle[tags=plugins]
 ----
-<1> Declare an Exec task to invoke `webpack`
 
+We now apply Gradle’s `java` and `application` plugin and as well added the Gradle build scan plugin, with which we are able to create a build scan.
+We will cover what build scans are later in this guide.
 
-You can now open `index.html` and see "Build together; not alone".
+Next we need to add the dependencies needed to compile and run our example as we are not using Spring’s dependency management plugin.
+For that we use the Gradle's BOM support and load the Spring Boot BOM file to be able to resolve all required dependencies with the proper version.
 
+NOTE: If you’d like to read more about Gradle’s BOM support please visit https://docs.gradle.org/current/userguide/managing_transitive_dependencies.html#sec:bom_import[this page].
+
+To define the dependencies adapt the `dependencies` block as shown below.
+This snippet will add the Spring Boot BOM file as first dependency with the specified Spring Boot version.
+The other dependencies do not need to have a specific version as these are implicitly defined in the BOM file.
+
+.build.gradle
+[source,groovy]
+----
+include::{samplescodedir}/sample-project/build.gradle[tags=dependencies]
+----
+
+To comply with the Spring Boot BOM the `components` block is needed to strictly use the `snakeyaml` dependency with version `1.19` as the `spring-beans` dependency has version `1.20` as transitive dependency.
+
+If using a Gradle version before 5.0, we need to enable this by adding the following line to the `settings.gradle` file in the root of the project:
+
+.build.gradle
+[source,groovy]
+----
+include::{samplescodedir}/sample-project/settings.gradle[]
+----
+
+If you would like to explore the versions of the dependencies used, which transitive dependencies are included or see where you have conflicts you can find this information in a https://gradle.com/build-scans[build scan].
+
+The following screenshot shows an example of the dependencies section of the build scan:
+
+image::dependencies.png[]
+
+You can also explore the above build scan https://gradle.com/s/ofnoymriygxtw[here].
+
+To enable this functionality you need to add the following block to your `build.gradle` file.
+This will always publish a build scan after each build and always accept the https://gradle.com/legal/terms-of-service[license agreement].
+
+.build.gradle
+[source,groovy]
+----
+include::{samplescodedir}/sample-project/build.gradle[tags=buildScan]
+----
+
+== Creating a "Hello Gradle" sample application
+
+For the example application we create a simple Hello Gradle application.
+First we need to move the `App` and `AppTest` classes to a `hello` package to facilitate Spring’s component scan.
+For that create the `src/main/java/hello` and `src/test/java/hello` directories, move the respective classes to the folders.
+
+Next adapt the `App` class located in the `src/main/java/hello` folder and replace its content with the following:
+
+.App.java
+[source,java]
+----
+include::{samplescodedir}/sample-project/src/main/java/hello/App.java[]
+----
+
+In the class above we create a new Spring Boot application and a `HelloGradleController` which returns `Hello Gradle!` when a `GET` request is processed on the root path of the application.
+
+To test this functionality we need to create an integration test.
+For that adapt the `AppTest` class located in the `src/test/java/hello` folder and replace its content with the following:
+
+.App.java
+[source,java]
+----
+include::{samplescodedir}/sample-project/src/test/java/hello/AppTest.java[]
+----
+
+The `helloGradle` test method spins up the `App` Spring Boot application and asserts the returned content when doing a `GET` request on the root path.
+
+== Building and running the Spring Boot application
+
+To build the executable jar you can execute the following command:
+
+[listing]
+----
+./gradlew bootJar
+----
+
+The executable jar is located in the `build/libs` directory and you can run it by executing the following command:
+
+[listing]
+----
+java -jar build/libs/gradle-spring-boot-project.jar
+----
+
+Another way to run the application is by executing the following Gradle command:
+
+[listing]
+----
+./gradlew bootRun
+----
+
+This command will run the Spring Boot application on the default port `8080` directly.
+After a successful startup you can open your browser and access `http://localhost:8080` and you should see the `Hello Gradle!` message in the browser window.
+
+== Migrate from an existing Spring Boot 1.5 project
+
+If you already have an existing 1.5.x Spring Boot project and want to migrate to the newer 2.x version you can follow https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.0-Migration-Guide#spring-boot-gradle-plugin[this guide].
+Please read the upgrade notes carefully to  successfully upgrade to the newest Spring Boot Gradle plugin.
 
 == Next Steps
-Congratulations! You now have ...
+
+Now that you know the basics of the new Spring Boot Gradle plugin, you can read https://docs.spring.io/spring-boot/docs/2.0.3.RELEASE/gradle-plugin/reference/html[its documentation] for further details.
+
+Please also have a look at https://gradle.com[Gradle Enterprise] if you are interested in build scans and even more metrics and tools for your builds on premise.
 
 include::contribute[repo-path="gradle-guides/building-spring-boot-2-projects-with-gradle"]

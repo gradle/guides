@@ -1,0 +1,61 @@
+/**
+* Spring Boot 2.0.x Project Build
+*/
+
+// Apply the build scan and Spring Boot 2.0.x plugin
+
+// tag::plugins[]
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.gradle.build-scan' version '1.15.1'
+    id 'org.springframework.boot' version '2.0.3.RELEASE'
+}
+// end::plugins[]
+
+// Add the repository for dependency resolution
+repositories {
+    jcenter()
+}
+
+// Add Spring Boot BOM and dependencies for the Spring Boot Starter Web/Test
+
+// tag::dependencies[]
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-dependencies:2.0.3.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    components {
+        withModule('org.springframework:spring-beans') {
+            allVariants {
+                withDependencyConstraints {
+                    // Need to patch constraints because snakeyaml is an optional dependency
+                    it.findAll { it.name == 'snakeyaml' }.each { it.version { strictly '1.19' } }
+                }
+            }
+        }
+    }
+}
+// end::dependencies[]
+
+// Define the main class used for the executable artifacts
+
+// tag::mainClassName[]
+mainClassName = 'hello.App'
+// end::mainClassName[]
+
+// Configure the Gradle's Build Scan plugin
+
+// tag::buildScan[]
+buildScan {
+
+    // always accept the terms of service
+    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+    termsOfServiceAgree = 'yes'
+
+    // always publish a build scan
+    publishAlways()
+}
+// end::buildScan[]
