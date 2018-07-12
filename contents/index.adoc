@@ -100,7 +100,7 @@ To comply with the Spring Boot BOM the `components` block is needed to strictly 
 
 If using a Gradle version before 5.0, we need to enable this by adding the following line to the `settings.gradle` file in the root of the project:
 
-.build.gradle
+.settings.gradle
 [source,groovy]
 ----
 include::{samplescodedir}/sample-project/settings.gradle[]
