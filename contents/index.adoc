@@ -81,9 +81,6 @@ include::{samplescodedir}/applying-plugins/declarative.gradle[]
 include::{samplescodedir}/applying-plugins/declarative.gradle.kts[]
 ----
 
-[TIP]
-You can switch between the Groovy and Kotlin versions of the script by clicking the tabs at the top of the sample.
-
 As you can see with the `jacoco` example, the same syntax can be used in Groovy and Kotlin, except for the double quotes and parentheses that must be used in Kotlin.
 
 The Kotlin DSL also defines Kotlin property extensions that you can use for all core Gradle plugins, as shown above with the `java` plugin declaration.
