@@ -81,12 +81,12 @@ include::{samplescodedir}/applying-plugins/declarative.gradle[]
 include::{samplescodedir}/applying-plugins/declarative.gradle.kts[]
 ----
 
-[TIP]
-You can switch between the Groovy and Kotlin versions of the script by clicking the tabs at the top of the sample.
+The Kotlin DSL provides property extensions for all link:{user-manual}standard_plugins.html[Gradle core plugins],
+as shown above with the `java`, `jacoco` or `maven-publish` declaration.
 
-As you can see with the `jacoco` example, the same syntax can be used in Groovy and Kotlin, except for the double quotes and parentheses that must be used in Kotlin.
-
-The Kotlin DSL also defines Kotlin property extensions that you can use for all core Gradle plugins, as shown above with the `java` plugin declaration.
+Third party plugins can be applied the same way as with the Groovy DSL. Except for the double quotes and parentheses.
+You can also apply core plugins with that style. But the statically-typed accessors are recommended since they are
+type-safe and will be autocompleted by your IDE.
 
 You can also use the imperative `apply` syntax, but then non-core plugins must be included on the classpath of the build script:
 

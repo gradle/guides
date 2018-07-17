@@ -1,7 +1,7 @@
 plugins {
-    id("jacoco")
+    id 'jacoco'
 }
 
 jacoco {
-    toolVersion = "0.8.1"
+    toolVersion = '0.8.1'
 }
