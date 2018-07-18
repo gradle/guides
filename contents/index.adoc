@@ -78,7 +78,7 @@ For that open the `build.gradle` file and adapt the `plugin` block such that it 
 include::{samplescodedir}/sample-project/build.gradle[tags=plugins]
 ----
 
-We now apply Gradle’s `java` and `application` plugin and as well added the Gradle build scan plugin, with which we are able to create a build scan.
+We also apply Gradle’s `java` and build scan plugin, with which we are able to create a build scan.
 We will cover what build scans are later in this guide.
 
 Next we need to add the dependencies needed to compile and run our example as we are not using Spring’s dependency management plugin.
@@ -125,7 +125,7 @@ include::{samplescodedir}/sample-project/build.gradle[tags=buildScan]
 
 == Creating a "Hello Gradle" sample application
 
-For the example application we create a simple Hello Gradle application.
+For the example application we create a simple "Hello Gradle" application.
 First we need to move the `App` and `AppTest` classes to a `hello` package to facilitate Spring’s component scan.
 For that create the `src/main/java/hello` and `src/test/java/hello` directories, move the respective classes to the folders.
 
@@ -149,6 +149,16 @@ include::{samplescodedir}/sample-project/src/test/java/hello/AppTest.java[]
 ----
 
 The `helloGradle` test method spins up the `App` Spring Boot application and asserts the returned content when doing a `GET` request on the root path.
+
+As a last step we need to define the main class name for the Spring Boot jar file.
+For that we need to define the `mainClassName` attribute on the `bootJar` configuration closure.
+Add the following snippet to your `build.gradle` and then we are ready to run the Spring Boot application.
+
+.build.gradle
+[source,groovy]
+----
+include::{samplescodedir}/sample-project/build.gradle[tags=mainClassName]
+----
 
 == Building and running the Spring Boot application
 

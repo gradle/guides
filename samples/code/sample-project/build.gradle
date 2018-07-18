@@ -7,7 +7,6 @@
 // tag::plugins[]
 plugins {
     id 'java'
-    id 'application'
     id 'com.gradle.build-scan' version '1.15.1'
     id 'org.springframework.boot' version '2.0.3.RELEASE'
 }
@@ -43,7 +42,9 @@ dependencies {
 // Define the main class used for the executable artifacts
 
 // tag::mainClassName[]
-mainClassName = 'hello.App'
+bootJar {
+    mainClassName = 'hello.App'
+}
 // end::mainClassName[]
 
 // Configure the Gradle's Build Scan plugin
