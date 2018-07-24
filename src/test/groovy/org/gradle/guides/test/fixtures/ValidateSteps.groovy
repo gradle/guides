@@ -9,23 +9,22 @@ import java.nio.file.Files
 
 class ValidateSteps extends Specification {
 
-    static final File SRC_CODE_DIR   = new File( System.getProperty('samplesDir') ?: 'samples', 'code' ).absoluteFile
-    static final File SRC_OUTPUT_DIR = new File( System.getProperty('samplesDir') ?: 'samples', 'output' ).absoluteFile
+    static final File SAMPLES_DIR = new File(System.getProperty('samplesDir') ?: 'samples').absoluteFile
 
     @Rule TemporaryFolder temporaryFolder = new TemporaryFolder()
     File workingDir
 
     void setup() {
         workingDir = new File(temporaryFolder.root,'webdemo')
-        copyProject()
     }
 
-    void copyProject() {
-        Files.copy(new File(SRC_CODE_DIR,'webdemo').toPath(),workingDir.toPath())
+    void copyProject(File sourceDir) {
+        Files.copy(new File(sourceDir, 'webdemo').toPath(), workingDir.toPath())
     }
 
-    void newBuildScript(final String relativeCodePath) {
-        Files.copy(new File(SRC_CODE_DIR,relativeCodePath).toPath(),new File(workingDir,'build.gradle').toPath())
+    void newBuildScript(File sourceDir, final String relativeCodePath, String buildScriptExtension) {
+        Files.copy(new File(sourceDir, "${relativeCodePath}${buildScriptExtension}").toPath(),
+                   new File(workingDir, "build.gradle${buildScriptExtension}").toPath())
     }
 
     String build(String... args) {
@@ -33,9 +32,10 @@ class ValidateSteps extends Specification {
         GradleRunner.create().withProjectDir(workingDir).withArguments(gradleArgs).build().getOutput()
     }
 
-    def 'build output is as expected'() {
+    def 'build output is as expected using #dsl DSL'() {
         setup:
-        newBuildScript('build-3.gradle')
+        copyProject(sourceDir)
+        newBuildScript(sourceDir, 'build-3.gradle', extension)
 
         when:
         String out = build 'build'
@@ -43,5 +43,10 @@ class ValidateSteps extends Specification {
         then:
         out.contains('''> Task :appAfterIntegrationTest
 Server stopped.''')
+
+        where:
+        dsl      | sourceDir                                 | extension
+        'groovy' | new File(SAMPLES_DIR, 'groovy-dsl') | ''
+        'kotlin' | new File(SAMPLES_DIR, 'kotlin-dsl') | '.kts'
     }
 }

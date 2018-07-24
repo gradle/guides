@@ -10,5 +10,7 @@ guide {
 
 asciidoctor {
     inputs.dir 'samples'
+    attributes 'groovy-example-dir': file('samples/groovy-dsl')
+    attributes 'kotlin-example-dir': file('samples/kotlin-dsl')
 }
 
