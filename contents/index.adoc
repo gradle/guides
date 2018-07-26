@@ -53,9 +53,12 @@ Add the {publishplugin} to the `plugins` block.
 .build.gradle
 [source,groovy]
 ----
-include::{exampledir}/build.gradle[tags=plugins_block,indent=0]
+plugins {
+include::{exampledir}/build.gradle[tags=declare-plugin]
+}
 ----
-<1> The latest version can be found on the https://plugins.gradle.org/plugin/com.gradle.plugin-publish[portal].
+
+NOTE: The latest version can be found on the https://plugins.gradle.org/plugin/com.gradle.plugin-publish[Plugin Portal].
 
 == Configure the {publishplugin}
 
@@ -66,9 +69,10 @@ Create a `pluginBundle` block in `build.gradle` and specify global information r
 ----
 include::{exampledir}/build.gradle[tags=plugin_bundle]
 ----
-<1> Everything for the plugin is configured in the `pluginBundle` extension block.
+<1> All information needed to publish a single or multiple plugins is configured in the `pluginBundle` extension block.
 <2> Set the website for your plugin's project.
 <3> Provide the source repository URI so that others can find it if they want to contribute.
+<4> Set the tags to be used for all plugins unless overridden in the `plugins` block.
 
 Now specify the details of the plugin. This is done in a `plugins` block within the `pluginBundle` block. The most important part is the `id`, as that both uniquely identifies it on the {portal} and prevents namespace clashes between different plugin authors. It should follow a domain namespace pattern i.e. `org.samples.greeting`. Substitute the values from this example with ones specific to your plugin. Take your time to think about good entries, as this information contributes to a better experience for people looking for specific plugins.
 
@@ -76,7 +80,7 @@ Now specify the details of the plugin. This is done in a `plugins` block within 
 [source,groovy]
 ----
 pluginBundle {
-include::{exampledir}/build.gradle[tags=plugin_definitions,indent=2]
+include::{exampledir}/build.gradle[tags=plugin_definitions,indent=4]
 }
 ----
 <1> Each plugin in a bundle is specified in the `plugins` block. As you are only publishing a single plugin at this point there will only be one entry, but should your project publish a bundle in the future you will list each of them in here.
@@ -93,16 +97,15 @@ Think about what would be the correct metadata for your plugin and fill in the t
 [source,groovy]
 ----
 pluginBundle {
+    // please change these URLs to point to your own website/repository
     website = 'http://www.gradle.org/'
     vcsUrl = 'https://github.com/gradle-guides/greeting-plugin-example'
+    tags = ['example', 'template']
 
     plugins {
         greetingsPlugin {
-            id = 'org.samples.greeting'
-            displayName = 'Gradle Guides Example Greeting Plugin'
-            description = 'The Greeting plugin is used as a template for people to start their own plugin adventure'
-            tags = ['example','template','greeting']
-            version = '1.2'
+            displayName = 'Greeting Plugin'
+            description = 'Template for people to start their own plugin adventure'
         }
     }
 }
@@ -133,6 +136,39 @@ If you browse the associated page on the {portal} for the https://plugins.gradle
 .GradleTest plugin metadata on the {portal}
 image::org.ysb33r.gradletest-1299x354.png[]
 
+
+=== Using the Java Gradle Plugin Development Plugin
+
+If the https://docs.gradle.org/current/userguide/java_gradle_plugin.html[Java Gradle Plugin Development Plugin] is applied, it will automatically add a plugin configuration to the `pluginBundle` extension for each configured plugin and allow you to omit the `id`.
+
+.build.gradle
+[source,groovy]
+----
+plugins {
+include::{exampledir}/build.gradle[tags=declare-plugin]
+    id 'java-gradle-plugin' // <1>
+}
+
+include::{exampledir}/build.gradle[tags=gradle-plugin]
+
+pluginBundle {
+    website = '<substitute your project website>'
+    vcsUrl = '<uri to project source repository>'
+    tags = ['default', 'tags']
+    plugins {
+        greetingsPlugin { // <2>
+            // id is captured from gradlePlugin extension block // <3>
+            displayName = '<short displayable name for plugin>'
+            description = '<Good human-readable description of what your plugin is about>'
+        }
+    }
+}
+----
+<1> Apply the Java Gradle Plugin Development Plugin.
+<2> The names of the plugin in the `gradlePlugin` and `pluginBundle` extension blocks must match.
+<3> The `id` specified in the `gradlePlugin` extension block is used by default for the plugin with the same name in the `pluginBundle` extension block, unless overridden there.
+
+NOTE: Future versions of Gradle will support additional attributes, e.g. `displayName` and `description`, and allow to further reduce the boilerplate.
 
 == Publish your plugin
 

@@ -1,20 +1,28 @@
-// tag::plugins_block[]
 plugins {
-    id 'com.gradle.plugin-publish' version '0.9.7' // <1>
+    id 'java-gradle-plugin'
+// tag::declare-plugin[]
+    id 'com.gradle.plugin-publish' version '0.10.0'
+// end::declare-plugin[]
 }
-// end::plugins_block[]
 
-apply plugin : 'java'
 version = '1.0'
 
-dependencies {
-    compileOnly gradleApi()
+// tag::gradle-plugin[]
+gradlePlugin {
+    plugins {
+        greetingsPlugin {  // <2>
+            id = '<your plugin identifier>' // <3>
+            implementationClass = '<your plugin class>'
+        }
+    }
 }
+// end::gradle-plugin[]
 
 // tag::plugin_bundle[]
 pluginBundle { // <1>
     website = '<substitute your project website>' // <2>
     vcsUrl = '<uri to project source repository>' // <3>
+    tags = ['default', 'tags', 'unless', 'overidden', 'in', 'plugin'] // <4>
 // end::plugin_bundle[]
 
 // tag::plugin_definitions[]
