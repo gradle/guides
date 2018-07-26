@@ -23,7 +23,9 @@ dependencies {
 }
 
 asciidoctor {
-    attributes 'exampledir'  : file('src/publicationTest').absolutePath
+    def exampleDir = file('src/publicationTest')
+    inputs.dir exampleDir
+    attributes 'exampledir' : exampleDir.absolutePath
 }
 
 test {
@@ -44,4 +46,3 @@ test {
         }
     }
 }
-
