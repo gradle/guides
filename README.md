@@ -82,7 +82,36 @@ include::{samplescodedir}/foo/build.gradle.kts
 ----
 ```
 
-This will combine the Groovy and Kotlin samples into 1 block and provide tabs so a user can select their preferred DSL. **Note:** when a language is selected, it applies changes to all parts of guides and saves the preference for later. 
+This will combine the Groovy and Kotlin samples into 1 block and provide tabs so a user can select their preferred DSL. **Note:** when a language is selected, it applies changes to all parts of guides and saves the preference for later.
+
+#### Multi-file and multi-language samples
+
+The following shows how to use asciidoc nested blocks to allow multi-file samples. This nesting ensures that the files are grouped properly and shown together when they're displayed.
+
+```adoc
+=== Example: Configuring arbitrary objects using a script
+
+[.multi-language-sample,groovy]
+====
+.build.gradle
+[source,groovy]
+----
+include::{samplesPath}/configureObjectUsingScript/build.gradle[]
+----
+
+.other.gradle
+[source,groovy]
+----
+include::{samplesPath}/configureObjectUsingScript/other.gradle[]
+----
+====
+
+.Output of `gradle -q configure`
+----
+> gradle -q configure
+include::{samplesPath}/configureObjectUsingScript/configureObjectUsingScript.out[]
+----
+```
 
 ## FAQ
 
