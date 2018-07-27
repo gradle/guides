@@ -1,15 +1,15 @@
+// tag::plugins_block[]
 plugins {
-    id 'java-gradle-plugin'
-// tag::declare-plugin[]
-    id 'com.gradle.plugin-publish' version '0.10.0'
-// end::declare-plugin[]
+    id 'java-gradle-plugin' // <1>
+    id 'com.gradle.plugin-publish' version '0.10.0' // <2>
 }
+// end::plugins_block[]
 
 version = '1.0'
 
 // tag::gradle-plugin[]
 gradlePlugin {
-    plugins {
+    plugins { // <1>
         greetingsPlugin {  // <2>
             id = '<your plugin identifier>' // <3>
             implementationClass = '<your plugin class>'
@@ -19,16 +19,16 @@ gradlePlugin {
 // end::gradle-plugin[]
 
 // tag::plugin_bundle[]
-pluginBundle { // <1>
-    website = '<substitute your project website>' // <2>
-    vcsUrl = '<uri to project source repository>' // <3>
-    tags = ['default', 'tags', 'unless', 'overidden', 'in', 'plugin'] // <4>
-// end::plugin_bundle[]
-
+pluginBundle {
+// tag::global_information[]
+    website = '<substitute your project website>' // <1>
+    vcsUrl = '<uri to project source repository>' // <2>
+    tags = ['default', 'tags', 'unless', 'overidden', 'in', 'plugin'] // <3>
+// end::global_information[]
 // tag::plugin_definitions[]
     plugins { // <1>
         greetingsPlugin {  // <2>
-            id = '<your plugin identifier>' // <3>
+            // id is captured from gradlePlugin extension block // <3>
             displayName = '<short displayable name for plugin>' // <4>
             description = '<Good human-readable description of what your plugin is about>' // <5>
             tags = ['individual', 'tags', 'per', 'plugin'] // <6>
@@ -36,7 +36,5 @@ pluginBundle { // <1>
         }
     }
 // end::plugin_definitions[]
-
-// tag::plugin_bundle[]
 }
 // end::plugin_bundle[]
