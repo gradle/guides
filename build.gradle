@@ -82,10 +82,10 @@ pluginBundle {
 }
 
 gradleTest {
-  versions '3.5', '4.4.1'
+    versions '3.5', '4.4.1'
 
-  // Should be declared by gradleTest plugin.
-  inputs.files tasks.jar.outputs.files
+    // Should be declared by gradleTest plugin.
+    inputs.files tasks.jar.outputs.files
 }
 
 publishPlugins {
