@@ -23,7 +23,7 @@ pluginBundle {
 // tag::global_information[]
     website = '<substitute your project website>' // <1>
     vcsUrl = '<uri to project source repository>' // <2>
-    tags = ['default', 'tags', 'unless', 'overidden', 'in', 'plugin'] // <3>
+    tags = ['default', 'tags', 'unless', 'overridden', 'in', 'plugin'] // <3>
 // end::global_information[]
 // tag::plugin_definitions[]
     plugins { // <1>

@@ -24,7 +24,7 @@ NOTE: If you have never written a plugin, you can use the https://github.com/gra
 
 == Create an account on the {portal}
 
-If you never published a plugin before you need to create a account on the {portal}. This consists of three steps:
+If you never published a plugin before you need to create an account on the {portal}. This consists of three steps:
 
 . Create an account.
 . Create an API key.
