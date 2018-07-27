@@ -104,11 +104,3 @@ travisci  {
         dependsOn build, publishPlugins
     }
 }
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
-}
