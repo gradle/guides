@@ -24,10 +24,7 @@ version = '0.13.4-SNAPSHOT'
 
 repositories {
     jcenter()
-
-    maven {
-        url "https://plugins.gradle.org/m2/"
-    }
+    gradlePluginPortal()
 }
 
 ext {
