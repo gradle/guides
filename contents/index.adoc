@@ -10,22 +10,28 @@ You'll start by creating an ad-hoc Gradle task that prints _Hello, World_ to the
 
 * About [.time-to-complete-text]#NN#
 * A text editor or IDE
-* A Java Development Kit (JDK), version 1.7 or better
+* A Java Development Kit (JDK)
+** version 7 or higher if using the Gradle Groovy DSL
+** version 8 or higher if using the Gradle Kotlin DSL
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 
 == Create an ad-hoc task
 
-In a new folder create a `build.gradle` and enter the following
+In a new folder create a `build.gradle` file (if you prefer using the Groovy DSL), or a `build.gradle.kts` file (if you prefer using the Kotlin DSL) and enter the following
 
 .build.gradle
-[source,groovy]
+[source.multi-language-sample,groovy]
 ----
-include::{samplescodedir}/part1/custom-hello.gradle[]
+include::{groovy-example-dir}/code/part1/custom-hello.gradle[]
+----
+
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/code/part1/custom-hello.gradle.kts[]
 ----
 <1> Create a new ad-hoc task called `hello`.
 <2> Add a task action to print to the console.
-
-Save the file and on the command-line and type:
 
 Save the file and on the command-line type `gradle tasks --all`. Your new task will appear under `Other tasks`.
 
@@ -34,7 +40,7 @@ Save the file and on the command-line type `gradle tasks --all`. Your new task w
 ----
 $ gradle tasks --all
 
-include::{samplesoutputdir}/part1/gradle-tasks.txt[]
+include::{groovy-example-dir}/output/part1/gradle-tasks.txt[]
 ----
 
 NOTE: If you are using Gradle 4.0 or later you may see less output from the console that you might see in this guide. This is because in this guide output is shown as when `--console-plain` is also passed to Gradle as a command-line. This is done to show the tasks that Gradle is executing.
@@ -78,15 +84,21 @@ When you ran `gradle tasks --all` earlier you would have seen other tasks in the
 .Well-documented tasks
 [listing.terminal]
 ----
-include::{samplesoutputdir}/part1/gradle-tasks-setup.txt[]
+include::{groovy-example-dir}/output/part1/gradle-tasks-setup.txt[]
 ----
 
 This is achieved by setting the `group` and `description` properties on the task.  Edit your ad-hoc task and add the following:
 
 .build.gradle
-[source,groovy]
+[source.multi-language-sample,groovy]
 ----
-include::{samplescodedir}/part2/custom-hello.gradle[]
+include::{groovy-example-dir}/code/part2/custom-hello.gradle[]
+----
+
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/code/part2/custom-hello.gradle.kts[]
 ----
 
 Run `gradle tasks` again.
@@ -96,7 +108,7 @@ Run `gradle tasks` again.
 ----
 $ gradle tasks
 
-include::{samplesoutputdir}/part2/gradle-tasks.txt[]
+include::{groovy-example-dir}/output/part2/gradle-tasks.txt[]
 ----
 
 Well done!
@@ -108,15 +120,21 @@ This is the point where you need to convert your ad-hoc task into a custom task 
 Return to your build script and add the following class and refactor your `hello` task.
 
 .build.gradle
-[source,groovy]
+[source.multi-language-sample,groovy]
 ----
-include::{samplescodedir}/part3/custom-hello.gradle[]
+include::{groovy-example-dir}/code/part3/custom-hello.gradle[]
 ----
-<1> As the build DSL in a `build.gradle` file is a Groovy-base DSL, the class will be a Groovy class.
+
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/code/part3/custom-hello.gradle.kts[]
+----
+<1> As the build DSL in a `build.gradle` (resp. `build.gradle.kts`) file is a Groovy-based (resp. Kotlin-based) DSL, the class will be a Groovy (resp. Kotlin) class.
 <2> Although other task classes from the Gradle API can be used in specific circumstances, extending {javadoc}/org/gradle/api/DefaultTask.html[DefaultTask] is the most common scenario.
 <3> Adding `message` and `recipient` properties allow instances of this custom task type to be configurable
 <4> Annotate the default task action.
-<5> Print the message using a standard Groovy interpolated string.
+<5> Print the message using a standard Groovy/Kotlin interpolated string.
 <6> Specify the task type by referencing the class type `Greeting` you have added above.
 <7> Configure the message and the recipient.
 
@@ -127,18 +145,24 @@ Test your modification. You should see the same output.
 ----
 $ gradle hello
 
-include::{samplesoutputdir}/part3/gradle-hello.txt[]
+include::{groovy-example-dir}/output/part3/gradle-hello.txt[]
 ----
 
 Now that you have the custom task type, you can add additional tasks. Add a German version of the greeting by just creating an additional task.
 
-.Adding a second task
-[source,groovy]
+.build.gradle
+[source.multi-language-sample,groovy]
 ----
-include::{samplescodedir}/part3/german-hello.gradle[tags=german]
+include::{groovy-example-dir}/code/part3/german-hello.gradle[tags=german]
 ----
 
-NOTE: No assignment is required during configuration as Gradle decorates the properties to allow for a more declarative DSL.
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/code/part3/german-hello.gradle.kts[tags=german]
+----
+
+NOTE: In the Groovy DSL, no assignment is required during configuration as Gradle decorates the properties to allow for a more declarative DSL.
 
 Run `gradle tasks` again to verify that the new task has been added.
 
@@ -147,7 +171,7 @@ Run `gradle tasks` again to verify that the new task has been added.
 ----
 $ gradle tasks
 
-include::{samplesoutputdir}/part3/gradle-tasks.txt[]
+include::{groovy-example-dir}/output/part3/gradle-tasks.txt[]
 ----
 
 Finally, run the new task by doing `gradle gutenTag`
@@ -157,7 +181,7 @@ Finally, run the new task by doing `gradle gutenTag`
 ----
 $ gradle gutenTag
 
-include::{samplesoutputdir}/part3/gradle-gutentag.txt[]
+include::{groovy-example-dir}/output/part3/gradle-gutentag.txt[]
 ----
 
 == Summary

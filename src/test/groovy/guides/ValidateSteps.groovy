@@ -10,8 +10,7 @@ import java.nio.file.Files
 
 class ValidateSteps extends Specification {
 
-    static final File SRC_CODE_DIR   = new File( System.getProperty('samplesDir') ?: 'samples', 'code' )
-    static final File SRC_OUTPUT_DIR = new File( System.getProperty('samplesDir') ?: 'samples', 'output' )
+    static final File SAMPLES_DIR = new File( System.getProperty('samplesDir') ?: 'samples')
 
     @Rule TemporaryFolder temporaryFolder = new TemporaryFolder()
     File workingDir
@@ -20,11 +19,11 @@ class ValidateSteps extends Specification {
         workingDir = temporaryFolder.root
     }
 
-    void createBuildScript(final String relativeCodePath) {
-        Files.copy(new File(SRC_CODE_DIR,relativeCodePath).toPath(),new File(workingDir,'build.gradle').toPath())
+    void createBuildScript(final String codeDir, final String relativeCodePath, extension) {
+        Files.copy(new File(codeDir, relativeCodePath).toPath(), new File(workingDir,"build.${extension}").toPath())
     }
 
-    String runGradle(final String task,Iterable<String> args) {
+    String runGradle(final String task, Iterable<String> args) {
         List<String> gradleArgs = [task]
         gradleArgs.addAll(args)
         GradleRunner.create().withProjectDir(workingDir).withArguments(gradleArgs).build().output
@@ -34,22 +33,31 @@ class ValidateSteps extends Specification {
     def 'Run gradle with #task (#params) using #scriptName'() {
 
         setup:
-        createBuildScript( scriptName )
+        String codeDir = new File(new File(SAMPLES_DIR, dsl), 'code')
+        String outputDir = new File(new File(SAMPLES_DIR, dsl), 'output')
+        createBuildScript(codeDir, scriptName, extension)
 
         when:
         String output = runGradle task, params
 
         then:
-        output.contains( new File(SRC_OUTPUT_DIR,validatorPath).text )
+        output.contains(new File(outputDir, validatorPath).text)
 
         where:
-        scriptName                  | task       | params    | validatorPath
-        'part1/custom-hello.gradle' | 'tasks'    | ['--all'] | 'part1/gradle-tasks.txt'
-        'part1/custom-hello.gradle' | 'tasks'    | ['--all'] | 'part1/gradle-tasks-setup.txt'
-        'part1/custom-hello.gradle' | 'hello'    | []        | 'part1/gradle-hello.txt'
-        'part2/custom-hello.gradle' | 'tasks'    | []        | 'part2/gradle-tasks.txt'
-        'part3/custom-hello.gradle' | 'hello'    | []        | 'part3/gradle-hello.txt'
-        'part3/german-hello.gradle' | 'tasks'    | []        | 'part3/gradle-tasks.txt'
-        'part3/german-hello.gradle' | 'gutenTag' | []        | 'part3/gradle-gutentag.txt'
+        dsl          | extension     | scriptName                      | task       | params    | validatorPath
+        'groovy-dsl' | 'gradle'      | 'part1/custom-hello.gradle'     | 'tasks'    | ['--all'] | 'part1/gradle-tasks.txt'
+        'groovy-dsl' | 'gradle'      | 'part1/custom-hello.gradle'     | 'tasks'    | ['--all'] | 'part1/gradle-tasks-setup.txt'
+        'groovy-dsl' | 'gradle'      | 'part1/custom-hello.gradle'     | 'hello'    | []        | 'part1/gradle-hello.txt'
+        'groovy-dsl' | 'gradle'      | 'part2/custom-hello.gradle'     | 'tasks'    | []        | 'part2/gradle-tasks.txt'
+        'groovy-dsl' | 'gradle'      | 'part3/custom-hello.gradle'     | 'hello'    | []        | 'part3/gradle-hello.txt'
+        'groovy-dsl' | 'gradle'      | 'part3/german-hello.gradle'     | 'tasks'    | []        | 'part3/gradle-tasks.txt'
+        'groovy-dsl' | 'gradle'      | 'part3/german-hello.gradle'     | 'gutenTag' | []        | 'part3/gradle-gutentag.txt'
+        'kotlin-dsl' | 'gradle.kts'  | 'part1/custom-hello.gradle.kts' | 'tasks'    | ['--all'] | 'part1/gradle-tasks.txt'
+        'kotlin-dsl' | 'gradle.kts'  | 'part1/custom-hello.gradle.kts' | 'tasks'    | ['--all'] | 'part1/gradle-tasks-setup.txt'
+        'kotlin-dsl' | 'gradle.kts'  | 'part1/custom-hello.gradle.kts' | 'hello'    | []        | 'part1/gradle-hello.txt'
+        'kotlin-dsl' | 'gradle.kts'  | 'part2/custom-hello.gradle.kts' | 'tasks'    | []        | 'part2/gradle-tasks.txt'
+        'kotlin-dsl' | 'gradle.kts'  | 'part3/custom-hello.gradle.kts' | 'hello'    | []        | 'part3/gradle-hello.txt'
+        'kotlin-dsl' | 'gradle.kts'  | 'part3/german-hello.gradle.kts' | 'tasks'    | []        | 'part3/gradle-tasks.txt'
+        'kotlin-dsl' | 'gradle.kts'  | 'part3/german-hello.gradle.kts' | 'gutenTag' | []        | 'part3/gradle-gutentag.txt'
     }
 }
