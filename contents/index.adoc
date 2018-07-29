@@ -31,7 +31,7 @@ $ cd building-java-libraries
 
 From inside the new project directory, run the `init` task with the `java-library` argument.
 
-.If you prefer the Goovy DSL
+.If you prefer the Groovy DSL
 [source.multi-language-sample,groovy]
 ----
 $ gradle init --type java-library
