@@ -58,7 +58,7 @@ Hello, World // <2>
 <1> This indicates that your `hello` task has executed.
 <2> This is the output from your ad-hoc task.
 
-Congratulations! You have you added your first ad-hoc task.
+Congratulations! You have added your first ad-hoc task.
 
 .Do not use << as an alternative to doLast
 [IMPORTANT]
