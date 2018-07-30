@@ -1,0 +1,18 @@
+// end::init[]
+
+// tag::version[]
+version = "0.1.0"
+// end::version[]
+
+// tag::jar-manifest[]
+tasks {
+    getByName<Jar>("jar") {
+        manifest {
+            attributes(
+                mapOf("Implementation-Title" to project.name,
+                      "Implementation-Version" to project.version)
+            )
+        }
+    }
+}
+// end::jar-manifest[]
