@@ -11,7 +11,6 @@ configure<org.gradle.guides.GuidesExtension> {
 }
 
 buildScan {
-    this.
     setTermsOfServiceUrl("https://gradle.com/terms-of-service")
     setTermsOfServiceUrl("yes")
     if (!System.getenv("CI").isNullOrEmpty()) {
