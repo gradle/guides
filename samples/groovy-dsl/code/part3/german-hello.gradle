@@ -8,7 +8,7 @@ class Greeting extends DefaultTask {
     }
 }
 
-task hello ( type : Greeting ) {
+task hello(type: Greeting) {
     group 'Welcome'
     description 'Produces a world greeting'
     message 'Hello'
@@ -16,7 +16,7 @@ task hello ( type : Greeting ) {
 }
 
 // tag::german[]
-task gutenTag( type : Greeting ) {
+task gutenTag(type: Greeting) {
     group 'Welcome'
     description 'Produces a German greeting'
     message 'Guten Tag'

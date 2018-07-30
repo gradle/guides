@@ -8,7 +8,7 @@ class Greeting extends DefaultTask { // <1> <2>
     }
 }
 
-task hello (type : Greeting) { // <6>
+task hello(type: Greeting) { // <6>
     group 'Welcome'
     description 'Produces a world greeting'
     message 'Hello' // <7>
