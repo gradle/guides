@@ -1,9 +1,8 @@
-tasks {
-    create("hello") {
-        group = "Welcome"
-        description = "Produces a greeting"
-        doLast {
-            println("Hello, World")
-        }
+tasks.create("hello") {
+    group = "Welcome"
+    description = "Produces a greeting"
+
+    doLast {
+        println("Hello, World")
     }
 }
