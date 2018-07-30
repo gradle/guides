@@ -61,7 +61,7 @@ Hello, World // <2>
 Congratulations! You have added your first ad-hoc task.
 
 .Do not use << as an alternative to doLast
-[IMPORTANT]
+[IMPORTANT.multi-language-text.lang-groovy]
 ====
 [source,groovy]
 ----
@@ -162,6 +162,7 @@ include::{groovy-example-dir}/code/part3/german-hello.gradle[tags=german]
 include::{kotlin-example-dir}/code/part3/german-hello.gradle.kts[tags=german]
 ----
 
+[.multi-language-text.lang-groovy]
 NOTE: In the Groovy DSL, no assignment is required during configuration as Gradle decorates the properties to allow for a more declarative DSL.
 
 Run `gradle tasks` again to verify that the new task has been added.
