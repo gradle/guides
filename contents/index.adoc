@@ -266,19 +266,6 @@ image::timeline-not-cacheable.png[title="Timeline screen with 'not cacheable' ta
 
 Subsequently sorting by task duration on the Timeline screen will highlight tasks with great potential for time saving. The build scan above shows that `:task1` and `:task3` could be improved and made cacheable, and clearly states the reason why they were considered not cacheable.
 
-=== Partial builds
-
-Incremental build definitely improves build times, but you need to remember that the up-to-date checks still take time. This has important implications for multi-project builds that have a large number of subprojects. If the task you want to execute ultimately depends on the execution of twenty other subprojects, you have to wait until the build has finished checking those before it gets round to your task. Some of them may even have non-incremental tasks that end up running, even if nothing has changed.
-
-Gradle offers a nice shortcut if you know that a task's project dependencies haven't changed: use the `-a` command line option. This forces Gradle to effectively ignore all the dependent projects and only execute the required tasks that are defined in the target project. Project dependencies will still be included on the appropriate classpaths, so the project will build as before. Just be sure there haven't been any changes to the projects the target depends on!
-
-Gradle also supports other forms of partial build via the _base_ plugin, which adds the following tasks:
-
-* `buildNeeded` - will execute the `build` task in the target project and all those projects it depends on. This verifies that the projects you depend on are working correctly. If that's not the case, they may break the target project's tests or some other part of the build.
-* `buildDependents` - will execute the `build` task in the target project and all projects that depend on it. This checks that you haven't broken those projects after making some changes.
-
-These tasks are slower than just running `build` in the target project as they do more work, but they are an effective alternative to running `gradle build`, which runs `build` in _all_ the projects of a multi-project build.
-
 == Daemon
 
 === Enable the daemon on old Gradle versions
