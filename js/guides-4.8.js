@@ -248,7 +248,7 @@ document.addEventListener("DOMContentLoaded", function () {
         "allowLinker": true
     });
     window.ga("all.require", "linker");
-    window.ga("all.linker:autoLink", ["gradle.com", "gradle.org"], false, true);
+    window.ga("all.linker:autoLink", ["gradle.com"], false, true);
     window.ga("create", "UA-4207603-11", "auto", "guides");
     window.ga("all.set", "transport", "beacon");
     window.ga("guides.set", "transport", "beacon");
