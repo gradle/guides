@@ -1,4 +1,8 @@
 = Publishing Plugins to Gradle Plugin Portal image:https://travis-ci.org/gradle-guides/publishing-plugins-to-gradle-plugin-portal.svg?branch=master["Build Status", link="https://travis-ci.org/gradle-guides/publishing-plugins-to-gradle-plugin-portal"]
 
-* Edit guide in `contents/index.adoc`.
-* Add testable code snippets to `src` folder
+* Content for this guide is in Asciidoc format and the entry file is `contents/index.adoc`.
+* Place new images under `contents/images`.
+* Add testable code snippets to `src` folder as appropriate for this guide.
+* Commits to `master` will automatically be published to `gh-pages` if the build is successful.
+* To build documentation run `./gradlew asciidoctor` and find the results in `build/asciidoc/html5`.
+* To test code snippets run `./gradlew check`.
