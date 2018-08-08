@@ -133,8 +133,8 @@ pluginBundle {
     vcsUrl = "https://github.com/gradle-guides/greeting-plugin-example"
     tags = listOf("example", "template")
 
-    plugins {
-        create("greetingsPlugin") {
+    (plugins) {
+        "greetingsPlugin" {
             displayName = "Greeting Plugin"
             description = "Template for people to start their own plugin adventure"
         }
@@ -167,8 +167,8 @@ pluginBundle {
     website     = "https://github.com/ysb33r/gradleTest"
     vcsUrl      = "https://github.com/ysb33r/gradleTest.git"
 
-    plugins {
-        create("gradletestPlugin") {
+    (plugins) {
+        "gradletestPlugin" {
             id = "org.ysb33r.gradletest"
             displayName = "Plugin for compatibility testing of Gradle plugins"
             description = "A plugin that helps you test your plugin against a variety of Gradle versions"

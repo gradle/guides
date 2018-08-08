@@ -7,8 +7,8 @@ plugins {
 
 // tag::gradle-plugin[]
 gradlePlugin {
-    plugins { // <1>
-        create("greetingsPlugin") { // <2>
+    (plugins) { // <1>
+        "greetingsPlugin" { // <2>
             id = "<your plugin identifier>" // <3>
             implementationClass = "<your plugin class>"
         }
@@ -24,8 +24,8 @@ pluginBundle {
     tags = listOf("default", "tags", "unless", "overridden", "in", "plugin") // <3>
 // end::global_information[]
 // tag::plugin_definitions[]
-    plugins { // <1>
-        create("greetingsPlugin") { // <2>
+    (plugins) { // <1>
+        "greetingsPlugin" { // <2>
             // id is captured from gradlePlugin extension block // <3>
             displayName = "<short displayable name for plugin>" // <4>
             description = "<Good human-readable description of what your plugin is about>" // <5>
