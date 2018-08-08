@@ -1,5 +1,7 @@
 package guide
 
+import spock.lang.Unroll
+
 import org.apache.commons.io.FileUtils
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule
@@ -24,21 +26,27 @@ class PublishSpec extends Specification {
         server.stop()
     }
 
-    def 'Publish plugin to portal using fake server'() {
+    @Unroll
+    def 'Publish plugin to portal using fake server with #lang'() {
 
         setup: 'Copy publication tree to temporary folder'
-        FileUtils.copyDirectory(PROJECT_TEMPLATE_DIR,testProjectDir.root)
-        File buildFile = new File(testProjectDir.root,'build.gradle')
+        FileUtils.copyDirectory(PROJECT_TEMPLATE_DIR, testProjectDir.root)
+        File buildFile = new File(testProjectDir.root, buildScriptFilename)
 
         when:
         def result = GradleRunner.create()
             .withProjectDir(testProjectDir.root)
-            .withArguments("-Dgradle.portal.url=http://localhost:${PORT}",'-u','jar','publishPlugin','-Pgradle.publish.key=foo','-Pgradle.publish.secret=bar','-s')
+            .withArguments("-Dgradle.portal.url=http://localhost:${PORT}",'-u','jar','publishPlugin','-Pgradle.publish.key=foo','-Pgradle.publish.secret=bar','-s','-b',buildScriptFilename)
             .withPluginClasspath(PLUGIN_CLASSPATH.listFiles() as List)
             .forwardOutput()
             .build()
 
         then: 'Exception is thrown due to invalid JSON. This is good for this test'
         thrown(java.lang.RuntimeException)
+
+        where:
+        lang     | buildScriptFilename
+        'Groovy' | 'build.gradle'
+        'Kotlin' | 'build.gradle.kts'
     }
 }
