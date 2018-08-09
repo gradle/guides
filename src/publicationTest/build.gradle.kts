@@ -7,8 +7,8 @@ plugins {
 
 // tag::gradle-plugin[]
 gradlePlugin {
-    (plugins) { // <1>
-        "greetingsPlugin" { // <2>
+    plugins { // <1>
+        create("greetingsPlugin") { // <2>
             id = "<your plugin identifier>" // <3>
             implementationClass = "<your plugin class>"
         }
