@@ -1,5 +1,6 @@
 package guide
 
+import org.gradle.testkit.runner.UnexpectedBuildFailure
 import spock.lang.Unroll
 
 import org.apache.commons.io.FileUtils
@@ -28,21 +29,26 @@ class PublishSpec extends Specification {
 
     @Unroll
     def 'Publish plugin to portal using fake server with #lang'() {
-
-        setup: 'Copy publication tree to temporary folder'
-        FileUtils.copyDirectory(PROJECT_TEMPLATE_DIR, testProjectDir.root)
-        File buildFile = new File(testProjectDir.root, buildScriptFilename)
+        given:
+        FileUtils.copyFileToDirectory(new File(PROJECT_TEMPLATE_DIR, buildScriptFilename), testProjectDir.root)
+        testProjectDir.newFile("settings.gradle").text = ""
+        testProjectDir.newFile("gradle.properties").text = """
+            gradle.publish.key=foo
+            gradle.publish.secret=bar
+            systemProp.gradle.portal.url=http://localhost:${PORT}
+        """
 
         when:
-        def result = GradleRunner.create()
+        GradleRunner.create()
             .withProjectDir(testProjectDir.root)
-            .withArguments("-Dgradle.portal.url=http://localhost:${PORT}",'-u','jar','publishPlugin','-Pgradle.publish.key=foo','-Pgradle.publish.secret=bar','-s','-b',buildScriptFilename)
+            .withArguments('publishPlugin', '--stacktrace')
             .withPluginClasspath(PLUGIN_CLASSPATH.listFiles() as List)
             .forwardOutput()
             .build()
 
-        then: 'Exception is thrown due to invalid JSON. This is good for this test'
-        thrown(java.lang.RuntimeException)
+        then: 'Exception is thrown due to invalid plugin ID. This is good for this test'
+        def failure = thrown(UnexpectedBuildFailure.class)
+        failure.buildResult.output.contains("Invalid plugin ID")
 
         where:
         lang     | buildScriptFilename
