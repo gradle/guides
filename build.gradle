@@ -19,7 +19,7 @@ configurations {
 }
 
 dependencies {
-    pluginClasspath 'com.gradle.publish:plugin-publish-plugin:0.9.7'
+    pluginClasspath 'com.gradle.publish:plugin-publish-plugin:0.10.0'
 }
 
 asciidoctor {
