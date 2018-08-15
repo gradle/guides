@@ -1,1 +1,3 @@
 rootProject.name='gradle-guides-plugin'
+
+enableFeaturePreview('STABLE_PUBLISHING')
