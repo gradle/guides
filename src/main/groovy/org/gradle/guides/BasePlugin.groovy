@@ -76,8 +76,8 @@ class BasePlugin implements Plugin<Project> {
         String gradleVersion = project.gradle.gradleVersion
 
         project.apply plugin: 'org.asciidoctor.convert'
-        project.repositories.maven { url "https://repo.gradle.org/gradle/ext-releases-local" }
-        project.dependencies.add("asciidoctor", "org.gradle:docs-asciidoctor-extensions:0.1.0")
+        project.repositories.maven { url "https://repo.gradle.org/gradle/libs-releases" }
+        project.dependencies.add("asciidoctor", "org.gradle:docs-asciidoctor-extensions:0.4.0")
 
         AsciidoctorTask asciidoc = (AsciidoctorTask) (project.tasks.getByName('asciidoctor'))
         project.tasks.getByName('build').dependsOn asciidoc
@@ -113,7 +113,7 @@ class BasePlugin implements Plugin<Project> {
                     linkattrs            : true,
                     encoding             : 'utf-8',
                     idprefix             : '',
-                    toc                  : 'preamble',
+                    toc                  : 'auto',
                     toclevels            : 1,
                     'toc-title'          : 'Contents',
                     guides               : 'https://guides.gradle.org',
