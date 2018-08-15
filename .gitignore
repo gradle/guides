@@ -10,6 +10,7 @@ building-java-libraries/
 building-java-web-applications/
 building-kotlin-jvm-libraries/
 building-scala-libraries/
+building-spring-boot-2-projects-with-gradle/
 creating-build-scans/
 creating-multi-project-builds/
 creating-new-gradle-builds/

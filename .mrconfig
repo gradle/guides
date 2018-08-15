@@ -31,6 +31,9 @@ checkout = git clone git@github.com:gradle-guides/building-kotlin-jvm-libraries.
 [building-scala-libraries]
 checkout = git clone git@github.com:gradle-guides/building-scala-libraries.git
 
+[building-spring-boot-2-projects-with-gradle]
+checkout = git clone git@github.com:gradle-guides/building-spring-boot-2-projects-with-gradle.git
+
 [creating-build-scans]
 checkout = git clone git@github.com:gradle-guides/creating-build-scans.git
 
