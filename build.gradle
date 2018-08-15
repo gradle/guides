@@ -1,5 +1,5 @@
 plugins {
-    id 'com.gradle.build-scan' version '1.13.4'
+    id 'com.gradle.build-scan' version '1.15.2'
     id 'groovy'
     id 'java-gradle-plugin'
     id 'com.gradle.plugin-publish' version '0.10.0'
@@ -20,7 +20,7 @@ buildScan {
 }
 
 group = 'org.gradle.guides'
-version = '0.13.4-SNAPSHOT'
+version = '0.14.0'
 
 repositories {
     jcenter()
@@ -88,7 +88,7 @@ gradlePlugin {
 }
 
 gradleTest {
-    versions '3.5', '4.4.1'
+  versions '3.5', '4.9'
 
     // Should be declared by gradleTest plugin.
     inputs.files tasks.jar.outputs.files
