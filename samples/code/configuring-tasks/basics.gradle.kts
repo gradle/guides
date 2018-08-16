@@ -2,26 +2,69 @@ plugins {
     java
 }
 
-// tag::single[]
+// tag::single-eager[]
 tasks.getByName<Jar>("jar").archiveName = "foo.jar"
-// end::single[]
+// end::single-eager[]
 
-// tag::untyped[]
-tasks["test"].doLast {
+// tag::single-lazy[]
+tasks.named<Jar>("jar") {
+    archiveName = "foo.jar"
+}
+// end::single-lazy[]
+
+// tag::untyped-lazy[]
+tasks.named<Task>("test") {
+    doLast {
+        println("test completed")
+    }
+}
+// end::untyped-lazy[]
+
+// tag::untyped-eager[]
+tasks.getByName("test").doLast {
     println("test completed")
 }
-// end::untyped[]
+// end::untyped-eager[]
 
-// tag::config[]
+
+// tag::config-lazy[]
+tasks.named<Jar>("jar") {
+    archiveName = "foo.jar"
+    into("META-INF") {
+        from("bar")
+    }
+}
+// end::config-lazy[]
+
+// tag::config-eager[]
 tasks.getByName<Jar>("jar") {
     archiveName = "foo.jar"
     into("META-INF") {
         from("bar")
     }
 }
-// end::config[]
+// end::config-eager[]
 
-// tag::reference[]
+
+tasks {
+
+// tag::reference-lazy[]
+val jar by tasks.existing(Jar::class) {
+    archiveName = "foo.jar"
+}
+
+jar {
+    into("META-INF") {
+        from("bar")
+    }
+}
+// end::reference-lazy[]
+
+}
+
+tasks {
+
+// tag::reference-eager[]
 val jar by tasks.getting(Jar::class) {
     archiveName = "foo.jar"
 }
@@ -29,4 +72,6 @@ val jar by tasks.getting(Jar::class) {
 jar.into("META-INF") {
     from("bar")
 }
-// end::reference[]
+// end::reference-eager[]
+
+}

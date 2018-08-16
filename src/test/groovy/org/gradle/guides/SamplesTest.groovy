@@ -23,22 +23,20 @@ class SamplesTest extends AbstractSamplesFunctionalTest {
 
         where:
         section                           | sample                            | ext
-        "applying-plugins"                | "declarative"                     | ".gradle"
-        "applying-plugins"                | "declarative"                     | ".gradle.kts"
-        "applying-plugins"                | "imperative"                      | ".gradle"
-        "applying-plugins"                | "imperative"                      | ".gradle.kts"
-        "configuring-plugins"             | "declaratively-applied"           | ".gradle"
-        "configuring-plugins"             | "declaratively-applied"           | ".gradle.kts"
-        "configuring-plugins"             | "imperatively-applied"            | ".gradle"
-        "configuring-plugins"             | "imperatively-applied"            | ".gradle.kts"
         "configuring-tasks"               | "basics"                          | ".gradle"
         "configuring-tasks"               | "basics"                          | ".gradle.kts"
         "configuring-tasks"               | "spring-boot"                     | ".gradle"
         "configuring-tasks"               | "spring-boot"                     | ".gradle.kts"
-        "creating-tasks"                  | "task-container"                  | ".gradle"
-        "creating-tasks"                  | "task-container"                  | ".gradle.kts"
-        "creating-tasks"                  | "reference"                       | ".gradle"
-        "creating-tasks"                  | "reference"                       | ".gradle.kts"
+        "creating-tasks"                  | "project"                         | ".gradle"
+        "creating-tasks"                  | "project"                         | ".gradle.kts"
+        "creating-tasks"                  | "task-container-lazy"             | ".gradle"
+        "creating-tasks"                  | "task-container-lazy"             | ".gradle.kts"
+        "creating-tasks"                  | "task-container-eager"            | ".gradle"
+        "creating-tasks"                  | "task-container-eager"            | ".gradle.kts"
+        "creating-tasks"                  | "reference-lazy"                  | ".gradle"
+        "creating-tasks"                  | "reference-lazy"                  | ".gradle.kts"
+        "creating-tasks"                  | "reference-eager"                 | ".gradle"
+        "creating-tasks"                  | "reference-eager"                 | ".gradle.kts"
         "configurations-and-dependencies" | "declarative"                     | ".gradle"
         "configurations-and-dependencies" | "declarative"                     | ".gradle.kts"
         "configurations-and-dependencies" | "imperative"                      | ".gradle"
@@ -49,22 +47,6 @@ class SamplesTest extends AbstractSamplesFunctionalTest {
         "interoperability"                | "closureOf"                       | ".gradle.kts"
         "interoperability"                | "delegateClosureOf"               | ".gradle.kts"
         "interoperability"                | "withGroovyBuilder"               | ".gradle.kts"
-    }
-
-    @Unroll
-    def "#section/#sample with #dsl build"() {
-
-        setup:
-        copySampleCode("$section/$sample")
-
-        expect:
-        succeeds("help")
-
-        where:
-        section                | sample              | dsl
-        "multi-project-builds" | "groovy-dsl"        | "groovy"
-        "multi-project-builds" | "kotlin-dsl"        | "kotlin"
-        "interoperability"     | "static-extensions" | "mixed"
     }
 
     @Unroll

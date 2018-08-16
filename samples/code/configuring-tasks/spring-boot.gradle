@@ -1,8 +1,26 @@
+// tag::lazy[]
+// tag::eager[]
 plugins {
     id 'java'
     id 'org.springframework.boot' version '2.0.2.RELEASE'
 }
 
+// end::lazy[]
+// end::eager[]
+
+// tag::lazy[]
+tasks.named('bootJar').configure {
+    archiveName = 'app.jar'
+    mainClassName = 'com.example.demo.Demo'
+}
+
+tasks.named('bootRun').configure {
+    main = 'com.example.demo.Demo'
+    args '--spring.profiles.active=demo'
+}
+// end::lazy[]
+
+// tag::eager[]
 bootJar {
     archiveName = 'app.jar'
     mainClassName = 'com.example.demo.Demo'
@@ -12,3 +30,4 @@ bootRun {
     main = 'com.example.demo.Demo'
     args '--spring.profiles.active=demo'
 }
+// end::eager[]

@@ -1,11 +1,13 @@
 // tag::reference[]
-def greeting = tasks.create('greeting') {
+// greeting is of type TaskProvider<Task>
+def greeting = tasks.register('greeting') {
     doLast { println("Hello, World!") }
 }
 // end::reference[]
 
 // tag::typed-reference[]
-def docZip = tasks.create(name: 'docZip', type: Zip) {
+// docZip is of type TaskProvider<Zip>
+def docZip = tasks.register('docZip', Zip) {
     archiveName = 'doc.zip'
     from 'doc'
 }
