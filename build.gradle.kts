@@ -11,7 +11,10 @@ repositories {
 }
 
 dependencies {
-    testImplementation("org.gradle:sample-check:0.4.2")
+    constraints {
+        testImplementation("org.codehaus.groovy:groovy-all:2.4.15")
+    }
+    testImplementation("org.gradle:sample-check:0.5.0")
     testImplementation(gradleTestKit())
 }
 
