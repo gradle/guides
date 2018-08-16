@@ -13,7 +13,7 @@ Gradle includes a `war` plugin for building Java web applications, and the commu
 
 == Create the structure of a web application
 
-Gradle includes a `war` plugin that is documented in the  {user-manual}web_project_tutorial.html[Web Application Quickstart] and the {user-manual}war_plugin.html[WAR plugin chapter] of the user manual. The `war` plugin extends the Java plugin to add support for web applications. By default, it uses a folder called `src/main/webapp` for web-related resources.
+Gradle includes a `war` plugin that is documented in the {user-manual}war_plugin.html[WAR plugin chapter] of the user manual. The `war` plugin extends the Java plugin to add support for web applications. By default, it uses a folder called `src/main/webapp` for web-related resources.
 
 NOTE: The "Web Application Quickstart" section in the User Manual still refers to the `jetty` plugin, which is deprecated in favor of the `gretty` plugin used here. The parts specific to the `war` plugin are fine, however, and the section will be updated soon.
 
