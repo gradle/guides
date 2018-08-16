@@ -22,7 +22,7 @@ val currentVersionInfo = tasks.create<CurrentVersionInfo>("currentVersionInfo") 
     versionInfoFile = File(generatedResourcesDir, "currentVersion.properties")
 }
 
-java.sourceSets["main"].output.dir(
+sourceSets["main"].output.dir(
     mapOf("builtBy" to currentVersionInfo),
     generatedResourcesDir)
 
