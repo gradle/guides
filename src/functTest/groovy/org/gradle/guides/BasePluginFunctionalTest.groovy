@@ -25,6 +25,7 @@ class BasePluginFunctionalTest extends AbstractFunctionalTest {
         buildFile << """
             task verifyAsciidoctorAttributes {
                 doLast {
+                    assert asciidoctor.attributes['samples-dir'] == file('samples')
                     assert asciidoctor.attributes['samplescodedir'] == file('samples/code')
                     assert asciidoctor.attributes['samplesoutputdir'] == file('samples/output')
                 }

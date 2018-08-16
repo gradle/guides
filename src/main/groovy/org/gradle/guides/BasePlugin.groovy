@@ -126,7 +126,8 @@ class BasePlugin implements Plugin<Project> {
                     'codedir'            : project.file('src/main'),
                     'testdir'            : project.file('src/test'),
                     'samplescodedir'     : project.file('samples/code'),
-                    'samplesoutputdir'   : project.file('samples/output')
+                    'samplesoutputdir'   : project.file('samples/output'),
+                    'samples-dir'        : project.file('samples')
 
         }
 
