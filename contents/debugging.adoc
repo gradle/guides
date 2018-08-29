@@ -15,7 +15,7 @@ Below we describe a step-by-step process that should help shake out any problems
 
 First, make sure your build does the right thing without the cache.
 Run a build twice without enabling the Gradle build cache.
-The expected outcome is that that all actionable tasks that produce file outputs are up-to-date.
+The expected outcome is that all actionable tasks that produce file outputs are up-to-date.
 You should see something like this on the command-line:
 
 [listing]
