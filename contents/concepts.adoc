@@ -127,7 +127,7 @@ For a runtime classpath it is possible to provide better insights to Gradle whic
 Given that you want to add a file `build-info.properties` to all your produced jar files which contains volatile information about the build, e.g. the timestamp when the build started or some ID to identify the CI job that published the artifact.
 This file is only used for auditing purposes, and has no effect on the outcome of running tests.
 Nonetheless, this file is part of the runtime classpath for the `test` task. Since the file changes on every build invocation, tests cannot be cached effectively.
-To fix this you can ignore `build-info.properties` on any runtime classpath by adding the following configuration to build script:
+To fix this you can ignore `build-info.properties` on any runtime classpath by adding the following configuration to the build script:
 
 .build.gradle
 [source.multi-language-sample,groovy]
