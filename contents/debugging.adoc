@@ -229,7 +229,7 @@ This can be done from the timeline view in a build scan or from the task input c
 image::first-non-cached-task.png[]
 
 At first, you should check if the implementation of the task changed. This would mean checking the class names and classloader hashes
-for the task class itself and for each of its action. If there is a change, this means that the build script, `buildSrc` or the Gradle version has changed.
+for the task class itself and for each of its actions. If there is a change, this means that the build script, `buildSrc` or the Gradle version has changed.
 
 [NOTE]
 ====
