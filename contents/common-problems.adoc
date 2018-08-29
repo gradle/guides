@@ -169,12 +169,12 @@ One way of locking the changes would be to check the volatile resource into sour
 [[custom_actions,"Review usages of `doFirst` and `doLast`"]]
 ==== Review usages of `doFirst` and `doLast`
 
-Using `doFirst` and `doLast` from a build script on a cacheable tasks ties you to build script changes since the implementation of the closure comes from the build script.
+Using `doFirst` and `doLast` from a build script on a cacheable task ties you to build script changes since the implementation of the closure comes from the build script.
 If possible, you should use separate tasks instead.
 
 Modifying input or output properties via the runtime API in `doFirst` is discouraged since these changes will not be detected for up-to-date checks and the build cache.
 Even worse, when the task does not execute, then the configuration of the task is actually different from when it executes.
-Instead of using `doFirst` for modifying the inputs consider using a separate tasks to configure the task under question - a so called configure task.
+Instead of using `doFirst` for modifying the inputs consider using a separate task to configure the task under question - a so called configure task.
 E.g., instead of doing
 
 .build.gradle
