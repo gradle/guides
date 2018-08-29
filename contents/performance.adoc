@@ -97,5 +97,5 @@ Improving the network link between the build and the remote cache can significan
 How to do this depends on the remote cache in use and your network environment.
 
 The multi-node remote build cache provided by Gradle Enterprise is a fast and efficient, purpose built, remote build cache.
-In particular, if your development team is geographically distributed, its replication features can significantly improve performance by allowing developers to use a cache that is close to them that they have a good network link to.
+In particular, if your development team is geographically distributed, its replication features can significantly improve performance by allowing developers to use a cache that they have a good network link to.
 See the https://docs.gradle.com/enterprise/admin/current/#replication[“Build Cache Replication” section of the Gradle Enterprise Admin Manual] for more information.

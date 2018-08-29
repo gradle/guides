@@ -26,7 +26,7 @@ The easiest way to avoid this performance penalty is to not use annotation proce
 
 [NOTE]
 ====
-Some common Java dependencies (such as Log4j 2.x) come bundled with annotation processors. If you use these dependencies, but to not leverage the features of the bundled annotation processors, it's best to disable annotation processing entirely. This can be done by setting the annotation processor classpath to an empty set.
+Some common Java dependencies (such as Log4j 2.x) come bundled with annotation processors. If you use these dependencies, but do not leverage the features of the bundled annotation processors, it's best to disable annotation processing entirely. This can be done by setting the annotation processor classpath to an empty set.
 ====
 
 === Unit test execution
