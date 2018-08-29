@@ -46,7 +46,7 @@ You need to pay attention what you add as an input to the task in this case.
 You would need to ensure that the absolute path is the same between machines. Most times it makes sense to track the file or the contents of the directory the absolute path points to.
 If the absolute path represents a tool being used it probably makes sense to track the tool version as an input instead.
 
-For example, if you are using tools in your `Test` task called `integTest` which depend on the the contents of the `LANG` variable you should do this:
+For example, if you are using tools in your `Test` task called `integTest` which depend on the contents of the `LANG` variable you should do this:
 
 .build.gradle
 [source.multi-language-sample,groovy]
