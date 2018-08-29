@@ -107,7 +107,7 @@ As a consequence, path sensitivity for Java sources is `NAME_ONLY` and not `RELA
 
 When it comes to the dependencies of a `JavaCompile` task (i.e. its _compile classpath),_ only changes to the Application Binary Interface (ABI) of these dependencies require compilation to be executed.
 Gradle has a deep understanding of what a compile classpath is and uses a sophisticated normalization strategy for it.
-Task outputs can be re-used as long the the ABI of the classes on the compile classpath stays the same.
+Task outputs can be re-used as long as the ABI of the classes on the compile classpath stays the same.
 This enables Gradle to avoid Java compilation by using incremental builds, or load results from the cache that were produced by different (but ABI-compatible) versions of dependencies.
 For more information on compile avoidance see the corresponding section in the {user-manual}java_plugin.html#sec:java_compile_avoidance[user guide].
 
