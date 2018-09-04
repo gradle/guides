@@ -34,11 +34,11 @@ link:https://en.wikipedia.org/wiki/Convention_over_configuration[Convention over
 - It defines the directory _src/main/java_ as the default source directory for compilation.
 - The output directory for compiled source code and other artifacts (like the JAR file) is _build_.
 
-As long the user of the plugin does not prefer to use other conventions, no additional configuration is needed in the consuming build script. It simply works out-of-the-box. However, if the user prefers other standards, then the default conventions can be reconfigured. You get the best of both worlds.
+As long as the user of the plugin does not prefer to use other conventions, no additional configuration is needed in the consuming build script. It simply works out-of-the-box. However, if the user prefers other standards, then the default conventions can be reconfigured. You get the best of both worlds.
 
 In practice you will find that most users are comfortable with the default conventions until there’s a good reason to change them e.g. if you have to work with a legacy project. When writing your own plugins, make sure that you pick sensible defaults. You can find out if you did pick sensible conventions for your plugin if you see that the majority of plugin consumers don’t have to reconfigure them.
 
-Let’s have a look at an example for conventions introduced by a plugin. The plugin retrieves information from a server by making HTTP calls. The default URL used by the plugin is configured to point to a server within an organization developing the plugin: http://www.myorg.com/server. A good way to make the default URL configurable is to introduce an link:https://docs.gradle.org/current/userguide/custom_plugins.html#sec:getting_input_from_the_build[extension]. An extension exposes a custom DSL for capturing user input that influence the runtime behavior. The following example shows such a custom DSL for the discussed example:
+Let’s have a look at an example for conventions introduced by a plugin. The plugin retrieves information from a server by making HTTP calls. The default URL used by the plugin is configured to point to a server within an organization developing the plugin: http://www.myorg.com/server. A good way to make the default URL configurable is to introduce an link:https://docs.gradle.org/current/userguide/custom_plugins.html#sec:getting_input_from_the_build[extension]. An extension exposes a custom DSL for capturing user input that influences the runtime behavior. The following example shows such a custom DSL for the discussed example:
 
 .build.gradle
 [source,groovy]
@@ -51,7 +51,7 @@ As you can see, the user only declares the "what" - the server the plugin should
 [[capabilities-vs-conventions]]
 === Capabilities vs. conventions
 
-The functionality brought in by a plugin can be extremely powerful but also very opinionated. That’s especially the case if a plugin predefines tasks and conventions that a project inherits automatically when applying it. Sometimes the reality that you - as plugin developer - chose for your users might simply look different than expected. For that very reason you need to make a plugin as flexible and configurable as possible.
+The functionality brought in by a plugin can be extremely powerful but also very opinionated. That’s especially the case if a plugin predefines tasks and conventions that a project inherits automatically when applying it. Sometimes the reality that you - as plugin developer - choose for your users might simply look different than expected. For that very reason you need to make a plugin as flexible and configurable as possible.
 
 One way to provide these quality criteria is to separate capabilities from conventions. In practice that means separating general-purpose functionality from pre-configured, opinionated functionality. Let’s have a look at an example to explain this seemingly abstract concept. There are two Gradle core plugins that demonstrate the concept perfectly: the link:https://docs.gradle.org/current/userguide/standard_plugins.html#sec:base_plugins[Java Base plugin] and the link:https://docs.gradle.org/current/userguide/java_plugin.html[Java plugin].
 
@@ -62,7 +62,7 @@ image::java-plugin-composition.png[align="center"]
 
 The bottom line is that we _separated capabilities from conventions_. If a user decides that he doesn’t like the tasks created or doesn’t want to reconfigure a lot of the conventions because that’s not how the project structure looks like, then he can just fall back to applying the Java Base plugin and take matters into his own hands.
 
-You should consider using the same technique when designing your own plugins. You can develop both plugins within the same project and ship their compiled classes and identifiers with the same binary artifact. The following code example show how to apply a plugin from another one, so-called plugin composition:
+You should consider using the same technique when designing your own plugins. You can develop both plugins within the same project and ship their compiled classes and identifiers with the same binary artifact. The following code example shows how to apply a plugin from another one, so-called plugin composition:
 
 .MyBasePlugin.java
 [source,java]
@@ -76,7 +76,7 @@ include::{samplescodedir}/capabilities-vs-conventions/buildSrc/src/main/java/MyB
 include::{samplescodedir}/capabilities-vs-conventions/buildSrc/src/main/java/MyPlugin.java[]
 ----
 
-Here are two open-source plugins that apply the concept for inspiration:
+For inspiration, here are two open-source plugins that apply the concept:
 
 - link:https://github.com/bmuschko/gradle-docker-plugin#provided-plugins[Docker plugin]
 - link:https://github.com/bmuschko/gradle-cargo-plugin#provided-plugins[Cargo plugin]
@@ -85,7 +85,7 @@ Here are two open-source plugins that apply the concept for inspiration:
 
 === Prefer using a statically-typed language to implement a plugin
 
-Gradle doesn’t take a stance on the programming language you should chose for implementing a plugin. It’s a developer’s choice as long as the plugin binary can be executed on the JVM.
+Gradle doesn’t take a stance on the programming language you should choose for implementing a plugin. It’s a developer’s choice as long as the plugin binary can be executed on the JVM.
 
 It is recommended to use a statically-typed language like Java or Kotlin for implementing plugins to decrease the likelihood of binary incompatibilities. Should you decide on using Groovy for your plugin implementation then it is a good choice to use the annotation link:http://docs.groovy-lang.org/latest/html/gapi/groovy/transform/CompileStatic.html[@groovy.transform.CompileStatic].
 
