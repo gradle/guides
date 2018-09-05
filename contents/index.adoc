@@ -52,7 +52,7 @@ include::{samplescodedir}/custom-task/build.gradle[]
 
 Gradle uses declared inputs and outputs to determine if a task is up-to-date and needs to perform any work. If none of the inputs or outputs have changed, Gradle can skip that task. Gradle calls this mechanism incremental build support. The advantage of {user-manual}more_about_tasks.html#sec:up_to_date_checks[incremental build support] is that it can significantly improve the performance of a build.
 
-It’s very common for Gradle plugins to introduce custom task types. As a plugin author that means that you’ll have to annotation all properties of a task with input or output annotations. It’s highly recommended to equip every task with the information to run up-to-date checking. Remember: for up-to-date checking to work properly a task needs to define both inputs and outputs.
+It’s very common for Gradle plugins to introduce custom task types. As a plugin author that means that you’ll have to annotate all properties of a task with input or output annotations. It’s highly recommended to equip every task with the information to run up-to-date checking. Remember: for up-to-date checking to work properly a task needs to define both inputs and outputs.
 
 Let’s consider the following sample task for illustration. The task generates a given number of files in an output directory. The text written to those files is provided by a String property.
 
@@ -62,7 +62,7 @@ Let’s consider the following sample task for illustration. The task generates 
 include::{samplescodedir}/incremental-task/buildSrc/src/main/java/Generate.java[]
 ----
 
-The first section of this guide talks about the <<plugin-development-plugin,Plugin Development plugin>>. As an added benefit of applying the plugin to your project, the task `validateTaskProperties` automatically checks for an existing input/output annotation for every public property define in a custom task type implementation.
+The first section of this guide talks about the <<plugin-development-plugin,Plugin Development plugin>>. As an added benefit of applying the plugin to your project, the task `validateTaskProperties` automatically checks for an existing input/output annotation for every public property defined in a custom task type implementation.
 
 === Modeling DSL-like APIs
 
@@ -110,7 +110,7 @@ NOTE: If you need second- or third-level nesting, you will also have to add over
 
 Some of the Gradle core plugins expose configurability with the help of a so-called {api-reference}org/gradle/api/plugins/Convention.html[Convention]. `Convention` is the preceding concept of an extension and serves a similar purpose. The main difference between both concepts is that `Convention` does not allow for defining a namespace to model a DSL-like API making it hard to distinguish from the Gradle core DSL. Please avoid using the `Convention` concept when writing new plugins. The long term plan is to migrate all Gradle core plugins to use extensions and remove the `Convention` concept altogether.
 
-There are situations that require you to interact with a Gradle core plugin that uses ``Convention``s. You can access the registered convention objects by calling the method `Project.getConvention()`. The specific convention implementation for a registered plugin can be retrieved by providing the convention class via {api-reference}org/gradle/api/plugins/Convention.html#getPlugin(java.lang.Class)[`Convention.getPlugin(Class)`]. The <<convention-api-usage-example,sample code below>> references the `JavaPluginConvention` inspect configuration values exposed by the Java plugin.
+There are situations that require you to interact with a Gradle core plugin that uses ``Convention``s. You can access the registered convention objects by calling the method `Project.getConvention()`. The specific convention implementation for a registered plugin can be retrieved by providing the convention class via {api-reference}org/gradle/api/plugins/Convention.html#getPlugin(java.lang.Class)[`Convention.getPlugin(Class)`]. The <<convention-api-usage-example,sample code below>> references the `JavaPluginConvention` configuration values exposed by the Java plugin.
 
 === Capturing user input to configure plugin runtime behavior
 
@@ -190,7 +190,7 @@ It's very common for a plugin to post-process the captured values within the plu
 
 === Reacting to plugins
 
-Configuring the runtime behavior of existing plugins and tasks in a build is a common pattern in Gradle plugin implementations. For example a plugin could assume that it is applied to a Java-based project and automatically reconfigures the standard source directory.
+Configuring the runtime behavior of existing plugins and tasks in a build is a common pattern in Gradle plugin implementations. For example a plugin could assume that it is applied to a Java-based project and automatically reconfigure the standard source directory.
 
 [[convention-api-usage-example]]
 .InhouseConventionJavaPlugin.java
@@ -245,7 +245,7 @@ You will find that this pattern works well for tasks that require an external de
 
 === Assigning appropriate plugin identifiers
 
-A descriptive plugin identifier makes it easy for consumers to apply the plugin to a project. The ID should reflect the purpose of the plugin with a single term. Additionally, a domain name should be added to avoid conflicts between other plugins with similar functionality. In the previous sections, dependencies shows in code examples use the group ID `com.company`. We could use the same identifier as domain name. In case you are not working with a legal entity or should want to publish a open-source plugin then you can just use the domain name hosting the source code e.g. `com.github`.
+A descriptive plugin identifier makes it easy for consumers to apply the plugin to a project. The ID should reflect the purpose of the plugin with a single term. Additionally, a domain name should be added to avoid conflicts between other plugins with similar functionality. In the previous sections, dependencies shown in code examples use the group ID `com.company`. We could use the same identifier as domain name. In case you are not working with a legal entity or should want to publish an open-source plugin then you can just use the domain name hosting the source code e.g. `com.github`.
 
 When publishing multiple plugins as part of a single JAR artifact (as described in the section {guides}/designing-gradle-plugins#capabilities-vs-conventions["Capabilities vs. conventions" in the "Designing Gradle plugins" guide]) the same naming conventions should apply. There’s no limitation to the number of plugins that can be registered by identifier and serves as a nice way to group related plugins together. For illustration, the Gradle Android plugin defines two different plugins in the directory `src/main/resources/META-INF/gradle-plugins`.
 
@@ -264,7 +264,7 @@ When publishing multiple plugins as part of a single JAR artifact (as described 
 
 Writing plugins doesn’t have to be hard. With the right techniques you can easily overcome commonly-faced challenges and implement plugins that are maintainable, reusable, declarative, well-documented and tested. Not all presented recommendations and recipes presented in this guide might be applicable to your plugin or your use case. However, the presented solutions should help you move toward the right direction.
 
-The content of this guide will be expanded over time as new functionality becomes available in Gradle core. Please let us know on the link:https://discuss.gradle.org/[Gradle forum] if you are still having difficulties implementing specific use cases in your plugin or if you’d like to see other use case covered in this guide.
+The content of this guide will be expanded over time as new functionality becomes available in Gradle core. Please let us know on the link:https://discuss.gradle.org/[Gradle forum] if you are still having difficulties implementing specific use cases in your plugin or if you’d like to see other use cases covered in this guide.
 
 include::contribute[repo-path="gradle-guides/implementing-gradle-plugins"]
 
