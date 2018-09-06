@@ -16,14 +16,16 @@ gradlePlugin {
 }
 // end::gradle-plugin[]
 
-// tag::plugin_bundle[]
+// tag::plugin_bundle_global_information[]
 pluginBundle {
-// tag::global_information[]
     website = "<substitute your project website>" // <1>
     vcsUrl = "<uri to project source repository>" // <2>
     tags = listOf("default", "tags", "unless", "overridden", "in", "plugin") // <3>
-// end::global_information[]
-// tag::plugin_definitions[]
+}
+// end::plugin_bundle_global_information[]
+
+// tag::plugin_bundle_plugin_definitions[]
+pluginBundle {
     (plugins) { // <1>
         "greetingsPlugin" { // <2>
             // id is captured from gradlePlugin extension block // <3>
@@ -33,6 +35,5 @@ pluginBundle {
             version = "1.2" // <7>
         }
     }
-// end::plugin_definitions[]
 }
-// end::plugin_bundle[]
+// end::plugin_bundle_plugin_definitions[]

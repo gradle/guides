@@ -70,12 +70,12 @@ Create a `pluginBundle` block in `build.gradle` and specify global information r
 .build.gradle
 [source.multi-language-sample,groovy]
 ----
-include::{exampledir}/build.gradle[tags=plugin_bundle;!plugin_definitions]
+include::{exampledir}/build.gradle[tags=plugin_bundle_global_information]
 ----
 .build.gradle.kts
 [source.multi-language-sample,kotlin]
 ----
-include::{exampledir}/build.gradle.kts[tags=plugin_bundle;!plugin_definitions]
+include::{exampledir}/build.gradle.kts[tags=plugin_bundle_global_information]
 ----
 <1> Set the website for your plugin's project.
 <2> Provide the source repository URI so that others can find it if they want to contribute.
@@ -87,13 +87,13 @@ Now specify the details of the plugin. This is done in a `plugins` block within 
 [source.multi-language-sample,groovy]
 ----
 include::{exampledir}/build.gradle[tags=gradle-plugin]
-include::{exampledir}/build.gradle[tags=plugin_bundle;!global_information]
+include::{exampledir}/build.gradle[tags=plugin_bundle_plugin_definitions]
 ----
 .build.gradle.kts
 [source.multi-language-sample,kotlin]
 ----
 include::{exampledir}/build.gradle.kts[tags=gradle-plugin]
-include::{exampledir}/build.gradle.kts[tags=plugin_bundle;!global_information]
+include::{exampledir}/build.gradle.kts[tags=plugin_bundle_plugin_definitions]
 ----
 <1> Each plugin in a bundle is specified in the `plugins` blocks. As you are only publishing a single plugin at this point there will only be one entry, but should your project publish a bundle in the future you will list each of them in here.
 <2> The name for each plugin block does not affect the plugin configuration, but needs to be unique for each plugin provided. Moreover, the names of the plugin in the `gradlePlugin` and `pluginBundle` extension blocks must match.
