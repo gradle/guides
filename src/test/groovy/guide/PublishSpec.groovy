@@ -13,7 +13,7 @@ import spock.lang.Specification
 class PublishSpec extends Specification {
 
     static final int PORT = System.getProperty('HTTPSERVER_PORT')?.toInteger() ?: 65000
-    static final File PROJECT_TEMPLATE_DIR = new File(System.getProperty('TEMPLATE_DIR') ?: 'src/publicationTest')
+    static final File PROJECT_TEMPLATE_DIR = new File(System.getProperty('samplesDir') ?: 'samples')
     static final File PLUGIN_CLASSPATH = new File( System.getProperty('PLUGIN_CLASSPATH') ?: 'build/pluginClasspath')
 
     @Shared SimpleHttpServer server = new SimpleHttpServer(PORT,'/')
