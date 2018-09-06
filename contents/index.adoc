@@ -2,6 +2,7 @@
 :portal: Gradle Plugin Portal
 :plugin: Greeting Plugin
 :publishplugin: Plugin Publishing Plugin
+:plugin-reference-documentation: https://plugins.gradle.org/docs/publish-plugin[reference documentation of the {publishplugin}]
 
 Sharing a plugin with others means publishing the artifact, along with specific metadata and in most cases the `pom.xml`, to any type of repository that is supported by Gradle. Sharing a plugin on a global scale requires using a well-known repository. The https://plugins.gradle.org[{portal}] provides a centralized repository that is dedicated to Gradle plugins and which is also easily searchable.
 
@@ -70,40 +71,36 @@ Create a `pluginBundle` block in `build.gradle` and specify global information r
 .build.gradle
 [source.multi-language-sample,groovy]
 ----
-include::{samples-dir}/build.gradle[tags=plugin_bundle_global_information]
+include::{samples-dir}/build.gradle[tags=plugin_bundle]
 ----
 .build.gradle.kts
 [source.multi-language-sample,kotlin]
 ----
-include::{samples-dir}/build.gradle.kts[tags=plugin_bundle_global_information]
+include::{samples-dir}/build.gradle.kts[tags=plugin_bundle]
 ----
 <1> Set the website for your plugin's project.
 <2> Provide the source repository URI so that others can find it if they want to contribute.
 <3> Set the tags to be used for all plugins unless overridden in the `plugins` block.
 
-Now specify the details of the plugin. This is done in a `plugins` block within the `pluginBundle` block. The most important part is the `id`, as that both uniquely identifies it on the {portal} and prevents namespace clashes between different plugin authors. It should follow a domain namespace pattern i.e. `org.samples.greeting`. Substitute the values from this example with ones specific to your plugin. Take your time to think about good entries, as this information contributes to a better experience for people looking for specific plugins.
+Now specify the details of the plugin. This is done in a `plugins` block within the `gradlePlugin` block. The most important part is the `id`, as that both uniquely identifies it on the {portal} and prevents namespace clashes between different plugin authors. It should follow a domain namespace pattern i.e. `org.samples.greeting`. Substitute the values from this example with ones specific to your plugin. Take your time to think about good entries, as this information contributes to a better experience for people looking for specific plugins.
 
 .build.gradle
 [source.multi-language-sample,groovy]
 ----
 include::{samples-dir}/build.gradle[tags=gradle-plugin]
-include::{samples-dir}/build.gradle[tags=plugin_bundle_plugin_definitions]
 ----
 .build.gradle.kts
 [source.multi-language-sample,kotlin]
 ----
 include::{samples-dir}/build.gradle.kts[tags=gradle-plugin]
-include::{samples-dir}/build.gradle.kts[tags=plugin_bundle_plugin_definitions]
 ----
 <1> Each plugin in a bundle is specified in the `plugins` blocks. As you are only publishing a single plugin at this point there will only be one entry, but should your project publish a bundle in the future you will list each of them in here.
-<2> The name for each plugin block does not affect the plugin configuration, but needs to be unique for each plugin provided. Moreover, the names of the plugin in the `gradlePlugin` and `pluginBundle` extension blocks must match.
-<3> The `id` specified in the `gradlePlugin` extension block is used for the plugin with the same name in the `pluginBundle` extension block.
+<2> The name for each plugin block does not affect the plugin configuration, but needs to be unique for each plugin provided.
+<3> Set the unique `id` of the plugin.
 <4> Set the plugin name in human-readable form.
 <5> Set a description that will be displayed on the portal. Although this is optional, it provides useful information to people would might want to use your plugin. Please give careful thought to the value of this property.
-<6> Set tags that build script authors might use to search for plugin types. This can make your plugin easier to locate.
-<7> By default the version from `project.version` will be used, but you can set your own version if required.
 
-NOTE: Gradle 4.10 adds support for configuring `displayName` and `description` in the `plugins` section of the `gradlePlugin` extension block. Thus, you only need to reiterate those plugins in the `pluginBundle` extension block for which you need to specify a custom `version` or custom `tags`.
+NOTE: If you are publishing multiple plugins, please note that it's possible to use custom tags and a custom version per plugin using the `pluginBundle` block. Please refer to the {plugin-reference-documentation} for an example.
 
 Think about what would be the correct metadata for your plugin and fill in the template appropriately. Here is an example of the `pluginBundle` configuration for the the https://github.com/gradle-guides/greeting-plugin-example[Greeting Plugin example]:
 
@@ -115,11 +112,14 @@ pluginBundle {
     website = 'http://www.gradle.org/'
     vcsUrl = 'https://github.com/gradle-guides/greeting-plugin-example'
     tags = ['example', 'template']
-
+}
+gradlePlugin {
     plugins {
         greetingsPlugin {
+            id = 'org.samples.greeting'
             displayName = 'Greeting Plugin'
             description = 'Template for people to start their own plugin adventure'
+            implementationClass = 'org.example.greeting.GreetingPlugin'
         }
     }
 }
@@ -132,11 +132,14 @@ pluginBundle {
     website = "http://www.gradle.org/"
     vcsUrl = "https://github.com/gradle-guides/greeting-plugin-example"
     tags = listOf("example", "template")
-
-    (plugins) {
-        "greetingsPlugin" {
+}
+gradlePlugin {
+    plugins {
+        create("greetingsPlugin") {
+            id = "org.samples.greeting"
             displayName = "Greeting Plugin"
             description = "Template for people to start their own plugin adventure"
+            implementationClass = "org.example.greeting.GreetingPlugin"
         }
     }
 }
@@ -147,15 +150,17 @@ As a second example of plugin configuration, consider the https://plugins.gradle
 [source.multi-language-sample,groovy]
 ----
 pluginBundle {
-    website     = 'https://github.com/ysb33r/gradleTest'
-    vcsUrl      = 'https://github.com/ysb33r/gradleTest.git'
-
+    website = 'https://github.com/ysb33r/gradleTest'
+    vcsUrl = 'https://github.com/ysb33r/gradleTest.git'
+    tags = ['testing', 'integrationTesting', 'compatibility']
+}
+gradlePlugin {
     plugins {
         gradletestPlugin {
             id = 'org.ysb33r.gradletest'
             displayName = 'Plugin for compatibility testing of Gradle plugins'
             description = 'A plugin that helps you test your plugin against a variety of Gradle versions'
-            tags = ['testing','integrationTesting','compatibility']
+            implementationClass = 'org.ysb33r.gradle.gradletest.GradleTestPlugin'
         }
     }
 }
@@ -164,15 +169,17 @@ pluginBundle {
 [source.multi-language-sample,kotlin]
 ----
 pluginBundle {
-    website     = "https://github.com/ysb33r/gradleTest"
-    vcsUrl      = "https://github.com/ysb33r/gradleTest.git"
-
-    (plugins) {
-        "gradletestPlugin" {
+    website = "https://github.com/ysb33r/gradleTest"
+    vcsUrl = "https://github.com/ysb33r/gradleTest.git"
+    tags = listOf("testing", "integrationTesting", "compatibility")
+}
+gradlePlugin {
+    plugins {
+        create("gradletestPlugin") {
             id = "org.ysb33r.gradletest"
             displayName = "Plugin for compatibility testing of Gradle plugins"
             description = "A plugin that helps you test your plugin against a variety of Gradle versions"
-            tags = listOf("testing", "integrationTesting", "compatibility")
+            implementationClass = "org.ysb33r.gradle.gradletest.GradleTestPlugin"
         }
     }
 }
@@ -210,7 +217,7 @@ Once your plugin has been published, the instructions for others to use it will 
 
 == Next steps
 
-* Read the https://plugins.gradle.org/docs/publish-plugin[reference documentation for the {publishplugin}].
+* Read the {plugin-reference-documentation}.
 
 
 include::contribute[repo-path="gradle-guides/publishing-plugins-to-gradle-plugin-portal"]
