@@ -61,7 +61,7 @@ The structure of a Gradle guide repository is very simple, consisting of just tw
 
  1. A directory called `contents` which contains an entry point AsciiDoc source file called `index.adoc`.
  2. A Gradle build script to process it into HTML (which later will publish it to the GitHub Pages site where the guides are hosted)
- 3. A `src` folder where source code to support the guide is hosted. This source code would normally get build with the guide to ensure that the code snippets used inthe guide is up to date.
+ 3. A `src` folder where source code to support the guide is hosted. This source code would normally get build with the guide to ensure that the code snippets used in the guide is up to date.
 
 The file you'll interact with most as a guide author is `index.adoc`, but it's useful to know what the other files and directories are for as well. The following listing walks through each of the top-level directory entries:
 
@@ -87,7 +87,7 @@ The file you'll interact with most as a guide author is `index.adoc`, but it's u
 <8> Gradle Wrapper Unix shell script
 <9> Gradle Wrapper Windows batch file
 
-Now you're ready to work on your new guide's content. You will edit the `contents/index.adoc` file. You are welcome to create additional AsciiDoc files inthe `contents` directory and include them via the AsciiDoc `include::` directive.
+Now you're ready to work on your new guide's content. You will edit the `contents/index.adoc` file. You are welcome to create additional AsciiDoc files in the `contents` directory and include them via the AsciiDoc `include::` directive.
 
 NOTE: Edit `contents/index.adoc`, but preview `index.html` in the `build/html5` directory.
 
