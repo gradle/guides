@@ -5,8 +5,8 @@ Following this guide, you'll create a trivial Gradle project, invoke some of the
 == What you'll need
 
 * About [.time-to-complete-text]#NN#
-* A terminal or IDE application
-* A Java Development Kit (JDK), version 1.7 or better if using the Gradle Groovy DSL, version 1.8 or better if using the Gradle Kotlin DSL (only necessary to run Gradle)
+* A terminal application
+* A Java Runtime Environment (JRE) or Java Development Kit (JDK), version 1.8 or later (only necessary to run Gradle)
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 
 NOTE: Shell commands will shown for Unix-based systems. Windows has analogous commands for each.
@@ -45,12 +45,12 @@ include::{samplesoutputdir}/file-tree.txt[tags=file-tree-all;file-tree-groovy]
 include::{samplesoutputdir}/file-tree.txt[tags=file-tree-all;file-tree-kotlin]
 ----
 
-<1> Project configuration script for configuring tasks in the current project
+<1> Gradle build script for configuring the current project
 <2> {user-manual}gradle_wrapper.html[Gradle Wrapper] executable JAR
 <3> Gradle Wrapper configuration properties
 <4> Gradle Wrapper script for Unix-based systems
 <5> Gradle Wrapper script for Windows
-<6> Settings configuration script for configuring which Projects participate in the build
+<6> Gradle settings script for configuring the Gradle build
 
 NOTE: `gradle init` can generate {user-manual}build_init_plugin.html#sec:build_init_types[various different types of projects], and even knows how to translate simple `pom.xml` files to Gradle.
 
@@ -210,10 +210,10 @@ Congratulations! You have created a new Gradle build and learned how to inspect 
 Chances are you want to create a library or application for a specific platform, so here are some guides that will teach you more about creating builds in your platform of choice:
 
 * {guides}/building-android-apps[Building Android Apps]
-* {guides}/building-cpp-executables[Building C++ Executables]
-* {guides}/building-groovy-libraries[Building Groovy Libraries]
 * {guides}/building-java-libraries[Building Java Libraries]
 * {guides}/building-kotlin-jvm-libraries[Building Kotlin JVM Libraries]
+* {guides}/building-cpp-executables[Building C++ Executables]
+* {guides}/building-groovy-libraries[Building Groovy Libraries]
 * {guides}/building-scala-libraries[Building Scala Libraries]
 
 You can also checkout many link:https://github.com/gradle/gradle/tree/master/subprojects/docs/src/samples[sample Gradle builds on GitHub].
