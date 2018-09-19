@@ -1,7 +1,7 @@
 = Using the Worker API
 
 The Worker API provides the ability to break up the execution of a task action into discrete units of work
-and then to execute that work concurrently and asynchronously.  This allows Gradle to fully utilizes the
+and then to execute that work concurrently and asynchronously.  This allows Gradle to fully utilize the
 resources available and complete builds faster.  This guide will walk you through the process of converting
 an existing custom task to use the Worker API.
 
