@@ -7,8 +7,8 @@
 // tag::plugins[]
 plugins {
     id 'java'
-    id 'com.gradle.build-scan' version '1.15.2'
-    id 'org.springframework.boot' version '2.0.3.RELEASE'
+    id 'com.gradle.build-scan' version '1.16'
+    id 'org.springframework.boot' version '2.0.5.RELEASE'
 }
 // end::plugins[]
 
@@ -21,7 +21,7 @@ repositories {
 
 // tag::dependencies[]
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-dependencies:2.0.3.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-dependencies:2.0.5.RELEASE'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
