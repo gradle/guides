@@ -137,12 +137,18 @@ Next adapt the `App` class located in the `src/main/java/hello` folder and repla
 include::{samplescodedir}/sample-project/src/main/java/hello/App.java[]
 ----
 
-In the class above we create a new Spring Boot application and a `HelloGradleController` which returns `Hello Gradle!` when a `GET` request is processed on the root path of the application.
+.HelloGradleController.java
+[source,java]
+----
+include::{samplescodedir}/sample-project/src/main/java/hello/HelloGradleController.java[]
+----
+
+In the above snippets we create a new Spring Boot application and a `HelloGradleController` which returns `Hello Gradle!` when a `GET` request is processed on the root path of the application.
 
 To test this functionality we need to create an integration test.
 For that adapt the `AppTest` class located in the `src/test/java/hello` folder and replace its content with the following:
 
-.App.java
+.AppTest.java
 [source,java]
 ----
 include::{samplescodedir}/sample-project/src/test/java/hello/AppTest.java[]
