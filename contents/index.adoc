@@ -126,7 +126,7 @@ Again, we strongly recommend that you apply plugins declaratively via the `plugi
 Because your IDE knows about the configuration elements that a plugin provides, it will include those elements when you ask your IDE for suggestions.
 This will happen both at the top level of your build scripts — most plugin extensions are added to the `Project` object — and within an extension's configuration block.
 
-You can also run the `:kotlinDslAccessorsReport` task to learn about the extension contributed by all applied plugins.
+You can also run the `:kotlinDslAccessorsReport` task to learn about the extensions contributed by all applied plugins.
 It prints the Kotlin code you can use to access those extensions and provides the name and type of the accessor methods.
 --
 
@@ -141,7 +141,7 @@ This topic is covered in the <<configuring-tasks>> section.
 == Keeping build scripts declarative
 
 Plugins fetched from a source other than the link:{plugin-portal}[Gradle Plugin Portal] may or may not be usable with the `plugins {}` block.
-It depending on how they have been published.
+It depends on how they have been published.
 
 For example, the Android Plugin for Gradle is not published to the Gradle Plugin Portal and at least up to version 3.1.0 of the plugin, the metadata required to resolve the artifacts for a given plugin identifier  is not published to the Google repository.
 
@@ -511,7 +511,7 @@ A complex and highly dynamic build may require some restructuring anyway, so in 
 
 Since applying Gradle best practices will make your builds easier to use and faster, we recommend that you migrate all projects in that way eventually, but it makes sense to focus on the projects that have to be restructured first and those that would benefit most from the improvements.
 
-Also consider that the more parts of your build logic that rely on the dynamic aspects of Groovy, the harder they will be to use from the Kotlin DSL.
+Also consider that the more parts of your build logic rely on the dynamic aspects of Groovy, the harder they will be to use from the Kotlin DSL.
 You'll find recipes on how to cross the dynamic boundaries from static Kotlin in the <<interop>> section below, regardless of where the dynamic Groovy build logic resides.
 
 There are two key best practices that make it easier to work within the static context of the Kotlin DSL:
@@ -563,7 +563,7 @@ To call a Kotlin extension function from Groovy, call it as a static function, p
 include::sample[dir="interoperability/static-extensions",files="build.gradle[tags=kotlin-from-groovy]"]
 ====
 
-Kotlin extension functions are package-level functions and you can learn how to locate the name of the type declaring a given Kotlin extension in see the link:{kotlin-reference}java-to-kotlin-interop.html#package-level-functions[Package-Level Functions] section of the Kotlin reference documentation.
+Kotlin extension functions are package-level functions and you can learn how to locate the name of the type declaring a given Kotlin extension in the link:{kotlin-reference}java-to-kotlin-interop.html#package-level-functions[Package-Level Functions] section of the Kotlin reference documentation.
 
 To call a Groovy extension method from Kotlin, the same approach applies: call it as a static function passing the receiver as the first parameter.
 Here's an example:
@@ -587,7 +587,7 @@ There is no way to provide values by argument name.
 
 To call a Kotlin function that has default arguments from Groovy, always pass values for all the function parameters.
 
-==== Calling Kotlin from Groovy
+==== Calling Groovy from Kotlin
 
 To call a Groovy function with named arguments from Kotlin, you need to pass a `Map<String, ?>`, as shown in this example:
 
@@ -612,7 +612,7 @@ You may sometimes have to call Groovy methods that take link:http://groovy-lang.
 For example, some third-party plugins written in Groovy expect closure arguments.
 
 [NOTE]
-Gradle plugins written in any language should prefer the type `Action<T>` type in place of closures. Groovy closures and Kotlin lambdas are automatically mapped to arguments of that type.
+Gradle plugins written in any language should prefer the type `Action<T>` in place of closures. Groovy closures and Kotlin lambdas are automatically mapped to arguments of that type.
 
 In order to provide a way to construct closures while preserving Kotlin's strong typing, two helper methods exist:
 
@@ -707,7 +707,7 @@ Last, but not least, you learnt how the two DSLs inter-operate.
 // TODO Uncomment once this is true
 // * The Gradle link:{user-manual}userguide.html[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
 * The link:{user-manual}userguide.html#best-practices[Gradle Best Practices] user manual chapters contain reference documentation on how to structure your builds.
-* The link:kotlin-dsl-samples[`kotlin-dsl` samples] contain example of various build structures using the Kotlin DSL.
+* The link:kotlin-dsl-samples[`kotlin-dsl` samples] contain examples of various build structures using the Kotlin DSL.
 
 
 include::contribute[repo-path="gradle-guides/migrating-build-logic-from-groovy-to-kotlin"]
