@@ -1,10 +1,14 @@
 = Writing Gradle Plugins
 
-This guide walks you through the process of creating reusable build logic in a Gradle plugin, which can then be applied to other Gradle builds. The core of Gradle provides an infrastructure for building anything, but plugins are what allow build script authors to get things done with a minimum of effort, allowing them to focus on *what to build*, rather than *how to build*. Plugins can apply conventions, add new task types, integrate with third-party tools and libraries, and more. For instance, the `java` plugin provides standard source directory layouts and tasks such as `compileJava` and `compileTestJava`. This guide focuses on the most basic of plugins, but represents the tip of the iceberg.
+This guide walks you through the process of creating reusable build logic as a Gradle plugin — located within a project's `buildSrc` directory — which can then be extracted later into its own project, published, and applied to other Gradle builds.
+
+Plugins provide the conventions, task types and other build logic that allow build script authors to focus on the elements that are unique to their build. For example, the {user-manual}java_plugin.html[Java Plugin] provides a standard directory layout and tasks for performing such work as compiling source, generating Javadocs and running unit tests.
+
+This guide introduces you to a very simple plugin, but it does not represent the limits of what you can do with a plugin. Anything you can do in a Gradle build you can do in a plugin.
 
 == What you'll build
 
-You'll write a simple plugin that adds a new task type and creates a task of that type in whatever project its applied to. You will also prove that the plugin works and see its effect by applying the plugin to a build.
+You'll write a simple plugin that adds a new task type and creates a task of that type in whatever project it's applied to. You will also prove that the plugin works and see its effect by applying the plugin to its host build.
 
 == What you'll need
 
@@ -15,7 +19,7 @@ You'll write a simple plugin that adds a new task type and creates a task of tha
 
 == Create a project
 
-You'll need to create a directory for this plugin project and switch to it:
+You'll need to create a directory for the project and then switch to it:
 
 [listing.terminal]
 ----
@@ -23,20 +27,20 @@ $ mkdir greeting-plugin
 $ cd greeting-plugin
 ----
 
-Next, you will create a special directory structure for the plugin code:
+Next, create the following directory structure for the plugin code:
 
 [listing.terminal]
 ----
 $ mkdir -p buildSrc/src/main/java/org/example/greeting
 ----
 
-TIP: If you'd like to learn more about this `buildSrc` directory, you can read about how it allows you to organize your build logic {user-manual}organizing_gradle_projects.html#sec:build_sources[in the User Manual].
+The `buildSrc` directory is one way to encapsulate build logic that you want to keep out of the project's build scripts. It's useful for custom task types as well as plugins. You can read about more about it in {user-manual}organizing_gradle_projects.html#sec:build_sources[the user manual].
 
-TIP: You will often want to publish the plugin so that it can be reused across multiple builds. You can learn about the options to do just that in <<Next steps>>.
+TIP: If you want to use a plugin across multiple builds, you will need to publish it. See <<Next steps>> for links to information on how to do that. In essence, you promote the plugin into its own project, i.e. not inside another project's `buildSrc` directory, and configure its build to upload the packaged plugin to the Gradle Plugin Portal or some other repository.
 
 == Create the plugin
 
-Create the class `GreetingPlugin` in the directory you just created, setting its contents to the following:
+Create the class `GreetingPlugin` in the directory you just created — `buildSrc/src/main/java/org/example/greeting` — and set its contents to the following:
 
 [source,java]
 .buildSrc/src/main/java/org/example/greeting/GreetingPlugin.java
@@ -46,7 +50,7 @@ include::{exampledir}/buildSrc/src/main/java/org/example/greeting/GreetingPlugin
 <1> Creates a new task named `hello` of type `Greeting` (which you will define shortly)
 <2> Sets default values for the new task
 
-This is the actual plugin and the Gradle `Project` object is your access point for the entire Gradle API, which allows you to do the same things as you can do in a build script. In this case, you are creating a simple task called `hello` in the target project.
+This is the entry point for the plugin and the Gradle `Project` object provides access to the entire Gradle API, which allows you to do the same things as you can do in a build script. In this case, you are creating a simple task called `hello` in the target project.
 
 TIP: Use the Gradle {language-reference}[DSL Reference] and {api-reference}[Javadocs] to learn what you can do with the Gradle API. Start with the entry for {language-reference}org.gradle.api.Project.html[`Project`]. You can find out more about what you can achieve by also following the links in <<Next steps>>.
 
@@ -59,13 +63,13 @@ include::{exampledir}/buildSrc/src/main/java/org/example/greeting/Greeting.java[
 ----
 <1> Prints out the configured greeting when the task runs
 
-TIP: You can learn more about creating your own task types in the {user-manual}custom_tasks.html[User Manual].
+TIP: You can learn more about creating your own task types in the {user-manual}custom_tasks.html[user manual].
 
-You now have a plugin, but a plugin alone doesn't do anything. You need to apply it to a project using the `apply` keyword for it to be useful, so we will show you how to do that next.
+You now have a plugin, but a plugin alone doesn't do anything. You need to apply it to a project for it to be useful, which is what you'll do next.
 
-== Use the plugin in the main project
+== Apply the plugin to the host project
 
-Create a build script file in the root of the project with the following contents:
+Create a build script file in the root of the host project — the `greeting-plugin` directory — with the following contents:
 
 [source.multi-language-sample,groovy]
 .build.gradle
@@ -79,7 +83,7 @@ include::{exampledir}/build.gradle.kts[tags=use-plugin-class-name-with-info]
 ----
 <1> This applies your plugin to the current `Project` instance, adding the `hello` task to the build.
 
-TIP: The above syntax is all that's required because the plugin source resides in the `buildSrc` directory. Applying other, non-core Gradle plugins requires other syntax as described in the {user-manual}plugins.html#sec:binary_plugins[User Manual].
+NOTE: The syntax is different from the `plugins {}` block you may be used to. That is because the plugin source resides in the `buildSrc` directory and has no identifier (you'll add one shortly). See the {user-manual}plugins.html#sec:binary_plugins[user manual] for more information on the different ways to apply a plugin.
 
 You can now verify that your plugin is working by running its `hello` task in the main build:
 
@@ -90,7 +94,7 @@ include::{gradle-outdir}/hello/out.txt[]
 
 The bulk of the output reflects that the files in `buildSrc` are treated as a Java project, which needs to be built first. Once that happens, the classes inside that project become available in your main build and the main build can execute the task or tasks that you specified.
 
-Your build is currently just using the default property values for the greeting, hence why it prints out "Hello, World!". This doesn't have to be the case as you can configure the task directly in the build script:
+Your build is currently using the default property values for the greeting, hence why it prints out "Hello, World!". This doesn't have to be the case as you can configure the task directly in the build script:
 
 [source.multi-language-sample,groovy]
 .build.gradle
@@ -104,7 +108,7 @@ include::{exampledir}/configure-hello.gradle.kts[tags=configure-hello]
 ----
 <1> Configures multiple properties of the task named `hello`
 
-TIP: You can learn more about the syntax for configuring tasks in the {user-manual}more_about_tasks.html#sec:configuring_tasks[User Manual].
+TIP: You can learn more about the syntax for configuring tasks in the {user-manual}more_about_tasks.html#sec:configuring_tasks[user manual].
 
 Now when you run the `hello` task -- using `-q` to hide the `buildSrc` output this time -- you'll see the following:
 
@@ -156,9 +160,9 @@ include::{exampledir}/configure-hello.gradle[tags=use-plugin-id]
 include::{exampledir}/configure-hello.gradle.kts[tags=use-plugin-id]
 ----
 
-Note how the name of the properties file -- `org.example.greeting.properties` -- maps to the ID above.
+Note how the name of the properties file -- `org.example.greeting.properties` -- matches the plugin ID. That is required.
 
-TIP: Always qualify the plugin name with a namespace that is unique to you instead of the "org.example" used in this guide. Doing so helps avoid name clashes between plugins. You can find more details about plugin IDs in the {user-manual}custom_plugins.html#sec:creating_a_plugin_id[User Manual].
+TIP: Always qualify the plugin name with a namespace that is unique to you instead of the "org.example" used in this guide. Doing so helps avoid name clashes between plugins. You can find more details about plugin IDs in the {user-manual}custom_plugins.html#sec:creating_a_plugin_id[user manual].
 
 == Summary
 
