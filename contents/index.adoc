@@ -707,7 +707,7 @@ Last, but not least, you learnt how the two DSLs inter-operate.
 // TODO Uncomment once this is true
 // * The Gradle link:{user-manual}userguide.html[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
 * The link:{user-manual}userguide.html#best-practices[Gradle Best Practices] user manual chapters contain reference documentation on how to structure your builds.
-* The link:kotlin-dsl-samples[`kotlin-dsl` samples] contain examples of various build structures using the Kotlin DSL.
+* The link:{kotlin-dsl-samples}[`kotlin-dsl` samples] contain examples of various build structures using the Kotlin DSL.
 
 
 include::contribute[repo-path="gradle-guides/migrating-build-logic-from-groovy-to-kotlin"]
