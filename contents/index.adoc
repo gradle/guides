@@ -1,16 +1,16 @@
-= Publishing Plugins to Gradle Plugin Portal
+= Publishing Plugins to the Gradle Plugin Portal
 :portal: Gradle Plugin Portal
 :plugin: Greeting Plugin
 :publishplugin: Plugin Publishing Plugin
 :plugin-reference-documentation: https://plugins.gradle.org/docs/publish-plugin[reference documentation of the {publishplugin}]
 
-Sharing a plugin with others means publishing the artifact, along with specific metadata and in most cases the `pom.xml`, to any type of repository that is supported by Gradle. Sharing a plugin on a global scale requires using a well-known repository. The https://plugins.gradle.org[{portal}] provides a centralized repository that is dedicated to Gradle plugins and which is also easily searchable.
+Publishing a plugin is the main way to make it available for others to use. One approach is to publish the plugin to a private repository, which is common when you want to restrict who can use it. But if you want the plugin to be available to anyone in the world, i.e. public, then you should publish it to the https://plugins.gradle.org[{portal}], a centralized, searchable repository dedicated to Gradle plugins.
 
-The https://plugins.gradle.org/plugin/com.gradle.plugin-publish[{publishplugin}] provides a convenient DSL to publish to the {portal} and thereby eliminating a large number of configuration steps that might otherwise be needed when publishing to different Maven repository. It also provides a number of checks to validate that your plugin meets the criteria for publishing to the {portal}.
+This guide will show you how to use the https://plugins.gradle.org/plugin/com.gradle.plugin-publish[{publishplugin}] to publish plugins to the {portal} using a convenient DSL. Taking this approach eliminates a large number of configuration steps and provides a number of checks to validate that your plugin meets the criteria enforced by the {portal}.
 
 == What you'll build
 
-You will take an existing plugin project and configure it so that the plugin is publishable to the {portal}.
+You will take an existing plugin project and configure it so that the plugin can be published to the {portal}. You will then perform the publication.
 
 == What you'll need
 
@@ -19,19 +19,24 @@ You will take an existing plugin project and configure it so that the plugin is 
 * A command prompt
 * The Java Development Kit (JDK), version 1.7 or higher
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
-* Source code for an existing Gradle plugin. (Preferably your own).
 
-NOTE: If you have never written a plugin, you can use the https://github.com/gradle-guides/greeting-plugin-example[Greeting Plugin example]. Also see {guides}/writing-gradle-plugins[Writing Gradle Plugins] for other plugin ideas.
+== Start with an existing Gradle plugin project
+
+You will need an existing plugin project for this tutorial. If you don't have your own, then you should download the source code for the example Greeting Plugin project https://github.com/gradle-guides/greeting-plugin-example[from GitHub]. It's based on the Greeting Plugin developed in the {guides}/writing-gradle-plugins[Writing Gradle Plugins] guide.
+
+NOTE: If you have followed the _Writing Gradle Plugins_ guide and want to use its project as the basis for this guide, then you will need to copy the contents of the _buildSrc_ directory into its own project and add a build file. If you're not sure how to do that, just use the example project from GitHub.
+
+Don't worry about cluttering up the {portal} with a trivial example plugin: trying to publish this plugin will safely fail with a permission error.
 
 == Create an account on the {portal}
 
-If you never published a plugin before you need to create an account on the {portal}. This consists of three steps:
+If you have never published a plugin to the {portal} before, you first need to create an account there. This consists of three steps:
 
-. Create an account.
-. Create an API key.
-. Add your API key to your Gradle configuration.
+. Create an account
+. Create an API key
+. Add your API key to your Gradle configuration
 
-First go to the https://plugins.gradle.org/user/register[registration page] and create an account.
+Start by going to the https://plugins.gradle.org/user/register[registration page] — which looks like the image below — and creating an account.
 
 .Registration page
 image::registration-page-552x432.png[]
@@ -41,7 +46,7 @@ Follow the instructions on that page. Once you have logged in, you can get your 
 .API keys is the third tab
 image::api-keys-860x208.png[]
 
-It is common practice to copy-paste the text into your {user-manual}build_environment.html#properties[$HOME/.gradle/gradle.properties] file, but if you wish you can place it elsewhere. All that the plugin requires is that `gradle.publish.key` and `gradle.publish.secret` are available as project properties when the appropriate Plugin portal tasks are executed.
+It is common practice to copy and paste the text into your {user-manual}build_environment.html#properties[$HOME/.gradle/gradle.properties] file, but you can also place it in any other valid location. All that the plugin requires is that `gradle.publish.key` and `gradle.publish.secret` are available as project properties when the appropriate Plugin Portal tasks are executed.
 
 If you are concerned about placing your credentials in `gradle.properties`, investigate use of https://plugins.gradle.org/plugin/de.qaware.seu.as.code.credentials[Seauc Credentials plugin] or the https://plugins.gradle.org/plugin/nu.studer.credentials[Gradle Credentials plugin].
 
@@ -82,7 +87,9 @@ include::{samples-dir}/build.gradle.kts[tags=plugin_bundle]
 <2> Provide the source repository URI so that others can find it if they want to contribute.
 <3> Set the tags to be used for all plugins unless overridden in the `plugins` block.
 
-Now specify the details of the plugin. This is done in a `plugins` block within the `gradlePlugin` block. The most important part is the `id`, as that both uniquely identifies it on the {portal} and prevents namespace clashes between different plugin authors. It should follow a domain namespace pattern i.e. `org.samples.greeting`. Substitute the values from this example with ones specific to your plugin. Take your time to think about good entries, as this information contributes to a better experience for people looking for specific plugins.
+Now specify the details of the plugin. This is done in a `plugins` block within the `gradlePlugin` block. The most important part is the `id` property, as that both uniquely identifies it on the {portal} and prevents namespace clashes between different plugin authors.
+
+As a convention, we recommend you use an ID based on the reverse-domain pattern used for Java packages, for example `org.example.greeting`. You can use this example ID for the Greeting Plugin project, but substitute the values for more appropriate ones if you're working with your own plugin that you actually want published.
 
 .build.gradle
 [source.multi-language-sample,groovy]
@@ -102,17 +109,17 @@ include::{samples-dir}/build.gradle.kts[tags=gradle-plugin]
 
 NOTE: If you are publishing multiple plugins, please note that it's possible to use custom tags and a custom version per plugin using the `pluginBundle` block. Please refer to the {plugin-reference-documentation} for an example.
 
-Think about what would be the correct metadata for your plugin and fill in the template appropriately. Here is an example of the `pluginBundle` configuration for the the https://github.com/gradle-guides/greeting-plugin-example[Greeting Plugin example]:
+Think about what would be the correct metadata for your plugin and fill in the template appropriately. Here is an example of the `pluginBundle` configuration that you can use for the https://github.com/gradle-guides/greeting-plugin-example[Greeting Plugin example]:
 
 .build.gradle
 [source.multi-language-sample,groovy]
 ----
 pluginBundle {
-    // please change these URLs to point to your own website/repository
     website = 'http://www.gradle.org/'
     vcsUrl = 'https://github.com/gradle-guides/greeting-plugin-example'
     tags = ['example', 'template']
 }
+
 gradlePlugin {
     plugins {
         greetingsPlugin {
@@ -133,6 +140,7 @@ pluginBundle {
     vcsUrl = "https://github.com/gradle-guides/greeting-plugin-example"
     tags = listOf("example", "template")
 }
+
 gradlePlugin {
     plugins {
         create("greetingsPlugin") {
@@ -207,13 +215,13 @@ If you have not configured your {portal} key and secret values in your `gradle.p
 $ ./gradlew publishPlugins -Pgradle.publish.key=<key> -Pgradle.publish.secret=<secret>
 ----
 
-NOTE: If you publish the example `GreetingPlugin` as-is, it will be rejected. That will keep the portal from being overrun with too many experimental and duplicate greeting-type plugins. In this case the following link:#consume[Consume the publish plugin] section will not be applicable.
+NOTE: If you attempt to publish the example Greeting Plugin with the ID used in this guide, you will encounter a permission failure. That's expected and ensures that the portal won't be overrun with multiple experimental and duplicate greeting-type plugins.
 
 
 [[consume]]
 == Consume the published plugin
 
-Once your plugin has been published, the instructions for others to use it will automatically appear on the plugin under a URL of the form *+https://plugins.gradle.org/plugin/<your-plugin-id>+*.
+If your plugin is successfully published, you'll be able to find instructions for its use at a URL of the form *+https://plugins.gradle.org/plugin/<your-plugin-id>+*. For example, the Greeting Plugin example is already on the portal at https://plugins.gradle.org/plugin/org.example.greeting.
 
 == Next steps
 
