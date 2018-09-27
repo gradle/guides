@@ -98,7 +98,7 @@ include::{gradle-outdir}/kotlin-dsl-files/build.gradle.kts[tags=init]
 
 <1> Public Bintray Artifactory repository
 <2> This is an example of a dependency which is exported to consumers, that is to say found on their compile classpath.
-<3> This is an exampe of a dependency which is used internally, and not exposed to consumers on their own compile classpath.
+<3> This is an example of a dependency which is used internally, and not exposed to consumers on their own compile classpath.
 <4> JUnit testing library
 
 The build script adds the {user-manual}java_library_plugin.html[java-library] plugin. This is an extension of the `java-base` plugin and adds additional tasks for compiling Java source code.
