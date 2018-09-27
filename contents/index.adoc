@@ -60,7 +60,7 @@ Hello, World // <2>
 
 Congratulations! You have added your first ad-hoc task.
 
-.Do not use << as an alternative to doLast
+.Using << as an alternative to doLast is no longer supported
 [IMPORTANT.multi-language-text.lang-groovy]
 ====
 [source,groovy]
@@ -72,7 +72,7 @@ task hello << {
 
 You may comes across an alternative form for creating ad-hoc tasks in some older documentation and blog posts whereby the left-shift operator (`<<`) is used.
 
-This form has caused too much confusion in the past especially among people that are new to Gradle. It also reduces readability. We have https://docs.gradle.org/3.2/release-notes#the-left-shift-operator-on-the-task-interface[deprecated this behaviour] and the functionality will be removed in Gradle 5.0.
+This form caused too much confusion in the past especially among people that were new to Gradle. It also reduced readability. Therefore, we https://docs.gradle.org/3.2/release-notes#the-left-shift-operator-on-the-task-interface[deprecated this behaviour] in Gradle 3.2 and removed the functionality in Gradle 5.0.
 ====
 
 == Add a task description
