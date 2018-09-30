@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     groovy
     `java-gradle-plugin`
@@ -15,8 +17,8 @@ group = "com.github.gradle-guides"
 version = "0.1"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_6
-    targetCompatibility = JavaVersion.VERSION_1_6
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 repositories {
@@ -39,4 +41,8 @@ gradlePlugin {
             implementationClass = "org.gradle.plugins.site.SitePlugin"
         }
     }
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "1.8"
 }
