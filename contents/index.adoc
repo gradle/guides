@@ -60,21 +60,6 @@ Hello, World // <2>
 
 Congratulations! You have added your first ad-hoc task.
 
-.Using << as an alternative to doLast is no longer supported
-[IMPORTANT.multi-language-text.lang-groovy]
-====
-[source,groovy]
-----
-task hello << {
-  println 'Hello, World!'
-}
-----
-
-You may comes across an alternative form for creating ad-hoc tasks in some older documentation and blog posts whereby the left-shift operator (`<<`) is used.
-
-This form caused too much confusion in the past especially among people that were new to Gradle. It also reduced readability. Therefore, we https://docs.gradle.org/3.2/release-notes#the-left-shift-operator-on-the-task-interface[deprecated this behaviour] in Gradle 3.2 and removed the functionality in Gradle 5.0.
-====
-
 == Add a task description
 
 Although you have tested your new ad-hoc task and know that it works, it is good practice to tell others who will use your build script what the purpose of your new task is. It is also useful to categorise your task.
