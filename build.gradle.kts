@@ -1,12 +1,15 @@
 plugins {
     groovy
     `java-gradle-plugin`
+    kotlin("jvm").version("1.2.71")
 }
 
 apply(from = "$rootDir/gradle/build-scan.gradle")
 apply(from = "$rootDir/gradle/functional-test.gradle")
 apply(from = "$rootDir/gradle/publishing-portal.gradle")
 apply(from = "$rootDir/gradle/ghpages-sample.gradle")
+
+val kotlinVersion by extra { "1.2.71" }
 
 group = "com.github.gradle-guides"
 version = "0.1"
@@ -25,6 +28,8 @@ dependencies {
     testCompile("org.spockframework:spock-core:1.1-groovy-2.4") {
         exclude(group = "org.codehaus.groovy")
     }
+
+    implementation(kotlin("stdlib-jdk8", kotlinVersion))
 }
 
 gradlePlugin {
