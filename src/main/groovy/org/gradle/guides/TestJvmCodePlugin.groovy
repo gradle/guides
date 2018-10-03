@@ -74,7 +74,7 @@ class TestJvmCodePlugin implements Plugin<Project> {
         repositoryHandler.maven(new Action<MavenArtifactRepository>() {
             @Override
             void execute(MavenArtifactRepository mavenArtifactRepository) {
-                mavenArtifactRepository.setUrl('https://repo.gradle.org/gradle/libs-releases-local')
+                mavenArtifactRepository.setUrl('https://repo.gradle.org/gradle/libs-releases')
             }
         })
     }
