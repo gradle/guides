@@ -71,7 +71,7 @@ Let’s consider the following sample task for illustration. The task generates 
 .Generate.java
 [source,java]
 ----
-include::{samplescodedir}/incremental-task/buildSrc/src/main/java/Generate.java[]
+include::{groovy-example-dir}/code/incremental-task/buildSrc/src/main/java/Generate.java[]
 ----
 
 The first section of this guide talks about the <<plugin-development-plugin,Plugin Development plugin>>. As an added benefit of applying the plugin to your project, the task `validateTaskProperties` automatically checks for an existing input/output annotation for every public property define in a custom task type implementation.
