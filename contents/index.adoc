@@ -256,24 +256,6 @@ include::sample[dir="configuring-tasks/basics/groovy",files="build.gradle[tags=c
 include::sample[dir="configuring-tasks/basics/kotlin",files="build.gradle.kts[tags=config-eager]"]
 ====
 
-An alternative and more idiomatic way to configure tasks compared to using the `tasks` collection API is through the use of Kotlin's link:{kotlin-reference}delegated-properties.html[delegated properties].
-This approach is particularly useful if you want to reference the task at a later stage in the build script.
-The following sample initially configures the `jar` task's `archiveName` property and then later adds an `into()` declaration via the new delegated property `jar`:
-
-.Using the configuration avoidance API & DSL
-====
-include::sample[dir="configuring-tasks/basics/groovy",files="build.gradle[tags=reference-lazy]"]
-include::sample[dir="configuring-tasks/basics/kotlin",files="build.gradle.kts[tags=reference-lazy]"]
-====
-
-.Using the eager API & DSL
-====
-include::sample[dir="configuring-tasks/basics/groovy",files="build.gradle[tags=reference-eager]"]
-include::sample[dir="configuring-tasks/basics/kotlin",files="build.gradle.kts[tags=reference-eager]"]
-====
-
-Note that even with this approach, you need to provide the type of the task when applying type-specific configuration.
-
 Once the task type is declared, the IDE can assist you in configuring the task with suggestions and by providing access to the task's source.
 
 [TIP]
@@ -351,20 +333,6 @@ include::sample[dir="creating-tasks/tasks-eager/groovy",files="build.gradle[tags
 include::sample[dir="creating-tasks/tasks-eager/kotlin",files="build.gradle.kts[tags=container-api]"]
 ====
 
-or by using Kotlin delegated properties for when you need a reference to the created task for later:
-
-.Using the configuration avoidance API & DSL
-====
-include::sample[dir="creating-tasks/reference-lazy/groovy",files="build.gradle[tags=reference]"]
-include::sample[dir="creating-tasks/reference-lazy/kotlin",files="build.gradle.kts[tags=reference]"]
-====
-
-.Using the eager API & DSL
-====
-include::sample[dir="creating-tasks/reference-eager/groovy",files="build.gradle[tags=reference]"]
-include::sample[dir="creating-tasks/reference-eager/kotlin",files="build.gradle.kts[tags=reference]"]
-====
-
 The samples above create untyped, ad-hoc tasks, but you will more commonly want to create tasks of a specific type.
 This can also be done using the same `create()` and `creating()` methods.
 Here's an example that creates a new task of type `Zip`:
@@ -379,20 +347,6 @@ include::sample[dir="creating-tasks/tasks-lazy/kotlin",files="build.gradle.kts[t
 ====
 include::sample[dir="creating-tasks/tasks-eager/groovy",files="build.gradle[tags=typed-container-api]"]
 include::sample[dir="creating-tasks/tasks-eager/kotlin",files="build.gradle.kts[tags=typed-container-api]"]
-====
-
-Here's the same task created using a delegated property:
-
-.Using the configuration avoidance API & DSL
-====
-include::sample[dir="creating-tasks/reference-lazy/groovy",files="build.gradle[tags=typed-reference]"]
-include::sample[dir="creating-tasks/reference-lazy/kotlin",files="build.gradle.kts[tags=typed-reference]"]
-====
-
-.Using the eager API & DSL
-====
-include::sample[dir="creating-tasks/reference-eager/groovy",files="build.gradle[tags=typed-reference]"]
-include::sample[dir="creating-tasks/reference-eager/kotlin",files="build.gradle.kts[tags=typed-reference]"]
 ====
 
 
@@ -421,13 +375,6 @@ Note that if you do not use the `plugins {}` block to apply your plugins, then y
 ====
 include::sample[dir="configurations-and-dependencies/imperative/groovy",files="build.gradle[]"]
 include::sample[dir="configurations-and-dependencies/imperative/kotlin",files="build.gradle.kts[tags=string-invoke]"]
-====
-
-or you can bring the configurations into scope thanks to Kotlin's delegated properties:
-
-====
-include::sample[dir="configurations-and-dependencies/imperative/groovy",files="build.gradle[]"]
-include::sample[dir="configurations-and-dependencies/imperative/kotlin",files="build.gradle.kts[tags=delegated-properties]"]
 ====
 
 This is just one more reason to use the `plugins {}` block whenever you can!
