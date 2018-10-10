@@ -20,9 +20,15 @@ If you happen to be a beginner to Gradle please start by working through the lin
 Setting up a Gradle plugin project should require as little boilerplate code as possible. The {user-manual}java_gradle_plugin.html[Java Gradle Plugin Development plugin] provides aid in this concern. To get started add the following code to your _build.gradle_ file:
 
 .build.gradle
-[source,groovy]
+[source.multi-language-sample,groovy]
 ----
-include::{samplescodedir}/plugin-dev-plugin/build.gradle[]
+include::{groovy-example-dir}/code/plugin-dev-plugin/build.gradle[]
+----
+
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/code/plugin-dev-plugin/build.gradle.kts[]
 ----
 
 By applying the plugin, necessary plugins are applied and relevant dependencies are added. It also helps with validating the plugin metadata before publishing the binary artifact to the Gradle plugin portal. Every plugin project should apply this plugin.
