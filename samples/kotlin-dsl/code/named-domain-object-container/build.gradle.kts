@@ -1,18 +1,21 @@
 import ServerEnvironmentPlugin
-import ServerEnvironments
+import ServerEnvironment
 
 apply<ServerEnvironmentPlugin>()
 
-configure<ServerEnvironments> {
-    create("dev") {
-        url = 'http://localhost:8080'
+extensions.configure("environments") {
+    (this as NamedDomainObjectContainer<ServerEnvironment>).let {
+      create("dev") {
+          url = "http://localhost:8080"
+      }
+
+      create("staging") {
+          url = "http://staging.enterprise.com"
+      }
+
+      create("production") {
+          url = "http://prod.enterprise.com"
+      }
     }
 
-    create("staging") {
-        url = 'http://staging.enterprise.com'
-    }
-
-    create("production") {
-        url = 'http://prod.enterprise.com'
-    }
 }
