@@ -116,7 +116,7 @@ include::{groovy-example-dir}/code/part3/custom-hello.gradle[]
 include::{kotlin-example-dir}/code/part3/custom-hello.gradle.kts[]
 ----
 <1> As the build DSL in a `build.gradle` (resp. `build.gradle.kts`) file is a Groovy-based (resp. Kotlin-based) DSL, the class will be a Groovy (resp. Kotlin) class.
-<2> Although other task classes from the Gradle API can be used in specific circumstances, extending {javadoc}/org/gradle/api/DefaultTask.html[DefaultTask] is the most common scenario.
+<2> Although other task classes from the Gradle API can be used in specific circumstances, extending `{language-reference}org.gradle.api.DefaultTask.html[DefaultTask]` is the most common scenario.
 <3> Adding `message` and `recipient` properties allow instances of this custom task type to be configurable
 <4> Annotate the default task action.
 <5> Print the message using a standard Groovy/Kotlin interpolated string.
