@@ -154,9 +154,15 @@ Plugins should expose a way to reconfigure the default runtime behavior. The sec
 The following example applies a plugin that exposes an extension with the name `binaryRepo` to capture a server URL:
 
 .build.gradle
-[source,groovy]
+[source.multi-language-sample,groovy]
 ----
-include::{samplescodedir}/capture-user-input/build.gradle[]
+include::{groovy-example-dir}/code/capture-user-input/build.gradle[]
+----
+
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/code/capture-user-input/build.gradle.kts[]
 ----
 
 Let's assume that you'll also want to do something with the value of `serverUrl` once captured. In many cases the exposed extension property is directly mapped to a task property that actually uses the value when performing work. To avoid evaluation order problems you should use {user-manual}lazy_configuration.html#lazy_properties[the public API `Property`] which was introduced in Gradle 4.0.
@@ -166,7 +172,7 @@ Let's have a look at the internals of the plugin `BinaryRepositoryVersionPlugin`
 .BinaryRepositoryVersionPlugin.java
 [source,java]
 ----
-include::{samplescodedir}/capture-user-input/buildSrc/src/main/java/BinaryRepositoryVersionPlugin.java[]
+include::{groovy-example-dir}/code/capture-user-input/buildSrc/src/main/java/BinaryRepositoryVersionPlugin.java[]
 ----
 
 Instead of using a plain `String` type, the extension defines the field `serverUrl` with type `Property<String>`. The field is initialized in the constructor of the class. It's state can be set directly on the object by getting the instance via the exposed getter methods.
@@ -176,7 +182,7 @@ NOTE: The Gradle classloader automatically injects setter methods alongside all 
 .BinaryRepositoryExtension.java
 [source,java]
 ----
-include::{samplescodedir}/capture-user-input/buildSrc/src/main/java/BinaryRepositoryExtension.java[]
+include::{groovy-example-dir}/code/capture-user-input/buildSrc/src/main/java/BinaryRepositoryExtension.java[]
 
 ----
 
@@ -185,7 +191,7 @@ The task property also defines the `serverUrl` with type `Property`. It allows f
 .LatestArtifactVersion.java
 [source,java]
 ----
-include::{samplescodedir}/capture-user-input/buildSrc/src/main/java/LatestArtifactVersion.java[]
+include::{groovy-example-dir}/code/capture-user-input/buildSrc/src/main/java/LatestArtifactVersion.java[]
 
 ----
 
