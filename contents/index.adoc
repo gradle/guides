@@ -269,21 +269,27 @@ Let’s have a look at an example. You wrote a plugin that downloads files conta
 .DataProcessingPlugin.java
 [source,java]
 ----
-include::{samplescodedir}/default-dependency/buildSrc/src/main/java/DataProcessingPlugin.java[]
+include::{groovy-example-dir}/code/default-dependency/buildSrc/src/main/java/DataProcessingPlugin.java[]
 ----
 
 .DataProcessing.java
 [source,java]
 ----
-include::{samplescodedir}/default-dependency/buildSrc/src/main/java/DataProcessing.java[]
+include::{groovy-example-dir}/code/default-dependency/buildSrc/src/main/java/DataProcessing.java[]
 ----
 
 Now, this approach is very convenient for the end user as there’s no need to actively declare a dependency. The plugin already provides all the knowledge about this implementation detail. But what if the user would like to redefine the default dependency. No problem...the plugin also exposes the custom configuration that can be used to assign a different dependency. Effectively, the default dependency is overwritten.
 
 .build.gradle
-[source,groovy]
+[source.multi-language-sample,groovy]
 ----
-include::{samplescodedir}/default-dependency/build.gradle[]
+include::{groovy-example-dir}/code/default-dependency/build.gradle[]
+----
+
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/code/default-dependency/build.gradle.kts[]
 ----
 
 You will find that this pattern works well for tasks that require an external dependency when the action of the task is actually executed. The method is heavily used for custom tasks that execute an external Ant task like many of the {user-manual}standard_plugins.html#sec:software_development_plugins[Gradle core static analysis plugins] do e.g. the FindBugs and Checkstyle plugin. In fact those plugins even go further and abstract the version to be used for the external dependency by exposing an extension property (e.g. `toolVersion` {language-reference}org.gradle.testing.jacoco.plugins.JacocoPluginExtension.html#org.gradle.testing.jacoco.plugins.JacocoPluginExtension:toolVersion[in the JaCoCo plugin]).
