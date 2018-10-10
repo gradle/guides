@@ -81,7 +81,7 @@ The first section of this guide talks about the <<plugin-development-plugin,Plug
 DSLs exposed by plugins should be readable and easy to understand. For illustration let's consider the following extension provided by a plugin. In its current form it offers a "flat" list of properties for configuring the creation of a web site.
 
 .build.gradle
-[source,groovy]
+[source.multi-language-sample,groovy]
 ----
 apply plugin: SitePlugin
 
@@ -92,12 +92,33 @@ site {
 }
 ----
 
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+import SitePlugin
+import SiteExtension
+
+apply<SitePlugin>()
+
+configure<SiteExtension> {
+    outputDir = file("build/mysite")
+    websiteUrl = "http://gradle.org"
+    vcsUrl = "https://github.com/gradle-guides/gradle-site-plugin"
+}
+----
+
 As the number of exposed properties grows, you might want to introduce a nested, more expressive structure. The following code snippet adds a new configuration block named `customData` as part of the extension. You might have noticed that it provides a stronger indication of what those properties mean.
 
 .build.gradle
-[source,groovy]
+[source.multi-language-sample,groovy]
 ----
-include::{samplescodedir}/dsl-like-api/build.gradle[]
+include::{groovy-example-dir}/code/dsl-like-api/build.gradle[]
+----
+
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/code/dsl-like-api/build.gradle.kts[]
 ----
 
 It's fairly easy to implement the backing objects of such an extension. First of all, you'll need to introduce a new data object for managing the properties `websiteUrl` and `vcsUrl`.
@@ -105,15 +126,15 @@ It's fairly easy to implement the backing objects of such an extension. First of
 .CustomData.java
 [source,java]
 ----
-include::{samplescodedir}/dsl-like-api/buildSrc/src/main/java/CustomData.java[]
+include::{groovy-example-dir}/code/dsl-like-api/buildSrc/src/main/java/CustomData.java[]
 ----
 
-In the extension, you'll need to create an instance of the `CustomData` class and a method that can delegate the captured values to the data instance. To configure underlying data objects define a parameter of type {api-reference}org/gradle/api/Action.html[org.gradle.api.Action]. The following example demonstrates the use of `Action` in an extension definition.
+In the extension, you'll need to create an instance of the `CustomData` class and a method that can delegate the captured values to the data instance. To configure underlying data objects define a parameter of type `{api-reference}org/gradle/api/Action.html[Action]`. The following example demonstrates the use of `Action` in an extension definition.
 
 .SiteExtension.java
 [source,java]
 ----
-include::{samplescodedir}/dsl-like-api/buildSrc/src/main/java/SiteExtension.java[]
+include::{groovy-example-dir}/code/dsl-like-api/buildSrc/src/main/java/SiteExtension.java[]
 ----
 
 NOTE: If you need second- or third-level nesting, you will also have to add overloads that take a `Closure`, because Gradle cannot instrument nested extensions at the moment.
