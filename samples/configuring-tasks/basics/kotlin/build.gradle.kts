@@ -46,7 +46,7 @@ tasks.getByName<Jar>("jar") {
 // end::config-eager[]
 
 
-tasks {
+run {
 
 // tag::reference-lazy[]
 val jar by tasks.existing(Jar::class) {
@@ -62,7 +62,7 @@ jar {
 
 }
 
-tasks {
+run {
 
 // tag::reference-eager[]
 val jar by tasks.getting(Jar::class) {
