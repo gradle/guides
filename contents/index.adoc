@@ -14,10 +14,13 @@ Gradle's newer Kotlin DSL provides a pleasant editing experience in supported ID
 
 image::intellij-idea-android-studio.png[IntelliJ IDEA and Android Studio]
 
-// TODO Uncomment once this is true
-// [TIP]
-// The Gradle link:{user-manual}userguide.html[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
-// This is the best place where to find how to do this and what with each DSL ; and it covers all Gradle features from link:{user-manual}plugins.html[using plugins] to link:{user-manual}customizing_dependency_resolution_behavior.html[customizing the dependency resolution behavior].
+[TIP]
+--
+Please also read the link:{user-manual}kotlin_dsl.html[Gradle Kotlin DSL Primer] in the Gradle user manual to learn the specificities, limitations and usage of the Gradle Kotlin DSL.
+
+The rest of the Gradle link:{user-manual}userguide.html[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
+This is the best place where to find how to do this and what with each DSL ; and it covers all Gradle features from link:{user-manual}plugins.html[using plugins] to link:{user-manual}customizing_dependency_resolution_behavior.html[customizing the dependency resolution behavior].
+--
 
 
 == Before you start migrating
@@ -513,8 +516,8 @@ Last, but not least, you learnt how the two DSLs inter-operate.
 
 === Next steps
 
-// TODO Uncomment once this is true
-// * The Gradle link:{user-manual}userguide.html[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
+* The link:{user-manual}kotlin_dsl.html[Gradle Kotlin DSL Primer] in the Gradle user manual is a must read.
+* The Gradle link:{user-manual}userguide.html[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
 * The link:{user-manual}userguide.html#best-practices[Gradle Best Practices] user manual chapters contain reference documentation on how to structure your builds.
 * The link:{kotlin-dsl-samples}[`kotlin-dsl` samples] contain examples of various build structures using the Kotlin DSL.
 
