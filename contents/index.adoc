@@ -43,15 +43,21 @@ Let’s say you implemented a plugin that resolves the latest version of a depen
 .LatestArtifactVersion.java
 [source,java]
 ----
-include::{samplescodedir}/custom-task/buildSrc/src/main/java/com/company/gradle/binaryrepo/LatestArtifactVersion.java[]
+include::{groovy-example-dir}/code/custom-task/buildSrc/src/main/java/com/company/gradle/binaryrepo/LatestArtifactVersion.java[]
 ----
 
 The end user of the task can now easily create multiple tasks of that type with different configuration. All the imperative, potentially complex logic is completely hidden in the custom task implementation.
 
 .build.gradle
-[source,groovy]
+[source.multi-language-sample,groovy]
 ----
-include::{samplescodedir}/custom-task/build.gradle[]
+include::{groovy-example-dir}/code/custom-task/build.gradle[]
+----
+
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/code/custom-task/build.gradle.kts[]
 ----
 
 === Benefiting from incremental tasks
