@@ -202,9 +202,15 @@ NOTE: We encourage plugin developers to migrate their plugins to the public API 
 Sometimes you might want to expose a way for users to define multiple, named data objects of the same type. Let's consider the following build script for illustration purposes.
 
 .build.gradle
-[source,groovy]
+[source.multi-language-sample,groovy]
 ----
-include::{samplescodedir}/named-domain-object-container/build.gradle[]
+include::{groovy-example-dir}/code/named-domain-object-container/build.gradle[]
+----
+
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/code/named-domain-object-container/build.gradle.kts[]
 ----
 
 The DSL exposed by the plugin exposes a _container_ for defining a set of environments. Each environment configured by the user has an arbitrary but declarative name and is represented with its own DSL configuration block. The example above instantiates a development, staging and production environment including its respective URL.
@@ -214,15 +220,15 @@ Obviously, each of these environments needs to have a data representation in cod
 .ServerEnvironment.java
 [source,java]
 ----
-include::{samplescodedir}/named-domain-object-container/buildSrc/src/main/java/ServerEnvironment.java[]
+include::{groovy-example-dir}/code/named-domain-object-container/buildSrc/src/main/java/ServerEnvironment.java[]
 ----
 
-Gradle exposes the convenience method {api-reference}org/gradle/api/Project.html#container(java.lang.Class)[Project.html#container(java.lang.Class)] to create a container of data objects. The parameter the method takes is the class representing the data. The created instance of type {api-reference}org/gradle/api/NamedDomainObjectContainer.html[NamedDomainObjectContainer] can be exposed to the end user by adding it to the extension container with a specific name.
+Gradle exposes the convenience method `{api-reference}org/gradle/api/Project.html#container(java.lang.Class)[Project#container(java.lang.Class)]` to create a container of data objects. The parameter the method takes is the class representing the data. The created instance of type {api-reference}org/gradle/api/NamedDomainObjectContainer.html[NamedDomainObjectContainer] can be exposed to the end user by adding it to the extension container with a specific name.
 
 .ServerEnvironmentPlugin.java
 [source,java]
 ----
-include::{samplescodedir}/named-domain-object-container/buildSrc/src/main/java/ServerEnvironmentPlugin.java[]
+include::{groovy-example-dir}/code/named-domain-object-container/buildSrc/src/main/java/ServerEnvironmentPlugin.java[]
 ----
 
 It's very common for a plugin to post-process the captured values within the plugin implementation e.g. to configure tasks. In the example above, a deployment task is created dynamically for every environment that was configured by the user.
