@@ -19,17 +19,10 @@ If you happen to be a beginner to Gradle please start by working through the lin
 
 Setting up a Gradle plugin project should require as little boilerplate code as possible. The {user-manual}java_gradle_plugin.html[Java Gradle Plugin Development plugin] provides aid in this concern. To get started add the following code to your _build.gradle_ file:
 
-.build.gradle
-[source.multi-language-sample,groovy]
-----
-include::{groovy-example-dir}/code/plugin-dev-plugin/build.gradle[]
-----
-
-.build.gradle.kts
-[source.multi-language-sample,kotlin]
-----
-include::{kotlin-example-dir}/code/plugin-dev-plugin/build.gradle.kts[]
-----
+====
+include::sample[dir="groovy-dsl/code/plugin-dev-plugin",files="build.gradle[]"]
+include::sample[dir="kotlin-dsl/code/plugin-dev-plugin",files="build.gradle.kts[]"]
+====
 
 By applying the plugin, necessary plugins are applied and relevant dependencies are added. It also helps with validating the plugin metadata before publishing the binary artifact to the Gradle plugin portal. Every plugin project should apply this plugin.
 
@@ -48,17 +41,10 @@ include::{groovy-example-dir}/code/custom-task/buildSrc/src/main/java/com/compan
 
 The end user of the task can now easily create multiple tasks of that type with different configuration. All the imperative, potentially complex logic is completely hidden in the custom task implementation.
 
-.build.gradle
-[source.multi-language-sample,groovy]
-----
-include::{groovy-example-dir}/code/custom-task/build.gradle[]
-----
-
-.build.gradle.kts
-[source.multi-language-sample,kotlin]
-----
-include::{kotlin-example-dir}/code/custom-task/build.gradle.kts[]
-----
+====
+include::sample[dir="groovy-dsl/code/custom-task",files="build.gradle[]"]
+include::sample[dir="kotlin-dsl/code/custom-task",files="build.gradle.kts[]"]
+====
 
 === Benefiting from incremental tasks
 
@@ -80,46 +66,17 @@ The first section of this guide talks about the <<plugin-development-plugin,Plug
 
 DSLs exposed by plugins should be readable and easy to understand. For illustration let's consider the following extension provided by a plugin. In its current form it offers a "flat" list of properties for configuring the creation of a web site.
 
-.build.gradle
-[source.multi-language-sample,groovy]
-----
-apply plugin: SitePlugin
-
-site {
-    outputDir = file('build/mysite')
-    websiteUrl = 'http://gradle.org'
-    vcsUrl = 'https://github.com/gradle-guides/gradle-site-plugin'
-}
-----
-
-.build.gradle.kts
-[source.multi-language-sample,kotlin]
-----
-import SitePlugin
-import SiteExtension
-
-apply<SitePlugin>()
-
-configure<SiteExtension> {
-    outputDir = file("build/mysite")
-    websiteUrl = "http://gradle.org"
-    vcsUrl = "https://github.com/gradle-guides/gradle-site-plugin"
-}
-----
+====
+include::sample[dir="groovy-dsl/code/configure-site-plugin",files="build.gradle[]"]
+include::sample[dir="kotlin-dsl/code/configure-site-plugin",files="build.gradle.kts[]"]
+====
 
 As the number of exposed properties grows, you might want to introduce a nested, more expressive structure. The following code snippet adds a new configuration block named `customData` as part of the extension. You might have noticed that it provides a stronger indication of what those properties mean.
 
-.build.gradle
-[source.multi-language-sample,groovy]
-----
-include::{groovy-example-dir}/code/dsl-like-api/build.gradle[]
-----
-
-.build.gradle.kts
-[source.multi-language-sample,kotlin]
-----
-include::{kotlin-example-dir}/code/dsl-like-api/build.gradle.kts[]
-----
+====
+include::sample[dir="groovy-dsl/code/dsl-like-api",files="build.gradle[]"]
+include::sample[dir="kotlin-dsl/code/dsl-like-api",files="build.gradle.kts[]"]
+====
 
 It's fairly easy to implement the backing objects of such an extension. First of all, you'll need to introduce a new data object for managing the properties `websiteUrl` and `vcsUrl`.
 
@@ -153,17 +110,10 @@ Plugins should expose a way to reconfigure the default runtime behavior. The sec
 
 The following example applies a plugin that exposes an extension with the name `binaryRepo` to capture a server URL:
 
-.build.gradle
-[source.multi-language-sample,groovy]
-----
-include::{groovy-example-dir}/code/capture-user-input/build.gradle[]
-----
-
-.build.gradle.kts
-[source.multi-language-sample,kotlin]
-----
-include::{kotlin-example-dir}/code/capture-user-input/build.gradle.kts[]
-----
+====
+include::sample[dir="groovy-dsl/code/capture-user-input",files="build.gradle[]"]
+include::sample[dir="kotlin-dsl/code/capture-user-input",files="build.gradle.kts[]"]
+====
 
 Let's assume that you'll also want to do something with the value of `serverUrl` once captured. In many cases the exposed extension property is directly mapped to a task property that actually uses the value when performing work. To avoid evaluation order problems you should use {user-manual}lazy_configuration.html#lazy_properties[the public API `Property`] which was introduced in Gradle 4.0.
 
@@ -201,17 +151,10 @@ NOTE: We encourage plugin developers to migrate their plugins to the public API 
 
 Sometimes you might want to expose a way for users to define multiple, named data objects of the same type. Let's consider the following build script for illustration purposes.
 
-.build.gradle
-[source.multi-language-sample,groovy]
-----
-include::{groovy-example-dir}/code/named-domain-object-container/build.gradle[]
-----
-
-.build.gradle.kts
-[source.multi-language-sample,kotlin]
-----
-include::{kotlin-example-dir}/code/named-domain-object-container/build.gradle.kts[]
-----
+====
+include::sample[dir="groovy-dsl/code/named-domain-object-container",files="build.gradle[]"]
+include::sample[dir="kotlin-dsl/code/named-domain-object-container",files="build.gradle.kts[]"]
+====
 
 The DSL exposed by the plugin exposes a _container_ for defining a set of environments. Each environment configured by the user has an arbitrary but declarative name and is represented with its own DSL configuration block. The example above instantiates a development, staging and production environment including its respective URL.
 
@@ -280,17 +223,10 @@ include::{groovy-example-dir}/code/default-dependency/buildSrc/src/main/java/Dat
 
 Now, this approach is very convenient for the end user as there’s no need to actively declare a dependency. The plugin already provides all the knowledge about this implementation detail. But what if the user would like to redefine the default dependency. No problem...the plugin also exposes the custom configuration that can be used to assign a different dependency. Effectively, the default dependency is overwritten.
 
-.build.gradle
-[source.multi-language-sample,groovy]
-----
-include::{groovy-example-dir}/code/default-dependency/build.gradle[]
-----
-
-.build.gradle.kts
-[source.multi-language-sample,kotlin]
-----
-include::{kotlin-example-dir}/code/default-dependency/build.gradle.kts[]
-----
+====
+include::sample[dir="groovy-dsl/code/default-dependency",files="build.gradle[]"]
+include::sample[dir="kotlin-dsl/code/default-dependency",files="build.gradle.kts[]"]
+====
 
 You will find that this pattern works well for tasks that require an external dependency when the action of the task is actually executed. The method is heavily used for custom tasks that execute an external Ant task like many of the {user-manual}standard_plugins.html#sec:software_development_plugins[Gradle core static analysis plugins] do e.g. the FindBugs and Checkstyle plugin. In fact those plugins even go further and abstract the version to be used for the external dependency by exposing an extension property (e.g. `toolVersion` {language-reference}org.gradle.testing.jacoco.plugins.JacocoPluginExtension.html#org.gradle.testing.jacoco.plugins.JacocoPluginExtension:toolVersion[in the JaCoCo plugin]).
 
