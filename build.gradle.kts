@@ -14,10 +14,11 @@ repositories {
 
 dependencies {
     constraints {
-        testImplementation("org.codehaus.groovy:groovy-all:2.4.15")
+        testImplementation("org.codehaus.groovy:groovy-all:2.5.3")
     }
     testImplementation("org.gradle:sample-check:0.6.1")
     testImplementation(gradleTestKit())
+    testImplementation("org.spockframework:spock-core:1.2-groovy-2.5")
 }
 
 guide {
