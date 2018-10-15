@@ -13,9 +13,9 @@ plugins {
 // tag::apply-maven-publish[]
     `maven-publish` // <1>
 // end::apply-maven-publish[]
-    kotlin("jvm") version "1.2.31"
+    kotlin("jvm") version "1.2.71"
 // tag::apply-maven-publish[]
-    id("org.jetbrains.dokka") version "0.9.16"
+    id("org.jetbrains.dokka") version "0.9.17"
 }
 // end::apply-maven-publish[]
 
@@ -29,7 +29,7 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib", "1.2.31"))
+    implementation(kotlin("stdlib"))
     testImplementation("junit:junit:4.12")
 }
 
@@ -41,7 +41,7 @@ buildScan {
 }
 
 // Configure existing Dokka task to output HTML to typical Javadoc directory
-val dokka by tasks.getting(DokkaTask::class) {
+tasks.dokka {
     outputFormat = "html"
     outputDirectory = "$buildDir/javadoc"
 }
@@ -50,13 +50,13 @@ val dokkaJar by tasks.creating(Jar::class) {
     group = JavaBasePlugin.DOCUMENTATION_GROUP
     description = "Assembles Kotlin docs with Dokka"
     classifier = "javadoc"
-    from(dokka) // <2>
+    from(tasks.dokka) // <2>
 }
 
 // tag::configure-publishing[]
 publishing {
     publications {
-        create("default", MavenPublication::class.java) { // <1>
+        create<MavenPublication>("default") { // <1>
             from(components["java"])
             artifact(dokkaJar) // <2>
         }

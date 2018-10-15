@@ -5,8 +5,8 @@ import org.jetbrains.dokka.gradle.DokkaTask
 plugins {
     `build-scan`
     `maven-publish`
-    kotlin("jvm") version "1.2.31"     // <1>
-    id("org.jetbrains.dokka") version "0.9.16"
+    kotlin("jvm") version "1.2.71"     // <1>
+    id("org.jetbrains.dokka") version "0.9.17"
 }
 
 group = "org.example"
@@ -17,7 +17,7 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib", "1.2.31"))
+    implementation(kotlin("stdlib"))
     testImplementation("junit:junit:4.12")
 }
 
@@ -29,7 +29,7 @@ buildScan {
 }
 
 // Configure existing Dokka task to output HTML to typical Javadoc directory
-val dokka by tasks.getting(DokkaTask::class) {
+tasks.dokka {
     outputFormat = "html"
     outputDirectory = "$buildDir/javadoc"
 }
@@ -39,8 +39,8 @@ val dokkaJar by tasks.creating(Jar::class) {
     group = JavaBasePlugin.DOCUMENTATION_GROUP
     description = "Assembles Kotlin docs with Dokka"
     classifier = "javadoc"
-    // dependsOn(dokka) not needed; dependency automatically inferred by from(dokka)
-    from(dokka)
+    // dependsOn(tasks.dokka) not needed; dependency automatically inferred by from(tasks.dokka)
+    from(tasks.dokka)
 }
 
 // Create sources Jar from main kotlin sources
@@ -53,7 +53,7 @@ val sourcesJar by tasks.creating(Jar::class) {
 
 publishing {
     publications {
-        create("default", MavenPublication::class.java) {
+        create<MavenPublication>("default") {
             from(components["java"])
             artifact(sourcesJar)
             artifact(dokkaJar)

@@ -1,6 +1,6 @@
 plugins {
     `build-scan`
-    kotlin("jvm") version "1.2.31"
+    kotlin("jvm") version "1.2.71"
 }
 
 repositories {
@@ -9,7 +9,7 @@ repositories {
 
 // tag::configure-dependencies[]
 dependencies {
-    implementation(kotlin("stdlib", "1.2.31"))
+    implementation(kotlin("stdlib"))
     testImplementation("junit:junit:4.12") // <1>
 }
 // tag::configure-dependencies[]

@@ -220,12 +220,12 @@ Let us specify our project coordinates as `org.example:my-kotlin-library:0.0.1` 
 include::{samplescodedir}/step-4/build.gradle.kts[tags=project-coordinates]
 ----
 
-The project name is set by the root project directory name by default, but it is best practice to make it explicit. This is done in a `settings.gradle` file at the project root.
+The project name is set by the root project directory name by default, but it is best practice to make it explicit. This is done in a `settings.gradle.kts` file at the project root.
 
-.settings.gradle
+.settings.gradle.kts
 [source,kotlin]
 ----
-include::{samplescodedir}/step-4/settings.gradle[]
+include::{samplescodedir}/step-4/settings.gradle.kts[]
 ----
 
 === Configure Maven publication
