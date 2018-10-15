@@ -22,9 +22,7 @@ val currentVersionInfo = tasks.create<CurrentVersionInfo>("currentVersionInfo") 
     versionInfoFile = File(generatedResourcesDir, "currentVersion.properties")
 }
 
-sourceSets["main"].output.dir(
-    mapOf("builtBy" to currentVersionInfo),
-    generatedResourcesDir)
+sourceSets.main { output.dir(generatedResourcesDir, "builtBy" to currentVersionInfo) }
 
 open class CurrentVersionInfo : DefaultTask() {
     @Input
@@ -43,5 +41,3 @@ open class CurrentVersionInfo : DefaultTask() {
     }
 }
 // end::versionInfo[]
-
-

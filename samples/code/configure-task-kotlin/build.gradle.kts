@@ -1,20 +1,23 @@
-allprojects {
+plugins {
+    java
+}
+
+subprojects {
     apply(plugin = "java")
 }
 
 // tag::configureTask[]
 tasks {
-    val jar = getByName<Jar>("jar")
     val configureJar = create("configureJar") {
         doLast {
-            jar.manifest {
+            jar.get().manifest {
                 val classPath = listOf(":core", ":baseServices").joinToString(" ") {
-                    (project(it).tasks["jar"] as Jar).archivePath.name
+                    project(it).tasks.getByName<Jar>("jar").archivePath.name
                 }
-                attributes(mapOf("Class-Path" to classPath))
+                attributes("Class-Path" to classPath)
             }
         }
     }
-    jar.dependsOn(configureJar)
+    jar { dependsOn(configureJar) }
 }
 // end::configureTask[]
