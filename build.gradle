@@ -2,7 +2,7 @@ import org.apache.tools.ant.filters.ConcatFilter
 
 plugins {
     id "com.gradle.build-scan" version "1.15.2"
-    id "org.gradle.guides.getting-started" version "0.14.0"
+    id "org.gradle.guides.getting-started" version "0.14.1"
 }
 
 guide {
@@ -22,6 +22,7 @@ gradleRunner {
 
         ext {
             buildType = 'java-library'
+            projectName = 'jvm-library'
 
             cleanBuildOutput = { stepName, info ->
                 File out = new File(getStepReportDir(stepName), 'out.txt')
@@ -34,7 +35,7 @@ gradleRunner {
 
         }
 
-        step "${sample.name}-initProject", ['init', '--type', buildType] + sample.initArguments
+        step "${sample.name}-initProject", ['init', '--type', buildType, '--project-name', projectName] + sample.initArguments
 
         step "${sample.name}-initOutput", cleanBuildOutput.curry("${sample.name}-initProject")
 
@@ -70,7 +71,7 @@ gradleRunner {
         }
 
         step "${sample.name}-editLibrary", {
-            File editLibrary = new File(workingDir, 'src/main/java/Library.java')
+            File editLibrary = new File(workingDir, 'src/main/java/jvm/library/Library.java')
             editLibrary.text = "${file('contents/javadoc-prefix.txt').text}${editLibrary.text}"
         }
 
