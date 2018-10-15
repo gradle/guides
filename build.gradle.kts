@@ -1,11 +1,15 @@
 plugins {
     id("com.gradle.build-scan") version "1.15.2"
-    id("org.gradle.guides.topical") version "0.14.0"
-    id("org.gradle.guides.test-jvm-code") version "0.14.0"
+    id("org.gradle.guides.topical") version "0.14.1"
+    id("org.gradle.guides.test-jvm-code") version "0.14.1"
 }
 
 configure<org.gradle.guides.GuidesExtension> {
     repoPath = "gradle-guides/using-build-cache"
+}
+
+dependencies {
+    testImplementation("org.spockframework:spock-core:1.2-groovy-2.5")
 }
 
 buildScan {
@@ -18,7 +22,7 @@ buildScan {
 }
 
 tasks {
-    "asciidoctor"(org.asciidoctor.gradle.AsciidoctorTask::class) {
+    asciidoctor {
         resources(delegateClosureOf<CopySpec> {
             from("contents/css") {
                 into("css")
