@@ -80,12 +80,10 @@ class TestJvmCodePlugin implements Plugin<Project> {
     }
 
     private void addDependencies(Project project) {
-        String spockGroovyVer = GroovySystem.version.replaceAll(/\.\d+$/,'')
-
         DependencyHandler dependencies = project.dependencies
         dependencies.add(TEST_COMPILE_CONFIGURATION_NAME, dependencies.localGroovy())
         dependencies.add(TEST_COMPILE_CONFIGURATION_NAME, dependencies.gradleTestKit())
-        ModuleDependency spockDependency = (ModuleDependency)dependencies.add(TEST_COMPILE_CONFIGURATION_NAME, "org.spockframework:spock-core:1.0-groovy-${spockGroovyVer}")
+        ModuleDependency spockDependency = (ModuleDependency)dependencies.add(TEST_COMPILE_CONFIGURATION_NAME, "org.spockframework:spock-core:1.2-groovy-2.5")
         spockDependency.exclude(module : 'groovy-all')
         dependencies.add(TEST_COMPILE_CONFIGURATION_NAME, 'commons-io:commons-io:2.5')
         ModuleDependency testFixturesDependency = (ModuleDependency)dependencies.add(TEST_COMPILE_CONFIGURATION_NAME, 'org.gradle.guides:test-fixtures:0.4')

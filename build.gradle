@@ -4,7 +4,6 @@ plugins {
     id 'java-gradle-plugin'
     id 'com.gradle.plugin-publish' version '0.10.0'
     id 'org.ysb33r.cloudci' version '1.0'
-    id 'org.ysb33r.gradletest' version '1.0-beta12'
     id 'maven-publish'
 }
 
@@ -20,15 +19,11 @@ buildScan {
 }
 
 group = 'org.gradle.guides'
-version = '0.14.2'
+version = '0.15.0'
 
 repositories {
     jcenter()
     gradlePluginPortal()
-}
-
-ext {
-    spockGroovyVer = GroovySystem.version.replaceAll(/\.\d+$/,'')
 }
 
 dependencies {
@@ -39,9 +34,9 @@ dependencies {
     compile 'org.ajoberstar:gradle-git-publish:0.2.1'
 
     runtime 'org.ysb33r.gradle:gradle-cloudci-plugin:1.0'
-    runtime 'org.ysb33r.gradle:gradletest:1.0-beta11'
+    runtime 'gradle.plugin.org.ysb33r.gradle:gradle-runner:1.1'
 
-    testImplementation "org.spockframework:spock-core:1.0-groovy-${spockGroovyVer}", {
+    testImplementation "org.spockframework:spock-core:1.2-groovy-2.5", {
         exclude module : 'groovy-all'
     }
 }
@@ -85,13 +80,6 @@ gradlePlugin {
             description = 'Plugin required for testing of JVM code snippets used in guides'
         }
     }
-}
-
-gradleTest {
-  versions '3.5', '4.9'
-
-    // Should be declared by gradleTest plugin.
-    inputs.files tasks.jar.outputs.files
 }
 
 publishPlugins {

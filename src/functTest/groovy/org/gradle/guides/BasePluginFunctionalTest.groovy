@@ -73,25 +73,6 @@ Hello world!
         htmlFile.contains('Task :helloWorld')
     }
 
-    def "referenced, non-existent samples directories are flagged as unresolved directive in Asciidoc generation"() {
-        given:
-        def contentsDir = createContentsDir()
-        new File(contentsDir, 'index.adoc') << """
-My build file:
-include::{samplescodedir}/helloWorld/build.gradle[]
-Output:
-include::{samplesoutputdir}/helloWorld/build.out[]
-"""
-
-        when:
-        build('asciidoctor')
-
-        then:
-        def htmlFile = new File(temporaryFolder.root, 'build/html5/index.html').text
-        htmlFile.contains("Unresolved directive in index.adoc - include::${temporaryFolder.root.canonicalPath}/samples/code/helloWorld/build.gradle[]")
-        htmlFile.contains("Unresolved directive in index.adoc - include::${temporaryFolder.root.canonicalPath}/samples/output/helloWorld/build.out[]")
-    }
-
     def "asciidoctor is out of date if samples change"() {
         given:
         def asciiDoctorTask = ":asciidoctor"
@@ -131,6 +112,7 @@ include::{samplesoutputdir}/helloWorld/build.out[]
         given:
         def asciiDoctorTask = ":asciidoctor"
         def contentsDir = createContentsDir()
+        createSamplesCodeDir()
         new File(contentsDir, "index.adoc") << 'This is some sample ascii source'
 
         when:

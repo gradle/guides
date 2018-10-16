@@ -46,6 +46,7 @@ class TestJvmCodePluginFunctionalTest extends AbstractFunctionalTest {
 
     def "can use sample directory system property in test class"() {
         def testDir = temporaryFolder.newFolder('src', 'test', 'groovy')
+        temporaryFolder.newFolder('samples')
         new File(testDir, 'MyTest.groovy') << """
 import spock.lang.Specification
 
