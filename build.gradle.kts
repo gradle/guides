@@ -2,8 +2,8 @@ import org.asciidoctor.gradle.AsciidoctorTask
 
 plugins {
     id("com.gradle.build-scan") version "1.16"
-    id("org.gradle.guides.topical") version "0.14.1"
-    id("org.gradle.guides.test-jvm-code") version "0.14.1"
+    id("org.gradle.guides.topical") version "0.15.1"
+    id("org.gradle.guides.test-jvm-code") version "0.15.1"
 }
 
 repositories {
