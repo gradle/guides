@@ -134,7 +134,7 @@ It prints the Kotlin code you can use to access those extensions and provides th
 --
 
 If the plugin you want to configure relies on `groovy.lang.Closure` in its method signatures or uses other dynamic Groovy semantics, more work will be required to configure that plugin from a Kotlin DSL build script.
-See the <<interop>> section for more information on how to call Groovy code from Kotlin code or to keep that plugin's configuration in a Groovy script.
+See the link:{user-manual}kotlin_dsl.html#sec:interoperability[interoperability section of the Gradle Kotlin DSL documentation] for more information on how to call Groovy code from Kotlin code or to keep that plugin's configuration in a Groovy script.
 
 Plugins also contribute tasks that you may want to configure directly.
 This topic is covered in the <<configuring-tasks>> section.
@@ -462,7 +462,7 @@ A complex and highly dynamic build may require some restructuring anyway, so in 
 Since applying Gradle best practices will make your builds easier to use and faster, we recommend that you migrate all projects in that way eventually, but it makes sense to focus on the projects that have to be restructured first and those that would benefit most from the improvements.
 
 Also consider that the more parts of your build logic rely on the dynamic aspects of Groovy, the harder they will be to use from the Kotlin DSL.
-You'll find recipes on how to cross the dynamic boundaries from static Kotlin in the <<interop>> section below, regardless of where the dynamic Groovy build logic resides.
+You'll find recipes on how to cross the dynamic boundaries from static Kotlin in the link:{user-manual}kotlin_dsl.html#sec:interoperability[interoperability section of the Gradle Kotlin DSL documentation], regardless of where the dynamic Groovy build logic resides.
 
 There are two key best practices that make it easier to work within the static context of the Kotlin DSL:
 
