@@ -148,7 +148,7 @@ class BasePlugin implements Plugin<Project> {
     @CompileDynamic
     private void lazyConfigureMoreAsciidoc(AsciidoctorTask asciidoc) {
 
-        GuidesExtension guide = (GuidesExtension)(asciidoc.project.extensions.getByName(org.gradle.guides.BasePlugin.GUIDE_EXTENSION_NAME))
+        GuidesExtension guide = (GuidesExtension)(asciidoc.project.extensions.getByName(BasePlugin.GUIDE_EXTENSION_NAME))
 
         asciidoc.configure {
             sources {
@@ -165,19 +165,19 @@ class BasePlugin implements Plugin<Project> {
         project.apply plugin : 'org.ajoberstar.git-publish'
 
         GitPublishExtension githubPages = (GitPublishExtension)(project.extensions.getByName('gitPublish'))
-        GuidesExtension guide = (GuidesExtension)(project.extensions.getByName(org.gradle.guides.BasePlugin.GUIDE_EXTENSION_NAME))
+        GuidesExtension guide = (GuidesExtension)(project.extensions.getByName(BasePlugin.GUIDE_EXTENSION_NAME))
         AsciidoctorTask asciidoc = (AsciidoctorTask)(project.tasks.getByName('asciidoctor'))
         String ghToken = System.getenv("GRGIT_USER")
 
-        githubPages.branch = 'gh-pages'
-        githubPages.commitMessage = "Publish to GitHub Pages"
+        githubPages.branch.set('gh-pages')
+        githubPages.commitMessage.set('Publish to GitHub Pages')
         githubPages.contents.from {"${asciidoc.outputDir}/${AsciidoctorBackend.HTML5.id}"}
 
         project.afterEvaluate {
             if (ghToken) {
-                githubPages.repoUri = "https://github.com/${guide.repoPath}.git"
+                githubPages.repoUri.set("https://github.com/${guide.repoPath}.git".toString())
             } else {
-                githubPages.repoUri = "git@github.com:${guide.repoPath}.git"
+                githubPages.repoUri.set("git@github.com:${guide.repoPath}.git".toString())
             }
         }
     }
@@ -186,18 +186,19 @@ class BasePlugin implements Plugin<Project> {
     private void addCloudCI(Project project) {
         project.apply plugin : 'org.ysb33r.cloudci'
 
-        project.travisci  {
+        project.cloudci {
+            travisci {
+                check.dependsOn CHECK_LINKS_TASK
 
-            check.dependsOn CHECK_LINKS_TASK
+                gitPublishPush {
+                    enabled = System.getenv('TRAVIS_BRANCH') == 'master' && System.getenv('TRAVIS_PULL_REQUEST') == 'false' && System.getenv('TRAVIS_OS_NAME') == 'linux'
+                }
 
-            gitPublishPush {
-                enabled = System.getenv('TRAVIS_BRANCH') == 'master' && System.getenv('TRAVIS_PULL_REQUEST') == 'false' && System.getenv('TRAVIS_OS_NAME') == 'linux'
-            }
-
-            if(System.getenv('TRAVIS_OS_NAME') != 'linux') {
-                project.tasks.each { t ->
-                    if( t.name.startsWith('gitPublish')) {
-                        t.enabled = false
+                if(System.getenv('TRAVIS_OS_NAME') != 'linux') {
+                    project.tasks.each { t ->
+                        if( t.name.startsWith('gitPublish')) {
+                            t.enabled = false
+                        }
                     }
                 }
             }
