@@ -237,7 +237,7 @@ The main thing to remember here is that in order to get type-safe accessors, plu
 
 It is strongly recommended to read about link:{user-manual}kotlin_dsl.html#sec:configuring_plugins[configuring plugins] with the Gradle Kotlin DSL in the Gradle user manual.
 
-If your build is a multi-project build, like mostly all *Android* builds for example, please also read the subsequent section aboutt link:{user-manual}kotlin_dsl.html#sec:multi_project_builds[multi-project builds].
+If your build is a multi-project build, like mostly all *Android* builds for example, please also read the subsequent section about link:{user-manual}kotlin_dsl.html#sec:multi_project_builds[multi-project builds].
 
 Finally, there are strategies to link:{user-manual}kotlin_dsl.html#sec:sec:plugins_resolution_strategy[use the `plugins {}` block with plugins that aren't published with the correct metadata], such as the *Android* Gradle Plugin.
 --
