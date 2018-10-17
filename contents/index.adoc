@@ -263,54 +263,34 @@ Rest assured, the whole Gradle API remains available.
 == Configuring tasks
 
 The syntax for configuring tasks is where the Groovy and Kotlin DSLs start to differ significantly.
-Since Kotlin is a statically typed language, you need to know and provide the type of the task if you want to access any of its type-specific properties and methods.
 
-You also can't access the task directly as a property of the build script as you can in a Groovy build script. Instead, you query the `tasks` collection by name and type, as demonstrated in the following sample:
-
-.Using the configuration avoidance API & DSL
+.In Kotlin, Tasks are namespaced into the `tasks` container
 ====
-include::sample[dir="configuring-tasks/basics/groovy",files="build.gradle[tags=single-lazy]"]
-include::sample[dir="configuring-tasks/basics/kotlin",files="build.gradle.kts[tags=single-lazy]"]
+include::sample[dir="configuring-tasks/basics/groovy",files="build.gradle[tags=namespace]"]
+include::sample[dir="configuring-tasks/basics/kotlin",files="build.gradle.kts[tags=namespace]"]
 ====
 
-.Using the eager API & DSL
+Note that in Kotlin the `tasks.jar {}` notation leverage the configuration avoidance API and defer the configuration of the `jar` task.
+
+If the type-safe task accessor `tasks.jar` isn't available, see the link:#configuring-plugins[Configuring plugins] section above, you can fallback to using the `tasks` container API. The Kotlin flavor of the following sample is strictly equivalent to the one using the type-safe accessor above:
+
+.Using the `tasks` container API
 ====
-include::sample[dir="configuring-tasks/basics/groovy",files="build.gradle[tags=single-eager]"]
-include::sample[dir="configuring-tasks/basics/kotlin",files="build.gradle.kts[tags=single-eager]"]
+include::sample[dir="configuring-tasks/basics/groovy",files="build.gradle[tags=namespace]"]
+include::sample[dir="configuring-tasks/basics/kotlin",files="build.gradle.kts[tags=using-api]"]
 ====
 
-[NOTE]
-Note that it's necessary to specify the type of the task explicitly. Otherwise, the script won't compile because the inferred type will be `Task`, not `Jar`, and the `archiveName` property is specific to the `Jar` task type.
+Note that since Kotlin is a statically typed language, it is necessary to specify the type of the task explicitly. Otherwise, the script will not compile because the inferred type will be `Task`, not `Jar`, and the `archiveName` property is specific to the `Jar` task type.
 
-You can, however, omit the type if you only need to configure properties or call methods that are common to all tasks, i.e. they are declared on the `Task` interface:
+If configuration avoidance is getting in your way migrating and you want to eagerly configure a task just like Groovy you can do so by using the eager configuration API on the `tasks` container:
 
-.Using the configuration avoidance API & DSL
+.Using the `tasks` container API for eager configuration
 ====
-include::sample[dir="configuring-tasks/basics/groovy",files="build.gradle[tags=untyped-lazy]"]
-include::sample[dir="configuring-tasks/basics/kotlin",files="build.gradle.kts[tags=untyped-lazy]"]
-====
-
-.Using the eager API & DSL
-====
-include::sample[dir="configuring-tasks/basics/groovy",files="build.gradle[tags=untyped-eager]"]
-include::sample[dir="configuring-tasks/basics/kotlin",files="build.gradle.kts[tags=untyped-eager]"]
+include::sample[dir="configuring-tasks/basics/groovy",files="build.gradle[tags=namespace]"]
+include::sample[dir="configuring-tasks/basics/kotlin",files="build.gradle.kts[tags=using-eager-api]"]
 ====
 
-If you need to configure several properties or call multiple methods on the same task, you can group them in a block as follows:
-
-.Using the configuration avoidance API & DSL
-====
-include::sample[dir="configuring-tasks/basics/groovy",files="build.gradle[tags=config-lazy]"]
-include::sample[dir="configuring-tasks/basics/kotlin",files="build.gradle.kts[tags=config-lazy]"]
-====
-
-.Using the eager API & DSL
-====
-include::sample[dir="configuring-tasks/basics/groovy",files="build.gradle[tags=config-eager]"]
-include::sample[dir="configuring-tasks/basics/kotlin",files="build.gradle.kts[tags=config-eager]"]
-====
-
-Once the task type is declared, the IDE can assist you in configuring the task with suggestions and by providing access to the task's source.
+Working with containers in the Gradle Kotlin DSL is link:{user-manual}kotlin_dsl.html#sec:containers[documented in detail] in the Gradle user manual.
 
 [TIP]
 .Knowing the type of a task
@@ -327,8 +307,19 @@ Type
 ----
 --
 
-Let's bring all this together by running through a quick worked example that configures the `bootJar` and `bootRun` tasks of a Spring Boot project.
-We first determine the types of those tasks via the `help` task:
+Let's bring all this together by running through a quick worked example that configures the `bootJar` and `bootRun` tasks of a Spring Boot project:
+
+.Configuring Spring Boot using type-safe accessors
+====
+include::sample[dir="configuring-tasks/spring-boot/groovy",files="build.gradle[tags=all]"]
+include::sample[dir="configuring-tasks/spring-boot/kotlin",files="build.gradle.kts[tags=accessors]"]
+====
+
+This is pretty self explanatory. The main difference is that tasks are namespaced into the `tasks` container.
+
+Now, for the sake of the example, let's look at the same configuration applied using the API instead of the type-safe accessors that may not be available depending on the build logic structure, see the corresponding link:{user-manual}kotlin_dsl.html#sec:configuring_plugins[documentation] in the Gradle user manual for more information.
+
+We first determine the types of the `bootJar` and `bootRun` tasks via the `help` task:
 
 [source]
 ----
@@ -350,16 +341,10 @@ Now that we know the types of the two tasks, we can import the relevant types â€
 Note that the IDE can assist us with the required imports, so we only need the simple names, i.e. without the full packages.
 Here's the resulting build script, complete with imports:
 
-.Using the configuration avoidance API & DSL
+.Configuring Spring Boot using the API
 ====
-include::sample[dir="configuring-tasks/spring-boot/groovy",files="build.gradle[tags=lazy]"]
+include::sample[dir="configuring-tasks/spring-boot/groovy",files="build.gradle[tags=all]"]
 include::sample[dir="configuring-tasks/spring-boot/kotlin",files="build.gradle.kts[tags=lazy]"]
-====
-
-.Using the eager API & DSL
-====
-include::sample[dir="configuring-tasks/spring-boot/groovy",files="build.gradle[tags=eager]"]
-include::sample[dir="configuring-tasks/spring-boot/kotlin",files="build.gradle.kts[tags=eager]"]
 ====
 
 
