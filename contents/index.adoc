@@ -255,12 +255,8 @@ ____
 
 See the link:https://blog.gradle.org/preview-avoiding-task-configuration-time[_Evolving the Gradle API to reduce configuration time_] blog post and the link:{user-manual}task_configuration_avoidance.html[Task Configuration Avoidance] chapter in the user manual for more information.
 
-The Gradle Kotlin DSL embraces the new API by providing DSL constructs to make it easier to use. Rest assured, the whole Gradle API remains available.
-
-[TIP]
-If your Groovy build logic is not using the new API, doing the migration to Kotlin and to the new API in distinct steps will make it easier to validate the build behavior.
-
-The following two sections will demonstrate both lazy and eager task creation and configuration.
+The Gradle Kotlin DSL embraces configuration avoidance by making the type-safe model accessors leverage the new APIs and providing DSL constructs to make them easier to use.
+Rest assured, the whole Gradle API remains available.
 
 
 [[configuring-tasks]]
