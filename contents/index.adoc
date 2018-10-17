@@ -350,15 +350,17 @@ include::sample[dir="configuring-tasks/spring-boot/kotlin",files="build.gradle.k
 
 == Creating tasks
 
-Creating tasks can be done using the script top-level method named `task(...)`:
+Creating tasks can be done using the script top-level function named `task(...)`:
 
-.Using the eager API & DSL only
+.Using the top-level `tasks(...)` function
 ====
 include::sample[dir="creating-tasks/project/groovy",files="build.gradle[]"]
 include::sample[dir="creating-tasks/project/kotlin",files="build.gradle.kts[]"]
 ====
 
-Registering or creating tasks can also be done on the `tasks` container, respectively using the `register(...)` and `create(...)` methods as shown here:
+Note that the above eagerly configures the created task with both Groovy and Kotlin DSLs.
+
+Registering or creating tasks can also be done on the `tasks` container, respectively using the `register(...)` and `create(...)` functions as shown here:
 
 .Using the configuration avoidance API & DSL
 ====
