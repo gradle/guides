@@ -455,33 +455,6 @@ include::sample[dir="configurations-and-dependencies/custom/kotlin",files="build
 ====
 
 
-== Multi-project builds
-
-The link:{user-manual}multi_project_builds.html[model for multi-project builds] is the same regardless of whether the projects within them have Groovy DSL or Kotlin DSL build scripts.
-Multi-project builds can even have a mix of the two.
-
-As you can see from the following settings file and build script, the Kotlin syntax is very similar to the Groovy one:
-
-====
-include::sample[dir="multi-project-builds/groovy",files="settings.gradle[];build.gradle[]"]
-include::sample[dir="multi-project-builds/kotlin",files="settings.gradle.kts[];build.gradle.kts[]"]
-====
-
-However there are some subtleties that can make your life easier or complicate things with the Kotlin DSL.
-
-In multi project builds, projects get configured top to bottom according to the project hierarchy.
-In other words, project build scripts are evaluated top to bottom according to the project hierarchy.
-
-This makes it possible for the Kotlin DSL to make Kotlin extensions to configure plugins applied by a parent project available in a sub project build script, just as if you used the `plugins {}` block directly in the sub project build script.
-
-Following up on our example multi project build, the `:cli` build script would look as follows:
-
-====
-include::sample[dir="multi-project-builds/groovy",files="cli/build.gradle[]"]
-include::sample[dir="multi-project-builds/kotlin",files="cli/build.gradle.kts[]"]
-====
-
-
 == Migration strategies
 
 As we've seen above, both scripts using the Kotlin DSL and those using the Groovy DSL can participate in the same build.
