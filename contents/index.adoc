@@ -158,8 +158,8 @@ On top of that, apply the following conventions for better IDE support:
 
 Just like with the Groovy DSL, there are two ways to apply Gradle plugins:
 
-- declaratively, using the `plugins {}` block,
-- imperatively, using the `apply(..)` functions.
+- link:{user-manual}plugins.html#sec:plugins_block[declaratively, using the `plugins {}` block],
+- link:{user-manual}plugins.html#sec:old_plugin_application[imperatively, using the legacy `apply(..)` functions].
 
 Here's an example using the declarative `plugins {}` block:
 
@@ -187,6 +187,8 @@ include::sample[dir="applying-plugins/imperative/kotlin",files="build.gradle.kts
 **We strongly recommend that you use the `plugins {}` block in preference to the `apply()` function.**
 
 The declarative nature of the `plugins {}` block enables the Kotlin DSL to provide type-safe accessors to the extensions, configurations and other features contributed by the applied plugins, which makes it easy for IDEs to discover the details of the plugins' models and makes them easy to configure.
+
+See the link:{user-manual}plugins.html#sec:plugins_block[`plugins {}` block documentation] in the Gradle user manual for more information.
 --
 
 
@@ -225,7 +227,7 @@ If the plugin you want to configure relies on `groovy.lang.Closure` in its metho
 See the link:{user-manual}kotlin_dsl.html#sec:interoperability[interoperability section of the Gradle Kotlin DSL documentation] for more information on how to call Groovy code from Kotlin code or to keep that plugin's configuration in a Groovy script.
 
 Plugins also contribute tasks that you may want to configure directly.
-This topic is covered in the <<configuring-tasks>> section.
+This topic is covered in the <<configuring-tasks>> section below.
 
 
 [[declarative-scripts]]
