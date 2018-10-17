@@ -47,6 +47,92 @@ If you run to trouble or a suspected bug, please take advantage of the `gradle/k
 _You don't have to migrate all at once!_ Both Groovy and Kotlin-based build scripts can `apply` other scripts of either language. You can find inspiration for any Gradle features not covered in the link:https://github.com/gradle/kotlin-dsl/tree/master/samples[Kotlin DSL samples].
 
 
+== Prepare your Groovy scripts
+
+Some simple Kotlin and Groovy language differences can make converting scripts tedious:
+
+* Groovy strings can be quoted with single quotes `'string'` or double quotes `"string"` whereas Kotlin requires double quotes `"string"`.
+* Groovy allows to omit parentheses when invoking functions whereas Kotlin always requires the parentheses.
+* The Gradle Groovy DSL allows to omit the `=` assignment operator when assigning properties whereas Kotlin always requires the assignment operator.
+
+As a first migration step, it is recommended to prepare your Groovy build scripts by
+
+* unifying quotes using double quotes,
+* disambiguating function invocations and property assignments (using respectively parentheses and assignment operator).
+
+The former can easily be done by searching for `'` and replacing by `"`.
+For example,
+
+[.multi-language-sample]
+====
+.build.gradle
+=====
+[source,groovy]
+----
+group 'com.acme'
+dependencies {
+    implementation 'com.acme:example:1.0'
+}
+----
+=====
+====
+
+becomes:
+
+[.multi-language-sample]
+====
+.build.gradle
+=====
+[source,groovy]
+----
+group "com.acme"
+dependencies {
+    implementation "com.acme:example:1.0"
+}
+----
+=====
+====
+
+The latter is a bit more involved as it may not be trivial to distinguish function invocations and property assignments in a Groovy script.
+A good strategy is to make all ambiguous statements property assignments first and then fix the build by turning the failing ones to function invocations.
+
+For example,
+
+[.multi-language-sample]
+====
+.build.gradle
+=====
+[source,groovy]
+----
+group "com.acme"
+dependencies {
+    implementation "com.acme:example:1.0"
+}
+----
+=====
+====
+
+becomes:
+
+[.multi-language-sample]
+====
+.build.gradle
+=====
+[source,groovy]
+----
+group = "com.acme"                          // <1>
+dependencies {
+    implementation("com.acme:example:1.0")  // <2>
+}
+----
+=====
+====
+<1> Property assignment
+<2> Function invocation
+
+While staying valid Groovy, it is now unambiguous and close to the Kotlin syntax, making it easier to then rename the script to turn it into a Gradle Kotlin DSL script.
+
+
 == Script file naming
 
 [NOTE]
