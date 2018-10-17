@@ -18,7 +18,7 @@ buildScan {
 }
 
 tasks.test {
-    inputs.property("androidHome", System.getenv("ANDROID_HOME"))
+    inputs.property("androidHome", System.getenv("ANDROID_HOME") ?: "")
 }
 
 repositories {
