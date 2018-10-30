@@ -2,13 +2,24 @@ import org.apache.tools.ant.filters.*
 import org.asciidoctor.gradle.AsciidoctorTask
 
 plugins {
-    id("com.gradle.build-scan") version "1.14"
+    id("com.gradle.build-scan") version "1.16"
     id("org.gradle.guides.getting-started") version "0.14.0"
     id("org.gradle.guides.test-jvm-code") version "0.14.0"
 }
 
-configure<org.gradle.guides.GuidesExtension> {
-    setRepoPath("gradle-guides/creating-build-scans")
+repositories {
+    maven {
+        url = uri("https://repo.gradle.org/gradle/libs")
+    }
+}
+
+dependencies {
+    testImplementation("org.gradle:sample-check:0.7.0")
+    testImplementation(gradleTestKit())
+}
+
+guide {
+    repoPath = "gradle-guides/creating-build-scans"
 }
 
 buildScan {
