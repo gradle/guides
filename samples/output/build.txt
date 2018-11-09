@@ -9,8 +9,9 @@
 > Task :compileTestJava
 > Task :processTestResources NO-SOURCE
 > Task :testClasses
-
 > Task :test
-
 > Task :check
 > Task :build
+
+BUILD SUCCESSFUL
+8 actionable tasks: 8 executed

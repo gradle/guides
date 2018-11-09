@@ -1,27 +1,34 @@
 plugins {
     groovy
-    id("com.gradle.build-scan") version "1.15.2"
-    id("org.gradle.guides.getting-started") version "0.14.0"
-    id("org.gradle.guides.test-jvm-code") version "0.14.0"
+    id("com.gradle.build-scan") version "2.0.2"
+    id("org.gradle.guides.getting-started") version "0.15.3"
+    id("org.gradle.guides.test-jvm-code") version "0.15.3"
 }
 
-configure<org.gradle.guides.GuidesExtension> {
-    repoPath = "gradle-guides/building-java-applications"
-    mainAuthor = "Ken Kousen"
+repositories {
+    maven {
+        url = uri("https://repo.gradle.org/gradle/libs")
+    }
 }
 
 dependencies {
-    testCompile(localGroovy())
+    constraints {
+        testImplementation("org.codehaus.groovy:groovy-all:2.5.3")
+    }
+}
+
+guide {
+    repoPath = "gradle-guides/building-java-applications"
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_7
-    targetCompatibility = JavaVersion.VERSION_1_7
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 buildScan {
-    setTermsOfServiceUrl("https://gradle.com/terms-of-service")
-    setTermsOfServiceAgree("yes")
+    termsOfServiceUrl = "https://gradle.com/terms-of-service"
+    termsOfServiceAgree = "yes"
     if (!System.getenv("CI").isNullOrEmpty()) {
         publishAlways()
         tag("CI")

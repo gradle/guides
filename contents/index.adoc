@@ -7,7 +7,7 @@ This guide demonstrates how to create a Java application in the standard form us
 * About [.time-to-complete-text]#NN#
 * A text editor
 * A command prompt
-* The Java Development Kit (JDK), version 1.7 or higher
+* The Java Development Kit (JDK), version 1.8 or higher
 * Any recent Gradle distribution
 
 == Check the user manual
@@ -16,47 +16,43 @@ Gradle comes with a built-in plugin called the Build Init plugin. It is document
 
 The plugin has one task, called `init`, that generates the project. The `init` task calls the (also built-in) `wrapper` task to create a Gradle wrapper script, `gradlew`.
 
-To run the `init` task, you run the following from a command prompt:
-
-[listing.terminal]
-----
-$ gradle init --type <name>
-----
-
-where `name` is one of the following:
-
-* `java-application`
-* `java-library`
-* `scala-library`
-* `groovy-library`
-* `basic`
-
-This guide uses the `java-application` type.
+== Setup
 
 The first step is to create a folder for the new project and change directory into it.
 
 [listing.terminal]
 ----
-$ mkdir java-demo
-$ cd java-demo
+$ mkdir demo
+$ cd demo
 ----
 
 == Run the init task
 
-From inside the new project directory, run the `init` task with the `java-application` argument.
+From inside the new project directory, run the `init` task with the `java-application` argument and press enter when prompted to use the default values.
 
 [listing.terminal]
 ----
 $ gradle init --type java-application
-Starting a Gradle Daemon (subsequent builds will be faster)
-include::{samplesoutputdir}/init.txt[]
+Select build script DSL:
+  1: groovy
+  2: kotlin
+Enter selection (default: groovy) [1..2]
+
+Select test framework:
+  1: junit
+  2: testng
+  3: spock
+Enter selection (default: junit) [1..3]
+
+Project name (default: demo):
+Source package (default: demo):
 
 BUILD SUCCESSFUL
 ----
 
 The `init` task runs the `wrapper` task first, which generates the `gradlew` and `gradlew.bat` wrapper scripts. Then it creates the new project with the following structure:
 
-[listing]
+[source.multi-language-sample,groovy]
 ----
 ├── build.gradle
 ├── gradle    // <1>
@@ -69,10 +65,33 @@ The `init` task runs the `wrapper` task first, which generates the `gradlew` and
 └── src
     ├── main
     │   └── java  // <2>
-    │       └── App.java
+    │       └── demo
+    │           └── App.java
     └── test      // <3>
         └── java
-            └── AppTest.java
+            └── demo
+                └── AppTest.java
+----
+
+[source.multi-language-sample,kotlin]
+----
+├── build.gradle.kts
+├── gradle    // <1>
+│   └── wrapper
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── gradlew
+├── gradlew.bat
+├── settings.gradle.kts
+└── src
+    ├── main
+    │   └── java  // <2>
+    │       └── demo
+    │           └── App.java
+    └── test      // <3>
+        └── java
+            └── demo
+                └── AppTest.java
 ----
 <1> Generated folder for wrapper files
 <2> Default Java source folder
@@ -82,21 +101,19 @@ The `init` task runs the `wrapper` task first, which generates the `gradlew` and
 
 The `settings.gradle` file is heavily commented, but has only one active line:
 
-.settings.gradle
-[source,groovy]
-----
-include::{samplescodedir}/settings.gradle[]
-----
+====
+include::sample[dir="groovy-dsl/code", files="settings.gradle[]"]
+include::sample[dir="kotlin-dsl/code", files="settings.gradle.kts[]"]
+====
 
 This assigns the name of the root project to `java-demo`, which is the default.
 
 The generated `build.gradle` file also has many comments. The active portion is reproduced here (note version numbers for the dependencies may be updated in later versions of Gradle):
 
-.build.gradle
-[source,groovy]
-----
-include::{samplescodedir}/build.gradle[]
-----
+====
+include::sample[dir="groovy-dsl/code",files="build.gradle[]"]
+include::sample[dir="kotlin-dsl/code",files="build.gradle.kts[]"]
+====
 <1> public Bintray Artifactory repository
 <2> Google Guava library
 <3> JUnit testing library
@@ -104,21 +121,21 @@ include::{samplescodedir}/build.gradle[]
 
 The build file adds the `java` and `application` plugins. The former support Java projects. The latter lets you designate one class as having a `main` method, which can be executed by the build from the command line. In the demo, the name of the `main` class is `App`.
 
-The file `src/main/java/App.java` is shown here:
+The file `src/main/java/demo/App.java` is shown here:
 
 .src/main/java/App.java
 [source,java]
 ----
-include::{samplescodedir}/src/main/java/App.java[]
+include::{samples-dir}/groovy-dsl/code/src/main/java/demo/App.java[]
 ----
 <1> Called by Application plugin "run" task
 
-The test class, `src/test/java/AppTest.java` is shown next:
+The test class, `src/test/java/demo/AppTest.java` is shown next:
 
 .src/test/java/AppTest.java
 [source,java]
 ----
-include::{samplescodedir}/src/test/java/AppTest.java[]
+include::{samples-dir}/groovy-dsl/code/src/test/java/demo/AppTest.java[]
 ----
 
 The generated test class has a single test annotated with JUnit's `@Test` annotation. The test instantiates the `App` class, invokes the `getGreeting` method, and checks that the returned value is not null.
@@ -131,8 +148,6 @@ To build the project, run the `build` command. You can use the regular `gradle` 
 ----
 $ ./gradlew build
 include::{samplesoutputdir}/build.txt[]
-
-BUILD SUCCESSFUL
 ----
 
 NOTE: The first time you run the wrapper script, `gradlew`, there may be a delay while that version of `gradle` is downloaded and stored locally in your `~/.gradle/wrapper/dists` folder.
