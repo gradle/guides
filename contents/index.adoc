@@ -11,9 +11,7 @@ You'll build a greeting app which also includes documentation. In the process yo
 * About +++<span class="time-to-complete-text"></span>+++
 * A text editor
 * A command prompt
-* The Java Development Kit (JDK)
-** version 1.7 or higher if using the Gradle Groovy DSL
-** version 1.8 or higher is using the Gradle Kotlin DSL
+* The Java Development Kit (JDK) version 1.8 or higher
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 
 == Create a root project
