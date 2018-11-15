@@ -22,8 +22,8 @@ dependencies {
 
 // tag::configure-build-scan[]
 buildScan {
-    setLicenseAgreementUrl("https://gradle.com/terms-of-service") // <1>
-    setLicenseAgree("yes")
+    termsOfServiceUrl = "https://gradle.com/terms-of-service" // <1>
+    termsOfServiceAgree = "yes"
 
     publishAlways() // <2>
 }
