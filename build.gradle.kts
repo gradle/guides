@@ -3,6 +3,7 @@ import org.gradle.internal.impldep.org.junit.platform.launcher.EngineFilter.incl
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.serialization.js.DynamicTypeDeserializer.id
+import java.time.Duration
 
 plugins {
     `build-scan`
@@ -69,6 +70,8 @@ tasks {
             html.destination = project.file("${html.destination}/functional")
             junitXml.destination = project.file("${junitXml.destination}/functional")
         }
+
+        timeout.set(Duration.ofMinutes(2))
     }
 
     withType<KotlinCompile> {
