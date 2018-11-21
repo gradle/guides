@@ -65,6 +65,12 @@ object SitePluginFunctionalTest : Spek({
                 assertNull(findJavaSourceCompatibility(document))
                 assertNull(findJavaTargetCompatibility(document))
             }
+
+            it("allows output directory specified on CLI") {
+                val customOutputDir = "build/clicustom"
+                execute(testProjectDir.toFile(), generateSiteTaskName, "-s", "--output-dir=$customOutputDir")
+                assertSiteFiles(testProjectDir.resolve(customOutputDir).toFile())
+            }
         }
 
         context("with configured site plugin extension") {

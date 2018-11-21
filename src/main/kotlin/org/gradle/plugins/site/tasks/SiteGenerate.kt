@@ -4,6 +4,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
+import org.gradle.api.tasks.options.Option
 import org.gradle.plugins.site.data.CustomData
 import org.gradle.plugins.site.data.ProjectDescriptor
 import org.gradle.plugins.site.generator.FreemarkerSiteGenerator
@@ -27,6 +28,11 @@ open class SiteGenerate : DefaultTask() {
     @get:OutputDirectory
     @get:PathSensitive(PathSensitivity.RELATIVE)
     val outputDir: DirectoryProperty = project.objects.directoryProperty()
+
+    @Option(option = "output-dir", description = "Output directory path relative to project directory")
+    fun setOutputDir(path: String) {
+        outputDir.set(project.layout.projectDirectory.dir(path))
+    }
 
     /**
      * Returns the custom data to be used in the generated web page.
