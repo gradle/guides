@@ -2,21 +2,24 @@ import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.
 import org.gradle.internal.impldep.org.junit.platform.launcher.EngineFilter.includeEngines
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.serialization.js.DynamicTypeDeserializer.id
 
 plugins {
     `build-scan`
     `java-gradle-plugin`
-    kotlin("jvm").version("1.3.0")
+    id("com.gradle.plugin-publish").version("0.10.0")
+    kotlin("jvm").version("1.3.10")
 }
 
-apply(from = "$rootDir/gradle/publishing-portal.gradle")
-
-val kotlinVersion by extra { "1.3.0" }
+val kotlinVersion by extra { "1.3.10" }
 val junitPlatformVersion by extra { "1.1.0" }
 val spekVersion by extra { "2.0.0-rc.1" }
 
-group = "com.github.gradle-guides"
+group = "org.gradle.plugins"
 version = "0.2"
+
+val websiteUrl by extra { "https://gradle-guides.github.io/${project.name}/" }
+val githubUrl by extra { "https://github.com/gradle-guides/${project.name}.git" }
 
 buildScan {
     termsOfServiceUrl = "https://gradle.com/terms-of-service"
@@ -40,10 +43,10 @@ sourceSets {
     }
 }
 
-val intTestImplementation: Configuration by configurations.getting {
+val intTestImplementation by configurations.getting {
     extendsFrom(configurations.testImplementation.get())
 }
-val intTestRuntimeOnly: Configuration by configurations.getting {
+val intTestRuntimeOnly by configurations.getting {
     extendsFrom(configurations.testRuntimeOnly.get())
 }
 
@@ -52,7 +55,7 @@ repositories {
 }
 
 dependencies {
-    compile("org.freemarker:freemarker:2.3.26-incubating")
+    implementation("org.freemarker:freemarker:2.3.26-incubating")
 
     implementation(kotlin("stdlib-jdk8", kotlinVersion))
     testImplementation(kotlin("test", kotlinVersion))
@@ -75,8 +78,21 @@ dependencies {
 gradlePlugin {
     plugins {
         create("sitePlugin") {
-            id = "com.github.gradle-guides.site"
+            id = "gradle.site"
             implementationClass = "org.gradle.plugins.site.SitePlugin"
+        }
+    }
+}
+
+pluginBundle {
+    website = websiteUrl
+    vcsUrl = githubUrl
+    tags = listOf("documentation", "site")
+    description = "Generates documentation in HTML for given project"
+
+    (plugins) {
+        "sitePlugin" {
+            displayName = "Gradle Site Plugin"
         }
     }
 }

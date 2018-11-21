@@ -45,7 +45,7 @@ object SitePluginFunctionalTest : Spek({
 
             buildFile.writeText("""
                 plugins {
-                    id 'com.github.gradle-guides.site'
+                    id 'gradle.site'
                 }
             """.trimIndent())
 
@@ -77,7 +77,7 @@ object SitePluginFunctionalTest : Spek({
 
             buildFile.writeText("""
                 plugins {
-                    id 'com.github.gradle-guides.site'
+                    id 'gradle.site'
                 }
 
                 description = 'My description'
@@ -123,7 +123,7 @@ object SitePluginFunctionalTest : Spek({
 
             buildFile.writeText("""
                     plugins {
-                        id 'com.github.gradle-guides.site'
+                        id 'gradle.site'
                         id 'java'
                     }
                     sourceCompatibility = '$javaSourceCompatibility'
