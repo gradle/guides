@@ -1,0 +1,410 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Gradle project information</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 20px;
+        padding-bottom: 40px;
+      }
+
+      .container-narrow {
+        margin: 0 auto;
+        max-width: 800px;
+      }
+      .container-narrow > hr {
+        margin: 30px 0;
+      }
+
+      .jumbotron {
+        margin: 20px 0;
+        text-align: center;
+      }
+      .jumbotron h1 {
+        font-size: 72px;
+        line-height: 1;
+      }
+      
+      .colored-font {
+        color:#00C489;
+      }
+      
+      .top-spacer {
+        margin-top:20px;
+      }
+    </style>
+    <link href="css/bootstrap-responsive.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    <div class="container-narrow">
+
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+                    <li><a href="https://github.com/gradle-guides/gradle-site-plugin" id="website-link"><div class="colored-font">Website</div></a></li>
+          <li><a href="https://github.com/gradle-guides/gradle-site-plugin.git" id="code-link"><div class="colored-font">Code</div></a></li>
+          <li>&nbsp;&nbsp;&nbsp;&nbsp;</li>
+          <li><img src="img/elephant-corner.png" height="35" width="35"></li>
+        </ul>
+        <h3>gradle-site-plugin</h3>
+      </div>
+
+      <hr>
+
+      <div class="jumbotron">
+        <p class="lead">
+        
+        </p>
+      </div>
+
+      <hr>
+      
+      <div>
+          <h4><div class="colored-font">Project information</div></h4>
+          <table class="table table-striped top-spacer">
+              <tr>
+                  <th>Property</th>
+                  <th>Value</th>
+              </tr>
+              <tr>
+                  <td>Group</td>
+                  <td>com.github.gradle-guides</td>
+              </tr>
+              <tr>
+                  <td>Version</td>
+                  <td>0.2-SNAPSHOT</td>
+              </tr>
+              <tr>
+                  <td>Source compatibility</td>
+                  <td id="java-source-compatibility">1.8</td>
+              </tr>
+              <tr>
+                  <td>Target compatibility</td>
+                  <td id="java-target-compatibility">1.8</td>
+              </tr>
+              <tr>
+                  <td>Gradle version</td>
+                  <td>5.0-rc-4</td>
+              </tr>
+          </table>
+      </div>
+
+      <hr>
+
+      <div>
+          <h4><div class="colored-font">Plugins</div></h4>
+          <table class="table table-striped top-spacer">
+              <tr>
+                  <th>Implementation Class</th>
+              </tr>
+              <tr>
+                  <td><code>org.gradle.buildinit.plugins.BuildInitPlugin</code></td>
+              </tr>
+              <tr>
+                  <td><code>org.gradle.buildinit.plugins.WrapperPlugin</code></td>
+              </tr>
+              <tr>
+                  <td><code>org.gradle.api.plugins.HelpTasksPlugin</code></td>
+              </tr>
+              <tr>
+                  <td><code>com.gradle.scan.plugin.BuildScanPlugin</code></td>
+              </tr>
+              <tr>
+                  <td><code>org.jetbrains.kotlin.gradle.scripting.internal.ScriptingGradleSubplugin</code></td>
+              </tr>
+              <tr>
+                  <td><code>org.gradle.language.base.plugins.LifecycleBasePlugin</code></td>
+              </tr>
+              <tr>
+                  <td><code>org.gradle.api.plugins.BasePlugin</code></td>
+              </tr>
+              <tr>
+                  <td><code>org.gradle.api.plugins.ReportingBasePlugin</code></td>
+              </tr>
+              <tr>
+                  <td><code>org.gradle.api.plugins.JavaBasePlugin</code></td>
+              </tr>
+              <tr>
+                  <td><code>org.gradle.api.plugins.JavaPlugin</code></td>
+              </tr>
+              <tr>
+                  <td><code>org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper</code></td>
+              </tr>
+              <tr>
+                  <td><code>org.gradle.plugin.devel.plugins.JavaGradlePluginPlugin</code></td>
+              </tr>
+              <tr>
+                  <td><code>org.gradle.kotlin.dsl.provider.plugins.KotlinScriptRootPlugin</code></td>
+              </tr>
+              <tr>
+                  <td><code>org.gradle.kotlin.dsl.provider.plugins.KotlinScriptBasePlugin</code></td>
+              </tr>
+              <tr>
+                  <td><code>org.gradle.api.publish.plugins.PublishingPlugin</code></td>
+              </tr>
+              <tr>
+                  <td><code>org.gradle.api.publish.maven.plugins.MavenPublishPlugin</code></td>
+              </tr>
+              <tr>
+                  <td><code>org.gradle.plugin.devel.plugins.MavenPluginPublishPlugin</code></td>
+              </tr>
+              <tr>
+                  <td><code>org.gradle.plugins.site.SitePlugin</code></td>
+              </tr>
+          </table>
+      </div>
+
+      <hr>
+
+      <div>
+          <h4><div class="colored-font">Tasks</div></h4>
+          <table class="table table-striped top-spacer">
+              <tr>
+                  <th>Name</th>
+                  <th>Group</th>
+                  <th>Description</th>
+              </tr>
+              <tr>
+                  <td>assemble</td>
+                  <td>build</td>
+                  <td>Assembles the outputs of this project.</td>
+              </tr>
+              <tr>
+                  <td>build</td>
+                  <td>build</td>
+                  <td>Assembles and tests this project.</td>
+              </tr>
+              <tr>
+                  <td>buildDependents</td>
+                  <td>build</td>
+                  <td>Assembles and tests this project and all projects that depend on it.</td>
+              </tr>
+              <tr>
+                  <td>buildEnvironment</td>
+                  <td>help</td>
+                  <td>Displays all buildscript dependencies declared in root project 'gradle-site-plugin'.</td>
+              </tr>
+              <tr>
+                  <td>buildNeeded</td>
+                  <td>build</td>
+                  <td>Assembles and tests this project and all projects it depends on.</td>
+              </tr>
+              <tr>
+                  <td>buildScanPublishPrevious</td>
+                  <td>Build scan</td>
+                  <td>Publishes the data captured by the last build to the build scan server.</td>
+              </tr>
+              <tr>
+                  <td>check</td>
+                  <td>verification</td>
+                  <td>Runs all checks.</td>
+              </tr>
+              <tr>
+                  <td>classes</td>
+                  <td>build</td>
+                  <td>Assembles main classes.</td>
+              </tr>
+              <tr>
+                  <td>clean</td>
+                  <td>build</td>
+                  <td>Deletes the build directory.</td>
+              </tr>
+              <tr>
+                  <td>components</td>
+                  <td>help</td>
+                  <td>Displays the components produced by root project 'gradle-site-plugin'. [incubating]</td>
+              </tr>
+              <tr>
+                  <td>dependencies</td>
+                  <td>help</td>
+                  <td>Displays all dependencies declared in root project 'gradle-site-plugin'.</td>
+              </tr>
+              <tr>
+                  <td>dependencyInsight</td>
+                  <td>help</td>
+                  <td>Displays the insight into a specific dependency in root project 'gradle-site-plugin'.</td>
+              </tr>
+              <tr>
+                  <td>dependentComponents</td>
+                  <td>help</td>
+                  <td>Displays the dependent components of components in root project 'gradle-site-plugin'. [incubating]</td>
+              </tr>
+              <tr>
+                  <td>generateMetadataFileForPluginMavenPublication</td>
+                  <td>publishing</td>
+                  <td>Generates the Gradle metadata file for publication 'pluginMaven'.</td>
+              </tr>
+              <tr>
+                  <td>generateMetadataFileForSitePluginPluginMarkerMavenPublication</td>
+                  <td>publishing</td>
+                  <td>Generates the Gradle metadata file for publication 'sitePluginPluginMarkerMaven'.</td>
+              </tr>
+              <tr>
+                  <td>generateMetadataFileForSitePluginPublication</td>
+                  <td>publishing</td>
+                  <td>Generates the Gradle metadata file for publication 'sitePlugin'.</td>
+              </tr>
+              <tr>
+                  <td>generatePomFileForPluginMavenPublication</td>
+                  <td>publishing</td>
+                  <td>Generates the Maven POM file for publication 'pluginMaven'.</td>
+              </tr>
+              <tr>
+                  <td>generatePomFileForSitePluginPluginMarkerMavenPublication</td>
+                  <td>publishing</td>
+                  <td>Generates the Maven POM file for publication 'sitePluginPluginMarkerMaven'.</td>
+              </tr>
+              <tr>
+                  <td>generatePomFileForSitePluginPublication</td>
+                  <td>publishing</td>
+                  <td>Generates the Maven POM file for publication 'sitePlugin'.</td>
+              </tr>
+              <tr>
+                  <td>generateSite</td>
+                  <td>documentation</td>
+                  <td>Generates a web page containing information about the project.</td>
+              </tr>
+              <tr>
+                  <td>help</td>
+                  <td>help</td>
+                  <td>Displays a help message.</td>
+              </tr>
+              <tr>
+                  <td>init</td>
+                  <td>Build Setup</td>
+                  <td>Initializes a new Gradle build.</td>
+              </tr>
+              <tr>
+                  <td>intTestClasses</td>
+                  <td>build</td>
+                  <td>Assembles int test classes.</td>
+              </tr>
+              <tr>
+                  <td>integrationTest</td>
+                  <td>verification</td>
+                  <td>Runs the functional tests</td>
+              </tr>
+              <tr>
+                  <td>jar</td>
+                  <td>build</td>
+                  <td>Assembles a jar archive containing the main classes.</td>
+              </tr>
+              <tr>
+                  <td>javadoc</td>
+                  <td>documentation</td>
+                  <td>Generates Javadoc API documentation for the main source code.</td>
+              </tr>
+              <tr>
+                  <td>kotlinDslAccessorsReport</td>
+                  <td>help</td>
+                  <td>Prints the Kotlin code for accessing the currently available project extensions and conventions.</td>
+              </tr>
+              <tr>
+                  <td>model</td>
+                  <td>help</td>
+                  <td>Displays the configuration model of root project 'gradle-site-plugin'. [incubating]</td>
+              </tr>
+              <tr>
+                  <td>pluginDescriptors</td>
+                  <td>Plugin development</td>
+                  <td>Generates plugin descriptors from plugin declarations.</td>
+              </tr>
+              <tr>
+                  <td>pluginUnderTestMetadata</td>
+                  <td>Plugin development</td>
+                  <td>Generates the metadata for plugin functional tests.</td>
+              </tr>
+              <tr>
+                  <td>projects</td>
+                  <td>help</td>
+                  <td>Displays the sub-projects of root project 'gradle-site-plugin'.</td>
+              </tr>
+              <tr>
+                  <td>properties</td>
+                  <td>help</td>
+                  <td>Displays the properties of root project 'gradle-site-plugin'.</td>
+              </tr>
+              <tr>
+                  <td>publish</td>
+                  <td>publishing</td>
+                  <td>Publishes all publications produced by this project.</td>
+              </tr>
+              <tr>
+                  <td>publishPluginMavenPublicationToFileBasedRepository</td>
+                  <td>publishing</td>
+                  <td>Publishes Maven publication 'pluginMaven' to Maven repository 'fileBased'.</td>
+              </tr>
+              <tr>
+                  <td>publishPluginMavenPublicationToMavenLocal</td>
+                  <td>publishing</td>
+                  <td>Publishes Maven publication 'pluginMaven' to the local Maven repository.</td>
+              </tr>
+              <tr>
+                  <td>publishSitePluginPluginMarkerMavenPublicationToFileBasedRepository</td>
+                  <td>publishing</td>
+                  <td>Publishes Maven publication 'sitePluginPluginMarkerMaven' to Maven repository 'fileBased'.</td>
+              </tr>
+              <tr>
+                  <td>publishSitePluginPluginMarkerMavenPublicationToMavenLocal</td>
+                  <td>publishing</td>
+                  <td>Publishes Maven publication 'sitePluginPluginMarkerMaven' to the local Maven repository.</td>
+              </tr>
+              <tr>
+                  <td>publishSitePluginPublicationToFileBasedRepository</td>
+                  <td>publishing</td>
+                  <td>Publishes Maven publication 'sitePlugin' to Maven repository 'fileBased'.</td>
+              </tr>
+              <tr>
+                  <td>publishSitePluginPublicationToMavenLocal</td>
+                  <td>publishing</td>
+                  <td>Publishes Maven publication 'sitePlugin' to the local Maven repository.</td>
+              </tr>
+              <tr>
+                  <td>publishToMavenLocal</td>
+                  <td>publishing</td>
+                  <td>Publishes all Maven publications produced by this project to the local Maven cache.</td>
+              </tr>
+              <tr>
+                  <td>tasks</td>
+                  <td>help</td>
+                  <td>Displays the tasks runnable from root project 'gradle-site-plugin'.</td>
+              </tr>
+              <tr>
+                  <td>test</td>
+                  <td>verification</td>
+                  <td>Runs the unit tests.</td>
+              </tr>
+              <tr>
+                  <td>testClasses</td>
+                  <td>build</td>
+                  <td>Assembles test classes.</td>
+              </tr>
+              <tr>
+                  <td>validateTaskProperties</td>
+                  <td>Plugin development</td>
+                  <td>Validates task property annotations for the plugin.</td>
+              </tr>
+              <tr>
+                  <td>wrapper</td>
+                  <td>Build Setup</td>
+                  <td>Generates Gradle wrapper files.</td>
+              </tr>
+          </table>
+      </div>
+      
+      <hr>
+
+      <div class="footer">
+        <div class="pull-left">&copy; Gradle Inc. 2018</div>
+        <div class="pull-right">Generated: 2018-11-21 09:09:25</div>
+      </div>
+    </div>
+
+  </body>
+</html>
