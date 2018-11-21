@@ -10,14 +10,13 @@ plugins {
 }
 
 apply(from = "$rootDir/gradle/publishing-portal.gradle")
-apply(from = "$rootDir/gradle/ghpages-sample.gradle")
 
 val kotlinVersion by extra { "1.3.0" }
 val junitPlatformVersion by extra { "1.1.0" }
 val spekVersion by extra { "2.0.0-rc.1" }
 
 group = "com.github.gradle-guides"
-version = "0.2-SNAPSHOT"
+version = "0.2"
 
 buildScan {
     termsOfServiceUrl = "https://gradle.com/terms-of-service"
