@@ -47,7 +47,7 @@
 
       <div class="masthead">
         <ul class="nav nav-pills pull-right">
-                    <li><a href="https://github.com/gradle-guides/gradle-site-plugin" id="website-link"><div class="colored-font">Website</div></a></li>
+                    <li><a href="https://gradle-guides.github.io/gradle-site-plugin/" id="website-link"><div class="colored-font">Website</div></a></li>
           <li><a href="https://github.com/gradle-guides/gradle-site-plugin.git" id="code-link"><div class="colored-font">Code</div></a></li>
           <li>&nbsp;&nbsp;&nbsp;&nbsp;</li>
           <li><img src="img/elephant-corner.png" height="35" width="35"></li>
@@ -59,7 +59,7 @@
 
       <div class="jumbotron">
         <p class="lead">
-        
+        Generates documentation in HTML for given project
         </p>
       </div>
 
@@ -74,19 +74,19 @@
               </tr>
               <tr>
                   <td>Group</td>
-                  <td>com.github.gradle-guides</td>
+                  <td>org.gradle.plugins</td>
               </tr>
               <tr>
                   <td>Version</td>
-                  <td>0.2-SNAPSHOT</td>
+                  <td>0.3</td>
               </tr>
               <tr>
                   <td>Source compatibility</td>
-                  <td id="java-source-compatibility">1.8</td>
+                  <td id="java-source-compatibility">1.9</td>
               </tr>
               <tr>
                   <td>Target compatibility</td>
-                  <td id="java-target-compatibility">1.8</td>
+                  <td id="java-target-compatibility">1.9</td>
               </tr>
               <tr>
                   <td>Gradle version</td>
@@ -116,9 +116,6 @@
                   <td><code>com.gradle.scan.plugin.BuildScanPlugin</code></td>
               </tr>
               <tr>
-                  <td><code>org.jetbrains.kotlin.gradle.scripting.internal.ScriptingGradleSubplugin</code></td>
-              </tr>
-              <tr>
                   <td><code>org.gradle.language.base.plugins.LifecycleBasePlugin</code></td>
               </tr>
               <tr>
@@ -134,6 +131,15 @@
                   <td><code>org.gradle.api.plugins.JavaPlugin</code></td>
               </tr>
               <tr>
+                  <td><code>com.gradle.publish.PublishPlugin</code></td>
+              </tr>
+              <tr>
+                  <td><code>org.gradle.plugins.site.SitePlugin</code></td>
+              </tr>
+              <tr>
+                  <td><code>org.jetbrains.kotlin.gradle.scripting.internal.ScriptingGradleSubplugin</code></td>
+              </tr>
+              <tr>
                   <td><code>org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper</code></td>
               </tr>
               <tr>
@@ -144,18 +150,6 @@
               </tr>
               <tr>
                   <td><code>org.gradle.kotlin.dsl.provider.plugins.KotlinScriptBasePlugin</code></td>
-              </tr>
-              <tr>
-                  <td><code>org.gradle.api.publish.plugins.PublishingPlugin</code></td>
-              </tr>
-              <tr>
-                  <td><code>org.gradle.api.publish.maven.plugins.MavenPublishPlugin</code></td>
-              </tr>
-              <tr>
-                  <td><code>org.gradle.plugin.devel.plugins.MavenPluginPublishPlugin</code></td>
-              </tr>
-              <tr>
-                  <td><code>org.gradle.plugins.site.SitePlugin</code></td>
               </tr>
           </table>
       </div>
@@ -236,36 +230,6 @@
                   <td>Displays the dependent components of components in root project 'gradle-site-plugin'. [incubating]</td>
               </tr>
               <tr>
-                  <td>generateMetadataFileForPluginMavenPublication</td>
-                  <td>publishing</td>
-                  <td>Generates the Gradle metadata file for publication 'pluginMaven'.</td>
-              </tr>
-              <tr>
-                  <td>generateMetadataFileForSitePluginPluginMarkerMavenPublication</td>
-                  <td>publishing</td>
-                  <td>Generates the Gradle metadata file for publication 'sitePluginPluginMarkerMaven'.</td>
-              </tr>
-              <tr>
-                  <td>generateMetadataFileForSitePluginPublication</td>
-                  <td>publishing</td>
-                  <td>Generates the Gradle metadata file for publication 'sitePlugin'.</td>
-              </tr>
-              <tr>
-                  <td>generatePomFileForPluginMavenPublication</td>
-                  <td>publishing</td>
-                  <td>Generates the Maven POM file for publication 'pluginMaven'.</td>
-              </tr>
-              <tr>
-                  <td>generatePomFileForSitePluginPluginMarkerMavenPublication</td>
-                  <td>publishing</td>
-                  <td>Generates the Maven POM file for publication 'sitePluginPluginMarkerMaven'.</td>
-              </tr>
-              <tr>
-                  <td>generatePomFileForSitePluginPublication</td>
-                  <td>publishing</td>
-                  <td>Generates the Maven POM file for publication 'sitePlugin'.</td>
-              </tr>
-              <tr>
                   <td>generateSite</td>
                   <td>documentation</td>
                   <td>Generates a web page containing information about the project.</td>
@@ -306,6 +270,11 @@
                   <td>Prints the Kotlin code for accessing the currently available project extensions and conventions.</td>
               </tr>
               <tr>
+                  <td>login</td>
+                  <td>Plugin Portal</td>
+                  <td>Update the gradle.properties files so this machine can publish to the Gradle Plugin portal.</td>
+              </tr>
+              <tr>
                   <td>model</td>
                   <td>help</td>
                   <td>Displays the configuration model of root project 'gradle-site-plugin'. [incubating]</td>
@@ -331,44 +300,19 @@
                   <td>Displays the properties of root project 'gradle-site-plugin'.</td>
               </tr>
               <tr>
-                  <td>publish</td>
-                  <td>publishing</td>
-                  <td>Publishes all publications produced by this project.</td>
+                  <td>publishPluginJar</td>
+                  <td>build</td>
+                  <td>Assembles a jar archive containing the main source code.</td>
               </tr>
               <tr>
-                  <td>publishPluginMavenPublicationToFileBasedRepository</td>
-                  <td>publishing</td>
-                  <td>Publishes Maven publication 'pluginMaven' to Maven repository 'fileBased'.</td>
+                  <td>publishPluginJavaDocsJar</td>
+                  <td>build</td>
+                  <td>Assembles a jar archive containing the documentation for the main Java source code.</td>
               </tr>
               <tr>
-                  <td>publishPluginMavenPublicationToMavenLocal</td>
-                  <td>publishing</td>
-                  <td>Publishes Maven publication 'pluginMaven' to the local Maven repository.</td>
-              </tr>
-              <tr>
-                  <td>publishSitePluginPluginMarkerMavenPublicationToFileBasedRepository</td>
-                  <td>publishing</td>
-                  <td>Publishes Maven publication 'sitePluginPluginMarkerMaven' to Maven repository 'fileBased'.</td>
-              </tr>
-              <tr>
-                  <td>publishSitePluginPluginMarkerMavenPublicationToMavenLocal</td>
-                  <td>publishing</td>
-                  <td>Publishes Maven publication 'sitePluginPluginMarkerMaven' to the local Maven repository.</td>
-              </tr>
-              <tr>
-                  <td>publishSitePluginPublicationToFileBasedRepository</td>
-                  <td>publishing</td>
-                  <td>Publishes Maven publication 'sitePlugin' to Maven repository 'fileBased'.</td>
-              </tr>
-              <tr>
-                  <td>publishSitePluginPublicationToMavenLocal</td>
-                  <td>publishing</td>
-                  <td>Publishes Maven publication 'sitePlugin' to the local Maven repository.</td>
-              </tr>
-              <tr>
-                  <td>publishToMavenLocal</td>
-                  <td>publishing</td>
-                  <td>Publishes all Maven publications produced by this project to the local Maven cache.</td>
+                  <td>publishPlugins</td>
+                  <td>Plugin Portal</td>
+                  <td>Publishes this plugin to the Gradle Plugin portal.</td>
               </tr>
               <tr>
                   <td>tasks</td>
@@ -402,7 +346,7 @@
 
       <div class="footer">
         <div class="pull-left">&copy; Gradle Inc. 2018</div>
-        <div class="pull-right">Generated: 2018-11-21 09:09:25</div>
+        <div class="pull-right">Generated: 2018-11-21 13:57:56</div>
       </div>
     </div>
 
