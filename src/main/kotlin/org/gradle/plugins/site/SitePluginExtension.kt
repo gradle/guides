@@ -10,7 +10,7 @@ open class SitePluginExtension(project: Project) {
      *
      * @return The output directory property.
      */
-    val outputDir: DirectoryProperty = project.layout.directoryProperty()
+    val outputDir: DirectoryProperty = project.objects.directoryProperty()
 
     /**
      * Returns the website URL of the project linked in the generated web page.

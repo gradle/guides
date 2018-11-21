@@ -26,7 +26,7 @@ open class SiteGenerate : DefaultTask() {
      */
     @get:OutputDirectory
     @get:PathSensitive(PathSensitivity.RELATIVE)
-    val outputDir: DirectoryProperty = newOutputDirectory()
+    val outputDir: DirectoryProperty = project.objects.directoryProperty()
 
     /**
      * Returns the custom data to be used in the generated web page.
