@@ -56,7 +56,7 @@ val intTestRuntimeOnly by configurations.getting {
 }
 
 tasks {
-    create<Test>("integrationTest") {
+    register<Test>("integrationTest") {
         description = "Runs the functional tests"
         group = JavaBasePlugin.VERIFICATION_GROUP
 
