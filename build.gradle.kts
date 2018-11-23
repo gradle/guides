@@ -4,6 +4,8 @@ import java.time.Duration
 plugins {
     `build-scan`
     `java-gradle-plugin`
+    `maven-publish`
+    signing
     id("com.gradle.plugin-publish") version "0.10.0"
     id("gradle.site") version "0.2"
     kotlin("jvm").version("1.3.10")
@@ -135,4 +137,40 @@ pluginBundle {
             displayName = "Gradle Site Plugin"
         }
     }
+}
+
+// Configure maven-publish plugin
+publishing {
+    publications.withType<MavenPublication> {
+        pom {
+            name.set(project.name)
+            description.set(project.description)
+            url.set(webUrl)
+
+            scm {
+                url.set(githubUrl)
+            }
+
+            licenses {
+                license {
+                    name.set("The Apache Software License, Version 2.0")
+                    url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    distribution.set("repo")
+                }
+            }
+
+            developers {
+                developer {
+                    id.set("eriwen")
+                    name.set("Eric Wendelin")
+                    email.set("eric@gradle.com")
+                }
+            }
+        }
+    }
+}
+
+signing {
+    useGpgCmd()
+    sign(configurations.archives.get())
 }
