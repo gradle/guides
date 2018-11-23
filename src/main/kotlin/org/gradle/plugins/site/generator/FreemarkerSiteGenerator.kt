@@ -4,8 +4,8 @@ import freemarker.template.Configuration
 import freemarker.template.TemplateException
 import freemarker.template.TemplateExceptionHandler
 import org.gradle.api.GradleException
-import org.gradle.plugins.site.data.CustomData
 import org.gradle.plugins.site.data.ProjectDescriptor
+import org.gradle.plugins.site.data.ProjectLinksDescriptor
 import org.gradle.plugins.site.utils.FileUtils
 import java.io.File
 import java.io.FileWriter
@@ -18,11 +18,11 @@ import java.util.*
  */
 class FreemarkerSiteGenerator(private val outputDir: File) : SiteGenerator {
 
-    override fun generate(projectDescriptor: ProjectDescriptor, customData: CustomData) {
+    override fun generate(projectDescriptor: ProjectDescriptor, projectLinksDescriptor: ProjectLinksDescriptor) {
         try {
             copyCssResources()
             copyImgResources()
-            processIndexPageTemplate(projectDescriptor, customData)
+            processIndexPageTemplate(projectDescriptor, projectLinksDescriptor)
         } catch (e: Exception) {
             throw GradleException("Unable to generate site", e)
         }
@@ -60,7 +60,7 @@ class FreemarkerSiteGenerator(private val outputDir: File) : SiteGenerator {
     }
 
     @Throws(IOException::class, TemplateException::class)
-    private fun processIndexPageTemplate(projectDescriptor: ProjectDescriptor, customData: CustomData) {
+    private fun processIndexPageTemplate(projectDescriptor: ProjectDescriptor, linksDescriptor: ProjectLinksDescriptor) {
         val cfg = Configuration(Configuration.VERSION_2_3_25)
         cfg.setClassLoaderForTemplateLoading(javaClass.classLoader, "template")
         cfg.defaultEncoding = "UTF-8"
@@ -68,7 +68,7 @@ class FreemarkerSiteGenerator(private val outputDir: File) : SiteGenerator {
         cfg.logTemplateExceptions = false
         val root = HashMap<String, Any>()
         root["project"] = projectDescriptor
-        root["customData"] = customData
+        root["customData"] = linksDescriptor
         val template = cfg.getTemplate("index.ftl")
         template.process(root, FileWriter(File(outputDir, "index.html")))
     }

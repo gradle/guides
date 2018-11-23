@@ -7,10 +7,14 @@ import org.gradle.api.tasks.*
 import org.gradle.api.tasks.options.Option
 import org.gradle.plugins.site.data.CustomData
 import org.gradle.plugins.site.data.ProjectDescriptor
+import org.gradle.plugins.site.data.ProjectLinksDescriptor
 import org.gradle.plugins.site.generator.FreemarkerSiteGenerator
+import org.gradle.workers.WorkerExecutor
+import java.io.File
+import javax.inject.Inject
 
 @CacheableTask
-open class SiteGenerate : DefaultTask() {
+open class SiteGenerate @Inject constructor(private val workerExecutor: WorkerExecutor) : DefaultTask() {
 
     /**
      * Returns the project descriptor containing the derived project information.
@@ -44,7 +48,19 @@ open class SiteGenerate : DefaultTask() {
 
     @TaskAction
     fun generate() {
-        val siteGenerator = FreemarkerSiteGenerator(outputDir.get().asFile)
-        siteGenerator.generate(projectDescriptor.get(), customData)
+        workerExecutor.submit(SiteGeneratorRunnable::class.java) {
+            val linksDescriptor = ProjectLinksDescriptor(customData.getWebsiteUrl(), customData.getVcsUrl())
+            it.params(projectDescriptor.get(), linksDescriptor, outputDir.get().asFile)
+        }
+    }
+}
+
+class SiteGeneratorRunnable @Inject constructor(
+        private val projectDescriptor: ProjectDescriptor,
+        private val projectLinksDescriptor: ProjectLinksDescriptor,
+        private val outputDir: File) : Runnable {
+
+    override fun run() {
+        FreemarkerSiteGenerator(outputDir).generate(projectDescriptor, projectLinksDescriptor)
     }
 }

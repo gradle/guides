@@ -35,16 +35,19 @@ class CustomData(project: Project) {
     }
 }
 
-class EnvironmentDescriptor(@get:Input val gradleVersion: String)
+// Separate data class for URLs because `Property` (in CustomData) is not serializable
+data class ProjectLinksDescriptor(@get:Input val websiteUrl: String?, @get:Input val vcsUrl: String?) : Serializable
 
-class JavaProjectDescriptor(@get:Input val sourceCompatibility: String,
-                            @get:Input val targetCompatibility: String)
+data class EnvironmentDescriptor(@get:Input val gradleVersion: String) : Serializable
 
-class ProjectDescriptor(@get:Input val name: String,
+data class JavaProjectDescriptor(@get:Input val sourceCompatibility: String,
+                            @get:Input val targetCompatibility: String) : Serializable
+
+data class ProjectDescriptor(@get:Input val name: String,
                         @get:Input val group: String,
                         @get:Input @get:Optional val description: String,
                         @get:Input val version: String,
-                        @get:Nested val environment: EnvironmentDescriptor) {
+                        @get:Nested val environment: EnvironmentDescriptor) : Serializable {
 
     private val pluginClasses = ArrayList<Class<out Plugin<*>>>()
     private val tasks = ArrayList<TaskDescriptor>()
@@ -72,7 +75,7 @@ class ProjectDescriptor(@get:Input val name: String,
     }
 }
 
-class TaskDescriptor(@get:Input val name: String,
+data class TaskDescriptor(@get:Input val name: String,
                      @get:Input val path: String,
                      @get:Input val group: String,
                      @get:Input val description: String) : Serializable
