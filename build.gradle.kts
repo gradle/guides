@@ -1,8 +1,4 @@
-import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
-import org.gradle.internal.impldep.org.junit.platform.launcher.EngineFilter.includeEngines
-import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.serialization.js.DynamicTypeDeserializer.id
 import java.time.Duration
 
 plugins {
