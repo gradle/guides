@@ -137,6 +137,11 @@ pluginBundle {
             displayName = "Gradle Site Plugin"
         }
     }
+
+    // Prefix group with "gradle.plugin" because plugin portal doesn't allow groups starting with "org.gradle"
+    mavenCoordinates {
+        groupId = "gradle.plugin.${project.group}"
+    }
 }
 
 // Configure maven-publish plugin
