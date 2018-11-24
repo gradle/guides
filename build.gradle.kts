@@ -209,6 +209,6 @@ signing {
     useGpgCmd()
     sign(configurations.archives.get())
     setRequired {
-        gradle.taskGraph.hasTask(tasks.publishPlugins.get())
+        gradle.taskGraph.hasTask("publishPlugins")
     }
 }

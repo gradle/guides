@@ -8,7 +8,7 @@ env:
   - CI=true
 
 script:
-  - ./gradlew build -s
+  - ./gradlew build -x signArchives -s
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
