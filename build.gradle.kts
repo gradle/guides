@@ -8,7 +8,8 @@ plugins {
     signing
     id("com.gradle.plugin-publish") version "0.10.0"
     id("gradle.site") version "0.2"
-    kotlin("jvm").version("1.3.10")
+    id("org.jetbrains.dokka") version "0.9.17"
+    kotlin("jvm") version "1.3.10"
 }
 
 val kotlinVersion by extra { "1.3.10" }
@@ -16,7 +17,7 @@ val junitPlatformVersion by extra { "1.1.0" }
 val spekVersion by extra { "2.0.0-rc.1" }
 
 group = "org.gradle.plugins"
-version = "0.3"
+version = "0.5"
 description = "Generates documentation in HTML for given project"
 
 val webUrl by extra { "https://gradle-guides.github.io/${project.name}/" }
@@ -72,6 +73,20 @@ tasks {
         timeout.set(Duration.ofMinutes(2))
     }
 
+    register<Jar>("sourcesJar") {
+        group = JavaBasePlugin.DOCUMENTATION_GROUP
+        description = "Assembles sources JAR"
+        classifier = "sources"
+        from(sourceSets.getByName("main").allSource)
+    }
+
+    register<Jar>("dokkaJar") {
+        group = JavaBasePlugin.DOCUMENTATION_GROUP
+        description = "Assembles Kotlin docs with Dokka"
+        classifier = "javadoc"
+        from(dokka)
+    }
+
     withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "1.8"
     }
@@ -80,6 +95,13 @@ tasks {
         useJUnitPlatform {
             includeEngines("spek2")
         }
+    }
+
+    dokka {
+        outputFormat = "html"
+        outputDirectory = "$buildDir/javadoc"
+        jdkVersion = 8
+        reportUndocumented = false
     }
 
     check {
@@ -144,9 +166,17 @@ pluginBundle {
     }
 }
 
+artifacts {
+    add(configurations.archives.name, tasks["dokkaJar"])
+    add(configurations.archives.name, tasks["sourcesJar"])
+}
+
 // Configure maven-publish plugin
 publishing {
     publications.withType<MavenPublication> {
+        artifact(tasks["dokkaJar"])
+        artifact(tasks["sourcesJar"])
+
         pom {
             name.set(project.name)
             description.set(project.description)
@@ -178,4 +208,7 @@ publishing {
 signing {
     useGpgCmd()
     sign(configurations.archives.get())
+    setRequired {
+        gradle.taskGraph.hasTask(tasks.publishPlugins.get())
+    }
 }
