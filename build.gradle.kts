@@ -207,7 +207,7 @@ publishing {
 signing {
     useGpgCmd()
     sign(configurations.archives.get())
-    setRequired {
+    setRequired(Callable {
         gradle.taskGraph.hasTask("publishPlugins")
-    }
+    })
 }
