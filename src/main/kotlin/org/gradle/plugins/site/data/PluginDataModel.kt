@@ -8,7 +8,6 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.Optional
 import java.io.Serializable
-import java.util.*
 
 class CustomData(project: Project) {
     private val websiteUrl: Property<String> = project.objects.property(String::class.java)
@@ -49,8 +48,8 @@ data class ProjectDescriptor(@get:Input val name: String,
                         @get:Input val version: String,
                         @get:Nested val environment: EnvironmentDescriptor) : Serializable {
 
-    private val pluginClasses = ArrayList<Class<out Plugin<*>>>()
-    private val tasks = ArrayList<TaskDescriptor>()
+    private val pluginClasses = mutableListOf<Class<out Plugin<*>>>()
+    private val tasks = mutableListOf<TaskDescriptor>()
 
     @get:Nested
     @get:Optional
