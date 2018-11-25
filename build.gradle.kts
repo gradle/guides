@@ -12,7 +12,6 @@ plugins {
     kotlin("jvm") version "1.3.10"
 }
 
-val kotlinVersion by extra { "1.3.10" }
 val junitPlatformVersion by extra { "1.1.0" }
 val spekVersion by extra { "2.0.0-rc.1" }
 
@@ -116,13 +115,13 @@ repositories {
 dependencies {
     implementation("org.freemarker:freemarker:2.3.26-incubating")
 
-    implementation(kotlin("stdlib-jdk8", kotlinVersion))
-    testImplementation(kotlin("test", kotlinVersion))
+    implementation(kotlin("stdlib-jdk8"))
+    testImplementation(kotlin("test"))
     testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion") {
         exclude(group = "org.jetbrains.kotlin")
     }
 
-    testRuntimeOnly(kotlin("reflect", kotlinVersion))
+    testRuntimeOnly(kotlin("reflect"))
     testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spekVersion") {
         exclude(group = "org.junit.platform")
         exclude(group = "org.jetbrains.kotlin")
