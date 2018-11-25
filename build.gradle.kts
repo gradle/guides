@@ -138,7 +138,7 @@ dependencies {
 // Configure java-gradle-plugin
 gradlePlugin {
     plugins {
-        create("sitePlugin") {
+        register("sitePlugin") {
             id = "gradle.site"
             implementationClass = "org.gradle.plugins.site.SitePlugin"
         }
@@ -152,8 +152,8 @@ pluginBundle {
     description = project.description
     tags = listOf("documentation", "site")
 
-    (plugins) {
-        "sitePlugin" {
+    plugins {
+        named("sitePlugin") {
             // ID and implementation class are used from `gradlePlugin` config
             displayName = "Gradle Site Plugin"
         }
