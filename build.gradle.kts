@@ -86,11 +86,11 @@ tasks {
         from(dokka)
     }
 
-    withType<KotlinCompile> {
+    withType<KotlinCompile>().configureEach {
         kotlinOptions.jvmTarget = "1.8"
     }
 
-    withType<Test> {
+    withType<Test>().configureEach {
         useJUnitPlatform {
             includeEngines("spek2")
         }
