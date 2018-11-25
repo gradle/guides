@@ -68,14 +68,14 @@ val integrationTest by tasks.registering(Test::class) {
     timeout.set(Duration.ofMinutes(2))
 }
 
-tasks.register<Jar>("sourcesJar") {
+val sourcesJar by tasks.registering(Jar::class) {
     group = JavaBasePlugin.DOCUMENTATION_GROUP
     description = "Assembles sources JAR"
     classifier = "sources"
     from(sourceSets.main.get().allSource)
 }
 
-tasks.register<Jar>("dokkaJar") {
+val dokkaJar by tasks.registering(Jar::class) {
     group = JavaBasePlugin.DOCUMENTATION_GROUP
     description = "Assembles Kotlin docs with Dokka"
     classifier = "javadoc"
@@ -161,15 +161,15 @@ pluginBundle {
 }
 
 artifacts {
-    add(configurations.archives.name, tasks["dokkaJar"])
-    add(configurations.archives.name, tasks["sourcesJar"])
+    add(configurations.archives.name, dokkaJar)
+    add(configurations.archives.name, sourcesJar)
 }
 
 // Configure maven-publish plugin
 publishing {
     publications.withType<MavenPublication> {
-        artifact(tasks["dokkaJar"])
-        artifact(tasks["sourcesJar"])
+        artifact(dokkaJar.get())
+        artifact(sourcesJar.get())
 
         pom {
             name.set(project.name)
