@@ -53,7 +53,7 @@ val intTestRuntimeOnly by configurations.getting {
 }
 
 tasks {
-    register<Test>("integrationTest") {
+    val integrationTest by registering(Test::class) {
         description = "Runs the functional tests"
         group = JavaBasePlugin.VERIFICATION_GROUP
 
@@ -101,7 +101,7 @@ tasks {
     }
 
     check {
-        dependsOn("integrationTest")
+        dependsOn(integrationTest)
     }
 }
 
