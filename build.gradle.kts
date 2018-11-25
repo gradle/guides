@@ -12,15 +12,15 @@ plugins {
     kotlin("jvm") version "1.3.10"
 }
 
-val junitPlatformVersion by extra { "1.1.0" }
-val spekVersion by extra { "2.0.0-rc.1" }
+val junitPlatformVersion = "1.1.0"
+val spekVersion = "2.0.0-rc.1"
 
 group = "org.gradle.plugins"
 version = "0.5"
 description = "Generates documentation in HTML for given project"
 
-val webUrl by extra { "https://gradle-guides.github.io/${project.name}/" }
-val githubUrl by extra { "https://github.com/gradle-guides/${project.name}.git" }
+val webUrl = "https://gradle-guides.github.io/${project.name}/"
+val githubUrl = "https://github.com/gradle-guides/${project.name}.git"
 
 buildScan {
     termsOfServiceUrl = "https://gradle.com/terms-of-service"
