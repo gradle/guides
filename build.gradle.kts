@@ -52,57 +52,55 @@ val intTestRuntimeOnly by configurations.getting {
     extendsFrom(configurations.testRuntimeOnly.get())
 }
 
-tasks {
-    val integrationTest by registering(Test::class) {
-        description = "Runs the functional tests"
-        group = JavaBasePlugin.VERIFICATION_GROUP
+val integrationTest by tasks.registering(Test::class) {
+    description = "Runs the functional tests"
+    group = JavaBasePlugin.VERIFICATION_GROUP
 
-        testClassesDirs = intTest.output.classesDirs
-        classpath = intTest.runtimeClasspath
-        shouldRunAfter(test)
+    testClassesDirs = intTest.output.classesDirs
+    classpath = intTest.runtimeClasspath
+    shouldRunAfter(tasks.test)
 
-        reports {
-            html.destination = file("${html.destination}/functional")
-            junitXml.destination = file("${junitXml.destination}/functional")
-        }
-
-        timeout.set(Duration.ofMinutes(2))
+    reports {
+        html.destination = file("${html.destination}/functional")
+        junitXml.destination = file("${junitXml.destination}/functional")
     }
 
-    register<Jar>("sourcesJar") {
-        group = JavaBasePlugin.DOCUMENTATION_GROUP
-        description = "Assembles sources JAR"
-        classifier = "sources"
-        from(sourceSets.main.get().allSource)
-    }
+    timeout.set(Duration.ofMinutes(2))
+}
 
-    register<Jar>("dokkaJar") {
-        group = JavaBasePlugin.DOCUMENTATION_GROUP
-        description = "Assembles Kotlin docs with Dokka"
-        classifier = "javadoc"
-        from(dokka)
-    }
+tasks.register<Jar>("sourcesJar") {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "Assembles sources JAR"
+    classifier = "sources"
+    from(sourceSets.main.get().allSource)
+}
 
-    withType<KotlinCompile>().configureEach {
-        kotlinOptions.jvmTarget = "1.8"
-    }
+tasks.register<Jar>("dokkaJar") {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "Assembles Kotlin docs with Dokka"
+    classifier = "javadoc"
+    from(tasks.dokka)
+}
 
-    withType<Test>().configureEach {
-        useJUnitPlatform {
-            includeEngines("spek2")
-        }
-    }
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions.jvmTarget = "1.8"
+}
 
-    dokka {
-        outputFormat = "html"
-        outputDirectory = "$buildDir/javadoc"
-        jdkVersion = 8
-        reportUndocumented = false
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform {
+        includeEngines("spek2")
     }
+}
 
-    check {
-        dependsOn(integrationTest)
-    }
+tasks.dokka {
+    outputFormat = "html"
+    outputDirectory = "$buildDir/javadoc"
+    jdkVersion = 8
+    reportUndocumented = false
+}
+
+tasks.check {
+    dependsOn(integrationTest)
 }
 
 repositories {
