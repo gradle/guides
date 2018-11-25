@@ -40,12 +40,9 @@ site {
 
 // Separate integration tests from "fast" tests
 // NOTE: deprecation warnings from the following lines are caused by the Kotlin plugin using a deprecated API when adding its own sourceSet management here
-val intTest = "intTest"
-sourceSets {
-    create(intTest) {
-        compileClasspath += sourceSets.main.get().output + configurations.testRuntime.get()
-        runtimeClasspath += output + compileClasspath
-    }
+val intTest by sourceSets.creating {
+    compileClasspath += sourceSets.main.get().output + configurations.testRuntime.get()
+    runtimeClasspath += output + compileClasspath
 }
 
 val intTestImplementation by configurations.getting {
@@ -60,8 +57,8 @@ tasks {
         description = "Runs the functional tests"
         group = JavaBasePlugin.VERIFICATION_GROUP
 
-        testClassesDirs = sourceSets[intTest].output.classesDirs
-        classpath = sourceSets[intTest].runtimeClasspath
+        testClassesDirs = intTest.output.classesDirs
+        classpath = intTest.runtimeClasspath
         shouldRunAfter(test)
 
         reports {
