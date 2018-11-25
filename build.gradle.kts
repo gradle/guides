@@ -76,7 +76,7 @@ tasks {
         group = JavaBasePlugin.DOCUMENTATION_GROUP
         description = "Assembles sources JAR"
         classifier = "sources"
-        from(sourceSets.getByName("main").allSource)
+        from(sourceSets.main.get().allSource)
     }
 
     register<Jar>("dokkaJar") {
