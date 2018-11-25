@@ -65,8 +65,8 @@ tasks {
         shouldRunAfter(test)
 
         reports {
-            html.destination = project.file("${html.destination}/functional")
-            junitXml.destination = project.file("${junitXml.destination}/functional")
+            html.destination = file("${html.destination}/functional")
+            junitXml.destination = file("${junitXml.destination}/functional")
         }
 
         timeout.set(Duration.ofMinutes(2))
