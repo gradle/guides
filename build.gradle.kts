@@ -82,25 +82,27 @@ val dokkaJar by tasks.registering(Jar::class) {
     from(tasks.dokka)
 }
 
-tasks.withType<KotlinCompile>().configureEach {
-    kotlinOptions.jvmTarget = "1.8"
-}
-
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform {
-        includeEngines("spek2")
+tasks {
+    withType<KotlinCompile>().configureEach {
+        kotlinOptions.jvmTarget = "1.8"
     }
-}
 
-tasks.dokka {
-    outputFormat = "html"
-    outputDirectory = "$buildDir/javadoc"
-    jdkVersion = 8
-    reportUndocumented = false
-}
+    withType<Test>().configureEach {
+        useJUnitPlatform {
+            includeEngines("spek2")
+        }
+    }
 
-tasks.check {
-    dependsOn(integrationTest)
+    dokka {
+        outputFormat = "html"
+        outputDirectory = "$buildDir/javadoc"
+        jdkVersion = 8
+        reportUndocumented = false
+    }
+
+    check {
+        dependsOn(integrationTest.get())
+    }
 }
 
 repositories {
