@@ -12,16 +12,15 @@ plugins {
     kotlin("jvm") version "1.3.10"
 }
 
-val kotlinVersion by extra { "1.3.10" }
-val junitPlatformVersion by extra { "1.1.0" }
-val spekVersion by extra { "2.0.0-rc.1" }
+val junitPlatformVersion = "1.1.0"
+val spekVersion = "2.0.0-rc.1"
 
 group = "org.gradle.plugins"
 version = "0.5"
 description = "Generates documentation in HTML for given project"
 
-val webUrl by extra { "https://gradle-guides.github.io/${project.name}/" }
-val githubUrl by extra { "https://github.com/gradle-guides/${project.name}.git" }
+val webUrl = "https://gradle-guides.github.io/${project.name}/"
+val githubUrl = "https://github.com/gradle-guides/${project.name}.git"
 
 buildScan {
     termsOfServiceUrl = "https://gradle.com/terms-of-service"
@@ -41,12 +40,9 @@ site {
 
 // Separate integration tests from "fast" tests
 // NOTE: deprecation warnings from the following lines are caused by the Kotlin plugin using a deprecated API when adding its own sourceSet management here
-val intTest = "intTest"
-sourceSets {
-    create(intTest) {
-        compileClasspath += sourceSets.main.get().output + configurations.testRuntime.get()
-        runtimeClasspath += output + compileClasspath
-    }
+val intTest by sourceSets.creating {
+    compileClasspath += sourceSets.main.get().output + configurations.testRuntime.get()
+    runtimeClasspath += output + compileClasspath
 }
 
 val intTestImplementation by configurations.getting {
@@ -56,57 +52,55 @@ val intTestRuntimeOnly by configurations.getting {
     extendsFrom(configurations.testRuntimeOnly.get())
 }
 
-tasks {
-    register<Test>("integrationTest") {
-        description = "Runs the functional tests"
-        group = JavaBasePlugin.VERIFICATION_GROUP
+val integrationTest by tasks.registering(Test::class) {
+    description = "Runs the functional tests"
+    group = JavaBasePlugin.VERIFICATION_GROUP
 
-        testClassesDirs = sourceSets[intTest].output.classesDirs
-        classpath = sourceSets[intTest].runtimeClasspath
-        shouldRunAfter(test)
+    testClassesDirs = intTest.output.classesDirs
+    classpath = intTest.runtimeClasspath
+    shouldRunAfter(tasks.test)
 
-        reports {
-            html.destination = project.file("${html.destination}/functional")
-            junitXml.destination = project.file("${junitXml.destination}/functional")
-        }
-
-        timeout.set(Duration.ofMinutes(2))
+    reports {
+        html.destination = file("${html.destination}/functional")
+        junitXml.destination = file("${junitXml.destination}/functional")
     }
 
-    register<Jar>("sourcesJar") {
-        group = JavaBasePlugin.DOCUMENTATION_GROUP
-        description = "Assembles sources JAR"
-        classifier = "sources"
-        from(sourceSets.getByName("main").allSource)
-    }
+    timeout.set(Duration.ofMinutes(2))
+}
 
-    register<Jar>("dokkaJar") {
-        group = JavaBasePlugin.DOCUMENTATION_GROUP
-        description = "Assembles Kotlin docs with Dokka"
-        classifier = "javadoc"
-        from(dokka)
-    }
+val sourcesJar by tasks.registering(Jar::class) {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "Assembles sources JAR"
+    classifier = "sources"
+    from(sourceSets.main.get().allSource)
+}
 
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "1.8"
-    }
+val dokkaJar by tasks.registering(Jar::class) {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "Assembles Kotlin docs with Dokka"
+    classifier = "javadoc"
+    from(tasks.dokka)
+}
 
-    withType<Test> {
-        useJUnitPlatform {
-            includeEngines("spek2")
-        }
-    }
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions.jvmTarget = "1.8"
+}
 
-    dokka {
-        outputFormat = "html"
-        outputDirectory = "$buildDir/javadoc"
-        jdkVersion = 8
-        reportUndocumented = false
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform {
+        includeEngines("spek2")
     }
+}
 
-    check {
-        dependsOn("integrationTest")
-    }
+tasks.dokka {
+    outputFormat = "html"
+    outputDirectory = "$buildDir/javadoc"
+    jdkVersion = 8
+    reportUndocumented = false
+}
+
+tasks.check {
+    dependsOn(integrationTest)
 }
 
 repositories {
@@ -116,13 +110,13 @@ repositories {
 dependencies {
     implementation("org.freemarker:freemarker:2.3.26-incubating")
 
-    implementation(kotlin("stdlib-jdk8", kotlinVersion))
-    testImplementation(kotlin("test", kotlinVersion))
+    implementation(kotlin("stdlib-jdk8"))
+    testImplementation(kotlin("test"))
     testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion") {
         exclude(group = "org.jetbrains.kotlin")
     }
 
-    testRuntimeOnly(kotlin("reflect", kotlinVersion))
+    testRuntimeOnly(kotlin("reflect"))
     testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spekVersion") {
         exclude(group = "org.junit.platform")
         exclude(group = "org.jetbrains.kotlin")
@@ -139,7 +133,7 @@ dependencies {
 // Configure java-gradle-plugin
 gradlePlugin {
     plugins {
-        create("sitePlugin") {
+        register("sitePlugin") {
             id = "gradle.site"
             implementationClass = "org.gradle.plugins.site.SitePlugin"
         }
@@ -153,8 +147,8 @@ pluginBundle {
     description = project.description
     tags = listOf("documentation", "site")
 
-    (plugins) {
-        "sitePlugin" {
+    plugins {
+        named("sitePlugin") {
             // ID and implementation class are used from `gradlePlugin` config
             displayName = "Gradle Site Plugin"
         }
@@ -167,15 +161,15 @@ pluginBundle {
 }
 
 artifacts {
-    add(configurations.archives.name, tasks["dokkaJar"])
-    add(configurations.archives.name, tasks["sourcesJar"])
+    add(configurations.archives.name, dokkaJar)
+    add(configurations.archives.name, sourcesJar)
 }
 
 // Configure maven-publish plugin
 publishing {
     publications.withType<MavenPublication> {
-        artifact(tasks["dokkaJar"])
-        artifact(tasks["sourcesJar"])
+        artifact(dokkaJar.get())
+        artifact(sourcesJar.get())
 
         pom {
             name.set(project.name)
@@ -208,7 +202,7 @@ publishing {
 signing {
     useGpgCmd()
     sign(configurations.archives.get())
-    setRequired {
+    setRequired(Callable {
         gradle.taskGraph.hasTask("publishPlugins")
-    }
+    })
 }
