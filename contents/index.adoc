@@ -168,7 +168,7 @@ include::sample[dir="applying-plugins/declarative/groovy",files="build.gradle[]"
 include::sample[dir="applying-plugins/declarative/kotlin",files="build.gradle.kts[]"]
 ====
 
-The Kotlin DSL provides property extensions for all link:{user-manual}standard_plugins.html[Gradle core plugins],
+The Kotlin DSL provides property extensions for all link:{user-manual}plugin_reference.html[Gradle core plugins],
 as shown above with the `java`, `jacoco` or `maven-publish` declaration.
 
 Third party plugins can be applied the same way as with the Groovy DSL. Except for the double quotes and parentheses.
@@ -443,6 +443,10 @@ include::sample[dir="configurations-and-dependencies/custom/kotlin",files="build
 
 
 == Migration strategies
+
+// TODO step by step to migrate a build script
+// https://gradle.slack.com/archives/C14BJHC2K/p1534945935000100
+// split into "migrating builds" vs. "migrating scripts"?
 
 As we've seen above, both scripts using the Kotlin DSL and those using the Groovy DSL can participate in the same build.
 In addition, Gradle plugins from the _buildSrc_ directory, an included build or an external location can be implemented using any JVM language.
