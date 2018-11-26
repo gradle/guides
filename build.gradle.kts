@@ -27,7 +27,7 @@ repositories {
 
 dependencies {
     constraints {
-        testImplementation("org.codehaus.groovy:groovy-all:2.5.3-SNAPSHOT")
+        testImplementation("org.codehaus.groovy:groovy-all:2.5.4")
     }
     testImplementation("org.gradle:sample-check:0.6.0")
     testImplementation(gradleTestKit())
