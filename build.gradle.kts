@@ -1,7 +1,7 @@
 import org.asciidoctor.gradle.AsciidoctorTask
 
 plugins {
-    id("com.gradle.build-scan") version "1.16"
+    `build-scan`
     id("org.gradle.guides.topical") version "0.15.1"
     id("org.gradle.guides.test-jvm-code") version "0.15.1"
 }
@@ -13,9 +13,6 @@ repositories {
 }
 
 dependencies {
-    constraints {
-        testImplementation("org.codehaus.groovy:groovy-all:2.4.15")
-    }
     testImplementation("org.gradle:sample-check:0.6.1")
     testImplementation(gradleTestKit())
 }
