@@ -4,10 +4,11 @@ plugins {
     id("org.asciidoctor.convert")       // <1>
 }
 
-val asciidoctor = tasks.getByName<AsciidoctorTask>("asciidoctor") {
+tasks.asciidoctor {
     sources(delegateClosureOf<PatternSet> {
         include("greeter.adoc")         // <2>
     })
 }
 
-tasks["build"].dependsOn(asciidoctor)
+tasks.build { dependsOn(tasks.asciidoctor) }
+

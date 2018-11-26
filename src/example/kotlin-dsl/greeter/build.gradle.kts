@@ -18,12 +18,12 @@ dependencies {
 // end::project-dependency[]
 
 // tag::link-docs[]
-tasks.getByName<Zip>("distZip") {
+tasks.distZip {
     from(project(":docs").tasks["asciidoctor"]) { // <1>
         into("${project.name}-$version")
     }
 }
-tasks.getByName<Tar>("distTar") {
+tasks.distTar {
     from(project(":docs").tasks["asciidoctor"]) {
         into("${project.name}-$version")
     }
