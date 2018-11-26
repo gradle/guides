@@ -2,71 +2,8 @@ plugins {
     id 'java'
 }
 
-// tag::single-lazy[]
-tasks.named('jar').configure {
-    archiveName = 'foo.jar'
-}
-// end::single-lazy[]
-
-// tag::single-eager[]
-jar.archiveName = 'foo.jar'
-// end::single-eager[]
-
-// tag::untyped-lazy[]
-tasks.named('test').configure {
-    doLast {
-        println('test completed')
-    }
-}
-// end::untyped-lazy[]
-
-// tag::untyped-eager[]
-test.doLast {
-    println('test completed')
-}
-// end::untyped-eager[]
-
-// tag::config-lazy[]
-tasks.named('jar').configure {
-    archiveName = 'foo.jar'
-    into('META-INF') {
-        from('bar')
-    }
-}
-// end::config-lazy[]
-
-// tag::config-eager[]
+// tag::namespace[]
 jar {
-    archiveName = 'foo.jar'
-    into('META-INF') {
-        from('bar')
-    }
+    archiveName = "foo.jar"
 }
-// end::config-eager[]
-
-with {
-
-// tag::reference-lazy[]
-def jar = tasks.named('jar')
-jar.configure {
-    archiveName = 'foo.jar'
-}
-
-jar.configure {
-    into('META-INF') {
-        from('bar')
-    }
-}
-// end::reference-lazy[]
-
-}
-
-// tag::reference-eager[]
-jar {
-    archiveName = 'foo.jar'
-}
-
-jar.into('META-INF') {
-    from('bar')
-}
-// end::reference-eager[]
+// end::namespace[]

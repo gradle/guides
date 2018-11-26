@@ -1,10 +1,10 @@
 plugins {
-    id("com.gradle.build-scan") version "1.15.2"
-    id("org.gradle.guides.topical") version "0.14.1"
-    id("org.gradle.guides.test-jvm-code") version "0.14.1"
+    `build-scan`
+    id("org.gradle.guides.topical") version "0.15.1"
+    id("org.gradle.guides.test-jvm-code") version "0.15.1"
 }
 
-configure<org.gradle.guides.GuidesExtension> {
+guide {
     repoPath = "gradle-guides/migrating-build-logic-from-groovy-to-kotlin"
 }
 
@@ -17,8 +17,8 @@ buildScan {
     }
 }
 
-tasks.getByName<Test>("test") {
-    inputs.property("androidHome", System.getenv("ANDROID_HOME"))
+tasks.test {
+    inputs.property("androidHome", System.getenv("ANDROID_HOME") ?: "")
 }
 
 repositories {
@@ -27,8 +27,8 @@ repositories {
 
 dependencies {
     constraints {
-        "testImplementation"("org.codehaus.groovy:groovy-all:2.4.15")
+        testImplementation("org.codehaus.groovy:groovy-all:2.5.4")
     }
-    testImplementation("org.gradle:sample-check:0.5.0")
+    testImplementation("org.gradle:sample-check:0.6.0")
     testImplementation(gradleTestKit())
 }

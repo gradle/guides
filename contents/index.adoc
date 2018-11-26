@@ -14,10 +14,13 @@ Gradle's newer Kotlin DSL provides a pleasant editing experience in supported ID
 
 image::intellij-idea-android-studio.png[IntelliJ IDEA and Android Studio]
 
-// TODO Uncomment once this is true
-// [TIP]
-// The Gradle link:{user-manual}userguide.html[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
-// This is the best place where to find how to do this and what with each DSL ; and it covers all Gradle features from link:{user-manual}plugins.html[using plugins] to link:{user-manual}customizing_dependency_resolution_behavior.html[customizing the dependency resolution behavior].
+[TIP]
+--
+Please also read the link:{user-manual}kotlin_dsl.html[Gradle Kotlin DSL Primer] in the Gradle user manual to learn the specificities, limitations and usage of the Gradle Kotlin DSL.
+
+The rest of the Gradle link:{user-manual}userguide.html[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
+This is the best place where to find how to do this and what with each DSL ; and it covers all Gradle features from link:{user-manual}plugins.html[using plugins] to link:{user-manual}customizing_dependency_resolution_behavior.html[customizing the dependency resolution behavior].
+--
 
 
 == Before you start migrating
@@ -29,17 +32,105 @@ image::intellij-idea-android-studio.png[IntelliJ IDEA and Android Studio]
 * In IntelliJ IDEA, you must link:https://www.jetbrains.com/help/idea/gradle.html#gradle_import[import your project from the Gradle model] to get content-assist and refactoring tools for Kotlin DSL scripts.
 * There are some situations where the Kotlin DSL is slower. First use, on clean checkouts or ephemeral CI agents for example, link:{kotlin-dsl-issues}902[are known to be slower].
 The same applies to the scenario in which something in the _buildSrc_ directory changes, which invalidates build-script caching.
-In addition, IntelliJ IDEA or Android Studio might spawn up to 3 Gradle daemons when editing scripts; one per each type of script: project scripts, settings scripts and initialization scripts.
-On some builds with slow configuration time (please check out the link:https://guides.gradle.org/performance/#configuration[performance guide]) the IDE may feel unresponsive when editing scripts.
+Builds with slow configuration time might affect the IDE responsiveness, please check out the link:https://guides.gradle.org/performance/#configuration[performance guide].
 * You must run Gradle with Java 8 or higher. Java 7 is not supported.
 * The embedded Kotlin compiler is known to work on Linux, macOS, Windows, Cygwin, FreeBSD and Solaris on x86-64 architectures.
 * Knowledge of Kotlin syntax and basic language features is very helpful. The link:{kotlin-reference}[Kotlin reference documentation] and link:https://kotlinlang.org/docs/tutorials/koans.html[Kotlin Koans] should be useful to you.
 * Use of the `plugins {}` block to declare Gradle plugins significantly improves the editing experience, and is highly recommended. Consider adopting it in your Groovy build scripts before converting them to Kotlin.
 * The Kotlin DSL will not support `model {}` elements. This is part of the link:https://blog.gradle.org/state-and-future-of-the-gradle-software-model[discontinued Gradle Software Model].
+* Enabling the incubating link:{user-manual}multi_project_builds.html#sec:configuration_on_demand[configuration on demand] feature is not recommended as it can lead to very hard-to-diagnose problems.
+
+Read more in the link:{user-manual}kotlin_dsl.html[Gradle Kotlin DSL Primer].
 
 If you run to trouble or a suspected bug, please take advantage of the `gradle/kotlin-dsl` link:{kotlin-dsl-issues}[issue tracker].
 
 _You don't have to migrate all at once!_ Both Groovy and Kotlin-based build scripts can `apply` other scripts of either language. You can find inspiration for any Gradle features not covered in the link:https://github.com/gradle/kotlin-dsl/tree/master/samples[Kotlin DSL samples].
+
+
+== Prepare your Groovy scripts
+
+Some simple Kotlin and Groovy language differences can make converting scripts tedious:
+
+* Groovy strings can be quoted with single quotes `'string'` or double quotes `"string"` whereas Kotlin requires double quotes `"string"`.
+* Groovy allows to omit parentheses when invoking functions whereas Kotlin always requires the parentheses.
+* The Gradle Groovy DSL allows to omit the `=` assignment operator when assigning properties whereas Kotlin always requires the assignment operator.
+
+As a first migration step, it is recommended to prepare your Groovy build scripts by
+
+* unifying quotes using double quotes,
+* disambiguating function invocations and property assignments (using respectively parentheses and assignment operator).
+
+The former can easily be done by searching for `'` and replacing by `"`.
+For example,
+
+[.multi-language-sample]
+====
+.build.gradle
+=====
+[source,groovy]
+----
+group 'com.acme'
+dependencies {
+    implementation 'com.acme:example:1.0'
+}
+----
+=====
+====
+
+becomes:
+
+[.multi-language-sample]
+====
+.build.gradle
+=====
+[source,groovy]
+----
+group "com.acme"
+dependencies {
+    implementation "com.acme:example:1.0"
+}
+----
+=====
+====
+
+The latter is a bit more involved as it may not be trivial to distinguish function invocations and property assignments in a Groovy script.
+A good strategy is to make all ambiguous statements property assignments first and then fix the build by turning the failing ones to function invocations.
+
+For example,
+
+[.multi-language-sample]
+====
+.build.gradle
+=====
+[source,groovy]
+----
+group "com.acme"
+dependencies {
+    implementation "com.acme:example:1.0"
+}
+----
+=====
+====
+
+becomes:
+
+[.multi-language-sample]
+====
+.build.gradle
+=====
+[source,groovy]
+----
+group = "com.acme"                          // <1>
+dependencies {
+    implementation("com.acme:example:1.0")  // <2>
+}
+----
+=====
+====
+<1> Property assignment
+<2> Function invocation
+
+While staying valid Groovy, it is now unambiguous and close to the Kotlin syntax, making it easier to then rename the script to turn it into a Gradle Kotlin DSL script.
 
 
 == Script file naming
@@ -67,8 +158,8 @@ On top of that, apply the following conventions for better IDE support:
 
 Just like with the Groovy DSL, there are two ways to apply Gradle plugins:
 
-- declaratively, using the `plugins {}` block,
-- imperatively, using the `apply(..)` functions.
+- link:{user-manual}plugins.html#sec:plugins_block[declaratively, using the `plugins {}` block],
+- link:{user-manual}plugins.html#sec:old_plugin_application[imperatively, using the legacy `apply(..)` functions].
 
 Here's an example using the declarative `plugins {}` block:
 
@@ -77,7 +168,7 @@ include::sample[dir="applying-plugins/declarative/groovy",files="build.gradle[]"
 include::sample[dir="applying-plugins/declarative/kotlin",files="build.gradle.kts[]"]
 ====
 
-The Kotlin DSL provides property extensions for all link:{user-manual}standard_plugins.html[Gradle core plugins],
+The Kotlin DSL provides property extensions for all link:{user-manual}plugin_reference.html[Gradle core plugins],
 as shown above with the `java`, `jacoco` or `maven-publish` declaration.
 
 Third party plugins can be applied the same way as with the Groovy DSL. Except for the double quotes and parentheses.
@@ -96,6 +187,8 @@ include::sample[dir="applying-plugins/imperative/kotlin",files="build.gradle.kts
 **We strongly recommend that you use the `plugins {}` block in preference to the `apply()` function.**
 
 The declarative nature of the `plugins {}` block enables the Kotlin DSL to provide type-safe accessors to the extensions, configurations and other features contributed by the applied plugins, which makes it easy for IDEs to discover the details of the plugins' models and makes them easy to configure.
+
+See the link:{user-manual}plugins.html#sec:plugins_block[`plugins {}` block documentation] in the Gradle user manual for more information.
 --
 
 
@@ -131,58 +224,23 @@ It prints the Kotlin code you can use to access those extensions and provides th
 --
 
 If the plugin you want to configure relies on `groovy.lang.Closure` in its method signatures or uses other dynamic Groovy semantics, more work will be required to configure that plugin from a Kotlin DSL build script.
-See the <<interop>> section for more information on how to call Groovy code from Kotlin code or to keep that plugin's configuration in a Groovy script.
+See the link:{user-manual}kotlin_dsl.html#sec:interoperability[interoperability section of the Gradle Kotlin DSL documentation] for more information on how to call Groovy code from Kotlin code or to keep that plugin's configuration in a Groovy script.
 
 Plugins also contribute tasks that you may want to configure directly.
-This topic is covered in the <<configuring-tasks>> section.
+This topic is covered in the <<configuring-tasks>> section below.
 
+[IMPORTANT]
+.Keeping build scripts declarative
+--
+To get the most benefits of the Gradle Kotlin DSL you should strive to keep your build scripts declarative.
+The main thing to remember here is that in order to get type-safe accessors, plugins must be applied before the body of build scripts.
 
-[[declarative-scripts]]
-== Keeping build scripts declarative
+It is strongly recommended to read about link:{user-manual}kotlin_dsl.html#sec:configuring_plugins[configuring plugins] with the Gradle Kotlin DSL in the Gradle user manual.
 
-Plugins fetched from a source other than the link:{plugin-portal}[Gradle Plugin Portal] may or may not be usable with the `plugins {}` block.
-It depends on how they have been published.
+If your build is a multi-project build, like mostly all *Android* builds for example, please also read the subsequent section about link:{user-manual}kotlin_dsl.html#sec:multi_project_builds[multi-project builds].
 
-For example, the Android Plugin for Gradle is not published to the Gradle Plugin Portal and at least up to version 3.1.0 of the plugin, the metadata required to resolve the artifacts for a given plugin identifier  is not published to the Google repository.
-
-Because of this, projects typically apply the plugin via a `buildscript {}` block and the `apply()` function.
-However, you _can_ use the `plugins {}` block if you configure your project appropriately.
-We will show you in this section how to do that for the Android Plugin for Gradle.
-
-[NOTE]
-When publishing plugins, please use Gradle's built-in link:{user-manual}java_gradle_plugin.html[Java Gradle Plugin] Plugin. It automates the publication of the metadata necessary to make your plugins usable with the `plugins {}` block.
-
-The goal is to instruct your build on how to map the `com.android.application` plugin identifier to a resolvable artifact.
-This is done in two steps:
-
- * Add a plugin repository to the build's settings file
- * Map the plugin ID to the corresponding artifact coordinates
-
-The following example shows you how to add a plugin repository to the build via a `pluginManagement {}` block in the settings file:
-
-====
-include::sample[dir="declarative-scripts/declarative-android",files="settings.gradle.kts[tags=repo]"]
-====
-
-Providing the ID-to-artifact mapping is also done in the settings file, again within the `pluginManagement {}` block.
-The following sample maps the `com.android.application` ID to the `com.android.tools.build:gradle:<version>` artifact coordinate:
-
-====
-include::sample[dir="declarative-scripts/declarative-android",files="settings.gradle.kts[tags=plugin]"]
-====
-
-Once you have completed both steps, you can apply the plugin using the `plugins {}` block and benefit from the type-safe plugin extension accessors in your build files:
-
-====
-include::sample[dir="declarative-scripts/declarative-android",files="build.gradle.kts[]"]
-====
-<1> Declaratively request the `com.android.application` plugin
-<2> Configure the `android` extension using Kotlin DSL type safe accessor
-
-See the link:{user-manual}plugins.html#sec:plugin_management[Plugin Management] section of the Gradle user manual for more information.
-
-The same approach can be used to resolve plugins from composite builds, which link:https://github.com/gradle/gradle/issues/2528[do not expose plugin markers] yet.
-Simply map the plugin ID to the corresponding artifact coordinates as shown in the Android samples above.
+Finally, there are strategies to link:{user-manual}kotlin_dsl.html#sec:sec:plugins_resolution_strategy[use the `plugins {}` block with plugins that aren't published with the correct metadata], such as the *Android* Gradle Plugin.
+--
 
 
 [[configuration-avoidance]]
@@ -197,84 +255,42 @@ ____
 
 See the link:https://blog.gradle.org/preview-avoiding-task-configuration-time[_Evolving the Gradle API to reduce configuration time_] blog post and the link:{user-manual}task_configuration_avoidance.html[Task Configuration Avoidance] chapter in the user manual for more information.
 
-The Gradle Kotlin DSL embraces the new API by providing DSL constructs to make it easier to use. Rest assured, the whole Gradle API remains available.
-
-[TIP]
-If your Groovy build logic is not using the new API, doing the migration to Kotlin and to the new API in distinct steps will make it easier to validate the build behavior.
-
-The following two sections will demonstrate both lazy and eager task creation and configuration.
+The Gradle Kotlin DSL embraces configuration avoidance by making the type-safe model accessors leverage the new APIs and providing DSL constructs to make them easier to use.
+Rest assured, the whole Gradle API remains available.
 
 
 [[configuring-tasks]]
 == Configuring tasks
 
 The syntax for configuring tasks is where the Groovy and Kotlin DSLs start to differ significantly.
-Since Kotlin is a statically typed language, you need to know and provide the type of the task if you want to access any of its type-specific properties and methods.
 
-You also can't access the task directly as a property of the build script as you can in a Groovy build script. Instead, you query the `tasks` collection by name and type, as demonstrated in the following sample:
-
-.Using the configuration avoidance API & DSL
+.In Kotlin, Tasks are namespaced into the `tasks` container
 ====
-include::sample[dir="configuring-tasks/basics/groovy",files="build.gradle[tags=single-lazy]"]
-include::sample[dir="configuring-tasks/basics/kotlin",files="build.gradle.kts[tags=single-lazy]"]
+include::sample[dir="configuring-tasks/basics/groovy",files="build.gradle[tags=namespace]"]
+include::sample[dir="configuring-tasks/basics/kotlin",files="build.gradle.kts[tags=namespace]"]
 ====
 
-.Using the eager API & DSL
+Note that in Kotlin the `tasks.jar {}` notation leverage the configuration avoidance API and defer the configuration of the `jar` task.
+
+If the type-safe task accessor `tasks.jar` isn't available, see the link:#configuring-plugins[Configuring plugins] section above, you can fallback to using the `tasks` container API. The Kotlin flavor of the following sample is strictly equivalent to the one using the type-safe accessor above:
+
+.Using the `tasks` container API
 ====
-include::sample[dir="configuring-tasks/basics/groovy",files="build.gradle[tags=single-eager]"]
-include::sample[dir="configuring-tasks/basics/kotlin",files="build.gradle.kts[tags=single-eager]"]
+include::sample[dir="configuring-tasks/basics/groovy",files="build.gradle[tags=namespace]"]
+include::sample[dir="configuring-tasks/basics/kotlin",files="build.gradle.kts[tags=using-api]"]
 ====
 
-[NOTE]
-Note that it's necessary to specify the type of the task explicitly. Otherwise, the script won't compile because the inferred type will be `Task`, not `Jar`, and the `archiveName` property is specific to the `Jar` task type.
+Note that since Kotlin is a statically typed language, it is necessary to specify the type of the task explicitly. Otherwise, the script will not compile because the inferred type will be `Task`, not `Jar`, and the `archiveName` property is specific to the `Jar` task type.
 
-You can, however, omit the type if you only need to configure properties or call methods that are common to all tasks, i.e. they are declared on the `Task` interface:
+If configuration avoidance is getting in your way migrating and you want to eagerly configure a task just like Groovy you can do so by using the eager configuration API on the `tasks` container:
 
-.Using the configuration avoidance API & DSL
+.Using the `tasks` container API for eager configuration
 ====
-include::sample[dir="configuring-tasks/basics/groovy",files="build.gradle[tags=untyped-lazy]"]
-include::sample[dir="configuring-tasks/basics/kotlin",files="build.gradle.kts[tags=untyped-lazy]"]
-====
-
-.Using the eager API & DSL
-====
-include::sample[dir="configuring-tasks/basics/groovy",files="build.gradle[tags=untyped-eager]"]
-include::sample[dir="configuring-tasks/basics/kotlin",files="build.gradle.kts[tags=untyped-eager]"]
+include::sample[dir="configuring-tasks/basics/groovy",files="build.gradle[tags=namespace]"]
+include::sample[dir="configuring-tasks/basics/kotlin",files="build.gradle.kts[tags=using-eager-api]"]
 ====
 
-If you need to configure several properties or call multiple methods on the same task, you can group them in a block as follows:
-
-.Using the configuration avoidance API & DSL
-====
-include::sample[dir="configuring-tasks/basics/groovy",files="build.gradle[tags=config-lazy]"]
-include::sample[dir="configuring-tasks/basics/kotlin",files="build.gradle.kts[tags=config-lazy]"]
-====
-
-.Using the eager API & DSL
-====
-include::sample[dir="configuring-tasks/basics/groovy",files="build.gradle[tags=config-eager]"]
-include::sample[dir="configuring-tasks/basics/kotlin",files="build.gradle.kts[tags=config-eager]"]
-====
-
-An alternative and more idiomatic way to configure tasks compared to using the `tasks` collection API is through the use of Kotlin's link:{kotlin-reference}delegated-properties.html[delegated properties].
-This approach is particularly useful if you want to reference the task at a later stage in the build script.
-The following sample initially configures the `jar` task's `archiveName` property and then later adds an `into()` declaration via the new delegated property `jar`:
-
-.Using the configuration avoidance API & DSL
-====
-include::sample[dir="configuring-tasks/basics/groovy",files="build.gradle[tags=reference-lazy]"]
-include::sample[dir="configuring-tasks/basics/kotlin",files="build.gradle.kts[tags=reference-lazy]"]
-====
-
-.Using the eager API & DSL
-====
-include::sample[dir="configuring-tasks/basics/groovy",files="build.gradle[tags=reference-eager]"]
-include::sample[dir="configuring-tasks/basics/kotlin",files="build.gradle.kts[tags=reference-eager]"]
-====
-
-Note that even with this approach, you need to provide the type of the task when applying type-specific configuration.
-
-Once the task type is declared, the IDE can assist you in configuring the task with suggestions and by providing access to the task's source.
+Working with containers in the Gradle Kotlin DSL is link:{user-manual}kotlin_dsl.html#sec:containers[documented in detail] in the Gradle user manual.
 
 [TIP]
 .Knowing the type of a task
@@ -291,8 +307,19 @@ Type
 ----
 --
 
-Let's bring all this together by running through a quick worked example that configures the `bootJar` and `bootRun` tasks of a Spring Boot project.
-We first determine the types of those tasks via the `help` task:
+Let's bring all this together by running through a quick worked example that configures the `bootJar` and `bootRun` tasks of a Spring Boot project:
+
+.Configuring Spring Boot using type-safe accessors
+====
+include::sample[dir="configuring-tasks/spring-boot/groovy",files="build.gradle[tags=all]"]
+include::sample[dir="configuring-tasks/spring-boot/kotlin",files="build.gradle.kts[tags=accessors]"]
+====
+
+This is pretty self explanatory. The main difference is that tasks are namespaced into the `tasks` container.
+
+Now, for the sake of the example, let's look at the same configuration applied using the API instead of the type-safe accessors that may not be available depending on the build logic structure, see the corresponding link:{user-manual}kotlin_dsl.html#sec:configuring_plugins[documentation] in the Gradle user manual for more information.
+
+We first determine the types of the `bootJar` and `bootRun` tasks via the `help` task:
 
 [source]
 ----
@@ -314,30 +341,26 @@ Now that we know the types of the two tasks, we can import the relevant types �
 Note that the IDE can assist us with the required imports, so we only need the simple names, i.e. without the full packages.
 Here's the resulting build script, complete with imports:
 
-.Using the configuration avoidance API & DSL
+.Configuring Spring Boot using the API
 ====
-include::sample[dir="configuring-tasks/spring-boot/groovy",files="build.gradle[tags=lazy]"]
+include::sample[dir="configuring-tasks/spring-boot/groovy",files="build.gradle[tags=all]"]
 include::sample[dir="configuring-tasks/spring-boot/kotlin",files="build.gradle.kts[tags=lazy]"]
-====
-
-.Using the eager API & DSL
-====
-include::sample[dir="configuring-tasks/spring-boot/groovy",files="build.gradle[tags=eager]"]
-include::sample[dir="configuring-tasks/spring-boot/kotlin",files="build.gradle.kts[tags=eager]"]
 ====
 
 
 == Creating tasks
 
-Creating tasks can be done using the script top-level method named `task(...)`:
+Creating tasks can be done using the script top-level function named `task(...)`:
 
-.Using the eager API & DSL only
+.Using the top-level `tasks(...)` function
 ====
 include::sample[dir="creating-tasks/project/groovy",files="build.gradle[]"]
 include::sample[dir="creating-tasks/project/kotlin",files="build.gradle.kts[]"]
 ====
 
-Registering or creating tasks can also be done on the `tasks` container, respectively using the `register(...)` and `create(...)` methods as shown here:
+Note that the above eagerly configures the created task with both Groovy and Kotlin DSLs.
+
+Registering or creating tasks can also be done on the `tasks` container, respectively using the `register(...)` and `create(...)` functions as shown here:
 
 .Using the configuration avoidance API & DSL
 ====
@@ -349,20 +372,6 @@ include::sample[dir="creating-tasks/tasks-lazy/kotlin",files="build.gradle.kts[t
 ====
 include::sample[dir="creating-tasks/tasks-eager/groovy",files="build.gradle[tags=container-api]"]
 include::sample[dir="creating-tasks/tasks-eager/kotlin",files="build.gradle.kts[tags=container-api]"]
-====
-
-or by using Kotlin delegated properties for when you need a reference to the created task for later:
-
-.Using the configuration avoidance API & DSL
-====
-include::sample[dir="creating-tasks/reference-lazy/groovy",files="build.gradle[tags=reference]"]
-include::sample[dir="creating-tasks/reference-lazy/kotlin",files="build.gradle.kts[tags=reference]"]
-====
-
-.Using the eager API & DSL
-====
-include::sample[dir="creating-tasks/reference-eager/groovy",files="build.gradle[tags=reference]"]
-include::sample[dir="creating-tasks/reference-eager/kotlin",files="build.gradle.kts[tags=reference]"]
 ====
 
 The samples above create untyped, ad-hoc tasks, but you will more commonly want to create tasks of a specific type.
@@ -379,20 +388,6 @@ include::sample[dir="creating-tasks/tasks-lazy/kotlin",files="build.gradle.kts[t
 ====
 include::sample[dir="creating-tasks/tasks-eager/groovy",files="build.gradle[tags=typed-container-api]"]
 include::sample[dir="creating-tasks/tasks-eager/kotlin",files="build.gradle.kts[tags=typed-container-api]"]
-====
-
-Here's the same task created using a delegated property:
-
-.Using the configuration avoidance API & DSL
-====
-include::sample[dir="creating-tasks/reference-lazy/groovy",files="build.gradle[tags=typed-reference]"]
-include::sample[dir="creating-tasks/reference-lazy/kotlin",files="build.gradle.kts[tags=typed-reference]"]
-====
-
-.Using the eager API & DSL
-====
-include::sample[dir="creating-tasks/reference-eager/groovy",files="build.gradle[tags=typed-reference]"]
-include::sample[dir="creating-tasks/reference-eager/kotlin",files="build.gradle.kts[tags=typed-reference]"]
 ====
 
 
@@ -423,13 +418,6 @@ include::sample[dir="configurations-and-dependencies/imperative/groovy",files="b
 include::sample[dir="configurations-and-dependencies/imperative/kotlin",files="build.gradle.kts[tags=string-invoke]"]
 ====
 
-or you can bring the configurations into scope thanks to Kotlin's delegated properties:
-
-====
-include::sample[dir="configurations-and-dependencies/imperative/groovy",files="build.gradle[]"]
-include::sample[dir="configurations-and-dependencies/imperative/kotlin",files="build.gradle.kts[tags=delegated-properties]"]
-====
-
 This is just one more reason to use the `plugins {}` block whenever you can!
 
 === Custom configurations and dependencies
@@ -454,47 +442,11 @@ include::sample[dir="configurations-and-dependencies/custom/kotlin",files="build
 ====
 
 
-== Multi-project builds
-
-The link:{user-manual}multi_project_builds.html[model for multi-project builds] is the same regardless of whether the projects within them have Groovy DSL or Kotlin DSL build scripts.
-Multi-project builds can even have a mix of the two.
-
-As you can see from the following settings file and build script, the Kotlin syntax is very similar to the Groovy one:
-
-====
-include::sample[dir="multi-project-builds/groovy",files="settings.gradle[];build.gradle[]"]
-include::sample[dir="multi-project-builds/kotlin",files="settings.gradle.kts[];build.gradle.kts[]"]
-====
-
-However there are some subtleties that can make your life easier or complicate things with the Kotlin DSL.
-
-In multi project builds, projects get configured top to bottom according to the project hierarchy.
-In other words, project build scripts are evaluated top to bottom according to the project hierarchy.
-
-This makes it possible for the Kotlin DSL to make Kotlin extensions to configure plugins applied by a parent project available in a sub project build script, just as if you used the `plugins {}` block directly in the sub project build script.
-
-Following up on our example multi project build, the `:cli` build script would look as follows:
-
-====
-include::sample[dir="multi-project-builds/groovy",files="cli/build.gradle[]"]
-include::sample[dir="multi-project-builds/kotlin",files="cli/build.gradle.kts[]"]
-====
-
-[CAUTION]
-.Configuration on demand
---
-Enabling the incubating link:{user-manual}multi_project_builds.html#sec:configuration_on_demand[configuration on demand] feature is not recommended as it can lead to very hard-to-diagnose problems.
-The strictness of the Gradle Kotlin DSL makes it even more likely that problems will arise.
-In order to save you trouble, you should disable it if it's already enabled.
-
-The same is true for `evaluationDependsOn(projectPath)` and `evaluationDependsOnChildren()`.
-Favor link:{user-manual}multi_project_builds.html#sec:decoupled_projects[decoupling your projects] instead.
-
-// TODO note that these will be deprecated soon, for Gradle 5?, need an issue link
---
-
-
 == Migration strategies
+
+// TODO step by step to migrate a build script
+// https://gradle.slack.com/archives/C14BJHC2K/p1534945935000100
+// split into "migrating builds" vs. "migrating scripts"?
 
 As we've seen above, both scripts using the Kotlin DSL and those using the Groovy DSL can participate in the same build.
 In addition, Gradle plugins from the _buildSrc_ directory, an included build or an external location can be implemented using any JVM language.
@@ -512,7 +464,7 @@ A complex and highly dynamic build may require some restructuring anyway, so in 
 Since applying Gradle best practices will make your builds easier to use and faster, we recommend that you migrate all projects in that way eventually, but it makes sense to focus on the projects that have to be restructured first and those that would benefit most from the improvements.
 
 Also consider that the more parts of your build logic rely on the dynamic aspects of Groovy, the harder they will be to use from the Kotlin DSL.
-You'll find recipes on how to cross the dynamic boundaries from static Kotlin in the <<interop>> section below, regardless of where the dynamic Groovy build logic resides.
+You'll find recipes on how to cross the dynamic boundaries from static Kotlin in the link:{user-manual}kotlin_dsl.html#sec:interoperability[interoperability section of the Gradle Kotlin DSL documentation], regardless of where the dynamic Groovy build logic resides.
 
 There are two key best practices that make it easier to work within the static context of the Kotlin DSL:
 
@@ -520,7 +472,6 @@ There are two key best practices that make it easier to work within the static c
  * Putting local build logic in the build's _buildSrc_ directory
 
 The `plugins {}` block — link:{user-manual}plugins.html#sec:plugins_block[explained in the Gradle User Manual] — is about keeping your build scripts declarative in order to get the best out of the Kotlin DSL.
-You saw <<declarative-scripts,above>> how to apply this practice even with external plugins published without the required metadata.
 
 Utilizing the _buildSrc_ project — also link:{user-manual}organizing_gradle_projects.html#sec:build_sources[explained in the Gradle User Manual] — is about organizing your build logic into shared local plugins and conventions that are easily testable and provide good IDE support.
 
@@ -550,151 +501,13 @@ Quoting the Kotlin reference documentation:
 Both link:{kotlin-reference}java-interop.html[calling Java from Kotlin] and link:{kotlin-reference}java-to-kotlin-interop.html[calling Kotlin from Java] are very well covered in the Kotlin reference documentation.
 
 The same mostly applies to interoperability with Groovy code.
-In addition, the Kotlin DSL provides several ways to opt into Groovy semantics, which we look at next.
+In addition, the Kotlin DSL provides several ways to opt into Groovy semantics.
 
-
-=== Static extensions
-
-Both the Groovy and Kotlin languages support extending existing classes via link:http://groovy-lang.org/metaprogramming.html#_extension_modules[Groovy Extension modules] and link:{kotlin-reference}extensions.html[Kotlin extensions].
-
-To call a Kotlin extension function from Groovy, call it as a static function, passing the receiver as the first parameter:
-
-====
-include::sample[dir="interoperability/static-extensions",files="build.gradle[tags=kotlin-from-groovy]"]
-====
-
-Kotlin extension functions are package-level functions and you can learn how to locate the name of the type declaring a given Kotlin extension in the link:{kotlin-reference}java-to-kotlin-interop.html#package-level-functions[Package-Level Functions] section of the Kotlin reference documentation.
-
-To call a Groovy extension method from Kotlin, the same approach applies: call it as a static function passing the receiver as the first parameter.
-Here's an example:
-
-====
-include::sample[dir="interoperability/static-extensions",files="build.gradle.kts[tags=groovy-from-kotlin]"]
-====
-
-
-=== Named parameters and default arguments
-
-Both the Groovy and Kotlin languages support named function parameters and default arguments, although they are implemented very differently.
-Kotlin has fully-fledged support for both, as described in the Kotlin language reference under link:{kotlin-reference}functions.html#named-arguments[named arguments] and link:{kotlin-reference}functions.html#default-arguments[default arguments].
-Groovy implements link:http://groovy-lang.org/objectorientation.html#_named_arguments[named arguments] in a non-type-safe way based on a `Map<String, ?>` parameter, which means they cannot be combined with link:http://groovy-lang.org/objectorientation.html#_default_arguments[default arguments].
-In other words, you can only use one or the other in Groovy for any given method.
-
-==== Calling Kotlin from Groovy
-
-To call a Kotlin function that has named arguments from Groovy, just use a normal method call with positional parameters.
-There is no way to provide values by argument name.
-
-To call a Kotlin function that has default arguments from Groovy, always pass values for all the function parameters.
-
-==== Calling Groovy from Kotlin
-
-To call a Groovy function with named arguments from Kotlin, you need to pass a `Map<String, ?>`, as shown in this example:
-
-[.multi-language-sample]
-====
-.build.gradle.kts
-[source, kotlin]
-----
-groovyNamedArgumentTakingMethod(mapOf(
-    "parameterName" to "value",
-    "other" to 42,
-    "and" to aReference))
-----
-====
-
-To call a Groovy function with default arguments from Kotlin, always pass values for all the parameters.
-
-
-=== Groovy closures from Kotlin
-
-You may sometimes have to call Groovy methods that take link:http://groovy-lang.org/closures.html[Closure] arguments from Kotlin code.
-For example, some third-party plugins written in Groovy expect closure arguments.
-
-[NOTE]
-Gradle plugins written in any language should prefer the type `Action<T>` in place of closures. Groovy closures and Kotlin lambdas are automatically mapped to arguments of that type.
-
-In order to provide a way to construct closures while preserving Kotlin's strong typing, two helper methods exist:
-
-* `closureOf<T> {}`
-* `delegateClosureOf<T> {}`
-
-Both methods are useful in different circumstances and depend upon the method you are passing the `Closure` instance into.
-
-Some plugins expect simple closures, as with the link:{plugin-portal}plugin/com.jfrog.bintray[Bintray] plugin:
-
-====
-include::sample[dir="interoperability/closure-of",files="build.gradle.kts[tags=closureOf]"]
-====
-
-In other cases, like with the link:{plugin-portal}plugin/org.gretty[Gretty Plugin] when configuring farms, the plugin expects a delegate closure:
-
-====
-include::sample[dir="interoperability/delegate-closure-of",files="build.gradle.kts[tags=delegateClosureOf]"]
-====
-
-There sometimes isn't a good way to tell, from looking at the source code, which version to use.
-Usually, if you get a `NullPointerException` with `closureOf<T> {}`, using `delegateClosureOf<T> {}`
-will resolve the problem.
-
-Also see the link:{kotlin-dsl-samples}groovy-interop[groovy-interop] sample.
-
-
-=== The Kotlin DSL Groovy Builder
-
-If some plugin makes heavy use of link:http://groovy-lang.org/metaprogramming.html[Groovy metaprogramming], then using it from Kotlin or Java or any statically-compiled language can be very cumbersome.
-
-The Kotlin DSL provides a `withGroovyBuilder {}` utility extension that attaches the Groovy metaprogramming semantics to objects of type `Any`.
-The following example demonstrates several features of the method on the object `target`:
-
-====
-include::sample[dir="interoperability/groovy-builder",files="build.gradle.kts[tags=withGroovyBuilder]"]
-====
-<1> The receiver is a link:http://docs.groovy-lang.org/latest/html/api/groovy/lang/GroovyObject.html[GroovyObject] and provides Kotlin helpers
-<2> The `GroovyObject` API is available
-<3> Invoke the `methodName` method, passing some parameters
-<4> Configure the `blockName` property, maps to a `Closure` taking method invocation
-<5> Invoke `another` method taking named arguments, maps to a Groovy named arguments `Map<String, ?>` taking method invocation
-
-The link:{kotlin-dsl-samples}maven-plugin[maven-plugin] sample demonstrates the use of the `withGroovyBuilder()` utility extensions for configuring the `uploadArchives` task to link:{user-manual}maven_plugin.html#sec:deploying_to_a_maven_repository[deploy to a Maven repository] with a custom POM using Gradle's core {user-manual}maven_plugin.html[Maven Plugin].
-Note that the recommended {user-manual}publishing_maven.html[Maven Publish Plugin] provides a type-safe and Kotlin-friendly DSL that allows you to easily do link:{user-manual}publishing_maven.html#sec:modifying_the_generated_pom[the same and more] without resorting to `withGroovyBuilder()`.
-
-=== Using a Groovy script
-
-Another option when dealing with problematic plugins that assume a Groovy DSL build script is to configure them in a Groovy DSL build script that is applied from the main Kotlin DSL build script:
-
-====
-[.multi-language-sample]
-=====
-.build.gradle.kts
-[source, kotlin]
-----
-plugins {
-    id("dynamic-groovy-plugin") version "1.0"               <1>
-}
-apply(from = "dynamic-groovy-plugin-configuration.gradle")  <2>
-----
-=====
-====
-
-====
-[.multi-language-sample]
-=====
-.dynamic-groovy-plugin-configuration.gradle
-[source, groovy]
-----
-native {                                                    <3>
-    dynamic {
-        groovy as Usual
-    }
-}
-----
-=====
-====
-<1> The Kotlin build script requests and applies the plugin
-<2> The Kotlin build script applies the Groovy script
-<3> The Groovy script uses dynamic Groovy to configure plugin
-
+.On the Gradle Kotlin DSL and interoperability
+[TIP]
+--
+Please find detailed documentation in the link:{user-manual}kotlin_dsl.html#sec:interoperability[interoperability section of the Gradle Kotlin DSL Primer] from the Gradle User Manual.
+--
 
 == Summary
 
@@ -704,8 +517,8 @@ Last, but not least, you learnt how the two DSLs inter-operate.
 
 === Next steps
 
-// TODO Uncomment once this is true
-// * The Gradle link:{user-manual}userguide.html[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
+* The link:{user-manual}kotlin_dsl.html[Gradle Kotlin DSL Primer] in the Gradle user manual is a must read.
+* The Gradle link:{user-manual}userguide.html[user manual] and link:{guides}[guides] contain build script excerpts that demonstrate both the Groovy DSL and the Kotlin DSL.
 * The link:{user-manual}userguide.html#best-practices[Gradle Best Practices] user manual chapters contain reference documentation on how to structure your builds.
 * The link:{kotlin-dsl-samples}[`kotlin-dsl` samples] contain examples of various build structures using the Kotlin DSL.
 
