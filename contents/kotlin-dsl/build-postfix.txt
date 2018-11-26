@@ -6,7 +6,7 @@ version = "0.1.0"
 
 // tag::jar-manifest[]
 tasks {
-    getByName<Jar>("jar") {
+    jar {
         manifest {
             attributes(
                 mapOf("Implementation-Title" to project.name,
