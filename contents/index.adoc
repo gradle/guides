@@ -228,7 +228,7 @@ include::sample[dir="groovy-dsl/code/default-dependency",files="build.gradle[]"]
 include::sample[dir="kotlin-dsl/code/default-dependency",files="build.gradle.kts[]"]
 ====
 
-You will find that this pattern works well for tasks that require an external dependency when the action of the task is actually executed. The method is heavily used for custom tasks that execute an external Ant task like many of the {user-manual}standard_plugins.html#sec:software_development_plugins[Gradle core static analysis plugins] do e.g. the FindBugs and Checkstyle plugin. In fact those plugins even go further and abstract the version to be used for the external dependency by exposing an extension property (e.g. `toolVersion` {language-reference}org.gradle.testing.jacoco.plugins.JacocoPluginExtension.html#org.gradle.testing.jacoco.plugins.JacocoPluginExtension:toolVersion[in the JaCoCo plugin]).
+You will find that this pattern works well for tasks that require an external dependency when the action of the task is actually executed. The method is heavily used for custom tasks that execute an external Ant task like many of the {user-manual}plugin_reference.html#code_analysis[Gradle core static analysis plugins] do e.g. the FindBugs and Checkstyle plugin. In fact those plugins even go further and abstract the version to be used for the external dependency by exposing an extension property (e.g. `toolVersion` {language-reference}org.gradle.testing.jacoco.plugins.JacocoPluginExtension.html#org.gradle.testing.jacoco.plugins.JacocoPluginExtension:toolVersion[in the JaCoCo plugin]).
 
 === Assigning appropriate plugin identifiers
 
