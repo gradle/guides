@@ -30,7 +30,6 @@ open class SiteGenerate @Inject constructor(private val workerExecutor: WorkerEx
      * @return The output directory.
      */
     @get:OutputDirectory
-    @get:PathSensitive(PathSensitivity.RELATIVE)
     val outputDir: DirectoryProperty = project.objects.directoryProperty()
 
     @Option(option = "output-dir", description = "Output directory path relative to project directory")
