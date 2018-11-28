@@ -8,6 +8,7 @@
     <link href="css/bootstrap.css" rel="stylesheet">
     <style type="text/css">
       body {
+        color: #02303A;
         padding-top: 20px;
         padding-bottom: 40px;
       }
@@ -24,17 +25,10 @@
         margin: 20px 0;
         text-align: center;
       }
-      .jumbotron h1 {
-        font-size: 72px;
-        line-height: 1;
-      }
       
-      .colored-font {
-        color:#00C489;
-      }
-      
-      .top-spacer {
-        margin-top:20px;
+      h2, h3 {
+        font-size: 24px;
+        color: #1DA2BD;
       }
     </style>
     <link href="css/bootstrap-responsive.css" rel="stylesheet">
@@ -48,15 +42,14 @@
       <div class="masthead">
         <ul class="nav nav-pills pull-right">
           <#if customData.websiteUrl??>
-          <li><a href="${customData.websiteUrl}" id="website-link"><div class="colored-font">Website</div></a></li>
+          <li><a href="${customData.websiteUrl}" id="website-link">Website</a></li>
           </#if>
           <#if customData.vcsUrl??>
-          <li><a href="${customData.vcsUrl}" id="code-link"><div class="colored-font">Code</div></a></li>
+          <li><a href="${customData.vcsUrl}" id="code-link">Code</a></li>
           </#if>
-          <li>&nbsp;&nbsp;&nbsp;&nbsp;</li>
           <li><img src="img/elephant-corner.png" height="35" width="35"></li>
         </ul>
-        <h3>${project.name}</h3>
+        <h1>${project.name}</h1>
       </div>
 
       <hr>
@@ -70,8 +63,8 @@
       <hr>
       
       <div>
-          <h4><div class="colored-font">Project information</div></h4>
-          <table class="table table-striped top-spacer">
+          <h2>Project information</h2>
+          <table class="table table-striped">
               <tr>
                   <th>Property</th>
                   <th>Value</th>
@@ -86,11 +79,11 @@
               </tr>
               <#if project.javaProject??>
               <tr>
-                  <td>Source compatibility</td>
+                  <td>Java source compatibility</td>
                   <td id="java-source-compatibility">${project.javaProject.sourceCompatibility}</td>
               </tr>
               <tr>
-                  <td>Target compatibility</td>
+                  <td>Java target compatibility</td>
                   <td id="java-target-compatibility">${project.javaProject.targetCompatibility}</td>
               </tr>
               </#if>
@@ -104,14 +97,14 @@
       <hr>
 
       <div>
-          <h4><div class="colored-font">Plugins</div></h4>
-          <table class="table table-striped top-spacer">
+          <h2>Plugins</h2>
+          <table class="table table-striped">
               <tr>
                   <th>Implementation Class</th>
               </tr>
               <#list project.pluginClasses as pluginClass>
               <tr>
-                  <td><code>${pluginClass.getName()}</code></td>
+                  <td>${pluginClass.getName()}</td>
               </tr>
               </#list>
           </table>
@@ -120,17 +113,15 @@
       <hr>
 
       <div>
-          <h4><div class="colored-font">Tasks</div></h4>
-          <table class="table table-striped top-spacer">
+          <h2>Tasks</h2>
+          <table class="table table-striped">
               <tr>
                   <th>Name</th>
-                  <th>Group</th>
                   <th>Description</th>
               </tr>
               <#list project.tasks as task>
               <tr>
                   <td>${task.name}</td>
-                  <td>${task.group}</td>
                   <td>${task.description}</td>
               </tr>
               </#list>
@@ -141,7 +132,6 @@
 
       <div class="footer">
         <#assign dateTime = .now>
-        <div class="pull-left">&copy; Gradle Inc. ${dateTime?string("yyyy")}</div>
         <div class="pull-right">Generated: ${dateTime?string("yyyy-MM-dd HH:mm:ss")}</div>
       </div>
     </div>
