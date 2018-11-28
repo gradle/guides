@@ -13,7 +13,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 object SitePluginFunctionalTest : Spek({
-    val generateSiteTaskName = "generateSite"
+    val generateSiteTaskName = "generateSiteHtml"
     val defaultOutputPath = "build/docs/site"
 
     describe("SitePlugin") {

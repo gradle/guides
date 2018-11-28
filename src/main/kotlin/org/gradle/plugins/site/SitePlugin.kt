@@ -25,12 +25,11 @@ class SitePlugin : Plugin<Project> {
      *
      * @see org.gradle.plugins.site.tasks.SiteGenerate
      */
-    val GENERATE_SITE_TASK_NAME = "generateSite"
+    val GENERATE_SITE_HTML_TASK_NAME = "generateSiteHtml"
 
     val DEFAULT_OUTPUT_DIR = "docs/site"
 
     override fun apply(project: Project): Unit = project.run {
-
         val sitePluginExtension = extensions.create(EXTENSION_NAME, SitePluginExtension::class.java, project)
         sitePluginExtension.outputDir.set(layout.buildDirectory.dir(DEFAULT_OUTPUT_DIR))
 
@@ -69,7 +68,7 @@ class SitePlugin : Plugin<Project> {
     }
 
     private fun Project.registerSiteTask(sitePluginExtension: SitePluginExtension): TaskProvider<SiteGenerate> =
-            tasks.register(GENERATE_SITE_TASK_NAME, SiteGenerate::class.java) { siteGenerate ->
+            tasks.register(GENERATE_SITE_HTML_TASK_NAME, SiteGenerate::class.java) { siteGenerate ->
                 siteGenerate.group = JavaBasePlugin.DOCUMENTATION_GROUP
                 siteGenerate.description = "Generates a web page containing information about the project."
                 siteGenerate.outputDir.set(sitePluginExtension.outputDir)

@@ -7,7 +7,7 @@ plugins {
     `maven-publish`
     signing
     id("com.gradle.plugin-publish") version "0.10.0"
-    id("gradle.site") version "0.2"
+    id("gradle.site") version "0.3"
     id("org.jetbrains.dokka") version "0.9.17"
     kotlin("jvm") version "1.3.10"
 }
@@ -16,7 +16,7 @@ val junitPlatformVersion = "1.1.0"
 val spekVersion = "2.0.0-rc.1"
 
 group = "org.gradle.plugins"
-version = "0.5"
+version = "0.6"
 description = "Generates documentation in HTML for given project"
 
 val webUrl = "https://gradle-guides.github.io/${project.name}/"
@@ -161,14 +161,14 @@ pluginBundle {
 }
 
 artifacts {
-    add(configurations.archives.name, dokkaJar)
+//    add(configurations.archives.name, dokkaJar)
     add(configurations.archives.name, sourcesJar)
 }
 
 // Configure maven-publish plugin
 publishing {
     publications.withType<MavenPublication> {
-        artifact(dokkaJar.get())
+//        artifact(dokkaJar.get())
         artifact(sourcesJar.get())
 
         pom {
