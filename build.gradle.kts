@@ -163,14 +163,14 @@ pluginBundle {
 }
 
 artifacts {
-//    add(configurations.archives.name, dokkaJar)
+    add(configurations.archives.name, dokkaJar)
     add(configurations.archives.name, sourcesJar)
 }
 
 // Configure maven-publish plugin
 publishing {
     publications.withType<MavenPublication> {
-//        artifact(dokkaJar.get())
+        artifact(dokkaJar.get())
         artifact(sourcesJar.get())
 
         pom {
