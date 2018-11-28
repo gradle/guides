@@ -7,7 +7,7 @@ plugins {
     `maven-publish`
     signing
     id("com.gradle.plugin-publish") version "0.10.0"
-    id("gradle.site") version "0.3"
+    id("gradle.site") version "0.6"
     id("org.jetbrains.dokka") version "0.9.17"
     kotlin("jvm") version "1.3.10"
 }
