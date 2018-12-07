@@ -2,8 +2,12 @@ import org.gradle.api.*;
 
 public class ServerEnvironmentPlugin implements Plugin<Project> {
     @Override
-    public void apply(Project project) {
-        NamedDomainObjectContainer<ServerEnvironment> serverEnvironmentContainer = project.container(ServerEnvironment.class);
+    public void apply(final Project project) {
+        NamedDomainObjectContainer<ServerEnvironment> serverEnvironmentContainer = project.container(ServerEnvironment.class, new NamedDomainObjectFactory<ServerEnvironment>() {
+            public ServerEnvironment create(String name) {
+                return new ServerEnvironment(name, project.getObjects());
+            }
+        });
         project.getExtensions().add("environments", serverEnvironmentContainer);
 
         serverEnvironmentContainer.all(new Action<ServerEnvironment>() {
@@ -13,7 +17,7 @@ public class ServerEnvironmentPlugin implements Plugin<Project> {
                 String taskName = "deployTo" + capitalizedServerEnv;
                 project.getTasks().register(taskName, Deploy.class, new Action<Deploy>() {
                     public void execute(Deploy task) {
-                        task.setUrl(serverEnvironment.getUrl());
+                        task.getUrl().set(serverEnvironment.getUrl());
                     }
                 });
             }
