@@ -11,11 +11,9 @@ public class ServerEnvironmentPlugin implements Plugin<Project> {
                 String env = serverEnvironment.getName();
                 String capitalizedServerEnv = env.substring(0, 1).toUpperCase() + env.substring(1);
                 String taskName = "deployTo" + capitalizedServerEnv;
-                Deploy deployTask = project.getTasks().create(taskName, Deploy.class);
-                
-                project.afterEvaluate(new Action<Project>() {
-                    public void execute(Project project) {
-                        deployTask.setUrl(serverEnvironment.getUrl());
+                project.getTasks().register(taskName, Deploy.class, new Action<Deploy>() {
+                    public void execute(Deploy task) {
+                        task.setUrl(serverEnvironment.getUrl());
                     }
                 });
             }
