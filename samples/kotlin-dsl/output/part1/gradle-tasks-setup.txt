@@ -1,5 +1,4 @@
 Build Setup tasks
 -----------------
 init - Initializes a new Gradle build.
-kotlinDslAccessorsSnapshot - Generates Kotlin accessors for accessing and configuring the currently available project extensions and conventions.
 wrapper - Generates Gradle wrapper files.
