@@ -30,7 +30,7 @@ include::{groovy-example-dir}/code/part1/custom-hello.gradle[]
 ----
 include::{kotlin-example-dir}/code/part1/custom-hello.gradle.kts[]
 ----
-<1> Create a new ad-hoc task called `hello`.
+<1> Register a new ad-hoc task called `hello`.
 <2> Add a task action to print to the console.
 
 Save the file and on the command-line type `gradle tasks --all`. Your new task will appear under `Other tasks`.
@@ -146,9 +146,6 @@ include::{groovy-example-dir}/code/part3/german-hello.gradle[tags=german]
 ----
 include::{kotlin-example-dir}/code/part3/german-hello.gradle.kts[tags=german]
 ----
-
-[.multi-language-text.lang-groovy]
-NOTE: In the Groovy DSL, no assignment is required during configuration as Gradle decorates the properties to allow for a more declarative DSL.
 
 Run `gradle tasks` again to verify that the new task has been added.
 

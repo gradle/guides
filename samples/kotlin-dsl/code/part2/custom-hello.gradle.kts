@@ -1,4 +1,4 @@
-tasks.create("hello") {
+tasks.register("hello") {
     group = "Welcome"
     description = "Produces a greeting"
 

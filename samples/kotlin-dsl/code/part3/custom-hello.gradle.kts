@@ -8,7 +8,7 @@ open class Greeting: DefaultTask() { // <1> <2>
     }
 }
 
-tasks.create<Greeting>("hello") { // <6>
+tasks.register<Greeting>("hello") { // <6>
     group = "Welcome"
     description = "Produces a world greeting"
     message = "Hello" // <7>
