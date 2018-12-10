@@ -171,10 +171,10 @@ include::{groovy-example-dir}/output/part3/gradle-gutentag.txt[]
 
 That's it! You've worked through the steps necessary to create a custom Gradle Task. You should now have learned how to
 
-* Create an ad-hoc task and add an action using `doLast`.
+* Register an ad-hoc task and add an action using `doLast`.
 * Document a task.
-* Convert an ad-hoc task to a custom Gradle task type and creating task instances.
-* Using `@TaskAction` to set a default action for a task type.
+* Convert an ad-hoc task to a custom Gradle task type and register task instances.
+* Use `@TaskAction` to set a default action for a task type.
 
 == Next steps
 
