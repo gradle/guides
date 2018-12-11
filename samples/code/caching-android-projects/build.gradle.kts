@@ -5,6 +5,10 @@ plugins {
     kotlin("kapt") version "1.3.11"
 }
 
+repositories {
+    jcenter()
+}
+
 // tag::cacheKapt[]
 subprojects {
     pluginManager.withPlugin("kotlin-kapt") {
