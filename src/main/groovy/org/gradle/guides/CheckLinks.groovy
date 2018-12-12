@@ -44,18 +44,22 @@ class CheckLinks extends DefaultTask {
 
         getAnchors(indexDocument.toURI()).each { anchor ->
 
-            if(anchor.absolute) {
-                if(anchor.scheme.startsWith('http')) {
-                    def client = HttpBuilder.configure {
-                        request.uri = anchor.toString()
-                        request.headers = ['User-Agent': 'gradle-guides-plugin/0.0.0.1']
-                    }
-                    try {
-                        client.head()
-                        logger.info "PASSED: ${anchor}"
-                    } catch( java.lang.RuntimeException e ) {
-                        failures.add(anchor)
-                        logger.info "FAILED: ${anchor}"
+            if (anchor.absolute) {
+                if (anchor.scheme.startsWith('http')) {
+                    if (!Blacklist.isBlacklisted(anchor)) {
+                        def client = HttpBuilder.configure {
+                            request.uri = anchor.toString()
+                            request.headers = ['User-Agent': 'gradle-guides-plugin/0.0.0.1']
+                        }
+                        try {
+                            client.head()
+                            logger.info "PASSED: ${anchor}"
+                        } catch (java.lang.RuntimeException e) {
+                            failures.add(anchor)
+                            logger.info "FAILED: ${anchor}"
+                        }
+                    } else {
+                        logger.debug "SKIPPED (blacklisted): ${anchor}"
                     }
                 } else {
                     logger.debug "SKIPPED (Not http/s): ${anchor}"
@@ -65,8 +69,8 @@ class CheckLinks extends DefaultTask {
             }
         }
 
-        if(!failures.empty) {
-            throw new GradleException( "The following links are broken:\n " + failures.join("\n ") + "\n" )
+        if (!failures.empty) {
+            throw new GradleException("The following links are broken:\n " + failures.join("\n ") + "\n")
         }
     }
 
@@ -78,11 +82,20 @@ class CheckLinks extends DefaultTask {
         )
 
         def anchors = page.'**'.findAll {
-            it.name() ==  'A' && it.@href != null
+            it.name() == 'A' && it.@href != null
         }.collect { "${it.@href}".toURI() }
-
     }
 
     private Object indexDoc
-}
 
+    @CompileStatic
+    private static class Blacklist {
+
+        // These hosts are blocking web scrapers.
+        private static final List<String> BLACKLISTED_HOSTS = ["bugs.java.com", "youtrack.jetbrains.com"]
+
+        private static boolean isBlacklisted(URI uri) {
+            return BLACKLISTED_HOSTS.contains(uri.host)
+        }
+    }
+}
