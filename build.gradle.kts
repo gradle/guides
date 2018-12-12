@@ -1,7 +1,7 @@
 plugins {
     id("com.gradle.build-scan") version "1.15.2"
-    id("org.gradle.guides.topical") version "0.14.0"
-    id("org.gradle.guides.test-jvm-code") version "0.14.0"
+    id("org.gradle.guides.topical") version "0.15.5"
+    id("org.gradle.guides.test-jvm-code") version "0.15.5"
     kotlin("kapt") version "1.3.11" apply false
 }
 
