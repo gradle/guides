@@ -8,7 +8,7 @@ open class Greeting: DefaultTask() {
     }
 }
 
-tasks.create<Greeting>("hello") {
+tasks.register<Greeting>("hello") {
     group = "Welcome"
     description = "Produces a world greeting"
     message = "Hello"
@@ -16,7 +16,7 @@ tasks.create<Greeting>("hello") {
 }
 
 // tag::german[]
-tasks.create<Greeting>("gutenTag") {
+tasks.register<Greeting>("gutenTag") {
     group = "Welcome"
     description = "Produces a German greeting"
     message = "Guten Tag"
