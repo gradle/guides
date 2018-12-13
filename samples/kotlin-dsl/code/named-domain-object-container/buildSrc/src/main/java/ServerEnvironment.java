@@ -7,6 +7,7 @@ public class ServerEnvironment {
     private final String name;
     private Property<String> url;
 
+    @Inject
     public ServerEnvironment(String name, ObjectFactory objectFactory) {
         this.name = name;
         this.url = objectFactory.property(String.class);

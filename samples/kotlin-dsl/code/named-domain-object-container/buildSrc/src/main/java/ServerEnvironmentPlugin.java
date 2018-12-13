@@ -5,7 +5,7 @@ public class ServerEnvironmentPlugin implements Plugin<Project> {
     public void apply(final Project project) {
         NamedDomainObjectContainer<ServerEnvironment> serverEnvironmentContainer = project.container(ServerEnvironment.class, new NamedDomainObjectFactory<ServerEnvironment>() {
             public ServerEnvironment create(String name) {
-                return new ServerEnvironment(name, project.getObjects());
+                return project.getObjects().newInstance(ServerEnvironment.class, name, project.getObjects());
             }
         });
         project.getExtensions().add("environments", serverEnvironmentContainer);
