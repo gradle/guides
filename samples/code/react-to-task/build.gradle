@@ -1,8 +1,8 @@
 apply plugin: InhouseConventionWarPlugin
 
-task war(type: War)
+tasks.register("war", War)
 
-task assertWarWebXml {
+tasks.register("assertWarWebXml") {
     doLast {
         assert war.webXml == file('src/someWeb.xml')
     }

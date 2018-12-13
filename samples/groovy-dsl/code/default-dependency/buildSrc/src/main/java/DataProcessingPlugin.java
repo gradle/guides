@@ -16,7 +16,7 @@ public class DataProcessingPlugin implements Plugin<Project> {
             }
         });
 
-        project.getTasks().withType(DataProcessing.class, new Action<DataProcessing>() {
+        project.getTasks().withType(DataProcessing.class).configureEach(new Action<DataProcessing>() {
             public void execute(DataProcessing dataProcessing) {
                 dataProcessing.setDataFiles(config);
             }

@@ -1,20 +1,27 @@
+import org.gradle.api.provider.Property;
+import org.gradle.api.model.ObjectFactory;
+
+import javax.inject.Inject;
+
 public class ServerEnvironment {
     private final String name;
-    private String url;
+    private Property<String> url;
 
-    public ServerEnvironment(String name) {
+    @Inject
+    public ServerEnvironment(String name, ObjectFactory objectFactory) {
         this.name = name;
+        this.url = objectFactory.property(String.class);
     }
-    
+
+    public void setUrl(String url) {
+        this.url.set(url);
+    }
+
     public String getName() {
         return name;
     }
     
-    public void setUrl(String url) {
-        this.url = url;
-    }
-    
-    public String getUrl() {
+    public Property<String> getUrl() {
         return url;
     }
 }

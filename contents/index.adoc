@@ -12,6 +12,13 @@ The guide assumes you have:
 
 If you happen to be a beginner to Gradle please start by working through the link:https://gradle.org/guides#getting-started[Getting Started Guides on Gradle development] first while referencing the {user-manual}userguide.html[Gradle User Manual] to go deeper.
 
+== What you'll need
+
+* About +++<span class="time-to-complete-text"></span>+++
+* A text editor or IDE
+* A Java Development Kit (JDK), version 1.8 or better
+* A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
+
 == Practices
 
 [[plugin-development-plugin]]

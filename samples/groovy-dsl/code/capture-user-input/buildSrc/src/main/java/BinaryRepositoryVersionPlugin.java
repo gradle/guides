@@ -6,7 +6,7 @@ public class BinaryRepositoryVersionPlugin implements Plugin<Project> {
     public void apply(Project project) {
         BinaryRepositoryExtension extension = project.getExtensions().create("binaryRepo", BinaryRepositoryExtension.class, project);
 
-        project.getTasks().create("latestArtifactVersion", LatestArtifactVersion.class, new Action<LatestArtifactVersion>() {
+        project.getTasks().register("latestArtifactVersion", LatestArtifactVersion.class, new Action<LatestArtifactVersion>() {
             public void execute(LatestArtifactVersion latestArtifactVersion) {
                 latestArtifactVersion.getServerUrl().set(extension.getServerUrl());
             }

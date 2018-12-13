@@ -1,4 +1,4 @@
-task generate(type: Generate) {
+tasks.register("generate", Generate) {
     fileCount = 2
     content = 'Hello World!'
     generatedFileDir = file("$buildDir/generated-output")
