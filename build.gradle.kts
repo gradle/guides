@@ -19,7 +19,7 @@ buildScan {
 }
 
 tasks {
-    "asciidoctor"(org.asciidoctor.gradle.AsciidoctorTask::class) {
+    asciidoctor {
         resources(delegateClosureOf<CopySpec> {
             from("contents/css") {
                 into("css")
