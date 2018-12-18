@@ -8,7 +8,6 @@ plugins {
     signing
     id("com.gradle.plugin-publish") version "0.10.0"
     id("gradle.site") version "0.6"
-    id("org.jetbrains.dokka") version "0.9.17"
     kotlin("jvm") version "1.3.10"
 }
 
@@ -75,13 +74,6 @@ val sourcesJar by tasks.registering(Jar::class) {
     from(sourceSets.main.get().allSource)
 }
 
-val dokkaJar by tasks.registering(Jar::class) {
-    group = JavaBasePlugin.DOCUMENTATION_GROUP
-    description = "Assembles Kotlin docs with Dokka"
-    classifier = "javadoc"
-    from(tasks.dokka)
-}
-
 tasks {
     withType<KotlinCompile>().configureEach {
         kotlinOptions.jvmTarget = "1.8"
@@ -91,13 +83,6 @@ tasks {
         useJUnitPlatform {
             includeEngines("spek2")
         }
-    }
-
-    dokka {
-        outputFormat = "html"
-        outputDirectory = "$buildDir/javadoc"
-        jdkVersion = 8
-        reportUndocumented = false
     }
 
     check {
@@ -163,14 +148,12 @@ pluginBundle {
 }
 
 artifacts {
-    add(configurations.archives.name, dokkaJar)
     add(configurations.archives.name, sourcesJar)
 }
 
 // Configure maven-publish plugin
 publishing {
     publications.withType<MavenPublication> {
-        artifact(dokkaJar.get())
         artifact(sourcesJar.get())
 
         pom {
