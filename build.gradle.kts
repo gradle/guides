@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.io.IOException
 import java.time.Duration
 
 plugins {
@@ -25,8 +26,34 @@ buildScan {
     termsOfServiceUrl = "https://gradle.com/terms-of-service"
     termsOfServiceAgree = "yes"
 
+    publishAlways()
+
+    fun execCommandWithOutput(input: String): String {
+        return try {
+            val parts = input.split("\\s".toRegex())
+            val proc = ProcessBuilder(*parts.toTypedArray())
+                    .directory(rootDir)
+                    .redirectOutput(ProcessBuilder.Redirect.PIPE)
+                    .redirectError(ProcessBuilder.Redirect.PIPE)
+                    .start()
+            proc.waitFor(20, TimeUnit.SECONDS)
+            proc.inputStream.bufferedReader().readText()
+        } catch(e: IOException) {
+            "<empty>"
+        }
+    }
+
+    // Fastest way to safely check Git https://gist.github.com/sindresorhus/3898739
+    value("Git Branch", execCommandWithOutput("git symbolic-ref --short HEAD"))
+    value("Git Commit", execCommandWithOutput("git rev-parse --verify HEAD"))
+
+    val gitStatus = execCommandWithOutput("git status --porcelain")
+    if (gitStatus.isNotEmpty()) {
+        value("Git Local Changes", gitStatus)
+        tag("dirty")
+    }
+
     if (!System.getenv("CI").isNullOrEmpty()) {
-        publishAlways()
         tag("CI")
     }
 }
