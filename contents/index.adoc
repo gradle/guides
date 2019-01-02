@@ -344,7 +344,7 @@ include::{kotlin-example-dir}/build.gradle.kts[tags=plugins]
 ----
 <1> The use of `apply false` adds the plugin to the overall project, but does not add it to the root project.
 
-Now another subproject folder, called `docs`, for the documentation.
+Now create another subproject folder, called `docs`, for the documentation.
 
 [listing]
 ----
