@@ -1,16 +1,16 @@
+#include "greeter.h"
+
 #include <cassert>
 #include <iostream>
 
-#include "greeter.hpp"
-
-void testNameLength() {
+void TestNameLength() {
   Greeter g("GradleUser");
   std::cout << "[test] returns the correct name length..." << std::flush;
-  assert(g.getNameLength() == 10);
+  assert(g.GetNameLength() == 10);
   std::cout << " pass" << std::endl;
 }
 
-int main(int argc, char **argv) {
-  testNameLength();
+int main(int argc, char** argv) {
+  TestNameLength();
   return 0;
 }

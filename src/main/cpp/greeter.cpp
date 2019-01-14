@@ -1,10 +1,11 @@
-#include <iostream>
-#include "greeter.hpp"
+#include "greeter.h"
 
-void Greeter::greet() {
-    std::cout << "Hello, " << name << ", your name has " << getNameLength() << " chars." << std::endl;
+#include <iostream>
+
+void Greeter::Greet() {
+  std::cout << "Hello, " << name_ << ", your name has " << GetNameLength() << " chars." << std::endl;
 }
 
-int Greeter::getNameLength() {
-    return name.length();
+int Greeter::GetNameLength() {
+  return name_.length();
 }
