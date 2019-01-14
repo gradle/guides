@@ -2,18 +2,17 @@
 
 This guide shows how to
 
-. Build a simple {cpp} library using the Gradle `cpp` plugin, and
-. Build and Run unit tests written with `GoogleTest` using the `google-test` plugin.
+. Build a simple {cpp} library using the Gradle `cpp-library` plugin, and
+. Build and Run generic unit tests using the `cpp-unit-test` plugin.
 
 == What you'll need
 
 * About +++<span class="time-to-complete-text"></span>+++
 * A text editor
 * A command prompt
-* The Java Development Kit (JDK), version 1.7 or higher
+* The Java Development Kit (JDK), version 1.8 or higher
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 * An installed {cpp} compiler. See which link:{user-manual}native_software.html#native-binaries:tool-chain-support[{cpp} tool chains] are supported by Gradle and whether you have to do any {user-manual}native_software.html#sec:tool_chain_installation[installation configuration] for your platform.
-* GoogleTest static library and the header files
 
 == Layout
 
@@ -38,234 +37,107 @@ Create a `build.gradle` file that has the following content:
 ----
 include::{projdir}/gradle/cpp.gradle[]
 ----
-<1> {cpp} libraries and binaries are built using the `cpp` plugin.
-<2> GoogleTest based unit test binaries are built using the `google-test` plugin
-<3> Native builds use the `model` block
-<4> You should already have the static library for `GoogleTest`. Hence this is defined as `PrebuiltLibraries`.
-<5> The name of the library component is `googleTest`. This can be any meaningful name you choose.
-<6> Specify the path where the header files of GoogleTest is located. Test suites will include the header files from this location.
-<7> Specify the path of the static library. The file name depends on the platform. So, a utility function that returns the library filename based on the target platform is used.
-<8> Native libraries are specified as a component of type {language-reference}org.gradle.nativeplatform.NativeLibrarySpec.html[NativeLibrarySpec] and defined by a name - `greeter` in this case.
-<9> Native executables are specified as a component of type {language-reference}org.gradle.nativeplatform.NativeExecutableSpec.html[NativeExecutableSpec] and defined by a name - `main` in this case.
-<10> The `main` binary uses the `greeter` {c++} library and is specified using `cpp.lib`
-<11> When using the VC++ compiler, the library methods should be declared with `__declspec(dllexport)` for shared library. This defines the macro `DLL_EXPORT` based on which the declaration is modified.
-<12> The test binaries should be linked with the `GoogleTest` static library to be able to run. We specify the `linkage` as static to tell the linker to statically link the binary with the `googleTest` library defined in step 5 above.
-
-Now run
-
-[listing]
-----
-$ ./gradlew tasks
-----
-
-You should see a number of tasks that has been added by Gradle
-
-[listing]
-----
-greeterSharedLibrary - Assembles shared library 'greeter:sharedLibrary'.
-greeterStaticLibrary - Assembles static library 'greeter:staticLibrary'.
-
-Build Dependents tasks
-----------------------
-assembleDependentsGreeter - Assemble dependents of native library 'greeter'.
-assembleDependentsGreeterSharedLibrary - Assemble dependents of shared library 'greeter:sharedLibrary'.
-assembleDependentsGreeterStaticLibrary - Assemble dependents of static library 'greeter:staticLibrary'.
-assembleDependentsGreeterTestGoogleTestExe - Assemble dependents of google test exe 'greeterTest:googleTestExe'.
-buildDependentsGreeter - Build dependents of native library 'greeter'.
-buildDependentsGreeterSharedLibrary - Build dependents of shared library 'greeter:sharedLibrary'.
-buildDependentsGreeterStaticLibrary - Build dependents of static library 'greeter:staticLibrary'.
-buildDependentsGreeterTestGoogleTestExe - Build dependents of google test exe 'greeterTest:googleTestExe'.
-
-Verification tasks
-------------------
-check - Runs all checks.
-checkGreeterTestGoogleTestExe - Check google test exe 'greeterTest:googleTestExe'
-
-----
+<1> {cpp} projects are enabled via the `cpp-library` plugin
+<2> C++ unit test binaries are built using the generic `cpp-unit-test` plugin
+<3> Change the library binary names, the base name defaults to the project name
+<4> Change the unit test binary names, the base name defaults to the project name followed by the `Test` suffix
 
 There are a few things to note here
 
-* The names `Greeter` and `Main` in the task names are derived from the names of the components defined in `build.gradle`.
-* The `NativeLibrarySpec`, by default, generates both static and shared(dynamic) libraries.  By default, the shared library is used by the binaries that use this library
-* The `google-test` plugin automatically generates testsuites for each of the component declared as a NativeLibrarySpec or NativeExecutableSpec. The testsuites are of type GoogleTestSuiteBinarySpec
-* The `google-test` plugin has also added a new  _verification task_. The verification tasks are `check` tasks that assemble and test a binary.
-* You might see a few more tasks than what has been listed above.
+* The `cpp-library` plugin automatically generates library component configurable via `library` extension DSL.
+* The `cpp-unit-test` plugin automatically generates a executable component that depends on the library. It also adds a new  _verification task_. The verification tasks are `check` tasks that assemble and test a binary. The unit test component configurable via the `unitTest` extension DSL.
 
 == Add source code
 
-In `build.gradle`, there are two components. `greeter` is the library you will be building and `main` is a simple executable to consume this library. The sources are structured as below
+In `build.gradle`, there are two components implicitly created. The `main` component is the library you will be building and the `test` component is a simple executable to consume this library for verfication purpose. The sources are structured as below
 
-* `greeter` library - `src/greeter/cpp` for sources and _non-exported header files_ and `src/greeter/headers` for _exported header files_
-* `main` binary - `src/main/cpp` for sources.
-
-The `google-test` plugin will automatically create two components named `greeterTest` and `mainTest` respectively for the `greeter` component and `main` component declared in te build scrpt. Place the test sources for the `greeterTest` test component at `src/greeterTest/cpp`.
-
-In general, the sources are located at `src/{name}/cpp` where `name` is the name of the component.
+* `main` library - `src/main/cpp` for sources, `src/main/headers` for _non-exported header files_ and `src/main/public` for _exported header files_
+* `test` executable - `src/test/cpp` for sources.
 
 [listing]
 ----
-mkdir -p src/greeter/cpp src/greeter/headers
-mkdir -p src/main/cpp
-mkdir -p src/greeterTest/cpp
+mkdir -p src/main/cpp src/main/public
+mkdir -p src/test/cpp
 ----
 
-Place a `greeter.hpp` in `src/greeter/headers` and a `greeter.cpp` in `src/greeter/cpp`.
+Place a `greeter.h` in `src/main/public` and a `greeter.cpp` in `src/main/cpp`.
 
-.src/greeter/headers/greeter.hpp
+.src/main/public/greeter.h
 [source,cpp]
 ----
-include::{projdir}/src/greeter/headers/greeter.hpp[]
+include::{projdir}/src/main/public/greeter.h[]
 ----
 
-.src/greeter/cpp/greeter.cpp
+.src/main/cpp/greeter.cpp
 [source,cpp]
 ----
-include::{projdir}/src/greeter/cpp/greeter.cpp[]
+include::{projdir}/src/main/cpp/greeter.cpp[]
 ----
 
-Now place a `greeting.cpp` under `src/main/cpp`.
+Place a `greeter_test.cpp` under `src/test/cpp`.
 
-.src/main/cpp/greeting.cpp
+.src/test/cpp/greeter_test.cpp
 [source,cpp]
 ----
-include::{projdir}/src/main/cpp/greeting.cpp[]
-----
-
-Place a `greetertest.cpp` under `src/greeterTest/cpp`.
-
-.src/greeterTest/cpp/greetertest.cpp
-[source,cpp]
-----
-include::{projdir}/src/greeterTest/cpp/greetertest.cpp[]
+include::{projdir}/src/test/cpp/greeter_test.cpp[]
 ----
 
 == Build the project
 
-Gradle adds tasks to the build for both static and shared form of the library. To build just the static library, run
+Gradle adds tasks to the build for only shared form of the library. To build build a static library, please refer to the https://github.com/gradle/native-samples/tree/master/cpp/static-library[static library sample].
+
+To build the shared library you can simply do `./gradlew assemble` as per usual.
 
 [listing]
 ----
-$ ./gradlew greeterStaticLibrary
-:compileGreeterStaticLibraryGreeterCpp // <1>
-:createGreeterStaticLibrary
-:greeterStaticLibrary
-
-BUILD SUCCESSFUL
-
-----
-<1> Gradle does not show the compiler commands or only show an excerpt of the compiler output if the compilation failed in order to keep the output from Gradle itself clean. But the compiler output can be found in `build/tmp/compileGreeterStaticLibraryGreeterCpp/output.txt` and the compiler flags can be found in `build/tmp/compileGreeterStaticLibraryGreeterCpp/options.txt`
-
-This builds the static library under `build/libs/greeter/static`
-
-[listing]
-----
-$ find build/libs/
-build/libs/
-build/libs/greeter
-build/libs/greeter/static
-build/libs/greeter/static/libgreeter.a
-----
-
-In a similar fashion, the shared library can be generated by running
-
-[listing]
-----
-$ ./gradlew greeterSharedLibrary
+$ ./gradlew assemble
 ----
 
 [listing]
 ----
-$ find build/libs/
-build/libs/
-build/libs/greeter
-build/libs/greeter/shared
-build/libs/greeter/shared/libgreeter.so
-build/libs/greeter/static
-build/libs/greeter/static/libgreeter.a
-----
-
-Since the `main` component depends on the `greeter` library, running the `mainExecutable` task will generate the static for exported symbols only and shared libraries and the executable binary as well.
-
-[listing]
-----
-$ ./gradlew mainExecutable
-:compileMainExecutableMainCpp
-:compileGreeterSharedLibraryGreeterCpp
-:linkGreeterSharedLibrary
-:greeterSharedLibrary
-:linkMainExecutable
-:mainExecutable
-
-BUILD SUCCESSFUL
-----
-
-You can run the binary that uses this library (you need to set the LD_LIBRARY_PATH as needed so that the shared library can be located).
-
-[listing]
-----
-$ LD_LIBRARY_PATH=build/libs/greeter/shared/ ./build/exe/main/main
-Hello, Gradle User, your name has 11 chars.
+$ find build/lib/
+build/lib/
+build/lib/main
+build/lib/main/debug
+build/lib/main/debug/libgreeter.so
 ----
 
 == Test the project
 
-As mentioned earlier, the `google-test` plugin automatically adds the testsuite components and verification tasks to the project. When you run the `build` task, gradle runs the compile tasks for source code and the test suites.
-It then runs the testsuite binary as well. The test binary in this case will be named `greeterTest` and the task will be named `runGreeterTestGoogleTestExe`.
+As mentioned earlier, the `cpp-unit-test` plugin automatically adds the test suite components and verification tasks to the project. When you run the `build` task, gradle runs the compile tasks for source code and the test suites.
+
+It then runs the test suite binary as well. The test binary in this case will be named `greeterTest` and the task will be named `runTest`.
 
 [listing.terminal]
 ----
 $ ./gradlew build
-:compileGreeterSharedLibraryGreeterCpp
-:linkGreeterSharedLibrary
-:greeterSharedLibrary
-:compileGreeterStaticLibraryGreeterCpp
-:createGreeterStaticLibrary
-:greeterStaticLibrary
-:compileMainExecutableMainCpp
-:linkMainExecutable
-:mainExecutable
+:compileDebugCpp
+:linkDebug
 :assemble
-:checkGreeterSharedLibrary UP-TO-DATE
-:compileGreeterTestGoogleTestExeGreeterCpp
-:compileGreeterTestGoogleTestExeGreeterTestCpp
-:linkGreeterTestGoogleTestExe
-:greeterTestGoogleTestExe
-:installGreeterTestGoogleTestExe
-:runGreeterTestGoogleTestExe
-[==========] Running 1 test from 1 test case.
-[----------] Global test environment set-up.
-[----------] 1 test from GreeterTest
-[ RUN      ] GreeterTest.CheckCapitalisation
-[       OK ] GreeterTest.CheckCapitalisation (0 ms)
-[----------] 1 test from GreeterTest (0 ms total)
+:compileTestCpp
+:linkTest
+:installTest
 
-[----------] Global test environment tear-down
-[==========] 1 test from 1 test case ran. (0 ms total)
-[  PASSED  ] 1 test.
-:checkGreeterTestGoogleTestExe
-:checkGreeterStaticLibrary
-:compileMainTestGoogleTestExeMainCpp
-:linkMainTestGoogleTestExe
-:mainTestGoogleTestExe
-:installMainTestGoogleTestExe
-:runMainTestGoogleTestExe
-Hello, Gradle User, your name has 11 chars.
-:checkMainTestGoogleTestExe
-:checkMainExecutable
+:runTest
+[test] returns the correct name length... pass
+
+:test
 :check
 :build
 ----
 
-You should see the output from the `GoogleTest` testsuite that you had written for the `greeter` library as part of the output for the `build` task.
+You should see the output from the C++ test suite that you had written for the library as part of the output for the `build` task.
 
 == Summary
 
-You have created a {cpp} library (both static and shared) and written unit tests for it. In doing so, you saw
+You have created a {cpp} library and written unit tests for it. In doing so, you saw
 
 * How to create gradle build scripts for {cpp} libraries.
-* How to generate static and/or shared libraries from {cpp} soruces.
-* How to use our library in a {cpp} binary.
-* How to build and run testsuites written with GoogleTest
+* How to generate shared libraries from {cpp} sources.
+* How to build and run a test suite
 
+== Next Steps
+
+* Make your way to the native samples repository to see the C++ plugins in action for common scenarios such as https://github.com/gradle/native-samples/tree/master/cpp/transitive-dependencies[transitive dependencies], https://github.com/gradle/native-samples/tree/master/cpp/swift-package-manager[custom source layout], and https://github.com/gradle/native-samples/tree/master/cpp/static-library[static library].
 
 include::contribute[repo-path="gradle-guides/building-cpp-libraries"]

@@ -1,49 +1,10 @@
-apply plugin: 'cpp' // <1>
-apply plugin: 'google-test' // <2>
+apply plugin: 'cpp-library' // <1>
+apply plugin: 'cpp-unit-test' // <2>
 
-model { // <3>
-    repositories {
-        libs(PrebuiltLibraries) { // <4>
-            googleTest { // <5>
-                headers.srcDir new File(projectDir, "3rdparty/googletest-master/googletest/include") // <6>
-                binaries.withType(StaticLibraryBinary) {
-                    staticLibraryFile = file(projectDir.getPath() + "/3rdparty/googletest-master/googletest/build/" + findGoogleTestStaticLib(targetPlatform)) // <7>
-                }
-            }
-        }
-    }
-    components {
-        greeter(NativeLibrarySpec) { } // <8>
-        // Let's try using the library
-        main(NativeExecutableSpec) { // <9>
-            sources {
-                cpp.lib library: "greeter" // <10>
-            }
-        }
-    }
-
-
-    binaries {
-        withType(SharedLibraryBinarySpec) {
-            if (toolChain in VisualCpp) {
-                cppCompiler.define "DLL_EXPORT" // <11>
-            }
-        }
-        withType(GoogleTestTestSuiteBinarySpec) {
-            lib library: "googleTest", linkage: "static" // <12>
-
-            if (targetPlatform.operatingSystem.linux) {
-                cppCompiler.args '-pthread'
-                linker.args '-pthread'
-            }
-        }
-    }
+library {
+    baseName = "greeter" // <3>
 }
 
-def findGoogleTestStaticLib(Platform p) {
-    if (p.operatingSystem.windows) {
-        return "Release/gtest.lib"
-    } else {
-        return "libgtest.a"
-    }
+unitTest {
+    baseName = "greeterTest" // <4>
 }
