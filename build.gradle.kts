@@ -1,6 +1,6 @@
 plugins {
-    id("com.gradle.build-scan") version "2.0.1"
-    id("org.gradle.guides.getting-started") version "0.15.3"
+    id("com.gradle.build-scan") version "2.0.2"
+    id("org.gradle.guides.getting-started") version "0.15.5"
     id("org.ysb33r.vfs") version "1.0"
 }
 
