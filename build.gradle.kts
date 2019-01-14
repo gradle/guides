@@ -1,7 +1,6 @@
 plugins {
     id("com.gradle.build-scan") version "2.0.2"
     id("org.gradle.guides.getting-started") version "0.15.5"
-    id("org.ysb33r.vfs") version "1.0"
 }
 
 guide {
@@ -9,7 +8,6 @@ guide {
 }
 
 apply {
-    from("gradle/setup-googletest.gradle")
     from("gradle/cpp.gradle")
 }
 
