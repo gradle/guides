@@ -5,7 +5,6 @@ plugins {
 
 configure<org.gradle.guides.GuidesExtension> {
     repoPath = "gradle-guides/building-cpp-executables"
-    mainAuthor = "Schalk Cronjé"
 }
 
 apply {
