@@ -35,12 +35,13 @@ Create a minimalist `build.gradle` file with the following content:
 include::{projdir}/gradle/cpp.gradle[]
 ----
 <1> {cpp} projects are enabled via the `cpp-application` plugin
+<2> Change the application binary names, the base name defaults to the project name
 
 == Add source code
 
 By convention, {cpp} projects in Gradle will follow a more contemporary layout. This can be troublesome for you if you are used to building {cpp} code with build tools that do not use a convention-over-configuration approach. Rest assured that Gradle is very configurable in this regard and should you need to migrate a {cpp} project to Gradle you can consult the {user-manual}native_software.html#sec:cpp_sources[{cpp} sources] section of the User Guide.
 
-The executable component is called `main`. By convention, Gradle will look in `src/main/cpp` for source files and non-exported header files. Create these folders
+The executable component is called `main`. By convention, Gradle will look in `src/main/cpp` for source files and non-exported header files. Create this folder
 
 [listing]
 ----
@@ -54,18 +55,18 @@ and place a `main.cpp` and a `greeting.hpp` within.
 ----
 include::{codedir}/cpp/main.cpp[]
 ----
-<1> The standard {cpp} headers wil be located via the compiler toolchain that Gradle uses
-<2> Non-exported headers will be searched for relative to the specified {cpp} source folders. (In this case `src/main/cpp`).
+<1> Non-exported headers will be searched for relative to the specified {cpp} source folders. (In this case `src/main/cpp`).
+<2> The standard {cpp} headers wil be located via the compiler toolchain that Gradle uses
 
-.src/main/cpp/greeting.hpp
+.src/main/cpp/greeting.h
 [source,cpp]
 ----
-include::{codedir}/cpp/greeting.hpp[]
+include::{codedir}/cpp/greeting.h[]
 ----
 
 == Build your project
 
-To build your project you can simply do `./gradlew assemble` as per usual.
+To build your project you can simply do `./gradlew assemble` as per usual:
 
 [listing]
 ----
@@ -86,7 +87,7 @@ Now run your newly built executable.
 
 [listing]
 ----
-$ ./build/exe/main/debug/main
+$ ./build/exe/main/debug/greeting
 
 Hello World
 ----
