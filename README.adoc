@@ -1,4 +1,6 @@
-= Gradle Site Plugin image:https://travis-ci.org/gradle-guides/gradle-site-plugin.svg?branch=master["Build Status", link="https://travis-ci.org/gradle-guides/gradle-site-plugin"] image:https://img.shields.io/badge/build-scan-green.svg["Build Scan", link="https://gradle.com/s/thgfe3dxihijo"]
+= Gradle Site Plugin
+image:https://travis-ci.org/gradle-guides/gradle-site-plugin.svg?branch=master["Build Status", link="https://travis-ci.org/gradle-guides/gradle-site-plugin"] image:https://img.shields.io/badge/build-scan-green.svg["Build Scan", link="https://gradle.com/s/thgfe3dxihijo"] image:https://img.shields.io/maven-metadata/v/https/plugins.gradle.org/m2/org.gradle/gradle-hello-world-plugin/maven-metadata.xml.svg?label=gradlePluginPortal["Maven Central",link="https://plugins.gradle.org/plugin/gradle.site"]
+
 
 A sample Gradle plugin demonstrating established techniques and practices for plugin development as described in the following guides:
 
