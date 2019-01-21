@@ -1,4 +1,10 @@
-= Gradle Site Plugin image:https://travis-ci.org/gradle-guides/gradle-site-plugin.svg?branch=master["Build Status", link="https://travis-ci.org/gradle-guides/gradle-site-plugin"] image:https://img.shields.io/badge/build-scan-green.svg["Build Scan", link="https://gradle.com/s/thgfe3dxihijo"]
+:maven-metadata: plugins.gradle.org/m2/gradle/plugin/org/gradle/plugins/gradle-site-plugin
+:travis: https://travis-ci.org/gradle-guides/gradle-site-plugin
+:gradle-plugins-portal: https://plugins.gradle.org/plugin/gradle.site
+
+
+= Gradle Site Plugin image:{travis}.svg?branch=master["Build Status", link="{travis}"] image:https://img.shields.io/badge/build-scan-green.svg["Build Scan", link="https://gradle.com/s/thgfe3dxihijo"] image:https://img.shields.io/maven-metadata/v/https/{maven-metadata}/maven-metadata.xml.svg?label=gradlePluginPortal["Maven Central",link="{gradle-plugins-portal}"]
+
 
 A sample Gradle plugin demonstrating established techniques and practices for plugin development as described in the following guides:
 
@@ -10,7 +16,7 @@ A sample Gradle plugin demonstrating established techniques and practices for pl
 
 The plugin provides a task for generating a web page that derives information about the project e.g. applied plugins and available tasks. While minimalistic in functionality it serves as a show case for demonstrating best practices for Gradle plugin development. A site generated for this project can be link:https://gradle-guides.github.io/gradle-site-plugin/[viewed here].
 
-TIP: The plugin is link:https://plugins.gradle.org/plugin/gradle.site[available on the Gradle plugin portal] for public consumption.
+TIP: The plugin is link:{gradle-plugins-portal}[available on the Gradle plugin portal] for public consumption.
 
 == Usage example
 
