@@ -106,7 +106,7 @@ include::sample[dir="groovy-dsl/code", files="settings.gradle[]"]
 include::sample[dir="kotlin-dsl/code", files="settings.gradle.kts[]"]
 ====
 
-This assigns the name of the root project to `java-demo`, which is the default.
+This sets the name of the root project to "demo", which overrides the default behavior of naming the project after the directory it's in.
 
 The generated `build.gradle` file also has many comments. The active portion is reproduced here (note version numbers for the dependencies may be updated in later versions of Gradle):
 
