@@ -1,10 +1,9 @@
-import org.apache.tools.ant.filters.*
-import org.asciidoctor.gradle.AsciidoctorTask
+import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
-    id("com.gradle.build-scan") version "1.16"
-    id("org.gradle.guides.getting-started") version "0.14.0"
-    id("org.gradle.guides.test-jvm-code") version "0.14.0"
+    id("com.gradle.build-scan") version "2.1"
+    id("org.gradle.guides.getting-started") version "0.15.5"
+    id("org.gradle.guides.test-jvm-code") version "0.15.5"
 }
 
 repositories {
@@ -23,8 +22,8 @@ guide {
 }
 
 buildScan {
-    setTermsOfServiceUrl("https://gradle.com/terms-of-service")
-    setTermsOfServiceAgree("yes")
+    termsOfServiceUrl = "https://gradle.com/terms-of-service"
+    termsOfServiceAgree = "yes"
     if (!System.getenv("CI").isNullOrEmpty()) {
         publishAlways()
         tag("CI")
@@ -32,28 +31,21 @@ buildScan {
 }
 
 tasks {
-    val preProcessSamples by creating(Copy::class) {
+    val preProcessSamples by registering(Copy::class) {
         into("$buildDir/samples")
         from("samples")
-        dependsOn("configurePreProcessSamples")
+        val tokens = mapOf("scanPluginVersion" to resolveLatestBuildScanPluginVersion())
+        filter<ReplaceTokens>("tokens" to tokens)
     }
 
-    val configurePreProcessSamples by creating {
-        doLast {
-            val tokens = mapOf("scanPluginVersion" to resolveLatestBuildScanPluginVersion())
-            preProcessSamples.inputs.properties(tokens)
-            preProcessSamples.filter<ReplaceTokens>("tokens" to tokens)
-        }
-    }
-
-    val asciidoctor by getting(AsciidoctorTask::class) {
+    asciidoctor {
         dependsOn(preProcessSamples)
         attributes.putAll(mapOf(
             "samplescodedir" to project.file("build/samples/code").absolutePath
         ))
     }
 
-    val test by getting(Test::class) {
+    test {
         dependsOn(preProcessSamples)
         systemProperty("samplesDir", "$buildDir/samples")
     }
