@@ -1,13 +1,13 @@
 // tag::build-scan-plugin-plugins-apply[]
 plugins {
-    id("com.gradle.build-scan") version "1.16" // <1>
+    id("com.gradle.build-scan") version "2.1" // <1>
 }
 // end::build-scan-plugin-plugins-apply[]
 
 // tag::build-scan-dsl[]
 buildScan {
-    setTermsOfServiceUrl("https://gradle.com/terms-of-service")
-    setTermsOfServiceAgree("yes")
+    termsOfServiceUrl = "https://gradle.com/terms-of-service"
+    termsOfServiceAgree = "yes"
 }
 // end::build-scan-dsl[]
 

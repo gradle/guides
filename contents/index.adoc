@@ -34,8 +34,8 @@ This mechanism makes it very easy to generate ad-hoc, one-off build scans withou
 Add a `plugins` block to the root project build script file with the following contents:
 
 ====
-include::sample[dir="samples/groovy-dsl/build-scan-from-build-script",files="build.gradle[tags=build-scan-plugin-plugins-apply]"]
-include::sample[dir="samples/kotlin-dsl/build-scan-from-build-script",files="build.gradle.kts[tags=build-scan-plugin-plugins-apply]"]
+include::sample[dir="groovy-dsl/build-scan-from-build-script",files="build.gradle[tags=build-scan-plugin-plugins-apply]"]
+include::sample[dir="kotlin-dsl/build-scan-from-build-script",files="build.gradle.kts[tags=build-scan-plugin-plugins-apply]"]
 ====
 <1> Use latest plugin version which can be found on the https://plugins.gradle.org/plugin/com.gradle.build-scan[Gradle Plugin Portal].
 
@@ -47,8 +47,8 @@ In order to publish build scans to https://scans.gradle.com, you need to accept 
 This can be done ad-hoc via the command line when publishing, but can also be specified in your Gradle build file, by adding the following section:
 
 ====
-include::sample[dir="samples/groovy-dsl/build-scan-from-build-script",files="build.gradle[tags=build-scan-dsl]"]
-include::sample[dir="samples/kotlin-dsl/build-scan-from-build-script",files="build.gradle.kts[tags=build-scan-dsl]"]
+include::sample[dir="groovy-dsl/build-scan-from-build-script",files="build.gradle[tags=build-scan-dsl]"]
+include::sample[dir="kotlin-dsl/build-scan-from-build-script",files="build.gradle.kts[tags=build-scan-dsl]"]
 ====
 
 The `buildScan` block allows you to configure the plugin. Here you are setting two properties necessary to accept the license agreement.
@@ -85,8 +85,8 @@ You can now explore all the information contained in the build scan, including t
 You can avoid having to add the plugin and license agreement to every build by using a Gradle init script. Create a file in the directory `~/.gradle/init.d` (where the tilde represents your home directory) with the following contents:
 
 ====
-include::sample[dir="samples/groovy-dsl/build-scan-from-init-script",files="buildScan.gradle[]"]
-include::sample[dir="samples/kotlin-dsl/build-scan-from-init-script",files="buildScan.init.gradle.kts[]"]
+include::sample[dir="groovy-dsl/build-scan-from-init-script",files="buildScan.gradle[]"]
+include::sample[dir="kotlin-dsl/build-scan-from-init-script",files="buildScan.init.gradle.kts[]"]
 ====
 
 The init script downloads the build scan plugin if necessary and applies it to every project, and accepts the license agreement. Now you can use the `--scan` flag on any build on your system.

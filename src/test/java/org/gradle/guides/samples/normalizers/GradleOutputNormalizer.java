@@ -15,7 +15,6 @@
  */
 package org.gradle.guides.samples.normalizers;
 
-import org.apache.commons.lang3.StringUtils;
 import org.gradle.samples.test.normalizer.OutputNormalizer;
 import org.gradle.samples.executor.ExecutionMetadata;
 
@@ -23,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class GradleOutputNormalizer implements OutputNormalizer {
     private static final Pattern STACK_TRACE_ELEMENT = Pattern.compile("\\s+(at\\s+)?([\\w.$_]+/)?[\\w.$_]+\\.[\\w$_ =+\'-<>]+\\(.+?\\)(\\x1B\\[0K)?");
@@ -38,7 +38,6 @@ public class GradleOutputNormalizer implements OutputNormalizer {
     public static final String DAEMON_WILL_BE_STOPPED_MESSAGE = "Daemon will be stopped at the end of the build";
     public static final String EXPIRING_DAEMON_MESSAGE = "Expiring Daemon because JVM Tenured space is exhausted";
     public static final String DEPRECATED_GRADLE_FEATURES_MESSAGE = "Deprecated Gradle features were used in this build, making it incompatible with Gradle";
-    public static final String JAVA_7_DEPRECATION_MESSAGE = "Support for running Gradle using Java 7 has been deprecated and is scheduled to be removed in Gradle 5.0.";
 
     @Override
     public String normalize(String commandOutput, ExecutionMetadata executionMetadata) {
@@ -64,12 +63,6 @@ public class GradleOutputNormalizer implements OutputNormalizer {
             } else if (line.contains(DEPRECATED_GRADLE_FEATURES_MESSAGE)) {
                 // Remove the "Deprecated Gradle features..." message and "See https://docs.gradle.org..."
                 i+=2;
-            } else if (line.contains(JAVA_7_DEPRECATION_MESSAGE)) {
-                // Remove the Java 7 deprecation warning. This should be removed after 5.0
-                i++;
-                while (i < lines.size() && STACK_TRACE_ELEMENT.matcher(lines.get(i)).matches()) {
-                    i++;
-                }
             } else if (BUILD_RESULT_PATTERN.matcher(line).matches()) {
                 result.add(BUILD_RESULT_PATTERN.matcher(line).replaceFirst("BUILD $1 in 0s"));
                 i++;
@@ -82,6 +75,6 @@ public class GradleOutputNormalizer implements OutputNormalizer {
             }
         }
 
-        return StringUtils.join(result, "\n");
+        return result.stream().collect(Collectors.joining(System.lineSeparator()));
     }
 }
