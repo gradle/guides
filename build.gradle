@@ -19,7 +19,7 @@ configurations {
 }
 
 dependencies {
-    pluginClasspath 'com.gradle.publish:plugin-publish-plugin:0.10.0'
+    pluginClasspath 'com.gradle.publish:plugin-publish-plugin:0.10.1'
 }
 
 test {
