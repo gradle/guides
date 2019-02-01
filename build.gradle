@@ -2,7 +2,7 @@ plugins {
     id 'com.gradle.build-scan' version '2.0.2'
     id 'groovy'
     id 'java-gradle-plugin'
-    id 'com.gradle.plugin-publish' version '0.10.0'
+    id 'com.gradle.plugin-publish' version '0.10.1'
     id 'org.ysb33r.cloudci' version '2.3'
     id 'maven-publish'
 }
