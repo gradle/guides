@@ -48,9 +48,11 @@ A typical use case for this is when developers start their day, pull all changes
 
 The changes don't need to be completely independent, either; we'll take a look at the strategies to reuse results when dependencies are involved in the section about the <<normalization,different forms of normalization>>.
 
-=== Combine CI results with local caching on developer machines
+=== Combine remote results with local caching
 
-Developers can utilize both a local and a remote cache. While loading results from a CI-filled remote cache helps to avoid work needed because of changes by other developers, the local cache can speed up switching branches and doing `git bisect`.
+You can utilize both a local and a remote cache for a compound effect.
+While loading results from a CI-filled remote cache helps to avoid work needed because of changes by other developers, the local cache can speed up switching branches and doing `git bisect`.
+On CI machines the local cache can act as a mirror of the remote cache, significantly reducing network usage.
 
 === Share results between developers
 
