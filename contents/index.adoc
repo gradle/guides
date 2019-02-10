@@ -9,7 +9,7 @@ This guide demonstrates how to create a minimalist {cpp} executable using Gradle
 * A command prompt
 * The Java Development Kit (JDK), version 1.8 or higher
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
-* An installed {cpp} compiler. See which link:{user-manual}native_software.html#native-binaries:tool-chain-support[{cpp} tool chains] are supported by Gradle and whether you have to do any {user-manual}native_software.html#sec:tool_chain_installation[installation configuration] for your platform.
+* An installed {cpp} compiler. See which link:{user-manual}cpp_plugins.html#cpp:tool-chain-support[{cpp} tool chains] are supported by Gradle and whether you have to do any {user-manual}cpp_plugins.html#cpp:tool_chain_installation[installation configuration] for your platform.
 
 == Layout
 
@@ -39,7 +39,7 @@ include::{projdir}/gradle/cpp.gradle[]
 
 == Add source code
 
-By convention, {cpp} projects in Gradle will follow a more contemporary layout. This can be troublesome for you if you are used to building {cpp} code with build tools that do not use a convention-over-configuration approach. Rest assured that Gradle is very configurable in this regard and should you need to migrate a {cpp} project to Gradle you can consult the {user-manual}native_software.html#sec:cpp_sources[{cpp} sources] section of the User Guide.
+By convention, {cpp} projects in Gradle will follow a more contemporary layout. This can be troublesome for you if you are used to building {cpp} code with build tools that do not use a convention-over-configuration approach. Rest assured that Gradle is very configurable in this regard and should you need to migrate a {cpp} project to Gradle you can consult the {user-manual}cpp_plugins.html#cpp:cpp_sources[{cpp} sources] section of the User Guide.
 
 The executable component is called `main`. By convention, Gradle will look in `src/main/cpp` for source files and non-exported header files. Create this folder
 
@@ -105,6 +105,5 @@ You have created an {cpp} project  that can be used as a foundation for somethin
 == Next Steps
 
 * Make your way to the native samples repository to see the C++ plugins in action for common scenarios such as https://github.com/gradle/native-samples/tree/master/cpp/transitive-dependencies[transitive dependencies] and https://github.com/gradle/native-samples/tree/master/cpp/swift-package-manager[custom source layout].
-
 
 include::contribute[repo-path="gradle-guides/building-cpp-executables"]
