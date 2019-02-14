@@ -111,7 +111,7 @@ Setting up a suite of tests earlier on is crucial to the success of your plugin.
 
 === Organizing test source code
 
-We recommended to implement a good distribution of unit, integration and functional tests to cover the most important use cases. Separating the source code for each test type automatically results in a project that is more maintainable and manageable.
+We recommend to implement a good distribution of unit, integration and functional tests to cover the most important use cases. Separating the source code for each test type automatically results in a project that is more maintainable and manageable.
 
 By default the Java project already creates a convention for organizing unit tests, the directory `src/test/java`. Additionally, if you apply the Groovy plugin source code under the directory `src/test/groovy` is taken under consideration for compilation. Consequently, source code directories for other test types should follow a similar pattern. Below you can find an exemplary project layout for a plugin project that chooses to use a Groovy-based testing approach.
 
@@ -134,7 +134,7 @@ By default the Java project already creates a convention for organizing unit tes
 <4> Source directory containing production resource files
 <5> Source directory containing unit tests
 
-NOTE: The directories `src/integTest/groovy` and `src/functTest/groovy` are not based on an existing standard convention for Gradle projects. You can free to choose any project layout that works best for you.
+NOTE: The directories `src/integTest/groovy` and `src/functTest/groovy` are not based on an existing standard convention for Gradle projects. You are free to choose any project layout that works best for you.
 
 In the next section, you will learn how to configure those source directories for compilation and test execution. You can also rely on third-party plugins for convience e.g. the link:https://github.com/nebula-plugins/nebula-project-plugin#nebula-facet-plugin[Nebula Facet plugin] or the link:https://github.com/unbroken-dome/gradle-testsets-plugin[TestSets plugin].
 
@@ -148,7 +148,7 @@ Gradle models source code directories with the help of the {user-manual}java_plu
 include::{samplescodedir}/url-verifier-plugin/gradle/integration-test.gradle[tags=test-source-set]
 ----
 
-Source sets are only responsible for compiling source code, but do not deal with executing the byte code. For the purpose of test execution, a corresponding task of type {api-reference}org/gradle/api/tasks/testing/Test.html[Test] needs to be established. The following task demonstrate the setup for executing integration tests. As you can see below, the task references the classes and runtime classpath of the integration test source set.
+Source sets are only responsible for compiling source code, but do not deal with executing the byte code. For the purpose of test execution, a corresponding task of type {api-reference}org/gradle/api/tasks/testing/Test.html[Test] needs to be established. The following task demonstrates the setup for executing integration tests. As you can see below, the task references the classes and runtime classpath of the integration test source set.
 
 .integration-test.gradle
 [source,groovy]
@@ -196,7 +196,7 @@ IMPORTANT: When writing unit tests, it's important to test boundary conditions a
 [[integration-tests]]
 === Implementing integration tests
 
-Let's have a look at a class that reaches out to a another system, the piece of code that emits the HTTP calls. At the time of executing a test for the class `DefaultHttpCaller`, the runtime environment needs to be able to reach out to the internet.
+Let's have a look at a class that reaches out to another system, the piece of code that emits the HTTP calls. At the time of executing a test for the class `DefaultHttpCaller`, the runtime environment needs to be able to reach out to the internet.
 
 .DefaultHttpCaller.java
 [source,java]
