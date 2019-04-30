@@ -4,5 +4,5 @@
 * Place new images under `contents/images`.
 * Add testable code snippets to `src` folder as appropriate for this guide.
 * Commits to `master` will automatically be published to `gh-pages` if the build is successful.
-* To build documentation run `./gradlew asciidoctor` and find the results in `build/asciidoc/html5`.
-* To test code snippets run `./gradlew check`.
+* To build documentation run `./gradlew asciidoctor` and find the results at `build/html5/index.html`.
+* To test everything run `./gradlew build`.
