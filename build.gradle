@@ -8,7 +8,7 @@ guide {
 }
 
 asciidoctor {
-    inputs.dir files('src/0-original', 'src/1-single-module', 'src/2-all-modules', 'src/3-application', 'src/4-plugin')
+    inputs.files('src/0-original', 'src/1-single-module', 'src/2-all-modules', 'src/3-application', 'src/4-plugin')
     attributes originaldir: file('src/0-original')
     attributes singledir: file('src/1-single-module')
     attributes alldir: file('src/2-all-modules')
