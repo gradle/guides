@@ -7,3 +7,7 @@ guide {
     repoPath 'gradle-guides/designing-gradle-plugins'
     mainAuthor 'Benjamin Muschko'
 }
+
+dependencies {
+    testImplementation("org.spockframework:spock-core:1.2-groovy-2.5")
+}
