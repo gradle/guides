@@ -28,7 +28,7 @@ From inside the new project directory, run the `init` task with the `groovy-libr
 
 [listing]
 ----
-$ gradle init --type groovy-library
+$ gradle init --type groovy-library --package guidesamples
 include::{gradle-outdir}/initOutput/out.txt[]
 ----
 
@@ -72,7 +72,7 @@ The file `src/main/groovy/Library.groovy` is shown here:
 .Generated src/main/groovy/Library.groovy
 [source,groovy]
 ----
-include::{gradle-outdir}/files/src/main/groovy/Library.groovy[tags=source-code]
+include::{gradle-outdir}/files/src/main/groovy/guidesamples/Library.groovy[tags=source-code]
 ----
 
 The generated Spock specification, `src/test/groovy/LibraryTest.groovy` is shown next:
@@ -80,7 +80,7 @@ The generated Spock specification, `src/test/groovy/LibraryTest.groovy` is shown
 .Generated  src/test/groovy/LibraryTest.groovy
 [source,groovy]
 ----
-include::{gradle-outdir}/files/src/test/groovy/LibraryTest.groovy[]
+include::{gradle-outdir}/files/src/test/groovy/guidesamples/LibraryTest.groovy[]
 ----
 
 The generated test class has a single http://spockframework.org[Spock specification]. The test instantiates the `Library` class, invokes the `someLibraryMethod` method, and checks that the returned value is `true`.
@@ -116,7 +116,7 @@ Annotate the `Library.groovy` file with Groovydoc markup.
 .src/main/groovy/Library.groovy
 [source,groovy]
 ----
-include::{gradle-outdir}/files/src/main/groovy/Library.groovy[tags=groovy-doc]
+include::{gradle-outdir}/files/src/main/groovy/guidesamples/Library.groovy[tags=groovy-doc]
 ----
 
 Run the `groovydoc` task.
