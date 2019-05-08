@@ -8,6 +8,10 @@ guide {
     mainAuthor 'Ken Kousen'
 }
 
+dependencies {
+    testImplementation("org.spockframework:spock-core:1.2-groovy-2.5")
+}
+
 asciidoctor {
     inputs.dir 'samples'
     attributes 'groovy-example-dir': file('samples/groovy-dsl')
