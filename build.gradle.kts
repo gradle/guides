@@ -9,6 +9,10 @@ configure<org.gradle.guides.GuidesExtension> {
     mainAuthor = "Peter Ledbrook"
 }
 
+dependencies {
+    testImplementation("org.spockframework:spock-core:1.2-groovy-2.5")
+}
+
 buildScan {
     setTermsOfServiceUrl("https://gradle.com/terms-of-service")
     setTermsOfServiceAgree("yes")
