@@ -1,5 +1,5 @@
 plugins {
-    id("org.gradle.guides.getting-started") version "0.14.0"
+    id("org.gradle.guides.getting-started") version "0.15.5"
     id("com.gradle.build-scan") version "2.3"
 }
 
