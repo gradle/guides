@@ -11,6 +11,13 @@ apply {
     from("gradle/cpp.gradle")
 }
 
+// NOTE: Patch until we fix this in guide plugin
+afterEvaluate {
+    tasks.named("gitPublishReset") {
+        enabled = true
+    }
+}
+
 buildScan {
     setTermsOfServiceUrl("https://gradle.com/terms-of-service")
     setTermsOfServiceAgree("yes")
