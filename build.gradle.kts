@@ -1,7 +1,7 @@
 plugins {
     `build-scan`
-    id("org.gradle.guides.getting-started") version "0.15.1"
-    id("org.gradle.guides.test-jvm-code") version "0.15.1"
+    id("org.gradle.guides.getting-started") version "0.15.5"
+    id("org.gradle.guides.test-jvm-code") version "0.15.5"
 }
 
 configure<org.gradle.guides.GuidesExtension> {
