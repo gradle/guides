@@ -1,6 +1,6 @@
 plugins {
-    id "org.gradle.guides.getting-started" version "0.14.1"
-    id "org.gradle.guides.test-jvm-code" version "0.14.1"
+    id "org.gradle.guides.getting-started" version "0.15.5"
+    id "org.gradle.guides.test-jvm-code" version "0.15.5"
 }
 
 guide {
@@ -20,7 +20,6 @@ configurations {
 
 dependencies {
     pluginClasspath 'com.gradle.publish:plugin-publish-plugin:0.10.1'
-    testImplementation 'org.spockframework:spock-core:1.2-groovy-2.5'
 }
 
 test {
