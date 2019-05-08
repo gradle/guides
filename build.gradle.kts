@@ -1,6 +1,6 @@
 plugins {
     groovy
-    id("com.gradle.build-scan") version "2.2.1"
+    id("com.gradle.build-scan") version "2.3"
     id("org.gradle.guides.getting-started") version "0.15.5"
     id("org.gradle.guides.test-jvm-code") version "0.15.5"
 }
