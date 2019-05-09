@@ -9,7 +9,9 @@
 └── src
     ├── main
     │   └── scala  // <2>
-    │       └── Library.scala
+    │       └── guidesamples
+    │           └── Library.scala
     └── test
         └── scala // <3>
-            └── LibrarySuite.scala
+            └── guidesamples
+                └── LibrarySuite.scala
