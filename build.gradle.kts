@@ -1,5 +1,5 @@
 plugins {
-    id("com.gradle.build-scan") version "2.0.2"
+    id("com.gradle.build-scan") version "2.3"
     id("org.gradle.guides.getting-started") version "0.15.5"
 }
 
@@ -9,6 +9,13 @@ configure<org.gradle.guides.GuidesExtension> {
 
 apply {
     from("gradle/cpp.gradle")
+}
+
+// NOTE: Patch until we fix this in guide plugin
+afterEvaluate {
+    tasks.named("gitPublishReset") {
+        enabled = true
+    }
 }
 
 buildScan {
