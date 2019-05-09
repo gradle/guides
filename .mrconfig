@@ -1,6 +1,3 @@
-[building-android-apps]
-checkout = git clone git@github.com:gradle-guides/building-android-apps.git
-
 [building-c-executables]
 checkout = git clone git@github.com:gradle-guides/building-c-executables.git
 
