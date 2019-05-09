@@ -1,7 +1,7 @@
 plugins {
     id("com.gradle.build-scan") version "2.3"
-    id("org.gradle.guides.getting-started") version "0.14.0"
-    id("org.gradle.guides.test-jvm-code") version "0.14.0"
+    id("org.gradle.guides.getting-started") version "0.15.5"
+    id("org.gradle.guides.test-jvm-code") version "0.15.5"
 }
 
 repositories {
@@ -16,7 +16,6 @@ dependencies {
     }
     testImplementation("org.gradle:sample-check:0.5.0")
     testImplementation(gradleTestKit())
-    testImplementation("org.spockframework:spock-core:1.2-groovy-2.5")
 }
 
 configure<org.gradle.guides.GuidesExtension> {
