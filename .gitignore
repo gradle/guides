@@ -1,44 +1,5 @@
 # mr-managed repositories
-building-android-apps/
-building-c-executables/
-building-cpp-executables/
-building-cpp-libraries/
-building-groovy-libraries/
-building-java-9-modules/
-building-java-applications/
-building-java-libraries/
-building-java-web-applications/
-building-kotlin-jvm-libraries/
-building-scala-libraries/
-building-spring-boot-2-projects-with-gradle/
-creating-build-scans/
-creating-multi-project-builds/
-creating-new-gradle-builds/
-consuming-jvm-libraries/
-designing-gradle-plugins/
-executing-gradle-builds-on-jenkins/
-executing-gradle-builds-on-teamcity/
-executing-gradle-builds-on-travisci/
-gradle-guides-plugin/
-gradle-site-plugin/
-greeting-plugin-example/
-gs-template/
-guides-test-fixtures/
-implementing-gradle-plugins/
-migrating-build-logic-from-groovy-to-kotlin/
-migrating-from-maven/
-performance/
-publishing-plugins-to-gradle-plugin-portal/
-running-webpack-with-gradle/
-style-guide/
-testing-gradle-plugins/
-topical-template/
-tutorial-template/
-using-build-cache/
-using-the-worker-api/
-writing-getting-started-guides/
-writing-gradle-plugins/
-writing-gradle-tasks/
+subprojects/
 
 # nginx
 nginx.pid

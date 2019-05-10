@@ -1,116 +1,116 @@
-[building-c-executables]
+[subprojects/building-c-executables]
 checkout = git clone git@github.com:gradle-guides/building-c-executables.git
 
-[building-cpp-executables]
+[subprojects/building-cpp-executables]
 checkout = git clone git@github.com:gradle-guides/building-cpp-executables.git
 
-[building-cpp-libraries]
+[subprojects/building-cpp-libraries]
 checkout = git clone git@github.com:gradle-guides/building-cpp-libraries.git
 
-[building-groovy-libraries]
+[subprojects/building-groovy-libraries]
 checkout = git clone git@github.com:gradle-guides/building-groovy-libraries.git
 
-[building-java-9-modules]
+[subprojects/building-java-9-modules]
 checkout = git clone git@github.com:gradle-guides/building-java-9-modules.git
 
-[building-java-applications]
+[subprojects/building-java-applications]
 checkout = git clone git@github.com:gradle-guides/building-java-applications.git
 
-[building-java-libraries]
+[subprojects/building-java-libraries]
 checkout = git clone git@github.com:gradle-guides/building-java-libraries.git
 
-[building-java-web-applications]
+[subprojects/building-java-web-applications]
 checkout = git clone git@github.com:gradle-guides/building-java-web-applications.git
 
-[building-kotlin-jvm-libraries]
+[subprojects/building-kotlin-jvm-libraries]
 checkout = git clone git@github.com:gradle-guides/building-kotlin-jvm-libraries.git
 
-[building-scala-libraries]
+[subprojects/building-scala-libraries]
 checkout = git clone git@github.com:gradle-guides/building-scala-libraries.git
 
-[building-spring-boot-2-projects-with-gradle]
+[subprojects/building-spring-boot-2-projects-with-gradle]
 checkout = git clone git@github.com:gradle-guides/building-spring-boot-2-projects-with-gradle.git
 
-[creating-build-scans]
+[subprojects/creating-build-scans]
 checkout = git clone git@github.com:gradle-guides/creating-build-scans.git
 
-[creating-multi-project-builds]
+[subprojects/creating-multi-project-builds]
 checkout = git clone git@github.com:gradle-guides/creating-multi-project-builds.git
 
-[creating-new-gradle-builds]
+[subprojects/creating-new-gradle-builds]
 checkout = git clone git@github.com:gradle-guides/creating-new-gradle-builds.git
 
-[consuming-jvm-libraries]
+[subprojects/consuming-jvm-libraries]
 checkout = git clone git@github.com:gradle-guides/consuming-jvm-libraries.git
 
-[designing-gradle-plugins]
+[subprojects/designing-gradle-plugins]
 checkout = git clone git@github.com:gradle-guides/designing-gradle-plugins.git
 
-[executing-gradle-builds-on-jenkins]
+[subprojects/executing-gradle-builds-on-jenkins]
 checkout = git clone git@github.com:gradle-guides/executing-gradle-builds-on-jenkins.git
 
-[executing-gradle-builds-on-teamcity]
+[subprojects/executing-gradle-builds-on-teamcity]
 checkout = git clone git@github.com:gradle-guides/executing-gradle-builds-on-teamcity.git
 
-[executing-gradle-builds-on-travisci]
+[subprojects/executing-gradle-builds-on-travisci]
 checkout = git clone git@github.com:gradle-guides/executing-gradle-builds-on-travisci.git
 
-[gradle-guides-plugin]
+[subprojects/gradle-guides-plugin]
 checkout = git clone git@github.com:gradle-guides/gradle-guides-plugin.git
 
-[gradle-site-plugin]
+[subprojects/gradle-site-plugin]
 checkout = git clone git@github.com:gradle-guides/gradle-site-plugin.git
 
-[greeting-plugin-example]
+[subprojects/greeting-plugin-example]
 checkout = git clone git@github.com:gradle-guides/greeting-plugin-example.git
 
-[gs-template]
+[subprojects/gs-template]
 checkout = git clone git@github.com:gradle-guides/gs-template.git
 
-[guides-test-fixtures]
+[subprojects/guides-test-fixtures]
 checkout = git clone git@github.com:gradle-guides/guides-test-fixtures.git
 
-[implementing-gradle-plugins]
+[subprojects/implementing-gradle-plugins]
 checkout = git clone git@github.com:gradle-guides/implementing-gradle-plugins.git
 
-[migrating-from-maven]
+[subprojects/migrating-from-maven]
 checkout = git clone git@github.com:gradle-guides/migrating-from-maven.git
 
-[migrating-build-logic-from-groovy-to-kotlin]
+[subprojects/migrating-build-logic-from-groovy-to-kotlin]
 checkout = git clone git@github.com:gradle-guides/migrating-build-logic-from-groovy-to-kotlin.git
 
-[performance]
+[subprojects/performance]
 checkout = git clone git@github.com:gradle-guides/performance.git
 
-[publishing-plugins-to-gradle-plugin-portal]
+[subprojects/publishing-plugins-to-gradle-plugin-portal]
 checkout = git clone git@github.com:gradle-guides/publishing-plugins-to-gradle-plugin-portal.git
 
-[running-webpack-with-gradle]
+[subprojects/running-webpack-with-gradle]
 checkout = git clone git@github.com:gradle-guides/running-webpack-with-gradle.git
 
-[style-guide]
+[subprojects/style-guide]
 checkout = git clone git@github.com:gradle-guides/style-guide.git
 
-[testing-gradle-plugins]
+[subprojects/testing-gradle-plugins]
 checkout = git clone git@github.com:gradle-guides/testing-gradle-plugins.git
 
-[topical-template]
+[subprojects/topical-template]
 checkout = git clone git@github.com:gradle-guides/topical-template.git
 
-[tutorial-template]
+[subprojects/tutorial-template]
 checkout = git clone git@github.com:gradle-guides/tutorial-template.git
 
-[using-build-cache]
+[subprojects/using-build-cache]
 checkout = git clone git@github.com:gradle-guides/using-build-cache.git
 
-[using-the-worker-api]
+[subprojects/using-the-worker-api]
 checkout = git clone git@github.com:gradle-guides/using-the-worker-api.git
 
-[writing-getting-started-guides]
+[subprojects/writing-getting-started-guides]
 checkout = git clone git@github.com:gradle-guides/writing-getting-started-guides.git
 
-[writing-gradle-plugins]
+[subprojects/writing-gradle-plugins]
 checkout = git clone git@github.com:gradle-guides/writing-gradle-plugins.git
 
-[writing-gradle-tasks]
+[subprojects/writing-gradle-tasks]
 checkout = git clone git@github.com:gradle-guides/writing-gradle-tasks.git
