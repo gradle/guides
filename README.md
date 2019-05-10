@@ -49,7 +49,7 @@ Follow these steps on your local machine, replacing `Creating Java Projects` wit
     # The command above will create a directory named `build/new-guide-repositories/creating-java-projects`
     cd build/new-guide-repositories/creating-java-projects
 
-In it's current format the Gradle `create` task will take care of creating the repository on GitHub, cloning the appropriate template for the guide type, substituting appropriate values and finally pushing the content upstream. It will also take care of enabling the repository to be built by Travis.
+In its current format the Gradle `create` task will take care of creating the repository on GitHub, cloning the appropriate template for the guide type, substituting appropriate values and finally pushing the content upstream. It will also take care of enabling the repository to be built by Travis.
 
 Once this has been done, _paste the link for this new repository into the guide's GitHub issue_ and let the author know that they have everything they need to begin writing.
 
@@ -137,3 +137,14 @@ The Gradle Guides homepage at guides.gradle.org is hosted on [GitHub Pages](http
 The GitHub repositories where Organization Pages live have naming constraints, and in our case the repository where the guides.gradle.org Organization Page lives is [gradle-guides/gradle-guides.github.io](https://github.com/gradle-guides/gradle-guides.github.io). That repository is a _mirror_ of this one—gradle/guides—meaning that every commit here is also pushed to gradle-guides/gradle-guides.github.io, which in turn triggers publication to GitHub Pages.
 
 The mirroring process is managed as a simple Travis CI build; see [.travis.yml](.travis.yml) for details. We set up this mirrored arrangement because "gradle-guides/gradle-guides.github.io" is cumbersome to type and talk about, while "gradle/guides" is a friendlier and more intention-revealing name. The mirroring process should be transparent and hands-free for maintainers. We mention it here for reference and clarity.
+
+### How do I test a change to a guide?
+
+Each guide is tested on Travis. This is triggered when you create a PR for the guide repo.
+
+## Other resources
+
+- Getting start guides are created using this template repo: https://github.com/gradle-guides/gs-template
+- Topical guides are created using this template repo: https://github.com/gradle-guides/topical-template
+- Tutorials are created using this template repo: https://github.com/gradle-guides/tutorial-template
+- Each guide uses the plugins from https://github.com/gradle-guides/gradle-guides-plugin
