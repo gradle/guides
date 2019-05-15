@@ -10,7 +10,9 @@
 └── src
     ├── main
     │   └── java // <2>
-    │       └── Library.java
+    │       └── guidesamples
+    │           └── Library.java
     └── test
         └── java // <3>
-            └── LibraryTest.java
+            └── guidesamples
+                └── LibraryTest.java

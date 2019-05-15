@@ -35,7 +35,7 @@ gradleRunner {
 
         }
 
-        step "${sample.name}-initProject", ['init', '--type', buildType, '--project-name', projectName] + sample.initArguments
+        step "${sample.name}-initProject", ['init', '--type', buildType, '--package', 'guidesamples', '--project-name', projectName] + sample.initArguments
 
         step "${sample.name}-initOutput", cleanBuildOutput.curry("${sample.name}-initProject")
 
@@ -71,7 +71,7 @@ gradleRunner {
         }
 
         step "${sample.name}-editLibrary", {
-            File editLibrary = new File(workingDir, 'src/main/java/jvm/library/Library.java')
+            File editLibrary = new File(workingDir, 'src/main/java/guidesamples/Library.java')
             editLibrary.text = "${file('contents/javadoc-prefix.txt').text}${editLibrary.text}"
         }
 
