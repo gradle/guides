@@ -13,7 +13,7 @@ dependencies {
 }
 
 task md5(type: CreateMD5) {
-    destinationDir = file("${buildDir}/md5")
-    source = file("src")
-    codecClasspath = configurations.codec
+    source file("src")
+    codecClasspath.from(configurations.codec)
+    destinationDirectory = project.layout.buildDirectory.dir("${buildDir}/md5")
 }
