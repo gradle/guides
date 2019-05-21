@@ -3,7 +3,7 @@ if (file("subprojects").exists()) {
         settings.includeBuild(it)
     }
 
-// Resolve to the gradle-guides-plugin subprojects instead of the released plugins
+    // Resolve to the gradle-guides-plugin subprojects instead of the released plugins
     val guidePluginIds = setOf("org.gradle.guides.base", "org.gradle.guides.getting-started", "org.gradle.guides.topical", "org.gradle.guides.tutorial", "org.gradle.guides.test-jvm-code")
     pluginManagement {
         resolutionStrategy {
