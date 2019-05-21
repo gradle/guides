@@ -1,4 +1,4 @@
-language: java
+language: generic
 script: git push -f https://${GH_TOKEN}@github.com/gradle-guides/gradle-guides.github.io
   master 2>&1 | sed "s/${GH_TOKEN}/[secure]/"
 env:
