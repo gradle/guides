@@ -10,5 +10,3 @@ buildScan {
         tag("CI")
     }
 }
-
-//gradle.includedBuilds.stream().map { it.task("pullRequest") }
