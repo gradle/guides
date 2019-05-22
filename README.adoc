@@ -14,7 +14,7 @@ Each of the plugins generates a guide from Asciidoc source. They all share the s
 
 - The source for the guide is located in `content/index.adoc`
 - Run `./gradlew asciidoctor` to generate the guide into `build/html5/index.html`.
-- run `./gradlew viewGuide` to generate the guide and open it in the browser.
+- Run `./gradlew viewGuide` to generate the guide and open it in the browser.
 
 == Base plugin
 
