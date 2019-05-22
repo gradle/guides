@@ -1,19 +1,18 @@
 = Building Java Applications
 
-This guide demonstrates how to use Gradle's Build Init plugin to create a Java application that follows Gradle conventions.
+This guide demonstrates how to use Gradle's Build Init plugin to create a new Java application that follows Gradle conventions.
 
 == What you'll need
 
 * About [.time-to-complete-text]#NN#
 * A text editor
 * A command prompt
-* The Java Development Kit (JDK), version 1.8 or higher
-* A Gradle distribution, version {gradle-version} or higher.
+* A http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK) version 8 or higher
+* A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 
 == Check the user manual
 
-Gradle comes with a built-in plugin called the Build Init plugin. It is documented in the Gradle User Manual at https://docs.gradle.org/{gradle-version}/userguide/build_init_plugin.html.
-
+Gradle comes with a built-in plugin called the Build Init plugin. It is documented in the https://docs.gradle.org/{gradle-version}/userguide/build_init_plugin.html[Gradle User Manual].
 The plugin provides a task, called `init`, that generates the project. The plugin also uses the (also built-in) `wrapper` task to create a Gradle wrapper script, `gradlew`.
 
 == Setup
@@ -66,6 +65,8 @@ Source package (default: demo):
 BUILD SUCCESSFUL in 1s
 2 actionable tasks: 2 executed
 ----
+
+If you prefer the Kotlin DSL, you can select `kotlin` for the build script DSL.
 
 The `init` task runs the `wrapper` task first, which generates the `gradlew` and `gradlew.bat` wrapper scripts. Then it creates the new project with the following structure:
 

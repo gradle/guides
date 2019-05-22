@@ -6,3 +6,4 @@
 * Commits to `master` will automatically be published to `gh-pages` if the build is successful.
 * To build documentation run `./gradlew asciidoctor` and find the results at `build/html5/index.html`.
 * To test everything run `./gradlew build`.
+* CI builds are at https://travis-ci.org/gradle-guides/building-java-applications
