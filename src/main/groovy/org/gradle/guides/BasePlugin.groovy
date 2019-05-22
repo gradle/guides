@@ -42,7 +42,7 @@ class BasePlugin implements Plugin<Project> {
     static final String CHECK_LINKS_TASK = 'checkLinks'
 
     void apply(Project project) {
-        project.apply plugin : org.gradle.api.plugins.BasePlugin
+        project.apply plugin : 'lifecycle-base'
 
         addGuidesExtension(project)
         addGradleRunnerSteps(project)
@@ -131,6 +131,8 @@ class BasePlugin implements Plugin<Project> {
         }
 
         lazyConfigureMoreAsciidoc(asciidoc)
+
+        project.tasks.getByName("assemble").dependsOn asciidoc
 
         // TODO - rework the above to use lazy configuration
 

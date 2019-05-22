@@ -17,8 +17,29 @@
 package org.gradle.guides
 
 import org.gradle.testkit.runner.TaskOutcome
+import spock.lang.Unroll
 
 class BasePluginFunctionalTest extends AbstractFunctionalTest {
+    @Unroll
+    def "builds the guide using task #task"() {
+        given:
+        def contentsDir = temporaryFolder.newFolder('contents')
+        new File(contentsDir, 'index.adoc') << """
+A simple guide
+"""
+        // Should not need to create this
+        temporaryFolder.newFolder("samples")
+
+        when:
+        build(task)
+
+        then:
+        def htmlFile = new File(temporaryFolder.root, 'build/html5/index.html')
+        htmlFile.exists()
+
+        where:
+        task << ["asciidoctor", "assemble"]
+    }
 
     def "adds Asciidoctor attributes for samples code and output directory"() {
         given:
