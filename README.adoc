@@ -8,6 +8,14 @@ This is a collection of very opinionated plugins that support the authoring of g
 * `org.gradle.guides.tutorial`: Used by all new Tutorials.
 * `org.gradle.guides.test-jvm-code`: Used to test JVM-based code snippets.
 
+== How do I use the plugins?
+
+Each of the plugins generates a guide from Asciidoc source. They all share the same conventions:
+
+- The source for the guide is located in `content/index.adoc`
+- Run `./gradlew asciidoctor` to generate the guide into `build/html5/index.html`.
+- Run `./gradlew viewGuide` to generate the guide and open it in the browser.
+
 == Base plugin
 
 * Adds `guide` extension.

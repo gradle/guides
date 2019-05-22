@@ -31,12 +31,7 @@ abstract class AbstractFunctionalTest extends Specification {
     def setup() {
         projectDir = temporaryFolder.root
         buildFile = temporaryFolder.newFile('build.gradle')
-
-        buildFile << """
-            plugins {
-                id 'org.gradle.guides.base'
-            }
-        """
+        new File(projectDir, "gradle.properties").text = "org.gradle.jvmargs=-XX:MaxMetaspaceSize=500m -Xmx500m"
     }
 
     protected BuildResult build(String... arguments) {
@@ -48,7 +43,8 @@ abstract class AbstractFunctionalTest extends Specification {
     }
 
     private GradleRunner createAndConfigureGradleRunner(String... arguments) {
-        GradleRunner.create().withProjectDir(projectDir).withArguments(arguments).withPluginClasspath().forwardOutput()
+        def allArgs = (arguments as List) + ["-S"]
+        GradleRunner.create().withProjectDir(projectDir).withArguments(allArgs).withPluginClasspath().forwardOutput()
     }
 
     static File createDir(File dir, String subDirName) {

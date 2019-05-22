@@ -18,7 +18,8 @@ package org.gradle.guides
 
 import org.gradle.testkit.runner.TaskOutcome
 
-class BasePluginFunctionalTest extends AbstractFunctionalTest {
+class BasePluginFunctionalTest extends AbstractGuidesPluginFunctionalTest {
+    String pluginId = "org.gradle.guides.base"
 
     def "adds Asciidoctor attributes for samples code and output directory"() {
         given:
@@ -41,8 +42,7 @@ class BasePluginFunctionalTest extends AbstractFunctionalTest {
 
     def "can reference attributes for samples directories in Asciidoc generation"() {
         given:
-        def contentsDir = temporaryFolder.newFolder('contents')
-        new File(contentsDir, 'index.adoc') << """
+        asciidocSourceFile << """
 My build file:
 include::{samplescodedir}/helloWorld/build.gradle[]
 Output:
@@ -76,8 +76,7 @@ Hello world!
     def "asciidoctor is out of date if samples change"() {
         given:
         def asciiDoctorTask = ":asciidoctor"
-        def contentsDir = createContentsDir()
-        new File(contentsDir, "index.adoc") << 'This is some sample ascii source'
+        asciidocSourceFile << 'This is some sample ascii source'
         def samplesCodeDir = createSamplesCodeDir()
         def samplesOutputDir = createSamplesOutputDir()
 
@@ -111,9 +110,8 @@ Hello world!
     def "header and footer is injected during asciidoctor postprocessing"() {
         given:
         def asciiDoctorTask = ":asciidoctor"
-        def contentsDir = createContentsDir()
         createSamplesCodeDir()
-        new File(contentsDir, "index.adoc") << 'This is some sample ascii source'
+        asciidocSourceFile << 'This is some sample ascii source'
 
         when:
         build(asciiDoctorTask)
@@ -123,17 +121,5 @@ Hello world!
         htmlFile.contains('<script defer src="https://guides.gradle.org/js/guides')
         htmlFile.contains('<header class="site-layout__header site-header js-site-header" itemscope="itemscope" itemtype="https://schema.org/WPHeader">')
         htmlFile.contains('<footer class="site-layout__footer site-footer" itemscope="itemscope" itemtype="https://schema.org/WPFooter">')
-    }
-
-    private File createSamplesCodeDir() {
-        temporaryFolder.newFolder('samples', 'code')
-    }
-
-    private File createSamplesOutputDir() {
-        temporaryFolder.newFolder('samples', 'output')
-    }
-
-    private File createContentsDir() {
-        temporaryFolder.newFolder('contents')
     }
 }

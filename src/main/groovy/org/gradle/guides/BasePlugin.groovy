@@ -24,7 +24,6 @@ import org.asciidoctor.gradle.AsciidoctorTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.internal.IConventionAware
 import org.gradle.api.tasks.PathSensitivity
 
 /**
@@ -43,7 +42,7 @@ class BasePlugin implements Plugin<Project> {
     static final String CHECK_LINKS_TASK = 'checkLinks'
 
     void apply(Project project) {
-        project.apply plugin : org.gradle.api.plugins.BasePlugin
+        project.apply plugin : 'lifecycle-base'
 
         addGuidesExtension(project)
         addGradleRunnerSteps(project)
@@ -133,15 +132,16 @@ class BasePlugin implements Plugin<Project> {
 
         lazyConfigureMoreAsciidoc(asciidoc)
 
-        def viewTask = project.tasks.create("viewGuide", ViewGuide).with {
-            (it as IConventionAware).conventionMapping.map("outputDir") {
-                asciidoc.outputDir
-            }
-            dependsOn asciidoc
-        }
+        project.tasks.getByName("assemble").dependsOn asciidoc
 
-        if (project.gradle.startParameter.continuous) {
-            asciidoc.finalizedBy viewTask
+        // TODO - rework the above to use lazy configuration
+
+        def asciidocIndexFile = project.layout.file(project.tasks.named("asciidoctor").map { new File(it.outputDir, "html5/index.html") })
+
+        project.tasks.register("viewGuide", ViewGuide) {
+            group = "Documentation"
+            description = "Generates the guide and open in the browser"
+            indexFile = asciidocIndexFile
         }
     }
 
