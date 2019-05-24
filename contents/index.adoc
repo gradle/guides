@@ -43,7 +43,7 @@ $ gradle tasks --all
 include::{groovy-example-dir}/output/part1/gradle-tasks.txt[]
 ----
 
-NOTE: If you are using Gradle 4.0 or later you may see less output from the console that you might see in this guide. This is because in this guide output is shown as when `--console-plain` is also passed to Gradle as a command-line. This is done to show the tasks that Gradle is executing.
+NOTE: If you are using Gradle 4.0 or later you may see less output from the console than you might see in this guide. This is because in this guide output is shown as when `--console-plain` is also passed to Gradle as a command-line. This is done to show the tasks that Gradle is executing.
 
 Run your task.
 
