@@ -118,9 +118,9 @@ This should be applied in the authoring of all new Topical guides
 === Releasing the plugins
 
 . Edit `build.gradle` and replace `-SNAPSHOT` version with the version to release.
-. Edit this README to update the changes section
+. Edit this README to update the changes section.
 . Commit and create tag.
 . Push changes and tag to master.
-. Wait for Travis CI to publish the plugins on the `https://plugins.gradle.org`[plugin portal].
-. Create Github release
+. Wait for Travis CI to publish the plugins on the https://plugins.gradle.org[plugin portal].
+. Create Github release.
 . Edit `build.gradle` and replace version with `-SNAPSHOT` for next version.
