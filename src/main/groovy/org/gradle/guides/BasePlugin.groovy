@@ -24,7 +24,11 @@ import org.asciidoctor.gradle.AsciidoctorTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.provider.Provider
+import org.gradle.api.provider.ProviderFactory
 import org.gradle.api.tasks.PathSensitivity
+
+import javax.inject.Inject
 
 /**
  * The guides base plugin provides conventions for all Gradle guides.
@@ -44,16 +48,23 @@ class BasePlugin implements Plugin<Project> {
     void apply(Project project) {
         project.apply plugin : 'lifecycle-base'
 
-        addGuidesExtension(project)
+        def guides = addGuidesExtension(project)
         addGradleRunnerSteps(project)
-        addAsciidoctor(project)
+        addAsciidoctor(project, guides)
         addGithubPages(project)
         addCloudCI(project)
         addCheckLinks(project)
     }
 
-    private void addGuidesExtension(Project project) {
-        project.extensions.create(GUIDE_EXTENSION_NAME,GuidesExtension,project)
+    @Inject
+    protected ProviderFactory getProviderFactory() {
+        throw new UnsupportedOperationException()
+    }
+
+    private GuidesExtension addGuidesExtension(Project project) {
+        GuidesExtension result = project.extensions.create(GUIDE_EXTENSION_NAME, GuidesExtension)
+        result.minimumGradleVersion.convention(project.gradle.gradleVersion)
+        return result
     }
 
     private void addGradleRunnerSteps(Project project) {
@@ -70,9 +81,9 @@ class BasePlugin implements Plugin<Project> {
     }
 
     @CompileDynamic
-    private void addAsciidoctor(Project project) {
+    private void addAsciidoctor(Project project, GuidesExtension guides) {
 
-        String gradleVersion = project.gradle.gradleVersion
+        def minimumGradleVersion = guides.minimumGradleVersion
 
         project.apply plugin: 'org.asciidoctor.convert'
         project.repositories.maven { url "https://repo.gradle.org/gradle/libs-releases" }
@@ -116,11 +127,11 @@ class BasePlugin implements Plugin<Project> {
                     toclevels            : 1,
                     'toc-title'          : 'Contents',
                     guides               : 'https://guides.gradle.org',
-                    'gradle-version'     : gradleVersion,
+                    'gradle-version'     : new StringProvider(minimumGradleVersion),
                     'user-manual-name'   : 'User Manual',
-                    'user-manual'        : "https://docs.gradle.org/${gradleVersion}/userguide/",
-                    'language-reference' : "https://docs.gradle.org/${gradleVersion}/dsl/",
-                    'api-reference'      : "https://docs.gradle.org/${gradleVersion}/javadoc/",
+                    'user-manual'        : new StringProvider(minimumGradleVersion.map { "https://docs.gradle.org/$it/userguide/" }),
+                    'language-reference' : new StringProvider(minimumGradleVersion.map { "https://docs.gradle.org/$it/dsl/" }),
+                    'api-reference'      : new StringProvider(minimumGradleVersion.map { "https://docs.gradle.org/$it/javadoc/" }),
                     'projdir'            : project.projectDir,
                     'codedir'            : project.file('src/main'),
                     'testdir'            : project.file('src/test'),
@@ -142,6 +153,42 @@ class BasePlugin implements Plugin<Project> {
             group = "Documentation"
             description = "Generates the guide and open in the browser"
             indexFile = asciidocIndexFile
+        }
+    }
+
+    // Deferred the String evaluation for Asciidoc task until it support Provider API.
+    // Using a simple interpolating closure expression in a GString doesn't work as it's not serializable.
+    private class StringProvider implements Serializable {
+        private Provider<String> value
+
+        StringProvider(Provider<String> value) {
+            this.value = value
+        }
+
+        @Override
+        boolean equals(o) {
+            return toString().equals(o)
+        }
+
+        @Override
+        int hashCode() {
+            return toString().hashCode()
+        }
+
+        @Override
+        String toString() {
+            return value.get()
+        }
+
+        private void readObject(ObjectInputStream aInputStream) throws ClassNotFoundException, IOException
+        {
+            String value = aInputStream.readUTF()
+            this.value = providerFactory.provider({ value })
+        }
+
+        private void writeObject(ObjectOutputStream aOutputStream) throws IOException
+        {
+            aOutputStream.writeUTF(toString())
         }
     }
 

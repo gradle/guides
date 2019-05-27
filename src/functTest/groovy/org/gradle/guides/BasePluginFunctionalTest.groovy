@@ -122,4 +122,48 @@ Hello world!
         htmlFile.contains('<header class="site-layout__header site-header js-site-header" itemscope="itemscope" itemtype="https://schema.org/WPHeader">')
         htmlFile.contains('<footer class="site-layout__footer site-footer" itemscope="itemscope" itemtype="https://schema.org/WPFooter">')
     }
+
+    def "defaults to current Gradle version for minimum Gradle version of the guide"() {
+        given:
+        buildFile << """
+            task verifyAsciidoctorAttributes {
+                doLast {
+                    assert asciidoctor.attributes['gradle-version'] == gradle.gradleVersion
+                    assert asciidoctor.attributes['user-manual'] == "https://docs.gradle.org/\${gradle.gradleVersion}/userguide/".toString()
+                    assert asciidoctor.attributes['language-reference'] == "https://docs.gradle.org/\${gradle.gradleVersion}/dsl/".toString()
+                    assert asciidoctor.attributes['api-reference'] == "https://docs.gradle.org/\${gradle.gradleVersion}/javadoc/".toString()
+                }
+            }
+        """
+
+        when:
+        build('verifyAsciidoctorAttributes')
+
+        then:
+        noExceptionThrown()
+    }
+
+    def "can configure the minimum Gradle version of the guide"() {
+        given:
+        buildFile << """
+            guide {
+                minimumGradleVersion = "5.2"
+            }
+
+            task verifyAsciidoctorAttributes {
+                doLast {
+                    assert asciidoctor.attributes['gradle-version'] == '5.2'
+                    assert asciidoctor.attributes['user-manual'] == 'https://docs.gradle.org/5.2/userguide/'
+                    assert asciidoctor.attributes['language-reference'] == 'https://docs.gradle.org/5.2/dsl/'
+                    assert asciidoctor.attributes['api-reference'] == 'https://docs.gradle.org/5.2/javadoc/'
+                }
+            }
+        """
+
+        when:
+        build('verifyAsciidoctorAttributes')
+
+        then:
+        noExceptionThrown()
+    }
 }

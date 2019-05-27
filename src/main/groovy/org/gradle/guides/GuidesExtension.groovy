@@ -17,20 +17,16 @@
 package org.gradle.guides
 
 import groovy.transform.CompileStatic
-import org.gradle.api.Project
+import org.gradle.api.provider.Property
 
 /**
  *
  * @since 0.1
  */
 @CompileStatic
-class GuidesExtension {
-
-    GuidesExtension(Project project) {
-    }
-
-    /** Path of repository relative to {@code https://github.com}.
-     *
+abstract class GuidesExtension {
+    /**
+     * Path of repository relative to {@code https://github.com}.
      */
     String repoPath
 
@@ -40,4 +36,10 @@ class GuidesExtension {
      * @since 0.5
      */
     String mainAuthor
+
+    /**
+     * Minimum Gradle version this guide works on.
+     * @since 0.15.7
+     */
+    abstract Property<String> getMinimumGradleVersion()
 }
