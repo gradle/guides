@@ -1,11 +1,12 @@
 plugins {
-    id "org.gradle.guides.getting-started" version "0.15.5"
-    id "org.gradle.guides.test-jvm-code" version "0.15.5"
+    id "org.gradle.guides.getting-started" version "0.15.7"
+    id "org.gradle.guides.test-jvm-code" version "0.15.7"
 }
 
 guide {
     repoPath 'gradle-guides/building-java-web-applications'
     mainAuthor 'Ken Kousen'
+    minimumGradleVersion = "4.10.3"
 }
 
 asciidoctor {
