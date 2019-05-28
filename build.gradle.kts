@@ -1,7 +1,7 @@
 plugins {
     id("com.gradle.build-scan") version "2.3"
-    id("org.gradle.guides.getting-started") version "0.15.5"
-    id("org.gradle.guides.test-jvm-code") version "0.15.5"
+    id("org.gradle.guides.getting-started") version "0.15.7"
+    id("org.gradle.guides.test-jvm-code") version "0.15.7"
 }
 
 repositories {
@@ -20,6 +20,7 @@ dependencies {
 
 configure<org.gradle.guides.GuidesExtension> {
     repoPath = "gradle-guides/building-spring-boot-2-projects-with-gradle"
+    minimumGradleVersion.set("4.10.3")
 }
 
 buildScan {
