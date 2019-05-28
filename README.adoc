@@ -108,9 +108,13 @@ This should be applied in the authoring of all new Topical guides
 
 == Changelog
 
+=== 0.15.7
+
+- Model the minimum Gradle version of a guide by introducing `minimumGradleVersion` property on the `guide` DSL.
+
 === 0.15.6
 
-- More reliable `viewGuide` implementation
+- More reliable `viewGuide` implementation.
 - The standard `assemble` task also generates the guide output.
 
 == Plugins development
