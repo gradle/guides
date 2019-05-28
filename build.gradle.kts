@@ -1,11 +1,12 @@
 plugins {
     id("com.gradle.build-scan") version "2.3"
-    id("org.gradle.guides.getting-started") version "0.15.5"
+    id("org.gradle.guides.getting-started") version "0.15.7"
 }
 
 configure<org.gradle.guides.GuidesExtension> {
     repoPath = "gradle-guides/executing-gradle-builds-on-travisci"
     mainAuthor = "Benjamin Muschko"
+    minimumGradleVersion.set("4.10.3")
 }
 
 buildScan {
