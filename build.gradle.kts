@@ -7,10 +7,6 @@ guide {
     repoPath = "gradle-guides/building-cpp-libraries"
 }
 
-apply {
-    from("gradle/cpp.gradle")
-}
-
 // NOTE: Patch until we fix this in guide plugin
 afterEvaluate {
     tasks.named("gitPublishReset") {

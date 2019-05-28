@@ -1,0 +1,13 @@
+> Task :compileTestCpp
+> Task :compileDebugCpp
+> Task :linkTest
+> Task :linkDebug
+> Task :assemble
+> Task :installTest
+> Task :runTest
+> Task :test
+> Task :check
+> Task :build
+
+BUILD SUCCESSFUL
+6 actionable tasks: 6 executed
