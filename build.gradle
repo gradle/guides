@@ -35,7 +35,7 @@ gradleRunner {
 
         }
 
-        step "${sample.name}-initProject", ['init', '--type', buildType, '--package', 'demo', '--project-name', 'demo'] + sample.initArguments
+        step "${sample.name}-initProject", ['init', '--type', buildType, '--project-name', projectName] + sample.initArguments
 
         step "${sample.name}-initOutput", cleanBuildOutput.curry("${sample.name}-initProject")
 
