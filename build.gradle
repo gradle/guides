@@ -1,7 +1,7 @@
 import org.apache.tools.ant.filters.ConcatFilter
 
 plugins {
-    id "com.gradle.build-scan" version "2.0.2"
+    id "com.gradle.build-scan" version "2.2.1"
     id "org.gradle.guides.getting-started" version "0.15.5"
 }
 
@@ -22,7 +22,7 @@ gradleRunner {
 
         ext {
             buildType = 'java-library'
-            projectName = 'jvm-library'
+            projectName = 'demo'
 
             cleanBuildOutput = { stepName, info ->
                 File out = new File(getStepReportDir(stepName), 'out.txt')
@@ -35,7 +35,7 @@ gradleRunner {
 
         }
 
-        step "${sample.name}-initProject", ['init', '--type', buildType, '--package', 'guidesamples', '--project-name', projectName] + sample.initArguments
+        step "${sample.name}-initProject", ['init', '--type', buildType, '--project-name', projectName] + sample.initArguments
 
         step "${sample.name}-initOutput", cleanBuildOutput.curry("${sample.name}-initProject")
 
@@ -71,7 +71,7 @@ gradleRunner {
         }
 
         step "${sample.name}-editLibrary", {
-            File editLibrary = new File(workingDir, 'src/main/java/guidesamples/Library.java')
+            File editLibrary = new File(workingDir, 'src/main/java/demo/Library.java')
             editLibrary.text = "${file('contents/javadoc-prefix.txt').text}${editLibrary.text}"
         }
 
@@ -126,7 +126,7 @@ gradleRunner {
                     }
                 }
 
-                filesMatching(['src/main/java/Library.java']) {
+                filesMatching(['src/main/java/demo/Library.java']) {
                     filter ConcatFilter, prepend: file('contents/javadoc-prefix.txt'),
                            append: file('contents/javadoc-postfix.txt')
                 }
