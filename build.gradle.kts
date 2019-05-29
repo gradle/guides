@@ -1,8 +1,8 @@
 plugins {
     groovy
     id("com.gradle.build-scan") version "2.3"
-    id("org.gradle.guides.getting-started") version "0.15.5"
-    id("org.gradle.guides.test-jvm-code") version "0.15.5"
+    id("org.gradle.guides.getting-started") version "0.15.7"
+    id("org.gradle.guides.test-jvm-code") version "0.15.7"
 }
 
 repositories {
@@ -19,6 +19,7 @@ dependencies {
 
 guide {
     repoPath = "gradle-guides/building-java-applications"
+    minimumGradleVersion.set("5.4.1")
 }
 
 java {
