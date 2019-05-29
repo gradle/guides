@@ -156,7 +156,7 @@ The following commands will update the Gradle wrapper for all guides and open a 
     mr run git add .
     mr run git commit --signoff --message "Update Gradle wrapper to <wrapper-version>"
     mr run git push -u origin <branch-name>
-    mr run hub pull-request
+    mr run hub pull-request --no-edit
 
 Make sure Travis CI builds pass before merging.
 
