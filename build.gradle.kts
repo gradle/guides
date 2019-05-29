@@ -2,8 +2,8 @@ import org.asciidoctor.gradle.AsciidoctorTask
 
 plugins {
     `build-scan`
-    id("org.gradle.guides.topical") version "0.15.5"
-    id("org.gradle.guides.test-jvm-code") version "0.15.5"
+    id("org.gradle.guides.topical") version "0.15.7"
+    id("org.gradle.guides.test-jvm-code") version "0.15.7"
 }
 
 repositories {
@@ -19,6 +19,7 @@ dependencies {
 
 guide {
     repoPath = "gradle-guides/implementing-gradle-plugins"
+    minimumGradleVersion.set("5.0")
 }
 
 buildScan {
