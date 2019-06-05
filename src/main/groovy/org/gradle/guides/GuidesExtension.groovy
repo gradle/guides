@@ -17,6 +17,7 @@
 package org.gradle.guides
 
 import groovy.transform.CompileStatic
+import org.gradle.api.model.ReplacedBy
 import org.gradle.api.provider.Property
 
 /**
@@ -25,10 +26,22 @@ import org.gradle.api.provider.Property
  */
 @CompileStatic
 abstract class GuidesExtension {
+    GuidesExtension() {
+        getRepositoryPath().convention(repoPath)
+    }
+
     /**
      * Path of repository relative to {@code https://github.com}.
+     * @deprecated
      */
+    @ReplacedBy('repositoryPath')
     String repoPath
+
+    /**
+     * Path of repository relative to {@code https://github.com}.
+     * @since 0.15.8
+     */
+    abstract Property<String> getRepositoryPath()
 
     /** Name of main author
      *
@@ -42,4 +55,10 @@ abstract class GuidesExtension {
      * @since 0.15.7
      */
     abstract Property<String> getMinimumGradleVersion()
+
+    /**
+     * Short description of guide.
+     * @since 0.15.8
+     */
+    abstract Property<String> getDescription()
 }
