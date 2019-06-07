@@ -17,7 +17,6 @@
 package org.gradle.guides
 
 import groovy.transform.CompileStatic
-import org.asciidoctor.gradle.AsciidoctorTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 

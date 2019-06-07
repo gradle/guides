@@ -26,10 +26,6 @@ import org.gradle.api.provider.Property
  */
 @CompileStatic
 abstract class GuidesExtension {
-    GuidesExtension() {
-        getRepositoryPath().convention(repoPath)
-    }
-
     /**
      * Path of repository relative to {@code https://github.com}.
      * @deprecated

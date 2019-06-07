@@ -75,6 +75,7 @@ class BasePlugin implements Plugin<Project> {
     private GuidesExtension addGuidesExtension(Project project) {
         GuidesExtension result = project.extensions.create(GUIDE_EXTENSION_NAME, GuidesExtension)
         result.minimumGradleVersion.convention(project.gradle.gradleVersion)
+        result.getRepositoryPath().convention(project.provider { result.repoPath })
         return result
     }
 

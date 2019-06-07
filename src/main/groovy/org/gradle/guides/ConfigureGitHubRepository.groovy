@@ -1,10 +1,27 @@
+/*
+ * Copyright 2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
 package org.gradle.guides
 
-import groovy.swing.SwingBuilder
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.internal.tasks.userinput.UserInputHandler
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.TaskAction
 
@@ -52,10 +69,13 @@ abstract class ConfigureGitHubRepository extends DefaultTask {
         connection.setRequestProperty("Method", method)
         connection.setDoOutput(true)
         def outStream = connection.getOutputStream()
-        outStream.withPrintWriter {
-            it.println(content)
+        try {
+            outStream.withPrintWriter {
+                it.println(content)
+            }
+        } finally {
+            outStream.close()
         }
-        outStream.close()
         int result = connection.getResponseCode()
         if (result != HttpURLConnection.HTTP_OK) {
             throw new GradleException(String.format("The GitHub API call failed with %s (%d)", connection.getResponseMessage(), connection.getResponseCode()))
@@ -66,30 +86,9 @@ abstract class ConfigureGitHubRepository extends DefaultTask {
     private static String askForGitHubCredentials() {
         if (System.getenv().containsKey("GITHUB_TOKEN")) {
             return System.getenv("GITHUB_TOKEN")
-        } else if(System.console() == null) {
-            def result = null
-            new SwingBuilder().edt {
-                dialog(modal: true, // Otherwise the build will continue running before you closed the dialog
-                        title: 'GitHub Credentials', // Dialog title
-                        alwaysOnTop: true, // pretty much what the name says
-                        resizable: false, // Don't allow the user to resize the dialog
-                        locationRelativeTo: null, // Place dialog in center of the screen
-                        pack: true, // We need to pack the dialog (so it will take the size of it's children)
-                        show: true // Let's show it
-                ) {
-                    vbox() {
-                        label(text: "OAuth:")
-                        def oauthInput = passwordField()
-                        button(defaultButton: true, text: 'OK', actionPerformed: {
-                            result = new String(oauthInput.password)
-                            dispose()
-                        })
-                    }
-                }
-            }
-            return result
         } else {
-            return new String(System.console().readPassword("\nOAuth: "))
+            UserInputHandler inputHandler = getServices().get(UserInputHandler.class)
+            return inputHandler.askQuestion("GitHub OAuth token: ", getProjectName());
         }
     }
 }
