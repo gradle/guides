@@ -80,11 +80,11 @@ gradlePlugin {
             displayName = 'Gradle Guides JVM Code Snippet Test Plugin'
             description = 'Plugin required for testing of JVM code snippets used in guides'
         }
-        githubPlugin {
-            id = 'org.gradle.guides.github'
-            implementationClass = 'org.gradle.guides.GitHubPlugin'
-            displayName = 'Gradle Guides GitHub Configuration Plugin'
-            description = 'Plugin required for configuring GitHub repository of guides'
+        setupPlugin {
+            id = 'org.gradle.guides.setup'
+            implementationClass = 'org.gradle.guides.SetupPlugin'
+            displayName = 'Gradle Guides Setup Plugin'
+            description = 'Plugin required for configuring a guide'
         }
     }
 }

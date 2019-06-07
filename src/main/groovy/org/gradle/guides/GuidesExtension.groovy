@@ -53,8 +53,15 @@ abstract class GuidesExtension {
     abstract Property<String> getMinimumGradleVersion()
 
     /**
-     * Short description of guide.
+     * Short description of the guide.
      * @since 0.15.8
      */
     abstract Property<String> getDescription()
+
+    /**
+     * Title of the guide.
+     *
+     * @since 0.15.8
+     */
+    abstract Property<String> getTitle()
 }
