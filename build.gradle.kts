@@ -5,7 +5,6 @@ plugins {
 
 configure<org.gradle.guides.GuidesExtension> {
     repoPath = "gradle-guides/executing-gradle-builds-on-travisci"
-    mainAuthor = "Benjamin Muschko"
     minimumGradleVersion.set("4.10.3")
 }
 
