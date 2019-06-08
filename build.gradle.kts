@@ -1,8 +1,13 @@
 plugins {
     groovy
     id("com.gradle.build-scan") version "2.3"
-    id("org.gradle.guides.getting-started") version "0.15.7"
-    id("org.gradle.guides.test-jvm-code") version "0.15.7"
+    id("org.gradle.guides.getting-started") version "0.15.11"
+    id("org.gradle.guides.test-jvm-code") version "0.15.11"
+}
+
+guide {
+    repositoryPath.set("gradle-guides/building-java-applications")
+    minimumGradleVersion.set("5.4.1")
 }
 
 repositories {
@@ -15,11 +20,6 @@ dependencies {
     constraints {
         testImplementation("org.codehaus.groovy:groovy-all:2.5.3")
     }
-}
-
-guide {
-    repoPath = "gradle-guides/building-java-applications"
-    minimumGradleVersion.set("5.4.1")
 }
 
 java {
