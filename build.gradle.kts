@@ -1,13 +1,14 @@
 plugins {
     id("com.gradle.build-scan") version "2.3"
-    id("org.gradle.guides.topical") version "0.15.7"
-    id("org.gradle.guides.test-jvm-code") version "0.15.7"
+    id("org.gradle.guides.topical") version "0.15.11"
+    id("org.gradle.guides.test-jvm-code") version "0.15.11"
     kotlin("kapt") version "1.3.11" apply false
 }
 
-configure<org.gradle.guides.GuidesExtension> {
-    repoPath = "gradle-guides/using-build-cache"
+guide {
+    repositoryPath.set("gradle-guides/using-build-cache")
     minimumGradleVersion.set("5.0")
+    title.set("Using the Build Cache")
 }
 
 buildScan {
