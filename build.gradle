@@ -3,7 +3,7 @@ plugins {
 }
 
 guide {
-    repoPath = 'gradle-guides/building-java-9-modules'
+    repositoryPath.set("gradle-guides/building-java-9-modules")
     minimumGradleVersion = "4.10.3"
 }
 
