@@ -7,7 +7,6 @@ plugins {
 
 guide {
     repoPath 'gradle-guides/consuming-jvm-libraries'
-    mainAuthor 'Schalk Cronjé'
     minimumGradleVersion = "4.10.3"
 }
 
