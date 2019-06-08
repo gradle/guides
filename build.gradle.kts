@@ -6,7 +6,6 @@ plugins {
 
 configure<org.gradle.guides.GuidesExtension> {
     repoPath = "gradle-guides/migrating-from-maven"
-    mainAuthor = "Peter Ledbrook"
     minimumGradleVersion.set("4.10.3")
 }
 
