@@ -18,7 +18,7 @@ dependencies {
 }
 
 guide {
-    repoPath = "gradle-guides/creating-build-scans"
+    repositoryPath.set("gradle-guides/creating-build-scans")
     minimumGradleVersion.set("5.1.1")
 }
 
