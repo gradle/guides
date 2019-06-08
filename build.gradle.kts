@@ -6,7 +6,7 @@ plugins {
 }
 
 configure<org.gradle.guides.GuidesExtension> {
-    repoPath = "gradle-guides/using-build-cache"
+    repositoryPath.set("gradle-guides/using-build-cache")
     minimumGradleVersion.set("5.0")
 }
 
