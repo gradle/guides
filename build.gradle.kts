@@ -1,12 +1,13 @@
 plugins {
     `build-scan`
-    id("org.gradle.guides.getting-started") version "0.15.7"
-    id("org.gradle.guides.test-jvm-code") version "0.15.7"
+    id("org.gradle.guides.getting-started") version "0.15.11"
+    id("org.gradle.guides.test-jvm-code") version "0.15.11"
 }
 
-configure<org.gradle.guides.GuidesExtension> {
-    repoPath = "gradle-guides/building-kotlin-jvm-libraries"
+guide {
+    repositoryPath.set("gradle-guides/building-kotlin-jvm-libraries")
     minimumGradleVersion.set("5.0")
+    title.set("Building Kotlin JVM Libraries")
 }
 
 buildScan {
