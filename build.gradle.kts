@@ -5,7 +5,7 @@ plugins {
 }
 
 configure<org.gradle.guides.GuidesExtension> {
-    repoPath = "gradle-guides/using-the-worker-api"
+    repositoryPath.set("gradle-guides/using-the-worker-api")
     minimumGradleVersion.set("4.10.3")
 }
 
