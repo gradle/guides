@@ -5,7 +5,6 @@ plugins {
 
 guide {
     repoPath 'gradle-guides/publishing-plugins-to-gradle-plugin-portal'
-    mainAuthor 'Schalk Cronjé'
     minimumGradleVersion = "4.10.3"
 }
 
