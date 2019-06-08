@@ -2,8 +2,13 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id("com.gradle.build-scan") version "2.3"
-    id("org.gradle.guides.getting-started") version "0.15.7"
-    id("org.gradle.guides.test-jvm-code") version "0.15.7"
+    id("org.gradle.guides.getting-started") version "0.15.11"
+    id("org.gradle.guides.test-jvm-code") version "0.15.11"
+}
+
+guide {
+    repositoryPath.set("gradle-guides/creating-build-scans")
+    minimumGradleVersion.set("5.1.1")
 }
 
 repositories {
@@ -15,11 +20,6 @@ repositories {
 dependencies {
     testImplementation("org.gradle:sample-check:0.7.0")
     testImplementation(gradleTestKit())
-}
-
-guide {
-    repoPath = "gradle-guides/creating-build-scans"
-    minimumGradleVersion.set("5.1.1")
 }
 
 buildScan {
