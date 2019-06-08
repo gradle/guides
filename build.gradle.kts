@@ -1,7 +1,7 @@
 plugins {
     `build-scan`
-    id("org.gradle.guides.topical") version "0.15.9"
-    id("org.gradle.guides.test-jvm-code") version "0.15.9"
+    id("org.gradle.guides.topical") version "0.15.10"
+    id("org.gradle.guides.test-jvm-code") version "0.15.10"
 }
 
 guide {
