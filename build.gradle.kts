@@ -5,7 +5,7 @@ plugins {
 }
 
 configure<org.gradle.guides.GuidesExtension> {
-    repoPath = "gradle-guides/creating-new-gradle-builds"
+    repositoryPath.set("gradle-guides/creating-new-gradle-builds")
     minimumGradleVersion.set("4.10.3")
 }
 
