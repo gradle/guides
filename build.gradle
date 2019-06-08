@@ -1,12 +1,11 @@
 import org.apache.tools.ant.filters.ConcatFilter
 
 plugins {
-    id "org.gradle.guides.getting-started" version "0.15.7"
+    id "org.gradle.guides.getting-started" version "0.15.11"
 }
 
 guide {
-    repoPath   'gradle-guides/building-scala-libraries'
-    mainAuthor 'Schalk Cronjé'
+    repositoryPath.set("gradle-guides/building-scala-libraries")
     minimumGradleVersion = "4.10.3"
 }
 
