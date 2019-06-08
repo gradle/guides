@@ -6,7 +6,6 @@ plugins {
 
 guide {
     repoPath   'gradle-guides/building-scala-libraries'
-    mainAuthor 'Schalk Cronjé'
     minimumGradleVersion = "4.10.3"
 }
 
