@@ -141,8 +141,8 @@ This should be applied in the authoring of all new Topical guides
 
 . Edit `build.gradle` and replace `-SNAPSHOT` version with the version to release.
 . Edit this README to update the changes section.
-. Commit and create tag.
-. Push changes and tag to master.
+. Commit and create tag, e.g. `git tag v0.15.9`.
+. Push changes and tag to master, e.g. `git push && git push origin v0.15.9`
 . Wait for Travis CI to publish the plugins on the https://plugins.gradle.org[plugin portal].
 . Create Github release.
 . Edit `build.gradle` and replace version with `-SNAPSHOT` for next version.
