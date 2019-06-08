@@ -4,7 +4,7 @@ plugins {
 }
 
 configure<org.gradle.guides.GuidesExtension> {
-    repoPath = "gradle-guides/executing-gradle-builds-on-travisci"
+    repositoryPath.set("gradle-guides/executing-gradle-builds-on-travisci")
     minimumGradleVersion.set("4.10.3")
 }
 
