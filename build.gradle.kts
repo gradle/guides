@@ -1,11 +1,12 @@
 plugins {
     id("com.gradle.build-scan") version "2.3"
-    id("org.gradle.guides.topical") version "0.15.7"
+    id("org.gradle.guides.topical") version "0.15.11"
 }
 
-configure<org.gradle.guides.GuidesExtension> {
-    repoPath = "gradle-guides/style-guide"
+guide {
+    repositoryPath.set("gradle-guides/style-guide")
     minimumGradleVersion.set("4.10.3")
+    title.set("Style Guide for Gradle Guide Authors")
 }
 
 buildScan {
