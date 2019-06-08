@@ -4,7 +4,7 @@ plugins {
 }
 
 guide {
-    repoPath 'gradle-guides/building-java-web-applications'
+    repositoryPath.set("gradle-guides/building-java-web-applications")
     minimumGradleVersion = "4.10.3"
 }
 
