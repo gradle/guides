@@ -2,11 +2,11 @@ import org.apache.tools.ant.filters.ConcatFilter
 
 plugins {
     id "com.gradle.build-scan" version "2.2.1"
-    id "org.gradle.guides.getting-started" version "0.15.7"
+    id "org.gradle.guides.getting-started" version "0.15.11"
 }
 
 guide {
-    repoPath 'gradle-guides/building-java-libraries'
+    repositoryPath.set("gradle-guides/building-java-libraries")
     minimumGradleVersion = "5.0"
 }
 
