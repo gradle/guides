@@ -5,6 +5,11 @@ plugins {
     id("org.gradle.guides.test-jvm-code") version "0.15.10"
 }
 
+guide {
+    repositoryPath.set("gradle-guides/building-java-applications")
+    minimumGradleVersion.set("5.4.1")
+}
+
 repositories {
     maven {
         url = uri("https://repo.gradle.org/gradle/libs")
@@ -15,11 +20,6 @@ dependencies {
     constraints {
         testImplementation("org.codehaus.groovy:groovy-all:2.5.3")
     }
-}
-
-guide {
-    repositoryPath.set("gradle-guides/building-java-applications")
-    minimumGradleVersion.set("5.4.1")
 }
 
 java {
