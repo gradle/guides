@@ -19,7 +19,7 @@ dependencies {
 }
 
 configure<org.gradle.guides.GuidesExtension> {
-    repoPath = "gradle-guides/building-spring-boot-2-projects-with-gradle"
+    repositoryPath.set("gradle-guides/building-spring-boot-2-projects-with-gradle")
     minimumGradleVersion.set("4.10.3")
 }
 
