@@ -4,7 +4,7 @@ plugins {
 }
 
 configure<org.gradle.guides.GuidesExtension> {
-    repoPath = "gradle-guides/executing-gradle-builds-on-teamcity"
+    repositoryPath.set("gradle-guides/executing-gradle-builds-on-teamcity")
     minimumGradleVersion.set("4.10.3")
 }
 
