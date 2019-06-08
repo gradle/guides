@@ -7,6 +7,7 @@ plugins {
 configure<org.gradle.guides.GuidesExtension> {
     repositoryPath.set("gradle-guides/using-the-worker-api")
     minimumGradleVersion.set("4.10.3")
+    title.set("Using the Worker API")
 }
 
 buildScan {
