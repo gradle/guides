@@ -8,6 +8,7 @@ plugins {
 configure<org.gradle.guides.GuidesExtension> {
     repositoryPath.set("gradle-guides/using-build-cache")
     minimumGradleVersion.set("5.0")
+    title.set("Using the Build Cache")
 }
 
 buildScan {
