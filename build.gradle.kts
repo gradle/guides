@@ -5,7 +5,7 @@ plugins {
 }
 
 configure<org.gradle.guides.GuidesExtension> {
-    repoPath = "gradle-guides/testing-gradle-plugins"
+    repositoryPath.set("gradle-guides/testing-gradle-plugins")
     minimumGradleVersion.set("4.10.3")
 }
 
