@@ -5,7 +5,6 @@ plugins {
 
 guide {
     repoPath 'gradle-guides/building-java-web-applications'
-    mainAuthor 'Ken Kousen'
     minimumGradleVersion = "4.10.3"
 }
 
