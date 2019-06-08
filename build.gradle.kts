@@ -5,7 +5,7 @@ plugins {
     kotlin("kapt") version "1.3.11" apply false
 }
 
-configure<org.gradle.guides.GuidesExtension> {
+guide {
     repositoryPath.set("gradle-guides/using-build-cache")
     minimumGradleVersion.set("5.0")
     title.set("Using the Build Cache")
