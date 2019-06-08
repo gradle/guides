@@ -6,6 +6,11 @@ plugins {
     id("org.gradle.guides.test-jvm-code") version "0.15.10"
 }
 
+guide {
+    repositoryPath.set("gradle-guides/implementing-gradle-plugins")
+    minimumGradleVersion.set("5.0")
+}
+
 repositories {
     maven {
         url = uri("https://repo.gradle.org/gradle/libs")
@@ -15,11 +20,6 @@ repositories {
 dependencies {
     testImplementation("org.gradle:sample-check:0.6.1")
     testImplementation(gradleTestKit())
-}
-
-guide {
-    repositoryPath.set("gradle-guides/implementing-gradle-plugins")
-    minimumGradleVersion.set("5.0")
 }
 
 buildScan {
