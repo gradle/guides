@@ -7,6 +7,7 @@ plugins {
 configure<org.gradle.guides.GuidesExtension> {
     repositoryPath.set("gradle-guides/performance")
     minimumGradleVersion.set("4.10.3")
+    title.set("Improving the Performance of Gradle Builds")
 }
 
 buildScan {
