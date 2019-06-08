@@ -16,25 +16,26 @@
 
 package org.gradle.guides
 
+import groovy.transform.CompileStatic
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.specs.Specs
-import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 
-import java.awt.*
-
-abstract class ViewGuide extends DefaultTask {
-
-    @InputFile
-    abstract RegularFileProperty getIndexFile()
-
-    ViewGuide() {
-        outputs.upToDateWhen(Specs.satisfyNone())
-    }
-
+/**
+ * Generate the Developer Certificate of Origin GitHub Application configuration file.
+ *
+ * @since 0.15.8
+ */
+@CompileStatic
+abstract class GenerateDeveloperCertificateOfOriginConfiguration extends GeneratorTask {
     @TaskAction
-    void action() {
-        Desktop.desktop.open(getIndexFile().get().asFile)
+    private doGenerate() {
+        outputFile.asFile.get().text = """${hashComment(generatedFileHeader)}
+
+# Disable sign-off checking for members of the Gradle GitHub organization
+require:
+  members: false
+"""
     }
 }

@@ -39,6 +39,7 @@ dependencies {
     testImplementation "org.spockframework:spock-core:1.2-groovy-2.5", {
         exclude module : 'groovy-all'
     }
+    testImplementation "org.yaml:snakeyaml:1.21"
 }
 
 pluginBundle {
@@ -78,6 +79,12 @@ gradlePlugin {
             implementationClass = 'org.gradle.guides.TestJvmCodePlugin'
             displayName = 'Gradle Guides JVM Code Snippet Test Plugin'
             description = 'Plugin required for testing of JVM code snippets used in guides'
+        }
+        setupPlugin {
+            id = 'org.gradle.guides.setup'
+            implementationClass = 'org.gradle.guides.SetupPlugin'
+            displayName = 'Gradle Guides Setup Plugin'
+            description = 'Plugin required for configuring a guide'
         }
     }
 }

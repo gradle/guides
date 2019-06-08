@@ -51,9 +51,25 @@ class BasePlugin implements Plugin<Project> {
         def guides = addGuidesExtension(project)
         addGradleRunnerSteps(project)
         addAsciidoctor(project, guides)
-        addGithubPages(project)
+        addGitHubPages(project)
         addCloudCI(project)
         addCheckLinks(project)
+        addGuideSetup(project, guides)
+    }
+
+    private void addGuideSetup(Project project, GuidesExtension guide) {
+        project.apply plugin: 'org.gradle.guides.setup'
+
+        project.tasks.withType(GenerateReadMeFile).configureEach {
+            it.repositorySlug.set(guide.repositoryPath)
+            it.title.set(guide.title)
+        }
+
+        project.tasks.withType(ConfigureGitHubRepository).configureEach {
+            it.repositorySlug.set(guide.repositoryPath)
+            it.repositoryHomepage.set(guide.repositoryPath.map { new URL("https://guides.gradle.org/${it.split('/')[1]}") })
+            it.repositoryDescription.set(guide.description)
+        }
     }
 
     @Inject
@@ -64,6 +80,7 @@ class BasePlugin implements Plugin<Project> {
     private GuidesExtension addGuidesExtension(Project project) {
         GuidesExtension result = project.extensions.create(GUIDE_EXTENSION_NAME, GuidesExtension)
         result.minimumGradleVersion.convention(project.gradle.gradleVersion)
+        result.getRepositoryPath().convention(project.provider { result.repoPath })
         return result
     }
 
@@ -208,7 +225,7 @@ class BasePlugin implements Plugin<Project> {
         }
     }
 
-    private void addGithubPages(Project project) {
+    private void addGitHubPages(Project project) {
         project.apply plugin : 'org.ajoberstar.git-publish'
 
         GitPublishExtension githubPages = (GitPublishExtension)(project.extensions.getByName('gitPublish'))
