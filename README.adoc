@@ -108,6 +108,11 @@ This should be applied in the authoring of all new Topical guides
 
 == Changelog
 
+=== 0.15.9
+
+- Fix `repoPath` forwarding to `repositoryPath` property.
+- Remove usage of `mainAuthor` in preparation to removing the property.
+
 === 0.15.8
 
 - Introduced `repositoryPath` property on the `guide` DSL to replace `repoPath` getter/setter.
