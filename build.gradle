@@ -1,12 +1,12 @@
 plugins {
-    id "org.gradle.guides.getting-started" version "0.15.7"
-    id "org.gradle.guides.test-jvm-code" version "0.15.7"
+    id "org.gradle.guides.getting-started" version "0.15.11"
+    id "org.gradle.guides.test-jvm-code" version "0.15.11"
 }
 
 guide {
-    repoPath 'gradle-guides/publishing-plugins-to-gradle-plugin-portal'
-    mainAuthor 'Schalk Cronjé'
+    repositoryPath.set("gradle-guides/publishing-plugins-to-gradle-plugin-portal")
     minimumGradleVersion = "4.10.3"
+    title.set("Publishing Plugins to the Gradle Plugin Portal")
 }
 
 repositories {
