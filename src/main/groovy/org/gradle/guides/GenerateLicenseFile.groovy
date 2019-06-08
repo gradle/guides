@@ -7,9 +7,9 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 
 /**
- *  Generate the LICENSE file.
+ * Generate the LICENSE file.
  *
- *  @since 0.15.8
+ * @since 0.15.8
  */
 @CompileStatic
 abstract class GenerateLicenseFile extends DefaultTask {
