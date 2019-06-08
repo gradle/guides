@@ -4,6 +4,6 @@ plugins {
 }
 
 guide {
-    repoPath 'gradle-guides/designing-gradle-plugins'
+    repositoryPath.set("gradle-guides/designing-gradle-plugins")
     minimumGradleVersion = "4.10.3"
 }
