@@ -2,6 +2,11 @@ package org.gradle.guides
 
 import org.gradle.api.tasks.TaskAction
 
+/**
+ * Generate the code of conduct file.
+ *
+ * @since 0.15.8
+ */
 abstract class GenerateCodeOfConductFile extends GeneratorTask {
     @TaskAction
     private void doGenerate() {
