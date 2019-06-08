@@ -4,7 +4,7 @@ plugins {
 }
 
 configure<org.gradle.guides.GuidesExtension> {
-    repoPath = "gradle-guides/writing-getting-started-guides"
+    repositoryPath.set("gradle-guides/writing-getting-started-guides")
     minimumGradleVersion.set("4.10.3")
 }
 
