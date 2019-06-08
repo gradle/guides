@@ -18,7 +18,7 @@ dependencies {
 }
 
 guide {
-    repoPath = "gradle-guides/implementing-gradle-plugins"
+    repositoryPath.set("gradle-guides/implementing-gradle-plugins")
     minimumGradleVersion.set("5.0")
 }
 
