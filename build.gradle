@@ -6,7 +6,7 @@ plugins {
 import org.apache.tools.ant.filters.*
 
 guide {
-    repoPath 'gradle-guides/creating-multi-project-builds'
+    repositoryPath.set("gradle-guides/creating-multi-project-builds")
     minimumGradleVersion = "5.0"
 }
 
