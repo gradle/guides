@@ -7,7 +7,7 @@ plugins {
 }
 
 configure<org.gradle.guides.GuidesExtension> {
-    repoPath = "gradle-guides/writing-gradle-tasks"
+    repositoryPath.set("gradle-guides/writing-gradle-tasks")
     minimumGradleVersion.set("5.0")
 }
 
