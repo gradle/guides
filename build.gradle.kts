@@ -6,7 +6,7 @@ plugins {
     id("org.gradle.guides.test-jvm-code") version "0.15.10"
 }
 
-configure<org.gradle.guides.GuidesExtension> {
+guide {
     repositoryPath.set("gradle-guides/writing-gradle-tasks")
     minimumGradleVersion.set("5.0")
 }
