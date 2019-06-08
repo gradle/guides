@@ -8,7 +8,7 @@ import org.apache.tools.ant.filters.*
 guide {
     repositoryPath.set("gradle-guides/creating-multi-project-builds")
     minimumGradleVersion = "5.0"
-    title.set("Creating Multi-project builds")
+    title.set("Creating Multi-project Builds")
 }
 
 asciidoctor {
