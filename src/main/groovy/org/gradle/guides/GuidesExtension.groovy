@@ -31,7 +31,12 @@ abstract class GuidesExtension {
      * @deprecated
      */
     @ReplacedBy('repositoryPath')
-    String repoPath
+    String getRepoPath() {
+        return getRepositoryPath().get()
+    }
+    void setRepoPath(String value) {
+        getRepositoryPath().set(value)
+    }
 
     /**
      * Path of repository relative to {@code https://github.com}.

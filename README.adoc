@@ -34,7 +34,7 @@ This `GuidesExtension` always has to be configured for a guide. (The initial rep
 [source,kotlin]
 ----
 guide {
-    repoPath = "gradle-guides/creating-multi-project-builds" // <1>
+    repositoryPath.set("gradle-guides/creating-multi-project-builds") // <1>
 }
 ----
 <1> Set the GitHub URL after `github.com`.
@@ -107,6 +107,11 @@ This should be applied in the authoring of all new Topical guides
 This should be applied in the authoring of all new Topical guides
 
 == Changelog
+
+=== 0.15.9
+
+- Fix `repoPath` forwarding to `repositoryPath` property.
+- Remove usage of `mainAuthor` in preparation to removing the property.
 
 === 0.15.8
 

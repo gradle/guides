@@ -2,8 +2,7 @@ apply plugin : 'org.gradle.guides.tutorial'
 apply plugin : 'org.gradle.guides.test-jvm-code'
 
 guide {
-    repoPath 'foo/bar'
-    mainAuthor 'FOO'
+    repositoryPath = 'foo/bar'
 }
 
 gradleRunner {

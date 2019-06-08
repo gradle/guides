@@ -23,6 +23,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.internal.tasks.userinput.UserInputHandler
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 
 /**
@@ -32,8 +33,13 @@ import org.gradle.api.tasks.TaskAction
  */
 @CompileStatic
 abstract class ConfigureGitHubRepository extends DefaultTask {
+    @Internal
     abstract Property<String> getRepositorySlug()
+
+    @Internal
     abstract Property<String> getRepositoryDescription()
+
+    @Internal
     abstract Property<URL> getRepositoryHomepage()
 
     @TaskAction
