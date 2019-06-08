@@ -6,7 +6,6 @@ plugins {
 
 configure<org.gradle.guides.GuidesExtension> {
     repoPath = "gradle-guides/creating-new-gradle-builds"
-    mainAuthor = "Ken Kousen"
     minimumGradleVersion.set("4.10.3")
 }
 
