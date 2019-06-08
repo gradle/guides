@@ -4,7 +4,6 @@ plugins {
 
 guide {
     repoPath = 'gradle-guides/building-java-9-modules'
-    mainAuthor = 'Pepper Lebeck-Jobe'
     minimumGradleVersion = "4.10.3"
 }
 
