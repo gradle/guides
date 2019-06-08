@@ -7,6 +7,7 @@ plugins {
 configure<org.gradle.guides.GuidesExtension> {
     repositoryPath.set("gradle-guides/building-kotlin-jvm-libraries")
     minimumGradleVersion.set("5.0")
+    title.set("Building Kotlin JVM Libraries")
 }
 
 buildScan {
