@@ -7,6 +7,7 @@ plugins {
 guide {
     repositoryPath.set("gradle-guides/migrating-build-logic-from-groovy-to-kotlin")
     minimumGradleVersion.set("5.0")
+    title.set("Migrating build logic from Groovy to Kotlin")
 }
 
 buildScan {
