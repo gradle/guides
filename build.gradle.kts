@@ -1,11 +1,18 @@
+import org.gradle.guides.GenerateReadMeFile
+
 plugins {
     id("com.gradle.build-scan") version "2.3"
     id("org.gradle.guides.getting-started") version "0.15.9"
 }
 
-configure<org.gradle.guides.GuidesExtension> {
+guide {
     repositoryPath.set("gradle-guides/building-cpp-executables")
     minimumGradleVersion.set("5.2.1")
+    title.set("Building C++ Executables")
+}
+
+tasks.withType(GenerateReadMeFile::class).configureEach {
+    title.set(guide.title.map { it.replace("C++", "{cpp}") })
 }
 
 apply {
