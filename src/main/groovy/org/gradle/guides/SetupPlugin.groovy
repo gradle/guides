@@ -29,10 +29,14 @@ class SetupPlugin implements Plugin<Project> {
             it.outputFile.set(project.layout.projectDirectory.file(".gitignore"))
         }
 
+        def generateCodeOfConductFileTask = project.tasks.register("generateCodeOfConductFile", GenerateCodeOfConductFile) {
+            it.outputFile.set(project.layout.projectDirectory.file(".github/CODE_OF_CONDUCT.md"))
+        }
+
         def setupGuideTask = project.tasks.register(SETUP_GUIDE_TASK_NAME) {
             it.group = GUIDE_SETUP_GROUP_NAME
             it.description = "Configure Guide Repository"
-            it.dependsOn(generateEditorConfigurationTask, generateLicenseFileTask, generateReadMeFileTask, generateDcoConfigurationTask, generateGitIgnoreConfigurationTask)
+            it.dependsOn(generateEditorConfigurationTask, generateLicenseFileTask, generateReadMeFileTask, generateDcoConfigurationTask, generateGitIgnoreConfigurationTask, generateCodeOfConductFileTask)
         }
     }
 }

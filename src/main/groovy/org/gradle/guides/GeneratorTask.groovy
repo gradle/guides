@@ -24,6 +24,10 @@ abstract class GeneratorTask extends DefaultTask {
         return lines.collect { "# ${it}" }.join('\n')
     }
 
+    protected static String htmlComment(List<String> lines) {
+        return lines.collect { "<!-- ${it} -->" }.join('\n')
+    }
+
     private static String gitHubCodeUrl(Class<? extends Task> taskType) {
         String gitHubUrlPath = taskType.canonicalName.replaceAll('\\.', '/').replace('_Decorated', '')
         return "https://github.com/gradle-guides/gradle-guides-plugin/tree/master/src/main/groovy/${gitHubUrlPath}.groovy"
