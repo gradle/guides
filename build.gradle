@@ -1,10 +1,9 @@
 plugins {
-    id "org.gradle.guides.tutorial" version "0.15.7"
+    id "org.gradle.guides.tutorial" version "0.15.11"
 }
 
 guide {
-    repoPath = 'gradle-guides/building-java-9-modules'
-    mainAuthor = 'Pepper Lebeck-Jobe'
+    repositoryPath.set("gradle-guides/building-java-9-modules")
     minimumGradleVersion = "4.10.3"
 }
 
