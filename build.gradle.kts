@@ -4,7 +4,7 @@ plugins {
 }
 
 configure<org.gradle.guides.GuidesExtension> {
-    repoPath = "gradle-guides/building-cpp-executables"
+    repositoryPath.set("gradle-guides/building-cpp-executables")
     minimumGradleVersion.set("5.2.1")
 }
 
