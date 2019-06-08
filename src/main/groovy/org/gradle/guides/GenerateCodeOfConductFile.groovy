@@ -1,5 +1,6 @@
 package org.gradle.guides
 
+import groovy.transform.CompileStatic
 import org.gradle.api.tasks.TaskAction
 
 /**
@@ -7,6 +8,7 @@ import org.gradle.api.tasks.TaskAction
  *
  * @since 0.15.8
  */
+@CompileStatic
 abstract class GenerateCodeOfConductFile extends GeneratorTask {
     @TaskAction
     private void doGenerate() {
