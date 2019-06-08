@@ -4,7 +4,7 @@ plugins {
 }
 
 guide {
-    repoPath = "gradle-guides/building-cpp-libraries"
+    repositoryPath.set("gradle-guides/building-cpp-libraries")
     minimumGradleVersion.set("5.2.1")
 }
 
