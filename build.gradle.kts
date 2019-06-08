@@ -5,7 +5,7 @@ plugins {
 }
 
 configure<org.gradle.guides.GuidesExtension> {
-    repoPath = "gradle-guides/running-webpack-with-gradle"
+    repositoryPath.set("gradle-guides/running-webpack-with-gradle")
     minimumGradleVersion.set("4.10.3")
 }
 
