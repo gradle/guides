@@ -108,6 +108,13 @@ This should be applied in the authoring of all new Topical guides
 
 == Changelog
 
+=== 0.15.10
+
+- Add conventions for the `guide` DSL:
+  * `repositoryPath` defaults to `gradle-guides/${project.name}`
+  * `title` defaults to title case of the `project.name`
+  * `description` defaults to `title`
+
 === 0.15.9
 
 - Fix `repoPath` forwarding to `repositoryPath` property.
