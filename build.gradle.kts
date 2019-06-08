@@ -4,7 +4,7 @@ plugins {
 }
 
 configure<org.gradle.guides.GuidesExtension> {
-    repoPath = "gradle-guides/style-guide"
+    repositoryPath.set("gradle-guides/style-guide")
     minimumGradleVersion.set("4.10.3")
 }
 
