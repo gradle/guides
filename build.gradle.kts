@@ -5,7 +5,7 @@ plugins {
 }
 
 guide {
-    repoPath = "gradle-guides/migrating-build-logic-from-groovy-to-kotlin"
+    repositoryPath.set("gradle-guides/migrating-build-logic-from-groovy-to-kotlin")
     minimumGradleVersion.set("5.0")
 }
 
