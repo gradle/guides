@@ -18,7 +18,7 @@ dependencies {
 }
 
 guide {
-    repoPath = "gradle-guides/building-java-applications"
+    repositoryPath.set("gradle-guides/building-java-applications")
     minimumGradleVersion.set("5.4.1")
 }
 
