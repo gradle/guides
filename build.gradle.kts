@@ -1,8 +1,8 @@
 plugins {
     groovy
     id("com.gradle.build-scan") version "2.3"
-    id("org.gradle.guides.getting-started") version "0.15.8"
-    id("org.gradle.guides.test-jvm-code") version "0.15.8"
+    id("org.gradle.guides.getting-started") version "0.15.9"
+    id("org.gradle.guides.test-jvm-code") version "0.15.9"
 }
 
 repositories {
