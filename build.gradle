@@ -5,7 +5,7 @@ plugins {
 }
 
 guide {
-    repoPath   'gradle-guides/building-scala-libraries'
+    repositoryPath.set("gradle-guides/building-scala-libraries")
     minimumGradleVersion = "4.10.3"
 }
 
