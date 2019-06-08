@@ -3,7 +3,7 @@ plugins {
     id("com.gradle.build-scan") version "2.3"
 }
 
-configure<org.gradle.guides.GuidesExtension> {
+guide {
     repositoryPath.set("gradle-guides/@@GUIDE_SLUG@@")
     minimumGradleVersion.set("EDIT build.gradle.kts TO ADD MINIMUM GRADLE VERSION")
 }
