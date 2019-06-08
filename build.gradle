@@ -5,6 +5,5 @@ plugins {
 
 guide {
     repoPath 'gradle-guides/designing-gradle-plugins'
-    mainAuthor 'Benjamin Muschko'
     minimumGradleVersion = "4.10.3"
 }
