@@ -166,4 +166,108 @@ Hello world!
         then:
         noExceptionThrown()
     }
+
+    def "can configure the title of the guide"() {
+        given:
+        buildFile << """
+            guide {
+                title = "Some Title"
+            }
+
+            task verifyAsciidoctorAttributes {
+                doLast {
+                    assert asciidoctor.attributes['guide-title'] == 'Some Title'
+                }
+            }
+        """
+
+        when:
+        build('verifyAsciidoctorAttributes')
+
+        then:
+        noExceptionThrown()
+    }
+
+    def "can configure the repository path of the guide"() {
+        given:
+        buildFile << """
+            guide {
+                repositoryPath = "foo/bar"
+            }
+
+            task verifyAsciidoctorAttributes {
+                doLast {
+                    assert asciidoctor.attributes['repo-path'] == 'foo/bar'
+                    assert asciidoctor.attributes['repository-path'] == 'foo/bar'
+                }
+            }
+        """
+
+        when:
+        build('verifyAsciidoctorAttributes')
+
+        then:
+        noExceptionThrown()
+    }
+
+    def "defaults guide title to project name as title case"() {
+        given:
+        buildFile << """
+            task verifyGuideTitle {
+                doLast {
+                    assert guide.title.get() == 'Some Project Name'
+                }
+            }
+        """
+        settingsFile << "rootProject.name = 'some-project-name'"
+
+        when:
+        build('verifyGuideTitle')
+
+        then:
+        noExceptionThrown()
+    }
+
+    def "defaults guide repository path to project name under gradle-guides organization"() {
+        given:
+        buildFile << """
+            task verifyGuideRepositoryPath {
+                doLast {
+                    assert guide.repositoryPath.get() == 'gradle-guides/some-project-name'
+                }
+            }
+        """
+        settingsFile << "rootProject.name = 'some-project-name'"
+
+        when:
+        build('verifyGuideRepositoryPath')
+
+        then:
+        noExceptionThrown()
+    }
+
+    def "defaults guide description to guide title"() {
+        given:
+        buildFile << """
+            task verifyGuideDescription {
+                doLast {
+                    assert guide.description.get() == 'Some Project Name'
+                    assert guide.description.get() == guide.title.get()
+
+                    guide.title.set('Some OTHER Project Name')
+                    assert guide.description.get() == 'Some OTHER Project Name'
+
+                    guide.description.set('Some description')
+                    assert guide.description.get() == 'Some description'
+                }
+            }
+        """
+        settingsFile << "rootProject.name = 'some-project-name'"
+
+        when:
+        build('verifyGuideDescription')
+
+        then:
+        noExceptionThrown()
+    }
 }
