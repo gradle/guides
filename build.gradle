@@ -6,7 +6,7 @@ plugins {
 }
 
 guide {
-    repoPath   'gradle-guides/building-groovy-libraries'
+    repositoryPath.set("gradle-guides/building-groovy-libraries")
     minimumGradleVersion = "4.10.3"
 }
 
