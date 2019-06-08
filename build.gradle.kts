@@ -7,7 +7,7 @@ plugins {
 }
 
 configure<org.gradle.guides.GuidesExtension> {
-    repoPath = "gradle-guides/@@GUIDE_SLUG@@"
+    repositoryPath.set("gradle-guides/@@GUIDE_SLUG@@")
     minimumGradleVersion.set("EDIT build.gradle.kts TO ADD MINIMUM GRADLE VERSION")
 }
 
