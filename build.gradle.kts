@@ -1,9 +1,9 @@
 plugins {
-    id("org.gradle.guides.topical") version "0.15.9"
+    id("org.gradle.guides.topical") version "0.15.10"
     id("com.gradle.build-scan") version "2.3"
 
     // Uncomment this line if you need test JVM code snippets
-    // id("org.gradle.guides.test-jvm-code") version "0.15.9"
+    // id("org.gradle.guides.test-jvm-code") version "0.15.10"
 }
 
 configure<org.gradle.guides.GuidesExtension> {
