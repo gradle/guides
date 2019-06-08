@@ -7,6 +7,7 @@ plugins {
 configure<org.gradle.guides.GuidesExtension> {
     repositoryPath.set("gradle-guides/migrating-from-maven")
     minimumGradleVersion.set("4.10.3")
+    title.set("Migrating from Maven to Gradle")
 }
 
 buildScan {
