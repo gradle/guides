@@ -4,7 +4,7 @@ plugins {
     id("org.gradle.guides.test-jvm-code") version "0.15.10"
 }
 
-configure<org.gradle.guides.GuidesExtension> {
+guide {
     repositoryPath.set("gradle-guides/using-the-worker-api")
     minimumGradleVersion.set("4.10.3")
     title.set("Using the Worker API")
