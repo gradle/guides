@@ -2,7 +2,7 @@ apply plugin : 'org.gradle.guides.getting-started'
 apply plugin : 'org.gradle.guides.test-jvm-code'
 
 guide {
-    repoPath 'foo/bar'
+    repositoryPath = 'foo/bar'
 }
 
 gradleRunner {

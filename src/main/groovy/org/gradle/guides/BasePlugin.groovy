@@ -80,7 +80,6 @@ class BasePlugin implements Plugin<Project> {
     private GuidesExtension addGuidesExtension(Project project) {
         GuidesExtension result = project.extensions.create(GUIDE_EXTENSION_NAME, GuidesExtension)
         result.minimumGradleVersion.convention(project.gradle.gradleVersion)
-        result.getRepositoryPath().convention(project.provider { result.repoPath })
         return result
     }
 
@@ -154,7 +153,8 @@ class BasePlugin implements Plugin<Project> {
                     'testdir'            : project.file('src/test'),
                     'samplescodedir'     : project.file('samples/code'),
                     'samplesoutputdir'   : project.file('samples/output'),
-                    'samples-dir'        : project.file('samples')
+                    'samples-dir'        : project.file('samples'),
+                    'repo-path'          : new StringProvider(guides.repositoryPath)
 
         }
 
@@ -194,18 +194,18 @@ class BasePlugin implements Plugin<Project> {
 
         @Override
         String toString() {
-            return value.get()
+            return value.getOrNull()
         }
 
         private void readObject(ObjectInputStream aInputStream) throws ClassNotFoundException, IOException
         {
-            String value = aInputStream.readUTF()
+            String value = (String) aInputStream.readObject()
             this.value = providerFactory.provider({ value })
         }
 
         private void writeObject(ObjectOutputStream aOutputStream) throws IOException
         {
-            aOutputStream.writeUTF(toString())
+            aOutputStream.writeObject(toString())
         }
     }
 
@@ -218,10 +218,6 @@ class BasePlugin implements Plugin<Project> {
             sources {
                 include 'index.adoc'
             }
-        }
-
-        asciidoc.project.afterEvaluate {
-            asciidoc.attributes 'repo-path' : guide.repoPath
         }
     }
 
@@ -239,9 +235,9 @@ class BasePlugin implements Plugin<Project> {
 
         project.afterEvaluate {
             if (ghToken) {
-                githubPages.repoUri.set("https://github.com/${guide.repoPath}.git".toString())
+                githubPages.repoUri.set(guide.repositoryPath.map { "https://github.com/${it}.git".toString() })
             } else {
-                githubPages.repoUri.set("git@github.com:${guide.repoPath}.git".toString())
+                githubPages.repoUri.set(guide.repositoryPath.map { "git@github.com:${it}.git".toString() })
             }
         }
     }
