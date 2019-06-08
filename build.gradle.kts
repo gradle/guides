@@ -1,12 +1,12 @@
 plugins {
     id("com.gradle.build-scan") version "2.3"
-    id("org.gradle.guides.getting-started") version "0.15.7"
+    id("org.gradle.guides.getting-started") version "0.15.11"
 }
 
-configure<org.gradle.guides.GuidesExtension> {
-    repoPath = "gradle-guides/executing-gradle-builds-on-teamcity"
-    mainAuthor = "Julia Alexandrova"
+guide {
+    repositoryPath.set("gradle-guides/executing-gradle-builds-on-teamcity")
     minimumGradleVersion.set("4.10.3")
+    title.set("Executing Gradle builds on TeamCity")
 }
 
 buildScan {
