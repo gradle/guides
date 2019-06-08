@@ -1,12 +1,13 @@
 plugins {
     `build-scan`
-    id("org.gradle.guides.topical") version "0.15.7"
-    id("org.gradle.guides.test-jvm-code") version "0.15.7"
+    id("org.gradle.guides.topical") version "0.15.11"
+    id("org.gradle.guides.test-jvm-code") version "0.15.11"
 }
 
 guide {
-    repoPath = "gradle-guides/migrating-build-logic-from-groovy-to-kotlin"
+    repositoryPath.set("gradle-guides/migrating-build-logic-from-groovy-to-kotlin")
     minimumGradleVersion.set("5.0")
+    title.set("Migrating build logic from Groovy to Kotlin")
 }
 
 buildScan {
