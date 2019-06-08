@@ -1,14 +1,14 @@
 plugins {
-    id "org.gradle.guides.getting-started" version "0.15.7"
-    id "org.gradle.guides.test-jvm-code" version "0.15.7"
+    id "org.gradle.guides.getting-started" version "0.15.11"
+    id "org.gradle.guides.test-jvm-code" version "0.15.11"
 }
 
 import org.apache.tools.ant.filters.*
 
 guide {
-    repoPath 'gradle-guides/creating-multi-project-builds'
-    mainAuthor 'Schalk Cronjé'
+    repositoryPath.set("gradle-guides/creating-multi-project-builds")
     minimumGradleVersion = "5.0"
+    title.set("Creating Multi-project Builds")
 }
 
 asciidoctor {
