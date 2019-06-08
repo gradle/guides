@@ -79,7 +79,10 @@ class BasePlugin implements Plugin<Project> {
 
     private GuidesExtension addGuidesExtension(Project project) {
         GuidesExtension result = project.extensions.create(GUIDE_EXTENSION_NAME, GuidesExtension)
+        result.repositoryPath.convention("gradle-guides/${project.name}".toString())
         result.minimumGradleVersion.convention(project.gradle.gradleVersion)
+        result.title.convention(result.repositoryPath.map { project.name.split('-').collect { it.capitalize() }.join(' ') })
+        result.description.convention(result.title)
         return result
     }
 
@@ -88,7 +91,7 @@ class BasePlugin implements Plugin<Project> {
     }
 
     private void addCheckLinks(Project project) {
-        CheckLinks task = project.tasks.create(CHECK_LINKS_TASK,CheckLinks)
+        CheckLinks task = project.tasks.create(CHECK_LINKS_TASK, CheckLinks)
 
         AsciidoctorTask asciidoc = (AsciidoctorTask)(project.tasks.getByName('asciidoctor'))
 
@@ -154,7 +157,9 @@ class BasePlugin implements Plugin<Project> {
                     'samplescodedir'     : project.file('samples/code'),
                     'samplesoutputdir'   : project.file('samples/output'),
                     'samples-dir'        : project.file('samples'),
-                    'repo-path'          : new StringProvider(guides.repositoryPath)
+                    'repo-path'          : new StringProvider(guides.repositoryPath),
+                    'repository-path'    : new StringProvider(guides.repositoryPath),
+                    'guide-title'        : new StringProvider(guides.title)
 
         }
 

@@ -27,10 +27,12 @@ abstract class AbstractFunctionalTest extends Specification {
     TemporaryFolder temporaryFolder = new TemporaryFolder()
     File projectDir
     File buildFile
+    File settingsFile
 
     def setup() {
         projectDir = temporaryFolder.root
         buildFile = temporaryFolder.newFile('build.gradle')
+        settingsFile = temporaryFolder.newFile('settings.gradle')
         new File(projectDir, "gradle.properties").text = "org.gradle.jvmargs=-XX:MaxMetaspaceSize=500m -Xmx500m"
     }
 
