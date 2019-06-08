@@ -5,7 +5,7 @@ plugins {
 }
 
 configure<org.gradle.guides.GuidesExtension> {
-    repoPath = "gradle-guides/building-kotlin-jvm-libraries"
+    repositoryPath.set("gradle-guides/building-kotlin-jvm-libraries")
     minimumGradleVersion.set("5.0")
 }
 
