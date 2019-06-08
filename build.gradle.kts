@@ -5,7 +5,7 @@ plugins {
 }
 
 configure<org.gradle.guides.GuidesExtension> {
-    repoPath = "gradle-guides/performance"
+    repositoryPath.set("gradle-guides/performance")
     minimumGradleVersion.set("4.10.3")
 }
 
