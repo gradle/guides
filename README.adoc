@@ -108,6 +108,10 @@ This should be applied in the authoring of all new Topical guides
 
 == Changelog
 
+=== 0.15.12
+
+- Use https in LICENSE file.
+
 === 0.15.11
 
 - Add GitHub repository configuration task to `setupGuide`.
