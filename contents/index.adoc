@@ -175,7 +175,7 @@ image::bad-dependency-resolution.png[title="Dependency resolution at configurati
 Here, you can quickly identify the cause of this particular performance issue. The time spent resolving dependencies during _"project configuration"_&nbsp; should be 0&nbsp;seconds, and this example shows the build is resolving dependencies too early in the lifecycle.  Also on the "Performance" page is a "Settings and suggestions" tab which will show you which dependencies were being resolved during project configuration.
 
 
-If you are using the profiler, you can get similar (but less detailed) information can by running this command:
+If you are using the profiler, you can get similar (but less detailed) information by running this command:
 
 [listing.terminal]
 ----
@@ -222,17 +222,17 @@ It seems to be very common to treat a build as an all or nothing package. Every 
 
 It’s important that a single task graph underpins the build to ensure consistency. But you don’t need to expose the entire task graph to everyone. Instead, think in terms of sets of tasks forming a restricted view upon the task graph, with each view designed for a specific group of users. Do front-end developers need to run the server side unit tests? No, so it would make no sense to force the cost of running the tests on those users.
 
-With that in mind, consider the different workflows that each distinct group of users require and try to ensure that they have the appropriate “view” with no unnecessary tasks executed. Gradle has several ways to aid you in such an endeavour:
+With that in mind, consider the different workflows that each distinct group of users requires and try to ensure that they have the appropriate “view” with no unnecessary tasks executed. Gradle has several ways to aid you in such an endeavour:
 
 * Assign tasks to appropriate groups
 * Create useful aggregate tasks (ones that have no action and simply depend on a set of other tasks, like `assemble`)
 * Defer configuration via `gradle.taskGraph.whenReady()` and others, so you can perform verification only when it's necessary
 
-It definitely requires some effort and an investment in time to craft suitable build views, but think about how often users run the build. Surely that investment is worth it if it saves users time on a daily basis?
+It definitely requires some effort and an investment in time to craft suitable build views, but think about how often users run the build. Surely that investment is worth it if it saves users time on a daily basis.
 
 === Incremental build
 
-You can can avoid executing tasks, even if they’re required by a user. If neither a task’s inputs nor its output have changed since the last time it was run, Gradle will not run it again.
+You can can avoid executing tasks, even if they’re required by a user. If neither a task’s inputs nor its outputs have changed since the last time it was run, Gradle will not run it again.
 
 Incremental build is the name Gradle gives to this feature of checking inputs and outputs to determine whether a task needs to run again or not. Most tasks provided by Gradle take part in incremental build because they have been defined that way. You can also make your own tasks integrate with incremental build, as described in the user guide. The basic idea is to mark the task’s properties that have an impact on whether a task needs to run. You can learn more https://docs.gradle.org/current/userguide/more_about_tasks.html#sec:up_to_date_checks[in the user guide].
 
@@ -258,7 +258,7 @@ image::cache-performance.png[title="Inspecting the performance of the build cach
 
 This shows you statistics about how many tasks interacted with a cache, which cache was used, along with transfer and pack/unpack rates for these cache entries.
 
-There is also a _"Task execution"_&nbsp; tab which shows details including cacheablity of the tasks that were executed. Clicking on any of the categories will take you to the Timeline screen with just tasks of that category highlighted.
+There is also a _"Task execution"_&nbsp; tab which shows details including cacheability of the tasks that were executed. Clicking on any of the categories will take you to the Timeline screen with just tasks of that category highlighted.
 
 image::task-execution-cacheable.png[title="A task oriented view of performance"]
 
@@ -540,7 +540,7 @@ Everything discussed thus far applies to Android builds too, since they're based
 
 == Summary
 
-Performance is not an afterthought in your build - it is a key feature affecting your team's productivity and happiness. The Gradle team is focused on making Gradle builds as fast as possible out of the box because they know that your time is valuable. Even so, Gradle supports a huge variety of builds which means that sometimes the default settings won't always be ideal for _your_ project. To help you optimize your build, this guide introduced you to settings and options that allow you to customize Gradle's behavior to best suite your particular build.
+Performance is not an afterthought in your build - it is a key feature affecting your team's productivity and happiness. The Gradle team is focused on making Gradle builds as fast as possible out of the box because they know that your time is valuable. Even so, Gradle supports a huge variety of builds which means that sometimes the default settings won't always be ideal for _your_ project. To help you optimize your build, this guide introduced you to settings and options that allow you to customize Gradle's behavior to best suit your particular build.
 
 Beyond those settings, remember that the two big contributors to build times are configuration and task execution, although the base cost of the former drops with almost every major Gradle release. And as far as the configuration phase goes, you should now have a good idea of the pitfalls you need to avoid. With task execution, you have more control since you can avoid running tasks or running them too often. You can also code your own tasks to be as efficient as possible.
 
