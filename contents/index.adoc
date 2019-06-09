@@ -115,7 +115,7 @@ Think about what would be the correct metadata for your plugin and fill in the t
 [source.multi-language-sample,groovy]
 ----
 pluginBundle {
-    website = 'http://www.gradle.org/'
+    website = 'https://www.gradle.org/'
     vcsUrl = 'https://github.com/gradle-guides/greeting-plugin-example'
     tags = ['example', 'template']
 }
@@ -136,7 +136,7 @@ gradlePlugin {
 ----
 pluginBundle {
     // please change these URLs to point to your own website/repository
-    website = "http://www.gradle.org/"
+    website = "https://www.gradle.org/"
     vcsUrl = "https://github.com/gradle-guides/greeting-plugin-example"
     tags = listOf("example", "template")
 }
