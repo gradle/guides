@@ -155,7 +155,7 @@ Congratulations! You have just created an application which consumes a third-par
 
 Third-party JVM libraries are released under various licenses. It is important to always check the licenses of the libraries you use, including all of the libraries that are introduced via transitive dependencies, for compatibility.
 
-For example the JFiglet library is released under http://www.gnu.org/licenses/gpl-2.0.html[GPL 2.0]. This means that should you want to release the application you have just built, it will also need to be under GPL 2.0.
+For example the JFiglet library is released under https://www.gnu.org/licenses/gpl-2.0.html[GPL 2.0]. This means that should you want to release the application you have just built, it will also need to be under GPL 2.0.
 
 You can utilise Jeroen van Erp's excellent https://plugins.gradle.org/plugin/com.github.hierynomus.license[License plugin] to create a report on the licenses of all of the dependencies of your project.
 
