@@ -181,6 +181,11 @@ The following command will remove a remote branch (from the server) for all guid
 
     mr run git push origin --delete <branch-name>
 
+### What is `ImgBot` used for?
+
+The `ImgBot` will submit PR to optimized images for all guides.
+Those can be merged without too much discussion as they only optimize the image without loosing any quality.
+
 ## Other resources
 
 - Getting start guides are created using this template repo: https://github.com/gradle-guides/gs-template
