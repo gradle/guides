@@ -82,13 +82,15 @@ The `init` task runs the `wrapper` task first, which generates the `gradlew` and
 ├── settings.gradle
 └── src
     ├── main
-    │   └── java  // <2>
-    │       └── demo
-    │           └── App.java
+    │   ├── java  // <2>
+    │   │   └── demo
+    │   │       └── App.java
+    │   └── resources
     └── test      // <3>
-        └── java
-            └── demo
-                └── AppTest.java
+        ├── java
+        │   └── demo
+        │       └── AppTest.java
+        └── resources
 ----
 
 [source.multi-language-sample,kotlin]
@@ -103,13 +105,15 @@ The `init` task runs the `wrapper` task first, which generates the `gradlew` and
 ├── settings.gradle.kts
 └── src
     ├── main
-    │   └── java  // <2>
-    │       └── demo
-    │           └── App.java
+    │   ├── java  // <2>
+    │   │   └── demo
+    │   │       └── App.java
+    │   └── resources
     └── test      // <3>
-        └── java
-            └── demo
-                └── AppTest.java
+        ├── java
+        │   └── demo
+        │       └── AppTest.java
+        └── resources
 ----
 <1> Generated folder for wrapper files
 <2> Default Java source folder
