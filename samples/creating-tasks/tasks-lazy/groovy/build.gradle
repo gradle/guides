@@ -5,7 +5,7 @@ tasks.register('greeting') {
 // end::container-api[]
 
 // tag::typed-container-api[]
-tasks.create(name: 'docZip', type: Zip) {
+tasks.register('docZip', Zip) {
     archiveName = 'doc.zip'
     from 'doc'
 }
