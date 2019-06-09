@@ -1,6 +1,6 @@
 = Building Groovy Libraries
 
-This guide demonstrates how to create a http://groovy-lang.org/[Groovy] library in the standard form using Gradle's Build Init plugin.
+This guide demonstrates how to create a https://groovy-lang.org/[Groovy] library in the standard form using Gradle's Build Init plugin.
 
 == What you'll need
 
@@ -83,7 +83,7 @@ The generated Spock specification, `src/test/groovy/LibraryTest.groovy` is shown
 include::{gradle-outdir}/files/src/test/groovy/guidesamples/LibraryTest.groovy[]
 ----
 
-The generated test class has a single http://spockframework.org[Spock specification]. The test instantiates the `Library` class, invokes the `someLibraryMethod` method, and checks that the returned value is `true`.
+The generated test class has a single https://spockframework.org[Spock specification]. The test instantiates the `Library` class, invokes the `someLibraryMethod` method, and checks that the returned value is `true`.
 
 == Execute the build
 
