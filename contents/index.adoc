@@ -247,7 +247,7 @@ requires the `guava` module. The Guava jar files are not yet Java 9 modules,
 so when you require them, you have to use the automatic module name `guava`
 which the JVM infers from the filename of the jar file which contains the
 classes. For Guava, the jar file's name is
-https://central.maven.org/maven2/com/google/guava/guava/22.0/[guava-22.0.jar], so according to the
+https://repo.maven.apache.org/maven2/com/google/guava/guava/22.0/[guava-22.0.jar], so according to the
 https://openjdk.java.net/projects/jigsaw/spec/sotms/#automatic-modules[rules of automatic module names],
 you require `guava`.
 
