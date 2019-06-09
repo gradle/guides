@@ -375,7 +375,7 @@ include::sample[dir="creating-tasks/tasks-eager/kotlin",files="build.gradle.kts[
 ====
 
 The samples above create untyped, ad-hoc tasks, but you will more commonly want to create tasks of a specific type.
-This can also be done using the same `create()` and `creating()` methods.
+This can also be done using the same `register()` and `create()` methods.
 Here's an example that creates a new task of type `Zip`:
 
 .Using the configuration avoidance API & DSL
