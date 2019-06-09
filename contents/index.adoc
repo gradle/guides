@@ -91,7 +91,7 @@ Verify that it worked as expected by checking that there is now a file called `m
 
 == Apply a plugin
 
-Gradle includes a range of plugins, and many, many more are available at http://plugins.gradle.org[the Gradle plugin portal]. One of the plugins included with the distribution is the `base` plugin. Combined with a core type called `{language-reference}org.gradle.api.tasks.bundling.Zip.html[Zip]`, you can create a zip archive of your project with a configured name and location.
+Gradle includes a range of plugins, and many, many more are available at https://plugins.gradle.org[the Gradle plugin portal]. One of the plugins included with the distribution is the `base` plugin. Combined with a core type called `{language-reference}org.gradle.api.tasks.bundling.Zip.html[Zip]`, you can create a zip archive of your project with a configured name and location.
 
 Add the `base` plugin to your build script file using the `plugins` syntax. Be sure to add the `plugins {}` block at the top of the file.
 
