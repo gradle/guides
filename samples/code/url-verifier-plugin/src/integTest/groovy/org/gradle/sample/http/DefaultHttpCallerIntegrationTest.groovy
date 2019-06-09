@@ -8,7 +8,7 @@ class DefaultHttpCallerIntegrationTest extends Specification {
 
     def "can make successful HTTP GET call"() {
         when:
-        def httpResponse = httpCaller.get('http://www.google.com/')
+        def httpResponse = httpCaller.get('https://www.google.com/')
 
         then:
         httpResponse.code == 200
@@ -17,11 +17,11 @@ class DefaultHttpCallerIntegrationTest extends Specification {
 
     def "throws exception when calling unknown host via HTTP GET"() {
         when:
-        httpCaller.get('http://www.wedonotknowyou123.com/')
+        httpCaller.get('https://www.wedonotknowyou123.com/')
 
         then:
         def t = thrown(HttpCallException)
-        t.message == "Failed to call URL 'http://www.wedonotknowyou123.com/' via HTTP GET"
+        t.message == "Failed to call URL 'https://www.wedonotknowyou123.com/' via HTTP GET"
         t.cause instanceof UnknownHostException
     }
 }
