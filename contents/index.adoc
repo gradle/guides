@@ -158,7 +158,7 @@ include::{samplescodedir}/url-verifier-plugin/gradle/integration-test.gradle[tag
 
 === Configuring a test framework
 
-Gradle does not dictate the use of a specific test framework. Popular choices include link:https://junit.org/junit4/[JUnit], link:https://testng.org/[TestNG] and link:http://spockframework.org/[Spock]. Once you choose an option, you have to add its dependency to the compile classpath for your tests. The following code snippet shows how to use Spock for implementing tests.
+Gradle does not dictate the use of a specific test framework. Popular choices include link:https://junit.org/junit4/[JUnit], link:https://testng.org/doc/[TestNG] and link:http://spockframework.org/[Spock]. Once you choose an option, you have to add its dependency to the compile classpath for your tests. The following code snippet shows how to use Spock for implementing tests.
 
 .build.gradle
 [source,groovy]
