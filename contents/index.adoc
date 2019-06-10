@@ -10,7 +10,7 @@ You'll generate a Java library that follows Gradle's conventions.
 
  - About +++<span class="time-to-complete-text"></span>+++
  - A text editor or IDE
- - A http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK) version 8 or higher
+ - A https://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK) version 8 or higher
  - A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 
 == Create a library project
@@ -142,7 +142,7 @@ The generated JUnit specification, `src/test/java/demo/LibraryTest.java` is show
 include::{gradle-outdir}/groovy-dsl-files/src/test/java/demo/LibraryTest.java[]
 ----
 
-The generated test class has a single http://junit.org/junit4/[JUnit 4] test. The test instantiates the `Library` class, invokes the `someLibraryMethod` method, and checks that the returned value is `true.
+The generated test class has a single https://junit.org/junit4/[JUnit 4] test. The test instantiates the `Library` class, invokes the `someLibraryMethod` method, and checks that the returned value is `true.
 
 == Assemble the library JAR
 
