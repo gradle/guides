@@ -160,7 +160,7 @@ Although the output says `Press any key to stop the server`, standard input is n
 
 == Unit test the servlet using Mockito
 
-The open source http://site.mockito.org/[Mockito framework] makes it easy to unit test Java applications. Add the Mockito dependency to the build script under the `testCompile` configuration.
+The open source https://site.mockito.org/[Mockito framework] makes it easy to unit test Java applications. Add the Mockito dependency to the build script under the `testCompile` configuration.
 
 .`build.gradle`
 [source.multi-language-sample,groovy]
@@ -241,7 +241,7 @@ include::{kotlin-example-dir}/build-3.gradle.kts[tags=add-selenium]
 
 The `gretty` plugin needs to know which task requires a start and stop of the server. Frequently that is assigned to your own task, but to keep things simple just use the existing `test` task.
 
-http://www.seleniumhq.org[Selenium] is a popular open-source API for writing functional tests. Version 2.0 is based on the WebDriver API. Recent versions require testers to download and install a version of WebDriver for their browser, which can be tedious and hard to automate. The https://github.com/bonigarcia/webdrivermanager[WebDriverManager] project makes it easy to let Gradle handle that process for you.
+https://www.seleniumhq.org[Selenium] is a popular open-source API for writing functional tests. Version 2.0 is based on the WebDriver API. Recent versions require testers to download and install a version of WebDriver for their browser, which can be tedious and hard to automate. The https://github.com/bonigarcia/webdrivermanager[WebDriverManager] project makes it easy to let Gradle handle that process for you.
 
 Add the following functional test to your project, in the `src/test/java` directory:
 
@@ -330,7 +330,7 @@ BUILD SUCCESSFUL
 
 The `gretty` plugin starts up an embedded version of Jetty 9 on the default port, executes the tests, and shuts down the server. If you watch, you'll see the Selenium system open a new browser, access the site, complete the form, click the button, check the new page, and finally shut down the browser.
 
-Integration tests are often handled by creating a separate source set and dedicated tasks, but that is beyond the scope of this guide. See the http://akhikhl.github.io/gretty-doc/[Gretty documentation] for details.
+Integration tests are often handled by creating a separate source set and dedicated tasks, but that is beyond the scope of this guide. See the https://akhikhl.github.io/gretty-doc/[Gretty documentation] for details.
 
 == Summary
 
@@ -344,7 +344,7 @@ In this guide, you learned how to:
 
 == Next steps
 
-Gretty is a very powerful API. See the http://akhikhl.github.io/gretty-doc/[Gretty documentation] for details. Further details about Selenium can be found on the http://www.seleniumhq.org[Selenium website], and more about WebDriverManager system is available on the https://github.com/bonigarcia/webdrivermanager[WebdriverDriverManager GitHub repository].
+Gretty is a very powerful API. See the https://akhikhl.github.io/gretty-doc/[Gretty documentation] for details. Further details about Selenium can be found on the https://www.seleniumhq.org[Selenium website], and more about WebDriverManager system is available on the https://github.com/bonigarcia/webdrivermanager[WebdriverDriverManager GitHub repository].
 
 If you are interested in functional testing, check out the open source http://www.gebish.org[Geb] library, which provides a powerful Groovy DSL for browser automation that rests on top of Selenium and WebDriver.
 
