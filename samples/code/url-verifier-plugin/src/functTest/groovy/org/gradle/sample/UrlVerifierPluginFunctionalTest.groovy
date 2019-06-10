@@ -23,7 +23,7 @@ class UrlVerifierPluginFunctionalTest extends Specification {
     def "can successfully configure URL through extension and verify it"() {
         buildFile << """
             verification {
-                url = 'http://www.google.com/'
+                url = 'https://www.google.com/'
             }
         """
 
@@ -35,7 +35,7 @@ class UrlVerifierPluginFunctionalTest extends Specification {
             .build()
 
         then:
-        result.output.contains("Successfully resolved URL 'http://www.google.com/'")
+        result.output.contains("Successfully resolved URL 'https://www.google.com/'")
         result.task(":verifyUrl").outcome == SUCCESS
     }
 }

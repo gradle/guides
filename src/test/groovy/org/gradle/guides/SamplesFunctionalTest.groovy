@@ -18,7 +18,7 @@ class SamplesFunctionalTest extends AbstractSamplesFunctionalTest {
         
         then:
         result.task(':verifyUrl').outcome == SUCCESS
-        result.output.contains("Successfully resolved URL 'http://www.google.com/'")
+        result.output.contains("Successfully resolved URL 'https://www.google.com/'")
     }
 
     def "can execute all tests in plugin project"() {
