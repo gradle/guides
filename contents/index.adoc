@@ -118,7 +118,7 @@ You can learn more about advanced Jenkins usage through these resources:
 
 * https://jenkins.io/doc/book/using/using-credentials/[Using credentials with Jenkins]
 * https://jenkins.io/solutions/pipeline/[Pipeline as code with Jenkins]
-* http://bmuschko.com/blog/jenkins-build-pipeline/[Modelling a Continuous Deployment pipeline for a Spring Boot application]
+* https://bmuschko.com/blog/jenkins-build-pipeline/[Modelling a Continuous Deployment pipeline for a Spring Boot application]
 
 == Summary
 
