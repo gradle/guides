@@ -11,7 +11,7 @@ import java.io.IOException
 import java.io.InputStream
 
 /**
- * A site generator implementation based on [Freemarker](http://freemarker.org/).
+ * A site generator implementation based on [Freemarker](https://freemarker.org/).
  */
 class FreemarkerSiteGenerator(private val outputDir: File) : SiteGenerator {
 
