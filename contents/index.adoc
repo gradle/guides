@@ -15,7 +15,7 @@ If you get stuck at any point, you can check out https://github.com/gradle-guide
 
  - About +++<span class="time-to-complete-text"></span>+++
  - A text editor or IDE
- - A http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK), version 1.8 or better
+ - A https://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK), version 1.8 or better
  - A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 
 == Step 1: Bootstrap Kotlin project
@@ -107,7 +107,7 @@ Think of a build scan like a web-based, detailed build report. Super handy for d
 
 == Step 2: Add testing with JUnit
 
-http://junit.org/junit4/[JUnit 4] is the simplest of testing libraries to add to our project. If you happen to prefer the http://spekframework.org/[Spek framework] for Kotlin-based specifications, check out the http://spekframework.org/docs/latest/#_gradle_kotlin_script[Spek docs].
+https://junit.org/junit4/[JUnit 4] is the simplest of testing libraries to add to our project. If you happen to prefer the https://spekframework.org/[Spek framework] for Kotlin-based specifications, check out the hhttps://spekframework.org/setup-jvm/#gradle[Spek docs].
 
 .build.gradle.kts
 [source,diff]
