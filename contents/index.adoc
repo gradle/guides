@@ -1,6 +1,6 @@
 = Building Groovy Libraries
 
-This guide demonstrates how to create a http://groovy-lang.org/[Groovy] library in the standard form using Gradle's Build Init plugin.
+This guide demonstrates how to create a https://groovy-lang.org/[Groovy] library in the standard form using Gradle's Build Init plugin.
 
 == What you'll need
 
