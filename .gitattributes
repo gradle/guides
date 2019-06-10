@@ -1,2 +1,2 @@
 * linguist-vendored
-.github/language/* linguist-vendored=false
+gradle/guide/language/* linguist-vendored=false
