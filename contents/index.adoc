@@ -328,7 +328,7 @@ NOTE: Did you notice that the task executed was `:greeter:test`, but when runnin
 
 == Add documentation
 
-It is considered good practice to create documentation for a software project. Although there is a number of authoring methods to accomplish this goal, you will be using the very popular http://asciidoctor.org/[Asciidoctor] tool.
+It is considered good practice to create documentation for a software project. Although there is a number of authoring methods to accomplish this goal, you will be using the very popular https://asciidoctor.org/[Asciidoctor] tool.
 
 Start by adding the https://plugins.gradle.org/plugin/org.asciidoctor.convert[Asciidoctor plugin] to a link:{user-manual}plugins.html#sec:plugins_block[plugins block] to the top of the root project build script.
 
