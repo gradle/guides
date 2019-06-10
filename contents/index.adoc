@@ -186,8 +186,8 @@ https://scans.gradle.com/s/l76lgbuizu4pm/tests/byProject?toggled=W1sxXSxbMSwwXSx
 
 If you aren't already familiar with the Java 9 module system, you should read:
 
-* http://openjdk.java.net/projects/jigsaw/quick-start[Module System Quick-Start Guide] (at least)
-* http://openjdk.java.net/projects/jigsaw/spec/sotms/[The State of The Module System] (for more details)
+* https://openjdk.java.net/projects/jigsaw/quick-start[Module System Quick-Start Guide] (at least)
+* https://openjdk.java.net/projects/jigsaw/spec/sotms/[The State of The Module System] (for more details)
 
 This guide assumes that you already have familiarity with the following concepts:
 
@@ -247,8 +247,8 @@ requires the `guava` module. The Guava jar files are not yet Java 9 modules,
 so when you require them, you have to use the automatic module name `guava`
 which the JVM infers from the filename of the jar file which contains the
 classes. For Guava, the jar file's name is
-http://central.maven.org/maven2/com/google/guava/guava/22.0/[guava-22.0.jar], so according to the
-http://openjdk.java.net/projects/jigsaw/spec/sotms/#automatic-modules[rules of automatic module names],
+https://repo.maven.apache.org/maven2/com/google/guava/guava/22.0/[guava-22.0.jar], so according to the
+https://openjdk.java.net/projects/jigsaw/spec/sotms/#automatic-modules[rules of automatic module names],
 you require `guava`.
 
 === Modify the `compileJava` task to produce a module.
@@ -348,7 +348,7 @@ before they can adopt any of those new modules, because Java 9 only allows
 one module on the module path to include any specific package.
 
 The whole situation can get quite messy. This is why
-http://blog.joda.org/2017/05/java-se-9-jpms-automatic-modules.html[Stephen Colebourne argues]
+https://blog.joda.org/2017/05/java-se-9-jpms-automatic-modules.html[Stephen Colebourne argues]
 that we should immediately start updating all of the jars we publish to public
 repositories to (at least) specify an `Automatic-Module-Name` attribute in
 the jar's manifest, and not to publish any artifacts which
