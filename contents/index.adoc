@@ -159,7 +159,7 @@ One thing to bear in mind is that high level ‘if' statements make builds harde
 The same applies to profiles.
 Gradle offers you many better ways to avoid the extensive use of profiles that Maven often requires, for example by offering variants.
 
-For a lengthier discussion on working with Maven profiles in Gradle, look no further than http://gradle.org/feature-spotlight-gradles-support-maven-pom-profiles[this article] by Benjamin Muschko.
+For a lengthier discussion on working with Maven profiles in Gradle, look no further than https://gradle.org/feature-spotlight-gradles-support-maven-pom-profiles[this article] by Benjamin Muschko.
 
 
 == Resource filtering
