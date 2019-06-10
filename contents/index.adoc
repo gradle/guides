@@ -6,9 +6,9 @@ This guide walks you through the process of writing a new guide for inclusion at
 
  - A https://git-scm.org[Git] client (command line is fine, or use one of the many excellent GUI clients)
  - A https://github.com[GitHub] account
- - A http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Runtime Environment], version 1.7 or better
+ - A https://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Runtime Environment], version 1.7 or better
  - A text editor
- - A basic familiarity with http://asciidoctor.org/docs/user-manual/[AsciiDoc]
+ - A basic familiarity with https://asciidoctor.org/docs/user-manual/[AsciiDoc]
 
 == Create a GitHub issue
 
@@ -100,7 +100,7 @@ As you work on the main content of the guide, we recommend that you read the ass
 [TIP]
 .New to AsciiDoc?
 ====
-Refer to the http://asciidoctor.org/docs/user-manual/[Asciidoctor User Manual] while writing and you'll master the basics in no time. There is also a http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/[quick reference for syntax] that's particularly useful when you just want to know the syntax for something specific.
+Refer to the https://asciidoctor.org/docs/user-manual/[Asciidoctor User Manual] while writing and you'll master the basics in no time. There is also a https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/[quick reference for syntax] that's particularly useful when you just want to know the syntax for something specific.
 ====
 
 When you want to preview your changes, simply regenerate your guide's HTML with the following build command:
