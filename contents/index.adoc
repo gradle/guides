@@ -132,7 +132,7 @@ include::sample[dir="kotlin-dsl/code",files="build.gradle.kts[]"]
 The build file adds the `cpp-application` and `cpp-unit-test` plugins:
 
 * The `cpp-application` plugin automatically generates application component configurable via link:{language-reference}org.gradle.language.cpp.CppApplication.html[application] extension DSL.
-* The `cpp-unit-test` plugin automatically generates a executable component that depends on the library.
+* The `cpp-unit-test` plugin automatically generates a executable component that depends on the application.
 It also adds a new  _verification task_. The verification tasks are `check` tasks that assemble and test a binary.
 The unit test component configurable via the link:{language-reference}org.gradle.nativeplatform.test.cpp.CppTestSuite.html[unitTest] extension DSL.
 
