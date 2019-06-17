@@ -17,10 +17,10 @@
 
 package org.gradle.guides
 
-import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.internal.tasks.userinput.UserInputHandler
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Internal
@@ -88,13 +88,12 @@ abstract class ConfigureGitHubRepository extends DefaultTask {
         }
     }
 
-    @CompileDynamic
-    private static String askForGitHubCredentials() {
+    private String askForGitHubCredentials() {
         if (System.getenv().containsKey("GITHUB_TOKEN")) {
             return System.getenv("GITHUB_TOKEN")
         } else {
-            UserInputHandler inputHandler = getServices().get(UserInputHandler.class)
-            return inputHandler.askQuestion("GitHub OAuth token: ", getProjectName());
+            UserInputHandler inputHandler = (getProject() as ProjectInternal).getServices().get(UserInputHandler) as UserInputHandler
+            return inputHandler.askQuestion("GitHub OAuth token: ", null)
         }
     }
 }
