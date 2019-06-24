@@ -165,7 +165,7 @@ Try creating a build scan by adding `--scan` when executing a task.
 include::{samplesoutputdir}/gradle-zip-scan.txt[]
 ----
 
-If you browse around your build scan, you should be able to easily find out what tasks where executed and how long they took, which plugins were applied, and much more. Consider sharing a build scan the next time you are debugging something on StackOverflow.
+If you browse around your build scan, you should be able to easily find out what tasks were executed and how long they took, which plugins were applied, and much more. Consider sharing a build scan the next time you are debugging something on StackOverflow.
 
 Learn more about how to configure and use build scans in the link:https://docs.gradle.com/build-scan-plugin/[Build Scan Plugin User Manual].
 
