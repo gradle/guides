@@ -15,10 +15,6 @@ tasks.withType(GenerateReadMeFile::class).configureEach {
     title.set(guide.title.map { it.replace("C++", "{cpp}") })
 }
 
-apply {
-    from("gradle/cpp.gradle")
-}
-
 // NOTE: Patch until we fix this in guide plugin
 afterEvaluate {
     tasks.named("gitPublishReset") {
