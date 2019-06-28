@@ -1,5 +1,5 @@
-[subprojects/building-cpp-executables]
-checkout = git clone git@github.com:gradle-guides/building-cpp-executables.git
+[subprojects/building-cpp-applications]
+checkout = git clone git@github.com:gradle-guides/building-cpp-applications.git
 
 [subprojects/building-cpp-libraries]
 checkout = git clone git@github.com:gradle-guides/building-cpp-libraries.git
