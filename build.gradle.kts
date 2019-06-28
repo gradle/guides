@@ -6,7 +6,7 @@ plugins {
 }
 
 guide {
-    repositoryPath.set("gradle-guides/building-cpp-executables")
+    repositoryPath.set("gradle-guides/building-cpp-applications")
     minimumGradleVersion.set("5.2.1")
     title.set("Building C++ Executables")
 }
