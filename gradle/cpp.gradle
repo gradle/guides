@@ -1,5 +1,0 @@
-apply plugin : 'cpp-application' // <1>
-
-application {
-    baseName = "greeting" // <2>
-}

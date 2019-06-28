@@ -1,109 +1,244 @@
-= Building {cpp} Executables
+= Building {cpp} Applications
 
-This guide demonstrates how to create a minimalist {cpp} executable using Gradle's `cpp` plugin.
+This guide demonstrates how to use Gradle's Build Init plugin to produce a {cpp} application that follows Gradle conventions.
 
 == What you'll need
 
-* About +++<span class="time-to-complete-text"></span>+++
+* About [.time-to-complete-text]#NN#
 * A text editor
 * A command prompt
-* The Java Development Kit (JDK), version 1.8 or higher
+* The http://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK), version 8 or higher
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
-* An installed {cpp} compiler. See which link:{user-manual}cpp_plugins.html#cpp:tool-chain-support[{cpp} tool chains] are supported by Gradle and whether you have to do any {user-manual}cpp_plugins.html#cpp:tool_chain_installation[installation configuration] for your platform.
+* An installed {cpp} compiler. See which link:{user-manual}building_cpp_projects.html#sec:cpp_supported_tool_chain[{cpp} tool chains] are supported by Gradle.
 
-== Layout
+== Check the user manual
 
-The first step is to create a folder for the new project and add a {user-manual}gradle_wrapper.html#sec:wrapper_generation[Gradle Wrapper] to the project.
+Gradle comes with a built-in plugin called the Build Init plugin. It is documented in the https://docs.gradle.org/{gradle-version}/userguide/build_init_plugin.html[Gradle User Manual].
+The plugin provides a task, called `init`, that generates the project. The plugin also uses the (also built-in) `wrapper` task to create a Gradle wrapper script, `gradlew`.
 
-[listing]
+== Setup
+
+The first step is to create a folder for the new project and change directory into it.
+
+[listing.terminal]
 ----
-$ mkdir cpp-executable
-$ cd cpp-executable
-$ gradle wrapper // <1>
-
-:wrapper
-
-BUILD SUCCESSFUL
-----
-<1> This allows a version of Gradle to be locked to a project and henceforth you can use `./gradlew` instead of `gradle`.
-
-Create a minimalist `build.gradle` file with the following content:
-
-.build.gradle
-[source,groovy]
-----
-include::{projdir}/gradle/cpp.gradle[]
-----
-<1> {cpp} projects are enabled via the `cpp-application` plugin
-<2> Change the application binary names, the base name defaults to the project name
-
-== Add source code
-
-By convention, {cpp} projects in Gradle will follow a more contemporary layout. This can be troublesome for you if you are used to building {cpp} code with build tools that do not use a convention-over-configuration approach. Rest assured that Gradle is very configurable in this regard and should you need to migrate a {cpp} project to Gradle you can consult the {user-manual}cpp_plugins.html#cpp:cpp_sources[{cpp} sources] section of the User Guide.
-
-The executable component is called `main`. By convention, Gradle will look in `src/main/cpp` for source files and non-exported header files. Create this folder
-
-[listing]
-----
-$ mkdir -p src/main/cpp
+$ mkdir building-cpp-applications
+$ cd building-cpp-applications
 ----
 
-and place a `main.cpp` and a `greeting.hpp` within.
+== Run the init task
 
-.src/main/cpp/main.cpp
+From inside the new project directory, run the `init` task and select `cpp-application` project type when prompted. For the other questions, press enter to use the default values.
+
+[listing.terminal]
+----
+$ gradle init
+
+Select type of project to generate:
+  1: basic
+  2: cpp-application
+  3: cpp-library
+  4: groovy-application
+  5: groovy-library
+  6: java-application
+  7: java-library
+  8: kotlin-application
+  9: kotlin-library
+  10: scala-library
+Enter selection (default: basic) [1..10] 2
+
+Select build script DSL:
+  1: groovy
+  2: kotlin
+Enter selection (default: groovy) [1..2]
+
+Project name (default: building-cpp-applications):
+
+BUILD SUCCESSFUL in 1s
+2 actionable tasks: 2 executed
+----
+
+If you prefer the Kotlin DSL, you can select `kotlin` for the build script DSL.
+
+The `init` task runs the `wrapper` task first, which generates the `gradlew` and `gradlew.bat` wrapper scripts. Then it creates the new project with the following structure:
+
+[source.multi-language-sample,groovy]
+----
+├── build.gradle
+├── gradle    // <1>
+│   └── wrapper
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── gradlew
+├── gradlew.bat
+├── settings.gradle
+└── src
+    ├── main
+    │   ├── cpp      // <2>
+    │   │   └── app.cpp
+    │   └── headers  // <3>
+    │       └── app.h
+    └── test         // <4>
+        └── cpp
+            └── app_test.cpp
+----
+
+[source.multi-language-sample,kotlin]
+----
+├── build.gradle.kts
+├── gradle    // <1>
+│   └── wrapper
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── gradlew
+├── gradlew.bat
+├── settings.gradle.kts
+└── src
+    ├── main
+    │   ├── cpp      // <2>
+    │   │   └── app.cpp
+    │   └── headers  // <3>
+    │       └── app.h
+    └── test         // <4>
+        └── cpp
+            └── app_test.cpp
+----
+<1> Generated folder for wrapper files
+<2> Default {cpp} source folder
+<3> Default {cpp} header folder
+<4> Default {cpp} test folder
+
+NOTE: The Gradle source layout convention can be customize to fit any source layout.
+See link:{user-manual}building_cpp_projects.html#sec:custom_cpp_source_set_paths[customizing {cpp} source] section of the {cpp} chapter in {user-manual-name} as well as the https://github.com/gradle/native-samples/tree/master/cpp/swift-package-manager[custom source layout sample] for a demonstration.
+
+== Review the generated project files
+
+The `settings.gradle` file is heavily commented, but has only one active line:
+
+====
+include::sample[dir="groovy-dsl/code", files="settings.gradle[]"]
+include::sample[dir="kotlin-dsl/code", files="settings.gradle.kts[]"]
+====
+
+This sets the name of the root project to "building-cpp-applications", which overrides the default behavior of naming the project after the directory it's in.
+
+The generated `build.gradle` file also has many comments. The active portion is reproduced here:
+
+====
+include::sample[dir="groovy-dsl/code",files="build.gradle[]"]
+include::sample[dir="kotlin-dsl/code",files="build.gradle.kts[]"]
+====
+
+The build file adds the `cpp-application` and `cpp-unit-test` plugins:
+
+* The `cpp-application` plugin automatically generates application component configurable via link:{language-reference}org.gradle.language.cpp.CppApplication.html[application] extension DSL.
+* The `cpp-unit-test` plugin automatically generates a executable component that depends on the application.
+It also adds a new  _verification task_. The verification tasks are `check` tasks that assemble and test a binary.
+The unit test component configurable via the link:{language-reference}org.gradle.nativeplatform.test.cpp.CppTestSuite.html[unitTest] extension DSL.
+
+The file `src/main/cpp/app.cpp` is shown here:
+
+.src/main/cpp/app.cpp
 [source,cpp]
 ----
-include::{codedir}/cpp/main.cpp[]
+include::{samples-dir}/groovy-dsl/code/src/main/cpp/app.cpp[]
 ----
-<1> Non-exported headers will be searched for relative to the specified {cpp} source folders. (In this case `src/main/cpp`).
-<2> The standard {cpp} headers wil be located via the compiler toolchain that Gradle uses
 
-.src/main/cpp/greeting.h
+The exported header, `src/main/headers/app.h` is shown here:
+
+.src/main/headers/app.h
 [source,cpp]
 ----
-include::{codedir}/cpp/greeting.h[]
+include::{samples-dir}/groovy-dsl/code/src/main/headers/app.h[]
 ----
 
-== Build your project
 
-To build your project you can simply do `./gradlew assemble` as per usual:
+The test application, `src/test/cpp/app_test.cpp` is shown next:
+
+.src/test/cpp/app_test.cpp
+[source,cpp]
+----
+include::{samples-dir}/groovy-dsl/code/src/test/cpp/app_test.cpp[]
+----
+
+The generated test file has a single test using the https://en.cppreference.com/w/cpp/error/assert[standard library assert function].
+The test instantiates the `Greeter` class, invokes the `greeting()` method, and checks that the returned value is equals to the expected string.
+
+NOTE: The `cpp-unit-test` plugin can also be used to test your application binaries using https://github.com/google/googletest[Google Test] as https://github.com/gradle/native-samples/tree/master/cpp/simple-library[demonstrated in the simple library sample].
+
+== Execute the build
+
+To build the project, run the `build` task. You can use the regular `gradle` command, but when a project includes link:{user-manual}gradle_wrapper.html[a wrapper script], it is considered good form to use it instead.
+
+[listing.terminal]
+----
+$ ./gradlew build
+include::{samplesoutputdir}/build.txt[]
+----
+
+NOTE: The first time you run the wrapper script, `gradlew`, there may be a delay while that version of `gradle` is downloaded and stored locally in your `~/.gradle/wrapper/dists` folder.
+
+The `build` task compiles the {cpp} sources, link the object files, and runs the tests.
+
+NOTE: Dependencies to other projects isn't covered in this guide.
+To learn more about that subject, have a look at the https://github.com/gradle/native-samples/tree/master/cpp/transitive-dependencies[transitive dependency sample] for a demonstration.
+
+NOTE: Gradle integrate with several IDEs: link:{user-manual}visual_studio_plugin.html[Visual Studio], link:{user-manual}xcode_plugin.html[Xcode] and https://www.jetbrains.com/help/clion/gradle-support.html[Clion].
+To learn more, have a look at their respective linked documentation to configure those IDE integration in your project.
+
+=== Application package
+
+As part of the the build process, Gradle package the main and test application for distribution on other system.
+The `installDebug` and `installTest` task copies the executable and generate a shell script for executing the application.
+The following listing shows the content of the `build/install` folder:
 
 [listing]
 ----
-$ ./gradlew assemble
-
-:compileDebugCpp // <1>
-:linkDebug // <2>
-:assemble
-
-BUILD SUCCESSFUL
+├── main
+│   └── debug
+│       ├── building-cpp-applications      // <1>
+│       └── lib
+│           └── building-cpp-applications  // <2>
+└── test
+    ├── building-cpp-applicationsTest      // <1>
+    └── lib
+        └── building-cpp-applicationsTest  // <3>
 ----
-<1> To keep things tidy on the console, Gradle does not display compiler output. If you need to ever diagnose a compilation issue, the output from the compiler is stored in `build/tmp/compileDebugCpp/output.txt`.
-<2> In a similar fashion the output from the linker is written to `build/tmp/linkDebug/output.txt`
+<1> The script for executing the application variant
+<2> The main executable binary (debug variant)
+<3> The test executable binary
 
-Look inside the `build` folder and you will notice the appearance of a `exe` folder. By convention Gradle will place all executables in subfolders named according to the component name. In this case you will find your assembled executable in `build/exe/main/debug` and it will be called `main` (or `main.exe` under Windows).
+NOTE: When a build has dependencies, every dependent shared libraries are also copied into the installation folder.
+The shell scripts then properly configure the library path so the package can be relocated.
+Have a look at the https://github.com/gradle/native-samples/tree/master/cpp/transitive-dependencies[transitive dependency sample] for a demonstration.
+
+== Run the application
+
+Look inside the `build` folder and you will notice the appearance of a `exe` folder.
+By convention Gradle will place all executables in subfolders named according to the component name.
+In this case you will find your assembled executable in `build/exe/main/debug` and it will be called `building-cpp-applications` (or `building-cpp-applications.exe` under Windows).
+
+// TODO: Mention how to configure the baseName of the application (need to change the gradle/gradle cpp-application plugin chapter)
 
 Now run your newly built executable.
 
 [listing]
 ----
-$ ./build/exe/main/debug/greeting
-
-Hello World
+$ ./build/exe/main/debug/building-cpp-applications
+Hello, World!
 ----
-
-Congratulations! You have just built a {cpp} executable with Gradle.
 
 == Summary
 
-You have created an {cpp} project  that can be used as a foundation for something more substantial. In the process you saw:
+You have created an {cpp} application with unit tests. In doing so, you saw:
 
-* How to create a build script for {cpp} executables.
-* Where to add source code by convention.
-* How to build the executable without building the full project.
+* How to generate a {cpp} application
+* How the generate build file and sample {cpp} files are structured
+* How to run the build with it's tests
+* How to execute the application from the command line
 
 == Next Steps
 
-* Make your way to the native samples repository to see the C++ plugins in action for common scenarios such as https://github.com/gradle/native-samples/tree/master/cpp/transitive-dependencies[transitive dependencies] and https://github.com/gradle/native-samples/tree/master/cpp/swift-package-manager[custom source layout].
+* Make your way to the https://github.com/gradle/native-samples/[native samples repository] to see the C++ plugins in action for common scenarios such as https://github.com/gradle/native-samples/tree/master/cpp/transitive-dependencies[transitive dependencies] and https://github.com/gradle/native-samples/tree/master/cpp/swift-package-manager[custom source layout].
 
 include::contribute[repo-path="gradle-guides/building-cpp-executables"]
