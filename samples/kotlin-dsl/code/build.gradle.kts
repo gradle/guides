@@ -5,10 +5,10 @@
  */
 
 plugins {
-    // Apply the cpp-application plugin to add support for building CPP executables
+    // Apply the cpp-application plugin to add support for building CPP applications
     `cpp-application`
 
-    // Apply the cpp-unit-test plugin to add support for building and running CPP test executables
+    // Apply the cpp-unit-test plugin to add support for building and running CPP test applications
     `cpp-unit-test`
 }
 

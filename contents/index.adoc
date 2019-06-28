@@ -215,7 +215,7 @@ Have a look at the https://github.com/gradle/native-samples/tree/master/cpp/tran
 == Run the application
 
 Look inside the `build` folder and you will notice the appearance of a `exe` folder.
-By convention Gradle will place all executables in subfolders named according to the component name.
+By convention Gradle will place all applications in subfolders named according to the component name.
 In this case you will find your assembled executable in `build/exe/main/debug` and it will be called `building-cpp-applications` (or `building-cpp-applications.exe` under Windows).
 
 // TODO: Mention how to configure the baseName of the application (need to change the gradle/gradle cpp-application plugin chapter)
