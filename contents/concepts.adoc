@@ -90,9 +90,10 @@ Tasks having files as inputs can declare the parts of a file's path what are ess
 Task properties declared with `ABSOLUTE` path sensitivity are considered non-relocatable.
 This is the default for properties not declaring path sensitivity, too.
 
-For example, the class files produced by the Java compiler are dependent on the file names of the Java source files: renaming the source files with public classes would fail the build.
-However, moving the files around has no effect on the result of the compilation.
-Therefore, the path sensitivity for the sources of the `JavaCompile` task is `NAME_ONLY`. Because of this only the normalized paths of the Java source files -- the file names -- are considered as inputs to the `JavaCompile` task.
+For example, the class files produced by the Java compiler are dependent on the file names of the Java source files: renaming the source files with public classes in them would fail the build.
+Moving the files around wouldn't have an effect on the result of the compilation, but we rely on the relative path to find other classes in the same package.
+Therefore, the path sensitivity for the sources of the `JavaCompile` task is `RELATIVE`.
+Because of this only the normalized (relative) paths of the Java source files are considered as inputs to the `JavaCompile` task.
 
 [NOTE]
 ====
