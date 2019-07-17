@@ -91,7 +91,7 @@ Task properties declared with `ABSOLUTE` path sensitivity are considered non-rel
 This is the default for properties not declaring path sensitivity, too.
 
 For example, the class files produced by the Java compiler are dependent on the file names of the Java source files: renaming the source files with public classes in them would fail the build.
-Moving the files around wouldn't have an effect on the result of the compilation, but we rely on the relative path to find other classes in the same package.
+Though moving the files around wouldn't have an effect on the result of the compilation, for incremental compilation the `JavaCompile` task relies on the relative path to find other classes in the same package.
 Therefore, the path sensitivity for the sources of the `JavaCompile` task is `RELATIVE`.
 Because of this only the normalized (relative) paths of the Java source files are considered as inputs to the `JavaCompile` task.
 
