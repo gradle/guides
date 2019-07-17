@@ -19,7 +19,7 @@ When you are switching branches back and forth, the local results get rebuilt ov
 The build cache remembers the earlier build results, and greatly reduces the need to rebuild things when they have already been built locally.
 This can also extend to rebuilding different commits, like when running `git bisect`.
 
-The local cache can also be useful when working with a project that has multiple variants, as in the case of Android projects. Each variant has a number of tasks associated with it, and some of those task variants, despite having different names, can end up producing the same output. With the local cache enabled, reuse between task variants will happen automatically when applicable.
+The local cache can also be useful when working with a project that has multiple variants, as in the case of Android projects. Each variant has a number of tasks associated with it, and some of those task variant dimensions, despite having different names, can end up producing the same output. With the local cache enabled, reuse between task variants will happen automatically when applicable.
 
 === Share results between CI builds
 
