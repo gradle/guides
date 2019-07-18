@@ -19,7 +19,7 @@ buildScan {
 }
 
 group = 'org.gradle.guides'
-version = '0.15.13-SNAPSHOT'
+version = '0.15.13'
 
 repositories {
     jcenter()
