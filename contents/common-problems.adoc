@@ -284,7 +284,7 @@ If possible, you should avoid going down that route.
 
 If none of the described solutions for dealing with volatile data work for you, you should still be able to limit the effect of volatile data on effective use of the build cache.
 This can be done by adding the volatile data later to the outputs as described in <<volatile_inputs>>.
-Another option would be to move the volatile data so it affects less tasks.
+Another option would be to move the volatile data so it affects fewer tasks.
 For example moving the dependency from the `compile` to the `runtime` configuration may already have quite an impact.
 
 Sometimes it is also possible to build two artifacts, one containing the volatile data and another one containing a constant representation of the volatile data.
