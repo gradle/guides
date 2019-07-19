@@ -212,7 +212,7 @@ Chances are you want to create a library or application for a specific platform,
 * {guides}/building-android-apps[Building Android Apps]
 * {guides}/building-java-libraries[Building Java Libraries]
 * {guides}/building-kotlin-jvm-libraries[Building Kotlin JVM Libraries]
-* {guides}/building-cpp-applications[Building {cpp} Application]
+* {guides}/building-cpp-applications[Building {cpp} Applications]
 * {guides}/building-groovy-libraries[Building Groovy Libraries]
 * {guides}/building-scala-libraries[Building Scala Libraries]
 
