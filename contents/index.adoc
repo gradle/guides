@@ -1,0 +1,180 @@
+= Building and Testing Swift Libraries
+
+This guide demonstrates how to use Gradle's Build Init plugin to produce a Swift library that follows Gradle conventions.
+
+== What you'll need
+
+* About [.time-to-complete-text]#NN#
+* A text editor
+* A command prompt
+* The https://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK), version 8 or higher
+* A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
+* An installed Swift compiler. See which link:{user-manual}building_swift_projects.html#sec:swift_supported_tool_chain[Swift tool chains] are supported by Gradle.
+
+== Check the user manual
+
+Gradle comes with a built-in plugin called the Build Init plugin. It is documented in the link:{user-manual}build_init_plugin.html[Gradle User Manual].
+The plugin provides a task, called `init`, that generates the project. The plugin also uses the (also built-in) `wrapper` task to create a Gradle wrapper script, `gradlew`.
+
+== Setup
+
+The first step is to create a folder for the new project and change directory into it.
+
+[listing.terminal]
+----
+$ mkdir building-swift-libraries
+$ cd building-swift-libraries
+----
+
+== Run the init task
+
+From inside the new project directory, run the `init` task and select `swift-library` project type when prompted. For the other questions, press enter to use the default values.
+
+[listing.terminal]
+----
+$ gradle init
+
+Select type of project to generate:
+  1: basic
+  2: application
+  3: library
+  4: Gradle plugin
+Enter selection (default: basic) [1..4] 3
+
+Select implementation language:
+  1: C++
+  2: Groovy
+  3: Java
+  4: Kotlin
+  5: Scala
+  6: Swift
+Enter selection (default: Java) [1..6] 6
+
+Select build script DSL:
+  1: Groovy
+  2: Kotlin
+Enter selection (default: Groovy) [1..2] 1
+
+Project name (default: building-swift-libraries):
+
+> Task :init
+Get more help with your project: https://docs.gradle.org/{gradle-version}/userguide/building_swift_projects.html
+
+BUILD SUCCESSFUL
+2 actionable tasks: 2 executed
+----
+
+If you prefer the Kotlin DSL, you can select `kotlin` for the build script DSL.
+
+The `init` task runs the `wrapper` task first, which generates the `gradlew` and `gradlew.bat` wrapper scripts. Then it creates the new project with the following structure:
+
+[source.multi-language-sample,groovy]
+----
+├── build.gradle
+├── gradle          // <1>
+│   └── wrapper
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── gradlew
+├── gradlew.bat
+├── settings.gradle
+└── src
+    ├── main
+    │   └── swift   // <2>
+    │       └── Hello.swift
+    └── test        // <3>
+        └── swift
+            ├── HelloTests.swift
+            └── LinuxMain.swift
+----
+
+[source.multi-language-sample,kotlin]
+----
+├── build.gradle.kts
+├── gradle          // <1>
+│   └── wrapper
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── gradlew
+├── gradlew.bat
+├── settings.gradle.kts
+└── src
+    ├── main
+    │   └── swift   // <2>
+    │       └── Hello.swift
+    └── test        // <3>
+        └── swift
+            ├── HelloTests.swift
+            └── LinuxMain.swift
+----
+<1> Generated folder for wrapper files
+<2> Default Swift source folder
+<3> Default Swift test folder
+
+NOTE: The Gradle source layout convention can be customize to fit any source layout.
+See link:{user-manual}building_swift_projects.html#sec:custom_swift_source_set_paths[customizing Swift source] section of the Swift chapter in {user-manual-name} as well as the https://github.com/gradle/native-samples/tree/master/swift/swift-package-manager[custom source layout sample] for a demonstration.
+
+== Review the generated project files
+
+The `settings.gradle` file is heavily commented, but has only one active line:
+
+====
+include::sample[dir="groovy-dsl/code", files="settings.gradle[]"]
+include::sample[dir="kotlin-dsl/code", files="settings.gradle.kts[]"]
+====
+
+This sets the name of the root project to "building-swift-libraries", which overrides the default behavior of naming the project after the directory it's in.
+
+The generated `build.gradle` file also has many comments. The active portion is reproduced here:
+
+====
+include::sample[dir="groovy-dsl/code",files="build.gradle[]"]
+include::sample[dir="kotlin-dsl/code",files="build.gradle.kts[]"]
+====
+
+The build file adds the `swift-library` and `xctest` plugins:
+
+* The `swift-library` plugin automatically generates library component configurable via link:{language-reference}org.gradle.language.swift.SwiftLibrary.html[library] extension DSL.
+* The `xctest` plugin automatically generates a executable component that depends on the library.
+It also adds a new  _verification task_. The verification tasks are `check` tasks that assemble and test a binary.
+The XCTest component is configurable via the link:{language-reference}org.gradle.nativeplatform.test.xctest.SwiftXCTestSuite.html[xctest] extension DSL.
+
+NOTE: The `xctest` requires an executable entry point only on Linux. Gradle support the `LinuxMain.swift` pattern out-of-the-box.
+
+== Execute the build
+
+To build the project, run the `build` task. You can use the regular `gradle` command, but when a project includes link:{user-manual}gradle_wrapper.html[a wrapper script], it is considered good form to use it instead.
+
+[listing.terminal]
+----
+$ ./gradlew build
+include::{samplesoutputdir}/build.txt[]
+----
+
+NOTE: The first time you run the wrapper script, `gradlew`, there may be a delay while that version of `gradle` is downloaded and stored locally in your `~/.gradle/wrapper/dists` folder.
+
+The `build` task compiles the Swift sources, link the object files into a shared library, and runs the tests.
+To build a static library, please refer to the https://github.com/gradle/native-samples/tree/master/swift/static-library[static library sample].
+
+NOTE: Dependencies to other projects isn't covered in this guide.
+To learn more about that subject, have a look at the https://github.com/gradle/native-samples/tree/master/swift/transitive-dependencies[transitive dependency sample] for a demonstration.
+
+NOTE: Publishing the libraries to Maven repositories is outside the scope of this guide.
+To learn more about that subject, have a look at the https://github.com/gradle/native-samples/tree/master/swift/simple-library[simple library sample] for a demonstration.
+
+NOTE: Gradle integrate with link:{user-manual}xcode_plugin.html[Xcode].
+To learn more, have a look at their respective linked documentation to configure those IDE integration in your project.
+
+== Summary
+
+You have created a Swift library with XCTest. In doing so, you saw:
+
+* How to generate a Swift libraries
+* How the generate build file and sample Swift files are structured
+* How to run the build with it's tests
+
+== Next Steps
+
+* Make your way to the https://github.com/gradle/native-samples/[native samples repository] to see the Swift plugins in action for common scenarios such as https://github.com/gradle/native-samples/tree/master/swift/transitive-dependencies[transitive dependencies], https://github.com/gradle/native-samples/tree/master/swift/swift-package-manager[custom source layout], and https://github.com/gradle/native-samples/tree/master/swift/static-library[static library].
+
+include::contribute[repo-path="gradle-guides/building-swift-libraries"]
