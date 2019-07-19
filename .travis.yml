@@ -1,7 +1,8 @@
 language: java
 install: true
-jdk:
-- oraclejdk8
+os: linux
+dist: trusty
+jdk: oraclejdk8
 script: GRGIT_PASS= ./gradlew build gitPublishPush --stacktrace
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
