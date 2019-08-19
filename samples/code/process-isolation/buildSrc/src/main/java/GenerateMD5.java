@@ -1,24 +1,17 @@
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
+import org.gradle.workers.WorkAction;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
-public class GenerateMD5 implements Runnable {
-    private final File sourceFile;
-    private final File md5File;
-
-    @Inject
-    public GenerateMD5(File sourceFile, File md5File) {
-        this.sourceFile = sourceFile;
-        this.md5File = md5File;
-    }
-
+public abstract class GenerateMD5 implements WorkAction<MD5WorkParameters> {
     @Override
-    public void run() {
+    public void execute() {
         try {
+            File sourceFile = getParameters().getSourceFile().get();
+            File md5File = getParameters().getMD5File().get();
             InputStream stream = new FileInputStream(sourceFile);
             System.out.println("Generating MD5 for " + sourceFile.getName() + "...");
             Thread.sleep(3000);

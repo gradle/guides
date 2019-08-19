@@ -115,16 +115,26 @@ Although this task processes each file in sequence, the processing of each file 
 would be really nice if this work was done in parallel and could take advantage of multiple processors.  This is where
 the Worker API can help.
 
-First, you'll need to refactor the part of your custom task that does the work for each individual file into a separate
-class.  This class is your "unit of work" implementation and should implement `java.lang.Runnable`.
+First, you'll need to define an interface that represents the parameters of each unit of work and extends `org.gradle.workers.WorkParameters`.
+For the generation of MD5 hash files, the unit of work will require two parameters: the file to be hashed and the file to write the hash to.
+There is no need to create a concrete implementation, though, because Gradle will generate one for us at runtime.
+
+.buildSrc/src/main/java/MD5WorkParameters.java
+[source,java]
+----
+include::{samplescodedir}/no-isolation/buildSrc/src/main/java/MD5WorkParameters.java[]
+----
+<1> Use `Property` objects to represent the source and MD5 hash files.
+
+Second, you'll need to refactor the part of your custom task that does the work for each individual file into a separate
+class.  This class is your "unit of work" implementation and it should be an abstract class that extends `org.gradle.workers.WorkAction`.
 
 .buildSrc/src/main/java/GenerateMD5.java
 [source,java]
 ----
 include::{samplescodedir}/no-isolation/buildSrc/src/main/java/GenerateMD5.java[]
 ----
-<1> This class must have a constructor annotated with `javax.inject.Inject`.
-<2> The parameters to the constructor are the parameters of the individual unit of work.
+<1> Do not implement the `getParameters()` method - Gradle will inject this at runtime.
 
 Now, you should change your custom task class to submit work to the
 {api-reference}org/gradle/workers/WorkerExecutor.html[WorkerExecutor] instead of doing the work itself.
@@ -139,10 +149,8 @@ to submit your work.
 <2> To get a {api-reference}org/gradle/workers/WorkerExecutor.html[WorkerExecutor], create a constructor annotated
 with `javax.inject.Inject`.  Gradle will inject the
 {api-reference}org/gradle/workers/WorkerExecutor.html[WorkerExecutor] at runtime when the task is created.
-<3> When submitting the unit of work, specify the unit of work implementation, in this case `GenerateMD5`.
-<4> For now, use an isolation mode of `NONE`.  We'll talk more about isolation modes later.
-<5> For each unit of work, configure the `params` property appropriately.  These values should match up to the values
-passed to the constructor of `GenerateMD5`.
+<3> Before submitting work, you'll need to get a `WorkQueue` object with the desired isolation mode.  We'll talk more about isolation modes later.
+<4> When submitting the unit of work, specify the unit of work implementation, in this case `GenerateMD5` and configure its parameters.
 
 At this point, you should be able to try your task again.
 
@@ -167,15 +175,15 @@ sequence.
 == Changing the isolation mode
 
 The isolation mode controls how strongly Gradle will isolate items of work from each other as well as from
-the rest of the Gradle runtime.  `IsolationMode.NONE` is the lowest level of isolation and will prevent a unit of work
-from changing the project state.  `NONE` is the fastest isolation mode because it requires the least overhead to set
-up the work item to execute, so you'll probably want to use this for simple cases.  However, it will use a single
-shared classloader for all units of work.  This means that every unit of work must use the same classes and can
-potentially affect each other through shared, static class state.  It also means that every unit of work must use the
-same version of libraries that are on the buildscript classpath.  But what if you wanted the user to be able to
-configure the task to run with a different (but compatible) version of the
-https://commons.apache.org/proper/commons-codec/[Apache Commons Codec] library?  The Worker API allows
-you to do that, too.
+the rest of the Gradle runtime.  There are three methods on `WorkerExecutor` that control this: `noIsolation()`,
+`classLoaderIsolation()` and `processIsolation()`.  The `noIsolation()` mode is the lowest level of isolation and
+will prevent a unit of work from changing the project state.  This is the fastest isolation mode because it requires
+the least overhead to set up the work item to execute, so you'll probably want to use this for simple cases.  However,
+it will use a single shared classloader for all units of work.  This means that each unit of work must can potentially
+affect each other through shared, static class state.  It also means that every unit of work must use the same version
+of libraries that are on the buildscript classpath.  But what if you wanted the user to be able to configure the task to
+run with a different (but compatible) version of the https://commons.apache.org/proper/commons-codec/[Apache Commons Codec]
+library?  The Worker API allows you to do that, too.
 
 First, you'll want to change the dependency in `buildSrc/build.gradle` to be `compileOnly`.  This tells Gradle that it
 should use this dependency when building the classes, but should not put it on the build script classpath.
@@ -188,7 +196,7 @@ include::{samplescodedir}/classloader-isolation/buildSrc/build.gradle[]
 
 Next, you'll want to change the `CreateMD5` task to allow the user to configure the version of the codec library that
 they want to use.  It'll resolve the appropriate version of the library at runtime and configure the workers to use
-this version.  The isolation mode `CLASSLOADER` tells Gradle to run this work in a thread with an isolated
+this version.  The `classLoaderIsolation()` method tells Gradle to run this work in a thread with an isolated
 classloader.
 
 .buildSrc/src/main/java/CreateMD5.java
@@ -198,7 +206,7 @@ include::{samplescodedir}/classloader-isolation/buildSrc/src/main/java/CreateMD5
 ----
 <1> Expose an input property for the codec library classpath.
 <2> Configure the classpath on the
-{api-reference}org/gradle/workers/WorkerConfiguration.html[WorkerConfiguration] when submitting the work item.
+{api-reference}org/gradle/workers/ClassLoaderWorkerSpec.html[ClassLoaderWorkerSpec] when creating the work queue.
 
 Next, you'll need to configure your build so that it has a repository to look up the codec version at task execution
 time.  We'll also create a dependency to resolve our codec library from this repository.
@@ -235,11 +243,11 @@ BUILD SUCCESSFUL in 9s
 Sometimes it is desirable to create even further isolation when executing items of work.  For instance, external
 libraries may rely on certain system properties to be set which may conflict between work items.  Or a library might
 not be compatible with the version of JDK that Gradle is running with and may need to be run with a different version.
-The Worker API can accommodate this with an isolation mode of `PROCESS` that causes the work to execute in a separate
+The Worker API can accommodate this using the `processIsolation()` method that causes the work to execute in a separate
 "worker daemon".  These worker daemon processes will persist across builds and can be reused during subsequent builds.
 If system resources get low, however, Gradle will stop any unused worker daemons.
 
-To utilize a worker daemon, you can simply change the isolation mode on the work items.  You may also want to
+To utilize a worker daemon, simply use the `processIsolation()` method when creating the `WorkQueue`.  You may also want to
 configure custom settings for the new process.
 
 .buildSrc/src/main/java/CreateMD5.java

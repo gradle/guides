@@ -24,13 +24,15 @@ public class CreateMD5 extends SourceTask {
 
     @TaskAction
     public void createHashes() {
+        WorkQueue workQueue = workerExecutor.noIsolation(); // <3>
+
         for (File sourceFile : getSource().getFiles()) {
             File md5File = destinationDirectory.file(sourceFile.getName() + ".md5").get().getAsFile();
-            workerExecutor.submit(GenerateMD5.class, new Action<WorkerConfiguration>() { // <3>
+            workQueue.submit(GenerateMD5.class, new Action<MD5WorkParameters>() { // <4>
                 @Override
-                public void execute(WorkerConfiguration config) {
-                    config.setIsolationMode(IsolationMode.NONE); // <4>
-                    config.params(sourceFile, md5File); // <5>
+                public void execute(MD5WorkParameters parameters) {
+                    parameters.getSourceFile().set(sourceFile);
+                    parameters.getMD5File().set(md5File);
                 }
             });
         }

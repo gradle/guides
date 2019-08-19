@@ -34,20 +34,26 @@ public class CreateMD5 extends SourceTask {
 
     @TaskAction
     public void createHashes() {
+        WorkQueue workQueue = workerExecutor.processIsolation(new Action<ProcessWorkerSpec>() { // <1>
+            @Override
+            public void execute(ProcessWorkerSpec workerSpec) {
+                workerSpec.getClasspath().from(codecClasspath);
+                workerSpec.forkOptions(new Action<JavaForkOptions>() {
+                    @Override
+                    public void execute(JavaForkOptions options) {
+                        options.setMaxHeapSize("64m"); // <2>
+                    }
+                });
+            }
+        });
+
         for (File sourceFile : getSource().getFiles()) {
             File md5File = destinationDirectory.file(sourceFile.getName() + ".md5").get().getAsFile();
-            workerExecutor.submit(GenerateMD5.class, new Action<WorkerConfiguration>() {
+            workQueue.submit(GenerateMD5.class, new Action<MD5WorkParameters>() {
                 @Override
-                public void execute(WorkerConfiguration config) {
-                    config.setIsolationMode(IsolationMode.PROCESS); // <1>
-                    config.forkOptions(new Action<JavaForkOptions>() {
-                        @Override
-                        public void execute(JavaForkOptions options) {
-                            options.setMaxHeapSize("64m"); // <2>
-                        }
-                    });
-                    config.params(sourceFile, md5File);
-                    config.classpath(codecClasspath);
+                public void execute(MD5WorkParameters parameters) {
+                    parameters.getSourceFile().set(sourceFile);
+                    parameters.getMD5File().set(md5File);
                 }
             });
         }

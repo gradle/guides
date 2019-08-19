@@ -6,7 +6,7 @@ plugins {
 
 guide {
     repositoryPath.set("gradle-guides/using-the-worker-api")
-    minimumGradleVersion.set("4.10.3")
+    minimumGradleVersion.set("5.6")
     title.set("Using the Worker API")
 }
 
