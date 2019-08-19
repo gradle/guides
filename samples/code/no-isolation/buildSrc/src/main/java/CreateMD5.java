@@ -1,4 +1,6 @@
 import org.gradle.api.Action;
+import org.gradle.api.file.RegularFile;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.*;
 import org.gradle.workers.*;
 import org.gradle.api.file.DirectoryProperty;
@@ -27,13 +29,10 @@ public class CreateMD5 extends SourceTask {
         WorkQueue workQueue = workerExecutor.noIsolation(); // <3>
 
         for (File sourceFile : getSource().getFiles()) {
-            File md5File = destinationDirectory.file(sourceFile.getName() + ".md5").get().getAsFile();
-            workQueue.submit(GenerateMD5.class, new Action<MD5WorkParameters>() { // <4>
-                @Override
-                public void execute(MD5WorkParameters parameters) {
-                    parameters.getSourceFile().set(sourceFile);
-                    parameters.getMD5File().set(md5File);
-                }
+            Provider<RegularFile> md5File = destinationDirectory.file(sourceFile.getName() + ".md5");
+            workQueue.submit(GenerateMD5.class, parameters -> { // <4>
+                parameters.getSourceFile().set(sourceFile);
+                parameters.getMD5File().set(md5File);
             });
         }
     }

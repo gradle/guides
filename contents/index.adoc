@@ -179,11 +179,11 @@ the rest of the Gradle runtime.  There are three methods on `WorkerExecutor` tha
 `classLoaderIsolation()` and `processIsolation()`.  The `noIsolation()` mode is the lowest level of isolation and
 will prevent a unit of work from changing the project state.  This is the fastest isolation mode because it requires
 the least overhead to set up the work item to execute, so you'll probably want to use this for simple cases.  However,
-it will use a single shared classloader for all units of work.  This means that each unit of work must can potentially
-affect each other through shared, static class state.  It also means that every unit of work must use the same version
-of libraries that are on the buildscript classpath.  But what if you wanted the user to be able to configure the task to
+it will use a single shared classloader for all units of work.  This means that each unit of work can potentially
+affect one another through static class state.  It also means that every unit of work uses the same version
+of libraries that are on the buildscript classpath.  If you wanted the user to be able to configure the task to
 run with a different (but compatible) version of the https://commons.apache.org/proper/commons-codec/[Apache Commons Codec]
-library?  The Worker API allows you to do that, too.
+library, you would need to use a different isolation mode.
 
 First, you'll want to change the dependency in `buildSrc/build.gradle` to be `compileOnly`.  This tells Gradle that it
 should use this dependency when building the classes, but should not put it on the build script classpath.

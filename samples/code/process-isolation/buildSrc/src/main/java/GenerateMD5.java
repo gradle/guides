@@ -10,10 +10,11 @@ public abstract class GenerateMD5 implements WorkAction<MD5WorkParameters> {
     @Override
     public void execute() {
         try {
-            File sourceFile = getParameters().getSourceFile().get();
-            File md5File = getParameters().getMD5File().get();
+            File sourceFile = getParameters().getSourceFile().getAsFile().get();
+            File md5File = getParameters().getMD5File().getAsFile().get();
             InputStream stream = new FileInputStream(sourceFile);
             System.out.println("Generating MD5 for " + sourceFile.getName() + "...");
+            // Artificially make this task slower.
             Thread.sleep(3000);
             FileUtils.writeStringToFile(md5File, DigestUtils.md5Hex(stream), (String) null);
         } catch (Exception e) {
