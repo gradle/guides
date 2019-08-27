@@ -13,8 +13,7 @@ This guide demonstrates how to use Gradle's Build Init plugin to produce a Swift
 
 == Check the user manual
 
-Gradle comes with a built-in plugin called the Build Init plugin. It is documented in the link:{user-manual}build_init_plugin.html[Gradle User Manual].
-The plugin provides a task, called `init`, that generates the project. The plugin also uses the (also built-in) link:{language-reference}org.gradle.api.tasks.wrapper.Wrapper.html[`wrapper` task] to create a link:{user-manual}gradle_wrapper.html[Gradle wrapper script], `gradlew`.
+Gradle ships with the link:{user-manual}build_init_plugin.html[Build Init plugin], which provides an easy way to generate projects of various types using the the `init` task.  This task will also execute the link:{language-reference}org.gradle.api.tasks.wrapper.Wrapper.html[`wrapper` task] to create a link:{user-manual}gradle_wrapper.html[Gradle wrapper script], `gradlew`.
 
 == Setup
 
@@ -28,7 +27,7 @@ $ cd building-swift-libraries
 
 == Run the init task
 
-From inside the new project directory, run the `init` task and select the `swift-library` project type when prompted. For the other questions, press enter to use the default values.
+From inside the new project directory, run the `init` task and select the `library` project type and the `Swift` language when prompted. For the other questions, press enter to use the default values.
 
 [listing.terminal]
 ----
@@ -112,7 +111,7 @@ The `init` task runs the `wrapper` task first, which generates the `gradlew` and
 <3> Default Swift test folder
 
 NOTE: The Gradle source layout convention can be customized to fit any source layout.
-See the link:{user-manual}building_swift_projects.html#sec:custom_swift_source_set_paths[customizing Swift source] section of the Swift chapter in {user-manual-name} as well as the https://github.com/gradle/native-samples/tree/master/swift/swift-package-manager[custom source layout sample] for a demonstration.
+See the link:{user-manual}building_swift_projects.html#sec:custom_swift_source_set_paths[customizing Swift source] section of the {user-manual-name} as well as the https://github.com/gradle/native-samples/tree/master/swift/swift-package-manager[custom source layout sample] for a demonstration.
 
 == Review the generated project files
 
