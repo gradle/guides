@@ -13,8 +13,8 @@ This guide demonstrates how to use Gradle's Build Init plugin to produce a Swift
 
 == Check the user manual
 
-Gradle comes with a built-in plugin called the Build Init plugin. It is documented in the https://docs.gradle.org/{gradle-version}/userguide/build_init_plugin.html[Gradle User Manual].
-The plugin provides a task, called `init`, that generates the project. The plugin also uses the (also built-in) `wrapper` task to create a Gradle wrapper script, `gradlew`.
+Gradle comes with a built-in plugin called the Build Init plugin. It is documented in the link:{user-manual}build_init_plugin.html[Gradle User Manual].
+The plugin provides a task, called `init`, that generates the project. The plugin also uses the (also built-in) link:{language-reference}org.gradle.api.tasks.wrapper.Wrapper.html[`wrapper` task] to create a link:{user-manual}gradle_wrapper.html[Gradle wrapper script], `gradlew`.
 
 == Setup
 
@@ -28,7 +28,7 @@ $ cd building-swift-applications
 
 == Run the init task
 
-From inside the new project directory, run the `init` task and select `application` project type followed by Swift language when prompted. For the other questions, press enter to use the default values.
+From inside the new project directory, run the `init` task and select the `swift-application` project type followed by Swift language when prompted. For the other questions, press enter to use the default values.
 
 [listing.terminal]
 ----
@@ -81,8 +81,8 @@ The `init` task runs the `wrapper` task first, which generates the `gradlew` and
     ├── main
     │   └── swift    // <2>
     │       └── main.swift
-    └── test         // <3>
-        └── swift
+    └── test
+        └── swift    // <3>
             ├── GreeterTests.swift
             └── LinuxMain.swift
 ----
@@ -101,8 +101,8 @@ The `init` task runs the `wrapper` task first, which generates the `gradlew` and
     ├── main
     │   └── swift    // <2>
     │       └── main.swift
-    └── test         // <3>
-        └── swift
+    └── test
+        └── swift    // <3>
             ├── GreeterTests.swift
             └── LinuxMain.swift
 ----
@@ -110,8 +110,8 @@ The `init` task runs the `wrapper` task first, which generates the `gradlew` and
 <2> Default Swift source folder
 <3> Default Swift test folder
 
-NOTE: The Gradle source layout convention can be customize to fit any source layout.
-See link:{user-manual}building_swift_projects.html#sec:custom_swift_source_set_paths[customizing Swift source] section of the Swift chapter in {user-manual-name} as well as the https://github.com/gradle/native-samples/tree/master/swift/swift-package-manager[custom source layout sample] for a demonstration.
+NOTE: The Gradle source layout convention can be customized to fit any source layout.
+See the link:{user-manual}building_swift_projects.html#sec:custom_swift_source_set_paths[customizing Swift source] section of the Swift chapter in {user-manual-name} as well as the https://github.com/gradle/native-samples/tree/master/swift/swift-package-manager[custom source layout sample] for a demonstration.
 
 == Review the generated project files
 
@@ -133,17 +133,14 @@ include::sample[dir="kotlin-dsl/code",files="build.gradle.kts[]"]
 
 The build file adds the `swift-application` and `xctest` plugins:
 
-* The `swift-application` plugin automatically generates application component configurable via link:{language-reference}org.gradle.language.swift.SwiftApplication.html[application] extension DSL.
-* The `xctest` plugin automatically generates a bundle (on macOS) or executable (on Linux) component that depends on the application.
-It also adds a new  _verification task_.
-The verification tasks are `check` tasks that assemble and test a binary.
+* The `swift-application` plugin automatically generates an application component configurable via the link:{language-reference}org.gradle.language.swift.SwiftApplication.html[application] extension DSL.
+* The `xctest` plugin automatically generates a bundle (on macOS) or an executable (on Linux) component that depends on the application.
+It also adds a new  _verification task_ that assembles and tests the binary.
 The XCTest component is configurable via the link:{language-reference}org.gradle.nativeplatform.test.xctest.SwiftXCTestSuite.html[xctest] extension DSL.
 
-NOTE: The `xctest` requires an executable entry point only on Linux. Gradle support the `LinuxMain.swift` pattern out-of-the-box.
+NOTE: The `xctest` requires an executable entry point only on Linux. Gradle supports the `LinuxMain.swift` pattern out-of-the-box.
 
 == Execute the build
-
-To build the project, run the `build` task. You can use the regular `gradle` command, but when a project includes link:{user-manual}gradle_wrapper.html[a wrapper script], it is considered good form to use it instead.
 
 [listing.terminal]
 ----
@@ -151,15 +148,14 @@ $ ./gradlew build
 include::{samplesoutputdir}/build.txt[]
 ----
 
-NOTE: The first time you run the wrapper script, `gradlew`, there may be a delay while that version of `gradle` is downloaded and stored locally in your `~/.gradle/wrapper/dists` folder.
+NOTE: The first time you run link:{user-manual}gradle_wrapper.html[the wrapper script], `gradlew`, there may be a delay while that version of `gradle` is downloaded and stored locally in your `~/.gradle/wrapper/dists` folder.
 
-The `build` task compiles the Swift sources, link the object files, and runs the tests.
+The `build` task compiles the Swift sources, links the object files, and runs the tests.
 
-NOTE: Dependencies to other projects isn't covered in this guide.
-To learn more about that subject, have a look at the https://github.com/gradle/native-samples/tree/master/swift/transitive-dependencies[transitive dependency sample] for a demonstration.
+NOTE: Dependencies on other projects isn't covered in this guide.
+To learn more about this subject, have a look at the https://github.com/gradle/native-samples/tree/master/swift/transitive-dependencies[transitive dependency sample] for a demonstration.
 
-NOTE: Gradle integrate with link:{user-manual}xcode_plugin.html[Xcode].
-To learn more, have a look at at the linked documentation to configure the IDE integration in your project.
+NOTE: To learn more about Gradle's Xcode integration and how to configure it, see the Gradle link:{user-manual}xcode_plugin.html[user guide].
 
 === Application package
 
