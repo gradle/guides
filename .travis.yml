@@ -13,11 +13,11 @@ before_cache:
 - rm -fr $HOME/.gradle/caches/*/scripts/
 cache:
   directories:
-  - $HOME/.gradle/caches/
-  - $HOME/.gradle/wrapper/
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
 env:
   global:
-    secure: "barqLqs9PpdWVnF1IFqku7vlC1uLh2GZrsh0rwqRVxpSS5THNlHOmkxOXOLAH028rh2JmcAwrzp2HcNLorFuE3sQhQxmKnN6mBv8BBbkmuqlFvMOUDlzXva4kNo2iHU8u0w2DpFm8oWfab7Ci+B0krWDvOhii9o8xRhhgDhIXPA5H+ro0MxLd4IrlMUx6Wrwtc7CGv8WU5Lhiq+NW9dbDvll5+MTtC4g6icLyLXkbNq4sXHihaMwLukwygQ38mR78FwP5cHHxk6xffBRp1gj1F3tVKe00W6cqJT/w6codMv5MZVU1h8cIJJjAqxWEgHkIExcFI61glrHq5SNX6YSh/Cs+onS9WAMTOpjmdwFy+Q7/zyIe5urd9Q+u7XC7Sb+eHrYMHcJiWicCAhqE0v2eZt2Qu2spL9Kt1izbKkje06PXcxCmCvHsa47JoYqeKW9SAvzX0Vx2fJFdSJnNYiZbUBuAdi5qRZhSUWXztuS906r7Od5URDIBjQj+oTcb5q4QJbIhPXzw+VS4bHbvRK34mktIHuFnVdNP1kQ64UOmRt2nB2eDZWyCzibMVCGZK2gjWGZAgUkSua9kgU/W/V4+Hg1ahgRnh5QHLPpHl9pWZ0s6PO5J/dMNBE0vsOqgoREhj0ZtI/MidY9HtUoDtCYu094IUqfltEepnbM9e5ibEg="
+    secure: QUppYabM1+DO6w7lyHEtZMz6K6NiRpFWKi34ESeDX1wZ+qBHRXiS/aRMoNOGDk8muD9/BIKZtRRJj0/epvV+Lr/wPj7bRMThuy1qye91jvgDz6GPkH+8RbpomxkJTnbqms1S10TPiZ+f93GA8oTwgvotKsWBjTrfN/bLFPvIe6QJdA+wBwLaIGig9i9ESDS26iwOaCoFbgLEjfMWlSplrex2nhQg8qVjUSrZqdKA67raZXaw+wCFsdzEXxYKbTOE4gnmsAnNtxoQPDHd3+BMkQaa9gzJgmwsYq+BNjCurphYGBiArCJs2SpoDxF/irQyD20PX2x96mYkCnl4DKxZxJQNPcAZ8E4JJaaf+N1x6gO11p+pGRpcsZtdElz0CCV6ksd3MTuZdaQ30T2WeJvDh0f4ukkUKs2pgY30FVosao6nPcBa/kmmcgao6zzoz694TyNncJWIUKiytUpHvjnEOAlq4nclk78mBL3DPjCZvMJ7Eq3+8er8bN7dhK1iEorab8aNqHPS0f/M+EENbrwyCYuYj9YcNWT5CbqbwCJyKMABk090XBqMyVJuu82hfbFQOxkaD5UQLNyaPaKyDx81XctH66g4AKGuc6QDj9O3bDxwmq87Sh4ZnizdQaYjcc+g/lHWaHg+b8BFjATHN8HZBKxXbJazGG7MAz581grEg54=
 notifications:
   slack:
     on_success: change
