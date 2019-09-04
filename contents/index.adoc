@@ -13,8 +13,8 @@ This guide demonstrates how to use Gradle's Build Init plugin to produce a {cpp}
 
 == Check the user manual
 
-Gradle comes with a built-in plugin called the Build Init plugin. It is documented in the link:{user-manual}build_init_plugin.html[Gradle User Manual].
-The plugin provides a task, called `init`, that generates the project. The plugin also uses the (also built-in) `wrapper` task to create a Gradle wrapper script, `gradlew`.
+Gradle ships with the link:{user-manual}build_init_plugin.html[Build Init plugin], which provides an easy way to generate projects of various types using the the `init` task.
+This task will also execute the link:{language-reference}org.gradle.api.tasks.wrapper.Wrapper.html[`wrapper` task] to create a link:{user-manual}gradle_wrapper.html[Gradle wrapper script], `gradlew`.
 
 == Setup
 
@@ -28,7 +28,7 @@ $ cd building-cpp-libraries
 
 == Run the init task
 
-From inside the new project directory, run the `init` task and select `cpp-library` project type when prompted. For the other questions, press enter to use the default values.
+From inside the new project directory, run the `init` task and select the `application` project type and the `{cpp}` language when prompted. For the other questions, press enter to use the default values.
 
 [listing.terminal]
 ----
@@ -36,25 +36,30 @@ $ gradle init
 
 Select type of project to generate:
   1: basic
-  2: cpp-application
-  3: cpp-library
-  4: groovy-application
-  5: groovy-library
-  6: java-application
-  7: java-library
-  8: kotlin-application
-  9: kotlin-library
-  10: scala-library
-Enter selection (default: basic) [1..10] 3
+  2: application
+  3: library
+  4: Gradle plugin
+Enter selection (default: basic) [1..4] 3
+
+Select implementation language:
+  1: C++
+  2: Groovy
+  3: Java
+  4: Kotlin
+  5: Swift
+Enter selection (default: Java) [1..5] 1
 
 Select build script DSL:
-  1: groovy
-  2: kotlin
-Enter selection (default: groovy) [1..2]
+  1: Groovy
+  2: Kotlin
+Enter selection (default: Groovy) [1..2]
 
-Project name (default: building-cpp-libraries):
+Project name (default: building-swift-libraries):
 
-BUILD SUCCESSFUL in 1s
+> Task :init
+Get more help with your project: https://docs.gradle.org/{gradle-version}/userguide/building_swift_projects.html
+
+BUILD SUCCESSFUL
 2 actionable tasks: 2 executed
 ----
 
@@ -108,8 +113,8 @@ The `init` task runs the `wrapper` task first, which generates the `gradlew` and
 <3> Default exported {cpp} header folder
 <4> Default {cpp} test folder
 
-NOTE: The Gradle source layout convention can be customize to fit any source layout.
-See link:{user-manual}building_cpp_projects.html#sec:custom_cpp_source_set_paths[customizing {cpp} source] section of the {cpp} chapter in {user-manual-name} as well as the https://github.com/gradle/native-samples/tree/master/cpp/swift-package-manager[custom source layout sample] for a demonstration.
+NOTE: The Gradle source layout convention can be customized to fit any source layout.
+See the link:{user-manual}building_cpp_projects.html#sec:custom_cpp_source_set_paths[customizing {cpp} source] section of the {user-manual-name} as well as the https://github.com/gradle/native-samples/tree/master/cpp/swift-package-manager[custom source layout sample] for a demonstration.
 
 == Review the generated project files
 
@@ -131,35 +136,10 @@ include::sample[dir="kotlin-dsl/code",files="build.gradle.kts[]"]
 
 The build file adds the `cpp-library` and `cpp-unit-test` plugins:
 
-* The `cpp-library` plugin automatically generates library component configurable via link:{language-reference}org.gradle.language.cpp.CppLibrary.html[library] extension DSL.
-* The `cpp-unit-test` plugin automatically generates a executable component that depends on the library.
-It also adds a new  _verification task_. The verification tasks are `check` tasks that assemble and test a binary.
+* The `cpp-library` plugin automatically generates a library component configurable via the link:{language-reference}org.gradle.language.cpp.CppLibrary.html[library] extension DSL.
+* The `cpp-unit-test` plugin automatically generates an executable component that depends on the library.
+It also adds a new  _verification task_ that assembles and tests the binary.
 The unit test component configurable via the link:{language-reference}org.gradle.nativeplatform.test.cpp.CppTestSuite.html[unitTest] extension DSL.
-
-The file `src/main/cpp/hello.cpp` is shown here:
-
-.src/main/cpp/hello.cpp
-[source,cpp]
-----
-include::{samples-dir}/groovy-dsl/code/src/main/cpp/hello.cpp[]
-----
-
-The exported header, `src/main/public/building-cpp-libraries.h` is shown here:
-
-.src/main/public/building-cpp-libraries.h
-[source,cpp]
-----
-include::{samples-dir}/groovy-dsl/code/src/main/public/building-cpp-libraries.h[]
-----
-
-
-The test application, `src/test/cpp/hello_test.cpp` is shown next:
-
-.src/test/cpp/hello_test.cpp
-[source,cpp]
-----
-include::{samples-dir}/groovy-dsl/code/src/test/cpp/hello_test.cpp[]
-----
 
 The generated test file has a single test using the https://en.cppreference.com/w/cpp/error/assert[standard library assert function].
 The test instantiates the `Greeter` class, invokes the `greeting()` method, and checks that the returned value is equals to the expected string.
@@ -168,24 +148,22 @@ NOTE: The `cpp-unit-test` plugin can also be used to test your library binaries 
 
 == Execute the build
 
-To build the project, run the `build` task. You can use the regular `gradle` command, but when a project includes link:{user-manual}gradle_wrapper.html[a wrapper script], it is considered good form to use it instead.
-
 [listing.terminal]
 ----
 $ ./gradlew build
 include::{samplesoutputdir}/build.txt[]
 ----
 
-NOTE: The first time you run the wrapper script, `gradlew`, there may be a delay while that version of `gradle` is downloaded and stored locally in your `~/.gradle/wrapper/dists` folder.
+NOTE: The first time you run link:{user-manual}gradle_wrapper.html[the wrapper script], `gradlew`, there may be a delay while that version of `gradle` is downloaded and stored locally in your `~/.gradle/wrapper/dists` folder.
 
-The `build` task compiles the {cpp} sources, link the object files into a shared library, and runs the tests.
+The `build` task compiles the {cpp} sources, links the object files into a shared library, and runs the tests.
 To build a static library, please refer to the https://github.com/gradle/native-samples/tree/master/cpp/static-library[static library sample].
 
-NOTE: Dependencies to other projects isn't covered in this guide.
-To learn more about that subject, have a look at the https://github.com/gradle/native-samples/tree/master/cpp/transitive-dependencies[transitive dependency sample] for a demonstration.
+NOTE: Dependencies on other projects isn't covered in this guide.
+To learn more about this subject, have a look at the https://github.com/gradle/native-samples/tree/master/cpp/transitive-dependencies[transitive dependency sample] for a demonstration.
 
-NOTE: Publishing the libraries to Maven repositories is outside the scope of this guide.
-To learn more about that subject, have a look at the https://github.com/gradle/native-samples/tree/master/cpp/simple-library[simple library sample] for a demonstration.
+NOTE: Publishing libraries to Maven repositories is outside the scope of this guide.
+To learn more about this subject, have a look at the https://github.com/gradle/native-samples/tree/master/cpp/simple-library[simple library sample] for a demonstration.
 
 NOTE: Gradle integrate with several IDEs: link:{user-manual}visual_studio_plugin.html[Visual Studio], link:{user-manual}xcode_plugin.html[Xcode] and https://www.jetbrains.com/help/clion/gradle-support.html[Clion].
 To learn more, have a look at their respective linked documentation to configure those IDE integration in your project.
