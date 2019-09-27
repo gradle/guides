@@ -86,6 +86,12 @@ gradlePlugin {
             displayName = 'Gradle Guides Setup Plugin'
             description = 'Plugin required for configuring a guide'
         }
+        samplePlugin {
+            id = 'org.gradle.samples'
+            implementationClass = 'org.gradle.samples.internal.SamplesPlugin'
+            displayName = 'Gradle Sample Plugin'
+            description = 'Plugin required for authoring new Gradle Samples'
+        }
     }
 }
 
