@@ -73,7 +73,10 @@ endif::[]
         def result = build('assemble')
 
         then:
-        assertTasksExecutedAndNotSkipped(result)
+        result.task(":generateSampleIndex").outcome == TaskOutcome.SUCCESS
+        result.task(":asciidocSampleIndex").outcome == TaskOutcome.SUCCESS
+        result.task(":assemble").outcome == TaskOutcome.SUCCESS
+        assertSampleTasksExecutedAndNotSkipped(result)
         assertZipHasContent(groovyDslZipFile, "gradlew", "gradlew.bat", "gradle/wrapper/gradle-wrapper.properties", "gradle/wrapper/gradle-wrapper.jar", "README.adoc", "build.gradle", "settings.gradle")
         new File(projectDir, "build/gradle-samples/demo/index.html").exists()
         assertZipHasContent(kotlinDslZipFile, "gradlew", "gradlew.bat", "gradle/wrapper/gradle-wrapper.properties", "gradle/wrapper/gradle-wrapper.jar", "README.adoc", "build.gradle.kts", "settings.gradle.kts")
@@ -88,6 +91,21 @@ endif::[]
         def indexFile = new File(projectDir, "build/gradle-samples/index.html")
         indexFile.exists()
         indexFile.text.contains('<a href="demo/">')
+    }
+
+    def "can assemble sample using a lifecycle task"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+
+        when:
+        def result = build('assembleDemoSample')
+
+        then:
+        assertSampleTasksExecutedAndNotSkipped(result)
+        groovyDslZipFile.exists()
+        kotlinDslZipFile.exists()
+        new File(projectDir, "build/gradle-samples/demo/index.html").exists()
+        !new File(projectDir, "build/gradle-samples/index.html").exists()
     }
 
     def "demonstrate publishing samples to directory"() {
@@ -107,7 +125,10 @@ tasks.assemble.dependsOn publishTask
         def result = build('assemble')
 
         then:
-        assertTasksExecutedAndNotSkipped(result)
+        result.task(":generateSampleIndex").outcome == TaskOutcome.SUCCESS
+        result.task(":asciidocSampleIndex").outcome == TaskOutcome.SUCCESS
+        result.task(":assemble").outcome == TaskOutcome.SUCCESS
+        assertSampleTasksExecutedAndNotSkipped(result)
         groovyDslZipFile.exists()
         kotlinDslZipFile.exists()
         getGroovyDslZipFile(buildDirectoryRelativePath: "docs/samples").exists()
@@ -129,22 +150,23 @@ tasks.withType(Zip).configureEach {
         def result = build('assemble')
 
         then:
-        assertTasksExecutedAndNotSkipped(result)
+        result.task(":generateSampleIndex").outcome == TaskOutcome.SUCCESS
+        result.task(":asciidocSampleIndex").outcome == TaskOutcome.SUCCESS
+        result.task(":assemble").outcome == TaskOutcome.SUCCESS
+        assertSampleTasksExecutedAndNotSkipped(result)
         groovyDslZipFile.exists()
         kotlinDslZipFile.exists()
         !getGroovyDslZipFile(version: '4.2').exists()
         !getKotlinDslZipFile(version: '4.2').exists()
     }
 
-    private static void assertTasksExecutedAndNotSkipped(BuildResult result) {
-        result.task(":generateSampleIndex").outcome == TaskOutcome.SUCCESS
-        result.task(":asciidocSampleIndex").outcome == TaskOutcome.SUCCESS
+    private static void assertSampleTasksExecutedAndNotSkipped(BuildResult result) {
         result.task(":generateWrapperForDemoSample").outcome == TaskOutcome.SUCCESS
         result.task(":syncDemoGroovyDslSample").outcome == TaskOutcome.SUCCESS
         result.task(":syncDemoKotlinDslSample").outcome == TaskOutcome.SUCCESS
         result.task(":compressDemoGroovyDslSample").outcome == TaskOutcome.SUCCESS
         result.task(":compressDemoKotlinDslSample").outcome == TaskOutcome.SUCCESS
-        result.task(":assemble").outcome == TaskOutcome.SUCCESS
+        result.task(":assembleDemoSample").outcome == TaskOutcome.SUCCESS
     }
 
     private static void assertZipHasContent(File file, String... expectedContent) {

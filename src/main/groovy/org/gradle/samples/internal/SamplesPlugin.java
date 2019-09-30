@@ -14,9 +14,11 @@ import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.bundling.Zip;
 import org.gradle.api.tasks.util.PatternSet;
 import org.gradle.api.tasks.wrapper.Wrapper;
+import org.gradle.language.base.plugins.LifecycleBasePlugin;
 import org.gradle.samples.Sample;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -40,14 +42,16 @@ public class SamplesPlugin implements Plugin<Project> {
             createWrapperTask(project.getTasks(), sample, project.getLayout());
 
             createSyncGroovyDslTask(project.getTasks(), sample, project.getLayout());
-            createGroovyDslZipTask(project.getTasks(), sample, project.getLayout());
+            TaskProvider<? extends Task> groovyDslZipTask = createGroovyDslZipTask(project.getTasks(), sample, project.getLayout());
 
             createSyncKotlinDslTask(project.getTasks(), sample, project.getLayout());
-            createKotlinDslZipTask(project.getTasks(), sample, project.getLayout());
+            TaskProvider<? extends Task> kotlinDslZipTask = createKotlinDslZipTask(project.getTasks(), sample, project.getLayout());
 
             TaskProvider<? extends Task> asciidocTask = createAsciidocTask(project.getTasks(), sample, project.getLayout());
 
-            project.getTasks().named("assemble").configure(it -> it.dependsOn(asciidocTask));
+            TaskProvider<? extends Task> assembleTask = createSampleAssembleTask(project.getTasks(), sample, Arrays.asList(groovyDslZipTask, kotlinDslZipTask, asciidocTask));
+
+            project.getTasks().named("assemble").configure(it -> it.dependsOn(assembleTask));
         });
 
         TaskProvider<GenerateSampleIndexAsciidoc> indexGeneratorTask = createSampleIndexGeneratorTask(project.getTasks(), samples, project.getLayout(), project.getProviders());
@@ -99,6 +103,14 @@ public class SamplesPlugin implements Plugin<Project> {
 
             task.getSampleDirectory().set(projectLayout.getBuildDirectory().dir("sample-zips/" + sample.getName() + "/kotlin-dsl"));
             task.getSampleZipFile().set(projectLayout.getBuildDirectory().file("gradle-samples/" + sample.getName() + "/" + sample.getName() + "-kotlin-dsl.zip"));
+        });
+    }
+
+    private static TaskProvider<Task> createSampleAssembleTask(TaskContainer tasks, Sample sample, Iterable<? extends TaskProvider> taskDependencies) {
+        return tasks.register("assemble" + capitalize(sample.getName()) + "Sample", task -> {
+            task.dependsOn(taskDependencies);
+            task.setGroup(LifecycleBasePlugin.BUILD_GROUP);
+            task.setDescription("Assembles '" + sample.getName() + "' sample");
         });
     }
 
