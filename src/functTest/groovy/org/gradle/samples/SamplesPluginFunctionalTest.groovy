@@ -116,6 +116,26 @@ tasks.assemble.dependsOn publishTask
         new File(projectDir, "build/docs/samples/index.html").exists()
     }
 
+    def "does not affect Sample compression tasks when configuring Zip type tasks"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        buildFile << """
+tasks.withType(Zip).configureEach {
+    archiveVersion = "4.2"
+}
+"""
+
+        when:
+        def result = build('assemble')
+
+        then:
+        assertTasksExecutedAndNotSkipped(result)
+        groovyDslZipFile.exists()
+        kotlinDslZipFile.exists()
+        !getGroovyDslZipFile(version: '4.2').exists()
+        !getKotlinDslZipFile(version: '4.2').exists()
+    }
+
     private static void assertTasksExecutedAndNotSkipped(BuildResult result) {
         result.task(":generateSampleIndex").outcome == TaskOutcome.SUCCESS
         result.task(":asciidocSampleIndex").outcome == TaskOutcome.SUCCESS

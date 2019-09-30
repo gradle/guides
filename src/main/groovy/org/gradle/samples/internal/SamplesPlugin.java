@@ -57,7 +57,10 @@ public class SamplesPlugin implements Plugin<Project> {
 
     private static TaskProvider<Sync> createSyncGroovyDslTask(TaskContainer tasks, Sample sample, ProjectLayout projectLayout) {
         return tasks.register(syncGroovyDslTaskName(sample), Sync.class, task -> {
+            task.dependsOn(generateWrapperTaskName(sample));
             task.setDestinationDir(projectLayout.getBuildDirectory().dir("sample-zips/" + sample.getName() + "/groovy-dsl").get().getAsFile());
+            task.from(projectLayout.getBuildDirectory().dir("sample-wrappers/" + sample.getName()));
+            task.from(sample.getSampleDir().file("README.adoc"));
             // TODO(daniel): We should probably use `groovy-dsl`, however, we are following the gradle/gradle convention for now
             task.from(sample.getSampleDir().dir("groovy"));
         });
@@ -65,7 +68,10 @@ public class SamplesPlugin implements Plugin<Project> {
 
     private static TaskProvider<Sync> createSyncKotlinDslTask(TaskContainer tasks, Sample sample, ProjectLayout projectLayout) {
         return tasks.register(syncKotlinDslTaskName(sample), Sync.class, task -> {
+            task.dependsOn(generateWrapperTaskName(sample));
             task.setDestinationDir(projectLayout.getBuildDirectory().dir("sample-zips/" + sample.getName() + "/kotlin-dsl").get().getAsFile());
+            task.from(projectLayout.getBuildDirectory().dir("sample-wrappers/" + sample.getName()));
+            task.from(sample.getSampleDir().file("README.adoc"));
             // TODO(daniel): We should probably use `kotlin-dsl`, however, we are following the gradle/gradle convention for now
             task.from(sample.getSampleDir().dir("kotlin"));
         });
@@ -78,33 +84,21 @@ public class SamplesPlugin implements Plugin<Project> {
         });
     }
 
-    private static TaskProvider<Zip> createGroovyDslZipTask(TaskContainer tasks, Sample sample, ProjectLayout projectLayout) {
-        return tasks.register(compressSampleGroovyDslTaskName(sample), Zip.class, task -> {
-            task.dependsOn(generateWrapperTaskName(sample));
+    private static TaskProvider<SampleZipTask> createGroovyDslZipTask(TaskContainer tasks, Sample sample, ProjectLayout projectLayout) {
+        return tasks.register(compressSampleGroovyDslTaskName(sample), SampleZipTask.class, task -> {
             task.dependsOn(syncGroovyDslTaskName(sample));
-            task.getArchiveBaseName().set(sample.getName());
-            task.getArchiveClassifier().set("groovy-dsl");
-            task.from(projectLayout.getBuildDirectory().dir("sample-wrappers/" + sample.getName()));
-            task.from(projectLayout.getBuildDirectory().dir("sample-zips/" + sample.getName() + "/groovy-dsl"));
-            task.from(sample.getSampleDir().file("README.adoc"));
-            task.into("");
 
-            task.getDestinationDirectory().set(projectLayout.getBuildDirectory().dir("gradle-samples/" + sample.getName()));
+            task.getSampleDirectory().set(projectLayout.getBuildDirectory().dir("sample-zips/" + sample.getName() + "/groovy-dsl"));
+            task.getSampleZipFile().set(projectLayout.getBuildDirectory().file("gradle-samples/" + sample.getName() + "/" + sample.getName() + "-groovy-dsl.zip"));
         });
     }
 
-    private static TaskProvider<Zip> createKotlinDslZipTask(TaskContainer tasks, Sample sample, ProjectLayout projectLayout) {
-        return tasks.register(compressSampleKotlinDslTaskName(sample), Zip.class, task -> {
-            task.dependsOn(generateWrapperTaskName(sample));
+    private static TaskProvider<SampleZipTask> createKotlinDslZipTask(TaskContainer tasks, Sample sample, ProjectLayout projectLayout) {
+        return tasks.register(compressSampleKotlinDslTaskName(sample), SampleZipTask.class, task -> {
             task.dependsOn(syncKotlinDslTaskName(sample));
-            task.getArchiveBaseName().set(sample.getName());
-            task.getArchiveClassifier().set("kotlin-dsl");
-            task.from(projectLayout.getBuildDirectory().dir("sample-wrappers/" + sample.getName()));
-            task.from(projectLayout.getBuildDirectory().dir("sample-zips/" + sample.getName() + "/kotlin-dsl"));
-            task.from(sample.getSampleDir().file("README.adoc"));
-            task.into("");
 
-            task.getDestinationDirectory().set(projectLayout.getBuildDirectory().dir("gradle-samples/" + sample.getName()));
+            task.getSampleDirectory().set(projectLayout.getBuildDirectory().dir("sample-zips/" + sample.getName() + "/kotlin-dsl"));
+            task.getSampleZipFile().set(projectLayout.getBuildDirectory().file("gradle-samples/" + sample.getName() + "/" + sample.getName() + "-kotlin-dsl.zip"));
         });
     }
 
