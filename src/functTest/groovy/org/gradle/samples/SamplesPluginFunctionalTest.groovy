@@ -16,8 +16,8 @@ class SamplesPluginFunctionalTest extends AbstractFunctionalTest {
 Some doc
 
 ifndef::env-github[]
-- link:demo-groovy-dsl.zip[Download Groovy DSL ZIP]
-- link:demo-kotlin-dsl.zip[Download Kotlin DSL ZIP]
+- link:{zip-base-file-name}-groovy-dsl.zip[Download Groovy DSL ZIP]
+- link:{zip-base-file-name}-kotlin-dsl.zip[Download Kotlin DSL ZIP]
 endif::[]
 """
         temporaryFolder.newFolder("src", "groovy")
@@ -158,6 +158,33 @@ tasks.withType(Zip).configureEach {
         kotlinDslZipFile.exists()
         !getGroovyDslZipFile(version: '4.2').exists()
         !getKotlinDslZipFile(version: '4.2').exists()
+    }
+
+    def "includes project version inside sample zip name"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        buildFile << """
+version = '5.6.2'
+"""
+
+        when:
+        def result = build('assemble')
+
+        then:
+        result.task(":generateSampleIndex").outcome == TaskOutcome.SUCCESS
+        result.task(":asciidocSampleIndex").outcome == TaskOutcome.SUCCESS
+        result.task(":assemble").outcome == TaskOutcome.SUCCESS
+        assertSampleTasksExecutedAndNotSkipped(result)
+        getGroovyDslZipFile(version: '5.6.2').exists()
+        getKotlinDslZipFile(version: '5.6.2').exists()
+        !groovyDslZipFile.exists()
+        !kotlinDslZipFile.exists()
+        def sampleIndexFile = new File(projectDir, "build/gradle-samples/demo/index.html")
+        sampleIndexFile.exists()
+        sampleIndexFile.text.contains('<a href="demo-5.6.2-groovy-dsl.zip">')
+        sampleIndexFile.text.contains('<a href="demo-5.6.2-kotlin-dsl.zip">')
+        !sampleIndexFile.text.contains('<a href="demo-groovy-dsl.zip">')
+        !sampleIndexFile.text.contains('<a href="demo-kotlin-dsl.zip">')
     }
 
     private static void assertSampleTasksExecutedAndNotSkipped(BuildResult result) {
