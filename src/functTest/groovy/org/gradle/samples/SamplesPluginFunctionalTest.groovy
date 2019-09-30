@@ -90,6 +90,32 @@ endif::[]
         indexFile.text.contains('<a href="demo/">')
     }
 
+    def "demonstrate publishing samples to directory"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        buildFile << """
+def publishTask = tasks.register("publishSamples", Copy) {
+    // TODO: The `gradle-samples` directory is an implementation detail
+    from("build/gradle-samples")
+    into("build/docs/samples")
+}
+
+tasks.assemble.dependsOn publishTask
+"""
+
+        when:
+        def result = build('assemble')
+
+        then:
+        assertTasksExecutedAndNotSkipped(result)
+        groovyDslZipFile.exists()
+        kotlinDslZipFile.exists()
+        getGroovyDslZipFile(buildDirectoryRelativePath: "docs/samples").exists()
+        getKotlinDslZipFile(buildDirectoryRelativePath: "docs/samples").exists()
+        new File(projectDir, "build/docs/samples/demo/index.html").exists()
+        new File(projectDir, "build/docs/samples/index.html").exists()
+    }
+
     private static void assertTasksExecutedAndNotSkipped(BuildResult result) {
         result.task(":generateSampleIndex").outcome == TaskOutcome.SUCCESS
         result.task(":asciidocSampleIndex").outcome == TaskOutcome.SUCCESS
