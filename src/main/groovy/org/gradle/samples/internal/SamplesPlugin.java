@@ -14,7 +14,6 @@ import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.util.PatternSet;
 import org.gradle.api.tasks.wrapper.Wrapper;
-import org.gradle.internal.StringProvider;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
 import org.gradle.samples.Sample;
 
@@ -142,23 +141,17 @@ public class SamplesPlugin implements Plugin<Project> {
             Map<String, Object> a = new HashMap<>();
             a.put("source-highlighter", "prettify");
             a.put("imagesdir", "images");
-            a.put("stylesheet", null);
-            a.put("linkcss", true);
             a.put("docinfodir", ".");
             a.put("docinfo1", "");
-            a.put("nofooter", true);
             a.put("icons", "font");
-            a.put("sectanchors", true);
-            a.put("sectlinks", true);
-            a.put("linkattrs", true);
             a.put("encoding", "utf-8");
             a.put("idprefix", "");
             a.put("toc", "auto");
             a.put("toclevels", 1);
             a.put("toc-title", "Contents");
             a.put("guides", "https://guides.gradle.org");
-            a.put("zip-base-file-name", StringProvider.of(zipBaseFileName));
-            task.setAttributes(a);
+            a.put("zip-base-file-name", zipBaseFileName.get());
+            task.attributes(a);
 
 //            def asciidocIndexFile = project.layout.file(project.tasks.named("asciidoctor").map { new File(it.outputDir, "html5/index.html") })
 //
@@ -209,22 +202,16 @@ public class SamplesPlugin implements Plugin<Project> {
             Map<String, Object> a = new HashMap<>();
             a.put("source-highlighter", "prettify");
             a.put("imagesdir", "images");
-            a.put("stylesheet", null);
-            a.put("linkcss", true);
             a.put("docinfodir", ".");
             a.put("docinfo1", "");
-            a.put("nofooter", true);
             a.put("icons", "font");
-            a.put("sectanchors", true);
-            a.put("sectlinks", true);
-            a.put("linkattrs", true);
             a.put("encoding", "utf-8");
             a.put("idprefix", "");
             a.put("toc", "auto");
             a.put("toclevels", 1);
             a.put("toc-title", "Contents");
             a.put("guides", "https://guides.gradle.org");
-            task.setAttributes(a);
+            task.attributes(a);
         });
     }
 

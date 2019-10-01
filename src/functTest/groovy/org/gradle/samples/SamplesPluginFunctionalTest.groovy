@@ -1,5 +1,6 @@
 package org.gradle.samples
 
+import org.asciidoctor.gradle.AsciidoctorTask
 import org.gradle.guides.AbstractFunctionalTest
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
@@ -185,6 +186,32 @@ version = '5.6.2'
         sampleIndexFile.text.contains('<a href="demo-5.6.2-kotlin-dsl.zip">')
         !sampleIndexFile.text.contains('<a href="demo-groovy-dsl.zip">')
         !sampleIndexFile.text.contains('<a href="demo-kotlin-dsl.zip">')
+    }
+
+    def "can add more attributes to AsciidoctorTask types before and after samples are added"() {
+        makeSingleProject()
+        buildFile << """
+import ${AsciidoctorTask.canonicalName}
+
+tasks.withType(AsciidoctorTask).configureEach {
+    attributes 'prop1': 'value1'
+}
+
+tasks.register('verify') {
+    doLast {
+        def allAsciidoctorTasks = tasks.withType(AsciidoctorTask)
+        assert allAsciidoctorTasks.collect { it.attributes.prop1 } == ['value1'] * allAsciidoctorTasks.size()
+    }
+}
+
+samples.create('anotherDemo')
+"""
+
+        when:
+        build('verify')
+
+        then:
+        noExceptionThrown()
     }
 
     private static void assertSampleTasksExecutedAndNotSkipped(BuildResult result) {
