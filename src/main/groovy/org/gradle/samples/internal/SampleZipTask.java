@@ -24,14 +24,16 @@ import org.gradle.api.file.FileVisitor;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Internal;
-import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.SkipWhenEmpty;
 import org.gradle.api.tasks.TaskAction;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.UncheckedIOException;
+import java.nio.file.Files;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -50,6 +52,12 @@ public abstract class SampleZipTask extends DefaultTask {
 
     @TaskAction
     private void doZip() throws IOException {
+        File previousOutputFile = new File(getTemporaryDir(), "previous-output-file.txt");
+        if (previousOutputFile.exists()) {
+            String previousOutputPath = Files.readString(previousOutputFile.toPath());
+            new File(previousOutputPath).delete();
+        }
+
         try (ZipOutputStream zipStream = new ZipOutputStream(new FileOutputStream(getSampleZipFile().get().getAsFile()))) {
             getSampleDirectory().getAsFileTree().visit(new FileVisitor() {
                 @Override
@@ -73,6 +81,10 @@ public abstract class SampleZipTask extends DefaultTask {
                     }
                 }
             });
+        }
+
+        try (PrintWriter outStream = new PrintWriter(previousOutputFile)) {
+            outStream.print(getSampleZipFile().get().getAsFile().getAbsolutePath());
         }
     }
 }

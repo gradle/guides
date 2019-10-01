@@ -202,12 +202,68 @@ endif::[]
         then:
         assertSampleTasksSkipped(result3)
     }
+
+    def "executes Asciidoctor and Zip tasks when project version change"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+
+        when:
+        def result1 = build("assemble")
+
+        then:
+        assertSampleTasksSkipped(result1)
+
+        and:
+        def sampleIndexFile1 = new File(projectDir, "build/gradle-samples/demo/index.html")
+        sampleIndexFile1.exists()
+        sampleIndexFile1.text.contains('<a href="demo-groovy-dsl.zip">')
+        sampleIndexFile1.text.contains('<a href="demo-kotlin-dsl.zip">')
+
+        and:
+        groovyDslZipFile.exists()
+        kotlinDslZipFile.exists()
+        !getGroovyDslZipFile(version: '4.2').exists()
+        !getKotlinDslZipFile(version: '4.2').exists()
+
+        when:
+        buildFile << "version = '4.2'\n"
+        def result2 = build("assemble")
+
+        then:
+        result2.task(':generateSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':asciidocSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':assemble').outcome == SUCCESS
+
+        and:
+        result2.task(":generateWrapperForDemoSample").outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(":syncDemoGroovyDslSample").outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(":syncDemoKotlinDslSample").outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(":compressDemoGroovyDslSample").outcome == SUCCESS
+        result2.task(":compressDemoKotlinDslSample").outcome == SUCCESS
+        result2.task(":assembleDemoSample").outcome == SUCCESS
+
+        and:
+        def sampleIndexFile2 = new File(projectDir, "build/gradle-samples/demo/index.html")
+        sampleIndexFile2.exists()
+        sampleIndexFile2.text.contains('<a href="demo-4.2-groovy-dsl.zip">')
+        sampleIndexFile2.text.contains('<a href="demo-4.2-kotlin-dsl.zip">')
+
+        and:
+        !groovyDslZipFile.exists()
+        !kotlinDslZipFile.exists()
+        getGroovyDslZipFile(version: '4.2').exists()
+        getKotlinDslZipFile(version: '4.2').exists()
+
+        when:
+        def result3 = build("assemble")
+
+        then:
+        assertSampleTasksSkipped(result3)
+    }
     // TODO: Change gradle version, asciidoctor and zips execute
     // TODO: Change groovy script, only groovy script executes
     // TODO: Change kotlin script, only kotlin script executes
-    // TODO: Change project version, asciidoctor and zips execute
     // TODO: Add/remove sample, index asciidoctor execute
-    // TODO: Changing project version, deletes previous zips
     // TODO: Output are cached
 
     private static void assertSampleTasksSkipped(BuildResult result) {
