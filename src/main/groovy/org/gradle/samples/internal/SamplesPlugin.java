@@ -69,6 +69,7 @@ public class SamplesPlugin implements Plugin<Project> {
             task.from(sample.getSampleDir().file("README.adoc"));
             // TODO(daniel): We should probably use `groovy-dsl`, however, we are following the gradle/gradle convention for now
             task.from(sample.getSampleDir().dir("groovy"));
+            task.onlyIf(it -> !sample.getSampleDir().dir("groovy").get().getAsFileTree().isEmpty());
         });
     }
 
@@ -76,10 +77,12 @@ public class SamplesPlugin implements Plugin<Project> {
         return tasks.register(syncKotlinDslTaskName(sample), Sync.class, task -> {
             task.dependsOn(generateWrapperTaskName(sample));
             task.setDestinationDir(projectLayout.getBuildDirectory().dir("sample-zips/" + sample.getName() + "/kotlin-dsl").get().getAsFile());
+
             task.from(projectLayout.getBuildDirectory().dir("sample-wrappers/" + sample.getName()));
             task.from(sample.getSampleDir().file("README.adoc"));
             // TODO(daniel): We should probably use `kotlin-dsl`, however, we are following the gradle/gradle convention for now
             task.from(sample.getSampleDir().dir("kotlin"));
+            task.onlyIf(it -> !sample.getSampleDir().dir("kotlin").get().getAsFileTree().isEmpty());
         });
     }
 
