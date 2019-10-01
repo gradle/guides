@@ -235,6 +235,18 @@ samples.create('anotherDemo')
         assertGradleWrapperVersion(kotlinDslZipFile, '5.6.2')
     }
 
+    // TODO: No asciidoc if no source
+    // TODO: No groovy zip if no groovy source
+    // TODO: No kotlin zip if no kotlin source
+    // TODO: Not in index if no source
+    // TODO: No change, all up-to-date
+    // TODO: Change sample README content, asciidoctor execute and zips execute
+    // TODO: Change gradle version, asciidoctor and zips execute
+    // TODO: Change groovy script, only groovy script executes
+    // TODO: Change kotlin script, only kotlin script executes
+    // TODO: Change project version, asciidoctor and zips execute
+    // TODO: Add/remove sample, index asciidoctor execute
+
     private static void assertSampleTasksExecutedAndNotSkipped(BuildResult result) {
         result.task(":generateWrapperForDemoSample").outcome == TaskOutcome.SUCCESS
         result.task(":syncDemoGroovyDslSample").outcome == TaskOutcome.SUCCESS
