@@ -24,9 +24,9 @@ import org.asciidoctor.gradle.AsciidoctorTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
 import org.gradle.api.tasks.PathSensitivity
-import org.gradle.internal.StringProvider
 
 import javax.inject.Inject
 
@@ -150,20 +150,20 @@ class BasePlugin implements Plugin<Project> {
                     toclevels            : 1,
                     'toc-title'          : 'Contents',
                     guides               : 'https://guides.gradle.org',
-                    'gradle-version'     : StringProvider.of(minimumGradleVersion),
+                    'gradle-version'     : new StringProvider(minimumGradleVersion),
                     'user-manual-name'   : 'User Manual',
-                    'user-manual'        : StringProvider.of(minimumGradleVersion.map { "https://docs.gradle.org/$it/userguide/" }),
-                    'language-reference' : StringProvider.of(minimumGradleVersion.map { "https://docs.gradle.org/$it/dsl/" }),
-                    'api-reference'      : StringProvider.of(minimumGradleVersion.map { "https://docs.gradle.org/$it/javadoc/" }),
+                    'user-manual'        : new StringProvider(minimumGradleVersion.map { "https://docs.gradle.org/$it/userguide/" }),
+                    'language-reference' : new StringProvider(minimumGradleVersion.map { "https://docs.gradle.org/$it/dsl/" }),
+                    'api-reference'      : new StringProvider(minimumGradleVersion.map { "https://docs.gradle.org/$it/javadoc/" }),
                     'projdir'            : project.projectDir,
                     'codedir'            : project.file('src/main'),
                     'testdir'            : project.file('src/test'),
                     'samplescodedir'     : project.file('samples/code'),
                     'samplesoutputdir'   : project.file('samples/output'),
                     'samples-dir'        : project.file('samples'),
-                    'repo-path'          : StringProvider.of(guides.repositoryPath),
-                    'repository-path'    : StringProvider.of(guides.repositoryPath),
-                    'guide-title'        : StringProvider.of(guides.title)
+                    'repo-path'          : new StringProvider(guides.repositoryPath),
+                    'repository-path'    : new StringProvider(guides.repositoryPath),
+                    'guide-title'        : new StringProvider(guides.title)
 
         }
 
@@ -179,6 +179,42 @@ class BasePlugin implements Plugin<Project> {
             group = "Documentation"
             description = "Generates the guide and open in the browser"
             indexFile = asciidocIndexFile
+        }
+    }
+
+    // Deferred the String evaluation for Asciidoc task until it support Provider API.
+    // Using a simple interpolating closure expression in a GString doesn't work as it's not serializable.
+    private class StringProvider implements Serializable {
+        private Provider<String> value
+
+        StringProvider(Provider<String> value) {
+            this.value = value
+        }
+
+        @Override
+        boolean equals(o) {
+            return toString().equals(o)
+        }
+
+        @Override
+        int hashCode() {
+            return toString().hashCode()
+        }
+
+        @Override
+        String toString() {
+            return value.getOrNull()
+        }
+
+        private void readObject(ObjectInputStream aInputStream) throws ClassNotFoundException, IOException
+        {
+            String value = (String) aInputStream.readObject()
+            this.value = providerFactory.provider({ value })
+        }
+
+        private void writeObject(ObjectOutputStream aOutputStream) throws IOException
+        {
+            aOutputStream.writeObject(toString())
         }
     }
 
