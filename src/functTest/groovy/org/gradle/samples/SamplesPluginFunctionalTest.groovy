@@ -66,6 +66,10 @@ endif::[]
         return new File(projectDir, "build/${buildDirectoryRelativePathToken}/demo/demo-${versionToken}${dslToken}.zip")
     }
 
+    protected String getSampleUnderTestDsl() {
+        return "samples.demo"
+    }
+
     def "can build samples"() {
         makeSingleProject()
         writeSampleUnderTest()
@@ -228,6 +232,24 @@ samples.create('anotherDemo')
 
         when:
         usingGradleVersion('5.6.2')
+        build("assembleDemoSample")
+
+        then:
+        assertGradleWrapperVersion(groovyDslZipFile, '5.6.2')
+        assertGradleWrapperVersion(kotlinDslZipFile, '5.6.2')
+    }
+
+    def "can change sample Gradle version"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+
+        when:
+        usingGradleVersion("5.4.1")
+        buildFile << """
+${sampleUnderTestDsl} {
+    gradleVersion = "5.6.2"
+}
+"""
         build("assembleDemoSample")
 
         then:

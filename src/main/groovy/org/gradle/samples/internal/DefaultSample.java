@@ -9,12 +9,10 @@ import javax.inject.Inject;
 
 public abstract class DefaultSample implements Sample {
     private final String name;
-    private final Property<String> gradleVersion;
 
     @Inject
-    public DefaultSample(String name, ObjectFactory objectFactory) {
+    public DefaultSample(String name) {
         this.name = name;
-        this.gradleVersion = objectFactory.property(String.class);
     }
 
     @Override
@@ -22,9 +20,7 @@ public abstract class DefaultSample implements Sample {
 
     // Implementation notes: At some point this may have to support "need at least version X" (Guides) and "for version X" (Gradle).
     @Override
-    public Property<String> getGradleVersion() {
-        return gradleVersion;
-    }
+    public abstract Property<String> getGradleVersion();
 
     @Override
     public String getName() {
