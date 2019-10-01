@@ -79,6 +79,10 @@ endif::[]
         return new File(projectDir, "build/${buildDirectoryRelativePathToken}/demo/demo-${versionToken}${dslToken}.zip")
     }
 
+    protected File getSampleReadMeFile() {
+        return new File(projectDir, "src/README.adoc")
+    }
+
     protected String getSampleUnderTestDsl() {
         return "samples.demo"
     }

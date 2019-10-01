@@ -164,7 +164,44 @@ endif::[]
         result2.task(':asciidocSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
     }
 
-    // TODO: Change sample README content, asciidoctor execute and zips execute
+    def "executes Asciidoctor and Zip tasks when README content change"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+
+        when:
+        def result1 = build("assemble")
+
+        then:
+        assertSampleTasksSkipped(result1)
+
+        when:
+        sampleReadMeFile << "More content\n"
+        def result2 = build("assemble")
+
+        then:
+        result2.task(':generateSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':asciidocSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':assemble').outcome == SUCCESS
+
+        and:
+        result2.task(":generateWrapperForDemoSample").outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(":syncDemoGroovyDslSample").outcome == SUCCESS
+        result2.task(":syncDemoKotlinDslSample").outcome == SUCCESS
+        result2.task(":compressDemoGroovyDslSample").outcome == SUCCESS
+        result2.task(":compressDemoKotlinDslSample").outcome == SUCCESS
+        result2.task(":assembleDemoSample").outcome == SUCCESS
+
+        and:
+        def sampleIndexFile = new File(projectDir, "build/gradle-samples/demo/index.html")
+        sampleIndexFile.exists()
+        sampleIndexFile.text.contains("More content")
+
+        when:
+        def result3 = build("assemble")
+
+        then:
+        assertSampleTasksSkipped(result3)
+    }
     // TODO: Change gradle version, asciidoctor and zips execute
     // TODO: Change groovy script, only groovy script executes
     // TODO: Change kotlin script, only kotlin script executes
