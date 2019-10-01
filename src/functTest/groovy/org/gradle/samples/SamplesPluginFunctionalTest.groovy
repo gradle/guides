@@ -196,6 +196,8 @@ ${sampleUnderTestDsl} {
         assertGradleWrapperVersion(kotlinDslZipFile, '5.6.2')
     }
 
+    // TODO: Allow preprocess build script files before zipping (remove tags) or including them in rendered output (remove tags and license)
+
     private static void assertSampleTasksExecutedAndNotSkipped(BuildResult result) {
         result.task(":generateWrapperForDemoSample").outcome == TaskOutcome.SUCCESS
         result.task(":syncDemoGroovyDslSample").outcome == TaskOutcome.SUCCESS
