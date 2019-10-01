@@ -8,68 +8,7 @@ import org.gradle.testkit.runner.TaskOutcome
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
-class SamplesPluginFunctionalTest extends AbstractFunctionalTest {
-    private void writeSampleUnderTest() {
-        temporaryFolder.newFolder("src")
-        temporaryFolder.newFile("src/README.adoc") << """
-= Demo Sample
-
-Some doc
-
-ifndef::env-github[]
-- link:{zip-base-file-name}-groovy-dsl.zip[Download Groovy DSL ZIP]
-- link:{zip-base-file-name}-kotlin-dsl.zip[Download Kotlin DSL ZIP]
-endif::[]
-"""
-        temporaryFolder.newFolder("src", "groovy")
-        temporaryFolder.newFile("src/groovy/build.gradle") << """
-            println "Hello, world!"
-        """
-        temporaryFolder.newFile("src/groovy/settings.gradle") << """
-            rootProject.name = 'demo'
-        """
-        temporaryFolder.newFolder("src", "kotlin")
-        temporaryFolder.newFile("src/kotlin/build.gradle.kts") << """
-            println("Hello, world!")
-        """
-        temporaryFolder.newFile("src/kotlin/settings.gradle.kts") << """
-            rootProject.name = "demo"
-        """
-    }
-
-    private void makeSingleProject() {
-        buildFile << """
-            plugins {
-                id 'org.gradle.samples'
-            }
-            
-            samples {
-                create("demo") {
-                    sampleDir = file('src')
-                }
-            }
-        """
-    }
-
-    protected File getGroovyDslZipFile(Map m = [:]) {
-        return getDslZipFile(m + [dsl: 'groovy-dsl'])
-    }
-
-    protected File getKotlinDslZipFile(Map m = [:]) {
-        return getDslZipFile(m + [dsl: 'kotlin-dsl'])
-    }
-
-    private File getDslZipFile(Map m) {
-        def versionToken = m.version ? "${m.version}-" : ''
-        def buildDirectoryRelativePathToken = m.getOrDefault('buildDirectoryRelativePath', 'gradle-samples')
-        def dslToken = m.dsl
-        return new File(projectDir, "build/${buildDirectoryRelativePathToken}/demo/demo-${versionToken}${dslToken}.zip")
-    }
-
-    protected String getSampleUnderTestDsl() {
-        return "samples.demo"
-    }
-
+class SamplesPluginFunctionalTest extends AbstractSampleFunctionalTest {
     def "can build samples"() {
         makeSingleProject()
         writeSampleUnderTest()
@@ -256,18 +195,6 @@ ${sampleUnderTestDsl} {
         assertGradleWrapperVersion(groovyDslZipFile, '5.6.2')
         assertGradleWrapperVersion(kotlinDslZipFile, '5.6.2')
     }
-
-    // TODO: No asciidoc if no source
-    // TODO: No groovy zip if no groovy source
-    // TODO: No kotlin zip if no kotlin source
-    // TODO: Not in index if no source
-    // TODO: No change, all up-to-date
-    // TODO: Change sample README content, asciidoctor execute and zips execute
-    // TODO: Change gradle version, asciidoctor and zips execute
-    // TODO: Change groovy script, only groovy script executes
-    // TODO: Change kotlin script, only kotlin script executes
-    // TODO: Change project version, asciidoctor and zips execute
-    // TODO: Add/remove sample, index asciidoctor execute
 
     private static void assertSampleTasksExecutedAndNotSkipped(BuildResult result) {
         result.task(":generateWrapperForDemoSample").outcome == TaskOutcome.SUCCESS

@@ -17,7 +17,6 @@ import org.gradle.api.tasks.wrapper.Wrapper;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
 import org.gradle.samples.Sample;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -89,6 +88,7 @@ public class SamplesPlugin implements Plugin<Project> {
             task.setJarFile(projectLayout.getBuildDirectory().file("sample-wrappers/" + sample.getName() + "/gradle/wrapper/gradle-wrapper.jar").get().getAsFile());
             task.setScriptFile(projectLayout.getBuildDirectory().file("sample-wrappers/" + sample.getName() + "/gradlew").get().getAsFile());
             task.setGradleVersion(sample.getGradleVersion().get());
+            task.onlyIf(it -> !sample.getSampleDir().getAsFileTree().isEmpty());
         });
     }
 
@@ -130,7 +130,7 @@ public class SamplesPlugin implements Plugin<Project> {
                     return null;
                 }
             });
-            task.outputDir(task.getTemporaryDir());
+            task.outputDir(projectLayout.getBuildDirectory().dir("tmp/" + task.getName()));
             task.setSeparateOutputDirs(false);
             task.doLast(it -> {
                 task.getProject().copy(spec -> {
@@ -188,8 +188,8 @@ public class SamplesPlugin implements Plugin<Project> {
 
     private static TaskProvider<GenerateSampleIndexAsciidoc> createSampleIndexGeneratorTask(TaskContainer tasks, Iterable<Sample> samples, ProjectLayout projectLayout, ProviderFactory providerFactory) {
         return tasks.register("generateSampleIndex", GenerateSampleIndexAsciidoc.class, task -> {
-            task.getSamplePaths().set(providerFactory.provider(() -> StreamSupport.stream(samples.spliterator(), false).map(Sample::getName).collect(Collectors.toList())));
-            task.getOutputFile().set(new File(task.getTemporaryDir(), "index.adoc"));
+            task.getSamplePaths().set(providerFactory.provider(() -> StreamSupport.stream(samples.spliterator(), false).filter(it -> !it.getSampleDir().getAsFileTree().isEmpty()).map(Sample::getName).collect(Collectors.toList())));
+            task.getOutputFile().set(projectLayout.getBuildDirectory().file("tmp/" + task.getName() + "/index.adoc"));
         });
     }
 

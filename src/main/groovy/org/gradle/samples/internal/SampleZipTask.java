@@ -18,11 +18,15 @@ package org.gradle.samples.internal;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.FileTree;
 import org.gradle.api.file.FileVisitDetails;
 import org.gradle.api.file.FileVisitor;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.tasks.InputFiles;
+import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputFile;
+import org.gradle.api.tasks.SkipWhenEmpty;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.FileOutputStream;
@@ -32,8 +36,14 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public abstract class SampleZipTask extends DefaultTask {
-    @InputFiles
+    @Internal
     public abstract DirectoryProperty getSampleDirectory();
+
+    @InputFiles
+    @SkipWhenEmpty
+    protected FileTree getInputFiles() {
+        return getSampleDirectory().getAsFileTree();
+    }
 
     @OutputFile
     public abstract RegularFileProperty getSampleZipFile();
