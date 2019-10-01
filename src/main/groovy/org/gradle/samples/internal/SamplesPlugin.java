@@ -30,7 +30,9 @@ public class SamplesPlugin implements Plugin<Project> {
         project.getPluginManager().apply("lifecycle-base");
         NamedDomainObjectContainer<Sample> samples = project.container(Sample.class, name -> {
             assert !name.isEmpty() : "sample name cannot be empty";
-            return project.getObjects().newInstance(DefaultSample.class, name);
+            DefaultSample result = project.getObjects().newInstance(DefaultSample.class, name);
+            result.getGradleVersion().convention(project.getGradle().getGradleVersion());
+            return result;
         });
         project.getExtensions().add(NamedDomainObjectContainer.class, "samples", samples);
 
@@ -86,6 +88,7 @@ public class SamplesPlugin implements Plugin<Project> {
         return tasks.register(generateWrapperTaskName(sample), Wrapper.class, task -> {
             task.setJarFile(projectLayout.getBuildDirectory().file("sample-wrappers/" + sample.getName() + "/gradle/wrapper/gradle-wrapper.jar").get().getAsFile());
             task.setScriptFile(projectLayout.getBuildDirectory().file("sample-wrappers/" + sample.getName() + "/gradlew").get().getAsFile());
+            task.setGradleVersion(sample.getGradleVersion().get());
         });
     }
 

@@ -214,6 +214,27 @@ samples.create('anotherDemo')
         noExceptionThrown()
     }
 
+    def "defaults Gradle version based on the running distribution"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+
+        when:
+        usingGradleVersion("5.4.1")
+        build("assembleDemoSample")
+
+        then:
+        assertGradleWrapperVersion(groovyDslZipFile, '5.4.1')
+        assertGradleWrapperVersion(kotlinDslZipFile, '5.4.1')
+
+        when:
+        usingGradleVersion('5.6.2')
+        build("assembleDemoSample")
+
+        then:
+        assertGradleWrapperVersion(groovyDslZipFile, '5.6.2')
+        assertGradleWrapperVersion(kotlinDslZipFile, '5.6.2')
+    }
+
     private static void assertSampleTasksExecutedAndNotSkipped(BuildResult result) {
         result.task(":generateWrapperForDemoSample").outcome == TaskOutcome.SUCCESS
         result.task(":syncDemoGroovyDslSample").outcome == TaskOutcome.SUCCESS
@@ -234,5 +255,14 @@ samples.create('anotherDemo')
         assert content.size() == expectedContent.size()
         content.removeAll(Arrays.asList(expectedContent))
         assert content.empty
+    }
+
+    private static void assertGradleWrapperVersion(File file, String expectedGradleVersion) {
+        assert file.exists()
+        def text = new ZipFile(file).withCloseable { zipFile ->
+            return zipFile.getInputStream(zipFile.entries().findAll { !it.directory }.find { it.name == 'gradle/wrapper/gradle-wrapper.properties' }).text
+        }
+
+        assert text.contains("-${expectedGradleVersion}-")
     }
 }
