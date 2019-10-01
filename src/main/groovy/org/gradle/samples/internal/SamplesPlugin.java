@@ -2,6 +2,7 @@ package org.gradle.samples.internal;
 
 import groovy.lang.Closure;
 import org.asciidoctor.gradle.AsciidoctorTask;
+import org.gradle.api.Action;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -135,12 +136,16 @@ public class SamplesPlugin implements Plugin<Project> {
             });
             task.outputDir(projectLayout.getBuildDirectory().dir("tmp/" + task.getName()));
             task.setSeparateOutputDirs(false);
-            task.doLast(it -> {
-                task.getProject().copy(spec -> {
-                    spec.from(task.getTemporaryDir());
-                    spec.rename("README.html", "index.html");
-                    spec.into(projectLayout.getBuildDirectory().dir("gradle-samples/" + sample.getName()));
-                });
+            task.doLast(new Action<Task>() {
+                // Need to use anonymous inner class as Java Lambdas aren't supported in incremental build
+                @Override
+                public void execute(Task task) {
+                    task.getProject().copy(spec -> {
+                        spec.from(task.getTemporaryDir());
+                        spec.rename("README.html", "index.html");
+                        spec.into(projectLayout.getBuildDirectory().dir("gradle-samples/" + sample.getName()));
+                    });
+                }
             });
             // TODO set inputs
 

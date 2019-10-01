@@ -141,13 +141,37 @@ endif::[]
         indexFile.text.contains('<a href="demo/">')
     }
 
-    // TODO: No change, all up-to-date
+    def "skips all tasks when no changes"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+
+        when:
+        def result1 = build("assemble")
+
+        then:
+        assertSampleTasksExecutedAndNotSkipped(result1)
+        result1.task(':assemble').outcome == SUCCESS
+        result1.task(':generateSampleIndex').outcome == SUCCESS
+        result1.task(':asciidocSampleIndex').outcome == SUCCESS
+
+        when:
+        def result2 = build("assemble")
+
+        then:
+        assertSampleTasksSkipped(result2)
+        result2.task(':assemble').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':generateSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':asciidocSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
+    }
+
     // TODO: Change sample README content, asciidoctor execute and zips execute
     // TODO: Change gradle version, asciidoctor and zips execute
     // TODO: Change groovy script, only groovy script executes
     // TODO: Change kotlin script, only kotlin script executes
     // TODO: Change project version, asciidoctor and zips execute
     // TODO: Add/remove sample, index asciidoctor execute
+    // TODO: Changing project version, deletes previous zips
+    // TODO: Output are cached
 
     private static void assertSampleTasksSkipped(BuildResult result) {
         result.task(":generateWrapperForDemoSample").outcome in SKIPPED_TASK_OUTCOMES

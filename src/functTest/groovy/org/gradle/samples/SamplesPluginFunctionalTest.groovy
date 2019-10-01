@@ -1,8 +1,6 @@
 package org.gradle.samples
 
 import org.asciidoctor.gradle.AsciidoctorTask
-import org.gradle.guides.AbstractFunctionalTest
-import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.TaskOutcome
 
 import java.util.zip.ZipEntry
@@ -197,15 +195,6 @@ ${sampleUnderTestDsl} {
     }
 
     // TODO: Allow preprocess build script files before zipping (remove tags) or including them in rendered output (remove tags and license)
-
-    private static void assertSampleTasksExecutedAndNotSkipped(BuildResult result) {
-        result.task(":generateWrapperForDemoSample").outcome == TaskOutcome.SUCCESS
-        result.task(":syncDemoGroovyDslSample").outcome == TaskOutcome.SUCCESS
-        result.task(":syncDemoKotlinDslSample").outcome == TaskOutcome.SUCCESS
-        result.task(":compressDemoGroovyDslSample").outcome == TaskOutcome.SUCCESS
-        result.task(":compressDemoKotlinDslSample").outcome == TaskOutcome.SUCCESS
-        result.task(":assembleDemoSample").outcome == TaskOutcome.SUCCESS
-    }
 
     private static void assertZipHasContent(File file, String... expectedContent) {
         assert file.exists()

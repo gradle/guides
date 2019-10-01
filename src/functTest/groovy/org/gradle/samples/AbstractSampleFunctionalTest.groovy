@@ -17,6 +17,9 @@
 package org.gradle.samples
 
 import org.gradle.guides.AbstractFunctionalTest
+import org.gradle.testkit.runner.BuildResult
+
+import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 class AbstractSampleFunctionalTest extends AbstractFunctionalTest {
     protected void writeSampleUnderTest() {
@@ -78,5 +81,14 @@ endif::[]
 
     protected String getSampleUnderTestDsl() {
         return "samples.demo"
+    }
+
+    protected static void assertSampleTasksExecutedAndNotSkipped(BuildResult result) {
+        result.task(":generateWrapperForDemoSample").outcome == SUCCESS
+        result.task(":syncDemoGroovyDslSample").outcome == SUCCESS
+        result.task(":syncDemoKotlinDslSample").outcome == SUCCESS
+        result.task(":compressDemoGroovyDslSample").outcome == SUCCESS
+        result.task(":compressDemoKotlinDslSample").outcome == SUCCESS
+        result.task(":assembleDemoSample").outcome == SUCCESS
     }
 }
