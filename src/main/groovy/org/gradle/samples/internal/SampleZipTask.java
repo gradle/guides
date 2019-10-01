@@ -29,11 +29,13 @@ import org.gradle.api.tasks.SkipWhenEmpty;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UncheckedIOException;
-import java.nio.file.Files;
+import java.util.Scanner;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -54,8 +56,12 @@ public abstract class SampleZipTask extends DefaultTask {
     private void doZip() throws IOException {
         File previousOutputFile = new File(getTemporaryDir(), "previous-output-file.txt");
         if (previousOutputFile.exists()) {
-            String previousOutputPath = Files.readString(previousOutputFile.toPath());
-            new File(previousOutputPath).delete();
+            try (InputStream inStream = new FileInputStream(previousOutputFile)) {
+                Scanner s = new java.util.Scanner(inStream).useDelimiter("\\A");
+                assert s.hasNext();
+                String previousOutputPath = s.next();
+                new File(previousOutputPath).delete();
+            }
         }
 
         try (ZipOutputStream zipStream = new ZipOutputStream(new FileOutputStream(getSampleZipFile().get().getAsFile()))) {
