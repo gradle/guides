@@ -194,7 +194,8 @@ ${sampleUnderTestDsl} {
         assertGradleWrapperVersion(kotlinDslZipFile, '5.6.2')
     }
 
-    // TODO: Allow preprocess build script files before zipping (remove tags) or including them in rendered output (remove tags and license)
+    // TODO: Allow preprocess build script files before zipping (remove tags, see NOTE1) or including them in rendered output (remove tags and license)
+    //   NOTE1: We can remove the license from all the files and add a LICENSE file at the root of the sample
 
     private static void assertZipHasContent(File file, String... expectedContent) {
         assert file.exists()

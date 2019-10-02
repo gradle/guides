@@ -35,6 +35,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -54,15 +57,12 @@ public abstract class SampleZipTask extends DefaultTask {
 
     @TaskAction
     private void doZip() throws IOException {
-        File previousOutputFile = new File(getTemporaryDir(), "previous-output-file.txt");
-        if (previousOutputFile.exists()) {
-            try (InputStream inStream = new FileInputStream(previousOutputFile)) {
-                Scanner s = new java.util.Scanner(inStream).useDelimiter("\\A");
-                assert s.hasNext();
-                String previousOutputPath = s.next();
-                new File(previousOutputPath).delete();
+        Optional.ofNullable(getSampleZipFile().get().getAsFile().getParentFile().listFiles()).ifPresent(files -> {
+            for (File file : files) {
+                assert !file.isDirectory() : "there shouldn't be a directory here";
+                file.delete();
             }
-        }
+        });
 
         try (ZipOutputStream zipStream = new ZipOutputStream(new FileOutputStream(getSampleZipFile().get().getAsFile()))) {
             getSampleDirectory().getAsFileTree().visit(new FileVisitor() {
@@ -87,10 +87,6 @@ public abstract class SampleZipTask extends DefaultTask {
                     }
                 }
             });
-        }
-
-        try (PrintWriter outStream = new PrintWriter(previousOutputFile)) {
-            outStream.print(getSampleZipFile().get().getAsFile().getAbsolutePath());
         }
     }
 }
