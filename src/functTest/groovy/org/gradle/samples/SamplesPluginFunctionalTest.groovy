@@ -6,6 +6,8 @@ import org.gradle.testkit.runner.TaskOutcome
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
+import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
+
 class SamplesPluginFunctionalTest extends AbstractSampleFunctionalTest {
     def "can build samples"() {
         makeSingleProject()
@@ -15,9 +17,9 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalTest {
         def result = build('assemble')
 
         then:
-        result.task(":generateSampleIndex").outcome == TaskOutcome.SUCCESS
-        result.task(":asciidocSampleIndex").outcome == TaskOutcome.SUCCESS
-        result.task(":assemble").outcome == TaskOutcome.SUCCESS
+        result.task(":generateSampleIndex").outcome == SUCCESS
+        result.task(":asciidocSampleIndex").outcome == SUCCESS
+        result.task(":assemble").outcome == SUCCESS
         assertSampleTasksExecutedAndNotSkipped(result)
         assertZipHasContent(groovyDslZipFile, "gradlew", "gradlew.bat", "gradle/wrapper/gradle-wrapper.properties", "gradle/wrapper/gradle-wrapper.jar", "README.adoc", "build.gradle", "settings.gradle")
         new File(projectDir, "build/gradle-samples/demo/index.html").exists()
@@ -67,9 +69,9 @@ tasks.assemble.dependsOn publishTask
         def result = build('assemble')
 
         then:
-        result.task(":generateSampleIndex").outcome == TaskOutcome.SUCCESS
-        result.task(":asciidocSampleIndex").outcome == TaskOutcome.SUCCESS
-        result.task(":assemble").outcome == TaskOutcome.SUCCESS
+        result.task(":generateSampleIndex").outcome == SUCCESS
+        result.task(":asciidocSampleIndex").outcome == SUCCESS
+        result.task(":assemble").outcome == SUCCESS
         assertSampleTasksExecutedAndNotSkipped(result)
         groovyDslZipFile.exists()
         kotlinDslZipFile.exists()
@@ -92,9 +94,9 @@ tasks.withType(Zip).configureEach {
         def result = build('assemble')
 
         then:
-        result.task(":generateSampleIndex").outcome == TaskOutcome.SUCCESS
-        result.task(":asciidocSampleIndex").outcome == TaskOutcome.SUCCESS
-        result.task(":assemble").outcome == TaskOutcome.SUCCESS
+        result.task(":generateSampleIndex").outcome == SUCCESS
+        result.task(":asciidocSampleIndex").outcome == SUCCESS
+        result.task(":assemble").outcome == SUCCESS
         assertSampleTasksExecutedAndNotSkipped(result)
         groovyDslZipFile.exists()
         kotlinDslZipFile.exists()
@@ -113,9 +115,9 @@ version = '5.6.2'
         def result = build('assemble')
 
         then:
-        result.task(":generateSampleIndex").outcome == TaskOutcome.SUCCESS
-        result.task(":asciidocSampleIndex").outcome == TaskOutcome.SUCCESS
-        result.task(":assemble").outcome == TaskOutcome.SUCCESS
+        result.task(":generateSampleIndex").outcome == SUCCESS
+        result.task(":asciidocSampleIndex").outcome == SUCCESS
+        result.task(":assemble").outcome == SUCCESS
         assertSampleTasksExecutedAndNotSkipped(result)
         getGroovyDslZipFile(version: '5.6.2').exists()
         getKotlinDslZipFile(version: '5.6.2').exists()
@@ -192,6 +194,31 @@ ${sampleUnderTestDsl} {
         then:
         assertGradleWrapperVersion(groovyDslZipFile, '5.6.2')
         assertGradleWrapperVersion(kotlinDslZipFile, '5.6.2')
+    }
+
+    def "can generate content for the sample"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        buildFile << '''
+samples.configureEach { sample ->
+    def generatorTask = tasks.register("generateContentFor${sample.name.capitalize()}Sample") {
+        outputs.dir(layout.buildDirectory.dir("sample-contents/${sample.name}"))
+        doLast {
+            layout.buildDirectory.dir("sample-contents/${sample.name}/gradle.properties").get().asFile.text = "foo.bar = foobar\\n"
+        }
+    }
+    sample.archiveContent.from(files(generatorTask))
+}
+'''
+
+        when:
+        def result = build("assembleDemoSample")
+
+        then:
+        assertSampleTasksExecutedAndNotSkipped(result)
+        result.task(":generateContentForDemoSample").outcome == SUCCESS
+        assertZipHasContent(groovyDslZipFile, "gradlew", "gradlew.bat", "gradle.properties", "gradle/wrapper/gradle-wrapper.properties", "gradle/wrapper/gradle-wrapper.jar", "README.adoc", "build.gradle", "settings.gradle")
+        assertZipHasContent(kotlinDslZipFile, "gradlew", "gradlew.bat", "gradle.properties", "gradle/wrapper/gradle-wrapper.properties", "gradle/wrapper/gradle-wrapper.jar", "README.adoc", "build.gradle.kts", "settings.gradle.kts")
     }
 
     // TODO: Allow preprocess build script files before zipping (remove tags, see NOTE1) or including them in rendered output (remove tags and license)

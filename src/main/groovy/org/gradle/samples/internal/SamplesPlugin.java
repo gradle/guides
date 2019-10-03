@@ -99,6 +99,7 @@ public class SamplesPlugin implements Plugin<Project> {
             task.into(sampleIntermediateDirectory.map(dir -> dir.dir(sample.getName() + "-" + dsl.getClassifierName())));
             task.from(sampleIntermediateDirectory.map(dir -> dir.dir(sample.getName() + "-wrapper")));
             task.from(sample.getSampleDir().file("README.adoc"));
+            task.from(sample.getArchiveContent());
 
             // TODO(daniel): We should probably use `(groovy|kotlin)-dsl`, however, we are following the gradle/gradle convention for now
             task.from(sample.getSampleDir().dir(dsl.getSampleDirectoryName()));
