@@ -1,8 +1,6 @@
 package org.gradle.samples.internal;
 
-import groovy.lang.Closure;
 import org.asciidoctor.gradle.AsciidoctorTask;
-import org.gradle.api.Action;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -14,10 +12,10 @@ import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
-import org.gradle.api.tasks.util.PatternSet;
 import org.gradle.api.tasks.wrapper.Wrapper;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
 import org.gradle.samples.Sample;
+import org.gradle.util.GUtil;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,6 +24,28 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class SamplesPlugin implements Plugin<Project> {
+    private enum Dsl {
+        GROOVY_DSL("groovy"), KOTLIN_DSL("kotlin");
+
+        private final String languageName;
+
+        Dsl(String languageName) {
+            this.languageName = languageName;
+        }
+
+        String getSampleDirectoryName() {
+            return languageName;
+        }
+
+        String getClassifierName() {
+            return languageName + "-dsl";
+        }
+
+        public String getTaskName() {
+            return capitalize(languageName) + "Dsl";
+        }
+    }
+
     @Override
     public void apply(Project project) {
         project.getPluginManager().apply("lifecycle-base");
@@ -53,9 +73,9 @@ public class SamplesPlugin implements Plugin<Project> {
             createSyncKotlinDslTask(project.getTasks(), sample, sampleIntermediateDirectory);
             TaskProvider<SampleZipTask> kotlinDslZipTask = createKotlinDslZipTask(project.getTasks(), sample, zipBaseFileName, sampleIntermediateDirectory);
 
-            TaskProvider<? extends Task> asciidocTask = createAsciidocTask(project.getTasks(), sample, zipBaseFileName, sampleIntermediateDirectory);
+            TaskProvider<? extends Task> asciidoctorTask = createAsciidoctorTask(project.getTasks(), sample, zipBaseFileName, sampleIntermediateDirectory);
 
-            TaskProvider<? extends Task> assembleTask = createSampleAssembleTask(project.getTasks(), sample, project.getLayout().getBuildDirectory(), sampleIntermediateDirectory, Arrays.asList(groovyDslZipTask, kotlinDslZipTask, asciidocTask));
+            TaskProvider<? extends Task> assembleTask = createSampleAssembleTask(project.getTasks(), sample, project.getLayout().getBuildDirectory(), sampleIntermediateDirectory, Arrays.asList(groovyDslZipTask, kotlinDslZipTask, asciidoctorTask), Arrays.asList(groovyDslZipTask, kotlinDslZipTask));
 
             project.getTasks().named("assemble").configure(it -> it.dependsOn(assembleTask));
         });
@@ -66,28 +86,23 @@ public class SamplesPlugin implements Plugin<Project> {
     }
 
     private static TaskProvider<Sync> createSyncGroovyDslTask(TaskContainer tasks, Sample sample, Provider<Directory> sampleIntermediateDirectory) {
-        return tasks.register(syncGroovyDslTaskName(sample), Sync.class, task -> {
-            task.dependsOn(generateWrapperTaskName(sample));
-            task.into(sampleIntermediateDirectory.map(dir -> dir.dir(sample.getName() + "-groovy-dsl")));
-            task.from(sampleIntermediateDirectory.map(dir -> dir.dir(sample.getName() + "-wrapper")));
-            task.from(sample.getSampleDir().file("README.adoc"));
-
-            // TODO(daniel): We should probably use `groovy-dsl`, however, we are following the gradle/gradle convention for now
-            task.from(sample.getSampleDir().dir("groovy"));
-            task.onlyIf(it -> !sample.getSampleDir().dir("groovy").get().getAsFileTree().isEmpty());
-        });
+        return createSyncDslTask(tasks, sample, sampleIntermediateDirectory, Dsl.GROOVY_DSL);
     }
 
     private static TaskProvider<Sync> createSyncKotlinDslTask(TaskContainer tasks, Sample sample, Provider<Directory> sampleIntermediateDirectory) {
-        return tasks.register(syncKotlinDslTaskName(sample), Sync.class, task -> {
+        return createSyncDslTask(tasks, sample, sampleIntermediateDirectory, Dsl.KOTLIN_DSL);
+    }
+
+    private static TaskProvider<Sync> createSyncDslTask(TaskContainer tasks, Sample sample, Provider<Directory> sampleIntermediateDirectory, Dsl dsl) {
+        return tasks.register(syncDslTaskName(sample, dsl), Sync.class, task -> {
             task.dependsOn(generateWrapperTaskName(sample));
-            task.into(sampleIntermediateDirectory.map(dir -> dir.dir(sample.getName() + "-kotlin-dsl")));
+            task.into(sampleIntermediateDirectory.map(dir -> dir.dir(sample.getName() + "-" + dsl.getClassifierName())));
             task.from(sampleIntermediateDirectory.map(dir -> dir.dir(sample.getName() + "-wrapper")));
             task.from(sample.getSampleDir().file("README.adoc"));
 
-            // TODO(daniel): We should probably use `kotlin-dsl`, however, we are following the gradle/gradle convention for now
-            task.from(sample.getSampleDir().dir("kotlin"));
-            task.onlyIf(it -> !sample.getSampleDir().dir("kotlin").get().getAsFileTree().isEmpty());
+            // TODO(daniel): We should probably use `(groovy|kotlin)-dsl`, however, we are following the gradle/gradle convention for now
+            task.from(sample.getSampleDir().dir(dsl.getSampleDirectoryName()));
+            task.onlyIf(it -> !sample.getSampleDir().dir(dsl.getSampleDirectoryName()).get().getAsFileTree().isEmpty());
         });
     }
 
@@ -101,31 +116,31 @@ public class SamplesPlugin implements Plugin<Project> {
     }
 
     private static TaskProvider<SampleZipTask> createGroovyDslZipTask(TaskContainer tasks, Sample sample, Provider<String> zipBaseFileName, Provider<Directory> sampleIntermediateDirectory) {
-        return tasks.register(compressSampleGroovyDslTaskName(sample), SampleZipTask.class, task -> {
-            task.dependsOn(syncGroovyDslTaskName(sample));
-
-            task.getSampleDirectory().set(sampleIntermediateDirectory.map(dir -> dir.dir(sample.getName() + "-groovy-dsl")));
-            task.getSampleZipFile().set(sampleIntermediateDirectory.map(dir -> dir.file(sample.getName() + "-groovy-dsl-zip/" + zipBaseFileName.get() + "-groovy-dsl.zip")));
-        });
+        return createDslZipTask(tasks, sample, zipBaseFileName, sampleIntermediateDirectory, Dsl.GROOVY_DSL);
     }
 
     private static TaskProvider<SampleZipTask> createKotlinDslZipTask(TaskContainer tasks, Sample sample, Provider<String> zipBaseFileName, Provider<Directory> sampleIntermediateDirectory) {
-        return tasks.register(compressSampleKotlinDslTaskName(sample), SampleZipTask.class, task -> {
-            task.dependsOn(syncKotlinDslTaskName(sample));
+        return createDslZipTask(tasks, sample, zipBaseFileName, sampleIntermediateDirectory, Dsl.KOTLIN_DSL);
+    }
 
-            task.getSampleDirectory().set(sampleIntermediateDirectory.map(dir -> dir.dir(sample.getName() + "-kotlin-dsl")));
-            task.getSampleZipFile().set(sampleIntermediateDirectory.map(dir -> dir.file(sample.getName() + "-kotlin-dsl-zip/" + zipBaseFileName.get() + "-kotlin-dsl.zip")));
+    private static TaskProvider<SampleZipTask> createDslZipTask(TaskContainer tasks, Sample sample, Provider<String> zipBaseFileName, Provider<Directory> sampleIntermediateDirectory, Dsl dsl) {
+        return tasks.register(compressSampleDslTaskName(sample, dsl), SampleZipTask.class, task -> {
+            task.dependsOn(syncDslTaskName(sample, dsl));
+
+            task.getSampleDirectory().set(sampleIntermediateDirectory.map(dir -> dir.dir(sample.getName() + "-" + dsl.getClassifierName())));
+            task.getSampleZipFile().set(sampleIntermediateDirectory.map(dir -> dir.file(sample.getName() + "-" + dsl.getClassifierName() + "-zip/" + zipBaseFileName.get() + "-" + dsl.getClassifierName() + ".zip")));
         });
     }
 
-    private static TaskProvider<Sync> createSampleAssembleTask(TaskContainer tasks, Sample sample, Provider<Directory> buildDirectory, Provider<Directory> sampleIntermediateDirectory, Iterable<? extends TaskProvider> taskDependencies) {
-        return tasks.register("assemble" + capitalize(sample.getName()) + "Sample", Sync.class, task -> {
+    private static TaskProvider<Sync> createSampleAssembleTask(TaskContainer tasks, Sample sample, Provider<Directory> buildDirectory, Provider<Directory> sampleIntermediateDirectory, Iterable<? extends TaskProvider> taskDependencies, Iterable<? extends TaskProvider<SampleZipTask>> zipTasks) {
+        return tasks.register("assemble" + GUtil.toCamelCase(sample.getName()) + "Sample", Sync.class, task -> {
             task.dependsOn(taskDependencies);
             task.setGroup(LifecycleBasePlugin.BUILD_GROUP);
             task.setDescription("Assembles '" + sample.getName() + "' sample");
 
-            task.from(tasks.named(compressSampleGroovyDslTaskName(sample), SampleZipTask.class).map(SampleZipTask::getSampleZipFile));
-            task.from(tasks.named(compressSampleKotlinDslTaskName(sample), SampleZipTask.class).map(SampleZipTask::getSampleZipFile));
+            zipTasks.forEach(zipTask -> {
+                task.from(zipTask.map(SampleZipTask::getSampleZipFile));
+            });
             task.from(sampleIntermediateDirectory.map(dir -> dir.dir(sample.getName() + "-content")), spec -> {
                 spec.rename("README.html", "index.html");
             });
@@ -133,57 +148,28 @@ public class SamplesPlugin implements Plugin<Project> {
         });
     }
 
-    private static TaskProvider<AsciidoctorTask> createAsciidocTask(TaskContainer tasks, Sample sample, Provider<String> zipBaseFileName, Provider<Directory> sampleIntermediateDirectory) {
-        return tasks.register("asciidoctor" + capitalize(sample.getName()) + "Sample", AsciidoctorTask.class, task -> {
-            task.dependsOn(compressSampleKotlinDslTaskName(sample), compressSampleGroovyDslTaskName(sample));
+    private static TaskProvider<AsciidoctorTask> createAsciidoctorTask(TaskContainer tasks, Sample sample, Provider<String> zipBaseFileName, Provider<Directory> sampleIntermediateDirectory) {
+        return tasks.register("asciidoctor" + GUtil.toCamelCase(sample.getName()) + "Sample", AsciidoctorTask.class, task -> {
             task.sourceDir(sample.getSampleDir());
             task.outputDir(sampleIntermediateDirectory.map(dir -> dir.dir(sample.getName() + "-content")));
             task.setSeparateOutputDirs(false);
-            // TODO set inputs
 
-            Map<String, Object> a = new HashMap<>();
-            a.put("source-highlighter", "prettify");
-            a.put("imagesdir", "images");
-            a.put("docinfodir", ".");
-            a.put("docinfo1", "");
-            a.put("icons", "font");
-            a.put("encoding", "utf-8");
-            a.put("idprefix", "");
-            a.put("toc", "auto");
-            a.put("toclevels", 1);
-            a.put("toc-title", "Contents");
-            a.put("guides", "https://guides.gradle.org");
+            Map<String, Object> a = getAsciidoctorAttributes();
             a.put("zip-base-file-name", zipBaseFileName.get());
             task.attributes(a);
-
-//            def asciidocIndexFile = project.layout.file(project.tasks.named("asciidoctor").map { new File(it.outputDir, "html5/index.html") })
-//
-//        project.tasks.register("viewGuide", ViewGuide) {
-//            group = "Documentation"
-//            description = "Generates the guide and open in the browser"
-//            indexFile = asciidocIndexFile
-//        }
         });
     }
 
-    private static String compressSampleKotlinDslTaskName(Sample sample) {
-        return "compress" + capitalize(sample.getName()) + "KotlinDslSample";
+    private static String compressSampleDslTaskName(Sample sample, Dsl dsl) {
+        return "compress" + GUtil.toCamelCase(sample.getName()) + dsl.getTaskName() + "Sample";
     }
 
-    private static String compressSampleGroovyDslTaskName(Sample sample) {
-        return "compress" + capitalize(sample.getName()) + "GroovyDslSample";
-    }
-
-    private static String syncGroovyDslTaskName(Sample sample) {
-        return "sync" + capitalize(sample.getName()) + "GroovyDslSample";
-    }
-
-    private static String syncKotlinDslTaskName(Sample sample) {
-        return "sync" + capitalize(sample.getName()) + "KotlinDslSample";
+    private static String syncDslTaskName(Sample sample, Dsl dsl) {
+        return "sync" + GUtil.toCamelCase(sample.getName()) + dsl.getTaskName() + "Sample";
     }
 
     private static String generateWrapperTaskName(Sample sample) {
-        return "generateWrapperFor" + capitalize(sample.getName()) + "Sample";
+        return "generateWrapperFor" + GUtil.toCamelCase(sample.getName()) + "Sample";
     }
 
     private static TaskProvider<GenerateSampleIndexAsciidoc> createSampleIndexGeneratorTask(TaskContainer tasks, Iterable<Sample> samples, ProjectLayout projectLayout, ProviderFactory providerFactory) {
@@ -200,22 +186,23 @@ public class SamplesPlugin implements Plugin<Project> {
             task.outputDir(projectLayout.getBuildDirectory().dir("gradle-samples"));
             task.setSeparateOutputDirs(false);
             task.setBackends("html5");
-            // TODO set inputs
-
-            Map<String, Object> a = new HashMap<>();
-            a.put("source-highlighter", "prettify");
-            a.put("imagesdir", "images");
-            a.put("docinfodir", ".");
-            a.put("docinfo1", "");
-            a.put("icons", "font");
-            a.put("encoding", "utf-8");
-            a.put("idprefix", "");
-            a.put("toc", "auto");
-            a.put("toclevels", 1);
-            a.put("toc-title", "Contents");
-            a.put("guides", "https://guides.gradle.org");
-            task.attributes(a);
+            task.attributes(getAsciidoctorAttributes());
         });
+    }
+
+    private static Map<String, Object> getAsciidoctorAttributes() {
+        Map<String, Object> a = new HashMap<>();
+        a.put("source-highlighter", "prettify");
+        a.put("imagesdir", "images");
+        a.put("docinfodir", ".");
+        a.put("docinfo1", "");
+        a.put("icons", "font");
+        a.put("encoding", "utf-8");
+        a.put("idprefix", "");
+        a.put("toc", "auto");
+        a.put("toclevels", 1);
+        a.put("toc-title", "Contents");
+        return a;
     }
 
     private static String capitalize(String v) {
