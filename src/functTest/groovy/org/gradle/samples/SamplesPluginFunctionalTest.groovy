@@ -162,12 +162,12 @@ samples.create('anotherDemo')
         writeSampleUnderTest()
 
         when:
-        usingGradleVersion("5.4.1")
+        usingGradleVersion("5.5.1")
         build("assembleDemoSample")
 
         then:
-        assertGradleWrapperVersion(groovyDslZipFile, '5.4.1')
-        assertGradleWrapperVersion(kotlinDslZipFile, '5.4.1')
+        assertGradleWrapperVersion(groovyDslZipFile, '5.5.1')
+        assertGradleWrapperVersion(kotlinDslZipFile, '5.5.1')
 
         when:
         usingGradleVersion('5.6.2')
@@ -183,7 +183,7 @@ samples.create('anotherDemo')
         writeSampleUnderTest()
 
         when:
-        usingGradleVersion("5.4.1")
+        usingGradleVersion("5.5.1")
         buildFile << """
 ${sampleUnderTestDsl} {
     gradleVersion = "5.6.2"

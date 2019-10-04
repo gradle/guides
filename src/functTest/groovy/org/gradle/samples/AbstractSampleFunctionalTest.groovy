@@ -88,11 +88,11 @@ endif::[]
     }
 
     protected static void assertSampleTasksExecutedAndNotSkipped(BuildResult result) {
-        result.task(":generateWrapperForDemoSample").outcome == SUCCESS
-        result.task(":syncDemoGroovyDslSample").outcome == SUCCESS
-        result.task(":syncDemoKotlinDslSample").outcome == SUCCESS
-        result.task(":compressDemoGroovyDslSample").outcome == SUCCESS
-        result.task(":compressDemoKotlinDslSample").outcome == SUCCESS
-        result.task(":assembleDemoSample").outcome == SUCCESS
+        assert result.task(":generateWrapperForDemoSample").outcome == SUCCESS
+        assert result.task(":syncDemoGroovyDslSample").outcome == SUCCESS
+        assert result.task(":syncDemoKotlinDslSample").outcome == SUCCESS
+        assert result.task(":compressDemoGroovyDslSample").outcome == SUCCESS
+        assert result.task(":compressDemoKotlinDslSample").outcome == SUCCESS
+        assert result.task(":assembleDemoSample").outcome == SUCCESS
     }
 }
