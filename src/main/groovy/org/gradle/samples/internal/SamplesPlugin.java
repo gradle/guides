@@ -84,6 +84,31 @@ public class SamplesPlugin implements Plugin<Project> {
         TaskProvider<GenerateSampleIndexAsciidoc> indexGeneratorTask = createSampleIndexGeneratorTask(project.getTasks(), samples, project.getLayout(), project.getProviders());
         TaskProvider<? extends Task> asciidocTask = createIndexAsciidocTask(project.getTasks(), indexGeneratorTask, project.getLayout());
         project.getTasks().named("assemble").configure(it -> it.dependsOn(asciidocTask));
+
+        project.afterEvaluate(evaluatedProject -> {
+            samples.forEach(s -> {
+                DefaultSample sample = (DefaultSample) s;
+                if (sample.getDslSampleArchives().isEmpty()) {
+                    sample.getDslSampleArchives().add(configureGroovyDslArchive(sample, project.getObjects().newInstance(DslSampleArchive.class, "groovyDsl")));
+                    sample.getDslSampleArchives().add(configureKotlinDslArchive(sample, project.getObjects().newInstance(DslSampleArchive.class, "kotlinDsl")));
+                }
+                // TODO: Print warning when assembling sample if no zip
+            });
+        });
+    }
+
+    private DslSampleArchive configureGroovyDslArchive(Sample sample, DslSampleArchive archive) {
+        archive.getArchiveContent().from(sample.getArchiveContent());
+        archive.getArchiveContent().from(sample.getSampleDir().dir("groovy"));
+        archive.getArchiveContent().from(sample.getSampleDir().dir("groovy-dsl"));
+        return archive;
+    }
+
+    private DslSampleArchive configureKotlinDslArchive(Sample sample, DslSampleArchive archive) {
+        archive.getArchiveContent().from(sample.getArchiveContent());
+        archive.getArchiveContent().from(sample.getSampleDir().dir("kotlin"));
+        archive.getArchiveContent().from(sample.getSampleDir().dir("kotlin-dsl"));
+        return archive;
     }
 
     private static TaskProvider<Sync> createSyncDslTask(TaskContainer tasks, Sample sample, Provider<Directory> sampleIntermediateDirectory, Dsl dsl) {
@@ -97,6 +122,8 @@ public class SamplesPlugin implements Plugin<Project> {
             // TODO(daniel): We should probably use `(groovy|kotlin)-dsl`, however, we are following the gradle/gradle convention for now
             task.from(sample.getSampleDir().dir(dsl.getSampleDirectoryName()));
             task.onlyIf(it -> !sample.getSampleDir().dir(dsl.getSampleDirectoryName()).get().getAsFileTree().isEmpty());
+
+            // TODO: Print error if zip folder doesn't contain an settings.gradle (Groovy) or settings.gradle.kts (Kotlin) - mandatory
         });
     }
 

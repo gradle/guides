@@ -16,22 +16,6 @@ public abstract class DefaultSample implements Sample {
     public DefaultSample(String name, ObjectFactory objectFactory) {
         this.name = name;
         archives = objectFactory.domainObjectSet(DslSampleArchive.class);
-        archives.add(configureGroovyDslArchive(objectFactory.newInstance(DslSampleArchive.class, "groovyDsl")));
-        archives.add(configureKotlinDslArchive(objectFactory.newInstance(DslSampleArchive.class, "kotlinDsl")));
-    }
-
-    private DslSampleArchive configureGroovyDslArchive(DslSampleArchive archive) {
-        archive.getArchiveContent().from(getArchiveContent());
-        archive.getArchiveContent().from(getSampleDir().dir("groovy"));
-        archive.getArchiveContent().from(getSampleDir().dir("groovy-dsl"));
-        return archive;
-    }
-
-    private DslSampleArchive configureKotlinDslArchive(DslSampleArchive archive) {
-        archive.getArchiveContent().from(getArchiveContent());
-        archive.getArchiveContent().from(getSampleDir().dir("kotlin"));
-        archive.getArchiveContent().from(getSampleDir().dir("kotlin-dsl"));
-        return archive;
     }
 
     @Override
