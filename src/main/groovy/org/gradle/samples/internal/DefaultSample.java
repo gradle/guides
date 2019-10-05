@@ -43,6 +43,10 @@ public abstract class DefaultSample implements Sample {
 
     abstract Property<String> getArchiveBaseName();
 
+    abstract DirectoryProperty getOutputDirectory();
+
+    abstract ConfigurableFileCollection getSource();
+
     String getWrapperTaskName() {
         return "generateWrapperFor" + capitalize(name) + "Sample";
     }

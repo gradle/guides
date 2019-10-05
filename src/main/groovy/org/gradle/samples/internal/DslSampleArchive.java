@@ -1,6 +1,7 @@
 package org.gradle.samples.internal;
 
 import org.gradle.api.Named;
+import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.samples.DomainSpecificSample;

@@ -18,7 +18,6 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin;
 import org.gradle.samples.Sample;
 
 import javax.inject.Inject;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,6 +40,7 @@ public class SamplesPlugin implements Plugin<Project> {
             result.getGradleVersion().convention(project.getGradle().getGradleVersion());
             result.getIntermediateDirectory().set(project.getLayout().getBuildDirectory().dir("sample-intermediate/" + name));
             result.getArchiveBaseName().set(project.provider(() -> name + (project.getVersion().equals(Project.DEFAULT_VERSION) ? "" : "-" + project.getVersion().toString())));
+            result.getOutputDirectory().set(project.getLayout().getBuildDirectory().dir("gradle-samples/" + name));
             return result;
         });
         project.getExtensions().add(NamedDomainObjectContainer.class, "samples", samples);
@@ -54,9 +54,8 @@ public class SamplesPlugin implements Plugin<Project> {
 
             // TODO: avoid creating the task if no DSL sample archive
             createWrapperTask(project.getTasks(), sample, getObjectFactory());
-
-            TaskProvider<? extends Task> asciidoctorTask = createAsciidoctorTask(project.getTasks(), sample);
-            TaskProvider<Sync> assembleTask = createSampleAssembleTask(project.getTasks(), sample, project.getLayout().getBuildDirectory(), Arrays.asList(asciidoctorTask));
+            createAsciidoctorTask(project.getTasks(), sample, getObjectFactory());
+            TaskProvider<Sync> assembleTask = createSampleAssembleTask(project.getTasks(), sample);
 
             project.getTasks().named("assemble").configure(it -> it.dependsOn(assembleTask));
 
@@ -64,7 +63,7 @@ public class SamplesPlugin implements Plugin<Project> {
                 createSyncDslTask(project.getTasks(), dslSample);
                 TaskProvider<SampleZipTask> zipTask = createDslZipTask(project.getTasks(), dslSample);
 
-                assembleTask.configure(task -> task.from(zipTask.flatMap(SampleZipTask::getSampleZipFile)));
+                sample.getSource().from(zipTask.flatMap(SampleZipTask::getSampleZipFile));
             });
         });
 
@@ -91,8 +90,8 @@ public class SamplesPlugin implements Plugin<Project> {
 
     private static TaskProvider<Sync> createSyncDslTask(TaskContainer tasks, DslSampleArchive dslSample) {
         return tasks.register(dslSample.getSyncTaskName(), Sync.class, task -> {
-            task.into(dslSample.getAssembleDirectory());
             task.from(dslSample.getArchiveContent());
+            task.into(dslSample.getAssembleDirectory());
 
             // TODO: Print error if zip folder doesn't contain an settings.gradle (Groovy) or settings.gradle.kts (Kotlin) - mandatory
         });
@@ -107,7 +106,7 @@ public class SamplesPlugin implements Plugin<Project> {
             task.onlyIf(it -> !sample.getSampleDir().getAsFileTree().isEmpty());
         });
 
-        sample.getArchiveContent().from(objectFactory.fileCollection().from(wrapperDirectory).builtBy(wrapperTask));
+        sample.getDslSampleArchives().all(it -> it.getArchiveContent().from(objectFactory.fileCollection().from(wrapperDirectory).builtBy(wrapperTask)));
 
         return wrapperTask;
     }
@@ -121,24 +120,30 @@ public class SamplesPlugin implements Plugin<Project> {
         });
     }
 
-    private static TaskProvider<Sync> createSampleAssembleTask(TaskContainer tasks, DefaultSample sample, Provider<Directory> buildDirectory, Iterable<? extends TaskProvider> taskDependencies) {
+    private static TaskProvider<Sync> createSampleAssembleTask(TaskContainer tasks, DefaultSample sample) {
         return tasks.register("assemble" + capitalize(sample.getName()) + "Sample", Sync.class, task -> {
-            task.dependsOn(taskDependencies);
             task.setGroup(LifecycleBasePlugin.BUILD_GROUP);
             task.setDescription("Assembles '" + sample.getName() + "' sample");
 
-            task.from(sample.getIntermediateDirectory().dir("content"), spec -> {
-                spec.rename("README.html", "index.html");
-            });
-            task.into(buildDirectory.map(dir -> dir.dir("gradle-samples/" + sample.getName())));
+            task.from(sample.getSource());
+            task.into(sample.getOutputDirectory());
         });
     }
 
-    private static TaskProvider<AsciidoctorTask> createAsciidoctorTask(TaskContainer tasks, DefaultSample sample) {
-        return tasks.register("asciidoctor" + capitalize(sample.getName()) + "Sample", AsciidoctorTask.class, task -> {
+    private static TaskProvider<AsciidoctorTask> createAsciidoctorTask(TaskContainer tasks, DefaultSample sample, ObjectFactory objectFactory) {
+        Provider<Directory> contentDirectory = sample.getIntermediateDirectory().dir("content");
+        TaskProvider<AsciidoctorTask> asciidoctorTask = tasks.register("asciidoctor" + capitalize(sample.getName()) + "Sample", AsciidoctorTask.class, task -> {
             task.sourceDir(sample.getSampleDir());
-            task.outputDir(sample.getIntermediateDirectory().dir("content"));
+            task.outputDir(task.getTemporaryDir());
             task.setSeparateOutputDirs(false);
+
+            task.doLast(it -> {
+                task.getProject().sync(spec -> {
+                    spec.from(task.getTemporaryDir());
+                    spec.into(contentDirectory);
+                    spec.rename("README.html", "index.html");
+                });
+            });
             // TODO: Filter to only README.adoc
             // TODO: Fail if no README.adoc file
 
@@ -146,6 +151,10 @@ public class SamplesPlugin implements Plugin<Project> {
             a.put("zip-base-file-name", sample.getArchiveBaseName().get());
             task.attributes(a);
         });
+
+        sample.getSource().from(objectFactory.fileCollection().from(contentDirectory).builtBy(asciidoctorTask));
+
+        return asciidoctorTask;
     }
 
     private static TaskProvider<GenerateSampleIndexAsciidoc> createSampleIndexGeneratorTask(TaskContainer tasks, Iterable<Sample> samples, ProjectLayout projectLayout, ProviderFactory providerFactory) {
