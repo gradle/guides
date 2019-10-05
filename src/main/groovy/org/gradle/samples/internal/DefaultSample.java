@@ -1,12 +1,17 @@
 package org.gradle.samples.internal;
 
 import org.gradle.api.DomainObjectSet;
+import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.RegularFile;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
+import org.gradle.api.provider.Provider;
 import org.gradle.samples.Sample;
 
 import javax.inject.Inject;
+
+import static org.gradle.samples.internal.StringUtils.capitalize;
 
 public abstract class DefaultSample implements Sample {
     private final String name;
@@ -25,12 +30,24 @@ public abstract class DefaultSample implements Sample {
     @Override
     public abstract Property<String> getGradleVersion();
 
-    public DomainObjectSet<DslSampleArchive> getDslSampleArchives() {
-        return archives;
-    }
-
     @Override
     public String getName() {
         return name;
+    }
+
+    Provider<RegularFile> getReadMeFile() {
+        return getSampleDir().file("README.adoc");
+    }
+
+    abstract DirectoryProperty getIntermediateDirectory();
+
+    abstract Property<String> getArchiveBaseName();
+
+    String getWrapperTaskName() {
+        return "generateWrapperFor" + capitalize(name) + "Sample";
+    }
+
+    DomainObjectSet<DslSampleArchive> getDslSampleArchives() {
+        return archives;
     }
 }

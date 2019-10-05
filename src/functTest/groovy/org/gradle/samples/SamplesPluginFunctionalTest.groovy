@@ -1,7 +1,6 @@
 package org.gradle.samples
 
 import org.asciidoctor.gradle.AsciidoctorTask
-import org.gradle.testkit.runner.TaskOutcome
 
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile

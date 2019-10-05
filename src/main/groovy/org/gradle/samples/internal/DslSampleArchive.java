@@ -1,8 +1,9 @@
 package org.gradle.samples.internal;
 
 import org.gradle.api.Named;
+import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.RegularFileProperty;
 import org.gradle.samples.DomainSpecificSample;
-import org.gradle.samples.Sample;
 
 import static org.gradle.samples.internal.StringUtils.capitalize;
 
@@ -22,25 +23,35 @@ public abstract class DslSampleArchive implements Named, DomainSpecificSample {
         return name;
     }
 
-    public String getLanguageName() {
+    String getLanguageName() {
         return languageName;
     }
 
-    public String getClassifier() {
+    String getClassifier() {
         return classifier;
     }
 
-    public String getSyncTaskName() {
+    String getSyncTaskName() {
         return "sync" + capitalize(name) + "Sample";
     }
 
-    public String getCompressTaskName() {
+    String getCompressTaskName() {
         return "compress" + capitalize(name) + "Sample";
     }
 
-    public DslSampleArchive configureFrom(Sample sample) {
+    abstract DirectoryProperty getAssembleDirectory();
+
+    abstract DirectoryProperty getArchiveDirectory();
+
+    abstract RegularFileProperty getArchiveFile();
+
+    DslSampleArchive configureFrom(DefaultSample sample) {
         getArchiveContent().from(sample.getArchiveContent());
         getArchiveContent().from(sample.getSampleDir().dir(getLanguageName()));
+        getArchiveContent().from(sample.getReadMeFile());
+        getAssembleDirectory().set(sample.getIntermediateDirectory().dir(getClassifier() + "-content"));
+        getArchiveDirectory().set(sample.getIntermediateDirectory().dir(getClassifier() + "-zip"));
+        getArchiveFile().set(sample.getIntermediateDirectory().file(sample.getArchiveBaseName().map(baseName -> getClassifier() + "-zip/" + baseName + "-" + getClassifier() + ".zip")));
         return this;
     }
 }
