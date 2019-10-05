@@ -1,6 +1,7 @@
 package org.gradle.samples
 
 import org.asciidoctor.gradle.AsciidoctorTask
+import org.gradle.testkit.runner.BuildResult
 
 import java.nio.file.Files
 import java.util.zip.ZipEntry
@@ -8,35 +9,7 @@ import java.util.zip.ZipFile
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
-class SamplesPluginFunctionalTest extends AbstractSampleFunctionalTest {
-    def "can build samples"() {
-        makeSingleProject()
-        writeSampleUnderTest()
-
-        when:
-        def result = build('assemble')
-
-        then:
-        result.task(":generateSampleIndex").outcome == SUCCESS
-        result.task(":asciidocSampleIndex").outcome == SUCCESS
-        result.task(":assemble").outcome == SUCCESS
-        assertSampleTasksExecutedAndNotSkipped(result)
-        assertZipHasContent(groovyDslZipFile, "gradlew", "gradlew.bat", "gradle/wrapper/gradle-wrapper.properties", "gradle/wrapper/gradle-wrapper.jar", "README.adoc", "build.gradle", "settings.gradle")
-        new File(projectDir, "build/gradle-samples/demo/index.html").exists()
-        assertZipHasContent(kotlinDslZipFile, "gradlew", "gradlew.bat", "gradle/wrapper/gradle-wrapper.properties", "gradle/wrapper/gradle-wrapper.jar", "README.adoc", "build.gradle.kts", "settings.gradle.kts")
-
-        def sampleIndexFile = new File(projectDir, "build/gradle-samples/demo/index.html")
-        sampleIndexFile.exists()
-        sampleIndexFile.text.contains('<a href="demo-groovy-dsl.zip">')
-        sampleIndexFile.text.contains('<a href="demo-kotlin-dsl.zip">')
-        sampleIndexFile.text.contains('<h1>Demo Sample</h1>')
-        sampleIndexFile.text.contains('Some doc')
-
-        def indexFile = new File(projectDir, "build/gradle-samples/index.html")
-        indexFile.exists()
-        indexFile.text.contains('<a href="demo/">')
-    }
-
+class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
     def "can assemble sample using a lifecycle task"() {
         makeSingleProject()
         writeSampleUnderTest()
@@ -277,21 +250,13 @@ samples.configureEach { sample ->
         result.output.contains("Sample 'demo' for Groovy DSL is invalid due to missing 'settings.gradle' file.")
     }
 
+//    def "can only have Kotlin DSL despite the conventional source are present"() {
+//        makeSingleProject()
+//
+//    }
+
     // TODO: Allow preprocess build script files before zipping (remove tags, see NOTE1) or including them in rendered output (remove tags and license)
     //   NOTE1: We can remove the license from all the files and add a LICENSE file at the root of the sample
-
-    private static void assertZipHasContent(File file, String... expectedContent) {
-        assert file.exists()
-        def content = new ZipFile(file).withCloseable { zipFile ->
-            return zipFile.entries().findAll { !it.directory }.collect { ZipEntry zipEntry ->
-                return zipEntry.getName()
-            }
-        } as Set
-
-        assert content.size() == expectedContent.size()
-        content.removeAll(Arrays.asList(expectedContent))
-        assert content.empty
-    }
 
     private static void assertGradleWrapperVersion(File file, String expectedGradleVersion) {
         assert file.exists()
@@ -300,5 +265,39 @@ samples.configureEach { sample ->
         }
 
         assert text.contains("-${expectedGradleVersion}-")
+    }
+
+    protected void makeSingleProject() {
+        buildFile << """
+            plugins {
+                id 'org.gradle.samples'
+            }
+
+            samples {
+                create("demo") {
+                    sampleDir = file('src')
+                }
+            }
+        """
+    }
+
+    protected void writeSampleUnderTest() {
+        temporaryFolder.newFolder("src")
+        temporaryFolder.newFile("src/README.adoc") << """
+= Demo Sample
+
+Some doc
+
+ifndef::env-github[]
+- link:{zip-base-file-name}-groovy-dsl.zip[Download Groovy DSL ZIP]
+- link:{zip-base-file-name}-kotlin-dsl.zip[Download Kotlin DSL ZIP]
+endif::[]
+"""
+        writeGroovyDslSample("src");
+        writeKotlinDslSample("src")
+    }
+
+    protected static void assertSampleTasksExecutedAndNotSkipped(BuildResult result) {
+        assertBothDslSampleTasksExecutedAndNotSkipped(result);
     }
 }

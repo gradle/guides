@@ -24,7 +24,7 @@ import static org.gradle.testkit.runner.TaskOutcome.SKIPPED
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 
-class IncrementalSamplesFunctionalTest extends AbstractSampleFunctionalTest {
+class IncrementalSamplesFunctionalTest extends AbstractSampleFunctionalSpec {
     private static final SKIPPED_TASK_OUTCOMES = [FROM_CACHE, UP_TO_DATE, SKIPPED, NO_SOURCE]
 
     protected void writeGroovyDslSampleUnderTest() {
@@ -300,21 +300,37 @@ endif::[]
         assert result.task(":assembleDemoSample").outcome in SKIPPED_TASK_OUTCOMES
     }
 
-    private static void assertOnlyGroovyDslTasksExecutedAndNotSkipped(BuildResult result) {
-        assert result.task(":generateWrapperForDemoSample").outcome == SUCCESS
-        assert result.task(":syncDemoGroovyDslSample").outcome == SUCCESS
-        assert result.task(":syncDemoKotlinDslSample") == null
-        assert result.task(":compressDemoGroovyDslSample").outcome == SUCCESS
-        assert result.task(":compressDemoKotlinDslSample") == null
-        assert result.task(":assembleDemoSample").outcome == SUCCESS
+    protected void makeSingleProject() {
+        buildFile << """
+            plugins {
+                id 'org.gradle.samples'
+            }
+
+            samples {
+                create("demo") {
+                    sampleDir = file('src')
+                }
+            }
+        """
     }
 
-    private static void assertOnlyKotlinDslTasksExecutedAndNotSkipped(BuildResult result) {
-        assert result.task(":generateWrapperForDemoSample").outcome == SUCCESS
-        assert result.task(":syncDemoGroovyDslSample") == null
-        assert result.task(":syncDemoKotlinDslSample").outcome == SUCCESS
-        assert result.task(":compressDemoGroovyDslSample") == null
-        assert result.task(":compressDemoKotlinDslSample").outcome == SUCCESS
-        assert result.task(":assembleDemoSample").outcome == SUCCESS
+    protected void writeSampleUnderTest() {
+        temporaryFolder.newFolder("src")
+        temporaryFolder.newFile("src/README.adoc") << """
+= Demo Sample
+
+Some doc
+
+ifndef::env-github[]
+- link:{zip-base-file-name}-groovy-dsl.zip[Download Groovy DSL ZIP]
+- link:{zip-base-file-name}-kotlin-dsl.zip[Download Kotlin DSL ZIP]
+endif::[]
+"""
+        writeGroovyDslSample("src");
+        writeKotlinDslSample("src")
+    }
+
+    protected static void assertSampleTasksExecutedAndNotSkipped(BuildResult result) {
+        assertBothDslSampleTasksExecutedAndNotSkipped(result);
     }
 }

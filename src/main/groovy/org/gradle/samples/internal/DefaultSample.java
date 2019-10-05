@@ -16,11 +16,13 @@ import static org.gradle.samples.internal.StringUtils.capitalize;
 public abstract class DefaultSample implements Sample {
     private final String name;
     private final DomainObjectSet<DslSampleArchive> archives;
+    private final ObjectFactory objectFactory;
 
     @Inject
     public DefaultSample(String name, ObjectFactory objectFactory) {
         this.name = name;
         archives = objectFactory.domainObjectSet(DslSampleArchive.class);
+        this.objectFactory = objectFactory;
     }
 
     @Override
@@ -46,6 +48,16 @@ public abstract class DefaultSample implements Sample {
     abstract DirectoryProperty getOutputDirectory();
 
     abstract ConfigurableFileCollection getSource();
+
+    @Override
+    public void withGroovyDsl() {
+        getDslSampleArchives().add(objectFactory.newInstance(GroovyDslSampleArchive.class, name).configureFrom(this));
+    }
+
+    @Override
+    public void withKotlinDsl() {
+        getDslSampleArchives().add(objectFactory.newInstance(KotlinDslSampleArchive.class, name).configureFrom(this));
+    }
 
     String getWrapperTaskName() {
         return "generateWrapperFor" + capitalize(name) + "Sample";

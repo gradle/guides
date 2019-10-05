@@ -11,4 +11,8 @@ public interface Sample extends Named {
     Property<String> getGradleVersion();
 
     ConfigurableFileCollection getArchiveContent();
+
+    void withGroovyDsl();
+
+    void withKotlinDsl();
 }
