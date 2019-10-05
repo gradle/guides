@@ -51,12 +51,16 @@ public abstract class DefaultSample implements Sample {
 
     @Override
     public void withGroovyDsl() {
-        getDslSampleArchives().add(objectFactory.newInstance(GroovyDslSampleArchive.class, name).configureFrom(this));
+        if (getDslSampleArchives().withType(GroovyDslSampleArchive.class).isEmpty()) {
+            getDslSampleArchives().add(objectFactory.newInstance(GroovyDslSampleArchive.class, name).configureFrom(this));
+        }
     }
 
     @Override
     public void withKotlinDsl() {
-        getDslSampleArchives().add(objectFactory.newInstance(KotlinDslSampleArchive.class, name).configureFrom(this));
+        if (getDslSampleArchives().withType(KotlinDslSampleArchive.class).isEmpty()) {
+            getDslSampleArchives().add(objectFactory.newInstance(KotlinDslSampleArchive.class, name).configureFrom(this));
+        }
     }
 
     String getWrapperTaskName() {

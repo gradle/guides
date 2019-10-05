@@ -34,20 +34,58 @@ endif::[]
     }
 
     @Override
+    protected List<File> getDslZipFiles(Map m) {
+        return [getKotlinDslZipFile(m)]
+    }
+
+    @Override
     protected void assertSampleTasksExecutedAndNotSkipped(BuildResult result) {
         assertOnlyKotlinDslTasksExecutedAndNotSkipped(result);
     }
 
     @Override
-    protected void assertSampleIndexContainsLinkToSampleArchives() {
+    protected void assertSampleIndexContainsLinkToSampleArchives(String version) {
+        if (version == null) {
+            version = ''
+        } else {
+            version = "-${version}"
+        }
+
         def sampleIndexFile = new File(projectDir, "build/gradle-samples/demo/index.html")
         assert sampleIndexFile.exists()
-        assert sampleIndexFile.text.contains('<a href="demo-kotlin-dsl.zip">')
+        assert !sampleIndexFile.text.contains("""<a href="demo${version}-groovy-dsl.zip">""")
+        assert sampleIndexFile.text.contains("""<a href="demo${version}-kotlin-dsl.zip">""")
     }
 
     @Override
-    protected void assertZipsHasContent() {
+    protected void assertSampleIndexDoesNotContainsLinkToSampleArchives(String version) {
+        if (version == null) {
+            version = ''
+        } else {
+            version = "-${version}"
+        }
+
+        def sampleIndexFile = new File(projectDir, "build/gradle-samples/demo/index.html")
+        assert sampleIndexFile.exists()
+        assert !sampleIndexFile.text.contains("""<a href="demo${version}-groovy-dsl.zip">""")
+        assert !sampleIndexFile.text.contains("""<a href="demo${version}-kotlin-dsl.zip">""")
+    }
+
+    @Override
+    protected void assertDslZipsHasContent() {
         assert !groovyDslZipFile.exists()
         assertZipHasContent(kotlinDslZipFile, "gradlew", "gradlew.bat", "gradle/wrapper/gradle-wrapper.properties", "gradle/wrapper/gradle-wrapper.jar", "README.adoc", "build.gradle.kts", "settings.gradle.kts")
+    }
+
+    @Override
+    protected void assertDslZipFilesExists(Map m) {
+        assert !getGroovyDslZipFile(m).exists()
+        assert getKotlinDslZipFile(m).exists()
+    }
+
+    @Override
+    protected void assertDslZipFilesDoesNotExists(Map m) {
+        assert !getGroovyDslZipFile(m).exists()
+        assert !getKotlinDslZipFile(m).exists()
     }
 }

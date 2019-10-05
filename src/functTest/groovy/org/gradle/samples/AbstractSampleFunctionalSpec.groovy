@@ -109,4 +109,13 @@ class AbstractSampleFunctionalSpec extends AbstractFunctionalTest {
         content.removeAll(Arrays.asList(expectedContent))
         assert content.empty
     }
+
+    protected static void assertGradleWrapperVersion(File file, String expectedGradleVersion) {
+        assert file.exists()
+        def text = new ZipFile(file).withCloseable { zipFile ->
+            return zipFile.getInputStream(zipFile.entries().findAll { !it.directory }.find { it.name == 'gradle/wrapper/gradle-wrapper.properties' }).text
+        }
+
+        assert text.contains("-${expectedGradleVersion}-")
+    }
 }
