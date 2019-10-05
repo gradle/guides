@@ -74,7 +74,7 @@ endif::[]
         def result = build('assemble')
 
         then:
-        assertSampleTasksSkipped(result)
+        assertSampleTasksNotExecuted(result)
         result.task(':assemble').outcome in SKIPPED_TASK_OUTCOMES
         result.task(':generateSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
         result.task(':asciidocSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
@@ -83,7 +83,7 @@ endif::[]
         !new File(projectDir, 'build').exists()
     }
 
-    def "skips kotlin dsl tasks when no source"() {
+    def "has no kotlin dsl tasks when no source"() {
         makeSingleProject()
         writeGroovyDslSampleUnderTest()
 
@@ -112,7 +112,7 @@ endif::[]
         indexFile.text.contains('<a href="demo/">')
     }
 
-    def "skips groovy dsl tasks when no source"() {
+    def "has no groovy dsl tasks when no source"() {
         makeSingleProject()
         writeKotlinDslSampleUnderTest()
 
@@ -278,6 +278,19 @@ endif::[]
     // TODO: Add/remove sample, index asciidoctor execute
     // TODO: Output are cached
 
+    // TODO: Explicit kotlin dsl source task are skipped if no source ... or maybe just fail saying "hey something is wrong"
+    // TODO: Explicit groovy dsl source task... same as kotlin
+    // TODO: Somehow fail when no groovy DSL or kotlin DSL
+
+    private static void assertSampleTasksNotExecuted(BuildResult result) {
+        assert result.task(":generateWrapperForDemoSample") == null
+        assert result.task(":syncDemoGroovyDslSample") == null
+        assert result.task(":syncDemoKotlinDslSample") == null
+        assert result.task(":compressDemoGroovyDslSample") == null
+        assert result.task(":compressDemoKotlinDslSample") == null
+        assert result.task(":assembleDemoSample").outcome in SKIPPED_TASK_OUTCOMES
+    }
+
     private static void assertSampleTasksSkipped(BuildResult result) {
         assert result.task(":generateWrapperForDemoSample").outcome in SKIPPED_TASK_OUTCOMES
         assert result.task(":syncDemoGroovyDslSample").outcome in SKIPPED_TASK_OUTCOMES
@@ -290,17 +303,17 @@ endif::[]
     private static void assertOnlyGroovyDslTasksExecutedAndNotSkipped(BuildResult result) {
         assert result.task(":generateWrapperForDemoSample").outcome == SUCCESS
         assert result.task(":syncDemoGroovyDslSample").outcome == SUCCESS
-        assert result.task(":syncDemoKotlinDslSample").outcome in SKIPPED_TASK_OUTCOMES
+        assert result.task(":syncDemoKotlinDslSample") == null
         assert result.task(":compressDemoGroovyDslSample").outcome == SUCCESS
-        assert result.task(":compressDemoKotlinDslSample").outcome in SKIPPED_TASK_OUTCOMES
+        assert result.task(":compressDemoKotlinDslSample") == null
         assert result.task(":assembleDemoSample").outcome == SUCCESS
     }
 
     private static void assertOnlyKotlinDslTasksExecutedAndNotSkipped(BuildResult result) {
         assert result.task(":generateWrapperForDemoSample").outcome == SUCCESS
-        assert result.task(":syncDemoGroovyDslSample").outcome in SKIPPED_TASK_OUTCOMES
+        assert result.task(":syncDemoGroovyDslSample") == null
         assert result.task(":syncDemoKotlinDslSample").outcome == SUCCESS
-        assert result.task(":compressDemoGroovyDslSample").outcome in SKIPPED_TASK_OUTCOMES
+        assert result.task(":compressDemoGroovyDslSample") == null
         assert result.task(":compressDemoKotlinDslSample").outcome == SUCCESS
         assert result.task(":assembleDemoSample").outcome == SUCCESS
     }

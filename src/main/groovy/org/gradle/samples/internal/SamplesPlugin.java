@@ -7,6 +7,7 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.ProjectLayout;
+import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.tasks.Sync;
@@ -17,6 +18,7 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin;
 import org.gradle.samples.Sample;
 import org.gradle.util.GUtil;
 
+import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +46,11 @@ public class SamplesPlugin implements Plugin<Project> {
         public String getTaskName() {
             return capitalize(languageName) + "Dsl";
         }
+    }
+
+    @Inject
+    protected ObjectFactory getObjectFactory() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -86,29 +93,20 @@ public class SamplesPlugin implements Plugin<Project> {
         project.getTasks().named("assemble").configure(it -> it.dependsOn(asciidocTask));
 
         project.afterEvaluate(evaluatedProject -> {
-            samples.forEach(s -> {
-                DefaultSample sample = (DefaultSample) s;
-                if (sample.getDslSampleArchives().isEmpty()) {
-                    sample.getDslSampleArchives().add(configureGroovyDslArchive(sample, project.getObjects().newInstance(GroovyDslSampleArchive.class, sample.getName())));
-                    sample.getDslSampleArchives().add(configureKotlinDslArchive(sample, project.getObjects().newInstance(KotlinDslSampleArchive.class, sample.getName())));
-                }
-                // TODO: Print warning when assembling sample if no zip
-            });
+            samples.stream().map(it -> (DefaultSample)it).forEach(this::configureDefaultDomainSpecificSampleIfNeeded);
         });
     }
 
-    private DslSampleArchive configureGroovyDslArchive(Sample sample, DslSampleArchive archive) {
-        archive.getArchiveContent().from(sample.getArchiveContent());
-        archive.getArchiveContent().from(sample.getSampleDir().dir("groovy"));
-        archive.getArchiveContent().from(sample.getSampleDir().dir("groovy-dsl"));
-        return archive;
-    }
-
-    private DslSampleArchive configureKotlinDslArchive(Sample sample, DslSampleArchive archive) {
-        archive.getArchiveContent().from(sample.getArchiveContent());
-        archive.getArchiveContent().from(sample.getSampleDir().dir("kotlin"));
-        archive.getArchiveContent().from(sample.getSampleDir().dir("kotlin-dsl"));
-        return archive;
+    private void configureDefaultDomainSpecificSampleIfNeeded(DefaultSample sample) {
+        if (sample.getDslSampleArchives().isEmpty()) {
+            if (KotlinDslSampleArchive.hasSource(sample.getSampleDir().get())) {
+                sample.getDslSampleArchives().add(getObjectFactory().newInstance(KotlinDslSampleArchive.class, sample.getName()).configureFrom(sample));
+            }
+            if (GroovyDslSampleArchive.hasSource(sample.getSampleDir().get())) {
+                sample.getDslSampleArchives().add(getObjectFactory().newInstance(GroovyDslSampleArchive.class, sample.getName()).configureFrom(sample));
+            }
+        }
+        // TODO: Print warning when assembling sample if no zip
     }
 
     private static TaskProvider<Sync> createSyncDslTask(TaskContainer tasks, Sample sample, DslSampleArchive dslSample, Provider<Directory> sampleIntermediateDirectory, Dsl dsl) {
