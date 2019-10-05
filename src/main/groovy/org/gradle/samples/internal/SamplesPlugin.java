@@ -73,9 +73,9 @@ public class SamplesPlugin implements Plugin<Project> {
 
             project.getTasks().named("assemble").configure(it -> it.dependsOn(assembleTask));
 
-            sample.getDslSampleArchives().configureEach(sampleDsl -> {
-                createSyncDslTask(project.getTasks(), sample, sampleIntermediateDirectory, sampleDsl.getName().contains("groovy") ? Dsl.GROOVY_DSL : Dsl.KOTLIN_DSL);
-                TaskProvider<SampleZipTask> zipTask = createDslZipTask(project.getTasks(), sample, zipBaseFileName, sampleIntermediateDirectory, sampleDsl.getName().contains("groovy") ? Dsl.GROOVY_DSL : Dsl.KOTLIN_DSL);
+            sample.getDslSampleArchives().configureEach(dslSample -> {
+                createSyncDslTask(project.getTasks(), sample, dslSample, sampleIntermediateDirectory, dslSample.getName().contains("Groovy") ? Dsl.GROOVY_DSL : Dsl.KOTLIN_DSL);
+                TaskProvider<SampleZipTask> zipTask = createDslZipTask(project.getTasks(), sample, dslSample, zipBaseFileName, sampleIntermediateDirectory, dslSample.getName().contains("Groovy") ? Dsl.GROOVY_DSL : Dsl.KOTLIN_DSL);
 
                 assembleTask.configure(task -> task.from(zipTask.flatMap(SampleZipTask::getSampleZipFile)));
             });
@@ -89,8 +89,8 @@ public class SamplesPlugin implements Plugin<Project> {
             samples.forEach(s -> {
                 DefaultSample sample = (DefaultSample) s;
                 if (sample.getDslSampleArchives().isEmpty()) {
-                    sample.getDslSampleArchives().add(configureGroovyDslArchive(sample, project.getObjects().newInstance(DslSampleArchive.class, "groovyDsl")));
-                    sample.getDslSampleArchives().add(configureKotlinDslArchive(sample, project.getObjects().newInstance(DslSampleArchive.class, "kotlinDsl")));
+                    sample.getDslSampleArchives().add(configureGroovyDslArchive(sample, project.getObjects().newInstance(GroovyDslSampleArchive.class, sample.getName())));
+                    sample.getDslSampleArchives().add(configureKotlinDslArchive(sample, project.getObjects().newInstance(KotlinDslSampleArchive.class, sample.getName())));
                 }
                 // TODO: Print warning when assembling sample if no zip
             });
@@ -111,16 +111,15 @@ public class SamplesPlugin implements Plugin<Project> {
         return archive;
     }
 
-    private static TaskProvider<Sync> createSyncDslTask(TaskContainer tasks, Sample sample, Provider<Directory> sampleIntermediateDirectory, Dsl dsl) {
-        return tasks.register(syncDslTaskName(sample, dsl), Sync.class, task -> {
+    private static TaskProvider<Sync> createSyncDslTask(TaskContainer tasks, Sample sample, DslSampleArchive dslSample, Provider<Directory> sampleIntermediateDirectory, Dsl dsl) {
+        return tasks.register(dslSample.getSyncTaskName(), Sync.class, task -> {
             task.dependsOn(generateWrapperTaskName(sample));
-            task.into(sampleIntermediateDirectory.map(dir -> dir.dir(sample.getName() + "-" + dsl.getClassifierName())));
+            task.into(sampleIntermediateDirectory.map(dir -> dir.dir(sample.getName() + "-" + dslSample.getClassifier())));
             task.from(sampleIntermediateDirectory.map(dir -> dir.dir(sample.getName() + "-wrapper")));
             task.from(sample.getSampleDir().file("README.adoc"));
-            task.from(sample.getArchiveContent());
+            task.from(dslSample.getArchiveContent());
 
             // TODO(daniel): We should probably use `(groovy|kotlin)-dsl`, however, we are following the gradle/gradle convention for now
-            task.from(sample.getSampleDir().dir(dsl.getSampleDirectoryName()));
             task.onlyIf(it -> !sample.getSampleDir().dir(dsl.getSampleDirectoryName()).get().getAsFileTree().isEmpty());
 
             // TODO: Print error if zip folder doesn't contain an settings.gradle (Groovy) or settings.gradle.kts (Kotlin) - mandatory
@@ -136,12 +135,12 @@ public class SamplesPlugin implements Plugin<Project> {
         });
     }
 
-    private static TaskProvider<SampleZipTask> createDslZipTask(TaskContainer tasks, Sample sample, Provider<String> zipBaseFileName, Provider<Directory> sampleIntermediateDirectory, Dsl dsl) {
-        return tasks.register(compressSampleDslTaskName(sample, dsl), SampleZipTask.class, task -> {
+    private static TaskProvider<SampleZipTask> createDslZipTask(TaskContainer tasks, Sample sample, DslSampleArchive dslSample, Provider<String> zipBaseFileName, Provider<Directory> sampleIntermediateDirectory, Dsl dsl) {
+        return tasks.register(dslSample.getCompressTaskName(), SampleZipTask.class, task -> {
             task.dependsOn(syncDslTaskName(sample, dsl));
 
-            task.getSampleDirectory().set(sampleIntermediateDirectory.map(dir -> dir.dir(sample.getName() + "-" + dsl.getClassifierName())));
-            task.getSampleZipFile().set(sampleIntermediateDirectory.map(dir -> dir.file(sample.getName() + "-" + dsl.getClassifierName() + "-zip/" + zipBaseFileName.get() + "-" + dsl.getClassifierName() + ".zip")));
+            task.getSampleDirectory().set(sampleIntermediateDirectory.map(dir -> dir.dir(sample.getName() + "-" + dslSample.getClassifier())));
+            task.getSampleZipFile().set(sampleIntermediateDirectory.map(dir -> dir.file(sample.getName() + "-" + dslSample.getClassifier() + "-zip/" + zipBaseFileName.get() + "-" + dslSample.getClassifier() + ".zip")));
         });
     }
 
