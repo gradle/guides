@@ -147,8 +147,11 @@ tasks.register('verify') {
     }
 }
 
-samples.create('anotherDemo')
+samples.create('anotherDemo') {
+    sampleDir = file('anotherDemo')
+}
 """
+        // TODO: SampleDir should have convention of src/samples/<sample-name>
 
         when:
         build('verify')

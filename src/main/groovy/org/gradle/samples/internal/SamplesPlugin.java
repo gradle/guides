@@ -26,28 +26,6 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class SamplesPlugin implements Plugin<Project> {
-    private enum Dsl {
-        GROOVY_DSL("groovy"), KOTLIN_DSL("kotlin");
-
-        private final String languageName;
-
-        Dsl(String languageName) {
-            this.languageName = languageName;
-        }
-
-        String getSampleDirectoryName() {
-            return languageName;
-        }
-
-        String getClassifierName() {
-            return languageName + "-dsl";
-        }
-
-        public String getTaskName() {
-            return capitalize(languageName) + "Dsl";
-        }
-    }
-
     @Inject
     protected ObjectFactory getObjectFactory() {
         throw new UnsupportedOperationException();
@@ -74,6 +52,7 @@ public class SamplesPlugin implements Plugin<Project> {
             DefaultSample sample = (DefaultSample) s;
             Provider<String> zipBaseFileName = project.provider(() -> sample.getName() + (project.getVersion().equals(Project.DEFAULT_VERSION) ? "" : "-" + project.getVersion().toString()));
 
+            // TODO: avoid creating the task if no DSL sample archive
             createWrapperTask(project.getTasks(), sample, sampleIntermediateDirectory);
             TaskProvider<? extends Task> asciidoctorTask = createAsciidoctorTask(project.getTasks(), sample, zipBaseFileName, sampleIntermediateDirectory);
             TaskProvider<Sync> assembleTask = createSampleAssembleTask(project.getTasks(), sample, project.getLayout().getBuildDirectory(), sampleIntermediateDirectory, Arrays.asList(asciidoctorTask));
@@ -81,8 +60,8 @@ public class SamplesPlugin implements Plugin<Project> {
             project.getTasks().named("assemble").configure(it -> it.dependsOn(assembleTask));
 
             sample.getDslSampleArchives().configureEach(dslSample -> {
-                createSyncDslTask(project.getTasks(), sample, dslSample, sampleIntermediateDirectory, dslSample.getName().contains("Groovy") ? Dsl.GROOVY_DSL : Dsl.KOTLIN_DSL);
-                TaskProvider<SampleZipTask> zipTask = createDslZipTask(project.getTasks(), sample, dslSample, zipBaseFileName, sampleIntermediateDirectory, dslSample.getName().contains("Groovy") ? Dsl.GROOVY_DSL : Dsl.KOTLIN_DSL);
+                createSyncDslTask(project.getTasks(), sample, dslSample, sampleIntermediateDirectory);
+                TaskProvider<SampleZipTask> zipTask = createDslZipTask(project.getTasks(), sample, dslSample, zipBaseFileName, sampleIntermediateDirectory);
 
                 assembleTask.configure(task -> task.from(zipTask.flatMap(SampleZipTask::getSampleZipFile)));
             });
@@ -109,16 +88,13 @@ public class SamplesPlugin implements Plugin<Project> {
         // TODO: Print warning when assembling sample if no zip
     }
 
-    private static TaskProvider<Sync> createSyncDslTask(TaskContainer tasks, Sample sample, DslSampleArchive dslSample, Provider<Directory> sampleIntermediateDirectory, Dsl dsl) {
+    private static TaskProvider<Sync> createSyncDslTask(TaskContainer tasks, Sample sample, DslSampleArchive dslSample, Provider<Directory> sampleIntermediateDirectory) {
         return tasks.register(dslSample.getSyncTaskName(), Sync.class, task -> {
             task.dependsOn(generateWrapperTaskName(sample));
             task.into(sampleIntermediateDirectory.map(dir -> dir.dir(sample.getName() + "-" + dslSample.getClassifier())));
             task.from(sampleIntermediateDirectory.map(dir -> dir.dir(sample.getName() + "-wrapper")));
             task.from(sample.getSampleDir().file("README.adoc"));
             task.from(dslSample.getArchiveContent());
-
-            // TODO(daniel): We should probably use `(groovy|kotlin)-dsl`, however, we are following the gradle/gradle convention for now
-            task.onlyIf(it -> !sample.getSampleDir().dir(dsl.getSampleDirectoryName()).get().getAsFileTree().isEmpty());
 
             // TODO: Print error if zip folder doesn't contain an settings.gradle (Groovy) or settings.gradle.kts (Kotlin) - mandatory
         });
@@ -133,9 +109,9 @@ public class SamplesPlugin implements Plugin<Project> {
         });
     }
 
-    private static TaskProvider<SampleZipTask> createDslZipTask(TaskContainer tasks, Sample sample, DslSampleArchive dslSample, Provider<String> zipBaseFileName, Provider<Directory> sampleIntermediateDirectory, Dsl dsl) {
+    private static TaskProvider<SampleZipTask> createDslZipTask(TaskContainer tasks, Sample sample, DslSampleArchive dslSample, Provider<String> zipBaseFileName, Provider<Directory> sampleIntermediateDirectory) {
         return tasks.register(dslSample.getCompressTaskName(), SampleZipTask.class, task -> {
-            task.dependsOn(syncDslTaskName(sample, dsl));
+            task.dependsOn(dslSample.getSyncTaskName());
 
             task.getSampleDirectory().set(sampleIntermediateDirectory.map(dir -> dir.dir(sample.getName() + "-" + dslSample.getClassifier())));
             task.getSampleZipFile().set(sampleIntermediateDirectory.map(dir -> dir.file(sample.getName() + "-" + dslSample.getClassifier() + "-zip/" + zipBaseFileName.get() + "-" + dslSample.getClassifier() + ".zip")));
@@ -165,14 +141,6 @@ public class SamplesPlugin implements Plugin<Project> {
             a.put("zip-base-file-name", zipBaseFileName.get());
             task.attributes(a);
         });
-    }
-
-    private static String compressSampleDslTaskName(Sample sample, Dsl dsl) {
-        return "compress" + GUtil.toCamelCase(sample.getName()) + dsl.getTaskName() + "Sample";
-    }
-
-    private static String syncDslTaskName(Sample sample, Dsl dsl) {
-        return "sync" + GUtil.toCamelCase(sample.getName()) + dsl.getTaskName() + "Sample";
     }
 
     private static String generateWrapperTaskName(Sample sample) {
@@ -210,9 +178,5 @@ public class SamplesPlugin implements Plugin<Project> {
         a.put("toclevels", 1);
         a.put("toc-title", "Contents");
         return a;
-    }
-
-    private static String capitalize(String v) {
-        return Character.toUpperCase(v.charAt(0)) + v.substring(1);
     }
 }
