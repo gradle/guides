@@ -2,6 +2,7 @@ package org.gradle.samples
 
 import org.asciidoctor.gradle.AsciidoctorTask
 
+import java.nio.file.Files
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
@@ -248,6 +249,32 @@ samples.configureEach { sample ->
 
         then:
         noExceptionThrown()
+    }
+
+    def "fails when settings.gradle.kts is missing from Kotlin DSL sample"() {
+        makeSingleProject()
+        writeGroovyDslSample("src")
+        Files.move(new File(temporaryFolder.root, "src/groovy").toPath(), new File(temporaryFolder.root, "src/kotlin").toPath())
+
+        when:
+        def result = buildAndFail("assemble")
+
+        then:
+        result.output.contains("Execution failed for task ':syncDemoKotlinDslSample'.")
+        result.output.contains("Sample 'demo' for Kotlin DSL is invalid due to missing 'settings.gradle.kts' file.")
+    }
+
+    def "fails when settings.gradle is missing from Groovy DSL sample"() {
+        makeSingleProject()
+        writeKotlinDslSample("src")
+        Files.move(new File(temporaryFolder.root, "src/kotlin").toPath(), new File(temporaryFolder.root, "src/groovy").toPath())
+
+        when:
+        def result = buildAndFail("assemble")
+
+        then:
+        result.output.contains("Execution failed for task ':syncDemoGroovyDslSample'.")
+        result.output.contains("Sample 'demo' for Groovy DSL is invalid due to missing 'settings.gradle' file.")
     }
 
     // TODO: Allow preprocess build script files before zipping (remove tags, see NOTE1) or including them in rendered output (remove tags and license)

@@ -12,11 +12,13 @@ public abstract class DslSampleArchive implements Named, DomainSpecificSample {
     private final String name;
     private final String languageName;
     private final String classifier;
+    private final String settingsFileName;
 
-    DslSampleArchive(String name, String languageName, String classifier) {
+    DslSampleArchive(String name, String languageName, String classifier, String settingsFileName) {
         this.name = name;
         this.languageName = languageName;
         this.classifier = classifier;
+        this.settingsFileName = settingsFileName;
     }
 
     @Override
@@ -45,6 +47,10 @@ public abstract class DslSampleArchive implements Named, DomainSpecificSample {
     abstract DirectoryProperty getArchiveDirectory();
 
     abstract RegularFileProperty getArchiveFile();
+
+    String getSettingsFileName() {
+        return settingsFileName;
+    }
 
     DslSampleArchive configureFrom(DefaultSample sample) {
         getArchiveContent().from(sample.getArchiveContent());

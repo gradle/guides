@@ -1,6 +1,8 @@
 package org.gradle.samples.internal;
 
 import org.asciidoctor.gradle.AsciidoctorTask;
+import org.gradle.api.Action;
+import org.gradle.api.GradleException;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -60,8 +62,10 @@ public class SamplesPlugin implements Plugin<Project> {
             project.getTasks().named("assemble").configure(it -> it.dependsOn(assembleTask));
 
             sample.getDslSampleArchives().configureEach(dslSample -> {
-                createSyncDslTask(project.getTasks(), dslSample);
+                TaskProvider<Sync> syncTask = createSyncDslTask(project.getTasks(), dslSample);
                 TaskProvider<SampleZipTask> zipTask = createDslZipTask(project.getTasks(), dslSample);
+
+                checkForValidSampleArchive(syncTask, sample, dslSample);
 
                 sample.getSource().from(zipTask.flatMap(SampleZipTask::getSampleZipFile));
             });
@@ -92,8 +96,20 @@ public class SamplesPlugin implements Plugin<Project> {
         return tasks.register(dslSample.getSyncTaskName(), Sync.class, task -> {
             task.from(dslSample.getArchiveContent());
             task.into(dslSample.getAssembleDirectory());
+        });
+    }
 
-            // TODO: Print error if zip folder doesn't contain an settings.gradle (Groovy) or settings.gradle.kts (Kotlin) - mandatory
+    private static void checkForValidSampleArchive(TaskProvider<Sync> syncTask, DefaultSample sample, DslSampleArchive dslSample) {
+        syncTask.configure(task -> {
+            task.doLast(new Action<Task>() {
+                // Lambda isn't well supported yet
+                @Override
+                public void execute(Task it) {
+                    if (!dslSample.getAssembleDirectory().file(dslSample.getSettingsFileName()).get().getAsFile().exists()) {
+                        throw new GradleException("Sample '" + sample.getName() + "' for " + capitalize(dslSample.getLanguageName()) + " DSL is invalid due to missing '" + dslSample.getSettingsFileName() + "' file.");
+                    }
+                }
+            });
         });
     }
 
