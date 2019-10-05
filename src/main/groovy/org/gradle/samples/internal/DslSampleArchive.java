@@ -4,6 +4,8 @@ import org.gradle.api.Named;
 import org.gradle.samples.DomainSpecificSample;
 import org.gradle.samples.Sample;
 
+import static org.gradle.samples.internal.StringUtils.capitalize;
+
 public abstract class DslSampleArchive implements Named, DomainSpecificSample {
     private final String name;
     private final String languageName;
@@ -34,10 +36,6 @@ public abstract class DslSampleArchive implements Named, DomainSpecificSample {
 
     public String getCompressTaskName() {
         return "compress" + capitalize(name) + "Sample";
-    }
-
-    private static String capitalize(String v) {
-        return Character.toUpperCase(v.charAt(0)) + v.substring(1);
     }
 
     public DslSampleArchive configureFrom(Sample sample) {

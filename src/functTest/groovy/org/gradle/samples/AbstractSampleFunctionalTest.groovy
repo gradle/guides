@@ -34,18 +34,28 @@ ifndef::env-github[]
 - link:{zip-base-file-name}-kotlin-dsl.zip[Download Kotlin DSL ZIP]
 endif::[]
 """
-        temporaryFolder.newFolder("src", "groovy")
-        temporaryFolder.newFile("src/groovy/build.gradle") << """
+        writeGroovyDslSample("src");
+        writeKotlinDslSample("src")
+    }
+
+    protected void writeGroovyDslSample(String sampleDirectory) {
+        def directory = "${sampleDirectory}/groovy"
+        temporaryFolder.newFolder(directory.split('/'))
+        temporaryFolder.newFile("${directory}/build.gradle") << """
             println "Hello, world!"
         """
-        temporaryFolder.newFile("src/groovy/settings.gradle") << """
+        temporaryFolder.newFile("${directory}/settings.gradle") << """
             rootProject.name = 'demo'
         """
-        temporaryFolder.newFolder("src", "kotlin")
-        temporaryFolder.newFile("src/kotlin/build.gradle.kts") << """
+    }
+
+    protected void writeKotlinDslSample(String sampleDirectory) {
+        def directory = "${sampleDirectory}/kotlin"
+        temporaryFolder.newFolder(directory.split('/'))
+        temporaryFolder.newFile("${directory}/build.gradle.kts") << """
             println("Hello, world!")
         """
-        temporaryFolder.newFile("src/kotlin/settings.gradle.kts") << """
+        temporaryFolder.newFile("${directory}/settings.gradle.kts") << """
             rootProject.name = "demo"
         """
     }

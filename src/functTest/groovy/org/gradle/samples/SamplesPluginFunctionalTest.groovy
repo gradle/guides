@@ -224,6 +224,33 @@ samples.configureEach { sample ->
         assertZipHasContent(kotlinDslZipFile, "gradlew", "gradlew.bat", "gradle.properties", "gradle/wrapper/gradle-wrapper.properties", "gradle/wrapper/gradle-wrapper.jar", "README.adoc", "build.gradle.kts", "settings.gradle.kts")
     }
 
+    def "can have two sample with different naming convention"() {
+        buildFile << """
+            plugins {
+                id 'org.gradle.samples'
+            }
+
+            samples {
+                "foo-bar" {
+                    sampleDir = file('src/samples/foo-bar')
+                }
+                "fooBar" {
+                    sampleDir = file('src/samples/fooBar')
+                }
+            }
+        """
+        writeGroovyDslSample("src/samples/foo-bar")
+        writeKotlinDslSample("src/samples/foo-bar")
+        writeGroovyDslSample("src/samples/fooBar")
+        writeKotlinDslSample("src/samples/fooBar")
+
+        when:
+        build("help")
+
+        then:
+        noExceptionThrown()
+    }
+
     // TODO: Allow preprocess build script files before zipping (remove tags, see NOTE1) or including them in rendered output (remove tags and license)
     //   NOTE1: We can remove the license from all the files and add a LICENSE file at the root of the sample
 

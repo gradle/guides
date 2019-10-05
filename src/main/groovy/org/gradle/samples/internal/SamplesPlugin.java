@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static org.gradle.samples.internal.StringUtils.capitalize;
+
 public class SamplesPlugin implements Plugin<Project> {
     @Inject
     protected ObjectFactory getObjectFactory() {
@@ -119,7 +121,7 @@ public class SamplesPlugin implements Plugin<Project> {
     }
 
     private static TaskProvider<Sync> createSampleAssembleTask(TaskContainer tasks, Sample sample, Provider<Directory> buildDirectory, Provider<Directory> sampleIntermediateDirectory, Iterable<? extends TaskProvider> taskDependencies) {
-        return tasks.register("assemble" + GUtil.toCamelCase(sample.getName()) + "Sample", Sync.class, task -> {
+        return tasks.register("assemble" + capitalize(sample.getName()) + "Sample", Sync.class, task -> {
             task.dependsOn(taskDependencies);
             task.setGroup(LifecycleBasePlugin.BUILD_GROUP);
             task.setDescription("Assembles '" + sample.getName() + "' sample");
@@ -132,7 +134,7 @@ public class SamplesPlugin implements Plugin<Project> {
     }
 
     private static TaskProvider<AsciidoctorTask> createAsciidoctorTask(TaskContainer tasks, Sample sample, Provider<String> zipBaseFileName, Provider<Directory> sampleIntermediateDirectory) {
-        return tasks.register("asciidoctor" + GUtil.toCamelCase(sample.getName()) + "Sample", AsciidoctorTask.class, task -> {
+        return tasks.register("asciidoctor" + capitalize(sample.getName()) + "Sample", AsciidoctorTask.class, task -> {
             task.sourceDir(sample.getSampleDir());
             task.outputDir(sampleIntermediateDirectory.map(dir -> dir.dir(sample.getName() + "-content")));
             task.setSeparateOutputDirs(false);
@@ -144,7 +146,7 @@ public class SamplesPlugin implements Plugin<Project> {
     }
 
     private static String generateWrapperTaskName(Sample sample) {
-        return "generateWrapperFor" + GUtil.toCamelCase(sample.getName()) + "Sample";
+        return "generateWrapperFor" + capitalize(sample.getName()) + "Sample";
     }
 
     private static TaskProvider<GenerateSampleIndexAsciidoc> createSampleIndexGeneratorTask(TaskContainer tasks, Iterable<Sample> samples, ProjectLayout projectLayout, ProviderFactory providerFactory) {

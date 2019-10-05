@@ -8,7 +8,7 @@ import javax.inject.Inject;
 public abstract class GroovyDslSampleArchive extends DslSampleArchive {
     @Inject
     public GroovyDslSampleArchive(String name) {
-        super(GUtil.toCamelCase(name) + "GroovyDsl", "groovy", "groovy-dsl");
+        super(name + "GroovyDsl", "groovy", "groovy-dsl");
     }
 
     public static boolean hasSource(Directory sampleDirectory) {
