@@ -106,4 +106,35 @@ endif::[]
         groovyDslZipFile.exists()
         !kotlinDslZipFile.exists()
     }
+
+    // TODO: Calling multiple time withGroovyDsl is allowed
+
+    def "can relocate Groovy DSL sample source"() {
+        given:
+        buildFile << """
+plugins {
+    id("org.gradle.samples")
+}
+
+samples {
+    demo {
+        sampleDir = file('src')
+        withGroovyDsl {
+            archiveContent.from(file('src/groovy-dsl'))
+        }
+    }
+}
+"""
+        writeSampleContent()
+        writeGroovyDslSampleToDirectory('src/groovy-dsl')
+        temporaryFolder.newFolder('src', 'groovy')
+        temporaryFolder.newFile('src/groovy/do.not.include')
+
+        when:
+        def result = build('assembleDemoSample')
+
+        then:
+        assertSampleTasksExecutedAndNotSkipped(result)
+        assertDslZipsHasContent()
+    }
 }

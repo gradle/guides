@@ -1,7 +1,6 @@
 package org.gradle.samples.internal;
 
 import org.gradle.api.Named;
-import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.samples.DomainSpecificSample;
@@ -53,8 +52,12 @@ public abstract class DslSampleArchive implements Named, DomainSpecificSample {
     }
 
     DslSampleArchive configureFrom(DefaultSample sample) {
-        getArchiveContent().from(sample.getArchiveContent());
         getArchiveContent().from(sample.getSampleDir().dir(getLanguageName()));
+        return configureDefaults(sample);
+    }
+
+    DslSampleArchive configureDefaults(DefaultSample sample) {
+        getArchiveContent().from(sample.getArchiveContent());
         getArchiveContent().from(sample.getReadMeFile());
         getAssembleDirectory().set(sample.getIntermediateDirectory().dir(getClassifier() + "-content"));
         getArchiveDirectory().set(sample.getIntermediateDirectory().dir(getClassifier() + "-zip"));

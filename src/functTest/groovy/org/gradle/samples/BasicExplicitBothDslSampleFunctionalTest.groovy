@@ -93,4 +93,42 @@ endif::[]
         assert !getGroovyDslZipFile(m).exists()
         assert !getKotlinDslZipFile(m).exists()
     }
+
+    // TODO: Calling multiple time withGroovyDsl and withKotlinDsl is allowed
+
+    def "can relocate both DSL sample source"() {
+        given:
+        buildFile << """
+plugins {
+    id("org.gradle.samples")
+}
+
+samples {
+    demo {
+        sampleDir = file('src')
+        withGroovyDsl {
+            archiveContent.from(file('src/groovy-dsl'))
+        }
+        withKotlinDsl {
+            archiveContent.from(file('src/kotlin-dsl'))
+        }
+    }
+}
+"""
+        writeSampleContent()
+        writeGroovyDslSampleToDirectory('src/groovy-dsl')
+        temporaryFolder.newFolder('src', 'groovy')
+        temporaryFolder.newFile('src/groovy/do.not.include')
+
+        writeKotlinDslSampleToDirectory('src/kotlin-dsl')
+        temporaryFolder.newFolder('src', 'kotlin')
+        temporaryFolder.newFile('src/kotlin/do.not.include')
+
+        when:
+        def result = build('assembleDemoSample')
+
+        then:
+        assertSampleTasksExecutedAndNotSkipped(result)
+        assertDslZipsHasContent()
+    }
 }

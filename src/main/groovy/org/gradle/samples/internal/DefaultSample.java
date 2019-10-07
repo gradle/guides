@@ -1,5 +1,6 @@
 package org.gradle.samples.internal;
 
+import org.gradle.api.Action;
 import org.gradle.api.DomainObjectSet;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
@@ -7,6 +8,7 @@ import org.gradle.api.file.RegularFile;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
+import org.gradle.samples.DomainSpecificSample;
 import org.gradle.samples.Sample;
 
 import javax.inject.Inject;
@@ -57,10 +59,30 @@ public abstract class DefaultSample implements Sample {
     }
 
     @Override
+    public void withGroovyDsl(Action<? super DomainSpecificSample> action) {
+        if (getDslSampleArchives().withType(GroovyDslSampleArchive.class).isEmpty()) {
+            DslSampleArchive dslSample = objectFactory.newInstance(GroovyDslSampleArchive.class, name).configureDefaults(this);
+            action.execute(dslSample);
+            getDslSampleArchives().add(dslSample);
+        }
+        // TODO: configure the sample after it was added
+    }
+
+    @Override
     public void withKotlinDsl() {
         if (getDslSampleArchives().withType(KotlinDslSampleArchive.class).isEmpty()) {
             getDslSampleArchives().add(objectFactory.newInstance(KotlinDslSampleArchive.class, name).configureFrom(this));
         }
+    }
+
+    @Override
+    public void withKotlinDsl(Action<? super DomainSpecificSample> action) {
+        if (getDslSampleArchives().withType(KotlinDslSampleArchive.class).isEmpty()) {
+            DslSampleArchive dslSample = objectFactory.newInstance(KotlinDslSampleArchive.class, name).configureDefaults(this);
+            action.execute(dslSample);
+            getDslSampleArchives().add(dslSample);
+        }
+        // TODO: configure the sample after it was added
     }
 
     String getWrapperTaskName() {

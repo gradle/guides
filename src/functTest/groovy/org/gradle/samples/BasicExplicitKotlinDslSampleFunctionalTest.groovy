@@ -22,16 +22,7 @@ class BasicExplicitKotlinDslSampleFunctionalTest extends AbstractBasicSampleFunc
 
     @Override
     protected void writeSampleUnderTest() {
-        temporaryFolder.newFolder("src")
-        temporaryFolder.newFile("src/README.adoc") << """
-= Demo Sample
-
-Some doc
-
-ifndef::env-github[]
-- link:{zip-base-file-name}-kotlin-dsl.zip[Download Kotlin DSL ZIP]
-endif::[]
-"""
+        writeSampleContent()
         writeGroovyDslSample("src")
         writeKotlinDslSample("src")
     }
@@ -105,5 +96,36 @@ endif::[]
         assertOnlyKotlinDslTasksExecutedAndNotSkipped(result)
         !groovyDslZipFile.exists()
         kotlinDslZipFile.exists()
+    }
+
+    // TODO: Calling multiple time withKotlinDsl is allowed
+
+    def "can relocate Kotlin DSL sample source"() {
+        given:
+        buildFile << """
+plugins {
+    id("org.gradle.samples")
+}
+
+samples {
+    demo {
+        sampleDir = file('src')
+        withKotlinDsl {
+            archiveContent.from(file('src/kotlin-dsl'))
+        }
+    }
+}
+"""
+        writeSampleContent()
+        writeKotlinDslSampleToDirectory('src/kotlin-dsl')
+        temporaryFolder.newFolder('src', 'kotlin')
+        temporaryFolder.newFile('src/kotlin/do.not.include')
+
+        when:
+        def result = build('assembleDemoSample')
+
+        then:
+        assertSampleTasksExecutedAndNotSkipped(result)
+        assertDslZipsHasContent()
     }
 }
