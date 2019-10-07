@@ -120,13 +120,43 @@ samples.configureEach { sample ->
                 withKotlinDsl()
                 withKotlinDsl()
             }
+
+            tasks.register('verify') {
+                doLast {
+                    // This uses internal APIs for asserting the correctness of the test
+                    assert ${sampleUnderTestDsl}.dslSampleArchives.size() == 2
+                }
+            }
         """
 
         when:
-        build('help')
+        build('verify')
 
         then:
         noExceptionThrown()
+    }
+
+    def "can call sample dsl configuration multiple time to configure components"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        buildFile << """
+            ${sampleUnderTestDsl} {
+                withGroovyDsl { println 'configuring Groovy DSL first time' }
+                withGroovyDsl { println 'configuring Groovy DSL second time' }
+                withKotlinDsl { println 'configuring Kotlin DSL first time' }
+                withKotlinDsl { println 'configuring Kotlin DSL second time' }
+            }
+        """
+
+        when:
+        def result = build('help')
+
+        then:
+        noExceptionThrown()
+        result.output.contains('configuring Groovy DSL first time')
+        result.output.contains('configuring Groovy DSL second time')
+        result.output.contains('configuring Kotlin DSL first time')
+        result.output.contains('configuring Kotlin DSL second time')
     }
 
     // TODO: Allow preprocess build script files before zipping (remove tags, see NOTE1) or including them in rendered output (remove tags and license)

@@ -60,12 +60,7 @@ public abstract class DefaultSample implements Sample {
 
     @Override
     public void withGroovyDsl(Action<? super DomainSpecificSample> action) {
-        if (getDslSampleArchives().withType(GroovyDslSampleArchive.class).isEmpty()) {
-            DslSampleArchive dslSample = objectFactory.newInstance(GroovyDslSampleArchive.class, name).configureDefaults(this);
-            action.execute(dslSample);
-            getDslSampleArchives().add(dslSample);
-        }
-        // TODO: configure the sample after it was added
+        action.execute(getOrCreateDsl(GroovyDslSampleArchive.class));
     }
 
     @Override
@@ -77,12 +72,17 @@ public abstract class DefaultSample implements Sample {
 
     @Override
     public void withKotlinDsl(Action<? super DomainSpecificSample> action) {
-        if (getDslSampleArchives().withType(KotlinDslSampleArchive.class).isEmpty()) {
-            DslSampleArchive dslSample = objectFactory.newInstance(KotlinDslSampleArchive.class, name).configureDefaults(this);
-            action.execute(dslSample);
-            getDslSampleArchives().add(dslSample);
-        }
-        // TODO: configure the sample after it was added
+        action.execute(getOrCreateDsl(KotlinDslSampleArchive.class));
+    }
+
+    private <T extends DslSampleArchive> DomainSpecificSample getOrCreateDsl(Class<T> dslClass) {
+        return getDslSampleArchives()
+                .withType(dslClass)
+                .stream().findFirst().orElseGet(() -> {
+                    T dslSample = dslClass.cast(objectFactory.newInstance(dslClass, name).configureDefaults(this));
+                    getDslSampleArchives().add(dslSample);
+                    return dslSample;
+                });
     }
 
     String getWrapperTaskName() {
