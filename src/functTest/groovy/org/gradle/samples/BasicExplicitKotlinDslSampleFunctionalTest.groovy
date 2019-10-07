@@ -91,4 +91,19 @@ endif::[]
         assert !getGroovyDslZipFile(m).exists()
         assert !getKotlinDslZipFile(m).exists()
     }
+
+    def "only contains Kotlin DSL sample even if Groovy DSL source are available"() {
+        given:
+        makeSingleProject()
+        writeSampleUnderTest()
+        writeGroovyDslSample('src/demo')
+
+        when:
+        def result = build('assembleDemoSample')
+
+        then:
+        assertOnlyKotlinDslTasksExecutedAndNotSkipped(result)
+        !groovyDslZipFile.exists()
+        kotlinDslZipFile.exists()
+    }
 }
