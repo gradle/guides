@@ -22,20 +22,15 @@ class BasicExplicitBothDslSampleFunctionalTest extends AbstractBasicSampleFuncti
     }
 
     @Override
-    protected void writeSampleUnderTest() {
-        temporaryFolder.newFolder("src")
-        temporaryFolder.newFile("src/README.adoc") << """
-= Demo Sample
-
-Some doc
-
+    protected void writeSampleUnderTestToDirectory(String directory) {
+        writeSampleContentToDirectory(directory) << """
 ifndef::env-github[]
 - link:{zip-base-file-name}-groovy-dsl.zip[Download Groovy DSL ZIP]
 - link:{zip-base-file-name}-kotlin-dsl.zip[Download Kotlin DSL ZIP]
 endif::[]
 """
-        writeGroovyDslSample("src")
-        writeKotlinDslSample("src")
+        writeGroovyDslSample(directory)
+        writeKotlinDslSample(directory)
     }
 
     @Override

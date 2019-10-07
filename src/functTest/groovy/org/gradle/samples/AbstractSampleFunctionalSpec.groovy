@@ -25,16 +25,12 @@ import java.util.zip.ZipFile
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 class AbstractSampleFunctionalSpec extends AbstractFunctionalTest {
-    protected void writeSampleContent() {
-        temporaryFolder.newFolder("src")
-        temporaryFolder.newFile("src/README.adoc") << """
+    protected File writeSampleContentToDirectory(String directory) {
+        temporaryFolder.newFolder(directory.split('/'))
+        return temporaryFolder.newFile("${directory}/README.adoc") << """
 = Demo Sample
 
 Some doc
-
-ifndef::env-github[]
-- link:{zip-base-file-name}-kotlin-dsl.zip[Download Kotlin DSL ZIP]
-endif::[]
 """
     }
 

@@ -160,9 +160,30 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
         }
     }
 
+    def "can relocate sample"() {
+        makeSingleProject()
+        writeSampleUnderTestToDirectory('src')
+        buildFile << """
+${sampleUnderTestDsl} {
+    sampleDir = file('src')
+}
+"""
+
+        when:
+        def result = build("assembleDemoSample")
+
+        then:
+        assertSampleTasksExecutedAndNotSkipped(result)
+        assertDslZipsHasContent()
+    }
+
     protected abstract void makeSingleProject()
 
-    protected abstract void writeSampleUnderTest()
+    protected void writeSampleUnderTest() {
+        writeSampleUnderTestToDirectory('src')
+    }
+
+    protected abstract void writeSampleUnderTestToDirectory(String directory)
 
     protected abstract List<File> getDslZipFiles(Map m = [:])
 
