@@ -110,6 +110,30 @@ samples.configureEach { sample ->
         result.output.contains("Sample 'demo' for Groovy DSL is invalid due to missing 'settings.gradle' file.")
     }
 
+    def "fails when README.adoc is missing from Groovy DSL sample"() {
+        makeSingleProject()
+        writeGroovyDslSample("src/samples/demo")
+
+        when:
+        def result = buildAndFail("assemble")
+
+        then:
+        result.output.contains("Execution failed for task ':installDemoGroovyDslSample'.")
+        result.output.contains("Sample 'demo' is invalid due to missing 'README.adoc' file.")
+    }
+
+    def "fails when README.adoc is missing from Kotlin DSL sample"() {
+        makeSingleProject()
+        writeKotlinDslSample("src/samples/demo")
+
+        when:
+        def result = buildAndFail("assemble")
+
+        then:
+        result.output.contains("Execution failed for task ':installDemoKotlinDslSample'.")
+        result.output.contains("Sample 'demo' is invalid due to missing 'README.adoc' file.")
+    }
+
     def "can call sample dsl configuration multiple time"() {
         makeSingleProject()
         writeSampleUnderTest()

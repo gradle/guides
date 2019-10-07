@@ -104,15 +104,28 @@ public class SamplesPlugin implements Plugin<Project> {
         });
     }
 
-    private static void checkForValidSampleArchive(TaskProvider<? extends Task> syncTask, DefaultSample sample, DslSampleArchive dslSample) {
-        syncTask.configure(task -> {
-            task.doLast(new Action<Task>() {
+    private static void checkForValidSampleArchive(TaskProvider<InstallSampleZipContentTask> installTask, DefaultSample sample, DslSampleArchive dslSample) {
+        installTask.configure(task -> {
+            task.doFirst(new Action<Task>() {
                 // Lambda isn't well supported yet
                 @Override
                 public void execute(Task it) {
-                    if (!dslSample.getInstallDirectory().file(dslSample.getSettingsFileName()).get().getAsFile().exists()) {
+
+                    if (!hasSettingsFile()) {
                         throw new GradleException("Sample '" + sample.getName() + "' for " + capitalize(dslSample.getLanguageName()) + " DSL is invalid due to missing '" + dslSample.getSettingsFileName() + "' file.");
                     }
+
+                    if (!hasReadMeFile()) {
+                        throw new GradleException("Sample '" + sample.getName() + "' is invalid due to missing 'README.adoc' file.");
+                    }
+                }
+
+                private boolean hasSettingsFile() {
+                    return task.getSource().getAsFileTree().getFiles().stream().anyMatch(it -> it.getName().equals(dslSample.getSettingsFileName()));
+                }
+
+                private boolean hasReadMeFile() {
+                    return task.getSource().getAsFileTree().getFiles().stream().anyMatch(it -> it.getName().equals("README.adoc"));
                 }
             });
         });
