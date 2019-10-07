@@ -63,7 +63,7 @@ public class SamplesPlugin implements Plugin<Project> {
             project.getTasks().named("assemble").configure(it -> it.dependsOn(assembleTask));
 
             sample.getDslSampleArchives().configureEach(dslSample -> {
-                TaskProvider<Sync> syncTask = createSyncDslTask(project.getTasks(), dslSample);
+                TaskProvider<InstallSampleZipContentTask> syncTask = createSyncDslTask(project.getTasks(), dslSample);
                 TaskProvider<SampleZipTask> zipTask = createDslZipTask(project.getTasks(), dslSample);
 
                 checkForValidSampleArchive(syncTask, sample, dslSample);
@@ -93,14 +93,14 @@ public class SamplesPlugin implements Plugin<Project> {
         // TODO: Print warning when assembling sample if no zip
     }
 
-    private static TaskProvider<Sync> createSyncDslTask(TaskContainer tasks, DslSampleArchive dslSample) {
-        return tasks.register(dslSample.getSyncTaskName(), Sync.class, task -> {
-            task.from(dslSample.getArchiveContent());
-            task.into(dslSample.getAssembleDirectory());
+    private static TaskProvider<InstallSampleZipContentTask> createSyncDslTask(TaskContainer tasks, DslSampleArchive dslSample) {
+        return tasks.register(dslSample.getSyncTaskName(), InstallSampleZipContentTask.class, task -> {
+            task.getSource().from(dslSample.getArchiveContent());
+            task.getInstallDirectory().set(dslSample.getAssembleDirectory());
         });
     }
 
-    private static void checkForValidSampleArchive(TaskProvider<Sync> syncTask, DefaultSample sample, DslSampleArchive dslSample) {
+    private static void checkForValidSampleArchive(TaskProvider<? extends Task> syncTask, DefaultSample sample, DslSampleArchive dslSample) {
         syncTask.configure(task -> {
             task.doLast(new Action<Task>() {
                 // Lambda isn't well supported yet
