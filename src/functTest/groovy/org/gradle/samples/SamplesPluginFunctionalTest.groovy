@@ -1,11 +1,8 @@
 package org.gradle.samples
 
-import org.asciidoctor.gradle.AsciidoctorTask
 import org.gradle.testkit.runner.BuildResult
 
 import java.nio.file.Files
-import java.util.zip.ZipEntry
-import java.util.zip.ZipFile
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
@@ -96,7 +93,7 @@ samples.configureEach { sample ->
         def result = buildAndFail("assemble")
 
         then:
-        result.output.contains("Execution failed for task ':syncDemoKotlinDslSample'.")
+        result.output.contains("Execution failed for task ':installDemoKotlinDslSample'.")
         result.output.contains("Sample 'demo' for Kotlin DSL is invalid due to missing 'settings.gradle.kts' file.")
     }
 
@@ -109,7 +106,7 @@ samples.configureEach { sample ->
         def result = buildAndFail("assemble")
 
         then:
-        result.output.contains("Execution failed for task ':syncDemoGroovyDslSample'.")
+        result.output.contains("Execution failed for task ':installDemoGroovyDslSample'.")
         result.output.contains("Sample 'demo' for Groovy DSL is invalid due to missing 'settings.gradle' file.")
     }
 

@@ -78,7 +78,7 @@ Some doc
     }
 
     protected File getSampleReadMeFile() {
-        return new File(projectDir, "src/README.adoc")
+        return new File(projectDir, "src/samples/demo/README.adoc")
     }
 
     protected String getSampleUnderTestDsl() {
@@ -87,28 +87,31 @@ Some doc
 
     protected static void assertBothDslSampleTasksExecutedAndNotSkipped(BuildResult result) {
         assert result.task(":generateWrapperForDemoSample").outcome == SUCCESS
-        assert result.task(":syncDemoGroovyDslSample").outcome == SUCCESS
-        assert result.task(":syncDemoKotlinDslSample").outcome == SUCCESS
+        assert result.task(":installDemoGroovyDslSample").outcome == SUCCESS
+        assert result.task(":installDemoKotlinDslSample").outcome == SUCCESS
         assert result.task(":compressDemoGroovyDslSample").outcome == SUCCESS
         assert result.task(":compressDemoKotlinDslSample").outcome == SUCCESS
+        assert result.task(":installDemoSample").outcome == SUCCESS
         assert result.task(":assembleDemoSample").outcome == SUCCESS
     }
 
     protected static void assertOnlyGroovyDslTasksExecutedAndNotSkipped(BuildResult result) {
         assert result.task(":generateWrapperForDemoSample").outcome == SUCCESS
-        assert result.task(":syncDemoGroovyDslSample").outcome == SUCCESS
-        assert result.task(":syncDemoKotlinDslSample") == null
+        assert result.task(":installDemoGroovyDslSample").outcome == SUCCESS
+        assert result.task(":installDemoKotlinDslSample") == null
         assert result.task(":compressDemoGroovyDslSample").outcome == SUCCESS
         assert result.task(":compressDemoKotlinDslSample") == null
+        assert result.task(":installDemoSample").outcome == SUCCESS
         assert result.task(":assembleDemoSample").outcome == SUCCESS
     }
 
     protected static void assertOnlyKotlinDslTasksExecutedAndNotSkipped(BuildResult result) {
         assert result.task(":generateWrapperForDemoSample").outcome == SUCCESS
-        assert result.task(":syncDemoGroovyDslSample") == null
-        assert result.task(":syncDemoKotlinDslSample").outcome == SUCCESS
+        assert result.task(":installDemoGroovyDslSample") == null
+        assert result.task(":installDemoKotlinDslSample").outcome == SUCCESS
         assert result.task(":compressDemoGroovyDslSample") == null
         assert result.task(":compressDemoKotlinDslSample").outcome == SUCCESS
+        assert result.task(":installDemoSample").outcome == SUCCESS
         assert result.task(":assembleDemoSample").outcome == SUCCESS
     }
 

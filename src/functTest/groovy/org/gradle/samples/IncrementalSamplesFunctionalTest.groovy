@@ -169,10 +169,11 @@ endif::[]
 
         and:
         result3.task(":generateWrapperForDemoSample").outcome in SKIPPED_TASK_OUTCOMES
-        result3.task(":syncDemoGroovyDslSample").outcome == SUCCESS
-        result3.task(":syncDemoKotlinDslSample").outcome == SUCCESS
+        result3.task(":installDemoGroovyDslSample").outcome == SUCCESS
+        result3.task(":installDemoKotlinDslSample").outcome == SUCCESS
         result3.task(":compressDemoGroovyDslSample").outcome == SUCCESS
         result3.task(":compressDemoKotlinDslSample").outcome == SUCCESS
+        result3.task(":installDemoSample").outcome == SUCCESS
         result3.task(":assembleDemoSample").outcome == SUCCESS
 
         and:
@@ -226,10 +227,11 @@ endif::[]
 
         and:
         result3.task(":generateWrapperForDemoSample").outcome in SKIPPED_TASK_OUTCOMES
-        result3.task(":syncDemoGroovyDslSample").outcome in SKIPPED_TASK_OUTCOMES
-        result3.task(":syncDemoKotlinDslSample").outcome in SKIPPED_TASK_OUTCOMES
+        result3.task(":installDemoGroovyDslSample").outcome in SKIPPED_TASK_OUTCOMES
+        result3.task(":installDemoKotlinDslSample").outcome in SKIPPED_TASK_OUTCOMES
         result3.task(":compressDemoGroovyDslSample").outcome == SUCCESS
         result3.task(":compressDemoKotlinDslSample").outcome == SUCCESS
+        result3.task(":installDemoSample").outcome == SUCCESS
         result3.task(":assembleDemoSample").outcome == SUCCESS
 
         and:
@@ -262,19 +264,21 @@ endif::[]
 
     private static void assertSampleTasksNotExecuted(BuildResult result) {
         assert result.task(":generateWrapperForDemoSample") == null
-        assert result.task(":syncDemoGroovyDslSample") == null
-        assert result.task(":syncDemoKotlinDslSample") == null
+        assert result.task(":installDemoGroovyDslSample") == null
+        assert result.task(":installDemoKotlinDslSample") == null
         assert result.task(":compressDemoGroovyDslSample") == null
         assert result.task(":compressDemoKotlinDslSample") == null
+        assert result.task(":installDemoSample").outcome in SKIPPED_TASK_OUTCOMES
         assert result.task(":assembleDemoSample").outcome in SKIPPED_TASK_OUTCOMES
     }
 
     private static void assertSampleTasksSkipped(BuildResult result) {
         assert result.task(":generateWrapperForDemoSample").outcome in SKIPPED_TASK_OUTCOMES
-        assert result.task(":syncDemoGroovyDslSample").outcome in SKIPPED_TASK_OUTCOMES
-        assert result.task(":syncDemoKotlinDslSample").outcome in SKIPPED_TASK_OUTCOMES
+        assert result.task(":installDemoGroovyDslSample").outcome in SKIPPED_TASK_OUTCOMES
+        assert result.task(":installDemoKotlinDslSample").outcome in SKIPPED_TASK_OUTCOMES
         assert result.task(":compressDemoGroovyDslSample").outcome in SKIPPED_TASK_OUTCOMES
         assert result.task(":compressDemoKotlinDslSample").outcome in SKIPPED_TASK_OUTCOMES
+        assert result.task(":installDemoSample").outcome in SKIPPED_TASK_OUTCOMES
         assert result.task(":assembleDemoSample").outcome in SKIPPED_TASK_OUTCOMES
     }
 

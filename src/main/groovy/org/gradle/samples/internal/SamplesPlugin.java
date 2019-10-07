@@ -44,7 +44,7 @@ public class SamplesPlugin implements Plugin<Project> {
             result.getGradleVersion().convention(project.getGradle().getGradleVersion());
             result.getIntermediateDirectory().set(project.getLayout().getBuildDirectory().dir("sample-intermediate/" + name));
             result.getArchiveBaseName().set(project.provider(() -> name + (project.getVersion().equals(Project.DEFAULT_VERSION) ? "" : "-" + project.getVersion().toString())));
-            result.getOutputDirectory().set(project.getLayout().getBuildDirectory().dir("gradle-samples/" + name));
+            result.getInstallDirectory().set(project.getLayout().getBuildDirectory().dir("gradle-samples/" + name));
             result.getSampleDirectory().convention(project.getLayout().getProjectDirectory().dir("src/samples/" + name));
             return result;
         });
@@ -60,15 +60,17 @@ public class SamplesPlugin implements Plugin<Project> {
             // TODO: avoid creating the task if no DSL sample archive
             createWrapperTask(project.getTasks(), sample, getObjectFactory());
             createAsciidoctorTask(project.getTasks(), sample, getObjectFactory());
-            TaskProvider<InstallSampleTask> assembleTask = createSampleAssembleTask(project.getTasks(), sample);
+            TaskProvider<InstallSampleTask> installSampleTask = createSampleInstallTask(project.getTasks(), sample);
+            TaskProvider<Task> assembleTask = createSampleAssembleTask(project.getTasks(), sample);
+            assembleTask.configure(it -> it.dependsOn(installSampleTask));
 
             project.getTasks().named("assemble").configure(it -> it.dependsOn(assembleTask));
 
             sample.getDslSampleArchives().configureEach(dslSample -> {
-                TaskProvider<InstallSampleZipContentTask> syncTask = createSyncDslTask(project.getTasks(), dslSample);
+                TaskProvider<InstallSampleZipContentTask> installTask = createSampleDslInstallTask(project.getTasks(), dslSample);
                 TaskProvider<SampleZipTask> zipTask = createDslZipTask(project.getTasks(), dslSample);
 
-                checkForValidSampleArchive(syncTask, sample, dslSample);
+                checkForValidSampleArchive(installTask, sample, dslSample);
 
                 sample.getSource().from(zipTask.flatMap(SampleZipTask::getSampleZipFile));
             });
@@ -95,10 +97,10 @@ public class SamplesPlugin implements Plugin<Project> {
         // TODO: Print warning when assembling sample if no zip
     }
 
-    private static TaskProvider<InstallSampleZipContentTask> createSyncDslTask(TaskContainer tasks, DslSampleArchive dslSample) {
-        return tasks.register(dslSample.getSyncTaskName(), InstallSampleZipContentTask.class, task -> {
+    private static TaskProvider<InstallSampleZipContentTask> createSampleDslInstallTask(TaskContainer tasks, DslSampleArchive dslSample) {
+        return tasks.register(dslSample.getInstallTaskName(), InstallSampleZipContentTask.class, task -> {
             task.getSource().from(dslSample.getArchiveContent());
-            task.getInstallDirectory().set(dslSample.getAssembleDirectory());
+            task.getInstallDirectory().set(dslSample.getInstallDirectory());
         });
     }
 
@@ -108,7 +110,7 @@ public class SamplesPlugin implements Plugin<Project> {
                 // Lambda isn't well supported yet
                 @Override
                 public void execute(Task it) {
-                    if (!dslSample.getAssembleDirectory().file(dslSample.getSettingsFileName()).get().getAsFile().exists()) {
+                    if (!dslSample.getInstallDirectory().file(dslSample.getSettingsFileName()).get().getAsFile().exists()) {
                         throw new GradleException("Sample '" + sample.getName() + "' for " + capitalize(dslSample.getLanguageName()) + " DSL is invalid due to missing '" + dslSample.getSettingsFileName() + "' file.");
                     }
                 }
@@ -125,27 +127,33 @@ public class SamplesPlugin implements Plugin<Project> {
             task.onlyIf(it -> !sample.getSampleDirectory().getAsFileTree().isEmpty());
         });
 
-        sample.getDslSampleArchives().all(it -> it.getArchiveContent().from(objectFactory.fileCollection().from(wrapperDirectory).builtBy(wrapperTask)));
+        sample.getDslSampleArchives().all(it -> {
+            it.getArchiveContent().from(objectFactory.fileCollection().from(wrapperDirectory).builtBy(wrapperTask));
+        });
 
         return wrapperTask;
     }
 
     private static TaskProvider<SampleZipTask> createDslZipTask(TaskContainer tasks, DslSampleArchive dslSample) {
         return tasks.register(dslSample.getCompressTaskName(), SampleZipTask.class, task -> {
-            task.dependsOn(dslSample.getSyncTaskName()); // TODO: Eliminate this
+            task.dependsOn(dslSample.getInstallTaskName()); // TODO: Eliminate this
 
-            task.getSampleDirectory().set(dslSample.getAssembleDirectory());
+            task.getSampleDirectory().set(dslSample.getInstallDirectory());
             task.getSampleZipFile().set(dslSample.getArchiveFile());
         });
     }
 
-    private static TaskProvider<InstallSampleTask> createSampleAssembleTask(TaskContainer tasks, DefaultSample sample) {
-        return tasks.register("assemble" + capitalize(sample.getName()) + "Sample", InstallSampleTask.class, task -> {
+    private static TaskProvider<InstallSampleTask> createSampleInstallTask(TaskContainer tasks, DefaultSample sample) {
+        return tasks.register("install" + capitalize(sample.getName()) + "Sample", InstallSampleTask.class, task -> {
+            task.getSource().from(sample.getSource());
+            task.getInstallDirectory().set(sample.getInstallDirectory());
+        });
+    }
+
+    private static TaskProvider<Task> createSampleAssembleTask(TaskContainer tasks, DefaultSample sample) {
+        return tasks.register("assemble" + capitalize(sample.getName()) + "Sample", Task.class, task -> {
             task.setGroup(LifecycleBasePlugin.BUILD_GROUP);
             task.setDescription("Assembles '" + sample.getName() + "' sample");
-
-            task.getSource().from(sample.getSource());
-            task.getInstallDirectory().set(sample.getOutputDirectory());
         });
     }
 

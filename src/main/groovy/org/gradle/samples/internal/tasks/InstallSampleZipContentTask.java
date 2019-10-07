@@ -5,11 +5,9 @@ import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputDirectory;
-import org.gradle.api.tasks.SkipWhenEmpty;
 import org.gradle.api.tasks.TaskAction;
 
 public abstract class InstallSampleZipContentTask extends DefaultTask {
-    @SkipWhenEmpty
     @InputFiles
     public abstract ConfigurableFileCollection getSource();
 

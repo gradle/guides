@@ -33,15 +33,15 @@ public abstract class DslSampleArchive implements Named, DomainSpecificSample {
         return classifier;
     }
 
-    String getSyncTaskName() {
-        return "sync" + capitalize(name) + "Sample";
+    String getInstallTaskName() {
+        return "install" + capitalize(name) + "Sample";
     }
 
     String getCompressTaskName() {
         return "compress" + capitalize(name) + "Sample";
     }
 
-    abstract DirectoryProperty getAssembleDirectory();
+    abstract DirectoryProperty getInstallDirectory();
 
     abstract DirectoryProperty getArchiveDirectory();
 
@@ -59,7 +59,7 @@ public abstract class DslSampleArchive implements Named, DomainSpecificSample {
     DslSampleArchive configureDefaults(DefaultSample sample) {
         getArchiveContent().from(sample.getArchiveContent());
         getArchiveContent().from(sample.getReadMeFile());
-        getAssembleDirectory().set(sample.getIntermediateDirectory().dir(getClassifier() + "-content"));
+        getInstallDirectory().set(sample.getIntermediateDirectory().dir(getClassifier() + "-content"));
         getArchiveDirectory().set(sample.getIntermediateDirectory().dir(getClassifier() + "-zip"));
         getArchiveFile().set(sample.getIntermediateDirectory().file(sample.getArchiveBaseName().map(baseName -> getClassifier() + "-zip/" + baseName + "-" + getClassifier() + ".zip")));
         return this;

@@ -47,7 +47,7 @@ public abstract class DefaultSample implements Sample {
 
     abstract Property<String> getArchiveBaseName();
 
-    abstract DirectoryProperty getOutputDirectory();
+    abstract DirectoryProperty getInstallDirectory();
 
     abstract ConfigurableFileCollection getSource();
 
