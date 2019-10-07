@@ -12,7 +12,6 @@ import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.provider.ProviderFactory;
-import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.wrapper.Wrapper;
@@ -58,7 +57,7 @@ public class SamplesPlugin implements Plugin<Project> {
             // TODO: avoid creating the task if no DSL sample archive
             createWrapperTask(project.getTasks(), sample, getObjectFactory());
             createAsciidoctorTask(project.getTasks(), sample, getObjectFactory());
-            TaskProvider<Sync> assembleTask = createSampleAssembleTask(project.getTasks(), sample);
+            TaskProvider<InstallSampleTask> assembleTask = createSampleAssembleTask(project.getTasks(), sample);
 
             project.getTasks().named("assemble").configure(it -> it.dependsOn(assembleTask));
 
@@ -137,13 +136,13 @@ public class SamplesPlugin implements Plugin<Project> {
         });
     }
 
-    private static TaskProvider<Sync> createSampleAssembleTask(TaskContainer tasks, DefaultSample sample) {
-        return tasks.register("assemble" + capitalize(sample.getName()) + "Sample", Sync.class, task -> {
+    private static TaskProvider<InstallSampleTask> createSampleAssembleTask(TaskContainer tasks, DefaultSample sample) {
+        return tasks.register("assemble" + capitalize(sample.getName()) + "Sample", InstallSampleTask.class, task -> {
             task.setGroup(LifecycleBasePlugin.BUILD_GROUP);
             task.setDescription("Assembles '" + sample.getName() + "' sample");
 
-            task.from(sample.getSource());
-            task.into(sample.getOutputDirectory());
+            task.getSource().from(sample.getSource());
+            task.getInstallDirectory().set(sample.getOutputDirectory());
         });
     }
 
