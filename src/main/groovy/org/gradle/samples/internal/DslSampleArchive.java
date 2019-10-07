@@ -52,7 +52,7 @@ public abstract class DslSampleArchive implements Named, DomainSpecificSample {
     }
 
     DslSampleArchive configureFrom(DefaultSample sample) {
-        getArchiveContent().from(sample.getSampleDir().dir(getLanguageName()));
+        getArchiveContent().from(sample.getSampleDirectory().dir(getLanguageName()));
         return configureDefaults(sample);
     }
 

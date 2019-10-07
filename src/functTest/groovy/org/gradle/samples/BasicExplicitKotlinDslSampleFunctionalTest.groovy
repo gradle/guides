@@ -112,7 +112,7 @@ plugins {
 
 samples {
     demo {
-        sampleDir = file('src')
+        sampleDirectory = file('src')
         withKotlinDsl {
             archiveContent.from(file('src/kotlin-dsl'))
         }

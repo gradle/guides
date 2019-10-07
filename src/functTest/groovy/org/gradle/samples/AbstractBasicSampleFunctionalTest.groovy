@@ -162,7 +162,7 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
         writeSampleUnderTestToDirectory('src')
         buildFile << """
 ${sampleUnderTestDsl} {
-    sampleDir = file('src')
+    sampleDirectory = file('src')
 }
 """
 
@@ -180,7 +180,7 @@ ${sampleUnderTestDsl} {
         buildFile << """
 tasks.register('verify') {
     doLast {
-        assert ${sampleUnderTestDsl}.sampleDir.get().asFile.absolutePath == '${new File(temporaryFolder.root, 'src/samples/demo').canonicalPath}'
+        assert ${sampleUnderTestDsl}.sampleDirectory.get().asFile.absolutePath == '${new File(temporaryFolder.root, 'src/samples/demo').canonicalPath}'
     }
 }
 """

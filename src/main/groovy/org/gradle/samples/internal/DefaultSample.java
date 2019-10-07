@@ -28,7 +28,7 @@ public abstract class DefaultSample implements Sample {
     }
 
     @Override
-    public abstract DirectoryProperty getSampleDir();
+    public abstract DirectoryProperty getSampleDirectory();
 
     // Implementation notes: At some point this may have to support "need at least version X" (Guides) and "for version X" (Gradle).
     @Override
@@ -40,7 +40,7 @@ public abstract class DefaultSample implements Sample {
     }
 
     Provider<RegularFile> getReadMeFile() {
-        return getSampleDir().file("README.adoc");
+        return getSampleDirectory().file("README.adoc");
     }
 
     abstract DirectoryProperty getIntermediateDirectory();

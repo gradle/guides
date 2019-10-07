@@ -111,7 +111,7 @@ plugins {
 
 samples {
     demo {
-        sampleDir = file('src')
+        sampleDirectory = file('src')
         withGroovyDsl {
             archiveContent.from(file('src/groovy-dsl'))
         }

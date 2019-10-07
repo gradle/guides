@@ -7,7 +7,7 @@ import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.provider.Property;
 
 public interface Sample extends Named {
-    DirectoryProperty getSampleDir();
+    DirectoryProperty getSampleDirectory();
 
     Property<String> getGradleVersion();
 

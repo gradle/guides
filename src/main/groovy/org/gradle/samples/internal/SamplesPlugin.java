@@ -43,7 +43,7 @@ public class SamplesPlugin implements Plugin<Project> {
             result.getIntermediateDirectory().set(project.getLayout().getBuildDirectory().dir("sample-intermediate/" + name));
             result.getArchiveBaseName().set(project.provider(() -> name + (project.getVersion().equals(Project.DEFAULT_VERSION) ? "" : "-" + project.getVersion().toString())));
             result.getOutputDirectory().set(project.getLayout().getBuildDirectory().dir("gradle-samples/" + name));
-            result.getSampleDir().convention(project.getLayout().getProjectDirectory().dir("src/samples/" + name));
+            result.getSampleDirectory().convention(project.getLayout().getProjectDirectory().dir("src/samples/" + name));
             return result;
         });
         project.getExtensions().add(NamedDomainObjectContainer.class, "samples", samples);
@@ -83,10 +83,10 @@ public class SamplesPlugin implements Plugin<Project> {
 
     private void configureDefaultDomainSpecificSampleIfNeeded(DefaultSample sample) {
         if (sample.getDslSampleArchives().isEmpty()) {
-            if (KotlinDslSampleArchive.hasSource(sample.getSampleDir().get())) {
+            if (KotlinDslSampleArchive.hasSource(sample.getSampleDirectory().get())) {
                 sample.getDslSampleArchives().add(getObjectFactory().newInstance(KotlinDslSampleArchive.class, sample.getName()).configureFrom(sample));
             }
-            if (GroovyDslSampleArchive.hasSource(sample.getSampleDir().get())) {
+            if (GroovyDslSampleArchive.hasSource(sample.getSampleDirectory().get())) {
                 sample.getDslSampleArchives().add(getObjectFactory().newInstance(GroovyDslSampleArchive.class, sample.getName()).configureFrom(sample));
             }
         }
@@ -120,7 +120,7 @@ public class SamplesPlugin implements Plugin<Project> {
             task.setJarFile(wrapperDirectory.get().dir("gradle/wrapper/gradle-wrapper.jar").getAsFile());
             task.setScriptFile(wrapperDirectory.get().file("gradlew").getAsFile());
             task.setGradleVersion(sample.getGradleVersion().get());
-            task.onlyIf(it -> !sample.getSampleDir().getAsFileTree().isEmpty());
+            task.onlyIf(it -> !sample.getSampleDirectory().getAsFileTree().isEmpty());
         });
 
         sample.getDslSampleArchives().all(it -> it.getArchiveContent().from(objectFactory.fileCollection().from(wrapperDirectory).builtBy(wrapperTask)));
@@ -150,7 +150,7 @@ public class SamplesPlugin implements Plugin<Project> {
     private static TaskProvider<AsciidoctorTask> createAsciidoctorTask(TaskContainer tasks, DefaultSample sample, ObjectFactory objectFactory) {
         Provider<Directory> contentDirectory = sample.getIntermediateDirectory().dir("content");
         TaskProvider<AsciidoctorTask> asciidoctorTask = tasks.register("asciidoctor" + capitalize(sample.getName()) + "Sample", AsciidoctorTask.class, task -> {
-            task.sourceDir(sample.getSampleDir());
+            task.sourceDir(sample.getSampleDirectory());
             task.outputDir(task.getProject().getLayout().getBuildDirectory().dir("tmp/" + task.getName()));
             task.setSeparateOutputDirs(false);
 
@@ -176,7 +176,7 @@ public class SamplesPlugin implements Plugin<Project> {
 
     private static TaskProvider<GenerateSampleIndexAsciidoc> createSampleIndexGeneratorTask(TaskContainer tasks, Iterable<Sample> samples, ProjectLayout projectLayout, ProviderFactory providerFactory) {
         return tasks.register("generateSampleIndex", GenerateSampleIndexAsciidoc.class, task -> {
-            task.getSamplePaths().set(providerFactory.provider(() -> StreamSupport.stream(samples.spliterator(), false).filter(it -> !it.getSampleDir().getAsFileTree().isEmpty()).map(Sample::getName).collect(Collectors.toList())));
+            task.getSamplePaths().set(providerFactory.provider(() -> StreamSupport.stream(samples.spliterator(), false).filter(it -> !it.getSampleDirectory().getAsFileTree().isEmpty()).map(Sample::getName).collect(Collectors.toList())));
             task.getOutputFile().set(projectLayout.getBuildDirectory().file("tmp/" + task.getName() + "/index.adoc"));
         });
     }
