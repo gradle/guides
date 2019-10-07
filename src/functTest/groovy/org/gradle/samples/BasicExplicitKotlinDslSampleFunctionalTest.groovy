@@ -11,9 +11,7 @@ class BasicExplicitKotlinDslSampleFunctionalTest extends AbstractBasicSampleFunc
             }
 
             samples {
-                create("demo") {
-                    sampleDir = file('src')
-                    
+                demo {
                     withKotlinDsl()
                 }
             }
@@ -121,7 +119,7 @@ samples {
     }
 }
 """
-        writeSampleContent()
+        writeSampleContentToDirectory('src')
         writeKotlinDslSampleToDirectory('src/kotlin-dsl')
         temporaryFolder.newFolder('src', 'kotlin')
         temporaryFolder.newFile('src/kotlin/do.not.include')

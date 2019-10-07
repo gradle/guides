@@ -11,9 +11,7 @@ class BasicExplicitGroovyDslSampleFunctionalTest extends AbstractBasicSampleFunc
             }
 
             samples {
-                create("demo") {
-                    sampleDir = file('src')
-                    
+                demo {
                     withGroovyDsl()
                 }
             }

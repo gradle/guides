@@ -71,12 +71,8 @@ samples.configureEach { sample ->
             }
 
             samples {
-                "foo-bar" {
-                    sampleDir = file('src/samples/foo-bar')
-                }
-                "fooBar" {
-                    sampleDir = file('src/samples/fooBar')
-                }
+                "foo-bar"
+                "fooBar"
             }
         """
         writeGroovyDslSample("src/samples/foo-bar")
@@ -93,8 +89,8 @@ samples.configureEach { sample ->
 
     def "fails when settings.gradle.kts is missing from Kotlin DSL sample"() {
         makeSingleProject()
-        writeGroovyDslSample("src")
-        Files.move(new File(temporaryFolder.root, "src/groovy").toPath(), new File(temporaryFolder.root, "src/kotlin").toPath())
+        writeGroovyDslSample("src/samples/demo")
+        Files.move(new File(temporaryFolder.root, "src/samples/demo/groovy").toPath(), new File(temporaryFolder.root, "src/samples/demo/kotlin").toPath())
 
         when:
         def result = buildAndFail("assemble")
@@ -106,8 +102,8 @@ samples.configureEach { sample ->
 
     def "fails when settings.gradle is missing from Groovy DSL sample"() {
         makeSingleProject()
-        writeKotlinDslSample("src")
-        Files.move(new File(temporaryFolder.root, "src/kotlin").toPath(), new File(temporaryFolder.root, "src/groovy").toPath())
+        writeKotlinDslSample("src/samples/demo")
+        Files.move(new File(temporaryFolder.root, "src/samples/demo/kotlin").toPath(), new File(temporaryFolder.root, "src/samples/demo/groovy").toPath())
 
         when:
         def result = buildAndFail("assemble")
@@ -146,27 +142,20 @@ samples.configureEach { sample ->
             }
 
             samples {
-                create("demo") {
-                    sampleDir = file('src')
-                }
+                demo
             }
         """
     }
 
     protected void writeSampleUnderTest() {
-        temporaryFolder.newFolder("src")
-        temporaryFolder.newFile("src/README.adoc") << """
-= Demo Sample
-
-Some doc
-
+        writeSampleContentToDirectory('src/samples/demo') << """
 ifndef::env-github[]
 - link:{zip-base-file-name}-groovy-dsl.zip[Download Groovy DSL ZIP]
 - link:{zip-base-file-name}-kotlin-dsl.zip[Download Kotlin DSL ZIP]
 endif::[]
 """
-        writeGroovyDslSample("src");
-        writeKotlinDslSample("src")
+        writeGroovyDslSample("src/samples/demo");
+        writeKotlinDslSample("src/samples/demo")
     }
 
     protected static void assertSampleTasksExecutedAndNotSkipped(BuildResult result) {

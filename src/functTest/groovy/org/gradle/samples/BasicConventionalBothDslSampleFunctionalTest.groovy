@@ -11,9 +11,7 @@ class BasicConventionalBothDslSampleFunctionalTest extends AbstractBasicSampleFu
             }
 
             samples {
-                create("demo") {
-                    sampleDir = file('src')
-                }
+                demo
             }
         """
     }

@@ -11,9 +11,7 @@ class BasicExplicitBothDslSampleFunctionalTest extends AbstractBasicSampleFuncti
             }
 
             samples {
-                create("demo") {
-                    sampleDir = file('src')
-                    
+                demo {
                     withGroovyDsl()
                     withKotlinDsl()
                 }
@@ -110,7 +108,7 @@ samples {
     }
 }
 """
-        writeSampleContent()
+        writeSampleContentToDirectory('src')
         writeGroovyDslSampleToDirectory('src/groovy-dsl')
         temporaryFolder.newFolder('src', 'groovy')
         temporaryFolder.newFile('src/groovy/do.not.include')

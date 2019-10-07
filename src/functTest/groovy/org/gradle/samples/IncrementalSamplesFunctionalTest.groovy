@@ -28,43 +28,21 @@ class IncrementalSamplesFunctionalTest extends AbstractSampleFunctionalSpec {
     private static final SKIPPED_TASK_OUTCOMES = [FROM_CACHE, UP_TO_DATE, SKIPPED, NO_SOURCE]
 
     protected void writeGroovyDslSampleUnderTest() {
-        temporaryFolder.newFolder("src")
-        temporaryFolder.newFile("src/README.adoc") << """
-= Demo Sample
-
-Some doc
-
+        writeSampleContentToDirectory('src/samples/demo') << """
 ifndef::env-github[]
 - link:{zip-base-file-name}-groovy-dsl.zip[Download Groovy DSL ZIP]
 endif::[]
 """
-        temporaryFolder.newFolder("src", "groovy")
-        temporaryFolder.newFile("src/groovy/build.gradle") << """
-            println "Hello, world!"
-        """
-        temporaryFolder.newFile("src/groovy/settings.gradle") << """
-            rootProject.name = 'demo'
-        """
+        writeGroovyDslSample('src/samples/demo')
     }
 
     protected void writeKotlinDslSampleUnderTest() {
-        temporaryFolder.newFolder("src")
-        temporaryFolder.newFile("src/README.adoc") << """
-= Demo Sample
-
-Some doc
-
+        writeSampleContentToDirectory('src/samples/demo') << """
 ifndef::env-github[]
 - link:{zip-base-file-name}-kotlin-dsl.zip[Download Kotlin DSL ZIP]
 endif::[]
 """
-        temporaryFolder.newFolder("src", "kotlin")
-        temporaryFolder.newFile("src/kotlin/build.gradle.kts") << """
-            println("Hello, world!")
-        """
-        temporaryFolder.newFile("src/kotlin/settings.gradle.kts") << """
-            rootProject.name = "demo"
-        """
+        writeKotlinDslSample('src/samples/demo')
     }
 
     def "skips sample tasks when no source"() {
@@ -307,27 +285,20 @@ endif::[]
             }
 
             samples {
-                create("demo") {
-                    sampleDir = file('src')
-                }
+                demo
             }
         """
     }
 
     protected void writeSampleUnderTest() {
-        temporaryFolder.newFolder("src")
-        temporaryFolder.newFile("src/README.adoc") << """
-= Demo Sample
-
-Some doc
-
+        writeSampleContentToDirectory('src/samples/demo') << """
 ifndef::env-github[]
 - link:{zip-base-file-name}-groovy-dsl.zip[Download Groovy DSL ZIP]
 - link:{zip-base-file-name}-kotlin-dsl.zip[Download Kotlin DSL ZIP]
 endif::[]
 """
-        writeGroovyDslSample("src");
-        writeKotlinDslSample("src")
+        writeGroovyDslSample("src/samples/demo");
+        writeKotlinDslSample("src/samples/demo")
     }
 
     protected static void assertSampleTasksExecutedAndNotSkipped(BuildResult result) {

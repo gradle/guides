@@ -105,11 +105,8 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
                 }
             }
             
-            samples.create('anotherDemo') {
-                sampleDir = file('anotherDemo')
-            }
+            samples.create('anotherDemo')
         """
-        // TODO: SampleDir should have convention of src/samples/<sample-name>
 
         when:
         build('verify')
@@ -177,10 +174,28 @@ ${sampleUnderTestDsl} {
         assertDslZipsHasContent()
     }
 
+    def "defaults sample location to `src/samples/<sample-name>`"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        buildFile << """
+tasks.register('verify') {
+    doLast {
+        assert ${sampleUnderTestDsl}.sampleDir.get().asFile.absolutePath == '${new File(temporaryFolder.root, 'src/samples/demo').canonicalPath}'
+    }
+}
+"""
+
+        when:
+        build("verify")
+
+        then:
+        noExceptionThrown()
+    }
+
     protected abstract void makeSingleProject()
 
     protected void writeSampleUnderTest() {
-        writeSampleUnderTestToDirectory('src')
+        writeSampleUnderTestToDirectory('src/samples/demo')
     }
 
     protected abstract void writeSampleUnderTestToDirectory(String directory)

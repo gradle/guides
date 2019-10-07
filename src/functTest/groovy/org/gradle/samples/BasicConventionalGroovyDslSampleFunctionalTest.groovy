@@ -11,9 +11,7 @@ class BasicConventionalGroovyDslSampleFunctionalTest extends AbstractBasicSample
             }
 
             samples {
-                create("demo") {
-                    sampleDir = file('src')
-                }
+                demo
             }
         """
     }

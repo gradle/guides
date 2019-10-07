@@ -43,6 +43,7 @@ public class SamplesPlugin implements Plugin<Project> {
             result.getIntermediateDirectory().set(project.getLayout().getBuildDirectory().dir("sample-intermediate/" + name));
             result.getArchiveBaseName().set(project.provider(() -> name + (project.getVersion().equals(Project.DEFAULT_VERSION) ? "" : "-" + project.getVersion().toString())));
             result.getOutputDirectory().set(project.getLayout().getBuildDirectory().dir("gradle-samples/" + name));
+            result.getSampleDir().convention(project.getLayout().getProjectDirectory().dir("src/samples/" + name));
             return result;
         });
         project.getExtensions().add(NamedDomainObjectContainer.class, "samples", samples);
