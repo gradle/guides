@@ -17,6 +17,9 @@ import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.wrapper.Wrapper;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
 import org.gradle.samples.Sample;
+import org.gradle.samples.internal.tasks.InstallSampleTask;
+import org.gradle.samples.internal.tasks.InstallSampleZipContentTask;
+import org.gradle.samples.internal.tasks.SampleZipTask;
 
 import javax.inject.Inject;
 import java.util.HashMap;
