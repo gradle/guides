@@ -131,4 +131,6 @@ samples {
         assertSampleTasksExecutedAndNotSkipped(result)
         assertDslZipsHasContent()
     }
+
+    // TODO: Configuring after being explicit (calling either withGroovyDsl() or withKotlinDsl()) overrides the default configuration
 }
