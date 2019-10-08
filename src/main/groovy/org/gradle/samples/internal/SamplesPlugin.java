@@ -57,7 +57,8 @@ public class SamplesPlugin implements Plugin<Project> {
         samples.configureEach(s -> {
             DefaultSample sample = (DefaultSample) s;
 
-            // TODO: avoid creating the task if no DSL sample archive
+            // TODO: Generate basic README (see kotlin-dsl)
+            // TODO: Process the README file to add links to the archives
             createWrapperTask(project.getTasks(), sample, getObjectFactory());
             createAsciidoctorTask(project.getTasks(), sample, getObjectFactory());
             TaskProvider<InstallSampleTask> installSampleTask = createSampleInstallTask(project.getTasks(), sample);
@@ -110,7 +111,6 @@ public class SamplesPlugin implements Plugin<Project> {
                 // Lambda isn't well supported yet
                 @Override
                 public void execute(Task it) {
-
                     if (!hasSettingsFile()) {
                         throw new GradleException("Sample '" + sample.getName() + "' for " + capitalize(dslSample.getLanguageName()) + " DSL is invalid due to missing '" + dslSample.getSettingsFileName() + "' file.");
                     }
