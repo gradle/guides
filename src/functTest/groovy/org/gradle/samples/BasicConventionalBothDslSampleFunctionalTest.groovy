@@ -35,7 +35,7 @@ endif::[]
 
     @Override
     protected void assertSampleTasksExecutedAndNotSkipped(BuildResult result) {
-        assertBothDslSampleTasksExecutedAndNotSkipped(result);
+        assertBothDslSampleTasksExecutedAndNotSkipped(result)
     }
 
     @Override

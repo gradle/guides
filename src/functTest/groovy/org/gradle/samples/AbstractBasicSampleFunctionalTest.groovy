@@ -161,10 +161,10 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
         makeSingleProject()
         writeSampleUnderTestToDirectory('src')
         buildFile << """
-${sampleUnderTestDsl} {
-    sampleDirectory = file('src')
-}
-"""
+            ${sampleUnderTestDsl} {
+                sampleDirectory = file('src')
+            }
+        """
 
         when:
         def result = build("assembleDemoSample")
@@ -178,12 +178,12 @@ ${sampleUnderTestDsl} {
         makeSingleProject()
         writeSampleUnderTest()
         buildFile << """
-tasks.register('verify') {
-    doLast {
-        assert ${sampleUnderTestDsl}.sampleDirectory.get().asFile.absolutePath == '${new File(temporaryFolder.root, 'src/samples/demo').canonicalPath}'
-    }
-}
-"""
+            tasks.register('verify') {
+                doLast {
+                    assert ${sampleUnderTestDsl}.sampleDirectory.get().asFile.absolutePath == '${new File(temporaryFolder.root, 'src/samples/demo').canonicalPath}'
+                }
+            }
+        """
 
         when:
         build("verify")
