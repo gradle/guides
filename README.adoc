@@ -108,6 +108,12 @@ This should be applied in the authoring of all new Topical guides
 
 == Changelog
 
+=== 0.15.15
+
+- Allow samples archive content to be customized
+- Allow samples archive content to be generated
+- Allow samples to be tested via Exemplar
+
 === 0.15.14
 
 - Introduce the Gradle samples plugin.
