@@ -84,6 +84,8 @@ public class SamplesPlugin implements Plugin<Project> {
         project.afterEvaluate(evaluatedProject -> {
             samples.stream().map(it -> (DefaultSample)it).forEach(this::configureDefaultDomainSpecificSampleIfNeeded);
         });
+
+        project.getPluginManager().apply(TestingSamplesWithExemplarPlugin.class);
     }
 
     private void configureDefaultDomainSpecificSampleIfNeeded(DefaultSample sample) {

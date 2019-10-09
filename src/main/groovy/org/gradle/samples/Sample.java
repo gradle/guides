@@ -4,9 +4,10 @@ import org.gradle.api.Action;
 import org.gradle.api.Named;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.provider.Property;
 
-public interface Sample extends Named {
+public interface Sample extends Named, ExtensionAware {
     DirectoryProperty getSampleDirectory();
 
     Property<String> getGradleVersion();

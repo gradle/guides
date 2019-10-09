@@ -47,7 +47,7 @@ abstract class AbstractFunctionalTest extends Specification {
 
     private GradleRunner createAndConfigureGradleRunner(String... arguments) {
         def allArgs = (arguments as List) + ["-S"]
-        def runner = GradleRunner.create().withProjectDir(projectDir).withArguments(allArgs).withPluginClasspath().forwardOutput()
+        def runner = GradleRunner.create().withProjectDir(projectDir).withArguments(allArgs).withPluginClasspath().forwardOutput().withDebug(true)
         if (gradleVersion != null) {
             runner.withGradleVersion(gradleVersion)
             gradleVersion = null
