@@ -108,6 +108,10 @@ cloudci {
             enabled = System.getenv('TRAVIS_BRANCH') == 'master' && System.getenv('TRAVIS_PULL_REQUEST') == 'false'
         }
 
+        functionalTest {
+            maxParallelForks = 1
+        }
+
         task release {
             dependsOn build, publishPlugins
         }
