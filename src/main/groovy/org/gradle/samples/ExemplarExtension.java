@@ -6,5 +6,6 @@ import org.gradle.api.file.CopySpec;
 
 public interface ExemplarExtension {
     ConfigurableFileCollection getSource();
+
     void source(Action<? super CopySpec> action);
 }

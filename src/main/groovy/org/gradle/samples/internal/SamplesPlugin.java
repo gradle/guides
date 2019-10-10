@@ -85,7 +85,7 @@ public class SamplesPlugin implements Plugin<Project> {
         project.getTasks().named("assemble").configure(it -> it.dependsOn(asciidocTask));
 
         project.afterEvaluate(evaluatedProject -> {
-            samples.stream().map(it -> (DefaultSample)it).forEach(this::configureDefaultDomainSpecificSampleIfNeeded);
+            samples.stream().map(it -> (DefaultSample) it).forEach(this::configureDefaultDomainSpecificSampleIfNeeded);
         });
 
         project.getPluginManager().apply(TestingSamplesWithExemplarPlugin.class);

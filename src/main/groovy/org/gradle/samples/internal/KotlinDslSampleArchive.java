@@ -1,7 +1,6 @@
 package org.gradle.samples.internal;
 
 import org.gradle.api.file.Directory;
-import org.gradle.util.GUtil;
 
 import javax.inject.Inject;
 
