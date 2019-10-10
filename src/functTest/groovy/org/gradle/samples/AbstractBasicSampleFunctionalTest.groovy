@@ -192,6 +192,37 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
         noExceptionThrown()
     }
 
+    def "can configure docinfo to add metadata information to each samples"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        buildFile << '''
+            samples.configureEach { sample ->
+                def docinfoFile = layout.buildDirectory.file("sample-docinfos/${sample.name}/README-docinfo.html")
+                def generateDocInfoTask = tasks.register("generateDocInfoFor${sample.name.capitalize()}Sample") {
+                    doLast {
+                        docinfoFile.get().asFile.parentFile.mkdirs()
+                        docinfoFile.get().asFile.text = """<meta name="adoc-src-path" content="${sample.sampleDirectory.get().asFile.path - project.projectDir.path}/README.adoc">"""
+                    }
+                }
+
+                asciidoctorTask.configure { task ->
+                    task.dependsOn(generateDocInfoTask)
+                    task.attributes.put('docinfodir', docinfoFile.get().asFile.parentFile.absolutePath)
+                    task.attributes.put('docinfo', 'private-head') 
+                    task.attributes.put('outfilesuffix', '.html')
+                }
+            }
+        '''
+
+        when:
+        build('assembleDemoSample')
+
+        then:
+        def sampleIndexFile = new File(projectDir, "build/gradle-samples/demo/index.html")
+        sampleIndexFile.exists()
+        sampleIndexFile.text.contains('<meta name="adoc-src-path" content="/src/samples/demo/README.adoc">')
+    }
+
     protected abstract void makeSingleProject()
 
     protected void writeSampleUnderTest() {

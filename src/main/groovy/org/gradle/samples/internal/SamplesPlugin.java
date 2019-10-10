@@ -41,12 +41,15 @@ public class SamplesPlugin implements Plugin<Project> {
         project.getPluginManager().apply("lifecycle-base");
         NamedDomainObjectContainer<Sample> samples = project.container(Sample.class, name -> {
             assert !name.isEmpty() : "sample name cannot be empty";
+
             DefaultSample result = project.getObjects().newInstance(DefaultSample.class, name);
             result.getGradleVersion().convention(project.getGradle().getGradleVersion());
             result.getIntermediateDirectory().set(project.getLayout().getBuildDirectory().dir("sample-intermediate/" + name));
             result.getArchiveBaseName().set(project.provider(() -> name + (project.getVersion().equals(Project.DEFAULT_VERSION) ? "" : "-" + project.getVersion().toString())));
             result.getInstallDirectory().set(project.getLayout().getBuildDirectory().dir("gradle-samples/" + name));
             result.getSampleDirectory().convention(project.getLayout().getProjectDirectory().dir("src/samples/" + name));
+            result.setAsciidoctorTask(createAsciidoctorTask(project.getTasks(), result, getObjectFactory()));
+
             return result;
         });
         project.getExtensions().add(NamedDomainObjectContainer.class, "samples", samples);
@@ -61,7 +64,6 @@ public class SamplesPlugin implements Plugin<Project> {
             // TODO: Generate basic README (see kotlin-dsl)
             // TODO: Process the README file to add links to the archives
             createWrapperTask(project.getTasks(), sample, getObjectFactory());
-            createAsciidoctorTask(project.getTasks(), sample, getObjectFactory());
             TaskProvider<InstallSampleTask> installSampleTask = createSampleInstallTask(project.getTasks(), sample);
             TaskProvider<Task> assembleTask = createSampleAssembleTask(project.getTasks(), sample);
             assembleTask.configure(it -> it.dependsOn(installSampleTask));

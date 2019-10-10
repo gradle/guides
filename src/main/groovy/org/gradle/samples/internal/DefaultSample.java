@@ -1,5 +1,6 @@
 package org.gradle.samples.internal;
 
+import org.asciidoctor.gradle.AsciidoctorTask;
 import org.gradle.api.Action;
 import org.gradle.api.DomainObjectSet;
 import org.gradle.api.file.ConfigurableFileCollection;
@@ -8,6 +9,7 @@ import org.gradle.api.file.RegularFile;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.TaskProvider;
 import org.gradle.samples.DomainSpecificSample;
 import org.gradle.samples.Sample;
 
@@ -19,11 +21,12 @@ public abstract class DefaultSample implements Sample {
     private final String name;
     private final DomainObjectSet<DslSampleArchive> archives;
     private final ObjectFactory objectFactory;
+    private TaskProvider<AsciidoctorTask> asciidoctorTask;
 
     @Inject
     public DefaultSample(String name, ObjectFactory objectFactory) {
         this.name = name;
-        archives = objectFactory.domainObjectSet(DslSampleArchive.class);
+        this.archives = objectFactory.domainObjectSet(DslSampleArchive.class);
         this.objectFactory = objectFactory;
     }
 
@@ -91,5 +94,15 @@ public abstract class DefaultSample implements Sample {
 
     DomainObjectSet<DslSampleArchive> getDslSampleArchives() {
         return archives;
+    }
+
+    @Override
+    public TaskProvider<AsciidoctorTask> getAsciidoctorTask() {
+        return asciidoctorTask;
+    }
+
+    void setAsciidoctorTask(TaskProvider<AsciidoctorTask> asciidoctorTask) {
+        assert this.asciidoctorTask == null;
+        this.asciidoctorTask = asciidoctorTask;
     }
 }
