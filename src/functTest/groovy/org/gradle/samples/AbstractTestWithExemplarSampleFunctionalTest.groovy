@@ -137,6 +137,22 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
         assertExemplarTasksExecutedAndNotSkipped(result)
         result.task(":generateContentForDemoSample").outcome == SUCCESS
     }
+
+    def "generates source file with checkstyle check turned off"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        writeExemplarConfigurationToDirectory()
+
+        when:
+        def result = build("generateSamplesExemplarFunctionalTestSourceSet")
+
+        then:
+        result.task(":generateSamplesExemplarFunctionalTestSourceSet").outcome == SUCCESS
+        def sourceFile = new File(temporaryFolder.root, "build/generated-source-sets/samplesExemplarFunctionalTest/ExemplarExternalSamplesFunctionalTest.java")
+        def allSourceFileLines = sourceFile.readLines()
+        allSourceFileLines.first().contains("//CHECKSTYLE:OFF")
+        allSourceFileLines.last().contains("//CHECKSTYLE:ON")
+    }
     // TODO: Test when the content of an archive is generated
 
     protected void assertExemplarTestSucceeds() {

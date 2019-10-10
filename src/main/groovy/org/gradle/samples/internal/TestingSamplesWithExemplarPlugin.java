@@ -35,8 +35,9 @@ public class TestingSamplesWithExemplarPlugin implements Plugin<Project> {
 
         Provider<Directory> samplesExemplarDirectory = project.getLayout().getBuildDirectory().dir("samples-exemplar");
 
-        TaskProvider<Task> generatorTask = createExemplarGeneratorTask(project.getTasks(), project.getLayout());
-        SourceSet sourceSet = createSourceSet(project.getExtensions().getByType(SourceSetContainer.class), generatorTask);
+        SourceSet sourceSet = createSourceSet(project.getExtensions().getByType(SourceSetContainer.class));
+        TaskProvider<Task> generatorTask = createExemplarGeneratorTask(project.getTasks(), project.getLayout(), sourceSet);
+        sourceSet.getJava().srcDir(generatorTask);
 
         configureExemplarDependencies(project.getDependencies(), sourceSet);
 
@@ -78,12 +79,13 @@ public class TestingSamplesWithExemplarPlugin implements Plugin<Project> {
         };
     }
 
-    private static TaskProvider<Task> createExemplarGeneratorTask(TaskContainer tasks, ProjectLayout projectLayout) {
-        Provider<Directory> testSourceSet = projectLayout.getBuildDirectory().dir("test-source-set");
-        return tasks.register("generateSampleTest", task -> {
+    private static TaskProvider<Task> createExemplarGeneratorTask(TaskContainer tasks, ProjectLayout projectLayout, SourceSet sourceSet) {
+        Provider<Directory> testSourceSet = projectLayout.getBuildDirectory().dir("generated-source-sets/" + sourceSet.getName());
+        return tasks.register("generate" + capitalize(sourceSet.getName() + "SourceSet"), task -> {
             task.getOutputs().dir(testSourceSet);
             task.doLast(it -> {
-                String content = "package org.gradle.samples;\n"
+                String content = "//CHECKSTYLE:OFF\n" +
+                        "package org.gradle.samples;\n"
                         + "\n"
                         + "import org.gradle.samples.test.normalizer.FileSeparatorOutputNormalizer;\n" +
                         "import org.gradle.samples.test.normalizer.JavaObjectSerializationOutputNormalizer;\n" +
@@ -95,9 +97,10 @@ public class TestingSamplesWithExemplarPlugin implements Plugin<Project> {
                         "@RunWith(GradleSamplesRunner.class)\n" +
                         "@SamplesOutputNormalizers({\n" +
                         "    JavaObjectSerializationOutputNormalizer.class,\n" +
-                        "    FileSeparatorOutputNormalizer.class//,\n" +
+                        "    FileSeparatorOutputNormalizer.class\n" +
                         "})\n" +
-                        "public class ExemplarExternalSamplesFunctionalTest {}";
+                        "public class ExemplarExternalSamplesFunctionalTest {}"
+                        + "//CHECKSTYLE:ON\n";
                 try {
                     Files.write(testSourceSet.map(f -> f.file("ExemplarExternalSamplesFunctionalTest.java")).get().getAsFile().toPath(), content.getBytes());
                 } catch (IOException e) {
@@ -107,10 +110,8 @@ public class TestingSamplesWithExemplarPlugin implements Plugin<Project> {
         });
     }
 
-    private static SourceSet createSourceSet(SourceSetContainer sourceSets, TaskProvider<Task> generatorTask) {
-        return sourceSets.create("samplesExemplarFunctionalTest", sourceSet -> {
-            sourceSet.getJava().srcDir(generatorTask);
-        });
+    private static SourceSet createSourceSet(SourceSetContainer sourceSets) {
+        return sourceSets.create("samplesExemplarFunctionalTest");
     }
 
     private static TaskProvider<Sync> createExemplarInstallTask(TaskContainer tasks, SourceSet sourceSet, Provider<Directory> samplesDirectory) {
