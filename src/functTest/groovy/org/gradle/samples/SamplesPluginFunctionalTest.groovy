@@ -183,6 +183,25 @@ samples.configureEach { sample ->
         result.output.contains('configuring Kotlin DSL second time')
     }
 
+    def "sample index contains description"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        buildFile << """
+            ${sampleUnderTestDsl}.description = "Some description"
+        """
+
+        when:
+        def result = build('assemble')
+
+        then:
+        result.task(":generateSampleIndex").outcome == SUCCESS
+        result.task(":asciidocSampleIndex").outcome == SUCCESS
+        result.task(":assemble").outcome == SUCCESS
+        assertSampleTasksExecutedAndNotSkipped(result)
+        def indexFile = new File(projectDir, "build/gradle-samples/index.html")
+        indexFile.text.contains('Some description')
+    }
+
     // TODO: Allow preprocess build script files before zipping (remove tags, see NOTE1) or including them in rendered output (remove tags and license)
     //   NOTE1: We can remove the license from all the files and add a LICENSE file at the root of the sample
 

@@ -10,6 +10,8 @@ import org.gradle.api.provider.Property;
 public interface Sample extends Named, ExtensionAware {
     DirectoryProperty getSampleDirectory();
 
+    Property<String> getDescription();
+
     Property<String> getGradleVersion();
 
     ConfigurableFileCollection getArchiveContent();

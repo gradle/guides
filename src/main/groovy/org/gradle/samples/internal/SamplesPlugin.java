@@ -17,6 +17,7 @@ import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.wrapper.Wrapper;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
 import org.gradle.samples.Sample;
+import org.gradle.samples.internal.tasks.GenerateSampleIndexAsciidoc;
 import org.gradle.samples.internal.tasks.InstallSampleTask;
 import org.gradle.samples.internal.tasks.InstallSampleZipContentTask;
 import org.gradle.samples.internal.tasks.SampleZipTask;
@@ -201,7 +202,10 @@ public class SamplesPlugin implements Plugin<Project> {
 
     private static TaskProvider<GenerateSampleIndexAsciidoc> createSampleIndexGeneratorTask(TaskContainer tasks, Iterable<Sample> samples, ProjectLayout projectLayout, ProviderFactory providerFactory) {
         return tasks.register("generateSampleIndex", GenerateSampleIndexAsciidoc.class, task -> {
-            task.getSamplePaths().set(providerFactory.provider(() -> StreamSupport.stream(samples.spliterator(), false).filter(it -> !it.getSampleDirectory().getAsFileTree().isEmpty()).map(Sample::getName).collect(Collectors.toList())));
+            task.getSampleInformation().set(providerFactory.provider(() -> StreamSupport.stream(samples.spliterator(), false)
+                    .filter(it -> !it.getSampleDirectory().getAsFileTree().isEmpty())
+                    .map(it -> new GenerateSampleIndexAsciidoc.SampleInformation(it.getName(), it.getDescription().getOrNull()))
+                    .collect(Collectors.toList())));
             task.getOutputFile().set(projectLayout.getBuildDirectory().file("tmp/" + task.getName() + "/index.adoc"));
         });
     }
