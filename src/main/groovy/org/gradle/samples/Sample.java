@@ -5,8 +5,10 @@ import org.gradle.api.Action;
 import org.gradle.api.Named;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.RegularFile;
 import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.provider.Property;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.TaskProvider;
 
 /**
@@ -19,6 +21,13 @@ public interface Sample extends Named, ExtensionAware {
      * @return a property for the sample root directory
      */
     DirectoryProperty getSampleDirectory();
+
+    /**
+     * Provider for locating the README file for the sample.
+     *
+     * @return a provider for the README file location
+     */
+    Provider<RegularFile> getReadMeFile();
 
     /**
      * Property for configuring the sample description. The description is used within the sample index.

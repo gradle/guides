@@ -42,7 +42,8 @@ public abstract class DefaultSample implements Sample {
         return name;
     }
 
-    Provider<RegularFile> getReadMeFile() {
+    @Override
+    public Provider<RegularFile> getReadMeFile() {
         return getSampleDirectory().file("README.adoc");
     }
 

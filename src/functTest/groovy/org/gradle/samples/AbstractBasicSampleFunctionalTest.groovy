@@ -223,6 +223,22 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
         sampleIndexFile.text.contains('<meta name="adoc-src-path" content="/src/samples/demo/README.adoc">')
     }
 
+    def "can access the readme file location from the sample"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        buildFile << """
+            tasks.register('verify') {
+                doLast {
+                    assert ${sampleUnderTestDsl}.readMeFile.get().asFile.canonicalPath == '${new File(temporaryFolder.root, "src/samples/demo/README.adoc").canonicalPath}'
+                }
+            }
+        """
+
+        expect:
+        def result = build('verify')
+        result.task(':verify').outcome == SUCCESS
+    }
+
     protected abstract void makeSingleProject()
 
     protected void writeSampleUnderTest() {
