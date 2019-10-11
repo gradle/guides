@@ -180,7 +180,7 @@ public class SamplesPlugin implements Plugin<Project> {
         Provider<Directory> contentDirectory = sample.getIntermediateDirectory().dir("content");
         TaskProvider<AsciidoctorTask> asciidoctorTask = tasks.register("asciidoctor" + capitalize(sample.getName()) + "Sample", AsciidoctorTask.class, task -> {
             task.sourceDir(sample.getSampleDirectory());
-            task.outputDir(task.getProject().getLayout().getBuildDirectory().dir("tmp/" + task.getName() + "out"));
+            task.outputDir(task.getProject().getLayout().getBuildDirectory().dir("tmp/" + task.getName() + "/out"));
             task.setSeparateOutputDirs(false);
 
             task.doLast(it -> {
