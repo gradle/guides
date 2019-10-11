@@ -113,6 +113,7 @@ This should be applied in the authoring of all new Topical guides
 - Introduce sample description on the model
 - Expose Asciidoctor task on the sample model
 - Disable checkstyle check on the Exemplar generated source
+- Automatically add the license file if available to all sample archives
 
 === 0.15.15
 
