@@ -24,9 +24,13 @@ import org.gradle.samples.internal.tasks.SampleZipTask;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static org.gradle.samples.internal.StringUtils.capitalize;
@@ -62,6 +66,8 @@ public class SamplesPlugin implements Plugin<Project> {
         samples.configureEach(s -> {
             DefaultSample sample = (DefaultSample) s;
 
+            sample.getArchiveContent().from(findLicenseFile(project));
+
             // TODO: Generate basic README (see kotlin-dsl)
             // TODO: Process the README file to add links to the archives
             createWrapperTask(project.getTasks(), sample, getObjectFactory());
@@ -90,6 +96,18 @@ public class SamplesPlugin implements Plugin<Project> {
         });
 
         project.getPluginManager().apply(TestingSamplesWithExemplarPlugin.class);
+    }
+
+    private static Callable<List<File>> findLicenseFile(Project project) {
+        return () -> {
+            Project rootProject = project.getRootProject();
+            return Stream.of("LICENSE", "LICENSE.txt", "LICENSE.md", "LICENSE.adoc")
+                    .map(rootProject::file)
+                    .filter(File::exists)
+                    .findAny()
+                    .map(Collections::singletonList)
+                    .orElse(Collections.emptyList());
+        };
     }
 
     private void configureDefaultDomainSpecificSampleIfNeeded(DefaultSample sample) {

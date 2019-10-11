@@ -65,9 +65,9 @@ endif::[]
     }
 
     @Override
-    protected void assertDslZipsHasContent() {
+    protected void assertDslZipsHasContent(String... additionalFiles) {
         assert !groovyDslZipFile.exists()
-        assertZipHasContent(kotlinDslZipFile, "gradlew", "gradlew.bat", "gradle/wrapper/gradle-wrapper.properties", "gradle/wrapper/gradle-wrapper.jar", "README.adoc", "build.gradle.kts", "settings.gradle.kts")
+        assertZipHasContent(kotlinDslZipFile, "gradlew", "gradlew.bat", "gradle/wrapper/gradle-wrapper.properties", "gradle/wrapper/gradle-wrapper.jar", "README.adoc", "build.gradle.kts", "settings.gradle.kts", *additionalFiles)
     }
 
     @Override

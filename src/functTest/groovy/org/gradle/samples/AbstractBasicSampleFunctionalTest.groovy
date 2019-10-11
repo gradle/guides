@@ -2,6 +2,7 @@ package org.gradle.samples
 
 import org.asciidoctor.gradle.AsciidoctorTask
 import org.gradle.testkit.runner.BuildResult
+import spock.lang.Unroll
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
@@ -239,6 +240,23 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
         result.task(':verify').outcome == SUCCESS
     }
 
+    @Unroll
+    def "adds #licenseFileName to archive when found within the root directory"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        temporaryFolder.newFile(licenseFileName) << "Some license"
+
+        when:
+        def result = build('assembleDemoSample')
+
+        then:
+        assertSampleTasksExecutedAndNotSkipped(result)
+        assertDslZipsHasContent(licenseFileName)
+
+        where:
+        licenseFileName << ['LICENSE', 'LICENSE.txt', 'LICENSE.md', 'LICENSE.adoc']
+    }
+
     protected abstract void makeSingleProject()
 
     protected void writeSampleUnderTest() {
@@ -255,7 +273,7 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
 
     protected abstract void assertSampleIndexDoesNotContainsLinkToSampleArchives(String version = null)
 
-    protected abstract void assertDslZipsHasContent()
+    protected abstract void assertDslZipsHasContent(String... additionalFiles)
 
     protected abstract void assertDslZipFilesExists(Map m = [:])
 
