@@ -23,6 +23,7 @@ import org.gradle.samples.internal.tasks.InstallSampleZipContentTask;
 import org.gradle.samples.internal.tasks.SampleZipTask;
 
 import javax.inject.Inject;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -179,12 +180,12 @@ public class SamplesPlugin implements Plugin<Project> {
         Provider<Directory> contentDirectory = sample.getIntermediateDirectory().dir("content");
         TaskProvider<AsciidoctorTask> asciidoctorTask = tasks.register("asciidoctor" + capitalize(sample.getName()) + "Sample", AsciidoctorTask.class, task -> {
             task.sourceDir(sample.getSampleDirectory());
-            task.outputDir(task.getProject().getLayout().getBuildDirectory().dir("tmp/" + task.getName()));
+            task.outputDir(task.getProject().getLayout().getBuildDirectory().dir("tmp/" + task.getName() + "out"));
             task.setSeparateOutputDirs(false);
 
             task.doLast(it -> {
                 task.getProject().sync(spec -> {
-                    spec.from(task.getTemporaryDir());
+                    spec.from(new File(task.getTemporaryDir(), "out"));
                     spec.into(contentDirectory);
                     spec.rename("README.html", "index.html");
                 });
