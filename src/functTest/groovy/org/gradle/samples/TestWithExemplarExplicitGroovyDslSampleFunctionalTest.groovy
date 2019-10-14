@@ -8,10 +8,12 @@ class TestWithExemplarExplicitGroovyDslSampleFunctionalTest extends AbstractTest
                 id 'org.gradle.samples'
             }
 
+            samples.all {
+                withGroovyDsl()
+            }
+
             samples {
-                demo {
-                    withGroovyDsl()
-                }
+                demo
             }
         """
     }

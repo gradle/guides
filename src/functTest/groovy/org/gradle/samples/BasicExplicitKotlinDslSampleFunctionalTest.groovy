@@ -10,10 +10,12 @@ class BasicExplicitKotlinDslSampleFunctionalTest extends AbstractBasicSampleFunc
                 id 'org.gradle.samples'
             }
 
+            samples.all {
+                withKotlinDsl()
+            }
+
             samples {
-                demo {
-                    withKotlinDsl()
-                }
+                demo
             }
         """
     }

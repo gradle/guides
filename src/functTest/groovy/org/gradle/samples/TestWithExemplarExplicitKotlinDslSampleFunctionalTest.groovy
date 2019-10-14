@@ -8,10 +8,12 @@ class TestWithExemplarExplicitKotlinDslSampleFunctionalTest extends AbstractTest
                 id 'org.gradle.samples'
             }
 
+            samples.all {
+                withKotlinDsl()
+            }
+
             samples {
-                demo {
-                    withKotlinDsl()
-                }
+                demo
             }
         """
     }

@@ -8,11 +8,13 @@ class TestWithExemplarExplicitBothDslSampleFunctionalTest extends AbstractTestWi
                 id 'org.gradle.samples'
             }
 
+            samples.all {
+                withGroovyDsl()
+                withKotlinDsl()
+            }
+
             samples {
-                demo {
-                    withGroovyDsl()
-                    withKotlinDsl()
-                }
+                demo
             }
         """
     }
