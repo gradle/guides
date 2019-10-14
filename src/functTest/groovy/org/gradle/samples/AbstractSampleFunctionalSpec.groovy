@@ -18,11 +18,15 @@ package org.gradle.samples
 
 import org.gradle.guides.AbstractFunctionalTest
 import org.gradle.testkit.runner.BuildResult
+import org.hamcrest.CoreMatchers
+import org.hamcrest.Matcher
+import org.hamcrest.MatcherAssert
 
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import static org.hamcrest.CoreMatchers.containsString
 
 class AbstractSampleFunctionalSpec extends AbstractFunctionalTest {
     protected File writeSampleContentToDirectory(String directory) {
@@ -41,11 +45,15 @@ Some doc
     protected void writeGroovyDslSampleToDirectory(String directory) {
         temporaryFolder.newFolder(directory.split('/'))
         temporaryFolder.newFile("${directory}/build.gradle") << """
-            println "Hello, world!"
-        """
+// tag::println[]
+println "Hello, world!"
+// end:println[]
+"""
         temporaryFolder.newFile("${directory}/settings.gradle") << """
-            rootProject.name = 'demo'
-        """
+// tag::root-project-name[]
+rootProject.name = 'demo'
+// end:root-project-name[]
+"""
     }
 
     protected void writeKotlinDslSample(String sampleDirectory) {
@@ -55,10 +63,14 @@ Some doc
     protected void writeKotlinDslSampleToDirectory(String directory) {
         temporaryFolder.newFolder(directory.split('/'))
         temporaryFolder.newFile("${directory}/build.gradle.kts") << """
-            println("Hello, world!")
+// tag::println[]
+println("Hello, world!")
+// end:println[]
         """
         temporaryFolder.newFile("${directory}/settings.gradle.kts") << """
-            rootProject.name = "demo"
+// tag::root-project-name[]
+rootProject.name = "demo"
+// end:root-project-name[]
         """
     }
 
@@ -129,11 +141,15 @@ Some doc
     }
 
     protected static void assertGradleWrapperVersion(File file, String expectedGradleVersion) {
+        assertFileInZipHasContains(file, 'gradle/wrapper/gradle-wrapper.properties', containsString("-${expectedGradleVersion}-"))
+    }
+
+    protected static void assertFileInZipThat(File file, String path, Matcher<String> matcher) {
         assert file.exists()
         def text = new ZipFile(file).withCloseable { zipFile ->
-            return zipFile.getInputStream(zipFile.entries().findAll { !it.directory }.find { it.name == 'gradle/wrapper/gradle-wrapper.properties' }).text
+            return zipFile.getInputStream(zipFile.entries().findAll { !it.directory }.find { it.name == path }).text
         }
 
-        assert text.contains("-${expectedGradleVersion}-")
+        MatcherAssert.assertThat(text, matcher)
     }
 }

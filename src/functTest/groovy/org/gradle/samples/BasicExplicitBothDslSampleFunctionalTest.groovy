@@ -2,6 +2,8 @@ package org.gradle.samples
 
 import org.gradle.testkit.runner.BuildResult
 
+import static org.hamcrest.CoreMatchers.not
+
 class BasicExplicitBothDslSampleFunctionalTest extends AbstractBasicSampleFunctionalTest {
     @Override
     protected void makeSingleProject() {
@@ -97,6 +99,14 @@ endif::[]
     @Override
     protected boolean hasKotlinDsl() {
         return true
+    }
+
+    @Override
+    protected void assertDslZipFilesDoesNotContainsAsciidoctorTags() {
+        assertFileInZipThat(groovyDslZipFile, "build.gradle", not(containsAsciidoctorTags()))
+        assertFileInZipThat(groovyDslZipFile, "settings.gradle", not(containsAsciidoctorTags()))
+        assertFileInZipThat(kotlinDslZipFile, "build.gradle.kts", not(containsAsciidoctorTags()))
+        assertFileInZipThat(kotlinDslZipFile, "settings.gradle.kts", not(containsAsciidoctorTags()))
     }
 
 // TODO: Calling multiple time withGroovyDsl and withKotlinDsl is allowed

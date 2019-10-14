@@ -2,6 +2,9 @@ package org.gradle.samples
 
 import org.asciidoctor.gradle.AsciidoctorTask
 import org.gradle.testkit.runner.BuildResult
+import org.hamcrest.BaseMatcher
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import spock.lang.Unroll
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
@@ -281,6 +284,21 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
         directory << ['.gradle', 'build']
     }
 
+    def "removes Asciidoctor tags from files included in the archive"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+
+        when:
+        def result = build('assembleDemoSample')
+
+        then:
+        assertSampleTasksExecutedAndNotSkipped(result)
+        assertDslZipFilesDoesNotContainsAsciidoctorTags()
+    }
+
+    // TODO: Remove license headers
+    // TODO: Model display name
+
     protected abstract void makeSingleProject()
 
     protected void writeSampleUnderTest() {
@@ -303,7 +321,22 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
 
     protected abstract void assertDslZipFilesDoesNotExists(Map m = [:])
 
+    protected abstract void assertDslZipFilesDoesNotContainsAsciidoctorTags()
+
     protected abstract boolean hasGroovyDsl()
 
     protected abstract boolean hasKotlinDsl()
+
+    protected static Matcher<String> containsAsciidoctorTags() {
+        return new BaseMatcher<String>() {
+            @Override
+            boolean matches(Object item) {
+                return (item.toString() =~ /\/\/ tag::.+\[\]/).find() || (item.toString() =~ /\/\/ end::.+\[\]/).find()
+            }
+
+            @Override
+            void describeTo(Description description) {
+            }
+        }
+    }
 }
