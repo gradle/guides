@@ -95,6 +95,7 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
 
         then:
         assertExemplarTasksExecutedAndNotSkipped(result)
+        assertExemplarTestSucceeds()
         !new File(temporaryFolder.root, 'build/samples-exemplar/anotherDemo').exists()
     }
 
@@ -135,6 +136,7 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
 
         then:
         assertExemplarTasksExecutedAndNotSkipped(result)
+        assertExemplarTestSucceeds()
         result.task(":generateContentForDemoSample").outcome == SUCCESS
     }
 
