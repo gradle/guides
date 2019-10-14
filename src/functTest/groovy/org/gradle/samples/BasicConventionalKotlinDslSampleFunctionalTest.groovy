@@ -81,4 +81,14 @@ endif::[]
         assert !getGroovyDslZipFile(m).exists()
         assert !getKotlinDslZipFile(m).exists()
     }
+
+    @Override
+    protected boolean hasGroovyDsl() {
+        return false
+    }
+
+    @Override
+    protected boolean hasKotlinDsl() {
+        return true
+    }
 }

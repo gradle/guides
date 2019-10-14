@@ -19,6 +19,8 @@ public abstract class InstallSampleZipContentTask extends DefaultTask {
         getProject().sync(spec -> {
             spec.from(getSource());
             spec.into(getInstallDirectory());
+            spec.exclude("**/build/**");
+            spec.exclude("**/.gradle/**");
         });
     }
 }

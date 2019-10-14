@@ -257,6 +257,30 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
         licenseFileName << ['LICENSE', 'LICENSE.txt', 'LICENSE.md', 'LICENSE.adoc']
     }
 
+    @Unroll
+    def "excludes '#directory' when building the domain language archive"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        if (hasGroovyDsl()) {
+            temporaryFolder.newFolder('src', 'samples', 'demo', 'groovy', directory)
+            temporaryFolder.newFile("src/samples/demo/groovy/${directory}/foo.txt")
+        }
+        if (hasKotlinDsl()) {
+            temporaryFolder.newFolder('src', 'samples', 'demo', 'kotlin', directory)
+            temporaryFolder.newFile("src/samples/demo/kotlin/${directory}/foo.txt")
+        }
+
+        when:
+        def result = build('assembleDemoSample')
+
+        then:
+        assertSampleTasksExecutedAndNotSkipped(result)
+        assertDslZipsHasContent()
+
+        where:
+        directory << ['.gradle', 'build']
+    }
+
     protected abstract void makeSingleProject()
 
     protected void writeSampleUnderTest() {
@@ -278,4 +302,8 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
     protected abstract void assertDslZipFilesExists(Map m = [:])
 
     protected abstract void assertDslZipFilesDoesNotExists(Map m = [:])
+
+    protected abstract boolean hasGroovyDsl()
+
+    protected abstract boolean hasKotlinDsl()
 }

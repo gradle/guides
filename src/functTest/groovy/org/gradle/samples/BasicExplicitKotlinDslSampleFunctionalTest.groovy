@@ -88,6 +88,16 @@ endif::[]
         assert !getKotlinDslZipFile(m).exists()
     }
 
+    @Override
+    protected boolean hasGroovyDsl() {
+        return false
+    }
+
+    @Override
+    protected boolean hasKotlinDsl() {
+        return true
+    }
+
     def "only contains Kotlin DSL sample even if Groovy DSL source are available"() {
         given:
         makeSingleProject()

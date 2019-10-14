@@ -89,7 +89,17 @@ endif::[]
         assert !getKotlinDslZipFile(m).exists()
     }
 
-    // TODO: Calling multiple time withGroovyDsl and withKotlinDsl is allowed
+    @Override
+    protected boolean hasGroovyDsl() {
+        return true
+    }
+
+    @Override
+    protected boolean hasKotlinDsl() {
+        return true
+    }
+
+// TODO: Calling multiple time withGroovyDsl and withKotlinDsl is allowed
 
     def "can relocate both DSL sample source"() {
         given:
