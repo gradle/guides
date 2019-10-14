@@ -75,7 +75,7 @@ public class TestingSamplesWithExemplarPlugin implements Plugin<Project> {
                     }
                     return objectFactory.fileCollection();
                 }
-            }).into(samplesDirectory.map(it -> it.dir(sample.getName())));
+            }, spec -> spec.into(sample.getName()));
         };
     }
 

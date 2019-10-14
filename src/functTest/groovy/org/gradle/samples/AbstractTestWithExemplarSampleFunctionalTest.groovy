@@ -155,19 +155,39 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
         allSourceFileLines.first().contains("//CHECKSTYLE:OFF")
         allSourceFileLines.last().contains("//CHECKSTYLE:ON")
     }
+
+    def "can test multiple samples"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        writeExemplarConfigurationToDirectory()
+        buildFile << '''
+            samples.create('anotherDemo')
+        '''
+        writeSampleUnderTestToDirectory('src/samples/anotherDemo')
+        writeExemplarConfigurationToDirectory('src/samples/anotherDemo')
+
+        when:
+        def result = build("samplesExemplarFunctionalTest")
+
+        then:
+        assertExemplarTasksExecutedAndNotSkipped(result)
+        assertExemplarTestSucceeds(['demo', 'anotherDemo'])
+    }
     // TODO: Test when the content of an archive is generated
 
-    protected void assertExemplarTestSucceeds() {
+    protected void assertExemplarTestSucceeds(List<String> testCases = ['demo']) {
         assert new File(temporaryFolder.root, "build/reports/tests/samplesExemplarFunctionalTest").exists()
 
         def testsuiteXmlFile = new File(temporaryFolder.root, "build/test-results/samplesExemplarFunctionalTest/TEST-org.gradle.samples.ExemplarExternalSamplesFunctionalTest.xml")
         assert testsuiteXmlFile.exists()
         def testsuiteNode = new XmlSlurper().parseText(testsuiteXmlFile.text)
         assert testsuiteNode.@name == 'org.gradle.samples.ExemplarExternalSamplesFunctionalTest'
-        assert testsuiteNode.@tests == '1'
+        assert testsuiteNode.@tests == "${testCases.size()}"
         assert testsuiteNode.@skipped == '0'
         assert testsuiteNode.@failures == '0'
         assert testsuiteNode.@errors == '0'
+
+        testsuiteNode.testcase*.@name == testCases.collect { "${it}_showDemoSample.sample" }
     }
 
     protected void assertExemplarTasksSkipped(BuildResult result) {
