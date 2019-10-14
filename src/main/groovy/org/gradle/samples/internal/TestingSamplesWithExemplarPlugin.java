@@ -84,8 +84,7 @@ public class TestingSamplesWithExemplarPlugin implements Plugin<Project> {
         return tasks.register("generate" + capitalize(sourceSet.getName() + "SourceSet"), task -> {
             task.getOutputs().dir(testSourceSet);
             task.doLast(it -> {
-                String content = "//CHECKSTYLE:OFF\n"
-                        + "package org.gradle.samples;\n"
+                String content = "package org.gradle.samples;\n"
                         + "\n"
                         + "import org.gradle.samples.test.normalizer.FileSeparatorOutputNormalizer;\n"
                         + "import org.gradle.samples.test.normalizer.JavaObjectSerializationOutputNormalizer;\n"
@@ -99,8 +98,7 @@ public class TestingSamplesWithExemplarPlugin implements Plugin<Project> {
                         + "    JavaObjectSerializationOutputNormalizer.class,\n"
                         + "    FileSeparatorOutputNormalizer.class\n"
                         + "})\n"
-                        + "public class ExemplarExternalSamplesFunctionalTest {}"
-                        + "//CHECKSTYLE:ON\n";
+                        + "public class ExemplarExternalSamplesFunctionalTest {}\n";
                 try {
                     Files.write(testSourceSet.map(f -> f.file("ExemplarExternalSamplesFunctionalTest.java")).get().getAsFile().toPath(), content.getBytes());
                 } catch (IOException e) {
