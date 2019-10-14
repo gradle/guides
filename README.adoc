@@ -108,6 +108,10 @@ This should be applied in the authoring of all new Topical guides
 
 == Changelog
 
+=== 0.15.17
+
+- Fix Exemplar tests for multiple samples
+
 === 0.15.16
 
 - Introduce sample description on the model
