@@ -297,7 +297,6 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
     }
 
     // TODO: Remove license headers
-    // TODO: Model display name
 
     protected abstract void makeSingleProject()
 

@@ -1,6 +1,7 @@
 package org.gradle.samples
 
 import org.gradle.testkit.runner.BuildResult
+import spock.lang.Unroll
 
 import java.nio.file.Files
 
@@ -202,6 +203,38 @@ samples.configureEach { sample ->
         indexFile.text.contains('Some description')
     }
 
+    @Unroll
+    def "uses '#displayName' instead of '#name' when generating sample index"() {
+        buildFile << """
+            plugins {
+                id 'org.gradle.samples'
+            }
+
+            samples.create("${name}")
+        """
+        writeSampleUnderTestToDirectory("src/samples/${name}")
+
+        when:
+        def result = build('assemble')
+
+        then:
+        result.task(":generateSampleIndex").outcome == SUCCESS
+        result.task(":asciidocSampleIndex").outcome == SUCCESS
+        result.task(":assemble").outcome == SUCCESS
+        assertSampleTasksExecutedAndNotSkipped(result, name)
+
+        and:
+        def indexFile = new File(projectDir, "build/gradle-samples/index.html")
+        indexFile.text.contains("Sample ${displayName}")
+
+        where:
+        name      | displayName
+        'foobar'  | 'Foobar'
+        'fooBar'  | 'Foo Bar'
+        'foo-bar' | 'Foo Bar'
+        'foo_bar' | 'Foo Bar'
+    }
+
     // TODO: Allow preprocess build script files before zipping (remove tags, see NOTE1) or including them in rendered output (remove tags and license)
     //   NOTE1: We can remove the license from all the files and add a LICENSE file at the root of the sample
 
@@ -218,17 +251,21 @@ samples.configureEach { sample ->
     }
 
     protected void writeSampleUnderTest() {
-        writeSampleContentToDirectory('src/samples/demo') << """
+        writeSampleUnderTestToDirectory('src/samples/demo')
+    }
+
+    protected void writeSampleUnderTestToDirectory(String directory) {
+        writeSampleContentToDirectory(directory) << """
 ifndef::env-github[]
 - link:{zip-base-file-name}-groovy-dsl.zip[Download Groovy DSL ZIP]
 - link:{zip-base-file-name}-kotlin-dsl.zip[Download Kotlin DSL ZIP]
 endif::[]
 """
-        writeGroovyDslSample("src/samples/demo");
-        writeKotlinDslSample("src/samples/demo")
+        writeGroovyDslSample(directory);
+        writeKotlinDslSample(directory)
     }
 
-    protected static void assertSampleTasksExecutedAndNotSkipped(BuildResult result) {
-        assertBothDslSampleTasksExecutedAndNotSkipped(result);
+    protected static void assertSampleTasksExecutedAndNotSkipped(BuildResult result, String name = 'demo') {
+        assertBothDslSampleTasksExecutedAndNotSkipped(result, name)
     }
 }

@@ -5,6 +5,7 @@ import org.gradle.api.Task;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputFile;
@@ -37,7 +38,7 @@ public abstract class GenerateSampleIndexAsciidoc extends DefaultTask {
             out.println("= Sample Index");
             out.println();
             getSampleInformation().get().forEach(sampleInformation -> {
-                out.print("- link:" + sampleInformation.getPath() + "/[Sample " + sampleInformation.getName() + "]");
+                out.print("- link:" + sampleInformation.getPath() + "/[Sample " + sampleInformation.getDisplayName() + "]");
                 if (sampleInformation.getDescription() == null || sampleInformation.getDescription().isEmpty()) {
                     out.println();
                 } else {
@@ -49,15 +50,23 @@ public abstract class GenerateSampleIndexAsciidoc extends DefaultTask {
 
     public static class SampleInformation {
         private final String path;
+        private final String displayName;
         private final String description;
 
-        public SampleInformation(String path, @Nullable String description) {
+        public SampleInformation(String path, String displayName, @Nullable String description) {
             this.path = path;
+            this.displayName = displayName;
             this.description = description;
         }
 
+        @Internal
         public String getName() {
             return path;
+        }
+
+        @Input
+        public String getDisplayName() {
+            return displayName;
         }
 
         @Input

@@ -18,7 +18,6 @@ package org.gradle.samples
 
 import org.gradle.guides.AbstractFunctionalTest
 import org.gradle.testkit.runner.BuildResult
-import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert
 
@@ -97,14 +96,14 @@ rootProject.name = "demo"
         return "samples.demo"
     }
 
-    protected static void assertBothDslSampleTasksExecutedAndNotSkipped(BuildResult result) {
-        assert result.task(":generateWrapperForDemoSample").outcome == SUCCESS
-        assert result.task(":installDemoGroovyDslSample").outcome == SUCCESS
-        assert result.task(":installDemoKotlinDslSample").outcome == SUCCESS
-        assert result.task(":compressDemoGroovyDslSample").outcome == SUCCESS
-        assert result.task(":compressDemoKotlinDslSample").outcome == SUCCESS
-        assert result.task(":installDemoSample").outcome == SUCCESS
-        assert result.task(":assembleDemoSample").outcome == SUCCESS
+    protected static void assertBothDslSampleTasksExecutedAndNotSkipped(BuildResult result, String name = 'demo') {
+        assert result.task(":generateWrapperFor${name.capitalize()}Sample").outcome == SUCCESS
+        assert result.task(":install${name.capitalize()}GroovyDslSample").outcome == SUCCESS
+        assert result.task(":install${name.capitalize()}KotlinDslSample").outcome == SUCCESS
+        assert result.task(":compress${name.capitalize()}GroovyDslSample").outcome == SUCCESS
+        assert result.task(":compress${name.capitalize()}KotlinDslSample").outcome == SUCCESS
+        assert result.task(":install${name.capitalize()}Sample").outcome == SUCCESS
+        assert result.task(":assemble${name.capitalize()}Sample").outcome == SUCCESS
     }
 
     protected static void assertOnlyGroovyDslTasksExecutedAndNotSkipped(BuildResult result) {

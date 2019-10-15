@@ -34,6 +34,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static org.gradle.samples.internal.StringUtils.capitalize;
+import static org.gradle.samples.internal.StringUtils.toTitleCase;
 
 public class SamplesPlugin implements Plugin<Project> {
     @Inject
@@ -225,7 +226,7 @@ public class SamplesPlugin implements Plugin<Project> {
         return tasks.register("generateSampleIndex", GenerateSampleIndexAsciidoc.class, task -> {
             task.getSampleInformation().set(providerFactory.provider(() -> StreamSupport.stream(samples.spliterator(), false)
                     .filter(it -> !it.getSampleDirectory().getAsFileTree().isEmpty())
-                    .map(it -> new GenerateSampleIndexAsciidoc.SampleInformation(it.getName(), it.getDescription().getOrNull()))
+                    .map(it -> new GenerateSampleIndexAsciidoc.SampleInformation(it.getName(), toTitleCase(it.getName()), it.getDescription().getOrNull()))
                     .collect(Collectors.toList())));
             task.getOutputFile().set(projectLayout.getBuildDirectory().file("tmp/" + task.getName() + "/index.adoc"));
         });
