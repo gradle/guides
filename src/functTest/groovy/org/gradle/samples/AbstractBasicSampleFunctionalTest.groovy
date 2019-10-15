@@ -296,8 +296,6 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
         assertDslZipFilesDoesNotContainsAsciidoctorTags()
     }
 
-    // TODO: Remove license headers
-
     protected abstract void makeSingleProject()
 
     protected void writeSampleUnderTest() {
