@@ -108,6 +108,14 @@ This should be applied in the authoring of all new Topical guides
 
 == Changelog
 
+=== 0.15.18
+
+- Use Exemplar 0.9.0
+- Allow README Asciidoctor files to use sample extension
+- Remove `Sample` prefix to on the auto-generated sample index page
+- Remove `.gradle` and `build` directory from sample archives
+- Remove Asciidoctor tags from Gradle script files inside archives
+
 === 0.15.17
 
 - Fix Exemplar tests for multiple samples
