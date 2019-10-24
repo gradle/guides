@@ -58,7 +58,7 @@ public class TestingSamplesWithExemplarPlugin implements Plugin<Project> {
     }
 
     private static void configureExemplarDependencies(DependencyHandler dependencies, SourceSet sourceSet) {
-        dependencies.add(sourceSet.getImplementationConfigurationName(), "org.gradle:sample-check:0.7.0");
+        dependencies.add(sourceSet.getImplementationConfigurationName(), "org.gradle:sample-check:0.9.0");
         dependencies.add(sourceSet.getImplementationConfigurationName(), dependencies.gradleTestKit());
         dependencies.add(sourceSet.getImplementationConfigurationName(), "org.slf4j:slf4j-simple:1.7.16");
         dependencies.add(sourceSet.getImplementationConfigurationName(), "junit:junit:4.12");
@@ -88,6 +88,7 @@ public class TestingSamplesWithExemplarPlugin implements Plugin<Project> {
                         + "\n"
                         + "import org.gradle.samples.test.normalizer.FileSeparatorOutputNormalizer;\n"
                         + "import org.gradle.samples.test.normalizer.JavaObjectSerializationOutputNormalizer;\n"
+                        + "import org.gradle.samples.test.normalizer.GradleOutputNormalizer;\n"
                         + "import org.gradle.samples.test.runner.GradleSamplesRunner;\n"
                         + "import org.gradle.samples.test.runner.SamplesOutputNormalizers;\n"
                         + "import org.gradle.samples.test.runner.SamplesRoot;\n"
@@ -96,7 +97,8 @@ public class TestingSamplesWithExemplarPlugin implements Plugin<Project> {
                         + "@RunWith(GradleSamplesRunner.class)\n"
                         + "@SamplesOutputNormalizers({\n"
                         + "    JavaObjectSerializationOutputNormalizer.class,\n"
-                        + "    FileSeparatorOutputNormalizer.class\n"
+                        + "    FileSeparatorOutputNormalizer.class,\n"
+                        + "    GradleOutputNormalizer.class\n"
                         + "})\n"
                         + "public class ExemplarExternalSamplesFunctionalTest {}\n";
                 try {
