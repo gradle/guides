@@ -225,7 +225,7 @@ samples.configureEach { sample ->
 
         and:
         def indexFile = new File(projectDir, "build/gradle-samples/index.html")
-        indexFile.text.contains("Sample ${displayName}")
+        indexFile.text.contains("${displayName}")
 
         where:
         name      | displayName

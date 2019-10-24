@@ -38,7 +38,7 @@ public abstract class GenerateSampleIndexAsciidoc extends DefaultTask {
             out.println("= Sample Index");
             out.println();
             getSampleInformation().get().forEach(sampleInformation -> {
-                out.print("- link:" + sampleInformation.getPath() + "/[Sample " + sampleInformation.getDisplayName() + "]");
+                out.print("- link:" + sampleInformation.getPath() + "/[" + sampleInformation.getDisplayName() + "]");
                 if (sampleInformation.getDescription() == null || sampleInformation.getDescription().isEmpty()) {
                     out.println();
                 } else {
