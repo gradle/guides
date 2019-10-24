@@ -140,7 +140,7 @@ rootProject.name = "demo"
     }
 
     protected static void assertGradleWrapperVersion(File file, String expectedGradleVersion) {
-        assertFileInZipHasContains(file, 'gradle/wrapper/gradle-wrapper.properties', containsString("-${expectedGradleVersion}-"))
+        assertFileInZipThat(file, 'gradle/wrapper/gradle-wrapper.properties', containsString("-${expectedGradleVersion}-"))
     }
 
     protected static void assertFileInZipThat(File file, String path, Matcher<String> matcher) {
