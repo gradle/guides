@@ -235,6 +235,30 @@ samples.configureEach { sample ->
         'foo_bar' | 'Foo Bar'
     }
 
+    @Unroll
+    def "fails when '#attributeName' immutable Asciidoctor attributes is changed"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        buildFile << """
+            afterEvaluate {
+                samples.configureEach {
+                    asciidoctorTask.configure {
+                        attributes.put('${attributeName}', 'some-other-value')
+                    }
+                }
+            }
+        """
+
+        when:
+        def result = buildAndFail('assembleDemoSample')
+
+        then:
+        result.output.contains("Attribute '$attributeName' is considered immutable and cannot be changed")
+
+        where:
+        attributeName << ['samples-dir', 'zip-base-file-name']
+    }
+
     // TODO: Allow preprocess build script files before zipping (remove tags, see NOTE1) or including them in rendered output (remove tags and license)
     //   NOTE1: We can remove the license from all the files and add a LICENSE file at the root of the sample
 

@@ -216,6 +216,11 @@ public class SamplesPlugin implements Plugin<Project> {
             a.put("zip-base-file-name", sample.getArchiveBaseName().get());
             a.put("samples-dir", sample.getSampleDirectory().get().getAsFile().getAbsolutePath());  // For Asciidoctor extension located in `gradle/dotorg-docs`
             task.attributes(a);
+
+            task.doFirst(it -> {
+                assert task.getAttributes().containsKey("samples-dir") && task.getAttributes().get("samples-dir").toString().equals(sample.getSampleDirectory().get().getAsFile().getAbsolutePath()) : "Attribute 'samples-dir' is considered immutable and cannot be changed";
+                assert task.getAttributes().containsKey("zip-base-file-name") && task.getAttributes().get("zip-base-file-name").toString().equals(sample.getArchiveBaseName().get()) : "Attribute 'zip-base-file-name' is considered immutable and cannot be changed";
+            });
         });
 
         sample.getSource().from(objectFactory.fileCollection().from(contentDirectory).builtBy(asciidoctorTask));
