@@ -214,6 +214,7 @@ public class SamplesPlugin implements Plugin<Project> {
 
             Map<String, Object> a = getAsciidoctorAttributes();
             a.put("zip-base-file-name", sample.getArchiveBaseName().get());
+            a.put("samples-dir", sample.getSampleDirectory().get().getAsFile().getAbsolutePath());  // For Asciidoctor extension located in `gradle/dotorg-docs`
             task.attributes(a);
         });
 

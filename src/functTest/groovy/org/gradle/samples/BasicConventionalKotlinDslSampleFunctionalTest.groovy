@@ -99,4 +99,13 @@ endif::[]
         assertFileInZipThat(kotlinDslZipFile, "build.gradle.kts", not(containsAsciidoctorTags()))
         assertFileInZipThat(kotlinDslZipFile, "settings.gradle.kts", not(containsAsciidoctorTags()))
     }
+
+    @Override
+    protected String useAsciidoctorSampleExtension() {
+        return """
+====
+include::sample[dir="kotlin",files="build.gradle.kts[]"]
+====
+"""
+    }
 }

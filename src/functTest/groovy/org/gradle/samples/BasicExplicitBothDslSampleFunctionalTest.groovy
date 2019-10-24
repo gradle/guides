@@ -109,6 +109,16 @@ endif::[]
         assertFileInZipThat(kotlinDslZipFile, "settings.gradle.kts", not(containsAsciidoctorTags()))
     }
 
+    @Override
+    protected String useAsciidoctorSampleExtension() {
+        return """
+====
+include::sample[dir="groovy",files="build.gradle[]"]
+include::sample[dir="kotlin",files="build.gradle.kts[]"]
+====
+"""
+    }
+
 // TODO: Calling multiple time withGroovyDsl and withKotlinDsl is allowed
 
     def "can relocate both DSL sample source"() {

@@ -99,4 +99,13 @@ endif::[]
         assertFileInZipThat(groovyDslZipFile, "build.gradle", not(containsAsciidoctorTags()))
         assertFileInZipThat(groovyDslZipFile, "settings.gradle", not(containsAsciidoctorTags()))
     }
+
+    @Override
+    protected String useAsciidoctorSampleExtension() {
+        return """
+====
+include::sample[dir="groovy",files="build.gradle[]"]
+====
+"""
+    }
 }

@@ -296,6 +296,21 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
         assertDslZipFilesDoesNotContainsAsciidoctorTags()
     }
 
+    def "can use asciidoctor sample extension"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        sampleReadMeFile << useAsciidoctorSampleExtension()
+
+        when:
+        def result = build('assembleDemoSample')
+
+        then:
+        assertSampleTasksExecutedAndNotSkipped(result)
+        def sampleIndexFile = new File(projectDir, "build/gradle-samples/demo/index.html")
+        sampleIndexFile.exists()
+        sampleIndexFile.text.contains('<div class="exampleblock testable-sample multi-language-sample">')
+    }
+
     protected abstract void makeSingleProject()
 
     protected void writeSampleUnderTest() {
@@ -319,6 +334,8 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
     protected abstract void assertDslZipFilesDoesNotExists(Map m = [:])
 
     protected abstract void assertDslZipFilesDoesNotContainsAsciidoctorTags()
+
+    protected abstract String useAsciidoctorSampleExtension()
 
     protected abstract boolean hasGroovyDsl()
 

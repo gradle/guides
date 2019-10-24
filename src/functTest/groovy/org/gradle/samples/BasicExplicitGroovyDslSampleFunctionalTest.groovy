@@ -105,6 +105,15 @@ endif::[]
         assertFileInZipThat(groovyDslZipFile, "settings.gradle", not(containsAsciidoctorTags()))
     }
 
+    @Override
+    protected String useAsciidoctorSampleExtension() {
+        return """
+====
+include::sample[dir="groovy",files="build.gradle[]"]
+====
+"""
+    }
+
     def "only contains Groovy DSL sample even if Kotlin DSL source are available"() {
         given:
         makeSingleProject()
