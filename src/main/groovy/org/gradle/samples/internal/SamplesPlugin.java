@@ -54,6 +54,7 @@ public class SamplesPlugin implements Plugin<Project> {
             result.getArchiveBaseName().set(project.provider(() -> name + (project.getVersion().equals(Project.DEFAULT_VERSION) ? "" : "-" + project.getVersion().toString())));
             result.getInstallDirectory().set(project.getLayout().getBuildDirectory().dir("gradle-samples/" + name));
             result.getSampleDirectory().convention(project.getLayout().getProjectDirectory().dir("src/samples/" + name));
+            result.getDisplayName().convention(toTitleCase(name));
             result.setAsciidoctorTask(createAsciidoctorTask(project.getTasks(), result, getObjectFactory()));
 
             return result;
@@ -232,7 +233,7 @@ public class SamplesPlugin implements Plugin<Project> {
         return tasks.register("generateSampleIndex", GenerateSampleIndexAsciidoc.class, task -> {
             task.getSampleInformation().set(providerFactory.provider(() -> StreamSupport.stream(samples.spliterator(), false)
                     .filter(it -> !it.getSampleDirectory().getAsFileTree().isEmpty())
-                    .map(it -> new GenerateSampleIndexAsciidoc.SampleInformation(it.getName(), toTitleCase(it.getName()), it.getDescription().getOrNull()))
+                    .map(it -> new GenerateSampleIndexAsciidoc.SampleInformation(it.getName(), it.getDisplayName().get(), it.getDescription().getOrNull()))
                     .collect(Collectors.toList())));
             task.getOutputFile().set(projectLayout.getBuildDirectory().file("tmp/" + task.getName() + "/index.adoc"));
         });

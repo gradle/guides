@@ -37,6 +37,13 @@ public interface Sample extends Named, ExtensionAware {
     Property<String> getDescription();
 
     /**
+     * Property for configuring the sample display name. The display name is used within the sample index.
+     *
+     * @return a property for the sample display name
+     */
+    Property<String> getDisplayName();
+
+    /**
      * Property for configuring the Gradle version wrapper to generate for this sample.
      *
      * @return a property for the Gradle version wrapper to generate

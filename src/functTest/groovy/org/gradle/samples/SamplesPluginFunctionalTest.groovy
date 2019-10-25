@@ -233,6 +233,7 @@ samples.configureEach { sample ->
         'fooBar'  | 'Foo Bar'
         'foo-bar' | 'Foo Bar'
         'foo_bar' | 'Foo Bar'
+        'fooABar' | 'Foo A Bar'
     }
 
     @Unroll
@@ -257,6 +258,34 @@ samples.configureEach { sample ->
 
         where:
         attributeName << ['samples-dir', 'zip-base-file-name']
+    }
+
+    def "can configure sample display name on the generated sample index"() {
+        writeSampleUnderTestToDirectory('src/samples/demoXUnit')
+        buildFile << """
+            plugins {
+                id 'org.gradle.samples'
+            }
+
+            samples {
+                demoXUnit {
+                    displayName = "Demo XUnit"
+                }
+            }
+        """
+
+        when:
+        def result = build('assemble')
+
+        then:
+        result.task(":generateSampleIndex").outcome == SUCCESS
+        result.task(":asciidocSampleIndex").outcome == SUCCESS
+        result.task(":assemble").outcome == SUCCESS
+        assertSampleTasksExecutedAndNotSkipped(result, 'demoXUnit')
+
+        and:
+        def indexFile = new File(projectDir, "build/gradle-samples/index.html")
+        indexFile.text.contains("Demo XUnit")
     }
 
     // TODO: Allow preprocess build script files before zipping (remove tags, see NOTE1) or including them in rendered output (remove tags and license)
