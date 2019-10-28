@@ -254,10 +254,14 @@ samples.configureEach { sample ->
         def result = buildAndFail('assembleDemoSample')
 
         then:
-        result.output.contains("Attribute '$attributeName' is considered immutable and cannot be changed")
+        result.output.contains("Attribute '$attributeName' is considered immutable because $immutabilityReason")
 
         where:
-        attributeName << ['samples-dir', 'zip-base-file-name']
+        attributeName         | immutabilityReason
+        'samples-dir'         | 'it is required by `gradle/dotorg-docs` custom Asciidoctor extension'
+        'zip-base-file-name'  | 'it is not configurable within the extension'
+        'sample-displayName'  | 'it models the displayName property of the extension'
+        'sample-description'  | 'it models the description property of the extension'
     }
 
     def "can configure sample display name on the generated sample index"() {
@@ -286,6 +290,50 @@ samples.configureEach { sample ->
         and:
         def indexFile = new File(projectDir, "build/gradle-samples/index.html")
         indexFile.text.contains("Demo XUnit")
+    }
+
+    def "can use sample display name inside Asciidoctor file"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        sampleReadMeFile << """
+== {sample-displayName}
+"""
+        buildFile << """
+            samples.demo.displayName = "Some Display Name"
+        """
+
+        when:
+        def result = build('assembleDemoSample')
+
+        then:
+        assertSampleTasksExecutedAndNotSkipped(result)
+
+        and:
+        def sampleIndexFile = new File(projectDir, "build/gradle-samples/demo/index.html")
+        sampleIndexFile.text.contains('<h2 id="some_display_name">Some Display Name</h2>')
+        !sampleIndexFile.text.contains('{sample-displayName}')
+    }
+
+    def "can use sample description inside Asciidoctor file"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        sampleReadMeFile << """
+{sample-description}
+"""
+        buildFile << """
+            samples.demo.description = "Some description"
+        """
+
+        when:
+        def result = build('assembleDemoSample')
+
+        then:
+        assertSampleTasksExecutedAndNotSkipped(result)
+
+        and:
+        def sampleIndexFile = new File(projectDir, "build/gradle-samples/demo/index.html")
+        sampleIndexFile.text.contains('Some description')
+        !sampleIndexFile.text.contains('{sample-description}')
     }
 
     // TODO: Allow preprocess build script files before zipping (remove tags, see NOTE1) or including them in rendered output (remove tags and license)
