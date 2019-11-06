@@ -108,6 +108,10 @@ This should be applied in the authoring of all new Topical guides
 
 == Changelog
 
+=== 0.15.20
+
+- Fix ClassNotFoundException with `org.gradle.samples` plugin
+
 === 0.15.19
 
 - Allow sample display name to be customized (`sample.displayName`)
