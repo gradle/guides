@@ -108,6 +108,10 @@ This should be applied in the authoring of all new Topical guides
 
 == Changelog
 
+=== 0.15.21
+
+- Fix corrupted wrapper JAR in sample zips
+
 === 0.15.20
 
 - Fix ClassNotFoundException with `org.gradle.samples` plugin
