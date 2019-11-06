@@ -108,6 +108,12 @@ This should be applied in the authoring of all new Topical guides
 
 == Changelog
 
+=== 0.15.19
+
+- Allow sample display name to be customized (`sample.displayName`)
+- Pass sample display name to Asciidoctor generator as `sample-displayName`
+- Pass sample description to Asciidoctor generator as `sample-description`
+
 === 0.15.18
 
 - Use Exemplar 0.9.0
