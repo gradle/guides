@@ -218,7 +218,7 @@ public class SamplesPlugin implements Plugin<Project> {
             task.doFirst(it -> task.getAttributes().put("sample-displayName", sampleDisplayName.get()));
 
             Provider<String> sampleDescription = sample.getDescription();
-            task.getInputs().property("sampleDescription", sampleDescription);
+            task.getInputs().property("sampleDescription", sampleDescription).optional(true);
             task.doFirst(it -> {
                 if (sampleDescription.isPresent()) {
                     task.getAttributes().put("sample-description", sampleDescription.get());
