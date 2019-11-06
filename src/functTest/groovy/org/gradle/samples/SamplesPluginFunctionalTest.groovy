@@ -4,6 +4,7 @@ import org.gradle.testkit.runner.BuildResult
 import spock.lang.Unroll
 
 import java.nio.file.Files
+import java.util.concurrent.TimeUnit
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
@@ -308,6 +309,21 @@ samples.configureEach { sample ->
         !sampleIndexFile.text.contains('{sample-description}')
     }
 
+    def "can execute the sample from the zip"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+
+        when:
+        def result = build('assembleDemoSample')
+
+        then:
+        assertSampleTasksExecutedAndNotSkipped(result)
+
+        and:
+        assertCanRunHelpTask(groovyDslZipFile)
+        assertCanRunHelpTask(kotlinDslZipFile)
+    }
+
     // TODO: Allow preprocess build script files before zipping (remove tags, see NOTE1) or including them in rendered output (remove tags and license)
     //   NOTE1: We can remove the license from all the files and add a LICENSE file at the root of the sample
 
@@ -340,5 +356,20 @@ endif::[]
 
     protected static void assertSampleTasksExecutedAndNotSkipped(BuildResult result, String name = 'demo') {
         assertBothDslSampleTasksExecutedAndNotSkipped(result, name)
+    }
+
+    private void assertCanRunHelpTask(File zipFile) {
+        def workingDirectory = new File(temporaryFolder.root, zipFile.name)
+        def ant = new AntBuilder()
+        ant.unzip(src: zipFile, dest: workingDirectory)
+
+        new File(workingDirectory, 'gradlew').executable = true
+        def process = "${workingDirectory}/gradlew help".execute(null, workingDirectory)
+        def stdoutThread = Thread.start { process.in.eachLine { println(it) } }
+        def stderrThread = Thread.start { process.err.eachLine { println(it) } }
+        process.waitFor(30, TimeUnit.SECONDS)
+        assert process.exitValue() == 0
+        stdoutThread.join(5000)
+        stderrThread.join(5000)
     }
 }
