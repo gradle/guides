@@ -13,6 +13,7 @@ import org.gradle.api.internal.provider.Providers;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.provider.ProviderFactory;
+import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.wrapper.Wrapper;
@@ -202,12 +203,33 @@ public class SamplesPlugin implements Plugin<Project> {
         });
     }
 
-    private static TaskProvider<AsciidoctorTask> createAsciidoctorTask(TaskContainer tasks, DefaultSample sample, ObjectFactory objectFactory) {
+    // Essentially `static`. See StringProvider.
+    private TaskProvider<AsciidoctorTask> createAsciidoctorTask(TaskContainer tasks, DefaultSample sample, ObjectFactory objectFactory) {
         Provider<Directory> contentDirectory = sample.getIntermediateDirectory().dir("content");
         TaskProvider<AsciidoctorTask> asciidoctorTask = tasks.register("asciidoctor" + capitalize(sample.getName()) + "Sample", AsciidoctorTask.class, task -> {
             task.sourceDir(sample.getSampleDirectory());
             task.outputDir(task.getProject().getLayout().getBuildDirectory().dir("tmp/" + task.getName() + "/out"));
             task.setSeparateOutputDirs(false);
+
+            Provider<String> zipBaseFileName = sample.getArchiveBaseName();
+            task.getInputs().property("zipBaseFileName", zipBaseFileName);
+            task.doFirst(it -> task.getAttributes().put("zip-base-file-name", zipBaseFileName.get()));
+
+            Provider<Directory> samplesDir = sample.getSampleDirectory();
+            task.getInputs().dir(samplesDir).withPropertyName("samplesDir").withPathSensitivity(PathSensitivity.RELATIVE);
+            task.doFirst(it -> task.getAttributes().put("samples-dir", samplesDir.get().getAsFile().getAbsolutePath()));
+
+            Provider<String> sampleDisplayName = sample.getDisplayName();
+            task.getInputs().property("sampleDisplayName", sampleDisplayName);
+            task.doFirst(it -> task.getAttributes().put("sample-displayName", sampleDisplayName.get()));
+
+            Provider<String> sampleDescription = sample.getDescription();
+            task.getInputs().property("sampleDescription", sampleDescription);
+            task.doFirst(it -> {
+                if (sampleDescription.isPresent()) {
+                    task.getAttributes().put("sample-description", sampleDescription.get());
+                }
+            });
 
             task.doLast(it -> {
                 task.getProject().sync(spec -> {
@@ -220,59 +242,11 @@ public class SamplesPlugin implements Plugin<Project> {
             // TODO: Fail if no README.adoc file
 
             task.attributes(getAsciidoctorAttributes());
-
-            addImmutableAttribute(task, "zip-base-file-name", sample.getArchiveBaseName(), "it is not configurable within the extension");
-            addImmutableAttribute(task, "samples-dir", sample.getSampleDirectory().map(it -> it.getAsFile().getAbsolutePath()), "it is required by `gradle/dotorg-docs` custom Asciidoctor extension");
-            addImmutableAttribute(task, "sample-displayName", sample.getDisplayName(), "it models the displayName property of the extension");
-            addImmutableAttribute(task, "sample-description", sample.getDescription(), "it models the description property of the extension");
         });
 
         sample.getSource().from(objectFactory.fileCollection().from(contentDirectory).builtBy(asciidoctorTask));
 
         return asciidoctorTask;
-    }
-
-    private static void addImmutableAttribute(AsciidoctorTask task, String key, Provider<String> value, String reason) {
-        task.getAttributes().put(key, new StringProvider(value));
-        task.doFirst(it -> {
-            Object attributeValue = task.getAttributes().getOrDefault(key, null);
-            if (!Objects.equals(attributeValue, value.getOrNull())) {
-                throw new IllegalStateException("Attribute '" + key + "' is considered immutable because " + reason);
-            }
-        });
-    }
-
-    // Deferred the String evaluation for Asciidoctor task until it supports the Provider API.
-    private static class StringProvider implements Serializable {
-        private Provider<String> value;
-
-        StringProvider(Provider<String> value) {
-            this.value = value;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            return Objects.equals(toString(), o);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hashCode(toString());
-        }
-
-        @Override
-        public String toString() {
-            return value.getOrNull();
-        }
-
-        private void readObject(ObjectInputStream aInputStream) throws ClassNotFoundException, IOException {
-            String value = (String) aInputStream.readObject();
-            this.value = Providers.of(value);
-        }
-
-        private void writeObject(ObjectOutputStream aOutputStream) throws IOException {
-            aOutputStream.writeObject(toString());
-        }
     }
 
     private static TaskProvider<GenerateSampleIndexAsciidoc> createSampleIndexGeneratorTask(TaskContainer tasks, Iterable<Sample> samples, ProjectLayout projectLayout, ProviderFactory providerFactory) {

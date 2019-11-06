@@ -236,34 +236,6 @@ samples.configureEach { sample ->
         'fooABar' | 'Foo A Bar'
     }
 
-    @Unroll
-    def "fails when '#attributeName' immutable Asciidoctor attributes is changed"() {
-        makeSingleProject()
-        writeSampleUnderTest()
-        buildFile << """
-            afterEvaluate {
-                samples.configureEach {
-                    asciidoctorTask.configure {
-                        attributes.put('${attributeName}', 'some-other-value')
-                    }
-                }
-            }
-        """
-
-        when:
-        def result = buildAndFail('assembleDemoSample')
-
-        then:
-        result.output.contains("Attribute '$attributeName' is considered immutable because $immutabilityReason")
-
-        where:
-        attributeName         | immutabilityReason
-        'samples-dir'         | 'it is required by `gradle/dotorg-docs` custom Asciidoctor extension'
-        'zip-base-file-name'  | 'it is not configurable within the extension'
-        'sample-displayName'  | 'it models the displayName property of the extension'
-        'sample-description'  | 'it models the description property of the extension'
-    }
-
     def "can configure sample display name on the generated sample index"() {
         writeSampleUnderTestToDirectory('src/samples/demoXUnit')
         buildFile << """
