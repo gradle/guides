@@ -34,7 +34,8 @@ endif::[]
 commands: [{
     execution-subdirectory: kotlin
     executable: gradle
-    args: tasks
+    args: help
+    expected-output-file: showDemoSample.sample.out
 }]
 """
     }

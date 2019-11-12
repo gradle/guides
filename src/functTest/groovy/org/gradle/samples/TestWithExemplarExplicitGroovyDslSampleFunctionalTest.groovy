@@ -34,7 +34,8 @@ endif::[]
 commands: [{
     execution-subdirectory: groovy
     executable: gradle
-    args: tasks
+    args: help
+    expected-output-file: showDemoSample.sample.out
 }]
 """
     }

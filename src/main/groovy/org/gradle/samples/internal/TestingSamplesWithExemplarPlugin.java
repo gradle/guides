@@ -1,15 +1,12 @@
 package org.gradle.samples.internal;
 
-import org.gradle.api.Action;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.file.Directory;
-import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.ProjectLayout;
-import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.SourceSet;
@@ -23,7 +20,6 @@ import org.gradle.samples.Sample;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.concurrent.Callable;
 
 import static org.gradle.samples.internal.StringUtils.capitalize;
 
@@ -41,19 +37,17 @@ public class TestingSamplesWithExemplarPlugin implements Plugin<Project> {
 
         configureExemplarDependencies(project.getDependencies(), sourceSet);
 
-        TaskProvider<Sync> installTask = createExemplarInstallTask(project.getTasks(), sourceSet, samplesExemplarDirectory);
         TaskProvider<Test> testTask = createExemplarTestTask(project.getTasks(), sourceSet, project.getLayout(), samplesExemplarDirectory, samples);
-        testTask.configure(task -> task.dependsOn(installTask));
 
         samples.configureEach(s -> {
             DefaultSample sample = (DefaultSample) s;
 
             DefaultExemplarExtension exemplar = project.getObjects().newInstance(DefaultExemplarExtension.class);
-            s.getExtensions().add(ExemplarExtension.class, "exemplar", exemplar);
+            sample.getExtensions().add(ExemplarExtension.class, "exemplar", exemplar);
             exemplar.getSource().from(sample.getSampleDirectory());
 
-            installTask.configure(task -> exemplar.actions.forEach(it -> it.execute(task)));
-            installTask.configure(toOnlyInstallIfExemplarConfigurationArePresent(sample, samplesExemplarDirectory, project.getObjects()));
+            TaskProvider<Sync> installSampleTask = createSampleExemplarInstallTask(project.getTasks(), sample, exemplar, samplesExemplarDirectory);
+            testTask.configure(task -> task.dependsOn(installSampleTask));
         });
     }
 
@@ -62,21 +56,6 @@ public class TestingSamplesWithExemplarPlugin implements Plugin<Project> {
         dependencies.add(sourceSet.getImplementationConfigurationName(), dependencies.gradleTestKit());
         dependencies.add(sourceSet.getImplementationConfigurationName(), "org.slf4j:slf4j-simple:1.7.16");
         dependencies.add(sourceSet.getImplementationConfigurationName(), "junit:junit:4.12");
-    }
-
-    private static Action<Sync> toOnlyInstallIfExemplarConfigurationArePresent(Sample sample, Provider<Directory> samplesDirectory, ObjectFactory objectFactory) {
-        return (Sync task) -> {
-            task.dependsOn(sample.getExtensions().getByType(ExemplarExtension.class).getSource());
-            task.from(new Callable<FileCollection>() {
-                @Override
-                public FileCollection call() throws Exception {
-                    if (exemplarConfigurationArePresent(sample)) {
-                        return sample.getExtensions().getByType(ExemplarExtension.class).getSource();
-                    }
-                    return objectFactory.fileCollection();
-                }
-            }, spec -> spec.into(sample.getName()));
-        };
     }
 
     private static TaskProvider<Task> createExemplarGeneratorTask(TaskContainer tasks, ProjectLayout projectLayout, SourceSet sourceSet) {
@@ -114,10 +93,13 @@ public class TestingSamplesWithExemplarPlugin implements Plugin<Project> {
         return sourceSets.create("samplesExemplarFunctionalTest");
     }
 
-    private static TaskProvider<Sync> createExemplarInstallTask(TaskContainer tasks, SourceSet sourceSet, Provider<Directory> samplesDirectory) {
-        return tasks.register("install" + capitalize(sourceSet.getName()), Sync.class, task -> {
-            task.into(samplesDirectory);
-            task.setDestinationDir(samplesDirectory.get().getAsFile());
+    private static TaskProvider<Sync> createSampleExemplarInstallTask(TaskContainer tasks, DefaultSample sample, DefaultExemplarExtension exemplar, Provider<Directory> samplesExemplarDirectory) {
+        return tasks.register("install" + capitalize(sample.getName()) + "ExemplarSample", Sync.class, task -> {
+            task.onlyIf(it -> exemplarConfigurationArePresent(sample));
+            task.setDestinationDir(samplesExemplarDirectory.get().dir(sample.getName()).getAsFile());
+            task.from(exemplar.getSource());
+
+            exemplar.actions.forEach(it -> it.execute(task));
         });
     }
 

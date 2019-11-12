@@ -67,7 +67,7 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
                     outputs.dir(layout.buildDirectory.dir("sample-exemplar/\${sample.name}"))
                     doLast {
                         layout.buildDirectory.dir("sample-exemplar/\${sample.name}/showDemoSample.sample.conf").get().asFile.text = '''${exemplarSampleConfigFileContent}'''
-                        layout.buildDirectory.dir("sample-exemplar/\${sample.name}/showDemoSample.sample.out").get().asFile.text = "${exemplarSampleOutFileContent}"
+                        layout.buildDirectory.dir("sample-exemplar/\${sample.name}/showDemoSample.sample.out").get().asFile.text = '''${exemplarSampleOutFileContent}'''
                     }
                 }
             
@@ -103,7 +103,8 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
         makeSingleProject()
         writeSampleUnderTest()
         writeExemplarConfigurationToDirectory()
-        new File(temporaryFolder.root, "src/samples/demo/showDemoSample.sample.out") << "\nfoobar"
+        def exemplarSampleOutFile = new File(temporaryFolder.root, "src/samples/demo/showDemoSample.sample.out")
+        exemplarSampleOutFile.text = getExemplarSampleOutFileContent("${expectedPrintlnValue}\nfoobar")
         def kotlinBuildScript = new File(temporaryFolder.root, "src/samples/demo/kotlin/build.gradle.kts")
         def hasKotlinDsl = kotlinBuildScript.exists()
         if (hasKotlinDsl) {
@@ -175,12 +176,12 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
     }
 
     protected void assertExemplarTasksSkipped(BuildResult result) {
-        assert result.task(':installSamplesExemplarFunctionalTest').outcome in SKIPPED_TASK_OUTCOMES
+        assert result.task(':installDemoExemplarSample').outcome in SKIPPED_TASK_OUTCOMES
         assert result.task(':samplesExemplarFunctionalTest').outcome in SKIPPED_TASK_OUTCOMES
     }
 
     protected void assertExemplarTasksExecutedAndNotSkipped(BuildResult result) {
-        assert result.task(':installSamplesExemplarFunctionalTest').outcome == SUCCESS
+        assert result.task(':installDemoExemplarSample').outcome == SUCCESS
         assert result.task(':samplesExemplarFunctionalTest').outcome == SUCCESS
     }
 
@@ -206,7 +207,31 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
 
     protected abstract String getExemplarSampleConfigFileContent()
 
-    private String getExemplarSampleOutFileContent() {
+    private String getExpectedPrintlnValue() {
         return "Hello, world!"
+    }
+
+    private String getExemplarSampleOutFileContent(String expectedOutput = expectedPrintlnValue) {
+        return """
+> Configure project :
+${expectedOutput}
+
+> Task :help
+
+Welcome to Gradle 5.5.1.
+
+To run a build, run gradle <task> ...
+
+To see a list of available tasks, run gradle tasks
+
+To see a list of command-line options, run gradle --help
+
+To see more detail about a task, run gradle help --task <task>
+
+For troubleshooting, visit https://help.gradle.org
+
+BUILD SUCCESSFUL in 0s
+1 actionable task: 1 executed
+"""
     }
 }
