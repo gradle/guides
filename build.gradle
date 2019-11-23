@@ -1,5 +1,4 @@
 plugins {
-    id 'com.gradle.build-scan' version '2.0.2'
     id 'groovy'
     id 'java-gradle-plugin'
     id 'com.gradle.plugin-publish' version '0.10.1'
@@ -8,15 +7,6 @@ plugins {
 }
 
 apply from: "$rootDir/gradle/functional-test.gradle"
-
-buildScan {
-    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
-    termsOfServiceAgree = 'yes'
-    if (System.getenv("CI")) {
-        publishAlways()
-        tag("CI")
-    }
-}
 
 group = 'org.gradle.guides'
 version = '0.15.24-SNAPSHOT'
