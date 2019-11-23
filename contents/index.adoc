@@ -31,15 +31,10 @@ This mechanism makes it very easy to generate ad-hoc, one-off build scans withou
 
 == Enable build scans on all builds of your project
 
-Add a `plugins` block to the root project build script file with the following contents:
+For Gradle 2.x-5.x, you need to apply the `com.gradle.build-scan` plugin to your root build script.
+For Gradle 6.0, you need to apply the `com.gradle.enterprise` plugin to your `settings` script.
 
-====
-include::sample[dir="groovy-dsl/build-scan-from-build-script",files="build.gradle[tags=build-scan-plugin-plugins-apply]"]
-include::sample[dir="kotlin-dsl/build-scan-from-build-script",files="build.gradle.kts[tags=build-scan-plugin-plugins-apply]"]
-====
-<1> Use latest plugin version which can be found on the https://plugins.gradle.org/plugin/com.gradle.build-scan[Gradle Plugin Portal].
-
-If you already have a `plugins` block, always put the build scan plugin first. Adding it below any existing plugins will still work, but will miss useful information.
+Follow the [Gradle Build Scan plugin docs](https://docs.gradle.com/enterprise/gradle-plugin/#applying_the_plugin) to apply the build scan plugin to your project.
 
 == Accept the license agreement
 
@@ -82,14 +77,7 @@ You can now explore all the information contained in the build scan, including t
 
 == Enable build scans for all builds (optional)
 
-You can avoid having to add the plugin and license agreement to every build by using a Gradle init script. Create a file in the directory `~/.gradle/init.d` (where the tilde represents your home directory) with the following contents:
-
-====
-include::sample[dir="groovy-dsl/build-scan-from-init-script",files="buildScan.gradle[]"]
-include::sample[dir="kotlin-dsl/build-scan-from-init-script",files="buildScan.init.gradle.kts[]"]
-====
-
-The init script downloads the build scan plugin if necessary and applies it to every project, and accepts the license agreement. Now you can use the `--scan` flag on any build on your system.
+You can avoid having to add the plugin and license agreement to every build by [using a Gradle init script](https://docs.gradle.com/enterprise/gradle-plugin/#many-projects). 
 
 There are additional capabilities you can add to the script, such as under what conditions to publish the scan information. For details, see the https://docs.gradle.com/build-scan-plugin/[Build Scans User Manual].
 
