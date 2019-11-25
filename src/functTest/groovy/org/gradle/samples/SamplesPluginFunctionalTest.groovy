@@ -1,11 +1,11 @@
 package org.gradle.samples
 
-import org.gradle.testkit.runner.BuildResult
+
 import spock.lang.Unroll
 
-import java.nio.file.Files
 import java.util.concurrent.TimeUnit
 
+import static org.gradle.testkit.runner.TaskOutcome.FAILED
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
@@ -13,65 +13,64 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
         makeSingleProject()
         writeSampleUnderTest()
         buildFile << """
-def publishTask = tasks.register("publishSamples", Copy) {
-    // TODO: The `gradle-samples` directory is an implementation detail
-    from("build/gradle-samples")
-    into("build/docs/samples")
+tasks.register("publishSamples", Sync) {
+    from(samples.assembledDocumentation)
+    into("build/published/samples/")
 }
-
-tasks.assemble.dependsOn publishTask
 """
-
         when:
-        def result = build('assemble')
+        build('publishSamples')
 
         then:
-        result.task(":generateSampleIndex").outcome == SUCCESS
-        result.task(":asciidocSampleIndex").outcome == SUCCESS
-        result.task(":assemble").outcome == SUCCESS
-        assertSampleTasksExecutedAndNotSkipped(result)
-        groovyDslZipFile.exists()
-        kotlinDslZipFile.exists()
-        getGroovyDslZipFile(buildDirectoryRelativePath: "docs/samples").exists()
-        getKotlinDslZipFile(buildDirectoryRelativePath: "docs/samples").exists()
-        new File(projectDir, "build/docs/samples/demo/index.html").exists()
-        new File(projectDir, "build/docs/samples/index.html").exists()
+        file("build/published/samples/index_samples.adoc").assertExists()
+        file("build/published/samples/sample_demo.adoc").assertExists()
+        file("build/published/samples/zips/demoGroovy.zip").assertExists()
+        file("build/published/samples/zips/demoKotlin.zip").assertExists()
     }
 
     def "can generate content for the sample"() {
         makeSingleProject()
         writeSampleUnderTest()
-        buildFile << '''
-samples.configureEach { sample ->
-    def generatorTask = tasks.register("generateContentFor${sample.name.capitalize()}Sample") {
-        outputs.dir(layout.buildDirectory.dir("sample-contents/${sample.name}"))
-        doLast {
-            layout.buildDirectory.dir("sample-contents/${sample.name}/gradle.properties").get().asFile.text = "foo.bar = foobar\\n"
-        }
+        buildFile << """
+abstract class GenerateTask extends DefaultTask {
+    @OutputFile
+    abstract RegularFileProperty getOutputFile()
+    
+    @TaskAction
+    void generate() {
+        outputFile.get().asFile.text = "This is generated content"
     }
-    sample.archiveContent.from(files(generatorTask))
 }
-'''
+def generatorTask = tasks.register("generate", GenerateTask) {
+    outputFile = new File(temporaryDir, "generated.txt")
+}
+${sampleUnderTestDsl}.common {
+    from(generatorTask)
+}
+"""
 
         when:
-        def result = build("assembleDemoSample")
+        build("assembleDemoSample")
 
         then:
-        assertSampleTasksExecutedAndNotSkipped(result)
-        result.task(":generateContentForDemoSample").outcome == SUCCESS
-        assertZipHasContent(groovyDslZipFile, "gradlew", "gradlew.bat", "gradle.properties", "gradle/wrapper/gradle-wrapper.properties", "gradle/wrapper/gradle-wrapper.jar", "README.adoc", "build.gradle", "settings.gradle")
-        assertZipHasContent(kotlinDslZipFile, "gradlew", "gradlew.bat", "gradle.properties", "gradle/wrapper/gradle-wrapper.properties", "gradle/wrapper/gradle-wrapper.jar", "README.adoc", "build.gradle.kts", "settings.gradle.kts")
+        result.task(":generate").outcome == SUCCESS
+        file("build/install/samples/demo/groovy/generated.txt").text == "This is generated content"
+        file("build/install/samples/demo/kotlin/generated.txt").text == "This is generated content"
+        file("build/distributions/demoGroovy.zip").asZip().assertContainsContent("generated.txt")
+        file("build/distributions/demoKotlin.zip").asZip().assertContainsContent("generated.txt")
     }
 
-    def "can have two sample with different naming convention"() {
+    def "can have two samples with different naming convention"() {
         buildFile << """
             plugins {
                 id 'org.gradle.samples'
             }
 
             samples {
-                "foo-bar"
-                "fooBar"
+                publishedSamples {
+                    "foo-bar"
+                    "fooBar"
+                }
             }
         """
         writeGroovyDslSample("src/samples/foo-bar")
@@ -88,120 +87,141 @@ samples.configureEach { sample ->
 
     def "fails when settings.gradle.kts is missing from Kotlin DSL sample"() {
         makeSingleProject()
-        writeGroovyDslSample("src/samples/demo")
-        Files.move(new File(temporaryFolder.root, "src/samples/demo/groovy").toPath(), new File(temporaryFolder.root, "src/samples/demo/kotlin").toPath())
+        writeSampleUnderTest()
+        file("src/samples/demo/kotlin/settings.gradle.kts").delete()
 
         when:
-        def result = buildAndFail("assemble")
+        buildAndFail("validateSampleDemoKotlin")
 
         then:
-        result.output.contains("Execution failed for task ':installDemoKotlinDslSample'.")
-        result.output.contains("Sample 'demo' for Kotlin DSL is invalid due to missing 'settings.gradle.kts' file.")
+        result.task(":validateSampleDemoKotlin").outcome == FAILED
+        result.output.contains("Sample 'demoKotlin' for Kotlin DSL is invalid due to missing 'settings.gradle.kts' file.")
     }
 
     def "fails when settings.gradle is missing from Groovy DSL sample"() {
         makeSingleProject()
-        writeKotlinDslSample("src/samples/demo")
-        Files.move(new File(temporaryFolder.root, "src/samples/demo/kotlin").toPath(), new File(temporaryFolder.root, "src/samples/demo/groovy").toPath())
+        writeSampleUnderTest()
+        file("src/samples/demo/groovy/settings.gradle").delete()
 
         when:
-        def result = buildAndFail("assemble")
+        buildAndFail("validateSampleDemoGroovy")
 
         then:
-        result.output.contains("Execution failed for task ':installDemoGroovyDslSample'.")
-        result.output.contains("Sample 'demo' for Groovy DSL is invalid due to missing 'settings.gradle' file.")
+        result.task(":validateSampleDemoGroovy").outcome == FAILED
+        result.output.contains("Sample 'demoGroovy' for Groovy DSL is invalid due to missing 'settings.gradle' file.")
     }
 
-    def "fails when README.adoc is missing from Groovy DSL sample"() {
+    def "fails when documentation is missing from sample"() {
         makeSingleProject()
+        writeSampleUnderTest()
+        file("src/samples/demo/README.adoc").delete()
+        when:
+        // If the readme doesn't exist for the sample, we fail to generate the sample page
+        buildAndFail("assembleDemoSample")
+        then:
+        result.task(":generateDemoPage").outcome == FAILED
+
+        when:
+        // Instead of generating the readme, point to a non-existent file
+        buildFile << """
+${sampleUnderTestDsl}.samplePageFile = file("README.adoc")
+"""
+        and:
+        buildAndFail("validateSampleDemoGroovy")
+        then:
+        result.task(":validateSampleDemoGroovy").outcome == FAILED
+
+        when:
+        buildAndFail("validateSampleDemoKotlin")
+        then:
+        result.task(":validateSampleDemoKotlin").outcome == FAILED
+    }
+
+    def "fails when zip looks invalid"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        // To simulate an invalid zip, replace the generated zip with an empty one
+        file("a.file").text = "This is not a sample."
+        buildFile << """
+task generateZip(type: Zip) {
+    archiveBaseName = "not-a-sample"
+    from("a.file")
+}
+
+samples.binaries.configureEach {
+    zipFile = tasks.generateZip.archiveFile
+}
+"""
+        when:
+        buildAndFail("validateSampleDemoGroovy")
+
+        then:
+        result.task(":validateSampleDemoGroovy").outcome == FAILED
+        result.output.contains("Sample 'demoGroovy' for Groovy DSL is invalid due to missing 'sample_demo.adoc' file in ZIP.")
+
+        when:
+        buildAndFail("validateSampleDemoKotlin")
+
+        then:
+        result.task(":validateSampleDemoKotlin").outcome == FAILED
+        result.output.contains("Sample 'demoKotlin' for Kotlin DSL is invalid due to missing 'sample_demo.adoc' file in ZIP.")
+    }
+
+    def "fails if the sample uses no dsls"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        buildFile << """
+${sampleUnderTestDsl}.dsls = [] 
+        """
+
+        when:
+        buildAndFail('assembleDemoSample')
+
+        then:
+        result.output.contains("Samples must have at least one DSL, sample 'demo' has none.")
+    }
+
+    def "fails if the sample does not have content for expected DSLs"() {
+        makeSingleProject()
+        // By default, we expect to produce samples for both Groovy and Kotlin, this should fail.
         writeGroovyDslSample("src/samples/demo")
 
         when:
-        def result = buildAndFail("assemble")
+        buildAndFail('check')
 
         then:
-        result.output.contains("Execution failed for task ':installDemoGroovyDslSample'.")
-        result.output.contains("Sample 'demo' is invalid due to missing 'README.adoc' file.")
-    }
-
-    def "fails when README.adoc is missing from Kotlin DSL sample"() {
-        makeSingleProject()
-        writeKotlinDslSample("src/samples/demo")
+        result.task(":validateSampleDemoKotlin").outcome == FAILED
 
         when:
-        def result = buildAndFail("assemble")
-
-        then:
-        result.output.contains("Execution failed for task ':installDemoKotlinDslSample'.")
-        result.output.contains("Sample 'demo' is invalid due to missing 'README.adoc' file.")
-    }
-
-    def "can call sample dsl configuration multiple time"() {
-        makeSingleProject()
-        writeSampleUnderTest()
+        // Only expect Groovy DSL content
         buildFile << """
-            ${sampleUnderTestDsl} {
-                withGroovyDsl()
-                withGroovyDsl()
-                withKotlinDsl()
-                withKotlinDsl()
-            }
-
-            tasks.register('verify') {
-                doLast {
-                    // This uses internal APIs for asserting the correctness of the test
-                    assert ${sampleUnderTestDsl}.dslSampleArchives.size() == 2
-                }
-            }
-        """
-
-        when:
-        build('verify')
-
+import ${Dsl.canonicalName}
+${sampleUnderTestDsl}.dsls = [ Dsl.GROOVY ]
+"""
+        and:
+        build('check')
         then:
         noExceptionThrown()
-    }
-
-    def "can call sample dsl configuration multiple time to configure components"() {
-        makeSingleProject()
-        writeSampleUnderTest()
-        buildFile << """
-            ${sampleUnderTestDsl} {
-                withGroovyDsl { println 'configuring Groovy DSL first time' }
-                withGroovyDsl { println 'configuring Groovy DSL second time' }
-                withKotlinDsl { println 'configuring Kotlin DSL first time' }
-                withKotlinDsl { println 'configuring Kotlin DSL second time' }
-            }
-        """
-
-        when:
-        def result = build('help')
-
-        then:
-        noExceptionThrown()
-        result.output.contains('configuring Groovy DSL first time')
-        result.output.contains('configuring Groovy DSL second time')
-        result.output.contains('configuring Kotlin DSL first time')
-        result.output.contains('configuring Kotlin DSL second time')
     }
 
     def "sample index contains description"() {
         makeSingleProject()
         writeSampleUnderTest()
-        buildFile << """
-            ${sampleUnderTestDsl}.description = "Some description"
-        """
+        def indexFile = file("build/samples/docs/index_samples.adoc")
 
         when:
-        def result = build('assemble')
-
+        build('assemble')
         then:
-        result.task(":generateSampleIndex").outcome == SUCCESS
-        result.task(":asciidocSampleIndex").outcome == SUCCESS
-        result.task(":assemble").outcome == SUCCESS
-        assertSampleTasksExecutedAndNotSkipped(result)
-        def indexFile = new File(projectDir, "build/gradle-samples/index.html")
-        indexFile.text.contains('Some description')
+        indexFile.text.contains('- <<sample_demo.adoc,Demo>>')
+
+        when:
+        buildFile << """
+            ${sampleUnderTestDsl}.description = "Some description"     
+        """
+        and:
+        build('assemble')
+        then:
+        indexFile.text.contains('- <<sample_demo.adoc,Demo>>: Some description')
     }
 
     @Unroll
@@ -211,21 +231,15 @@ samples.configureEach { sample ->
                 id 'org.gradle.samples'
             }
 
-            samples.create("${name}")
+            samples.publishedSamples.create("${name}")
         """
         writeSampleUnderTestToDirectory("src/samples/${name}")
 
         when:
-        def result = build('assemble')
+        build('assemble')
 
         then:
-        result.task(":generateSampleIndex").outcome == SUCCESS
-        result.task(":asciidocSampleIndex").outcome == SUCCESS
-        result.task(":assemble").outcome == SUCCESS
-        assertSampleTasksExecutedAndNotSkipped(result, name)
-
-        and:
-        def indexFile = new File(projectDir, "build/gradle-samples/index.html")
+        def indexFile = file("build/samples/docs/index_samples.adoc")
         indexFile.text.contains("${displayName}")
 
         where:
@@ -245,68 +259,20 @@ samples.configureEach { sample ->
             }
 
             samples {
-                demoXUnit {
-                    displayName = "Demo XUnit"
+                publishedSamples {                
+                    demoXUnit {
+                        displayName = "Demo XUnit"
+                    }
                 }
             }
         """
 
         when:
-        def result = build('assemble')
+        build('assemble')
 
         then:
-        result.task(":generateSampleIndex").outcome == SUCCESS
-        result.task(":asciidocSampleIndex").outcome == SUCCESS
-        result.task(":assemble").outcome == SUCCESS
-        assertSampleTasksExecutedAndNotSkipped(result, 'demoXUnit')
-
-        and:
-        def indexFile = new File(projectDir, "build/gradle-samples/index.html")
+        def indexFile = file("build/samples/docs/index_samples.adoc")
         indexFile.text.contains("Demo XUnit")
-    }
-
-    def "can use sample display name inside Asciidoctor file"() {
-        makeSingleProject()
-        writeSampleUnderTest()
-        sampleReadMeFile << """
-== {sample-displayName}
-"""
-        buildFile << """
-            samples.demo.displayName = "Some Display Name"
-        """
-
-        when:
-        def result = build('assembleDemoSample')
-
-        then:
-        assertSampleTasksExecutedAndNotSkipped(result)
-
-        and:
-        def sampleIndexFile = new File(projectDir, "build/gradle-samples/demo/index.html")
-        sampleIndexFile.text.contains('<h2 id="some_display_name">Some Display Name</h2>')
-        !sampleIndexFile.text.contains('{sample-displayName}')
-    }
-
-    def "can use sample description inside Asciidoctor file"() {
-        makeSingleProject()
-        writeSampleUnderTest()
-        sampleReadMeFile << """
-{sample-description}
-"""
-        buildFile << """
-            samples.demo.description = "Some description"
-        """
-
-        when:
-        def result = build('assembleDemoSample')
-
-        then:
-        assertSampleTasksExecutedAndNotSkipped(result)
-
-        and:
-        def sampleIndexFile = new File(projectDir, "build/gradle-samples/demo/index.html")
-        sampleIndexFile.text.contains('Some description')
-        !sampleIndexFile.text.contains('{sample-description}')
     }
 
     def "can execute the sample from the zip"() {
@@ -314,18 +280,12 @@ samples.configureEach { sample ->
         writeSampleUnderTest()
 
         when:
-        def result = build('assembleDemoSample')
+        build('assembleDemoSample')
 
         then:
-        assertSampleTasksExecutedAndNotSkipped(result)
-
-        and:
         assertCanRunHelpTask(groovyDslZipFile)
         assertCanRunHelpTask(kotlinDslZipFile)
     }
-
-    // TODO: Allow preprocess build script files before zipping (remove tags, see NOTE1) or including them in rendered output (remove tags and license)
-    //   NOTE1: We can remove the license from all the files and add a LICENSE file at the root of the sample
 
     protected void makeSingleProject() {
         buildFile << """
@@ -334,7 +294,9 @@ samples.configureEach { sample ->
             }
 
             samples {
-                demo
+                publishedSamples {
+                    demo
+                }
             }
         """
     }
@@ -344,26 +306,17 @@ samples.configureEach { sample ->
     }
 
     protected void writeSampleUnderTestToDirectory(String directory) {
-        writeSampleContentToDirectory(directory) << """
-ifndef::env-github[]
-- link:{zip-base-file-name}-groovy-dsl.zip[Download Groovy DSL ZIP]
-- link:{zip-base-file-name}-kotlin-dsl.zip[Download Kotlin DSL ZIP]
-endif::[]
-"""
-        writeGroovyDslSample(directory);
+        writeSampleContentToDirectory(file(directory))
+        writeGroovyDslSample(directory)
         writeKotlinDslSample(directory)
     }
 
-    protected static void assertSampleTasksExecutedAndNotSkipped(BuildResult result, String name = 'demo') {
-        assertBothDslSampleTasksExecutedAndNotSkipped(result, name)
-    }
-
     private void assertCanRunHelpTask(File zipFile) {
-        def workingDirectory = new File(temporaryFolder.root, zipFile.name)
+        def workingDirectory = file(zipFile.name)
         def ant = new AntBuilder()
         ant.unzip(src: zipFile, dest: workingDirectory)
 
-        new File(workingDirectory, 'gradlew').executable = true
+        workingDirectory.file('gradlew').executable = true
         def process = "${workingDirectory}/gradlew help".execute(null, workingDirectory)
         def stdoutThread = Thread.start { process.in.eachLine { println(it) } }
         def stderrThread = Thread.start { process.err.eachLine { println(it) } }

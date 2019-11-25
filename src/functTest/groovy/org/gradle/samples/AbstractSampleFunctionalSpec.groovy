@@ -17,6 +17,7 @@
 package org.gradle.samples
 
 import org.gradle.guides.AbstractFunctionalTest
+import org.gradle.guides.TestFile
 import org.gradle.testkit.runner.BuildResult
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert
@@ -28,9 +29,8 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static org.hamcrest.CoreMatchers.containsString
 
 class AbstractSampleFunctionalSpec extends AbstractFunctionalTest {
-    protected File writeSampleContentToDirectory(String directory) {
-        temporaryFolder.newFolder(directory.split('/'))
-        return temporaryFolder.newFile("${directory}/README.adoc") << """
+    protected File writeSampleContentToDirectory(TestFile directory) {
+        return directory.file("README.adoc") << """
 = Demo Sample
 
 Some doc
@@ -38,17 +38,18 @@ Some doc
     }
 
     protected void writeGroovyDslSample(String sampleDirectory) {
-        writeGroovyDslSampleToDirectory("${sampleDirectory}/groovy")
+        def sampleDir = file(sampleDirectory)
+        sampleDir.file("README.adoc") << ""
+        writeGroovyDslSampleToDirectory(sampleDir.file("groovy"))
     }
 
-    protected void writeGroovyDslSampleToDirectory(String directory) {
-        temporaryFolder.newFolder(directory.split('/'))
-        temporaryFolder.newFile("${directory}/build.gradle") << """
+    protected void writeGroovyDslSampleToDirectory(TestFile directory) {
+        directory.file("build.gradle") << """
 // tag::println[]
 println "Hello, world!"
 // end:println[]
 """
-        temporaryFolder.newFile("${directory}/settings.gradle") << """
+        directory.file("settings.gradle") << """
 // tag::root-project-name[]
 rootProject.name = 'demo'
 // end:root-project-name[]
@@ -56,36 +57,28 @@ rootProject.name = 'demo'
     }
 
     protected void writeKotlinDslSample(String sampleDirectory) {
-        writeKotlinDslSampleToDirectory("${sampleDirectory}/kotlin")
+        writeKotlinDslSampleToDirectory(file("${sampleDirectory}/kotlin"))
     }
 
-    protected void writeKotlinDslSampleToDirectory(String directory) {
-        temporaryFolder.newFolder(directory.split('/'))
-        temporaryFolder.newFile("${directory}/build.gradle.kts") << """
+    protected void writeKotlinDslSampleToDirectory(TestFile directory) {
+        directory.file("build.gradle.kts") << """
 // tag::println[]
 println("Hello, world!")
 // end:println[]
         """
-        temporaryFolder.newFile("${directory}/settings.gradle.kts") << """
+        directory.file("settings.gradle.kts") << """
 // tag::root-project-name[]
 rootProject.name = "demo"
 // end:root-project-name[]
         """
     }
 
-    protected File getGroovyDslZipFile(Map m = [:]) {
-        return getDslZipFile(m + [dsl: 'groovy-dsl'])
+    protected TestFile getGroovyDslZipFile() {
+        return file("build/distributions/demoGroovy.zip")
     }
 
     protected File getKotlinDslZipFile(Map m = [:]) {
-        return getDslZipFile(m + [dsl: 'kotlin-dsl'])
-    }
-
-    private File getDslZipFile(Map m) {
-        def versionToken = m.version ? "${m.version}-" : ''
-        def buildDirectoryRelativePathToken = m.getOrDefault('buildDirectoryRelativePath', 'gradle-samples')
-        def dslToken = m.dsl
-        return new File(projectDir, "build/${buildDirectoryRelativePathToken}/demo/demo-${versionToken}${dslToken}.zip")
+        return file("build/distributions/demoKotlin.zip")
     }
 
     protected File getSampleReadMeFile() {
@@ -93,7 +86,7 @@ rootProject.name = "demo"
     }
 
     protected String getSampleUnderTestDsl() {
-        return "samples.demo"
+        return "samples.publishedSamples.demo"
     }
 
     protected static void assertBothDslSampleTasksExecutedAndNotSkipped(BuildResult result, String name = 'demo') {

@@ -6,20 +6,29 @@ import org.gradle.api.Named;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFile;
+import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.plugins.ExtensionAware;
+import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskProvider;
 
 /**
  * Represent a sample to be documented. Each sample must contains a Groovy or Kotlin DSL sample.
  */
-public interface Sample extends Named, ExtensionAware {
+public interface Sample extends Named {
+    @Internal
+    @Override
+    String getName();
+
     /**
      * Property for configuring the sample root directory.
      *
      * @return a property for the sample root directory
      */
+    @Internal
     DirectoryProperty getSampleDirectory();
 
     /**
@@ -27,13 +36,18 @@ public interface Sample extends Named, ExtensionAware {
      *
      * @return a provider for the README file location
      */
-    Provider<RegularFile> getReadMeFile();
+    @Internal
+    RegularFileProperty getReadMeFile();
+
+    @Internal
+    RegularFileProperty getLicenseFile();
 
     /**
      * Property for configuring the sample description. The description is used within the sample index.
      *
      * @return a property for the sample description
      */
+    @Input
     Property<String> getDescription();
 
     /**
@@ -41,58 +55,27 @@ public interface Sample extends Named, ExtensionAware {
      *
      * @return a property for the sample display name
      */
+    @Input
     Property<String> getDisplayName();
 
-    /**
-     * Property for configuring the Gradle version wrapper to generate for this sample.
-     *
-     * @return a property for the Gradle version wrapper to generate
-     */
-    Property<String> getGradleVersion();
+    @Internal
+    ConfigurableFileCollection getCommonContent();
+    void common(Action<? super ConfigurableFileCollection> action);
 
-    /**
-     * Property for configuring the common content to include in both domain specific sample archives.
-     *
-     * @return a file collection to configure the files to include in the domain specific archives
-     */
-    ConfigurableFileCollection getArchiveContent();
+    @Internal
+    ConfigurableFileCollection getGroovyContent();
+    void groovy(Action<? super ConfigurableFileCollection> action);
 
-    /**
-     * Explicitly declare a Groovy DSL sample at the conventional location (e.g. {@code src/samples/<name>/groovy}).
-     *
-     * NOTE: Explicitly declaring a domain specific sample exclude any implicit conventional declaration.
-     */
-    void withGroovyDsl();
+    @Internal
+    ConfigurableFileCollection getKotlinContent();
+    void kotlin(Action<? super ConfigurableFileCollection> action);
 
-    /**
-     * Explicitly declare a Groovy DSL sample at a custom location.
-     *
-     * NOTE: Explicitly declaring a domain specific sample exclude any implicit conventional declaration.
-     *
-     * @param action the configuration action for the Groovy DSL
-     */
-    void withGroovyDsl(Action<? super DomainSpecificSample> action);
+    @Input
+    ListProperty<Dsl> getDsls();
 
-    /**
-     * Explicitly declare a Kotlin DSL sample at the conventional location (e.g. {@code src/samples/<name>/kotlin}).
-     *
-     * NOTE: Explicitly declaring a domain specific sample exclude any implicit conventional declaration.
-     */
-    void withKotlinDsl();
+    @Internal
+    DirectoryProperty getInstallDirectory();
 
-    /**
-     * Explicitly declare a Kotlin DSL sample at a custom location.
-     *
-     * NOTE: Explicitly declaring a domain specific sample exclude any implicit conventional declaration.
-     *
-     * @param action the configuration action for the Kotlin DSL
-     */
-    void withKotlinDsl(Action<? super DomainSpecificSample> action);
-
-    /**
-     * Returns the Asciidoctor task that process the README.adoc file.
-     *
-     * @return a provider for the Asciidoctor task of the sample README.adoc
-     */
-    TaskProvider<AsciidoctorTask> getAsciidoctorTask();
+    @Internal
+    RegularFileProperty getSamplePageFile();
 }

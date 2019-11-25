@@ -20,7 +20,7 @@ class BasicConventionalBothDslSampleFunctionalTest extends AbstractBasicSampleFu
 
     @Override
     protected void writeSampleUnderTestToDirectory(String directory) {
-        writeSampleContentToDirectory(directory) << """
+        writeSampleContentToDirectory(file(directory)) << """
 ifndef::env-github[]
 - link:{zip-base-file-name}-groovy-dsl.zip[Download Groovy DSL ZIP]
 - link:{zip-base-file-name}-kotlin-dsl.zip[Download Kotlin DSL ZIP]

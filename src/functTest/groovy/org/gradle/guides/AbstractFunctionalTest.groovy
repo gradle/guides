@@ -25,24 +25,27 @@ import spock.lang.Specification
 abstract class AbstractFunctionalTest extends Specification {
     @Rule
     TemporaryFolder temporaryFolder = new TemporaryFolder()
-    File projectDir
-    File buildFile
-    File settingsFile
+    TestFile projectDir
+    TestFile buildFile
+    TestFile settingsFile
+    BuildResult result
     private String gradleVersion
 
     def setup() {
-        projectDir = temporaryFolder.root
-        buildFile = temporaryFolder.newFile('build.gradle')
-        settingsFile = temporaryFolder.newFile('settings.gradle')
-        new File(projectDir, "gradle.properties").text = "org.gradle.jvmargs=-XX:MaxMetaspaceSize=500m -Xmx500m"
+        projectDir = new TestFile(temporaryFolder.root)
+        buildFile = new TestFile(temporaryFolder.newFile('build.gradle'))
+        settingsFile = new TestFile(temporaryFolder.newFile('settings.gradle'))
+        file("gradle.properties").text = "org.gradle.jvmargs=-XX:MaxMetaspaceSize=500m -Xmx500m"
     }
 
     protected BuildResult build(String... arguments) {
-        createAndConfigureGradleRunner(arguments).build()
+        result = createAndConfigureGradleRunner(arguments).build()
+        result
     }
 
     protected BuildResult buildAndFail(String... arguments) {
-        createAndConfigureGradleRunner(arguments).buildAndFail()
+        result = createAndConfigureGradleRunner(arguments).buildAndFail()
+        result
     }
 
     private GradleRunner createAndConfigureGradleRunner(String... arguments) {
@@ -67,5 +70,9 @@ abstract class AbstractFunctionalTest extends Specification {
         }
 
         newDir
+    }
+
+    TestFile file(Object... paths) {
+        return projectDir.file(paths)
     }
 }

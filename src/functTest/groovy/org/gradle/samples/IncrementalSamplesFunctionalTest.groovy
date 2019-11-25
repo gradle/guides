@@ -28,7 +28,7 @@ class IncrementalSamplesFunctionalTest extends AbstractSampleFunctionalSpec {
     private static final SKIPPED_TASK_OUTCOMES = [FROM_CACHE, UP_TO_DATE, SKIPPED, NO_SOURCE]
 
     protected void writeGroovyDslSampleUnderTest() {
-        writeSampleContentToDirectory('src/samples/demo') << """
+        writeSampleContentToDirectory(file('src/samples/demo')) << """
 ifndef::env-github[]
 - link:{zip-base-file-name}-groovy-dsl.zip[Download Groovy DSL ZIP]
 endif::[]
@@ -37,7 +37,7 @@ endif::[]
     }
 
     protected void writeKotlinDslSampleUnderTest() {
-        writeSampleContentToDirectory('src/samples/demo') << """
+        writeSampleContentToDirectory(file('src/samples/demo')) << """
 ifndef::env-github[]
 - link:{zip-base-file-name}-kotlin-dsl.zip[Download Kotlin DSL ZIP]
 endif::[]
@@ -295,7 +295,7 @@ endif::[]
     }
 
     protected void writeSampleUnderTest() {
-        writeSampleContentToDirectory('src/samples/demo') << """
+        writeSampleContentToDirectory(file('src/samples/demo')) << """
 ifndef::env-github[]
 - link:{zip-base-file-name}-groovy-dsl.zip[Download Groovy DSL ZIP]
 - link:{zip-base-file-name}-kotlin-dsl.zip[Download Kotlin DSL ZIP]

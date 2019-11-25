@@ -26,7 +26,7 @@ import static org.gradle.samples.internal.StringUtils.capitalize;
 public class TestingSamplesWithExemplarPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
-        project.getPluginManager().apply("java-base");
+        /*project.getPluginManager().apply("java-base");
         NamedDomainObjectContainer<Sample> samples = (NamedDomainObjectContainer<Sample>) project.getExtensions().getByName("samples");
 
         Provider<Directory> samplesExemplarDirectory = project.getLayout().getBuildDirectory().dir("samples-exemplar");
@@ -48,9 +48,9 @@ public class TestingSamplesWithExemplarPlugin implements Plugin<Project> {
 
             TaskProvider<Sync> installSampleTask = createSampleExemplarInstallTask(project.getTasks(), sample, exemplar, samplesExemplarDirectory);
             testTask.configure(task -> task.dependsOn(installSampleTask));
-        });
+        });*/
     }
-
+/*
     private static void configureExemplarDependencies(DependencyHandler dependencies, SourceSet sourceSet) {
         dependencies.add(sourceSet.getImplementationConfigurationName(), "org.gradle:sample-check:0.9.0");
         dependencies.add(sourceSet.getImplementationConfigurationName(), dependencies.gradleTestKit());
@@ -117,5 +117,5 @@ public class TestingSamplesWithExemplarPlugin implements Plugin<Project> {
             task.onlyIf(it -> samplesDirectory.get().getAsFile().exists());
 //            task.onlyIf(it -> samples.stream().anyMatch(TestingSamplesWithExemplarPlugin::exemplarConfigurationArePresent));
         });
-    }
+    }*/
 }

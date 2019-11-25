@@ -24,7 +24,7 @@ class BasicExplicitKotlinDslSampleFunctionalTest extends AbstractBasicSampleFunc
 
     @Override
     protected void writeSampleUnderTestToDirectory(String directory) {
-        writeSampleContentToDirectory(directory) << """
+        writeSampleContentToDirectory(file(directory)) << """
 ifndef::env-github[]
 - link:{zip-base-file-name}-kotlin-dsl.zip[Download Kotlin DSL ZIP]
 endif::[]
@@ -148,8 +148,8 @@ samples {
     }
 }
 """
-        writeSampleContentToDirectory('src')
-        writeKotlinDslSampleToDirectory('src/kotlin-dsl')
+        writeSampleContentToDirectory(file('src'))
+        writeKotlinDslSampleToDirectory(file('src/kotlin-dsl'))
         temporaryFolder.newFolder('src', 'kotlin')
         temporaryFolder.newFile('src/kotlin/do.not.include')
 
