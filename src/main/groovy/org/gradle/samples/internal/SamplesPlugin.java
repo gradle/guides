@@ -4,16 +4,22 @@ import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.file.ConfigurableFileCollection;
+import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileTree;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.internal.AbstractTask;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.tasks.PathSensitivity;
+import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
+import org.gradle.api.tasks.testing.Test;
 import org.gradle.api.tasks.wrapper.Wrapper;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
 import org.gradle.samples.Dsl;
@@ -22,6 +28,7 @@ import org.gradle.samples.SampleBinary;
 import org.gradle.samples.SamplesExtension;
 import org.gradle.samples.internal.tasks.GenerateSampleIndexAsciidoc;
 import org.gradle.samples.internal.tasks.GenerateSamplePageAsciidoc;
+import org.gradle.samples.internal.tasks.GenerateTestSource;
 import org.gradle.samples.internal.tasks.InstallSample;
 import org.gradle.samples.internal.tasks.SyncWithProvider;
 import org.gradle.samples.internal.tasks.ValidateSampleBinary;
@@ -48,7 +55,7 @@ public class SamplesPlugin implements Plugin<Project> {
         TaskContainer tasks = project.getTasks();
         ObjectFactory objectFactory = project.getObjects();
 
-        project.getPluginManager().apply("base");
+        project.getPluginManager().apply("java-base");
 
         // Register a samples extension to configure published samples
         SamplesExtension extension = createSamplesExtension(project, layout);
@@ -94,41 +101,20 @@ public class SamplesPlugin implements Plugin<Project> {
             template.getTemplateDirectory().convention(generateTemplate.flatMap(task -> task.getDestinationDirectory()));
         });
 
-        project.afterEvaluate(p -> {
-            // TODO: Disallow changes to published samples container after this point.
-            for (Sample sample : extension.getPublishedSamples()) {
+        SourceSet sourceSet = project.getExtensions().getByType(SourceSetContainer.class).create("samplesExemplarFunctionalTest");
+        TaskProvider<GenerateTestSource> generatorTask = createExemplarGeneratorTask(tasks, layout, sourceSet);
+        sourceSet.getJava().srcDir(generatorTask.flatMap(task -> task.getOutputDirectory()));
 
-                // TODO: Make these lifecycle tasks a part of the sample component?
-                TaskProvider<Task> assembleSample = registerAssembleForSample(tasks, sample);
-                assemble.configure(t -> t.dependsOn(assembleSample));
+        DependencyHandler dependencies = project.getDependencies();
+        dependencies.add(sourceSet.getImplementationConfigurationName(), dependencies.gradleTestKit());
+        dependencies.add(sourceSet.getImplementationConfigurationName(), "org.gradle:sample-check:0.9.0");
+        dependencies.add(sourceSet.getImplementationConfigurationName(), "org.slf4j:slf4j-simple:1.7.16");
+        dependencies.add(sourceSet.getImplementationConfigurationName(), "junit:junit:4.12");
 
-                TaskProvider<Task> checkSample = registerCheckForSample(tasks, sample);
-                check.configure(t -> t.dependsOn(checkSample));
+        TaskProvider<Test> exemplarTest = createExemplarTestTask(tasks, sourceSet, layout, extension);
+        check.configure(task -> task.dependsOn(exemplarTest));
 
-                registerGenerateSamplePage(tasks, sample);
-
-                sample.getDsls().disallowChanges();
-                // TODO: This should only be enforced if we are trying to build the given sample
-                List<Dsl> dsls = sample.getDsls().get();
-                if (dsls.isEmpty()) {
-                    throw new GradleException("Samples must have at least one DSL, sample '" + sample.getName() + "' has none.");
-                }
-                for (Dsl dsl : dsls) {
-                    Provider<SampleBinary> dslBinary = registerSampleBinaryForDsl(extension, sample, dsl);
-                    assembleSample.configure(task -> {
-                        task.dependsOn(dslBinary.flatMap(SampleBinary::getZipFile));
-                        task.dependsOn(dslBinary.flatMap(SampleBinary::getInstallDirectory));
-                    });
-                    // TODO: Wire validate tasks into the sample check task
-                }
-            }
-        });
-
-        // TODO: Re-enable this
-//        project.getRepositories().maven(it -> it.setUrl("https://repo.gradle.org/gradle/libs-releases"));
-//        project.getConfigurations().maybeCreate("asciidoctor");
-//        project.getDependencies().add("asciidoctor", "org.gradle:docs-asciidoctor-extensions:0.4.0");
-        // project.getPluginManager().apply(TestingSamplesWithExemplarPlugin.class);
+        project.afterEvaluate(p -> realizeSamples(tasks, extension, assemble, check));
     }
 
     private SamplesExtension createSamplesExtension(Project project, ProjectLayout layout) {
@@ -257,5 +243,54 @@ public class SamplesPlugin implements Plugin<Project> {
             task.setDescription("Creates a zip for sample '" + binary.getName() + "'.");
         });
         binary.getZipFile().convention(zipTask.flatMap(ZipSample::getArchiveFile));
+    }
+
+    private static TaskProvider<GenerateTestSource> createExemplarGeneratorTask(TaskContainer tasks, ProjectLayout layout, SourceSet sourceSet) {
+        return tasks.register("generate" + capitalize(sourceSet.getName() + "SourceSet"), GenerateTestSource.class, task -> {
+            task.getOutputDirectory().convention(layout.getBuildDirectory().dir("generated-sources/" + sourceSet.getName()));
+        });
+    }
+
+    private static TaskProvider<Test> createExemplarTestTask(TaskContainer tasks, SourceSet sourceSet, ProjectLayout layout, SamplesExtension extension) {
+        return tasks.register(sourceSet.getName(), Test.class, task -> {
+            DirectoryProperty samplesDirectory = extension.getInstallRoot();
+            task.getInputs().dir(samplesDirectory).withPathSensitivity(PathSensitivity.RELATIVE);
+            task.setTestClassesDirs(sourceSet.getRuntimeClasspath());
+            task.setClasspath(sourceSet.getRuntimeClasspath());
+            task.setWorkingDir(layout.getProjectDirectory().getAsFile());
+            // TODO: This isn't lazy.  Need a different API here.
+            task.systemProperty("integTest.samplesdir", samplesDirectory.get().getAsFile().getAbsolutePath());
+            task.dependsOn((Callable<Object[]>) () -> extension.getBinaries().stream().map(binary -> binary.getInstallDirectory()).toArray());
+        });
+    }
+
+    private void realizeSamples(TaskContainer tasks, SamplesExtension extension, TaskProvider<Task> assemble, TaskProvider<Task> check) {
+        // TODO: Disallow changes to published samples container after this point.
+        for (Sample sample : extension.getPublishedSamples()) {
+
+            // TODO: Make these lifecycle tasks a part of the sample component?
+            TaskProvider<Task> assembleSample = registerAssembleForSample(tasks, sample);
+            assemble.configure(t -> t.dependsOn(assembleSample));
+
+            TaskProvider<Task> checkSample = registerCheckForSample(tasks, sample);
+            check.configure(t -> t.dependsOn(checkSample));
+
+            registerGenerateSamplePage(tasks, sample);
+
+            sample.getDsls().disallowChanges();
+            // TODO: This should only be enforced if we are trying to build the given sample
+            List<Dsl> dsls = sample.getDsls().get();
+            if (dsls.isEmpty()) {
+                throw new GradleException("Samples must have at least one DSL, sample '" + sample.getName() + "' has none.");
+            }
+            for (Dsl dsl : dsls) {
+                Provider<SampleBinary> dslBinary = registerSampleBinaryForDsl(extension, sample, dsl);
+                assembleSample.configure(task -> {
+                    task.dependsOn(dslBinary.flatMap(SampleBinary::getZipFile));
+                    task.dependsOn(dslBinary.flatMap(SampleBinary::getInstallDirectory));
+                });
+                // TODO: Wire validate tasks into the sample check task
+            }
+        }
     }
 }
