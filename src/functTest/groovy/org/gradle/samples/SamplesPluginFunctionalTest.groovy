@@ -1,6 +1,6 @@
 package org.gradle.samples
 
-
+import org.gradle.guides.TestFile
 import spock.lang.Unroll
 
 import java.util.concurrent.TimeUnit
@@ -56,8 +56,8 @@ ${sampleUnderTestDsl}.common {
         result.task(":generate").outcome == SUCCESS
         file("build/install/samples/demo/groovy/generated.txt").text == "This is generated content"
         file("build/install/samples/demo/kotlin/generated.txt").text == "This is generated content"
-        file("build/distributions/demoGroovy.zip").asZip().assertContainsContent("generated.txt")
-        file("build/distributions/demoKotlin.zip").asZip().assertContainsContent("generated.txt")
+        file("build/distributions/demoGroovy.zip").asZip().assertContainsDescendants("generated.txt")
+        file("build/distributions/demoKotlin.zip").asZip().assertContainsDescendants("generated.txt")
     }
 
     def "can have two samples with different naming convention"() {
@@ -73,10 +73,10 @@ ${sampleUnderTestDsl}.common {
                 }
             }
         """
-        writeGroovyDslSample("src/samples/foo-bar")
-        writeKotlinDslSample("src/samples/foo-bar")
-        writeGroovyDslSample("src/samples/fooBar")
-        writeKotlinDslSample("src/samples/fooBar")
+        writeGroovyDslSample(file("src/samples/foo-bar"))
+        writeKotlinDslSample(file("src/samples/foo-bar"))
+        writeGroovyDslSample(file("src/samples/fooBar"))
+        writeKotlinDslSample(file("src/samples/fooBar"))
 
         when:
         build("help")
@@ -184,7 +184,9 @@ ${sampleUnderTestDsl}.dsls = []
     def "fails if the sample does not have content for expected DSLs"() {
         makeSingleProject()
         // By default, we expect to produce samples for both Groovy and Kotlin, this should fail.
-        writeGroovyDslSample("src/samples/demo")
+        def sampleDirectory = file("src/samples/demo")
+        writeReadmeTo(sampleDirectory)
+        writeGroovyDslSample(sampleDirectory)
 
         when:
         buildAndFail('check')
@@ -233,7 +235,7 @@ ${sampleUnderTestDsl}.dsls = [ Dsl.GROOVY ]
 
             samples.publishedSamples.create("${name}")
         """
-        writeSampleUnderTestToDirectory("src/samples/${name}")
+        writeSampleUnderTest("src/samples/${name}")
 
         when:
         build('assemble')
@@ -252,7 +254,7 @@ ${sampleUnderTestDsl}.dsls = [ Dsl.GROOVY ]
     }
 
     def "can configure sample display name on the generated sample index"() {
-        writeSampleUnderTestToDirectory('src/samples/demoXUnit')
+        writeSampleUnderTest('src/samples/demoXUnit')
         buildFile << """
             plugins {
                 id 'org.gradle.samples'
@@ -285,30 +287,6 @@ ${sampleUnderTestDsl}.dsls = [ Dsl.GROOVY ]
         then:
         assertCanRunHelpTask(groovyDslZipFile)
         assertCanRunHelpTask(kotlinDslZipFile)
-    }
-
-    protected void makeSingleProject() {
-        buildFile << """
-            plugins {
-                id 'org.gradle.samples'
-            }
-
-            samples {
-                publishedSamples {
-                    demo
-                }
-            }
-        """
-    }
-
-    protected void writeSampleUnderTest() {
-        writeSampleUnderTestToDirectory('src/samples/demo')
-    }
-
-    protected void writeSampleUnderTestToDirectory(String directory) {
-        writeSampleContentToDirectory(file(directory))
-        writeGroovyDslSample(directory)
-        writeKotlinDslSample(directory)
     }
 
     private void assertCanRunHelpTask(File zipFile) {

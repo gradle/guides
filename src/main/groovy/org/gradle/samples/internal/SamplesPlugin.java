@@ -1,5 +1,6 @@
 package org.gradle.samples.internal;
 
+import groovy.lang.Closure;
 import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -14,6 +15,7 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
+import org.gradle.api.tasks.bundling.AbstractArchiveTask;
 import org.gradle.api.tasks.bundling.Zip;
 import org.gradle.api.tasks.wrapper.Wrapper;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
@@ -52,6 +54,7 @@ public class SamplesPlugin implements Plugin<Project> {
         extension.getSamplesRoot().convention(layout.getProjectDirectory().dir("src/samples"));
         extension.getDocumentationRoot().convention(layout.getBuildDirectory().dir("samples/docs/"));
         extension.getInstallRoot().convention(layout.getBuildDirectory().dir("install/samples"));
+        extension.getCommonExcludes().convention(Arrays.asList("**/build/**", "**/.gradle/**"));
 
         FileTree wrapperFiles = createWrapperFiles(tasks);
         extension.getPublishedSamples().configureEach(sample -> applyConventionsForSamples(extension, wrapperFiles, sample));
@@ -148,6 +151,7 @@ public class SamplesPlugin implements Plugin<Project> {
             binary.getDsl().convention(dsl).disallowChanges();
             binary.getSamplePageFile().convention(sample.getSamplePageFile()).disallowChanges();
             binary.getContent().from(sample.getCommonContent());
+            binary.getExcludes().convention(extension.getCommonExcludes());
             if (dsl == Dsl.GROOVY) {
                 binary.getStagingDirectory().convention(sample.getInstallDirectory().dir("groovy")).disallowChanges();
                 binary.getContent().from(sample.getGroovyContent());
@@ -173,14 +177,17 @@ public class SamplesPlugin implements Plugin<Project> {
         TaskProvider<InstallSampleTask> installSampleTask = tasks.register("installSample" + StringUtils.capitalize(binary.getName()), InstallSampleTask.class, task -> {
             task.getSource().from(binary.getContent());
             task.getInstallDirectory().convention(binary.getStagingDirectory());
+            task.getExcludes().convention(binary.getExcludes());
         });
-        binary.getInstallDirectory().convention(installSampleTask.flatMap(task -> task.getInstallDirectory()));
+        binary.getInstallDirectory().convention(installSampleTask.flatMap(InstallSampleTask::getInstallDirectory));
 
         TaskProvider<Zip> zipTask = tasks.register("zipSample" + StringUtils.capitalize(binary.getName()), Zip.class, task -> {
             task.from(binary.getContent());
             task.getArchiveBaseName().convention(binary.getName());
+            // TODO: Introduce a org.gradle.api.tasks.util.PatternFilterable.exclude(Provider<String>)?
+            task.exclude(binary.getExcludes().get());
         });
-        binary.getZipFile().convention(zipTask.flatMap(task -> task.getArchiveFile()));
+        binary.getZipFile().convention(zipTask.flatMap(AbstractArchiveTask::getArchiveFile));
     }
 
     private void applyConventionsForSamples(SamplesExtension extension, FileTree wrapperFiles, Sample sample) {

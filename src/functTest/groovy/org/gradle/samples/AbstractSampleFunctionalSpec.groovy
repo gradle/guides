@@ -19,31 +19,30 @@ package org.gradle.samples
 import org.gradle.guides.AbstractFunctionalTest
 import org.gradle.guides.TestFile
 import org.gradle.testkit.runner.BuildResult
-import org.hamcrest.Matcher
-import org.hamcrest.MatcherAssert
 
-import java.util.zip.ZipEntry
-import java.util.zip.ZipFile
-
+import static org.gradle.testkit.runner.TaskOutcome.FROM_CACHE
+import static org.gradle.testkit.runner.TaskOutcome.NO_SOURCE
+import static org.gradle.testkit.runner.TaskOutcome.SKIPPED
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 import static org.hamcrest.CoreMatchers.containsString
 
 class AbstractSampleFunctionalSpec extends AbstractFunctionalTest {
-    protected File writeSampleContentToDirectory(TestFile directory) {
-        return directory.file("README.adoc") << """
+    protected static final SKIPPED_TASK_OUTCOMES = [FROM_CACHE, UP_TO_DATE, SKIPPED, NO_SOURCE]
+
+    protected static void writeReadmeTo(TestFile directory) {
+        directory.file("README.adoc") << """
 = Demo Sample
 
 Some doc
 """
     }
 
-    protected void writeGroovyDslSample(String sampleDirectory) {
-        def sampleDir = file(sampleDirectory)
-        sampleDir.file("README.adoc") << ""
-        writeGroovyDslSampleToDirectory(sampleDir.file("groovy"))
+    protected static void writeGroovyDslSample(TestFile sampleDirectory) {
+        writeGroovyDslSampleToDirectory(sampleDirectory.file("groovy"))
     }
 
-    protected void writeGroovyDslSampleToDirectory(TestFile directory) {
+    protected static void writeGroovyDslSampleToDirectory(TestFile directory) {
         directory.file("build.gradle") << """
 // tag::println[]
 println "Hello, world!"
@@ -56,11 +55,11 @@ rootProject.name = 'demo'
 """
     }
 
-    protected void writeKotlinDslSample(String sampleDirectory) {
-        writeKotlinDslSampleToDirectory(file("${sampleDirectory}/kotlin"))
+    protected static void writeKotlinDslSample(TestFile sampleDirectory) {
+        writeKotlinDslSampleToDirectory(sampleDirectory.file("kotlin"))
     }
 
-    protected void writeKotlinDslSampleToDirectory(TestFile directory) {
+    protected static void writeKotlinDslSampleToDirectory(TestFile directory) {
         directory.file("build.gradle.kts") << """
 // tag::println[]
 println("Hello, world!")
@@ -77,71 +76,84 @@ rootProject.name = "demo"
         return file("build/distributions/demoGroovy.zip")
     }
 
-    protected File getKotlinDslZipFile(Map m = [:]) {
+    protected TestFile getKotlinDslZipFile() {
         return file("build/distributions/demoKotlin.zip")
-    }
-
-    protected File getSampleReadMeFile() {
-        return new File(projectDir, "src/samples/demo/README.adoc")
     }
 
     protected String getSampleUnderTestDsl() {
         return "samples.publishedSamples.demo"
     }
 
-    protected static void assertBothDslSampleTasksExecutedAndNotSkipped(BuildResult result, String name = 'demo') {
-        assert result.task(":generateWrapperFor${name.capitalize()}Sample").outcome == SUCCESS
-        assert result.task(":install${name.capitalize()}GroovyDslSample").outcome == SUCCESS
-        assert result.task(":install${name.capitalize()}KotlinDslSample").outcome == SUCCESS
-        assert result.task(":compress${name.capitalize()}GroovyDslSample").outcome == SUCCESS
-        assert result.task(":compress${name.capitalize()}KotlinDslSample").outcome == SUCCESS
-        assert result.task(":install${name.capitalize()}Sample").outcome == SUCCESS
-        assert result.task(":assemble${name.capitalize()}Sample").outcome == SUCCESS
+    protected static void assertBothDslSampleTasksSkipped(BuildResult result) {
+        assertCommonSampleTasksSkipped(result)
+        assertDslSampleTasksSkipped(result, "Groovy")
+        assertDslSampleTasksSkipped(result, "Kotlin")
+    }
+
+    protected static void assertBothDslSampleTasksExecutedAndNotSkipped(BuildResult result) {
+        assertCommonSampleTasksExecutedAndNotSkipped(result)
+        assertDslSampleTasksExecutedAndNotSkipped(result, "Groovy")
+        assertDslSampleTasksExecutedAndNotSkipped(result, "Kotlin")
     }
 
     protected static void assertOnlyGroovyDslTasksExecutedAndNotSkipped(BuildResult result) {
-        assert result.task(":generateWrapperForDemoSample").outcome == SUCCESS
-        assert result.task(":installDemoGroovyDslSample").outcome == SUCCESS
-        assert result.task(":installDemoKotlinDslSample") == null
-        assert result.task(":compressDemoGroovyDslSample").outcome == SUCCESS
-        assert result.task(":compressDemoKotlinDslSample") == null
-        assert result.task(":installDemoSample").outcome == SUCCESS
-        assert result.task(":assembleDemoSample").outcome == SUCCESS
+        assertCommonSampleTasksExecutedAndNotSkipped(result)
+        assertDslSampleTasksExecutedAndNotSkipped(result, "Groovy")
+        assertDslSampleTasksNotExecuted(result, "Kotlin")
     }
 
     protected static void assertOnlyKotlinDslTasksExecutedAndNotSkipped(BuildResult result) {
-        assert result.task(":generateWrapperForDemoSample").outcome == SUCCESS
-        assert result.task(":installDemoGroovyDslSample") == null
-        assert result.task(":installDemoKotlinDslSample").outcome == SUCCESS
-        assert result.task(":compressDemoGroovyDslSample") == null
-        assert result.task(":compressDemoKotlinDslSample").outcome == SUCCESS
-        assert result.task(":installDemoSample").outcome == SUCCESS
+        assertCommonSampleTasksExecutedAndNotSkipped(result)
+        assertDslSampleTasksExecutedAndNotSkipped(result, "Kotlin")
+        assertDslSampleTasksNotExecuted(result, "Groovy")
+    }
+
+    private static void assertDslSampleTasksNotExecuted(BuildResult result, String dsl) {
+        assert result.task(":installSampleDemo${dsl}") == null
+        assert result.task(":zipSampleDemo${dsl}") == null
+    }
+
+    protected static void assertDslSampleTasksExecutedAndNotSkipped(BuildResult result, String dsl) {
+        assert result.task(":installSampleDemo${dsl}").outcome == SUCCESS
+        assert result.task(":zipSampleDemo${dsl}").outcome == SUCCESS
+    }
+
+    protected static void assertDslSampleTasksSkipped(BuildResult result, String dsl) {
+        assert result.task(":installSampleDemo${dsl}").outcome in SKIPPED_TASK_OUTCOMES
+        assert result.task(":zipSampleDemo${dsl}").outcome in SKIPPED_TASK_OUTCOMES
+    }
+
+    private static void assertCommonSampleTasksExecutedAndNotSkipped(BuildResult result) {
+        assert result.task(":generateDemoPage").outcome == SUCCESS
         assert result.task(":assembleDemoSample").outcome == SUCCESS
     }
 
-    protected static void assertZipHasContent(File file, String... expectedContent) {
-        assert file.exists()
-        def content = new ZipFile(file).withCloseable { zipFile ->
-            return zipFile.entries().findAll { !it.directory }.collect { ZipEntry zipEntry ->
-                return zipEntry.getName()
+    private static void assertCommonSampleTasksSkipped(BuildResult result) {
+        assert result.task(":generateDemoPage").outcome in SKIPPED_TASK_OUTCOMES
+        assert result.task(":assembleDemoSample").outcome in SKIPPED_TASK_OUTCOMES
+    }
+
+    protected static void assertGradleWrapperVersion(TestFile file, String expectedGradleVersion) {
+        file.asZip().assertDescendantHasContent('gradle/wrapper/gradle-wrapper.properties', containsString("-${expectedGradleVersion}-"))
+    }
+
+    protected void makeSingleProject() {
+        buildFile << """
+            plugins {
+                id 'org.gradle.samples'
             }
-        } as Set
 
-        assert content.size() == expectedContent.size()
-        content.removeAll(Arrays.asList(expectedContent))
-        assert content.empty
+            samples {
+                publishedSamples {
+                    demo
+                }
+            }
+        """
     }
 
-    protected static void assertGradleWrapperVersion(File file, String expectedGradleVersion) {
-        assertFileInZipThat(file, 'gradle/wrapper/gradle-wrapper.properties', containsString("-${expectedGradleVersion}-"))
-    }
-
-    protected static void assertFileInZipThat(File file, String path, Matcher<String> matcher) {
-        assert file.exists()
-        def text = new ZipFile(file).withCloseable { zipFile ->
-            return zipFile.getInputStream(zipFile.entries().findAll { !it.directory }.find { it.name == path }).text
-        }
-
-        MatcherAssert.assertThat(text, matcher)
+    protected void writeSampleUnderTest(String directory="src/samples/demo") {
+        writeReadmeTo(file(directory))
+        writeGroovyDslSample(file(directory))
+        writeKotlinDslSample(file(directory))
     }
 }

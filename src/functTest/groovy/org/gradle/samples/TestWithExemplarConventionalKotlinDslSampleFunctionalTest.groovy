@@ -16,7 +16,7 @@ class TestWithExemplarConventionalKotlinDslSampleFunctionalTest extends Abstract
 
     @Override
     protected void writeSampleUnderTestToDirectory(String directory) {
-        writeSampleContentToDirectory(file(directory)) << """
+        writeReadmeTo(file(directory)) << """
 ifndef::env-github[]
 - link:{zip-base-file-name}-kotlin-dsl.zip[Download Kotlin DSL ZIP]
 endif::[]

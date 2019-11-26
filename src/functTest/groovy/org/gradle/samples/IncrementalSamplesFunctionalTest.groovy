@@ -16,296 +16,142 @@
 
 package org.gradle.samples
 
-import org.gradle.testkit.runner.BuildResult
 
-import static org.gradle.testkit.runner.TaskOutcome.FROM_CACHE
-import static org.gradle.testkit.runner.TaskOutcome.NO_SOURCE
-import static org.gradle.testkit.runner.TaskOutcome.SKIPPED
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
-import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 
 class IncrementalSamplesFunctionalTest extends AbstractSampleFunctionalSpec {
-    private static final SKIPPED_TASK_OUTCOMES = [FROM_CACHE, UP_TO_DATE, SKIPPED, NO_SOURCE]
-
-    protected void writeGroovyDslSampleUnderTest() {
-        writeSampleContentToDirectory(file('src/samples/demo')) << """
-ifndef::env-github[]
-- link:{zip-base-file-name}-groovy-dsl.zip[Download Groovy DSL ZIP]
-endif::[]
-"""
-        writeGroovyDslSample('src/samples/demo')
-    }
-
-    protected void writeKotlinDslSampleUnderTest() {
-        writeSampleContentToDirectory(file('src/samples/demo')) << """
-ifndef::env-github[]
-- link:{zip-base-file-name}-kotlin-dsl.zip[Download Kotlin DSL ZIP]
-endif::[]
-"""
-        writeKotlinDslSample('src/samples/demo')
-    }
-
-    def "skips sample tasks when no source"() {
-        makeSingleProject()
-
-        when:
-        def result = build('assemble')
-
-        then:
-        assertSampleTasksNotExecuted(result)
-        result.task(':assemble').outcome in SKIPPED_TASK_OUTCOMES
-        result.task(':generateSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
-        result.task(':asciidocSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
-        !groovyDslZipFile.exists()
-        !kotlinDslZipFile.exists()
-        !new File(projectDir, 'build').exists()
-    }
-
-    def "has no kotlin dsl tasks when no source"() {
-        makeSingleProject()
-        writeGroovyDslSampleUnderTest()
-
-        when:
-        def result = build('assemble')
-
-        then:
-        assertOnlyGroovyDslTasksExecutedAndNotSkipped(result)
-        result.task(':assemble').outcome == SUCCESS
-        result.task(':generateSampleIndex').outcome == SUCCESS
-        result.task(':asciidocSampleIndex').outcome == SUCCESS
-
-        and:
-        groovyDslZipFile.exists()
-        !kotlinDslZipFile.exists()
-
-        and:
-        def sampleIndexFile = new File(projectDir, "build/gradle-samples/demo/index.html")
-        sampleIndexFile.exists()
-        sampleIndexFile.text.contains('<a href="demo-groovy-dsl.zip">')
-        !sampleIndexFile.text.contains('<a href="demo-kotlin-dsl.zip">')
-
-        and:
-        def indexFile = new File(projectDir, "build/gradle-samples/index.html")
-        indexFile.exists()
-        indexFile.text.contains('<a href="demo/">')
-    }
-
-    def "has no groovy dsl tasks when no source"() {
-        makeSingleProject()
-        writeKotlinDslSampleUnderTest()
-
-        when:
-        def result = build('assemble')
-
-        then:
-        assertOnlyKotlinDslTasksExecutedAndNotSkipped(result)
-        result.task(':assemble').outcome == SUCCESS
-        result.task(':generateSampleIndex').outcome == SUCCESS
-        result.task(':asciidocSampleIndex').outcome == SUCCESS
-
-        and:
-        !groovyDslZipFile.exists()
-        kotlinDslZipFile.exists()
-
-        and:
-        def sampleIndexFile = new File(projectDir, "build/gradle-samples/demo/index.html")
-        sampleIndexFile.exists()
-        !sampleIndexFile.text.contains('<a href="demo-groovy-dsl.zip">')
-        sampleIndexFile.text.contains('<a href="demo-kotlin-dsl.zip">')
-
-        and:
-        def indexFile = new File(projectDir, "build/gradle-samples/index.html")
-        indexFile.exists()
-        indexFile.text.contains('<a href="demo/">')
-    }
-
     def "skips all tasks when no changes"() {
         makeSingleProject()
         writeSampleUnderTest()
 
         when:
-        def result1 = build("assemble")
+        build("assemble")
 
         then:
-        assertSampleTasksExecutedAndNotSkipped(result1)
-        result1.task(':assemble').outcome == SUCCESS
-        result1.task(':generateSampleIndex').outcome == SUCCESS
-        result1.task(':asciidocSampleIndex').outcome == SUCCESS
+        result.task(':generateSampleIndex').outcome == SUCCESS
+        result.task(":generateWrapperForSamples").outcome == SUCCESS
+        assertBothDslSampleTasksExecutedAndNotSkipped(result)
 
         when:
-        def result2 = build("assemble")
+        build("assemble")
 
         then:
-        assertSampleTasksSkipped(result2)
-        result2.task(':assemble').outcome in SKIPPED_TASK_OUTCOMES
-        result2.task(':generateSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
-        result2.task(':asciidocSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
+        result.task(':generateSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
+        result.task(":generateWrapperForSamples").outcome in SKIPPED_TASK_OUTCOMES
+        assertBothDslSampleTasksSkipped(result)
     }
 
-    def "executes Asciidoctor and Zip tasks when README content change"() {
+    def "executes generate, install and Zip tasks when README content changes"() {
         makeSingleProject()
         writeSampleUnderTest()
 
         when:
-        def result1 = build("assemble")
+        build("assemble")
 
         then:
-        assertSampleTasksExecutedAndNotSkipped(result1)
+        assertBothDslSampleTasksExecutedAndNotSkipped(result)
 
         when:
-        def result2 = build("assemble")
+        build("assemble")
 
         then:
-        assertSampleTasksSkipped(result2)
+        assertBothDslSampleTasksSkipped(result)
 
         when:
-        sampleReadMeFile << "More content\n"
-        def result3 = build("assemble")
-
-        then:
-        result3.task(':generateSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
-        result3.task(':asciidocSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
-        result3.task(':assemble').outcome == SUCCESS
-
+        file("src/samples/demo/README.adoc") << "More content\n"
         and:
-        result3.task(":generateWrapperForDemoSample").outcome in SKIPPED_TASK_OUTCOMES
-        result3.task(":installDemoGroovyDslSample").outcome == SUCCESS
-        result3.task(":installDemoKotlinDslSample").outcome == SUCCESS
-        result3.task(":compressDemoGroovyDslSample").outcome == SUCCESS
-        result3.task(":compressDemoKotlinDslSample").outcome == SUCCESS
-        result3.task(":installDemoSample").outcome == SUCCESS
-        result3.task(":assembleDemoSample").outcome == SUCCESS
-
-        and:
-        def sampleIndexFile = new File(projectDir, "build/gradle-samples/demo/index.html")
-        sampleIndexFile.exists()
-        sampleIndexFile.text.contains("More content")
-
-        when:
-        def result4 = build("assemble")
+        build("assemble")
 
         then:
-        assertSampleTasksSkipped(result4)
+        result.task(':generateWrapperForSamples').outcome in SKIPPED_TASK_OUTCOMES
+        result.task(':generateSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
+        assertBothDslSampleTasksExecutedAndNotSkipped(result)
+        and:
+        def samplePage = file("build/samples/docs/sample_demo.adoc")
+        samplePage.text.contains("More content")
+
+        when:
+        build("assemble")
+        then:
+        assertBothDslSampleTasksSkipped(result)
     }
 
-    def "executes Asciidoctor and Zip tasks when project version change"() {
+    def "change to Groovy content causes only Groovy to be out-of-date"() {
         makeSingleProject()
         writeSampleUnderTest()
+        build("assemble")
 
         when:
-        def result1 = build("assemble")
+        build("assemble")
 
         then:
-        assertSampleTasksExecutedAndNotSkipped(result1)
-
-        and:
-        def sampleIndexFile1 = new File(projectDir, "build/gradle-samples/demo/index.html")
-        sampleIndexFile1.exists()
-        sampleIndexFile1.text.contains('<a href="demo-groovy-dsl.zip">')
-        sampleIndexFile1.text.contains('<a href="demo-kotlin-dsl.zip">')
-
-        and:
-        groovyDslZipFile.exists()
-        kotlinDslZipFile.exists()
-        !getGroovyDslZipFile(version: '4.2').exists()
-        !getKotlinDslZipFile(version: '4.2').exists()
+        result.task(':generateSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
+        result.task(":generateWrapperForSamples").outcome in SKIPPED_TASK_OUTCOMES
+        assertBothDslSampleTasksSkipped(result)
 
         when:
-        def result2 = build("assemble")
-
-        then:
-        assertSampleTasksSkipped(result2)
-
-        when:
-        buildFile << "version = '4.2'\n"
-        def result3 = build("assemble")
-
-        then:
-        result3.task(':generateSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
-        result3.task(':asciidocSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
-        result3.task(':assemble').outcome == SUCCESS
-
+        file("src/samples/demo/groovy/build.gradle") << "// This is a change"
         and:
-        result3.task(":generateWrapperForDemoSample").outcome in SKIPPED_TASK_OUTCOMES
-        result3.task(":installDemoGroovyDslSample").outcome in SKIPPED_TASK_OUTCOMES
-        result3.task(":installDemoKotlinDslSample").outcome in SKIPPED_TASK_OUTCOMES
-        result3.task(":compressDemoGroovyDslSample").outcome == SUCCESS
-        result3.task(":compressDemoKotlinDslSample").outcome == SUCCESS
-        result3.task(":installDemoSample").outcome == SUCCESS
-        result3.task(":assembleDemoSample").outcome == SUCCESS
-
-        and:
-        def sampleIndexFile2 = new File(projectDir, "build/gradle-samples/demo/index.html")
-        sampleIndexFile2.exists()
-        sampleIndexFile2.text.contains('<a href="demo-4.2-groovy-dsl.zip">')
-        sampleIndexFile2.text.contains('<a href="demo-4.2-kotlin-dsl.zip">')
-
-        and:
-        !groovyDslZipFile.exists()
-        !kotlinDslZipFile.exists()
-        getGroovyDslZipFile(version: '4.2').exists()
-        getKotlinDslZipFile(version: '4.2').exists()
-
-        when:
-        def result4 = build("assemble")
-
+        build("assemble")
         then:
-        assertSampleTasksSkipped(result4)
-    }
-    // TODO: Change gradle version, asciidoctor and zips execute
-    // TODO: Change groovy script, only groovy script executes
-    // TODO: Change kotlin script, only kotlin script executes
-    // TODO: Add/remove sample, index asciidoctor execute
-    // TODO: Output are cached
-
-    // TODO: Explicit kotlin dsl source task are skipped if no source ... or maybe just fail saying "hey something is wrong"
-    // TODO: Explicit groovy dsl source task... same as kotlin
-    // TODO: Somehow fail when no groovy DSL or kotlin DSL
-
-    private static void assertSampleTasksNotExecuted(BuildResult result) {
-        assert result.task(":generateWrapperForDemoSample") == null
-        assert result.task(":installDemoGroovyDslSample") == null
-        assert result.task(":installDemoKotlinDslSample") == null
-        assert result.task(":compressDemoGroovyDslSample") == null
-        assert result.task(":compressDemoKotlinDslSample") == null
-        assert result.task(":installDemoSample").outcome in SKIPPED_TASK_OUTCOMES
-        assert result.task(":assembleDemoSample").outcome in SKIPPED_TASK_OUTCOMES
+        result.task(':generateSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
+        result.task(":generateWrapperForSamples").outcome in SKIPPED_TASK_OUTCOMES
+        assertDslSampleTasksExecutedAndNotSkipped(result, "Groovy")
+        assertDslSampleTasksSkipped(result, "Kotlin")
+        file("build/install/samples/demo/groovy/build.gradle").text.contains("// This is a change")
     }
 
-    private static void assertSampleTasksSkipped(BuildResult result) {
-        assert result.task(":generateWrapperForDemoSample").outcome in SKIPPED_TASK_OUTCOMES
-        assert result.task(":installDemoGroovyDslSample").outcome in SKIPPED_TASK_OUTCOMES
-        assert result.task(":installDemoKotlinDslSample").outcome in SKIPPED_TASK_OUTCOMES
-        assert result.task(":compressDemoGroovyDslSample").outcome in SKIPPED_TASK_OUTCOMES
-        assert result.task(":compressDemoKotlinDslSample").outcome in SKIPPED_TASK_OUTCOMES
-        assert result.task(":installDemoSample").outcome in SKIPPED_TASK_OUTCOMES
-        assert result.task(":assembleDemoSample").outcome in SKIPPED_TASK_OUTCOMES
+    def "change to Kotlin content causes only Kotlin to be out-of-date"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        build("assemble")
+
+        when:
+        build("assemble")
+
+        then:
+        result.task(':generateSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
+        result.task(":generateWrapperForSamples").outcome in SKIPPED_TASK_OUTCOMES
+        assertBothDslSampleTasksSkipped(result)
+
+        when:
+        file("src/samples/demo/kotlin/build.gradle.kts") << "// This is a change"
+        and:
+        build("assemble")
+        then:
+        result.task(':generateSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
+        result.task(":generateWrapperForSamples").outcome in SKIPPED_TASK_OUTCOMES
+        assertDslSampleTasksExecutedAndNotSkipped(result, "Kotlin")
+        assertDslSampleTasksSkipped(result, "Groovy")
+        file("build/install/samples/demo/kotlin/build.gradle.kts").text.contains("// This is a change")
     }
 
-    protected void makeSingleProject() {
+    def "index is regenerated when sample is added or removed"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        build("generateSampleIndex")
+
+        when:
+        build("generateSampleIndex")
+
+        then:
+        result.task(':generateSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
+
+        when:
         buildFile << """
-            plugins {
-                id 'org.gradle.samples'
-            }
-
-            samples {
-                demo
-            }
+samples {
+    publishedSamples {
+        newSample
+    }
+}
         """
+        and:
+        build("generateSampleIndex")
+        then:
+        result.task(':generateSampleIndex').outcome == SUCCESS
+        def indexFile = file("build/tmp/generateSampleIndex/index_samples.adoc")
+        indexFile.text.contains('- <<sample_demo.adoc,Demo>>')
+        indexFile.text.contains('- <<sample_newSample.adoc,New Sample>>')
     }
-
-    protected void writeSampleUnderTest() {
-        writeSampleContentToDirectory(file('src/samples/demo')) << """
-ifndef::env-github[]
-- link:{zip-base-file-name}-groovy-dsl.zip[Download Groovy DSL ZIP]
-- link:{zip-base-file-name}-kotlin-dsl.zip[Download Kotlin DSL ZIP]
-endif::[]
-"""
-        writeGroovyDslSample("src/samples/demo");
-        writeKotlinDslSample("src/samples/demo")
-    }
-
-    protected static void assertSampleTasksExecutedAndNotSkipped(BuildResult result) {
-        assertBothDslSampleTasksExecutedAndNotSkipped(result);
-    }
+    // TODO: Output are cached
 }

@@ -1,6 +1,7 @@
 package org.gradle.samples
 
 import org.gradle.testkit.runner.BuildResult
+import spock.lang.Ignore
 
 import static org.gradle.testkit.runner.TaskOutcome.FROM_CACHE
 import static org.gradle.testkit.runner.TaskOutcome.NO_SOURCE
@@ -8,6 +9,7 @@ import static org.gradle.testkit.runner.TaskOutcome.SKIPPED
 import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
+@Ignore
 abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSampleFunctionalSpec {
     private static final SKIPPED_TASK_OUTCOMES = [FROM_CACHE, UP_TO_DATE, SKIPPED, NO_SOURCE]
 

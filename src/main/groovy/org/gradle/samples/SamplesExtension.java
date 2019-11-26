@@ -5,6 +5,7 @@ import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.model.ObjectFactory;
+import org.gradle.api.provider.ListProperty;
 import org.gradle.samples.internal.DefaultSample;
 import org.gradle.samples.internal.DefaultSampleBinary;
 
@@ -25,6 +26,7 @@ public abstract class SamplesExtension {
     public abstract RegularFileProperty getSampleIndexFile();
     public abstract DirectoryProperty getDocumentationRoot();
     public abstract ConfigurableFileCollection getAssembledDocumentation();
+    public abstract ListProperty<String> getCommonExcludes();
 
     public NamedDomainObjectContainer<Sample> getPublishedSamples() {
         return publishedSamples;
