@@ -10,7 +10,6 @@ import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Internal;
-import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.SkipWhenEmpty;
 import org.gradle.api.tasks.TaskAction;
@@ -21,6 +20,11 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+/**
+ * Zips a sample to the given location.
+ *
+ * Skips execution if there are no "main" content.  This is usually DSL-specific content.
+ */
 public abstract class ZipSample extends DefaultTask {
     @InputFiles
     protected FileTree getSourceAsTree() {

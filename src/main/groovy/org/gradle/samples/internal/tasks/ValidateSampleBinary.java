@@ -25,6 +25,7 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 public abstract class ValidateSampleBinary extends DefaultTask {
+    // TODO: Maybe this isn't a good idea to pollute the SampleBinary with I/O annotations.
     @Nested
     public abstract Property<SampleBinary> getSampleBinary();
 

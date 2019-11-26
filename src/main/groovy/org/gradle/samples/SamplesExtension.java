@@ -11,28 +11,61 @@ import org.gradle.samples.internal.DefaultSampleBinary;
 
 import javax.inject.Inject;
 
-public abstract class SamplesExtension {
-    private final NamedDomainObjectContainer<Sample> publishedSamples;
-    private final NamedDomainObjectContainer<SampleBinary> binaries;
+public interface SamplesExtension {
 
-    @Inject
-    public SamplesExtension(ObjectFactory objectFactory) {
-        this.publishedSamples = objectFactory.domainObjectContainer(Sample.class, name -> objectFactory.newInstance(DefaultSample.class, name));
-        this.binaries = objectFactory.domainObjectContainer(SampleBinary.class, name -> objectFactory.newInstance(DefaultSampleBinary.class, name));
-    }
+    /**
+     * The root sample directory.
+     *
+     * By convention, this is src/samples
+     */
+    DirectoryProperty getSamplesRoot();
 
-    public abstract DirectoryProperty getSamplesRoot();
-    public abstract DirectoryProperty getInstallRoot();
-    public abstract RegularFileProperty getSampleIndexFile();
-    public abstract DirectoryProperty getDocumentationRoot();
-    public abstract ConfigurableFileCollection getAssembledDocumentation();
-    public abstract ListProperty<String> getCommonExcludes();
+    /**
+     * The root install directory.
+     *
+     * By convention, this is buildDir/install/samples
+     */
+    DirectoryProperty getInstallRoot();
 
-    public NamedDomainObjectContainer<Sample> getPublishedSamples() {
-        return publishedSamples;
-    }
+    /**
+     * The root directory for all documentation.
+     *
+     * By convention, this is buildDir/samples/docs
+     */
+    DirectoryProperty getDocumentationRoot();
 
-    public NamedDomainObjectContainer<SampleBinary> getBinaries() {
-        return binaries;
-    }
+    /**
+     * The generated samples index file.
+     *
+     * This is an asciidoc file, not the generated HTML.
+     *
+     * By convention, this is documentationRoot/index_samples.adoc
+     */
+    RegularFileProperty getSampleIndexFile();
+
+    /**
+     * All documentation for samples.
+     *
+     * This is not the generated HTML.
+     */
+    ConfigurableFileCollection getAssembledDocumentation();
+
+    /**
+     * List of common exclude patterns when building a zip or install directory for a sample.
+     *
+     * By convention, this excludes build and .gradle directories.
+     */
+    ListProperty<String> getCommonExcludes();
+
+    /**
+     * Container of all published samples. This is the primary configuration point for all samples.
+     */
+    NamedDomainObjectContainer<Sample> getPublishedSamples();
+
+    /**
+     * Container of all "sample binaries".  A sample binary is a sample for a particular DSL.
+     *
+     * Most configuration should happen in the "published samples" container above.
+     */
+    NamedDomainObjectContainer<SampleBinary> getBinaries();
 }

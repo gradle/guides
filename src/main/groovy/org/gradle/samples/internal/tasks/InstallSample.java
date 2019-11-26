@@ -11,6 +11,11 @@ import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.SkipWhenEmpty;
 import org.gradle.api.tasks.TaskAction;
 
+/**
+ * Installs a sample to the given directory.
+ *
+ * Skips execution if there are no "main" content.  This is usually DSL-specific content.
+ */
 public abstract class InstallSample extends DefaultTask {
     @InputFiles
     protected FileTree getSourceAsTree() {

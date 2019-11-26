@@ -17,11 +17,12 @@ public abstract class GenerateSamplePageAsciidoc extends DefaultTask {
 
     @TaskAction
     public void generate() {
-        // TODO: Generate properly
         // TODO: Process the README file to add links to the archives
+        // TODO: Add useful information to the readme
 
         getProject().sync(copySpec -> {
             copySpec.from(getSourceFile());
+
             File outputFile = getOutputFile().getAsFile().get();
             copySpec.into(outputFile.getParentFile());
             copySpec.rename(original -> outputFile.getName());

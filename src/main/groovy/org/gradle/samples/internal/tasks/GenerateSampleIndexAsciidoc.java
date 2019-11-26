@@ -17,13 +17,9 @@ import javax.inject.Inject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.List;
 
 public abstract class GenerateSampleIndexAsciidoc extends DefaultTask {
-    @Inject
-    public GenerateSampleIndexAsciidoc() {
-        onlyIf(t -> !getSamples().get().isEmpty());
-    }
-
     @Nested
     public abstract ListProperty<Sample> getSamples();
 
@@ -35,15 +31,22 @@ public abstract class GenerateSampleIndexAsciidoc extends DefaultTask {
         try (PrintWriter out = new PrintWriter(getOutputFile().get().getAsFile())) {
             out.println("= Sample Index");
             out.println();
-            getSamples().get().forEach(sample -> {
-                File samplePage = sample.getSamplePageFile().get().getAsFile();
-                String description = sample.getDescription().get();
-                if (description.isEmpty()) {
-                    out.println(String.format("- <<%s,%s>>", samplePage.getName(), sample.getDisplayName().get()));
-                } else {
-                    out.println(String.format("- <<%s,%s>>: %s", samplePage.getName(), sample.getDisplayName().get(), description));
-                }
-            });
+
+            List<Sample> samples = getSamples().get();
+
+            if (samples.isEmpty()) {
+                out.println("No available samples.");
+            } else {
+                samples.forEach(sample -> {
+                    File samplePage = sample.getSamplePageFile().get().getAsFile();
+                    String description = sample.getDescription().get();
+                    if (description.isEmpty()) {
+                        out.println(String.format("- <<%s,%s>>", samplePage.getName(), sample.getDisplayName().get()));
+                    } else {
+                        out.println(String.format("- <<%s,%s>>: %s", samplePage.getName(), sample.getDisplayName().get(), description));
+                    }
+                });
+            }
         }
     }
 }

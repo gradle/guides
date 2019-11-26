@@ -1,6 +1,5 @@
 package org.gradle.samples
 
-import org.gradle.guides.TestFile
 import spock.lang.Unroll
 
 import java.util.concurrent.TimeUnit
