@@ -70,6 +70,11 @@ public interface SamplesExtension {
     NamedDomainObjectContainer<Sample> getPublishedSamples();
 
     /**
+     * Container of all published samples. This is the primary configuration point for all samples.
+     */
+    NamedDomainObjectContainer<Template> getTemplates();
+
+    /**
      * Container of all "sample binaries".  A sample binary is a sample for a particular DSL.
      *
      * Most configuration should happen in the "published samples" container above.

@@ -23,6 +23,7 @@ import org.gradle.samples.SamplesExtension;
 import org.gradle.samples.internal.tasks.GenerateSampleIndexAsciidoc;
 import org.gradle.samples.internal.tasks.GenerateSamplePageAsciidoc;
 import org.gradle.samples.internal.tasks.InstallSample;
+import org.gradle.samples.internal.tasks.SyncWithProvider;
 import org.gradle.samples.internal.tasks.ValidateSampleBinary;
 import org.gradle.samples.internal.tasks.ZipSample;
 
@@ -33,8 +34,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
-import static org.gradle.samples.internal.StringUtils.toKebabCase;
-import static org.gradle.samples.internal.StringUtils.toTitleCase;
+import static org.gradle.samples.internal.StringUtils.*;
 
 public class SamplesPlugin implements Plugin<Project> {
     @Inject
@@ -74,8 +74,25 @@ public class SamplesPlugin implements Plugin<Project> {
             task.into(extension.getDocumentationRoot());
         });
         extension.getAssembledDocumentation().from(assembleDocs);
-
         assemble.configure(t -> t.dependsOn(extension.getAssembledDocumentation()));
+
+        extension.getTemplates().configureEach(template -> {
+            // Configure conventions for templates
+            template.getTarget().convention("");
+            template.getSourceDirectory().convention(extension.getTemplatesRoot().dir(toKebabCase(template.getName())));
+        });
+
+        // Generate tasks to stage templates
+        extension.getTemplates().all(template -> {
+            TaskProvider<SyncWithProvider> generateTemplate = tasks.register("generateTemplate" + capitalize(template.getName()), SyncWithProvider.class, task -> {
+                task.from(template.getSourceDirectory(), copySpec -> {
+                    copySpec.into(template.getTarget());
+                });
+                task.into(layout.getBuildDirectory().dir("tmp/" + task.getName()));
+            });
+
+            template.getTemplateDirectory().convention(generateTemplate.flatMap(task -> task.getDestinationDirectory()));
+        });
 
         project.afterEvaluate(p -> {
             // TODO: Disallow changes to published samples container after this point.
@@ -146,21 +163,21 @@ public class SamplesPlugin implements Plugin<Project> {
     }
 
     private TaskProvider<Task> registerAssembleForSample(TaskContainer tasks, Sample sample) {
-        return tasks.register("assemble" + StringUtils.capitalize(sample.getName() + "Sample"), task -> {
+        return tasks.register("assemble" + capitalize(sample.getName() + "Sample"), task -> {
             task.setGroup(LifecycleBasePlugin.BUILD_GROUP);
             task.setDescription("Assembles '" + sample.getName() + "' sample.");
         });
     }
 
     private TaskProvider<Task> registerCheckForSample(TaskContainer tasks, Sample sample) {
-        return tasks.register("check" + StringUtils.capitalize(sample.getName() + "Sample"), task -> {
+        return tasks.register("check" + capitalize(sample.getName() + "Sample"), task -> {
             task.setGroup(LifecycleBasePlugin.BUILD_GROUP);
             task.setDescription("Checks '" + sample.getName() + "' sample.");
         });
     }
 
     private void registerGenerateSamplePage(TaskContainer tasks, Sample sample) {
-        TaskProvider<GenerateSamplePageAsciidoc> generateSamplePage = tasks.register("generate" + StringUtils.capitalize(sample.getName()) + "Page", GenerateSamplePageAsciidoc.class, task -> {
+        TaskProvider<GenerateSamplePageAsciidoc> generateSamplePage = tasks.register("generate" + capitalize(sample.getName()) + "Page", GenerateSamplePageAsciidoc.class, task -> {
             task.getReadmeFile().convention(sample.getReadMeFile());
             // TODO: This ignores changes to the temporary directory
             task.getOutputFile().set(new File(task.getTemporaryDir(), "sample_" + sample.getName() + ".adoc"));
@@ -214,7 +231,7 @@ public class SamplesPlugin implements Plugin<Project> {
     }
 
     private void createTasksForSampleBinary(TaskContainer tasks, ProjectLayout layout, SampleBinary binary) {
-        TaskProvider<ValidateSampleBinary> validateSample = tasks.register("validateSample" + StringUtils.capitalize(binary.getName()), ValidateSampleBinary.class, task -> {
+        TaskProvider<ValidateSampleBinary> validateSample = tasks.register("validateSample" + capitalize(binary.getName()), ValidateSampleBinary.class, task -> {
             task.getSampleBinary().convention(binary);
             task.getReportFile().convention(layout.getBuildDirectory().file("reports/sample-validation/" + task.getName() + ".txt"));
             task.setDescription("Checks the sample '" + binary.getName() + "' is valid.");
@@ -223,7 +240,7 @@ public class SamplesPlugin implements Plugin<Project> {
         // TODO: Wire this into the sample instead?
         tasks.named("check").configure(task -> task.dependsOn(validateSample));
 
-        TaskProvider<InstallSample> installSampleTask = tasks.register("installSample" + StringUtils.capitalize(binary.getName()), InstallSample.class, task -> {
+        TaskProvider<InstallSample> installSampleTask = tasks.register("installSample" + capitalize(binary.getName()), InstallSample.class, task -> {
             task.getSource().from(binary.getContent());
             task.getMainSource().from(binary.getDslSpecificContent());
             task.getInstallDirectory().convention(binary.getStagingDirectory());
@@ -232,7 +249,7 @@ public class SamplesPlugin implements Plugin<Project> {
         });
         binary.getInstallDirectory().convention(installSampleTask.flatMap(InstallSample::getInstallDirectory));
 
-        TaskProvider<ZipSample> zipTask = tasks.register("zipSample" + StringUtils.capitalize(binary.getName()), ZipSample.class, task -> {
+        TaskProvider<ZipSample> zipTask = tasks.register("zipSample" + capitalize(binary.getName()), ZipSample.class, task -> {
             task.getSource().from(binary.getContent());
             task.getMainSource().from(binary.getDslSpecificContent());
             task.getArchiveFile().convention(layout.getBuildDirectory().file("sample-zips/" + binary.getName() + ".zip"));

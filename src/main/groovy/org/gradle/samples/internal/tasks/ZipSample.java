@@ -58,7 +58,7 @@ public abstract class ZipSample extends DefaultTask {
             getFilteredSourceTree().visit(new FileVisitor() {
                 @Override
                 public void visitDir(FileVisitDetails dirDetails) {
-                    // 
+                    //
                 }
 
                 @Override
