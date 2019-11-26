@@ -276,6 +276,28 @@ ${sampleUnderTestDsl}.dsls = [ Dsl.GROOVY ]
         indexFile.text.contains("Demo XUnit")
     }
 
+    def "can use template for source of common content"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        file("src/templates/template-dir/a.txt") << "aaaa"
+        file("src/templates/template-dir/subdir/b.txt") << "bbbb"
+        buildFile << """
+${sampleUnderTestDsl}.common {
+    from("src/templates/template-dir")
+}
+"""
+        when:
+        build("assembleDemoSample")
+
+        then:
+        file("build/install/samples/demo/groovy/a.txt").text == "aaaa"
+        file("build/install/samples/demo/groovy/subdir/b.txt").text == "bbbb"
+        file("build/install/samples/demo/kotlin/a.txt").text == "aaaa"
+        file("build/install/samples/demo/kotlin/subdir/b.txt").text == "bbbb"
+        file("build/sample-zips/demoGroovy.zip").asZip().assertContainsDescendants("a.txt", "subdir/b.txt")
+        file("build/sample-zips/demoKotlin.zip").asZip().assertContainsDescendants("a.txt", "subdir/b.txt")
+    }
+
     def "can execute the sample from the zip"() {
         makeSingleProject()
         writeSampleUnderTest()

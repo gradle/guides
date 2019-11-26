@@ -14,8 +14,6 @@ import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
-import org.gradle.api.tasks.bundling.AbstractArchiveTask;
-import org.gradle.api.tasks.bundling.Zip;
 import org.gradle.api.tasks.wrapper.Wrapper;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
 import org.gradle.samples.Dsl;
@@ -35,6 +33,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
+import static org.gradle.samples.internal.StringUtils.toKebabCase;
 import static org.gradle.samples.internal.StringUtils.toTitleCase;
 
 public class SamplesPlugin implements Plugin<Project> {
@@ -118,6 +117,7 @@ public class SamplesPlugin implements Plugin<Project> {
     private SamplesExtension createSamplesExtension(Project project, ProjectLayout layout) {
         SamplesExtension extension = project.getExtensions().create(SamplesExtension.class, "samples", DefaultSamplesExtension.class);
         extension.getSamplesRoot().convention(layout.getProjectDirectory().dir("src/samples"));
+        extension.getTemplatesRoot().convention(layout.getProjectDirectory().dir("src/samples/templates"));
         extension.getInstallRoot().convention(layout.getBuildDirectory().dir("install/samples"));
         extension.getDocumentationRoot().convention(layout.getBuildDirectory().dir("samples/docs/"));
         extension.getCommonExcludes().convention(Arrays.asList("**/build/**", "**/.gradle/**"));
@@ -161,7 +161,7 @@ public class SamplesPlugin implements Plugin<Project> {
 
     private void registerGenerateSamplePage(TaskContainer tasks, Sample sample) {
         TaskProvider<GenerateSamplePageAsciidoc> generateSamplePage = tasks.register("generate" + StringUtils.capitalize(sample.getName()) + "Page", GenerateSamplePageAsciidoc.class, task -> {
-            task.getSourceFile().convention(sample.getReadMeFile());
+            task.getReadmeFile().convention(sample.getReadMeFile());
             // TODO: This ignores changes to the temporary directory
             task.getOutputFile().set(new File(task.getTemporaryDir(), "sample_" + sample.getName() + ".adoc"));
             task.setDescription("Generates asciidoc page for sample '" + sample.getName() + "'");
@@ -172,7 +172,8 @@ public class SamplesPlugin implements Plugin<Project> {
     private void applyConventionsForSamples(SamplesExtension extension, FileTree wrapperFiles, Sample sample) {
         String name = sample.getName();
         sample.getDisplayName().convention(toTitleCase(name));
-        sample.getSampleDirectory().convention(extension.getSamplesRoot().dir(name));
+        // androidApplication -> android_application
+        sample.getSampleDirectory().convention(extension.getSamplesRoot().dir(toKebabCase(name)));
         sample.getInstallDirectory().convention(extension.getInstallRoot().dir(name));
         sample.getDescription().convention("");
 

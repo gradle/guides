@@ -21,6 +21,13 @@ public interface SamplesExtension {
     DirectoryProperty getSamplesRoot();
 
     /**
+     * The root template directory.
+     *
+     * By convention, this is src/samples/templates
+     */
+    DirectoryProperty getTemplatesRoot();
+
+    /**
      * The root install directory.
      *
      * By convention, this is buildDir/install/samples

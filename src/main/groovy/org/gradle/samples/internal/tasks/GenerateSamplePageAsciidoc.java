@@ -10,7 +10,7 @@ import java.io.File;
 
 public abstract class GenerateSamplePageAsciidoc extends DefaultTask {
     @InputFile
-    public abstract RegularFileProperty getSourceFile();
+    public abstract RegularFileProperty getReadmeFile();
 
     @OutputFile
     public abstract RegularFileProperty getOutputFile();
@@ -21,7 +21,7 @@ public abstract class GenerateSamplePageAsciidoc extends DefaultTask {
         // TODO: Add useful information to the readme
 
         getProject().sync(copySpec -> {
-            copySpec.from(getSourceFile());
+            copySpec.from(getReadmeFile());
 
             File outputFile = getOutputFile().getAsFile().get();
             copySpec.into(outputFile.getParentFile());

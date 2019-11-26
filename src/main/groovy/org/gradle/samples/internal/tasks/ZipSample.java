@@ -58,12 +58,7 @@ public abstract class ZipSample extends DefaultTask {
             getFilteredSourceTree().visit(new FileVisitor() {
                 @Override
                 public void visitDir(FileVisitDetails dirDetails) {
-                    try {
-                        zipStream.putNextEntry(new ZipEntry(dirDetails.getRelativePath().getPathString() + "/"));
-                        zipStream.closeEntry();
-                    } catch (IOException e) {
-                        throw new UncheckedIOException(e);
-                    }
+                    // 
                 }
 
                 @Override
