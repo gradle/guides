@@ -1,5 +1,6 @@
 package org.gradle.samples.internal;
 
+import org.gradle.api.tasks.Internal;
 import org.gradle.samples.SampleBinary;
 
 import javax.inject.Inject;

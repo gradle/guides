@@ -49,7 +49,6 @@ class BasePlugin implements Plugin<Project> {
         project.apply plugin : 'lifecycle-base'
 
         def guides = addGuidesExtension(project)
-        addGradleRunnerSteps(project)
         addAsciidoctor(project, guides)
         addGitHubPages(project)
         addCloudCI(project)
@@ -90,10 +89,6 @@ class BasePlugin implements Plugin<Project> {
         return result
     }
 
-    private void addGradleRunnerSteps(Project project) {
-        project.apply plugin : 'org.ysb33r.gradlerunner'
-    }
-
     private void addCheckLinks(Project project) {
         CheckLinks task = project.tasks.create(CHECK_LINKS_TASK, CheckLinks)
 
@@ -127,7 +122,6 @@ class BasePlugin implements Plugin<Project> {
         }
 
         asciidoc.with {
-            dependsOn project.tasks.getByPath('gradleRunner')
             sourceDir 'contents'
             outputDir { project.buildDir }
             backends 'html5'

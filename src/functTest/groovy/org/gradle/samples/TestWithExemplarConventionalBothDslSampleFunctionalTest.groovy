@@ -1,5 +1,8 @@
 package org.gradle.samples
 
+import spock.lang.Ignore
+
+@Ignore
 class TestWithExemplarConventionalBothDslSampleFunctionalTest extends AbstractTestWithExemplarSampleFunctionalTest {
     @Override
     protected void makeSingleProject() {

@@ -15,6 +15,10 @@ import org.gradle.api.tasks.Internal;
  * Represents a sample tailored for a particular DSL.
  */
 public interface SampleBinary extends Named {
+    @Internal
+    @Override
+    String getName();
+
     /**
      * The language this sample is written for
      */
