@@ -18,6 +18,8 @@ public interface SampleBinary extends Named {
     @Internal
     ConfigurableFileCollection getContent();
     @Internal
+    ConfigurableFileCollection getDslSpecificContent();
+    @Internal
     RegularFileProperty getSamplePageFile();
     @Internal
     DirectoryProperty getStagingDirectory();

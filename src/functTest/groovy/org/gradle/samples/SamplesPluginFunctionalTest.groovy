@@ -56,8 +56,8 @@ ${sampleUnderTestDsl}.common {
         result.task(":generate").outcome == SUCCESS
         file("build/install/samples/demo/groovy/generated.txt").text == "This is generated content"
         file("build/install/samples/demo/kotlin/generated.txt").text == "This is generated content"
-        file("build/distributions/demoGroovy.zip").asZip().assertContainsDescendants("generated.txt")
-        file("build/distributions/demoKotlin.zip").asZip().assertContainsDescendants("generated.txt")
+        file("build/sample-zips/demoGroovy.zip").asZip().assertContainsDescendants("generated.txt")
+        file("build/sample-zips/demoKotlin.zip").asZip().assertContainsDescendants("generated.txt")
     }
 
     def "can have two samples with different naming convention"() {

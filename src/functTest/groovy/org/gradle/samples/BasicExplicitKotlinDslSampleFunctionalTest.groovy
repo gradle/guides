@@ -1,5 +1,7 @@
 package org.gradle.samples
 
+import org.gradle.testkit.runner.BuildResult
+
 class BasicExplicitKotlinDslSampleFunctionalTest extends AbstractKotlinDslSampleFunctionalTest {
     @Override
     protected void makeSingleProject() {
@@ -10,6 +12,11 @@ class BasicExplicitKotlinDslSampleFunctionalTest extends AbstractKotlinDslSample
                 dsls = [ Dsl.KOTLIN ]
             }
         """
+    }
+
+    @Override
+    protected void assertSampleTasksExecutedAndNotSkipped(BuildResult result) {
+        assertOnlyKotlinDslTasksExecutedAndNotSkipped(result)
     }
 
     def "can relocate Kotlin DSL sample source"() {

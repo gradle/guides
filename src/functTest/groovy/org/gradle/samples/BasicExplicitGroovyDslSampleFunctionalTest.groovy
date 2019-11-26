@@ -1,5 +1,7 @@
 package org.gradle.samples
 
+import org.gradle.testkit.runner.BuildResult
+
 class BasicExplicitGroovyDslSampleFunctionalTest extends AbstractGroovyDslSampleFunctionalTest {
     @Override
     protected void makeSingleProject() {
@@ -10,6 +12,11 @@ class BasicExplicitGroovyDslSampleFunctionalTest extends AbstractGroovyDslSample
                 dsls = [ Dsl.GROOVY ]
             }
         """
+    }
+
+    @Override
+    protected void assertSampleTasksExecutedAndNotSkipped(BuildResult result) {
+        assertOnlyGroovyDslTasksExecutedAndNotSkipped(result)
     }
 
     def "can relocate Groovy DSL sample source"() {

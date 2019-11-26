@@ -27,7 +27,7 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 import static org.hamcrest.CoreMatchers.containsString
 
-class AbstractSampleFunctionalSpec extends AbstractFunctionalTest {
+abstract class AbstractSampleFunctionalSpec extends AbstractFunctionalTest {
     protected static final SKIPPED_TASK_OUTCOMES = [FROM_CACHE, UP_TO_DATE, SKIPPED, NO_SOURCE]
 
     protected static void writeReadmeTo(TestFile directory) {
@@ -73,11 +73,11 @@ rootProject.name = "demo"
     }
 
     protected TestFile getGroovyDslZipFile() {
-        return file("build/distributions/demoGroovy.zip")
+        return file("build/sample-zips/demoGroovy.zip")
     }
 
     protected TestFile getKotlinDslZipFile() {
-        return file("build/distributions/demoKotlin.zip")
+        return file("build/sample-zips/demoKotlin.zip")
     }
 
     protected String getSampleUnderTestDsl() {
@@ -102,10 +102,22 @@ rootProject.name = "demo"
         assertDslSampleTasksNotExecuted(result, "Kotlin")
     }
 
+    protected static void assertGroovyDslTasksExecutedAndKotlinSkipped(BuildResult result) {
+        assertCommonSampleTasksExecutedAndNotSkipped(result)
+        assertDslSampleTasksExecutedAndNotSkipped(result, "Groovy")
+        assertDslSampleTasksSkipped(result, "Kotlin")
+    }
+
     protected static void assertOnlyKotlinDslTasksExecutedAndNotSkipped(BuildResult result) {
         assertCommonSampleTasksExecutedAndNotSkipped(result)
         assertDslSampleTasksExecutedAndNotSkipped(result, "Kotlin")
         assertDslSampleTasksNotExecuted(result, "Groovy")
+    }
+
+    protected static void assertKotlinDslTasksExecutedAndGroovySkipped(BuildResult result) {
+        assertCommonSampleTasksExecutedAndNotSkipped(result)
+        assertDslSampleTasksExecutedAndNotSkipped(result, "Kotlin")
+        assertDslSampleTasksSkipped(result, "Groovy")
     }
 
     private static void assertDslSampleTasksNotExecuted(BuildResult result, String dsl) {

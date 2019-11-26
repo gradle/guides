@@ -1,9 +1,16 @@
 package org.gradle.samples
 
+import org.gradle.testkit.runner.BuildResult
+
 class BasicConventionalGroovyDslSampleFunctionalTest extends AbstractGroovyDslSampleFunctionalTest {
     @Override
-    protected void writeSampleUnderTestToDirectory(String directory) {
+    protected void writeSampleUnderTest(String directory) {
         writeReadmeTo(file(directory))
         writeGroovyDslSample(file(directory))
+    }
+
+    @Override
+    protected void assertSampleTasksExecutedAndNotSkipped(BuildResult result) {
+        assertGroovyDslTasksExecutedAndKotlinSkipped(result)
     }
 }

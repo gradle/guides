@@ -11,15 +11,22 @@ import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.SkipWhenEmpty;
 import org.gradle.api.tasks.TaskAction;
 
-public abstract class InstallSampleTask extends DefaultTask {
-    @SkipWhenEmpty
+public abstract class InstallSample extends DefaultTask {
     @InputFiles
-    protected FileTree getInputFiles() {
+    protected FileTree getSourceAsTree() {
         return getSource().getAsFileTree();
+    }
+    @InputFiles
+    @SkipWhenEmpty
+    protected FileTree getMainSourceAsTree() {
+        return getMainSource().getAsFileTree();
     }
 
     @Internal
     public abstract ConfigurableFileCollection getSource();
+
+    @Internal
+    public abstract ConfigurableFileCollection getMainSource();
 
     @Internal
     public abstract ListProperty<String> getExcludes();

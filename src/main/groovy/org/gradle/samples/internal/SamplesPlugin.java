@@ -1,6 +1,5 @@
 package org.gradle.samples.internal;
 
-import groovy.lang.Closure;
 import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -25,8 +24,9 @@ import org.gradle.samples.SampleBinary;
 import org.gradle.samples.SamplesExtension;
 import org.gradle.samples.internal.tasks.GenerateSampleIndexAsciidoc;
 import org.gradle.samples.internal.tasks.GenerateSamplePageAsciidoc;
-import org.gradle.samples.internal.tasks.InstallSampleTask;
+import org.gradle.samples.internal.tasks.InstallSample;
 import org.gradle.samples.internal.tasks.ValidateSampleBinary;
+import org.gradle.samples.internal.tasks.ZipSample;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -150,17 +150,18 @@ public class SamplesPlugin implements Plugin<Project> {
         return extension.getBinaries().register(sample.getName() + dsl.getDisplayName(), binary -> {
             binary.getDsl().convention(dsl).disallowChanges();
             binary.getSamplePageFile().convention(sample.getSamplePageFile()).disallowChanges();
-            binary.getContent().from(sample.getCommonContent());
-            binary.getExcludes().convention(extension.getCommonExcludes());
             if (dsl == Dsl.GROOVY) {
                 binary.getStagingDirectory().convention(sample.getInstallDirectory().dir("groovy")).disallowChanges();
-                binary.getContent().from(sample.getGroovyContent());
+                binary.getDslSpecificContent().from(sample.getGroovyContent()).disallowChanges();
             } else if (dsl == Dsl.KOTLIN) {
                 binary.getStagingDirectory().convention(sample.getInstallDirectory().dir("kotlin")).disallowChanges();
-                binary.getContent().from(sample.getKotlinContent());
+                binary.getDslSpecificContent().from(sample.getKotlinContent()).disallowChanges();
             } else {
                 throw new GradleException("Unhandled Dsl type " + dsl + " for sample '" + sample.getName() + "'");
             }
+            binary.getExcludes().convention(extension.getCommonExcludes());
+            binary.getContent().from(sample.getCommonContent());
+            binary.getContent().from(binary.getDslSpecificContent());
             binary.getContent().disallowChanges();
         });
     }
@@ -174,20 +175,21 @@ public class SamplesPlugin implements Plugin<Project> {
         // TODO: Wire this into the sample instead?
         tasks.named("check").configure(task -> task.dependsOn(validateSample));
 
-        TaskProvider<InstallSampleTask> installSampleTask = tasks.register("installSample" + StringUtils.capitalize(binary.getName()), InstallSampleTask.class, task -> {
+        TaskProvider<InstallSample> installSampleTask = tasks.register("installSample" + StringUtils.capitalize(binary.getName()), InstallSample.class, task -> {
             task.getSource().from(binary.getContent());
+            task.getMainSource().from(binary.getDslSpecificContent());
             task.getInstallDirectory().convention(binary.getStagingDirectory());
             task.getExcludes().convention(binary.getExcludes());
         });
-        binary.getInstallDirectory().convention(installSampleTask.flatMap(InstallSampleTask::getInstallDirectory));
+        binary.getInstallDirectory().convention(installSampleTask.flatMap(InstallSample::getInstallDirectory));
 
-        TaskProvider<Zip> zipTask = tasks.register("zipSample" + StringUtils.capitalize(binary.getName()), Zip.class, task -> {
-            task.from(binary.getContent());
-            task.getArchiveBaseName().convention(binary.getName());
-            // TODO: Introduce a org.gradle.api.tasks.util.PatternFilterable.exclude(Provider<String>)?
-            task.exclude(binary.getExcludes().get());
+        TaskProvider<ZipSample> zipTask = tasks.register("zipSample" + StringUtils.capitalize(binary.getName()), ZipSample.class, task -> {
+            task.getSource().from(binary.getContent());
+            task.getMainSource().from(binary.getDslSpecificContent());
+            task.getArchiveFile().convention(layout.getBuildDirectory().file("sample-zips/" + binary.getName() + ".zip"));
+            task.getExcludes().convention(binary.getExcludes());
         });
-        binary.getZipFile().convention(zipTask.flatMap(AbstractArchiveTask::getArchiveFile));
+        binary.getZipFile().convention(zipTask.flatMap(ZipSample::getArchiveFile));
     }
 
     private void applyConventionsForSamples(SamplesExtension extension, FileTree wrapperFiles, Sample sample) {

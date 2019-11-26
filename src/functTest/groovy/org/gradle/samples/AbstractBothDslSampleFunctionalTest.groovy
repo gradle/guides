@@ -3,7 +3,7 @@ package org.gradle.samples
 import org.gradle.guides.TestFile
 import org.gradle.testkit.runner.BuildResult
 
-class AbstractBothDslSampleFunctionalTest extends AbstractBasicSampleFunctionalTest {
+abstract class AbstractBothDslSampleFunctionalTest extends AbstractBasicSampleFunctionalTest {
     @Override
     protected List<TestFile> getDslZipFiles() {
         return [groovyDslZipFile, kotlinDslZipFile]

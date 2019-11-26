@@ -64,7 +64,7 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
 
     def "can relocate sample"() {
         makeSingleProject()
-        writeSampleUnderTestToDirectory('src')
+        writeSampleUnderTest('src')
         buildFile << """
             ${sampleUnderTestDsl} {
                 sampleDirectory = file('src')
@@ -147,12 +147,6 @@ sample.common {
 
         where:
         directory << ['.gradle', 'build']
-    }
-
-    protected void writeSampleUnderTestToDirectory(String directory) {
-        writeReadmeTo(file(directory))
-        writeGroovyDslSample(file(directory))
-        writeKotlinDslSample(file(directory))
     }
 
     protected abstract List<TestFile> getDslZipFiles()

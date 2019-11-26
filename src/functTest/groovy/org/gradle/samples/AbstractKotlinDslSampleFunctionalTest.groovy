@@ -10,14 +10,9 @@ abstract class AbstractKotlinDslSampleFunctionalTest extends AbstractBasicSample
     }
 
     @Override
-    protected void assertSampleTasksExecutedAndNotSkipped(BuildResult result) {
-        assertOnlyKotlinDslTasksExecutedAndNotSkipped(result)
-    }
-
-    @Override
     protected void assertDslZipsHaveContent() {
         groovyDslZipFile.assertDoesNotExist()
-        kotlinDslZipFile.asZip().assertHasDescendants("gradlew", "gradlew.bat", "gradle/wrapper/gradle-wrapper.properties", "gradle/wrapper/gradle-wrapper.jar", "README.adoc", "build.gradle.kts", "settings.gradle.kts")
+        kotlinDslZipFile.asZip().assertHasDescendants("gradlew", "gradlew.bat", "gradle/wrapper/gradle-wrapper.properties", "gradle/wrapper/gradle-wrapper.jar", "sample_demo.adoc", "build.gradle.kts", "settings.gradle.kts")
     }
 
     @Override
