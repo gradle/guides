@@ -124,6 +124,7 @@ public class SamplesPlugin implements Plugin<Project> {
         dependencies.add(sourceSet.getImplementationConfigurationName(), "junit:junit:4.12");
 
         TaskProvider<Test> exemplarTest = createExemplarTestTask(tasks, sourceSet, layout, extension);
+        // TODO: Make the sample's check task depend on this test?
         check.configure(task -> task.dependsOn(exemplarTest));
     }
 
@@ -158,20 +159,6 @@ public class SamplesPlugin implements Plugin<Project> {
         return wrapperFiles.getAsFileTree();
     }
 
-    private TaskProvider<Task> registerAssembleForSample(TaskContainer tasks, Sample sample) {
-        return tasks.register("assemble" + capitalize(sample.getName() + "Sample"), task -> {
-            task.setGroup(LifecycleBasePlugin.BUILD_GROUP);
-            task.setDescription("Assembles '" + sample.getName() + "' sample.");
-        });
-    }
-
-    private TaskProvider<Task> registerCheckForSample(TaskContainer tasks, Sample sample) {
-        return tasks.register("check" + capitalize(sample.getName() + "Sample"), task -> {
-            task.setGroup(LifecycleBasePlugin.BUILD_GROUP);
-            task.setDescription("Checks '" + sample.getName() + "' sample.");
-        });
-    }
-
     private void registerGenerateSamplePage(TaskContainer tasks, Sample sample) {
         TaskProvider<GenerateSamplePageAsciidoc> generateSamplePage = tasks.register("generate" + capitalize(sample.getName()) + "Page", GenerateSamplePageAsciidoc.class, task -> {
             task.getReadmeFile().convention(sample.getReadMeFile());
@@ -202,11 +189,19 @@ public class SamplesPlugin implements Plugin<Project> {
         });
         sample.groovy(content -> content.from(sample.getSampleDirectory().dir(Dsl.GROOVY.getConventionalDirectory())));
         sample.kotlin(content -> content.from(sample.getSampleDirectory().dir(Dsl.KOTLIN.getConventionalDirectory())));
+
+        sample.getAssembleTask().configure(task -> {
+            task.setGroup(LifecycleBasePlugin.BUILD_GROUP);
+            task.setDescription("Assembles '" + sample.getName() + "' sample.");
+        });
+        sample.getCheckTask().configure(task -> {
+            task.setGroup(LifecycleBasePlugin.BUILD_GROUP);
+            task.setDescription("Checks '" + sample.getName() + "' sample.");
+        });
     }
 
     private Provider<SampleBinary> registerSampleBinaryForDsl(SamplesExtension extension, Sample sample, Dsl dsl) {
         return extension.getBinaries().register(sample.getName() + dsl.getDisplayName(), binary -> {
-            binary.getSample().convention(sample).disallowChanges();
             binary.getDsl().convention(dsl).disallowChanges();
             binary.getSamplePageFile().convention(sample.getSamplePageFile()).disallowChanges();
             switch (dsl) {
@@ -237,9 +232,7 @@ public class SamplesPlugin implements Plugin<Project> {
             task.getReportFile().convention(layout.getBuildDirectory().file("reports/sample-validation/" + task.getName() + ".txt"));
             task.setDescription("Checks the sample '" + binary.getName() + "' is valid.");
         });
-
-        // TODO: Wire this into the sample instead?
-        tasks.named("check").configure(task -> task.dependsOn(validateSample));
+        binary.getValidationReport().convention(validateSample.flatMap(task -> task.getReportFile()));
 
         TaskProvider<InstallSample> installSampleTask = tasks.register("installSample" + capitalize(binary.getName()), InstallSample.class, task -> {
             task.getSource().from(binary.getZipFile());
@@ -273,21 +266,16 @@ public class SamplesPlugin implements Plugin<Project> {
             task.setWorkingDir(layout.getProjectDirectory().getAsFile());
             // TODO: This isn't lazy.  Need a different API here.
             task.systemProperty("integTest.samplesdir", samplesDirectory.get().getAsFile().getAbsolutePath());
-            task.dependsOn((Callable<Object[]>) () -> extension.getBinaries().stream().map(binary -> binary.getInstallDirectory()).toArray());
+            task.dependsOn((Callable<Object[]>) () -> extension.getBinaries().stream().map(SampleBinary::getInstallDirectory).toArray());
         });
     }
 
     private void realizeSamples(TaskContainer tasks, SamplesExtension extension, TaskProvider<Task> assemble, TaskProvider<Task> check) {
         // TODO: Disallow changes to published samples container after this point.
         for (Sample sample : extension.getPublishedSamples()) {
-
-            // TODO: Make these lifecycle tasks a part of the sample component?
-            TaskProvider<Task> assembleSample = registerAssembleForSample(tasks, sample);
-            assemble.configure(t -> t.dependsOn(assembleSample));
-
-            TaskProvider<Task> checkSample = registerCheckForSample(tasks, sample);
-            check.configure(t -> t.dependsOn(checkSample));
-
+            // TODO: To make this lazy without afterEvaluate/eagerness, we need to be able to tell the tasks container that the samples container should be consulted
+            assemble.configure(t -> t.dependsOn(sample.getAssembleTask()));
+            check.configure(t -> t.dependsOn(sample.getCheckTask()));
             registerGenerateSamplePage(tasks, sample);
 
             sample.getDsls().disallowChanges();
@@ -297,12 +285,9 @@ public class SamplesPlugin implements Plugin<Project> {
                 throw new GradleException("Samples must have at least one DSL, sample '" + sample.getName() + "' has none.");
             }
             for (Dsl dsl : dsls) {
-                Provider<SampleBinary> dslBinary = registerSampleBinaryForDsl(extension, sample, dsl);
-                assembleSample.configure(task -> {
-                    task.dependsOn(dslBinary.flatMap(SampleBinary::getZipFile));
-                    task.dependsOn(dslBinary.flatMap(SampleBinary::getInstallDirectory));
-                });
-                // TODO: Wire validate tasks into the sample check task
+                Provider<SampleBinary> binary = registerSampleBinaryForDsl(extension, sample, dsl);
+                sample.getAssembleTask().configure(task -> task.dependsOn(binary.flatMap(SampleBinary::getZipFile)));
+                sample.getCheckTask().configure(task -> task.dependsOn(binary.flatMap(SampleBinary::getValidationReport)));
             }
         }
     }

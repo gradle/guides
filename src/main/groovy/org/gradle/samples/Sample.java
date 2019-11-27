@@ -2,6 +2,7 @@ package org.gradle.samples;
 
 import org.gradle.api.Action;
 import org.gradle.api.Named;
+import org.gradle.api.Task;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
@@ -9,6 +10,7 @@ import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.TaskProvider;
 
 /**
  * Represent a sample to be documented. Each sample must contain at least a Groovy or Kotlin DSL sample.
@@ -110,4 +112,14 @@ public interface Sample extends Named {
      */
     @Internal
     RegularFileProperty getSamplePageFile();
+
+    /**
+     * Lifecycle task for assembling this sample.
+     */
+    TaskProvider<Task> getAssembleTask();
+
+    /**
+     * Lifecycle task for checking this sample.
+     */
+    TaskProvider<Task> getCheckTask();
 }

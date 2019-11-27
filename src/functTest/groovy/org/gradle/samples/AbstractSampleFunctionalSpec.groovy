@@ -121,17 +121,14 @@ rootProject.name = "demo"
     }
 
     private static void assertDslSampleTasksNotExecuted(BuildResult result, String dsl) {
-        assert result.task(":installSampleDemo${dsl}") == null
         assert result.task(":zipSampleDemo${dsl}") == null
     }
 
     protected static void assertDslSampleTasksExecutedAndNotSkipped(BuildResult result, String dsl) {
-        assert result.task(":installSampleDemo${dsl}").outcome == SUCCESS
         assert result.task(":zipSampleDemo${dsl}").outcome == SUCCESS
     }
 
     protected static void assertDslSampleTasksSkipped(BuildResult result, String dsl) {
-        assert result.task(":installSampleDemo${dsl}").outcome in SKIPPED_TASK_OUTCOMES
         assert result.task(":zipSampleDemo${dsl}").outcome in SKIPPED_TASK_OUTCOMES
     }
 

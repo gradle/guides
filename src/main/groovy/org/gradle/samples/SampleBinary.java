@@ -15,11 +15,6 @@ public interface SampleBinary extends Named {
     String getName();
 
     /**
-     * The sample for this binary.
-     */
-    Property<Sample> getSample();
-
-    /**
      * The language this sample is written for
      */
     Property<Dsl> getDsl();
@@ -48,6 +43,11 @@ public interface SampleBinary extends Named {
      * Exclude patterns for files included in this sample
      */
     ListProperty<String> getExcludes();
+
+    /**
+     * Gets the validation report for this sample.
+     */
+    RegularFileProperty getValidationReport();
 
     /**
      * A zip containing this sample.  This is the primary thing produced by a sample for a given language.

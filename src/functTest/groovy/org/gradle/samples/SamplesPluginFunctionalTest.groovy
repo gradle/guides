@@ -1,11 +1,13 @@
 package org.gradle.samples
 
+
 import spock.lang.Unroll
 
 import java.util.concurrent.TimeUnit
 
 import static org.gradle.testkit.runner.TaskOutcome.FAILED
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import static org.hamcrest.CoreMatchers.equalTo
 
 class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
     def "demonstrate publishing samples to directory"() {
@@ -53,8 +55,6 @@ ${sampleUnderTestDsl}.common {
 
         then:
         result.task(":generate").outcome == SUCCESS
-        file("build/install/samples/demo/groovy/generated.txt").text == "This is generated content"
-        file("build/install/samples/demo/kotlin/generated.txt").text == "This is generated content"
         file("build/sample-zips/demoGroovy.zip").asZip().assertContainsDescendants("generated.txt")
         file("build/sample-zips/demoKotlin.zip").asZip().assertContainsDescendants("generated.txt")
     }
@@ -290,12 +290,13 @@ ${sampleUnderTestDsl}.common {
         build("assembleDemoSample")
 
         then:
-        file("build/install/samples/demo/groovy/a.txt").text == "aaaa"
-        file("build/install/samples/demo/groovy/subdir/b.txt").text == "bbbb"
-        file("build/install/samples/demo/kotlin/a.txt").text == "aaaa"
-        file("build/install/samples/demo/kotlin/subdir/b.txt").text == "bbbb"
-        file("build/sample-zips/demoGroovy.zip").asZip().assertContainsDescendants("a.txt", "subdir/b.txt")
-        file("build/sample-zips/demoKotlin.zip").asZip().assertContainsDescendants("a.txt", "subdir/b.txt")
+        def demoGroovyZip = file("build/sample-zips/demoGroovy.zip").asZip()
+        demoGroovyZip.assertDescendantHasContent("a.txt", equalTo("aaaa"))
+        demoGroovyZip.assertDescendantHasContent("subdir/b.txt", equalTo("bbbb"))
+
+        def demoKotlinZip = file("build/sample-zips/demoKotlin.zip").asZip()
+        demoKotlinZip.assertDescendantHasContent("a.txt", equalTo("aaaa"))
+        demoKotlinZip.assertDescendantHasContent("subdir/b.txt", equalTo("bbbb"))
     }
 
     def "can execute the sample from the zip"() {
