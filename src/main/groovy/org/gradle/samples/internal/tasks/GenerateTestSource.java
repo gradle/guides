@@ -1,6 +1,7 @@
 package org.gradle.samples.internal.tasks;
 
 import org.gradle.api.DefaultTask;
+import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
@@ -32,7 +33,9 @@ public abstract class GenerateTestSource extends DefaultTask {
                 + "})\n"
                 + "public class ExemplarExternalSamplesFunctionalTest {}\n";
         try {
-            Files.write(getOutputDirectory().file("org/gradle/samples/ExemplarExternalSamplesFunctionalTest.java").get().getAsFile().toPath(), content.getBytes());
+            Directory sourceDirectory = getOutputDirectory().dir("org/gradle/samples/").get();
+            sourceDirectory.getAsFile().mkdirs();
+            Files.write(sourceDirectory.file("ExemplarExternalSamplesFunctionalTest.java").getAsFile().toPath(), content.getBytes());
         } catch (IOException e) {
             throw new UnsupportedOperationException(e);
         }

@@ -175,7 +175,7 @@ public class SamplesPlugin implements Plugin<Project> {
     private void applyConventionsForSamples(SamplesExtension extension, FileTree wrapperFiles, Sample sample) {
         String name = sample.getName();
         sample.getDisplayName().convention(toTitleCase(name));
-        // androidApplication -> android_application
+        // Converts names like androidApplication to android-application
         sample.getSampleDirectory().convention(extension.getSamplesRoot().dir(toKebabCase(name)));
         sample.getInstallDirectory().convention(extension.getInstallRoot().dir(name));
         sample.getDescription().convention("");
@@ -187,6 +187,7 @@ public class SamplesPlugin implements Plugin<Project> {
         sample.common(content -> {
             content.from(sample.getLicenseFile());
             content.from(sample.getSamplePageFile());
+            content.from(sample.getSampleDirectory().dir("tests"));
             content.from(wrapperFiles);
         });
         sample.groovy(content -> content.from(sample.getSampleDirectory().dir(Dsl.GROOVY.getConventionalDirectory())));

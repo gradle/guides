@@ -154,6 +154,12 @@ rootProject.name = "demo"
             plugins {
                 id 'org.gradle.samples'
             }
+            repositories {
+                jcenter()
+                maven {
+                    url = "https://repo.gradle.org/gradle/libs-releases"
+                }
+            }
 
             samples {
                 publishedSamples {

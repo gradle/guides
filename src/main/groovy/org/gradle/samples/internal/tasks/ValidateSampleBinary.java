@@ -34,6 +34,8 @@ public abstract class ValidateSampleBinary extends DefaultTask {
 
     @TaskAction
     public void validate() {
+        // TODO: check for exemplar conf files?
+
         SampleBinary binary = getSampleBinary().get();
 
         Dsl dsl = binary.getDsl().get();

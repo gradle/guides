@@ -1,45 +1,14 @@
 package org.gradle.samples
 
-import spock.lang.Ignore
-
-@Ignore
-class TestWithExemplarExplicitGroovyDslSampleFunctionalTest extends AbstractTestWithExemplarSampleFunctionalTest {
+class TestWithExemplarExplicitGroovyDslSampleFunctionalTest extends AbstractExemplarGroovyDslSampleFunctionalTest {
     @Override
     protected void makeSingleProject() {
+        super.makeSingleProject()
         buildFile << """
-            plugins {
-                id 'org.gradle.samples'
-            }
-
-            samples.all {
-                withGroovyDsl()
-            }
-
-            samples {
-                demo
+            import ${Dsl.canonicalName}
+            samples.publishedSamples.all {
+                dsls = [ Dsl.GROOVY ]
             }
         """
-    }
-
-    @Override
-    protected void writeSampleUnderTestToDirectory(String directory) {
-        writeReadmeTo(file(directory)) << """
-ifndef::env-github[]
-- link:{zip-base-file-name}-groovy-dsl.zip[Download Groovy DSL ZIP]
-endif::[]
-"""
-        writeGroovyDslSample(directory)
-    }
-
-    @Override
-    protected String getExemplarSampleConfigFileContent() {
-        return """
-commands: [{
-    execution-subdirectory: groovy
-    executable: gradle
-    args: help
-    expected-output-file: showDemoSample.sample.out
-}]
-"""
     }
 }
