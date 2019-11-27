@@ -200,11 +200,11 @@ public class SamplesPlugin implements Plugin<Project> {
             binary.getSamplePageFile().convention(sample.getSamplePageFile()).disallowChanges();
             switch (dsl) {
                 case GROOVY:
-                    binary.getStagingDirectory().convention(sample.getInstallDirectory().dir(dsl.getConventionalDirectory())).disallowChanges();
+                    binary.getWorkingDirectory().convention(sample.getInstallDirectory().dir(dsl.getConventionalDirectory())).disallowChanges();
                     binary.getDslSpecificContent().from(sample.getGroovyContent()).disallowChanges();
                     break;
                 case KOTLIN:
-                    binary.getStagingDirectory().convention(sample.getInstallDirectory().dir(dsl.getConventionalDirectory())).disallowChanges();
+                    binary.getWorkingDirectory().convention(sample.getInstallDirectory().dir(dsl.getConventionalDirectory())).disallowChanges();
                     binary.getDslSpecificContent().from(sample.getKotlinContent()).disallowChanges();
                     break;
                 default:
@@ -232,7 +232,7 @@ public class SamplesPlugin implements Plugin<Project> {
 
         TaskProvider<InstallSample> installSampleTask = tasks.register("installSample" + capitalize(binary.getName()), InstallSample.class, task -> {
             task.getSource().from(binary.getZipFile());
-            task.getInstallDirectory().convention(binary.getStagingDirectory());
+            task.getInstallDirectory().convention(binary.getWorkingDirectory());
             task.setDescription("Installs sample '" + binary.getName() + "' into a local directory.");
         });
         binary.getInstallDirectory().convention(installSampleTask.flatMap(InstallSample::getInstallDirectory));

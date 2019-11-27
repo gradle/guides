@@ -6,10 +6,6 @@ import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputFile;
-import org.gradle.api.tasks.InputFiles;
-import org.gradle.api.tasks.Internal;
 
 /**
  * Represents a sample tailored for a particular DSL.
@@ -38,7 +34,10 @@ public interface SampleBinary extends Named {
      */
     RegularFileProperty getSamplePageFile();
 
-    DirectoryProperty getStagingDirectory();
+    /**
+     * Working directory used by the plugin to validate or test this sample.
+     */
+    DirectoryProperty getWorkingDirectory();
 
     /**
      * Exclude patterns for files included in this sample
@@ -46,12 +45,14 @@ public interface SampleBinary extends Named {
     ListProperty<String> getExcludes();
 
     /**
-     * A zip containing this sample
+     * A zip containing this sample.  This is the primary thing produced by a sample for a given language.
      */
     RegularFileProperty getZipFile();
 
     /**
-     * A installation directory containing this sample
+     * A installation directory containing this sample.  This can be used to get an installed version of the sample.
+     *
+     * NOTE: This directory may be reused by other consumers.
      */
     DirectoryProperty getInstallDirectory();
 }

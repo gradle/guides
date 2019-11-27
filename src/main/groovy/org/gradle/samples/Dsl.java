@@ -1,14 +1,14 @@
 package org.gradle.samples;
 
+import java.util.Locale;
+
 public enum Dsl {
-    GROOVY("Groovy", "groovy"), KOTLIN("Kotlin", "kotlin");
+    GROOVY("Groovy"), KOTLIN("Kotlin");
 
     private final String displayName;
-    private final String conventionalDirectory;
 
-    Dsl(String displayName, String conventionalDirectory) {
+    Dsl(String displayName) {
         this.displayName = displayName;
-        this.conventionalDirectory = conventionalDirectory;
     }
 
     public String getDisplayName() {
@@ -16,6 +16,6 @@ public enum Dsl {
     }
 
     public String getConventionalDirectory() {
-        return conventionalDirectory;
+        return name().toLowerCase(Locale.ENGLISH);
     }
 }

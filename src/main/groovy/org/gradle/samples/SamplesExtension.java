@@ -4,12 +4,7 @@ import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
-import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ListProperty;
-import org.gradle.samples.internal.DefaultSample;
-import org.gradle.samples.internal.DefaultSampleBinary;
-
-import javax.inject.Inject;
 
 public interface SamplesExtension {
 
@@ -70,7 +65,7 @@ public interface SamplesExtension {
     NamedDomainObjectContainer<Sample> getPublishedSamples();
 
     /**
-     * Container of all published samples. This is the primary configuration point for all samples.
+     * Container of all templates.  Templates are reusable parts of a sample.
      */
     NamedDomainObjectContainer<Template> getTemplates();
 

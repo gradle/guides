@@ -1,19 +1,13 @@
 package org.gradle.samples.internal.tasks;
 
 import org.gradle.api.DefaultTask;
-import org.gradle.api.Task;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Nested;
-import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.samples.Sample;
 
-import javax.annotation.Nullable;
-import javax.inject.Inject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
