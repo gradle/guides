@@ -228,10 +228,8 @@ public class SamplesPlugin implements Plugin<Project> {
         tasks.named("check").configure(task -> task.dependsOn(validateSample));
 
         TaskProvider<InstallSample> installSampleTask = tasks.register("installSample" + capitalize(binary.getName()), InstallSample.class, task -> {
-            task.getSource().from(binary.getContent());
-            task.getMainSource().from(binary.getDslSpecificContent());
+            task.getSource().from(binary.getZipFile());
             task.getInstallDirectory().convention(binary.getStagingDirectory());
-            task.getExcludes().convention(binary.getExcludes());
             task.setDescription("Installs sample '" + binary.getName() + "' into a local directory.");
         });
         binary.getInstallDirectory().convention(installSampleTask.flatMap(InstallSample::getInstallDirectory));

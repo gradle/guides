@@ -12,29 +12,12 @@ import org.gradle.api.tasks.SkipWhenEmpty;
 import org.gradle.api.tasks.TaskAction;
 
 /**
- * Installs a sample to the given directory.
- *
- * Skips execution if there are no "main" content.  This is usually DSL-specific content.
+ * Installs the sample's zip to the given directory.
  */
 public abstract class InstallSample extends DefaultTask {
     @InputFiles
-    protected FileTree getSourceAsTree() {
-        return getSource().getAsFileTree();
-    }
-    @InputFiles
     @SkipWhenEmpty
-    protected FileTree getMainSourceAsTree() {
-        return getMainSource().getAsFileTree();
-    }
-
-    @Internal
     public abstract ConfigurableFileCollection getSource();
-
-    @Internal
-    public abstract ConfigurableFileCollection getMainSource();
-
-    @Internal
-    public abstract ListProperty<String> getExcludes();
 
     @OutputDirectory
     public abstract DirectoryProperty getInstallDirectory();
@@ -42,9 +25,8 @@ public abstract class InstallSample extends DefaultTask {
     @TaskAction
     private void doInstall() {
         getProject().sync(spec -> {
-            spec.from(getSource());
+            spec.from(getProject().zipTree(getSource().getSingleFile()));
             spec.into(getInstallDirectory());
-            spec.exclude(getExcludes().get());
         });
     }
 }
