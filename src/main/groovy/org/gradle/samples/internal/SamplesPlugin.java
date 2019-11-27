@@ -26,6 +26,7 @@ import org.gradle.samples.Dsl;
 import org.gradle.samples.Sample;
 import org.gradle.samples.SampleBinary;
 import org.gradle.samples.SamplesExtension;
+import org.gradle.samples.Template;
 import org.gradle.samples.internal.tasks.GenerateSampleIndexAsciidoc;
 import org.gradle.samples.internal.tasks.GenerateSamplePageAsciidoc;
 import org.gradle.samples.internal.tasks.GenerateTestSource;
@@ -57,50 +58,61 @@ public class SamplesPlugin implements Plugin<Project> {
 
         project.getPluginManager().apply("java-base");
 
+        TaskProvider<Task> assemble = tasks.named(LifecycleBasePlugin.ASSEMBLE_TASK_NAME);
+        TaskProvider<Task> check = tasks.named(LifecycleBasePlugin.CHECK_TASK_NAME);
+
         // Register a samples extension to configure published samples
         SamplesExtension extension = createSamplesExtension(project, layout);
 
+        // Samples
         // Generate wrapper files that can be shared by all samples
         FileTree wrapperFiles = createWrapperFiles(tasks, objectFactory);
         extension.getPublishedSamples().configureEach(sample -> applyConventionsForSamples(extension, wrapperFiles, sample));
 
+        // Sample binaries
         // Create tasks for each sample binary (a sample for a particular DSL)
         // TODO: This could be lazy if we had a way to make the TaskContainer require evaluation
         extension.getBinaries().all(binary -> createTasksForSampleBinary(tasks, layout, binary));
 
-        TaskProvider<Task> assemble = tasks.named(LifecycleBasePlugin.ASSEMBLE_TASK_NAME);
-        TaskProvider<Task> check = tasks.named(LifecycleBasePlugin.CHECK_TASK_NAME);
-
+        // Documentation for sample index
         registerGenerateSampleIndex(tasks, extension);
         TaskProvider<Sync> assembleDocs = tasks.register("assembleSampleDocs", Sync.class, task -> {
             task.from(extension.getSampleIndexFile());
             task.from((Callable<List<RegularFileProperty>>) () -> extension.getPublishedSamples().stream().map(Sample::getSamplePageFile).collect(Collectors.toList()));
-            task.from((Callable<List<RegularFileProperty>>) () -> extension.getBinaries().stream().map(SampleBinary::getZipFile).collect(Collectors.toList()), copySpec -> {
-                copySpec.into("zips");
-            });
+            task.from((Callable<List<RegularFileProperty>>) () -> extension.getBinaries().stream().map(SampleBinary::getZipFile).collect(Collectors.toList()), copySpec -> copySpec.into("zips"));
             task.into(extension.getDocumentationRoot());
         });
         extension.getAssembledDocumentation().from(assembleDocs);
         assemble.configure(t -> t.dependsOn(extension.getAssembledDocumentation()));
 
-        extension.getTemplates().configureEach(template -> {
-            // Configure conventions for templates
-            template.getTarget().convention("");
-            template.getSourceDirectory().convention(extension.getTemplatesRoot().dir(toKebabCase(template.getName())));
-        });
+        // Templates
+        extension.getTemplates().configureEach(template -> applyConventionsForTemplates(extension, template));
+        extension.getTemplates().all(template -> createTasksForTemplates(layout, tasks, template));
 
-        // Generate tasks to stage templates
-        extension.getTemplates().all(template -> {
-            TaskProvider<SyncWithProvider> generateTemplate = tasks.register("generateTemplate" + capitalize(template.getName()), SyncWithProvider.class, task -> {
-                task.from(template.getSourceDirectory(), copySpec -> {
-                    copySpec.into(template.getTarget());
-                });
-                task.into(layout.getBuildDirectory().dir("tmp/" + task.getName()));
+        // Testing
+        addExemplarTestsForSamples(project, layout, tasks, extension, check);
+
+        // Trigger everything by realizing sample container
+        project.afterEvaluate(p -> realizeSamples(tasks, extension, assemble, check));
+    }
+
+    private void createTasksForTemplates(ProjectLayout layout, TaskContainer tasks, Template template) {
+        TaskProvider<SyncWithProvider> generateTemplate = tasks.register("generateTemplate" + capitalize(template.getName()), SyncWithProvider.class, task -> {
+            task.from(template.getSourceDirectory(), copySpec -> {
+                copySpec.into(template.getTarget());
             });
-
-            template.getTemplateDirectory().convention(generateTemplate.flatMap(task -> task.getDestinationDirectory()));
+            task.into(layout.getBuildDirectory().dir("tmp/" + task.getName()));
         });
 
+        template.getTemplateDirectory().convention(generateTemplate.flatMap(task -> task.getDestinationDirectory()));
+    }
+
+    private void applyConventionsForTemplates(SamplesExtension extension, Template template) {
+        template.getTarget().convention("");
+        template.getSourceDirectory().convention(extension.getTemplatesRoot().dir(toKebabCase(template.getName())));
+    }
+
+    private void addExemplarTestsForSamples(Project project, ProjectLayout layout, TaskContainer tasks, SamplesExtension extension, TaskProvider<Task> check) {
         SourceSet sourceSet = project.getExtensions().getByType(SourceSetContainer.class).create("samplesExemplarFunctionalTest");
         TaskProvider<GenerateTestSource> generatorTask = createExemplarGeneratorTask(tasks, layout, sourceSet);
         sourceSet.getJava().srcDir(generatorTask.flatMap(task -> task.getOutputDirectory()));
@@ -113,8 +125,6 @@ public class SamplesPlugin implements Plugin<Project> {
 
         TaskProvider<Test> exemplarTest = createExemplarTestTask(tasks, sourceSet, layout, extension);
         check.configure(task -> task.dependsOn(exemplarTest));
-
-        project.afterEvaluate(p -> realizeSamples(tasks, extension, assemble, check));
     }
 
     private SamplesExtension createSamplesExtension(Project project, ProjectLayout layout) {
@@ -196,6 +206,7 @@ public class SamplesPlugin implements Plugin<Project> {
 
     private Provider<SampleBinary> registerSampleBinaryForDsl(SamplesExtension extension, Sample sample, Dsl dsl) {
         return extension.getBinaries().register(sample.getName() + dsl.getDisplayName(), binary -> {
+            binary.getSample().convention(sample).disallowChanges();
             binary.getDsl().convention(dsl).disallowChanges();
             binary.getSamplePageFile().convention(sample.getSamplePageFile()).disallowChanges();
             switch (dsl) {

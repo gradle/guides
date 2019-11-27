@@ -15,6 +15,11 @@ public interface SampleBinary extends Named {
     String getName();
 
     /**
+     * The sample for this binary.
+     */
+    Property<Sample> getSample();
+
+    /**
      * The language this sample is written for
      */
     Property<Dsl> getDsl();
