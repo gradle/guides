@@ -6,7 +6,9 @@ import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.InputFiles;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
@@ -25,9 +27,17 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 public abstract class ValidateSampleBinary extends DefaultTask {
-    // TODO: Maybe this isn't a good idea to pollute the SampleBinary with I/O annotations.
-    @Nested
-    public abstract Property<SampleBinary> getSampleBinary();
+    @InputFile
+    public abstract RegularFileProperty getZipFile();
+
+    @Input
+    public abstract Property<Dsl> getDsl();
+
+    @Input
+    public abstract Property<String> getReadmeName();
+
+    @Internal
+    public abstract Property<String> getSampleName();
 
     @OutputFile
     public abstract RegularFileProperty getReportFile();
@@ -35,25 +45,17 @@ public abstract class ValidateSampleBinary extends DefaultTask {
     @TaskAction
     public void validate() {
         // TODO: check for exemplar conf files?
-
-        SampleBinary binary = getSampleBinary().get();
-
-        Dsl dsl = binary.getDsl().get();
+        Dsl dsl = getDsl().get();
         String settingsFileName = getSettingsFileName(dsl);
-        String readme = binary.getSamplePageFile().get().getAsFile().getName();
+        String name = getSampleName().get();
+        String readme = getReadmeName().get();
         List<String> requiredContents = Arrays.asList(readme, settingsFileName, "gradlew", "gradlew.bat", "gradle/wrapper/gradle-wrapper.jar", "gradle/wrapper/gradle-wrapper.properties");
 
-        // Does the install directory look correct?
-        File installDir = binary.getInstallDirectory().get().getAsFile();
-        for (String required : requiredContents) {
-            assertFileExists(binary, dsl, installDir, required);
-        }
-
         // Does the Zip look correct?
-        File zipFile = binary.getZipFile().get().getAsFile();
+        File zipFile = getZipFile().get().getAsFile();
         try (ZipFile zip = new ZipFile(zipFile)) {
             for (String required : requiredContents) {
-                assertZipContains(binary, dsl, zip, required);
+                assertZipContains(name, dsl, zip, required);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -62,16 +64,16 @@ public abstract class ValidateSampleBinary extends DefaultTask {
         // TODO: Would be nice to put the failures in this file too.
         File reportFile = getReportFile().get().getAsFile();
         try (PrintWriter fw = new PrintWriter(reportFile)) {
-            fw.println(binary.getName() + " looks valid.");
+            fw.println(name + " looks valid.");
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void assertZipContains(SampleBinary binary, Dsl dsl, ZipFile zip, String file) {
+    private void assertZipContains(String name, Dsl dsl, ZipFile zip, String file) {
         ZipEntry entry = zip.getEntry(file);
         if (entry == null) {
-            throw new GradleException("Sample '" + binary.getName() + "' for " + dsl.getDisplayName() + " DSL is invalid due to missing '" + file + "' file in ZIP.");
+            throw new GradleException("Sample '" + name + "' for " + dsl.getDisplayName() + " DSL is invalid due to missing '" + file + "' file.");
         }
     }
 
@@ -88,12 +90,5 @@ public abstract class ValidateSampleBinary extends DefaultTask {
                 throw new GradleException("Unsupported DSL type");
         }
         return settingsFileName;
-    }
-
-    private void assertFileExists(SampleBinary binary, Dsl dsl, File installDir, String fileName) {
-        File file = new File(installDir, fileName);
-        if (!file.exists()) {
-            throw new GradleException("Sample '" + binary.getName() + "' for " + dsl.getDisplayName() + " DSL is invalid due to missing '" + fileName + "' file.");
-        }
     }
 }

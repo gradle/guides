@@ -17,6 +17,11 @@ import org.gradle.api.tasks.TaskAction;
 public abstract class InstallSample extends DefaultTask {
     @InputFiles
     @SkipWhenEmpty
+    protected FileTree getSourceAsTree() {
+        return getSource().getAsFileTree();
+    }
+
+    @Internal
     public abstract ConfigurableFileCollection getSource();
 
     @OutputDirectory

@@ -156,14 +156,14 @@ samples.binaries.configureEach {
 
         then:
         result.task(":validateSampleDemoGroovy").outcome == FAILED
-        result.output.contains("Sample 'demoGroovy' for Groovy DSL is invalid due to missing 'sample_demo.adoc' file in ZIP.")
+        result.output.contains("Sample 'demoGroovy' for Groovy DSL is invalid due to missing 'sample_demo.adoc' file.")
 
         when:
         buildAndFail("validateSampleDemoKotlin")
 
         then:
         result.task(":validateSampleDemoKotlin").outcome == FAILED
-        result.output.contains("Sample 'demoKotlin' for Kotlin DSL is invalid due to missing 'sample_demo.adoc' file in ZIP.")
+        result.output.contains("Sample 'demoKotlin' for Kotlin DSL is invalid due to missing 'sample_demo.adoc' file.")
     }
 
     def "fails if the sample uses no dsls"() {
@@ -237,10 +237,10 @@ ${sampleUnderTestDsl}.dsls = [ Dsl.GROOVY ]
         writeSampleUnderTest("src/samples/${name}")
 
         when:
-        build('assemble')
+        build('generateSampleIndex')
 
         then:
-        def indexFile = file("build/samples/docs/index_samples.adoc")
+        def indexFile = file("build/tmp/generateSampleIndex/index_samples.adoc")
         indexFile.text.contains("${displayName}")
 
         where:
@@ -269,10 +269,10 @@ ${sampleUnderTestDsl}.dsls = [ Dsl.GROOVY ]
         """
 
         when:
-        build('assemble')
+        build('generateSampleIndex')
 
         then:
-        def indexFile = file("build/samples/docs/index_samples.adoc")
+        def indexFile = file("build/tmp/generateSampleIndex/index_samples.adoc")
         indexFile.text.contains("Demo XUnit")
     }
 

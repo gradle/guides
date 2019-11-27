@@ -219,7 +219,10 @@ public class SamplesPlugin implements Plugin<Project> {
 
     private void createTasksForSampleBinary(TaskContainer tasks, ProjectLayout layout, SampleBinary binary) {
         TaskProvider<ValidateSampleBinary> validateSample = tasks.register("validateSample" + capitalize(binary.getName()), ValidateSampleBinary.class, task -> {
-            task.getSampleBinary().convention(binary);
+            task.getDsl().convention(binary.getDsl());
+            task.getSampleName().convention(binary.getName());
+            task.getReadmeName().convention(binary.getSamplePageFile().map(f -> f.getAsFile().getName()));
+            task.getZipFile().convention(binary.getZipFile());
             task.getReportFile().convention(layout.getBuildDirectory().file("reports/sample-validation/" + task.getName() + ".txt"));
             task.setDescription("Checks the sample '" + binary.getName() + "' is valid.");
         });
