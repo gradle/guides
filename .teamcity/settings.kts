@@ -30,10 +30,7 @@ To debug in IntelliJ Idea, open the 'Maven Projects' tool window (View
 version = "2019.1"
 
 project {
-    uuid = "4175c92d-44cc-4a08-9e68-67d805a9dc7d"
-    id("GradleGuidesPlugin")
-    name = "Gradle Guides Plugin"
-
+    vcsRoot(GradleGuidesPluginBranches)
     buildType(Build)
 }
 
@@ -57,7 +54,6 @@ object Build : BuildType({
     requirements {
         contains("teamcity.agent.jvm.os.name", "Linux")
     }
-
     params {
         param("env.LC_ALL", "en_US.UTF-8")
         param("env.JAVA_HOME", "%linux.java8.openjdk.64bit%")
