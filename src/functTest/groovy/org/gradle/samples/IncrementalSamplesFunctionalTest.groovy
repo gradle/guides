@@ -128,18 +128,34 @@ endif::[]
 
         then:
         assertSampleTasksExecutedAndNotSkipped(result1)
-        result1.task(':assemble').outcome == SUCCESS
         result1.task(':generateSampleIndex').outcome == SUCCESS
         result1.task(':asciidocSampleIndex').outcome == SUCCESS
+        result1.task(':asciidoctorDemoSample').outcome == SUCCESS
+        result1.task(':generateWrapperForDemoSample').outcome == SUCCESS
+        result1.task(':installDemoGroovyDslSample').outcome == SUCCESS
+        result1.task(':compressDemoGroovyDslSample').outcome == SUCCESS
+        result1.task(':installDemoKotlinDslSample').outcome == SUCCESS
+        result1.task(':compressDemoKotlinDslSample').outcome == SUCCESS
+        result1.task(':installDemoSample').outcome == SUCCESS
+        result1.task(':assembleDemoSample').outcome == SUCCESS
+        result1.task(':assemble').outcome == SUCCESS
 
         when:
         def result2 = build("assemble")
 
         then:
         assertSampleTasksSkipped(result2)
-        result2.task(':assemble').outcome in SKIPPED_TASK_OUTCOMES
         result2.task(':generateSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
         result2.task(':asciidocSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':asciidoctorDemoSample').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':generateWrapperForDemoSample').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':installDemoGroovyDslSample').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':compressDemoGroovyDslSample').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':installDemoKotlinDslSample').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':compressDemoKotlinDslSample').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':installDemoSample').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':assembleDemoSample').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':assemble').outcome in SKIPPED_TASK_OUTCOMES
     }
 
     def "executes Asciidoctor and Zip tasks when README content change"() {
