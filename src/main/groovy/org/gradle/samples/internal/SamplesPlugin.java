@@ -37,6 +37,7 @@ import java.util.stream.StreamSupport;
 import static org.gradle.samples.internal.StringUtils.capitalize;
 import static org.gradle.samples.internal.StringUtils.toTitleCase;
 
+@SuppressWarnings("Convert2Lambda") // Additional task actions are not supported to be lambdas
 public class SamplesPlugin implements Plugin<Project> {
     @Inject
     protected ObjectFactory getObjectFactory() {
@@ -207,30 +208,51 @@ public class SamplesPlugin implements Plugin<Project> {
 
             Provider<String> zipBaseFileName = sample.getArchiveBaseName();
             task.getInputs().property("zipBaseFileName", zipBaseFileName);
-            task.doFirst(it -> task.getAttributes().put("zip-base-file-name", zipBaseFileName.get()));
-
-            Provider<Directory> samplesDir = sample.getSampleDirectory();
-            task.getInputs().dir(samplesDir).withPropertyName("samplesDir").withPathSensitivity(PathSensitivity.RELATIVE);
-            task.doFirst(it -> task.getAttributes().put("samples-dir", samplesDir.get().getAsFile().getAbsolutePath()));
-
-            Provider<String> sampleDisplayName = sample.getDisplayName();
-            task.getInputs().property("sampleDisplayName", sampleDisplayName);
-            task.doFirst(it -> task.getAttributes().put("sample-displayName", sampleDisplayName.get()));
-
-            Provider<String> sampleDescription = sample.getDescription();
-            task.getInputs().property("sampleDescription", sampleDescription).optional(true);
-            task.doFirst(it -> {
-                if (sampleDescription.isPresent()) {
-                    task.getAttributes().put("sample-description", sampleDescription.get());
+            task.doFirst(new Action<Task>() {
+                @Override
+                public void execute(Task it) {
+                    task.getAttributes().put("zip-base-file-name", zipBaseFileName.get());
                 }
             });
 
-            task.doLast(it -> {
-                task.getProject().sync(spec -> {
-                    spec.from(new File(task.getTemporaryDir(), "out"));
-                    spec.into(contentDirectory);
-                    spec.rename("README.html", "index.html");
-                });
+            Provider<Directory> samplesDir = sample.getSampleDirectory();
+            task.getInputs().dir(samplesDir).withPropertyName("samplesDir").withPathSensitivity(PathSensitivity.RELATIVE);
+            task.doFirst(new Action<Task>() {
+                @Override
+                public void execute(Task it) {
+                    task.getAttributes().put("samples-dir", samplesDir.get().getAsFile().getAbsolutePath());
+                }
+            });
+
+            Provider<String> sampleDisplayName = sample.getDisplayName();
+            task.getInputs().property("sampleDisplayName", sampleDisplayName);
+            task.doFirst(new Action<Task>() {
+                @Override
+                public void execute(Task it) {
+                    task.getAttributes().put("sample-displayName", sampleDisplayName.get());
+                }
+            });
+
+            Provider<String> sampleDescription = sample.getDescription();
+            task.getInputs().property("sampleDescription", sampleDescription).optional(true);
+            task.doFirst(new Action<Task>() {
+                @Override
+                public void execute(Task it) {
+                    if (sampleDescription.isPresent()) {
+                        task.getAttributes().put("sample-description", sampleDescription.get());
+                    }
+                }
+            });
+
+            task.doLast(new Action<Task>() {
+                @Override
+                public void execute(Task it) {
+                    task.getProject().sync(spec -> {
+                        spec.from(new File(task.getTemporaryDir(), "out"));
+                        spec.into(contentDirectory);
+                        spec.rename("README.html", "index.html");
+                    });
+                }
             });
             // TODO: Filter to only README.adoc
             // TODO: Fail if no README.adoc file
