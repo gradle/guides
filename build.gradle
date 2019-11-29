@@ -43,7 +43,7 @@ dependencies {
 }
 
 pluginBundle {
-    website = 'https://guides.gradle.org'
+    website = 'https://github.com/gradle-guides/gradle-guides-plugin'
     vcsUrl = 'https://github.com/gradle-guides/gradle-guides-plugin'
     tags = ['gradle', 'guides', 'documentation']
 }
