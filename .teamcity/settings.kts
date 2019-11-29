@@ -57,6 +57,11 @@ object Build : BuildType({
     requirements {
         contains("teamcity.agent.jvm.os.name", "Linux")
     }
+
+    params {
+        param("env.LC_ALL", "en_US.UTF-8")
+        param("env.JAVA_HOME", "%linux.java8.openjdk.64bit%")
+    }
 })
 
 object GradleGuidesPluginBranches : GitVcsRoot({
