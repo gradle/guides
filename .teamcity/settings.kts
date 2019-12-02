@@ -2,10 +2,7 @@ import jetbrains.buildServer.configs.kotlin.v2018_2.BuildType
 import jetbrains.buildServer.configs.kotlin.v2018_2.DslContext
 import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.gradle
 import jetbrains.buildServer.configs.kotlin.v2018_2.project
-import jetbrains.buildServer.configs.kotlin.v2018_2.projectFeatures.VersionedSettings
-import jetbrains.buildServer.configs.kotlin.v2018_2.projectFeatures.versionedSettings
 import jetbrains.buildServer.configs.kotlin.v2018_2.triggers.vcs
-import jetbrains.buildServer.configs.kotlin.v2018_2.vcs.GitVcsRoot
 import jetbrains.buildServer.configs.kotlin.v2018_2.version
 
 /*
@@ -58,6 +55,6 @@ object Build : BuildType({
     }
     params {
         param("env.LC_ALL", "en_US.UTF-8")
-        param("env.JAVA_HOME", "%linux.java8.openjdk.64bit%")
+        param("env.JAVA_HOME", "%linux.java8.oracle.64bit%")
     }
 })
