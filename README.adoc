@@ -108,6 +108,10 @@ This should be applied in the authoring of all new Topical guides
 
 == Changelog
 
+=== 0.15.24
+
+- Allow Asciidoctor tasks to be cacheable
+
 === 0.15.23
 
 - Avoid filtering any binary files in sample zips
