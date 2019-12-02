@@ -67,8 +67,8 @@ object GradleGuidesPluginBranches : GitVcsRoot({
     branchSpec = "+:refs/heads/*"
     agentGitPath = "%env.TEAMCITY_GIT_PATH%"
     useMirrors = false
-    authMethod = password {
-        userName = "gradlewaregitbot"
-        password = "credentialsJSON:5306bfc7-041e-46e8-8d61-1d49424e7b04"
-    }
+//    authMethod = password {
+//        userName = "gradlewaregitbot"
+//        password = "credentialsJSON:5306bfc7-041e-46e8-8d61-1d49424e7b04"
+//    }
 })
