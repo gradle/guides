@@ -1,5 +1,8 @@
 import jetbrains.buildServer.configs.kotlin.v2018_2.*
+import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.GradleBuildStep
 import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.gradle
+import jetbrains.buildServer.configs.kotlin.v2018_2.triggers.VcsTrigger
+import jetbrains.buildServer.configs.kotlin.v2018_2.triggers.finishBuildTrigger
 import jetbrains.buildServer.configs.kotlin.v2018_2.triggers.vcs
 
 /*
@@ -28,33 +31,60 @@ version = "2019.1"
 
 project {
     buildType(Build)
+    buildType(Publish)
 }
 
-object Build : BuildType({
-    name = "Build"
-
+open class AbstractBuild(init: BuildType.() -> Unit) : BuildType({
     vcs {
         root(DslContext.settingsRoot)
     }
     steps {
         gradle {
             useGradleWrapper = true
-            gradleParams = "-Pgradle.publish.key=%GRADLE_PUBLISH_KEY% -Pgradle.publish.secret=%GRADLE_PUBLISH_SECRET% -Dgradle.publish.skip.namespace.check=true"
             tasks = "build"
-        }
-    }
-    triggers {
-        vcs {
-            groupCheckinsByCommitter = true
         }
     }
     requirements {
         contains("teamcity.agent.jvm.os.name", "Linux")
     }
     params {
-        password("GRADLE_PUBLISH_KEY", "credentialsJSON:13d96e17-375d-4753-aaea-caa5b3f748ec", display = ParameterDisplay.HIDDEN)
-        password("GRADLE_PUBLISH_SECRET", "credentialsJSON:13245140-f526-4aff-8e98-efe67142912a", display = ParameterDisplay.HIDDEN)
         param("env.LC_ALL", "en_US.UTF-8")
         param("env.JAVA_HOME", "%linux.java8.oracle.64bit%")
+    }
+
+    init()
+})
+
+object Build : AbstractBuild({
+    name = "Build"
+    triggers {
+        vcs {
+            branchFilter = """
+                +:*
+                -:<default>
+            """.trimIndent()
+            groupCheckinsByCommitter = true
+        }
+    }
+})
+
+object Publish : AbstractBuild({
+    name = "Publish"
+    steps {
+        gradle {
+            useGradleWrapper = true
+            gradleParams = "-Dgradle.publish.skip.namespace.check=true -Pgradle.publish.key=%GRADLE_PUBLISH_KEY% -Pgradle.publish.secret=%GRADLE_PUBLISH_SECRET%"
+            tasks = "publish"
+        }
+    }
+    triggers {
+        vcs {
+            this.branchFilter = "+:<default>"
+            groupCheckinsByCommitter = true
+        }
+    }
+    params {
+        password("GRADLE_PUBLISH_KEY", "credentialsJSON:13d96e17-375d-4753-aaea-caa5b3f748ec", display = ParameterDisplay.HIDDEN)
+        password("GRADLE_PUBLISH_SECRET", "credentialsJSON:13245140-f526-4aff-8e98-efe67142912a", display = ParameterDisplay.HIDDEN)
     }
 })
