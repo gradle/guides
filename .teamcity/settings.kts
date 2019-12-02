@@ -1,6 +1,9 @@
 import jetbrains.buildServer.configs.kotlin.v2018_2.BuildType
+import jetbrains.buildServer.configs.kotlin.v2018_2.DslContext
 import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.gradle
 import jetbrains.buildServer.configs.kotlin.v2018_2.project
+import jetbrains.buildServer.configs.kotlin.v2018_2.projectFeatures.VersionedSettings
+import jetbrains.buildServer.configs.kotlin.v2018_2.projectFeatures.versionedSettings
 import jetbrains.buildServer.configs.kotlin.v2018_2.triggers.vcs
 import jetbrains.buildServer.configs.kotlin.v2018_2.vcs.GitVcsRoot
 import jetbrains.buildServer.configs.kotlin.v2018_2.version
@@ -30,7 +33,6 @@ To debug in IntelliJ Idea, open the 'Maven Projects' tool window (View
 version = "2019.1"
 
 project {
-    vcsRoot(GradleGuidesPluginBranches)
     buildType(Build)
 }
 
@@ -38,7 +40,7 @@ object Build : BuildType({
     name = "Build"
 
     vcs {
-        root(GradleGuidesPluginBranches)
+        root(DslContext.settingsRoot)
     }
     steps {
         gradle {
@@ -58,17 +60,4 @@ object Build : BuildType({
         param("env.LC_ALL", "en_US.UTF-8")
         param("env.JAVA_HOME", "%linux.java8.openjdk.64bit%")
     }
-})
-
-object GradleGuidesPluginBranches : GitVcsRoot({
-    uuid = "022ee0e9-d93c-4b47-acbe-2b476820aa41"
-    name = "Gradle Guides Plugin Branches"
-    url = "https://github.com/gradle-guides/gradle-guides-plugin.git"
-    branchSpec = "+:refs/heads/*"
-    agentGitPath = "%env.TEAMCITY_GIT_PATH%"
-    useMirrors = false
-//    authMethod = password {
-//        userName = "gradlewaregitbot"
-//        password = "credentialsJSON:5306bfc7-041e-46e8-8d61-1d49424e7b04"
-//    }
 })
