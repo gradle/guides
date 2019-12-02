@@ -1,9 +1,6 @@
-import jetbrains.buildServer.configs.kotlin.v2018_2.BuildType
-import jetbrains.buildServer.configs.kotlin.v2018_2.DslContext
+import jetbrains.buildServer.configs.kotlin.v2018_2.*
 import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.gradle
-import jetbrains.buildServer.configs.kotlin.v2018_2.project
 import jetbrains.buildServer.configs.kotlin.v2018_2.triggers.vcs
-import jetbrains.buildServer.configs.kotlin.v2018_2.version
 
 /*
 The settings script is an entry point for defining a TeamCity
@@ -42,6 +39,7 @@ object Build : BuildType({
     steps {
         gradle {
             useGradleWrapper = true
+            gradleParams = "-Pgradle.publish.key=%GRADLE_PUBLISH_KEY% -Pgradle.publish.secret=%GRADLE_PUBLISH_SECRET% -Dgradle.publish.skip.namespace.check=true"
             tasks = "build"
         }
     }
@@ -54,6 +52,8 @@ object Build : BuildType({
         contains("teamcity.agent.jvm.os.name", "Linux")
     }
     params {
+        password("GRADLE_PUBLISH_KEY", "credentialsJSON:13d96e17-375d-4753-aaea-caa5b3f748ec", display = ParameterDisplay.HIDDEN)
+        password("GRADLE_PUBLISH_SECRET", "credentialsJSON:13245140-f526-4aff-8e98-efe67142912a", display = ParameterDisplay.HIDDEN)
         param("env.LC_ALL", "en_US.UTF-8")
         param("env.JAVA_HOME", "%linux.java8.oracle.64bit%")
     }
