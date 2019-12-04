@@ -25,6 +25,7 @@ import org.gradle.samples.internal.tasks.SampleZipTask;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -91,7 +92,10 @@ public class SamplesPlugin implements Plugin<Project> {
             });
         });
 
-        TaskProvider<GenerateSampleIndexAsciidoc> indexGeneratorTask = createSampleIndexGeneratorTask(project.getTasks(), samples, project.getLayout(), project.getProviders());
+        List<Sample> orderedSampleList = new ArrayList<>();
+        samples.configureEach(orderedSampleList::add);
+        TaskProvider<GenerateSampleIndexAsciidoc> indexGeneratorTask = createSampleIndexGeneratorTask(project.getTasks(), orderedSampleList, project.getLayout(), project.getProviders());
+
         TaskProvider<? extends Task> asciidocTask = createIndexAsciidocTask(project.getTasks(), indexGeneratorTask, project.getLayout());
         project.getTasks().named("assemble").configure(it -> it.dependsOn(asciidocTask));
 

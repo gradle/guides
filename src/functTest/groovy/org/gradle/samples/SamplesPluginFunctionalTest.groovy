@@ -324,6 +324,32 @@ samples.configureEach { sample ->
         assertCanRunHelpTask(kotlinDslZipFile)
     }
 
+    def "honors the sample declaration order in the generated sample index"() {
+        writeSampleUnderTestToDirectory('src/samples/foo')
+        writeSampleUnderTestToDirectory('src/samples/bar')
+        buildFile << """
+            plugins {
+                id 'org.gradle.samples'
+            }
+
+            samples {
+                foo
+                bar
+            }
+        """
+
+        when:
+        def result = build('asciidocSampleIndex')
+
+        then:
+        result.task(":generateSampleIndex").outcome == SUCCESS
+        result.task(":asciidocSampleIndex").outcome == SUCCESS
+
+        and:
+        def indexFile = new File(projectDir, "build/gradle-samples/index.html").readLines()
+        indexFile.findIndexOf { it.contains('Foo') } < indexFile.findIndexOf { it.contains('Bar') }
+    }
+
     // TODO: Allow preprocess build script files before zipping (remove tags, see NOTE1) or including them in rendered output (remove tags and license)
     //   NOTE1: We can remove the license from all the files and add a LICENSE file at the root of the sample
 
