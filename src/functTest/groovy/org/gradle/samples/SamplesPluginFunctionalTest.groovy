@@ -381,6 +381,184 @@ samples.configureEach { sample ->
         'foo_Bar'  | 'Foo_Bar'
     }
 
+    def "defaults permalink to sample name (#sampleName)"() {
+        buildFile << """
+            plugins {
+                id 'org.gradle.samples'
+            }
+
+            tasks.register('verify') {
+                doLast {
+                    assert samples.getByName('${sampleName}').permalink.get() == '${sampleName}'
+                }
+            }
+
+            samples.create('$sampleName')
+        """
+
+        expect:
+        build('verify')
+
+        where:
+        sampleName << ['foo', 'fooBar', 'foo_bar', 'foo-bar']
+    }
+
+    def "can customize the permalink of a sample"() {
+        writeSampleUnderTest()
+        buildFile << """
+            plugins {
+                id 'org.gradle.samples'
+            }
+
+            samples {
+                demo {
+                    permalink = 'foo_bar'
+                }
+            }
+        """
+
+        when:
+        assert !new File(projectDir, 'build/gradle-samples/foo_bar').exists()
+        assert !new File(projectDir, 'build/gradle-samples/demo').exists()
+        def result = build('assemble')
+
+        then:
+        result.task(":generateSampleIndex").outcome == SUCCESS
+        result.task(":asciidocSampleIndex").outcome == SUCCESS
+        assertSampleTasksExecutedAndNotSkipped(result)
+
+        and:
+        def indexFile = new File(projectDir, "build/gradle-samples/index.html")
+        indexFile.text.contains("""<a href="foo_bar/">""")
+        !indexFile.text.contains("""<a href="demo/">""")
+
+        and:
+        !new File(projectDir, "build/gradle-samples/demo/index.html").exists()
+        !getKotlinDslZipFile().exists()
+        !getGroovyDslZipFile().exists()
+
+        and:
+        new File(projectDir, "build/gradle-samples/foo_bar/index.html").exists()
+        getKotlinDslZipFile([permalink: 'foo_bar']).exists()
+        getGroovyDslZipFile([permalink: 'foo_bar']).exists()
+    }
+
+    def "does not fail or warn when install task with duplicated permalink are absent from task graph"() {
+        writeSampleUnderTestToDirectory('src/samples/foo')
+        writeSampleUnderTestToDirectory('src/samples/bar')
+        buildFile << """
+            plugins {
+                id 'org.gradle.samples'
+            }
+
+            samples {
+                foo {
+                    permalink = 'a_sample'
+                }
+                bar {
+                    permalink = 'a_sample'
+                }
+            }
+        """
+
+        when:
+        def result = build('help')
+
+        then:
+        result.task(':help').outcome == SUCCESS
+        !result.output.contains("""Permalinks collision detected among samples:
+ * The following samples are sharing permalink 'a_sample':
+   - Sample 'bar'
+   - Sample 'foo'""")
+    }
+
+    def "warn when one of the install task with duplicated permalink is present in task graph"() {
+        writeSampleUnderTestToDirectory('src/samples/foo')
+        writeSampleUnderTestToDirectory('src/samples/bar')
+        buildFile << """
+            plugins {
+                id 'org.gradle.samples'
+            }
+
+            samples {
+                foo {
+                    permalink = 'a_sample'
+                }
+                bar {
+                    permalink = 'a_sample'
+                }
+            }
+        """
+
+        when:
+        def result = build('assembleFooSample', '-w')
+
+        then:
+        assertSampleTasksExecutedAndNotSkipped(result, 'foo')
+
+        and:
+        result.output.contains("""Permalinks collision detected among samples:
+ * The following samples are sharing permalink 'a_sample':
+   - Sample 'bar'
+   - Sample 'foo'""")
+    }
+
+    def "fails when multiple install task with duplicated permalink are present in task graph"() {
+        writeSampleUnderTestToDirectory('src/samples/foo')
+        writeSampleUnderTestToDirectory('src/samples/bar')
+        buildFile << """
+            plugins {
+                id 'org.gradle.samples'
+            }
+
+            samples {
+                foo {
+                    permalink = 'a_sample'
+                }
+                bar {
+                    permalink = 'a_sample'
+                }
+            }
+        """
+
+        when:
+        def result = buildAndFail('installBarSample', 'installFooSample')
+
+        then:
+        result.output.contains("""Permalinks collision detected among samples:
+ * The following samples are sharing permalink 'a_sample':
+   - Sample 'bar'
+   - Sample 'foo'""")
+    }
+
+    def "fails when sample index contains duplicated permalink"() {
+        writeSampleUnderTestToDirectory('src/samples/foo')
+        writeSampleUnderTestToDirectory('src/samples/bar')
+        buildFile << """
+            plugins {
+                id 'org.gradle.samples'
+            }
+
+            samples {
+                foo {
+                    permalink = 'a_sample'
+                }
+                bar {
+                    permalink = 'a_sample'
+                }
+            }
+        """
+
+        when:
+        def result = buildAndFail('asciidocSampleIndex')
+
+        then:
+        result.output.contains("""Permalinks collision detected among samples:
+ * The following samples are sharing permalink 'a_sample':
+   - Sample 'bar'
+   - Sample 'foo'""")
+    }
+
     // TODO: Allow preprocess build script files before zipping (remove tags, see NOTE1) or including them in rendered output (remove tags and license)
     //   NOTE1: We can remove the license from all the files and add a LICENSE file at the root of the sample
 
