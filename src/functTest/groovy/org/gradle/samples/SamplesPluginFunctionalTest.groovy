@@ -350,6 +350,37 @@ samples.configureEach { sample ->
         indexFile.findIndexOf { it.contains('Foo') } < indexFile.findIndexOf { it.contains('Bar') }
     }
 
+    @Unroll
+    def "ensure the zip file name is capitalized (#sampleName => #expectedZipName)"() {
+        buildFile << """
+            plugins {
+                id 'org.gradle.samples'
+            }
+
+            samples.create('${sampleName}')
+        """
+        writeSampleUnderTestToDirectory("src/samples/${sampleName}")
+
+        when:
+        assert !getGroovyDslZipFile([name: sampleName]).exists()
+        assert !getKotlinDslZipFile([name: sampleName]).exists()
+        def result = build("assemble${sampleName.capitalize()}Sample")
+
+        then:
+        assertSampleTasksExecutedAndNotSkipped(result, sampleName)
+        getGroovyDslZipFile([name: sampleName]).exists()
+        getKotlinDslZipFile([name: sampleName]).exists()
+
+        where:
+        sampleName | expectedZipName
+        'foo'      | 'Foo'
+        'fooBar'   | 'FooBar'
+        'foo-bar'  | 'Foo-bar'
+        'foo-Bar'  | 'Foo-Bar'
+        'foo_bar'  | 'Foo_bar'
+        'foo_Bar'  | 'Foo_Bar'
+    }
+
     // TODO: Allow preprocess build script files before zipping (remove tags, see NOTE1) or including them in rendered output (remove tags and license)
     //   NOTE1: We can remove the license from all the files and add a LICENSE file at the root of the sample
 

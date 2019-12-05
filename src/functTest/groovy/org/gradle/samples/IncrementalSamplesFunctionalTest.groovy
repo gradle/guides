@@ -81,8 +81,8 @@ endif::[]
         and:
         def sampleIndexFile = new File(projectDir, "build/gradle-samples/demo/index.html")
         sampleIndexFile.exists()
-        sampleIndexFile.text.contains('<a href="demo-groovy-dsl.zip">')
-        !sampleIndexFile.text.contains('<a href="demo-kotlin-dsl.zip">')
+        sampleIndexFile.text.contains('<a href="Demo-groovy-dsl.zip">')
+        !sampleIndexFile.text.contains('<a href="Demo-kotlin-dsl.zip">')
 
         and:
         def indexFile = new File(projectDir, "build/gradle-samples/index.html")
@@ -110,8 +110,8 @@ endif::[]
         and:
         def sampleIndexFile = new File(projectDir, "build/gradle-samples/demo/index.html")
         sampleIndexFile.exists()
-        !sampleIndexFile.text.contains('<a href="demo-groovy-dsl.zip">')
-        sampleIndexFile.text.contains('<a href="demo-kotlin-dsl.zip">')
+        !sampleIndexFile.text.contains('<a href="Demo-groovy-dsl.zip">')
+        sampleIndexFile.text.contains('<a href="Demo-kotlin-dsl.zip">')
 
         and:
         def indexFile = new File(projectDir, "build/gradle-samples/index.html")
@@ -217,8 +217,8 @@ endif::[]
         and:
         def sampleIndexFile1 = new File(projectDir, "build/gradle-samples/demo/index.html")
         sampleIndexFile1.exists()
-        sampleIndexFile1.text.contains('<a href="demo-groovy-dsl.zip">')
-        sampleIndexFile1.text.contains('<a href="demo-kotlin-dsl.zip">')
+        sampleIndexFile1.text.contains('<a href="Demo-groovy-dsl.zip">')
+        sampleIndexFile1.text.contains('<a href="Demo-kotlin-dsl.zip">')
 
         and:
         groovyDslZipFile.exists()
@@ -253,8 +253,8 @@ endif::[]
         and:
         def sampleIndexFile2 = new File(projectDir, "build/gradle-samples/demo/index.html")
         sampleIndexFile2.exists()
-        sampleIndexFile2.text.contains('<a href="demo-4.2-groovy-dsl.zip">')
-        sampleIndexFile2.text.contains('<a href="demo-4.2-kotlin-dsl.zip">')
+        sampleIndexFile2.text.contains('<a href="Demo-4.2-groovy-dsl.zip">')
+        sampleIndexFile2.text.contains('<a href="Demo-4.2-kotlin-dsl.zip">')
 
         and:
         !groovyDslZipFile.exists()
