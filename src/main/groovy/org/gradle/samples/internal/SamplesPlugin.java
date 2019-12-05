@@ -54,7 +54,7 @@ public class SamplesPlugin implements Plugin<Project> {
             DefaultSample result = project.getObjects().newInstance(DefaultSample.class, name);
             result.getGradleVersion().convention(project.getGradle().getGradleVersion());
             result.getIntermediateDirectory().set(project.getLayout().getBuildDirectory().dir("sample-intermediate/" + name));
-            result.getArchiveBaseName().set(project.provider(() -> name + (project.getVersion().equals(Project.DEFAULT_VERSION) ? "" : "-" + project.getVersion().toString())));
+            result.getArchiveBaseName().set(project.provider(() -> capitalize(name) + (project.getVersion().equals(Project.DEFAULT_VERSION) ? "" : "-" + project.getVersion().toString())));
             result.getInstallDirectory().set(project.getLayout().getBuildDirectory().dir("gradle-samples/" + name));
             result.getSampleDirectory().convention(project.getLayout().getProjectDirectory().dir("src/samples/" + name));
             result.getDisplayName().convention(toTitleCase(name));
