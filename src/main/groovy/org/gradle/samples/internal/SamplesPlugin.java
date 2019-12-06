@@ -55,9 +55,10 @@ public class SamplesPlugin implements Plugin<Project> {
             result.getGradleVersion().convention(project.getGradle().getGradleVersion());
             result.getIntermediateDirectory().set(project.getLayout().getBuildDirectory().dir("sample-intermediate/" + name));
             result.getArchiveBaseName().set(project.provider(() -> capitalize(name) + (project.getVersion().equals(Project.DEFAULT_VERSION) ? "" : "-" + project.getVersion().toString())));
-            result.getInstallDirectory().set(project.getLayout().getBuildDirectory().dir("gradle-samples/" + name));
+            result.getInstallDirectory().set(project.getLayout().getBuildDirectory().dir(result.getPermalink().map(it -> "gradle-samples/" + it)));
             result.getSampleDirectory().convention(project.getLayout().getProjectDirectory().dir("src/samples/" + name));
             result.getDisplayName().convention(toTitleCase(name));
+            result.getPermalink().convention(name);
             result.setAsciidoctorTask(createAsciidoctorTask(project.getTasks(), result, getObjectFactory()));
 
             return result;
@@ -101,6 +102,14 @@ public class SamplesPlugin implements Plugin<Project> {
 
         project.afterEvaluate(evaluatedProject -> {
             samples.stream().map(it -> (DefaultSample) it).forEach(this::configureDefaultDomainSpecificSampleIfNeeded);
+        });
+
+        PermalinkCollisionHandler permalinkCollisionHandler = new PermalinkCollisionHandler(samples.withType(DefaultSample.class));
+        project.getTasks().withType(InstallSampleTask.class).configureEach(task -> {
+            task.doFirst(permalinkCollisionHandler.throwOrWarnOnPermalinkCollision());
+        });
+        project.getTasks().withType(GenerateSampleIndexAsciidoc.class).configureEach(task -> {
+            task.doFirst(permalinkCollisionHandler.throwOnPermalinkCollision());
         });
 
         project.getPluginManager().apply(TestingSamplesWithExemplarPlugin.class);
@@ -189,7 +198,7 @@ public class SamplesPlugin implements Plugin<Project> {
     }
 
     private static TaskProvider<InstallSampleTask> createSampleInstallTask(TaskContainer tasks, DefaultSample sample) {
-        return tasks.register("install" + capitalize(sample.getName()) + "Sample", InstallSampleTask.class, task -> {
+        return tasks.register(sample.getInstallTaskName(), InstallSampleTask.class, task -> {
             task.getSource().from(sample.getSource());
             task.getInstallDirectory().set(sample.getInstallDirectory());
         });
@@ -273,7 +282,7 @@ public class SamplesPlugin implements Plugin<Project> {
         return tasks.register("generateSampleIndex", GenerateSampleIndexAsciidoc.class, task -> {
             task.getSampleInformation().set(providerFactory.provider(() -> StreamSupport.stream(samples.spliterator(), false)
                     .filter(it -> !it.getSampleDirectory().getAsFileTree().isEmpty())
-                    .map(it -> new GenerateSampleIndexAsciidoc.SampleInformation(it.getName(), it.getDisplayName().get(), it.getDescription().getOrNull()))
+                    .map(it -> new GenerateSampleIndexAsciidoc.SampleInformation(it.getPermalink().get(), it.getDisplayName().get(), it.getDescription().getOrNull()))
                     .collect(Collectors.toList())));
             task.getOutputFile().set(projectLayout.getBuildDirectory().file("tmp/" + task.getName() + "/index.adoc"));
         });
