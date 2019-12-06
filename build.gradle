@@ -3,7 +3,6 @@ plugins {
     id 'groovy'
     id 'java-gradle-plugin'
     id 'com.gradle.plugin-publish' version '0.10.1'
-    id 'org.ysb33r.cloudci' version '2.3'
     id 'maven-publish'
 }
 
@@ -96,24 +95,11 @@ gradlePlugin {
 }
 
 publishPlugins {
-    enabled = false
     dependsOn build
 
     onlyIf { !version.endsWith('-SNAPSHOT')}
 }
 
-cloudci {
-    travisci {
-        publishPlugins {
-            enabled = System.getenv('TRAVIS_BRANCH') == 'master' && System.getenv('TRAVIS_PULL_REQUEST') == 'false'
-        }
-
-        functionalTest {
-            maxParallelForks = 1
-        }
-
-        task release {
-            dependsOn build, publishPlugins
-        }
-    }
+task release {
+    dependsOn build, publishPlugins
 }

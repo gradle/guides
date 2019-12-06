@@ -1,8 +1,5 @@
 import jetbrains.buildServer.configs.kotlin.v2018_2.*
-import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.GradleBuildStep
 import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.gradle
-import jetbrains.buildServer.configs.kotlin.v2018_2.triggers.VcsTrigger
-import jetbrains.buildServer.configs.kotlin.v2018_2.triggers.finishBuildTrigger
 import jetbrains.buildServer.configs.kotlin.v2018_2.triggers.vcs
 
 /*
@@ -31,18 +28,12 @@ version = "2019.1"
 
 project {
     buildType(Build)
-    buildType(Publish)
+    buildType(Release)
 }
 
 open class AbstractBuild(init: BuildType.() -> Unit) : BuildType({
     vcs {
         root(DslContext.settingsRoot)
-    }
-    steps {
-        gradle {
-            useGradleWrapper = true
-            tasks = "build"
-        }
     }
     requirements {
         contains("teamcity.agent.jvm.os.name", "Linux")
@@ -57,30 +48,29 @@ open class AbstractBuild(init: BuildType.() -> Unit) : BuildType({
 
 object Build : AbstractBuild({
     name = "Build"
+    steps {
+        gradle {
+            useGradleWrapper = true
+            tasks = "build"
+        }
+    }
     triggers {
         vcs {
             branchFilter = """
                 +:*
-                -:<default>
             """.trimIndent()
             groupCheckinsByCommitter = true
         }
     }
 })
 
-object Publish : AbstractBuild({
-    name = "Publish"
+object Release : AbstractBuild({
+    name = "Release"
     steps {
         gradle {
             useGradleWrapper = true
             gradleParams = "-Dgradle.publish.skip.namespace.check=true -Pgradle.publish.key=%GRADLE_PUBLISH_KEY% -Pgradle.publish.secret=%GRADLE_PUBLISH_SECRET%"
-            tasks = "publishPlugins"
-        }
-    }
-    triggers {
-        vcs {
-            this.branchFilter = "+:<default>"
-            groupCheckinsByCommitter = true
+            tasks = "release"
         }
     }
     params {
