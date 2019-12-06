@@ -74,7 +74,7 @@ object Release : AbstractBuild({
         }
     }
     params {
-        password("GRADLE_PUBLISH_KEY", "credentialsJSON:13d96e17-375d-4753-aaea-caa5b3f748ec", display = ParameterDisplay.HIDDEN)
-        password("GRADLE_PUBLISH_SECRET", "credentialsJSON:13245140-f526-4aff-8e98-efe67142912a", display = ParameterDisplay.HIDDEN)
+        password("GRADLE_PUBLISH_KEY", "credentialsJSON:9ea244eb-7e24-44c5-8d4d-0e4d512b1608", display = ParameterDisplay.HIDDEN)
+        password("GRADLE_PUBLISH_SECRET", "credentialsJSON:14df9326-8326-4329-bb04-3837d010d2e8", display = ParameterDisplay.HIDDEN)
     }
 })
