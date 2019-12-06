@@ -108,6 +108,14 @@ This should be applied in the authoring of all new Topical guides
 
 == Changelog
 
+=== 0.15.25
+
+- Honor disabled Exemplar tests from previous test runs
+- Order sample index according to sample creation order inside build script
+- Capitalize the sample archive base name
+- Allow configuration of the sample permalink
+- Update Asciidoctor Gradle plugin to version 1.5.9.2
+
 === 0.15.24
 
 - Allow Asciidoctor tasks to be cacheable
