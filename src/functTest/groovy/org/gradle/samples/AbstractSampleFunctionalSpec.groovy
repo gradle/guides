@@ -73,14 +73,14 @@ rootProject.name = "demo"
     }
 
     protected TestFile getGroovyDslZipFile() {
-        return file("build/sample-zips/demoGroovy.zip")
+        return file("build/sample-zips/DemoGroovy.zip")
     }
 
     protected TestFile getKotlinDslZipFile() {
-        return file("build/sample-zips/demoKotlin.zip")
+        return file("build/sample-zips/DemoKotlin.zip")
     }
 
-    protected String getSampleUnderTestDsl() {
+    protected static String getSampleUnderTestDsl() {
         return "samples.publishedSamples.demo"
     }
 

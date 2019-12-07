@@ -35,7 +35,6 @@ import org.gradle.samples.internal.tasks.SyncWithProvider;
 import org.gradle.samples.internal.tasks.ValidateSampleBinary;
 import org.gradle.samples.internal.tasks.ZipSample;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -44,7 +43,7 @@ import java.util.stream.Collectors;
 
 import static org.gradle.samples.internal.StringUtils.*;
 
-@SuppressWarnings("Convert2Lambda") // Additional task actions are not supported to be lambdas
+@SuppressWarnings("UnstableApiUsage")
 public class SamplesPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
@@ -94,13 +93,11 @@ public class SamplesPlugin implements Plugin<Project> {
 
     private void createTasksForTemplates(ProjectLayout layout, TaskContainer tasks, Template template) {
         TaskProvider<SyncWithProvider> generateTemplate = tasks.register("generateTemplate" + capitalize(template.getName()), SyncWithProvider.class, task -> {
-            task.from(template.getSourceDirectory(), copySpec -> {
-                copySpec.into(template.getTarget());
-            });
+            task.from(template.getSourceDirectory(), copySpec -> copySpec.into(template.getTarget()));
             task.into(layout.getBuildDirectory().dir("tmp/" + task.getName()));
         });
 
-        template.getTemplateDirectory().convention(generateTemplate.flatMap(task -> task.getDestinationDirectory()));
+        template.getTemplateDirectory().convention(generateTemplate.flatMap(SyncWithProvider::getDestinationDirectory));
     }
 
     private void applyConventionsForTemplates(SamplesExtension extension, Template template) {
@@ -111,7 +108,7 @@ public class SamplesPlugin implements Plugin<Project> {
     private void addExemplarTestsForSamples(Project project, ProjectLayout layout, TaskContainer tasks, SamplesExtension extension, TaskProvider<Task> check) {
         SourceSet sourceSet = project.getExtensions().getByType(SourceSetContainer.class).create("samplesExemplarFunctionalTest");
         TaskProvider<GenerateTestSource> generatorTask = createExemplarGeneratorTask(tasks, layout, sourceSet);
-        sourceSet.getJava().srcDir(generatorTask.flatMap(task -> task.getOutputDirectory()));
+        sourceSet.getJava().srcDir(generatorTask.flatMap(GenerateTestSource::getOutputDirectory));
 
         DependencyHandler dependencies = project.getDependencies();
         dependencies.add(sourceSet.getImplementationConfigurationName(), dependencies.gradleTestKit());
@@ -158,8 +155,7 @@ public class SamplesPlugin implements Plugin<Project> {
     private void registerGenerateSamplePage(TaskContainer tasks, Sample sample) {
         TaskProvider<GenerateSamplePageAsciidoc> generateSamplePage = tasks.register("generate" + capitalize(sample.getName()) + "Page", GenerateSamplePageAsciidoc.class, task -> {
             task.getReadmeFile().convention(sample.getReadMeFile());
-            // TODO: This ignores changes to the temporary directory
-            task.getOutputFile().set(new File(task.getTemporaryDir(), "sample_" + sample.getName() + ".adoc"));
+            task.getOutputFile().fileProvider(sample.getSampleDocName().map(fileName -> new File(task.getTemporaryDir(), fileName)));
             task.setDescription("Generates asciidoc page for sample '" + sample.getName() + "'");
         });
         sample.getSamplePageFile().convention(generateSamplePage.flatMap(GenerateSamplePageAsciidoc::getOutputFile));
@@ -171,7 +167,9 @@ public class SamplesPlugin implements Plugin<Project> {
         // Converts names like androidApplication to android-application
         sample.getSampleDirectory().convention(extension.getSamplesRoot().dir(toKebabCase(name)));
         sample.getInstallDirectory().convention(extension.getInstallRoot().dir(name));
+        sample.getSampleDocName().convention("sample_" + toSnakeCase(name) + ".adoc");
         sample.getDescription().convention("");
+        sample.getCategory().convention("Uncategorized");
 
         sample.getLicenseFile().convention(sample.getSampleDirectory().file("LICENSE"));
         sample.getReadMeFile().convention(sample.getSampleDirectory().file("README.adoc"));
@@ -180,6 +178,7 @@ public class SamplesPlugin implements Plugin<Project> {
         sample.common(content -> {
             content.from(sample.getLicenseFile());
             content.from(sample.getSamplePageFile());
+            // TODO: Generate sanity check configuration file
             content.from(sample.getSampleDirectory().dir("tests"));
             content.from(wrapperFiles);
         });
@@ -228,7 +227,7 @@ public class SamplesPlugin implements Plugin<Project> {
             task.getReportFile().convention(layout.getBuildDirectory().file("reports/sample-validation/" + task.getName() + ".txt"));
             task.setDescription("Checks the sample '" + binary.getName() + "' is valid.");
         });
-        binary.getValidationReport().convention(validateSample.flatMap(task -> task.getReportFile()));
+        binary.getValidationReport().convention(validateSample.flatMap(ValidateSampleBinary::getReportFile));
 
         TaskProvider<InstallSample> installSampleTask = tasks.register("installSample" + capitalize(binary.getName()), InstallSample.class, task -> {
             task.getSource().from(binary.getZipFile());
@@ -240,7 +239,7 @@ public class SamplesPlugin implements Plugin<Project> {
         TaskProvider<ZipSample> zipTask = tasks.register("zipSample" + capitalize(binary.getName()), ZipSample.class, task -> {
             task.getSource().from(binary.getContent());
             task.getMainSource().from(binary.getDslSpecificContent());
-            task.getArchiveFile().convention(layout.getBuildDirectory().file("sample-zips/" + binary.getName() + ".zip"));
+            task.getArchiveFile().convention(layout.getBuildDirectory().file("sample-zips/" + capitalize(binary.getName()) + ".zip"));
             task.getExcludes().convention(binary.getExcludes());
             task.setDescription("Creates a zip for sample '" + binary.getName() + "'.");
         });
@@ -269,6 +268,9 @@ public class SamplesPlugin implements Plugin<Project> {
     private void realizeSamples(TaskContainer tasks, SamplesExtension extension, TaskProvider<Task> assemble, TaskProvider<Task> check) {
         // TODO: Disallow changes to published samples container after this point.
         for (Sample sample : extension.getPublishedSamples()) {
+            if (sample.getName().contains("_") || sample.getName().contains("-")) {
+                throw new IllegalArgumentException(String.format("Sample '%s' has disallowed characters", sample.getName()));
+            }
             // TODO: To make this lazy without afterEvaluate/eagerness, we need to be able to tell the tasks container that the samples container should be consulted
             assemble.configure(t -> t.dependsOn(sample.getAssembleTask()));
             check.configure(t -> t.dependsOn(sample.getCheckTask()));

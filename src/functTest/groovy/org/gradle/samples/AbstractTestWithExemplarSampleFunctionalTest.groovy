@@ -3,6 +3,8 @@ package org.gradle.samples
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.util.GradleVersion
 
+import java.nio.file.Files
+
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static org.gradle.testkit.runner.TaskOutcome.FAILED
 
@@ -79,34 +81,33 @@ ${sampleUnderTestDsl}.common {
         makeSingleProject()
         writeSampleUnderTest()
         writeExemplarConfigurationToDirectory()
+
         buildFile << '''
-            samples.create('anotherDemo')
+            samples.publishedSamples.create('another')
         '''
-        writeSampleUnderTestToDirectory('src/samples/anotherDemo')
-        writeExemplarConfigurationToDirectory('src/samples/anotherDemo')
-        def anotherDemoConfigFile = new File(temporaryFolder.root, 'src/samples/anotherDemo/showDemoSample.sample.conf')
+        writeSampleUnderTest('src/samples/another')
+        writeExemplarConfigurationToDirectory('src/samples/another')
+
+        def anotherDemoConfigFile = file('src/samples/another/tests/sanityCheck.sample.conf')
         anotherDemoConfigFile.text = anotherDemoConfigFile.text.replaceAll('help', 'belp') // make the test fail
 
         when:
-        def result1 = buildAndFail("samplesExemplarFunctionalTest")
+        buildAndFail("samplesExemplarFunctionalTest")
 
         then:
-        result1.task(':installDemoExemplarSample').outcome == SUCCESS
-        result1.task(':samplesExemplarFunctionalTest').outcome == FAILED
-        assertExemplarTestExecuted(['demo'], ['anotherDemo'])
+        result.task(':samplesExemplarFunctionalTest').outcome == FAILED
 
         when:
-        assert anotherDemoConfigFile.renameTo(new File(temporaryFolder.root, "src/samples/anotherDemo/showDemoSample.sample.confz"))
-        def result2 = build("samplesExemplarFunctionalTest")
+        assert anotherDemoConfigFile.renameTo(file("src/samples/another/tests/sanityCheck.sample.confz"))
+        build("samplesExemplarFunctionalTest")
 
         then:
-        assertExemplarTasksExecutedAndNotSkipped(result2)
-        assertExemplarTestSucceeds(['demo'])
+        result.task(':samplesExemplarFunctionalTest').outcome == SUCCESS
     }
 
     protected abstract void assertExemplarTasksExecutedAndNotSkipped(BuildResult result)
 
-    protected void assertExemplarTasksExecutedAndNotSkipped(BuildResult result, String dsl) {
+    protected static void assertExemplarTasksExecutedAndNotSkipped(BuildResult result, String dsl) {
         assert result.task(":generateSamplesExemplarFunctionalTestSourceSet").outcome == SUCCESS
         assert result.task(":installSampleDemo${dsl}").outcome == SUCCESS
         assert result.task(':samplesExemplarFunctionalTest').outcome == SUCCESS
@@ -120,7 +121,7 @@ ${sampleUnderTestDsl}.common {
 
     protected abstract List<String> getExpectedTestsFor(String sampleName, String testName="sanityCheck")
 
-    protected String expectTestsExecuted(List<String> expected) {
+    protected static String expectTestsExecuted(List<String> expected) {
         def script = """
 task assertTestsExecuted {
     ext.tests = []
@@ -144,7 +145,7 @@ tasks.withType(Test).configureEach {
         return script
     }
 
-    protected String getExemplarSampleConfigFileContent(String outputFile="sanityCheck.sample.out") {
+    protected static String getExemplarSampleConfigFileContent(String outputFile="sanityCheck.sample.out") {
         return """
 commands: [{
     executable: gradle
@@ -154,7 +155,7 @@ commands: [{
 """
     }
 
-    private String getExemplarSampleOutFileContent() {
+    private static String getExemplarSampleOutFileContent() {
         return """
 > Configure project :
 Hello, world!

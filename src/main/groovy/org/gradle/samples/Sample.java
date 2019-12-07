@@ -15,111 +15,92 @@ import org.gradle.api.tasks.TaskProvider;
 /**
  * Represent a sample to be documented. Each sample must contain at least a Groovy or Kotlin DSL sample.
  */
-public interface Sample extends Named {
-    @Internal
-    @Override
-    String getName();
-
+public interface Sample extends Named, SampleSummary {
     /**
-     * Property for configuring the sample root directory.
-     *
      * By convention, this is the sample name off the extension's sample root directory.
+     *
+     * @return Property for configuring the sample root directory.
      */
-    @Internal
     DirectoryProperty getSampleDirectory();
 
     /**
-     * The README file for the sample.
+     * @return The README file for the sample.
      *
      * By convention, this is README.adoc in the sample directory.
      */
-    @Internal
     RegularFileProperty getReadMeFile();
 
     /**
-     * The LICENSE file for the sample.
+     * @return The LICENSE file for the sample.
      *
      * By convention, this is LICENSE in the sample directory.
      */
-    @Internal
     RegularFileProperty getLicenseFile();
 
     /**
-     * Property for configuring the sample description. The description is used within the sample index.
-     */
-    @Input
-    Property<String> getDescription();
-
-    /**
-     * Property for configuring the sample display name. The display name is used within the sample index.
-     */
-    @Input
-    Property<String> getDisplayName();
-
-    /**
-     * Sample content that is shared by all DSLs.
+     * @return Sample content that is shared by all DSLs.
      *
      * By convention, this is the wrapper files, README and LICENSE.
      */
-    @Internal
     ConfigurableFileCollection getCommonContent();
 
     /**
      * Configure common content.
+     *
+     * @param action configuration action
      */
     void common(Action<? super ConfigurableFileCollection> action);
 
     /**
-     * Sample content that is used for Groovy DSL.
+     * @return Sample content that is used for Groovy DSL.
      *
      * By convention, this is the "groovy" directory in the sample directory.
      */
-    @Internal
     ConfigurableFileCollection getGroovyContent();
     /**
      * Configure Groovy content.
+     *
+     * @param action configuration action
      */
     void groovy(Action<? super ConfigurableFileCollection> action);
 
     /**
-     * Sample content that is used for Groovy DSL.
+     * @return Sample content that is used for Groovy DSL.
      */
-    @Internal
     ConfigurableFileCollection getKotlinContent();
     /**
      * Configure Kotlin content.
+     *
+     * @param action coniguration action
      */
     void kotlin(Action<? super ConfigurableFileCollection> action);
 
     /**
-     * Configure which DSLs should be expected for this sample.
+     * @return DSLs that should be expected for this sample.
      * By convention, this is both Groovy and Kotlin.
      * Every sample must have at least one DSL.
      */
-    @Input
     ListProperty<Dsl> getDsls();
 
     /**
-     * Root installation directory for each DSL.
+     * @return Root installation directory for each DSL.
      */
-    @Internal
     DirectoryProperty getInstallDirectory();
 
     /**
-     * The generated sample (asciidoc) page.
+     * @return The generated sample (asciidoc) page.
      *
      * This is an asciidoc file, not the generated HTML.
      */
-    @Internal
     RegularFileProperty getSamplePageFile();
 
     /**
-     * Lifecycle task for assembling this sample.
+     * @return Lifecycle task for assembling this sample.
      */
     TaskProvider<Task> getAssembleTask();
 
     /**
-     * Lifecycle task for checking this sample.
+     * @return Lifecycle task for checking this sample.
      */
     TaskProvider<Task> getCheckTask();
 }

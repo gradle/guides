@@ -11,51 +11,48 @@ import org.gradle.api.provider.Property;
  * Represents a sample tailored for a particular DSL.
  */
 public interface SampleBinary extends Named {
-    @Override
-    String getName();
-
     /**
-     * The language this sample is written for
+     * @return The language this sample is written for
      */
     Property<Dsl> getDsl();
 
     /**
-     * All content to include in the sample.
+     * @return All content to include in the sample.
      */
     ConfigurableFileCollection getContent();
 
     /**
-     * Content that is specific to the DSL language.
+     * @return Content that is specific to the DSL language.
      */
     ConfigurableFileCollection getDslSpecificContent();
 
     /**
-     * The documentation page for this sample
+     * @return The documentation page for this sample
      */
     RegularFileProperty getSamplePageFile();
 
     /**
-     * Working directory used by the plugin to validate or test this sample.
+     * @return Working directory used by the plugin to validate or test this sample.
      */
     DirectoryProperty getWorkingDirectory();
 
     /**
-     * Exclude patterns for files included in this sample
+     * @return Exclude patterns for files included in this sample
      */
     ListProperty<String> getExcludes();
 
     /**
-     * Gets the validation report for this sample.
+     * @return Gets the validation report for this sample.
      */
     RegularFileProperty getValidationReport();
 
     /**
-     * A zip containing this sample.  This is the primary thing produced by a sample for a given language.
+     * @return A zip containing this sample.  This is the primary thing produced by a sample for a given language.
      */
     RegularFileProperty getZipFile();
 
     /**
-     * A installation directory containing this sample.  This can be used to get an installed version of the sample.
+     * @return A installation directory containing this sample.  This can be used to get an installed version of the sample.
      *
      * NOTE: This directory may be reused by other consumers.
      */

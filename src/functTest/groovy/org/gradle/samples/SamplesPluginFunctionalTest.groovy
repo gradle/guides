@@ -25,8 +25,8 @@ tasks.register("publishSamples", Sync) {
         then:
         file("build/published/samples/index_samples.adoc").assertExists()
         file("build/published/samples/sample_demo.adoc").assertExists()
-        file("build/published/samples/zips/demoGroovy.zip").assertExists()
-        file("build/published/samples/zips/demoKotlin.zip").assertExists()
+        file("build/published/samples/zips/DemoGroovy.zip").assertExists()
+        file("build/published/samples/zips/DemoKotlin.zip").assertExists()
     }
 
     def "can generate content for the sample"() {
@@ -55,33 +55,8 @@ ${sampleUnderTestDsl}.common {
 
         then:
         result.task(":generate").outcome == SUCCESS
-        file("build/sample-zips/demoGroovy.zip").asZip().assertContainsDescendants("generated.txt")
-        file("build/sample-zips/demoKotlin.zip").asZip().assertContainsDescendants("generated.txt")
-    }
-
-    def "can have two samples with different naming convention"() {
-        buildFile << """
-            plugins {
-                id 'org.gradle.samples'
-            }
-
-            samples {
-                publishedSamples {
-                    "foo-bar"
-                    "fooBar"
-                }
-            }
-        """
-        writeGroovyDslSample(file("src/samples/foo-bar"))
-        writeKotlinDslSample(file("src/samples/foo-bar"))
-        writeGroovyDslSample(file("src/samples/fooBar"))
-        writeKotlinDslSample(file("src/samples/fooBar"))
-
-        when:
-        build("help")
-
-        then:
-        noExceptionThrown()
+        file("build/sample-zips/DemoGroovy.zip").asZip().assertContainsDescendants("generated.txt")
+        file("build/sample-zips/DemoKotlin.zip").asZip().assertContainsDescendants("generated.txt")
     }
 
     def "fails when settings.gradle.kts is missing from Kotlin DSL sample"() {
@@ -247,8 +222,6 @@ ${sampleUnderTestDsl}.dsls = [ Dsl.GROOVY ]
         name      | displayName
         'foobar'  | 'Foobar'
         'fooBar'  | 'Foo Bar'
-        'foo-bar' | 'Foo Bar'
-        'foo_bar' | 'Foo Bar'
         'fooABar' | 'Foo A Bar'
     }
 
@@ -290,11 +263,11 @@ ${sampleUnderTestDsl}.common {
         build("assembleDemoSample")
 
         then:
-        def demoGroovyZip = file("build/sample-zips/demoGroovy.zip").asZip()
+        def demoGroovyZip = file("build/sample-zips/DemoGroovy.zip").asZip()
         demoGroovyZip.assertDescendantHasContent("a.txt", equalTo("aaaa"))
         demoGroovyZip.assertDescendantHasContent("subdir/b.txt", equalTo("bbbb"))
 
-        def demoKotlinZip = file("build/sample-zips/demoKotlin.zip").asZip()
+        def demoKotlinZip = file("build/sample-zips/DemoKotlin.zip").asZip()
         demoKotlinZip.assertDescendantHasContent("a.txt", equalTo("aaaa"))
         demoKotlinZip.assertDescendantHasContent("subdir/b.txt", equalTo("bbbb"))
     }
@@ -311,61 +284,35 @@ ${sampleUnderTestDsl}.common {
         assertCanRunHelpTask(kotlinDslZipFile)
     }
 
-    def "honors the sample declaration order in the generated sample index"() {
-        writeSampleUnderTestToDirectory('src/samples/foo')
-        writeSampleUnderTestToDirectory('src/samples/bar')
+    def "sorts samples by category and display name"() {
+        makeSingleProject()
         buildFile << """
-            plugins {
-                id 'org.gradle.samples'
+            samples.publishedSamples.create("zzz") {
+                category = "Special"
             }
-
-            samples {
-                foo
-                bar
-            }
+            samples.publishedSamples.create("mmm")
+            samples.publishedSamples.create("aaa")
         """
 
         when:
-        def result = build('asciidocSampleIndex')
+        build('generateSampleIndex')
 
         then:
         result.task(":generateSampleIndex").outcome == SUCCESS
-        result.task(":asciidocSampleIndex").outcome == SUCCESS
 
         and:
-        def indexFile = new File(projectDir, "build/gradle-samples/index.html").readLines()
-        indexFile.findIndexOf { it.contains('Foo') } < indexFile.findIndexOf { it.contains('Bar') }
-    }
+        def indexFile = file("build/tmp/generateSampleIndex/index_samples.adoc")
+        indexFile.text == """= Sample Index
 
-    @Unroll
-    def "ensure the zip file name is capitalized (#sampleName => #expectedZipName)"() {
-        buildFile << """
-            plugins {
-                id 'org.gradle.samples'
-            }
+== Special
 
-            samples.create('${sampleName}')
-        """
-        writeSampleUnderTestToDirectory("src/samples/${sampleName}")
+- <<sample_zzz.adoc,Zzz>>
+== Uncategorized
 
-        when:
-        assert !getGroovyDslZipFile([name: sampleName]).exists()
-        assert !getKotlinDslZipFile([name: sampleName]).exists()
-        def result = build("assemble${sampleName.capitalize()}Sample")
-
-        then:
-        assertSampleTasksExecutedAndNotSkipped(result, sampleName)
-        getGroovyDslZipFile([name: sampleName]).exists()
-        getKotlinDslZipFile([name: sampleName]).exists()
-
-        where:
-        sampleName | expectedZipName
-        'foo'      | 'Foo'
-        'fooBar'   | 'FooBar'
-        'foo-bar'  | 'Foo-bar'
-        'foo-Bar'  | 'Foo-Bar'
-        'foo_bar'  | 'Foo_bar'
-        'foo_Bar'  | 'Foo_Bar'
+- <<sample_aaa.adoc,Aaa>>
+- <<sample_demo.adoc,Demo>>
+- <<sample_mmm.adoc,Mmm>>
+"""
     }
 
     private void assertCanRunHelpTask(File zipFile) {

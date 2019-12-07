@@ -9,35 +9,35 @@ import org.gradle.api.provider.ListProperty;
 public interface SamplesExtension {
 
     /**
-     * The root sample directory.
+     * @return The root sample directory.
      *
      * By convention, this is src/samples
      */
     DirectoryProperty getSamplesRoot();
 
     /**
-     * The root template directory.
+     * @return The root template directory.
      *
      * By convention, this is src/samples/templates
      */
     DirectoryProperty getTemplatesRoot();
 
     /**
-     * The root install directory.
+     * @return The root install directory.
      *
      * By convention, this is buildDir/install/samples
      */
     DirectoryProperty getInstallRoot();
 
     /**
-     * The root directory for all documentation.
+     * @return The root directory for all documentation.
      *
      * By convention, this is buildDir/samples/docs
      */
     DirectoryProperty getDocumentationRoot();
 
     /**
-     * The generated samples index file.
+     * @return The generated samples index file.
      *
      * This is an asciidoc file, not the generated HTML.
      *
@@ -46,33 +46,33 @@ public interface SamplesExtension {
     RegularFileProperty getSampleIndexFile();
 
     /**
-     * All documentation for samples.
+     * @return All documentation for samples.
      *
      * This is not the generated HTML.
      */
     ConfigurableFileCollection getAssembledDocumentation();
 
     /**
-     * List of common exclude patterns when building a zip or install directory for a sample.
+     * @return List of common exclude patterns when building a zip or install directory for a sample.
      *
      * By convention, this excludes build and .gradle directories.
      */
     ListProperty<String> getCommonExcludes();
 
     /**
-     * Container of all published samples. This is the primary configuration point for all samples.
+     * @return Container of all published samples. This is the primary configuration point for all samples.
      */
     NamedDomainObjectContainer<Sample> getPublishedSamples();
 
     /**
-     * Container of all templates.  Templates are reusable parts of a sample.
+     * @return Container of all templates.  Templates are reusable parts of a sample.
      */
     NamedDomainObjectContainer<Template> getTemplates();
 
     /**
-     * Container of all "sample binaries".  A sample binary is a sample for a particular DSL.
+     * @return Container of all "sample binaries".  A sample binary is a sample for a particular DSL.
      *
-     * Most configuration should happen in the "published samples" container above.
+     * Most configuration should happen in the "published samples" container.
      */
     NamedDomainObjectContainer<SampleBinary> getBinaries();
 }

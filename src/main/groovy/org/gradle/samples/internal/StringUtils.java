@@ -16,6 +16,9 @@ class StringUtils {
         return Arrays.stream(GUtil.toWords(v).split(" ")).map(StringUtils::capitalize).collect(Collectors.joining(" "));
     }
 
+    static String toSnakeCase(String s) {
+        return s.replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();
+    }
     static String toKebabCase(String text) {
         Matcher m = Pattern.compile("(?<=[a-z])[A-Z]").matcher(text);
         StringBuffer sb = new StringBuffer();
