@@ -4,6 +4,7 @@ import org.gradle.testkit.runner.BuildResult
 import org.gradle.util.GradleVersion
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import static org.gradle.testkit.runner.TaskOutcome.FAILED
 
 abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSampleFunctionalSpec {
     def "can test sample using exemplar"() {
@@ -72,6 +73,35 @@ ${sampleUnderTestDsl}.common {
         build("samplesExemplarFunctionalTest")
         then:
         assertExemplarTasksExecutedAndNotSkipped(result)
+    }
+
+    def "can disable sample testing by renaming the .sample.config file"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        writeExemplarConfigurationToDirectory()
+        buildFile << '''
+            samples.create('anotherDemo')
+        '''
+        writeSampleUnderTestToDirectory('src/samples/anotherDemo')
+        writeExemplarConfigurationToDirectory('src/samples/anotherDemo')
+        def anotherDemoConfigFile = new File(temporaryFolder.root, 'src/samples/anotherDemo/showDemoSample.sample.conf')
+        anotherDemoConfigFile.text = anotherDemoConfigFile.text.replaceAll('help', 'belp') // make the test fail
+
+        when:
+        def result1 = buildAndFail("samplesExemplarFunctionalTest")
+
+        then:
+        result1.task(':installDemoExemplarSample').outcome == SUCCESS
+        result1.task(':samplesExemplarFunctionalTest').outcome == FAILED
+        assertExemplarTestExecuted(['demo'], ['anotherDemo'])
+
+        when:
+        assert anotherDemoConfigFile.renameTo(new File(temporaryFolder.root, "src/samples/anotherDemo/showDemoSample.sample.confz"))
+        def result2 = build("samplesExemplarFunctionalTest")
+
+        then:
+        assertExemplarTasksExecutedAndNotSkipped(result2)
+        assertExemplarTestSucceeds(['demo'])
     }
 
     protected abstract void assertExemplarTasksExecutedAndNotSkipped(BuildResult result)

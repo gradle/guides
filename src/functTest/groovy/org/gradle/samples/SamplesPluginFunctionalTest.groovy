@@ -311,6 +311,63 @@ ${sampleUnderTestDsl}.common {
         assertCanRunHelpTask(kotlinDslZipFile)
     }
 
+    def "honors the sample declaration order in the generated sample index"() {
+        writeSampleUnderTestToDirectory('src/samples/foo')
+        writeSampleUnderTestToDirectory('src/samples/bar')
+        buildFile << """
+            plugins {
+                id 'org.gradle.samples'
+            }
+
+            samples {
+                foo
+                bar
+            }
+        """
+
+        when:
+        def result = build('asciidocSampleIndex')
+
+        then:
+        result.task(":generateSampleIndex").outcome == SUCCESS
+        result.task(":asciidocSampleIndex").outcome == SUCCESS
+
+        and:
+        def indexFile = new File(projectDir, "build/gradle-samples/index.html").readLines()
+        indexFile.findIndexOf { it.contains('Foo') } < indexFile.findIndexOf { it.contains('Bar') }
+    }
+
+    @Unroll
+    def "ensure the zip file name is capitalized (#sampleName => #expectedZipName)"() {
+        buildFile << """
+            plugins {
+                id 'org.gradle.samples'
+            }
+
+            samples.create('${sampleName}')
+        """
+        writeSampleUnderTestToDirectory("src/samples/${sampleName}")
+
+        when:
+        assert !getGroovyDslZipFile([name: sampleName]).exists()
+        assert !getKotlinDslZipFile([name: sampleName]).exists()
+        def result = build("assemble${sampleName.capitalize()}Sample")
+
+        then:
+        assertSampleTasksExecutedAndNotSkipped(result, sampleName)
+        getGroovyDslZipFile([name: sampleName]).exists()
+        getKotlinDslZipFile([name: sampleName]).exists()
+
+        where:
+        sampleName | expectedZipName
+        'foo'      | 'Foo'
+        'fooBar'   | 'FooBar'
+        'foo-bar'  | 'Foo-bar'
+        'foo-Bar'  | 'Foo-Bar'
+        'foo_bar'  | 'Foo_bar'
+        'foo_Bar'  | 'Foo_Bar'
+    }
+
     private void assertCanRunHelpTask(File zipFile) {
         def workingDirectory = file(zipFile.name)
         def ant = new AntBuilder()

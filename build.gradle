@@ -2,14 +2,13 @@ plugins {
     id 'groovy'
     id 'java-gradle-plugin'
     id 'com.gradle.plugin-publish' version '0.10.1'
-    id 'org.ysb33r.cloudci' version '2.3'
     id 'maven-publish'
 }
 
 apply from: "$rootDir/gradle/functional-test.gradle"
 
 group = 'org.gradle.guides'
-version = '0.15.24-SNAPSHOT'
+version = '0.15.25'
 
 repositories {
     jcenter()
@@ -20,7 +19,7 @@ dependencies {
     compile 'net.sourceforge.nekohtml:nekohtml:1.9.21'
     compile 'org.codehaus.groovy.modules:http-builder-ng-core:0.11.1'
 
-    compile 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
+    compile 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.9.2'
     compile 'org.ajoberstar:gradle-git-publish:2.0.0-rc.2'
 
     runtime 'gradle.plugin.org.ysb33r.gradle:gradle-cloudci-plugin:2.3'
@@ -33,7 +32,7 @@ dependencies {
 }
 
 pluginBundle {
-    website = 'https://guides.gradle.org'
+    website = 'https://github.com/gradle-guides/gradle-guides-plugin'
     vcsUrl = 'https://github.com/gradle-guides/gradle-guides-plugin'
     tags = ['gradle', 'guides', 'documentation']
 }
@@ -86,24 +85,11 @@ gradlePlugin {
 }
 
 publishPlugins {
-    enabled = false
     dependsOn build
 
     onlyIf { !version.endsWith('-SNAPSHOT')}
 }
 
-cloudci {
-    travisci {
-        publishPlugins {
-            enabled = System.getenv('TRAVIS_BRANCH') == 'master' && System.getenv('TRAVIS_PULL_REQUEST') == 'false'
-        }
-
-        functionalTest {
-            maxParallelForks = 1
-        }
-
-        task release {
-            dependsOn build, publishPlugins
-        }
-    }
+task release {
+    dependsOn build, publishPlugins
 }

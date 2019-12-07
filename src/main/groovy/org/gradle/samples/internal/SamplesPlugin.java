@@ -44,12 +44,8 @@ import java.util.stream.Collectors;
 
 import static org.gradle.samples.internal.StringUtils.*;
 
+@SuppressWarnings("Convert2Lambda") // Additional task actions are not supported to be lambdas
 public class SamplesPlugin implements Plugin<Project> {
-    @Inject
-    protected ObjectFactory getObjectFactory() {
-        throw new UnsupportedOperationException();
-    }
-
     @Override
     public void apply(Project project) {
         ProjectLayout layout = project.getLayout();

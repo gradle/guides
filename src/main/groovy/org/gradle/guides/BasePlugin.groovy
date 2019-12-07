@@ -24,7 +24,6 @@ import org.asciidoctor.gradle.AsciidoctorTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
 import org.gradle.api.tasks.PathSensitivity
 
@@ -119,6 +118,29 @@ class BasePlugin implements Plugin<Project> {
             asciidoc.attributes.each { Object k, Object v ->
                 println "${k.toString()}: ${v.toString()}"
             }
+            println "gradle-version: ${minimumGradleVersion.get()}"
+            println "user-manual: https://docs.gradle.org/${minimumGradleVersion.get()}/userguide/"
+            println "language-reference: https://docs.gradle.org/${minimumGradleVersion.get()}/dsl/"
+            println "api-reference: https://docs.gradle.org/${minimumGradleVersion.get()}/javadoc/"
+        }
+
+        asciidoc.inputs.property("minimumGradleVersion", minimumGradleVersion)
+        asciidoc.doFirst {
+            asciidoc.attributes.put('gradle-version', minimumGradleVersion.get())
+            asciidoc.attributes.put('user-manual', "https://docs.gradle.org/${minimumGradleVersion.get()}/userguide/")
+            asciidoc.attributes.put('language-reference', "https://docs.gradle.org/${minimumGradleVersion.get()}/dsl/")
+            asciidoc.attributes.put('api-reference', "https://docs.gradle.org/${minimumGradleVersion.get()}/javadoc/")
+        }
+
+        asciidoc.inputs.property('repositoryPath', guides.repositoryPath)
+        asciidoc.doFirst {
+            asciidoc.attributes.put('repo-path', guides.repositoryPath.get())
+            asciidoc.attributes.put('repository-path', guides.repositoryPath.get())
+        }
+
+        asciidoc.inputs.property('guideTitle', guides.title)
+        asciidoc.doFirst {
+            asciidoc.attributes.put('guide-title', guides.title.get())
         }
 
         asciidoc.with {
@@ -144,20 +166,13 @@ class BasePlugin implements Plugin<Project> {
                     toclevels            : 1,
                     'toc-title'          : 'Contents',
                     guides               : 'https://guides.gradle.org',
-                    'gradle-version'     : new StringProvider(minimumGradleVersion),
                     'user-manual-name'   : 'User Manual',
-                    'user-manual'        : new StringProvider(minimumGradleVersion.map { "https://docs.gradle.org/$it/userguide/" }),
-                    'language-reference' : new StringProvider(minimumGradleVersion.map { "https://docs.gradle.org/$it/dsl/" }),
-                    'api-reference'      : new StringProvider(minimumGradleVersion.map { "https://docs.gradle.org/$it/javadoc/" }),
                     'projdir'            : project.projectDir,
                     'codedir'            : project.file('src/main'),
                     'testdir'            : project.file('src/test'),
                     'samplescodedir'     : project.file('samples/code'),
                     'samplesoutputdir'   : project.file('samples/output'),
-                    'samples-dir'        : project.file('samples'),
-                    'repo-path'          : new StringProvider(guides.repositoryPath),
-                    'repository-path'    : new StringProvider(guides.repositoryPath),
-                    'guide-title'        : new StringProvider(guides.title)
+                    'samples-dir'        : project.file('samples')
 
         }
 
@@ -173,42 +188,6 @@ class BasePlugin implements Plugin<Project> {
             group = "Documentation"
             description = "Generates the guide and open in the browser"
             indexFile = asciidocIndexFile
-        }
-    }
-
-    // Deferred the String evaluation for Asciidoc task until it support Provider API.
-    // Using a simple interpolating closure expression in a GString doesn't work as it's not serializable.
-    private class StringProvider implements Serializable {
-        private Provider<String> value
-
-        StringProvider(Provider<String> value) {
-            this.value = value
-        }
-
-        @Override
-        boolean equals(o) {
-            return toString().equals(o)
-        }
-
-        @Override
-        int hashCode() {
-            return toString().hashCode()
-        }
-
-        @Override
-        String toString() {
-            return value.getOrNull()
-        }
-
-        private void readObject(ObjectInputStream aInputStream) throws ClassNotFoundException, IOException
-        {
-            String value = (String) aInputStream.readObject()
-            this.value = providerFactory.provider({ value })
-        }
-
-        private void writeObject(ObjectOutputStream aOutputStream) throws IOException
-        {
-            aOutputStream.writeObject(toString())
         }
     }
 
