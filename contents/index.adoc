@@ -82,8 +82,8 @@ You will be asked to set up an new administration user and which plugins to inst
 Confirm to install the recommended plugins when starting Jenkins for the first time.
 Under "Manage Jenkins > Manage Plugins" ensure that you have the following two plugins installed.
 
-* https://wiki.jenkins.io/display/JENKINS/Git+Plugin[Git plugin]
-* https://wiki.jenkins.io/display/JENKINS/Gradle+Plugin[Gradle plugin]
+* https://plugins.jenkins.io/git[Git plugin]
+* https://plugins.jenkins.io/gradle[Gradle plugin]
 
 Next, we can set up the job for building the project.
 
