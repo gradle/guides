@@ -108,6 +108,10 @@ This should be applied in the authoring of all new Topical guides
 
 == Changelog
 
+=== 0.15.26
+
+- Honor Gradle wrapper execution flag on *nix system
+
 === 0.15.25
 
 - Honor disabled Exemplar tests from previous test runs
