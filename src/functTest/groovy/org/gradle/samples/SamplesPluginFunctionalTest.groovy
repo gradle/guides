@@ -595,10 +595,9 @@ endif::[]
 
     private void assertCanRunHelpTask(File zipFile) {
         def workingDirectory = new File(temporaryFolder.root, zipFile.name)
-        def ant = new AntBuilder()
-        ant.unzip(src: zipFile, dest: workingDirectory)
+        "unzip ${zipFile.getCanonicalPath()} -d ${workingDirectory.getCanonicalPath()}".execute().waitFor()
 
-        new File(workingDirectory, 'gradlew').executable = true
+        assert new File(workingDirectory, 'gradlew').canExecute()
         def process = "${workingDirectory}/gradlew help".execute(null, workingDirectory)
         def stdoutThread = Thread.start { process.in.eachLine { println(it) } }
         def stderrThread = Thread.start { process.err.eachLine { println(it) } }
