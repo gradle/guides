@@ -15,12 +15,13 @@ import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.SkipWhenEmpty;
 import org.gradle.api.tasks.TaskAction;
+import org.apache.tools.zip.UnixStat;
+import org.apache.tools.zip.ZipEntry;
+import org.apache.tools.zip.ZipOutputStream;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 /**
  * Zips a sample to the given location.
@@ -60,20 +61,32 @@ public abstract class ZipSample extends DefaultTask {
 
         try (FileOutputStream fileStream = new FileOutputStream(zipFile);
              ZipOutputStream zipStream = new ZipOutputStream(fileStream)) {
+            zipStream.setMethod(ZipOutputStream.DEFLATED);
             getFilteredSourceTree().visit(new FileVisitor() {
                 @Override
                 public void visitDir(FileVisitDetails dirDetails) {
-                    //
+                    try {
+                    ZipEntry entry = new ZipEntry(dirDetails.getRelativePath().getPathString() + "/");
+                    entry.setUnixMode(UnixStat.DIR_FLAG | dirDetails.getMode());
+                    zipStream.putNextEntry(entry);
+                    zipStream.closeEntry();
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
                 }
 
                 @Override
                 public void visitFile(FileVisitDetails fileDetails) {
                     try {
+                        final ZipEntry entry;
                         if (fileDetails.getName().equals(getReadmeName().get())) {
-                            zipStream.putNextEntry(new ZipEntry("README"));
+                            entry = new ZipEntry("README");
                         } else {
-                            zipStream.putNextEntry(new ZipEntry(fileDetails.getRelativePath().getPathString()));
+                            entry = new ZipEntry(fileDetails.getRelativePath().getPathString());
                         }
+                        entry.setSize(fileDetails.getSize());
+                        entry.setUnixMode(UnixStat.FILE_FLAG | fileDetails.getMode());
+                        zipStream.putNextEntry(entry);
                         fileDetails.copyTo(zipStream);
                         zipStream.closeEntry();
                     } catch (IOException e) {
