@@ -126,7 +126,7 @@ include::{gradle-outdir}/kotlin-dsl-files/build.gradle.kts[tags=init]
 
 The build script adds the {user-manual}java_library_plugin.html[java-library] plugin. This is an extension of the `java-base` plugin and adds additional tasks for compiling Java source code.
 
-The file `src/main/java/guidesamples/Library.java` is shown here:
+The file `src/main/java/demo/Library.java` is shown here:
 
 .Generated src/main/java/demo/Library.java
 [source,java]
