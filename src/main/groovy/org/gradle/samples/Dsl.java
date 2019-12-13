@@ -18,4 +18,8 @@ public enum Dsl {
     public String getConventionalDirectory() {
         return name().toLowerCase(Locale.ENGLISH);
     }
+
+    public String getDslLabel() {
+        return getConventionalDirectory() + "-dsl";
+    }
 }

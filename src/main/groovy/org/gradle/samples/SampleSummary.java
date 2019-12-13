@@ -1,6 +1,7 @@
 package org.gradle.samples;
 
 import org.gradle.api.provider.Property;
+import org.gradle.api.provider.SetProperty;
 import org.gradle.api.tasks.Input;
 
 public interface SampleSummary {
@@ -27,4 +28,13 @@ public interface SampleSummary {
      */
     @Input
     Property<String> getCategory();
+
+    /**
+     * By convention, this is both Groovy and Kotlin.
+     * Every sample must have at least one DSL.
+     *
+     * @return DSLs that should be expected for this sample.
+     */
+    @Input
+    SetProperty<Dsl> getDsls();
 }

@@ -13,7 +13,7 @@ abstract class AbstractGroovyDslSampleFunctionalTest extends AbstractBasicSample
         kotlinDslZipFile.assertDoesNotExist()
         groovyDslZipFile.asZip().assertHasDescendants(
                 "gradlew", "gradlew.bat", "gradle/wrapper/gradle-wrapper.properties", "gradle/wrapper/gradle-wrapper.jar",
-                "sample_demo.adoc",
+                "README",
                 "build.gradle", "settings.gradle")
     }
 
@@ -21,5 +21,22 @@ abstract class AbstractGroovyDslSampleFunctionalTest extends AbstractBasicSample
     protected void assertDslZipFilesExists() {
         groovyDslZipFile.assertExists()
         kotlinDslZipFile.assertDoesNotExist()
+    }
+
+    @Override
+    protected void assertReadmeHasContent() {
+        def groovyReadmeFile = file("build/install/samples/demo/groovy/README")
+        def kotlinReadmeFile = file("build/install/samples/demo/kotlin/README")
+        assert groovyReadmeFile.text == """= Demo Sample
+
+[.download]
+- link:zips/sample_demo-groovy-dsl.zip[icon:download[] Groovy DSL]
+
+
+= Demo Sample
+
+Some doc
+"""
+        kotlinReadmeFile.assertDoesNotExist()
     }
 }

@@ -11,6 +11,6 @@ class BasicConventionalKotlinDslSampleFunctionalTest extends AbstractKotlinDslSa
 
     @Override
     protected void assertSampleTasksExecutedAndNotSkipped(BuildResult result) {
-        assertKotlinDslTasksExecutedAndGroovySkipped(result)
+        assertOnlyKotlinDslTasksExecutedAndNotSkipped(result)
     }
 }

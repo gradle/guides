@@ -54,11 +54,12 @@ public abstract class GenerateSampleIndexAsciidoc extends DefaultTask {
                     samples.forEach(sample -> {
                         String description = sample.getDescription().get();
                         if (description.isEmpty()) {
-                            out.println(String.format("- <<%s,%s>>", sample.getSampleDocName().get(), sample.getDisplayName().get()));
+                            out.println(String.format("- <<%s#,%s>>", sample.getSampleDocName().get(), sample.getDisplayName().get()));
                         } else {
-                            out.println(String.format("- <<%s,%s>>: %s", sample.getSampleDocName().get(), sample.getDisplayName().get(), description));
+                            out.println(String.format("- <<%s#,%s>>: %s", sample.getSampleDocName().get(), sample.getDisplayName().get(), description));
                         }
                     });
+                    out.println();
                 });
             }
         }

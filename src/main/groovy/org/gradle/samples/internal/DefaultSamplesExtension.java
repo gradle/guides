@@ -4,6 +4,7 @@ import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.samples.Sample;
 import org.gradle.samples.SampleBinary;
+import org.gradle.samples.SampleSummary;
 import org.gradle.samples.SamplesExtension;
 import org.gradle.samples.Template;
 

@@ -26,10 +26,12 @@ public interface SampleBinary extends Named {
      */
     ConfigurableFileCollection getDslSpecificContent();
 
+    ConfigurableFileCollection getTestContent();
+
     /**
      * @return The documentation page for this sample
      */
-    RegularFileProperty getSamplePageFile();
+    Property<String> getSampleLinkName();
 
     /**
      * @return Working directory used by the plugin to validate or test this sample.

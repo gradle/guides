@@ -1,11 +1,14 @@
 package org.gradle.samples.internal;
 
+import groovy.lang.Closure;
+import org.asciidoctor.gradle.AsciidoctorTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.file.ConfigurableFileCollection;
+import org.gradle.api.file.CopySpec;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileTree;
 import org.gradle.api.file.ProjectLayout;
@@ -13,6 +16,7 @@ import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.internal.AbstractTask;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Provider;
+import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
@@ -20,6 +24,7 @@ import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.testing.Test;
+import org.gradle.api.tasks.util.PatternSet;
 import org.gradle.api.tasks.wrapper.Wrapper;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
 import org.gradle.samples.Dsl;
@@ -36,8 +41,12 @@ import org.gradle.samples.internal.tasks.ValidateSampleBinary;
 import org.gradle.samples.internal.tasks.ZipSample;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
@@ -71,13 +80,52 @@ public class SamplesPlugin implements Plugin<Project> {
 
         // Documentation for sample index
         registerGenerateSampleIndex(tasks, extension);
-        TaskProvider<Sync> assembleDocs = tasks.register("assembleSampleDocs", Sync.class, task -> {
+
+        TaskProvider<Sync> assembleDocs = tasks.register("assembleSamples", Sync.class, task -> {
             task.from(extension.getSampleIndexFile());
+            // TODO: File collection of the readmes too?
             task.from((Callable<List<RegularFileProperty>>) () -> extension.getPublishedSamples().stream().map(Sample::getSamplePageFile).collect(Collectors.toList()));
-            task.from((Callable<List<RegularFileProperty>>) () -> extension.getBinaries().stream().map(SampleBinary::getZipFile).collect(Collectors.toList()), copySpec -> copySpec.into("zips"));
+            task.from(extension.getZippedSamples(), sub -> sub.into("zips"));
+            task.from(extension.getInstalledSamples(), sub -> sub.into("samples"));
             task.into(extension.getDocumentationRoot());
         });
         extension.getAssembledDocumentation().from(assembleDocs);
+
+        TaskProvider<AsciidoctorTask> samplesMultiPage = tasks.register("samplesMultiPage", AsciidoctorTask.class, task -> {
+            task.setGroup("documentation");
+            task.setDescription("Generates multi-page samples index.");
+            task.dependsOn(extension.getAssembledDocumentation());
+
+            task.sources(new Closure(null) {
+                public Object doCall(Object ignore) {
+                    ((PatternSet)this.getDelegate()).include("**/*.adoc");
+                    ((PatternSet)this.getDelegate()).exclude("samples/**/*.adoc");
+                    return null;
+                }
+            });
+            // TODO: This breaks the provider
+            task.setSourceDir(extension.getDocumentationRoot().get().getAsFile());
+            // TODO: This breaks the provider
+            task.setOutputDir(extension.getRenderedDocumentationRoot().get().getAsFile());
+            task.resources(new Closure(task) {
+                public Object doCall(Object ignore) {
+                    ((CopySpec)this.getDelegate()).from(extension.getZippedSamples(), sub -> sub.into("zips"));
+                    return this.getDelegate();
+                }
+            });
+
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("icons", "font");
+            attributes.put("source-highlighter", "prettify");
+            attributes.put("toc", "auto");
+            attributes.put("toclevels", 1);
+            attributes.put("toc-title", "Contents");
+            attributes.put("userManualPath", "../userguide");
+            attributes.put("samples-dir", extension.getDocumentationRoot().get().getAsFile());
+            task.attributes(attributes);
+        });
+        extension.getRenderedDocumentation().from(samplesMultiPage);
+
         assemble.configure(t -> t.dependsOn(extension.getAssembledDocumentation()));
 
         // Templates
@@ -128,6 +176,11 @@ public class SamplesPlugin implements Plugin<Project> {
         extension.getInstallRoot().convention(layout.getBuildDirectory().dir("install/samples"));
         extension.getDocumentationRoot().convention(layout.getBuildDirectory().dir("samples/docs/"));
         extension.getCommonExcludes().convention(Arrays.asList("**/build/**", "**/.gradle/**"));
+        extension.getInstalledSamples().from(extension.getInstallRoot());
+        extension.getInstalledSamples().builtBy((Callable<List<DirectoryProperty>>) () -> extension.getBinaries().stream().map(SampleBinary::getInstallDirectory).collect(Collectors.toList()));
+        extension.getZippedSamples().from((Callable<List<RegularFileProperty>>) () -> extension.getBinaries().stream().map(SampleBinary::getZipFile).collect(Collectors.toList()));
+
+        extension.getRenderedDocumentationRoot().convention(layout.getBuildDirectory().dir("working/samples/render-samples"));
         return extension;
     }
 
@@ -135,7 +188,7 @@ public class SamplesPlugin implements Plugin<Project> {
         TaskProvider<GenerateSampleIndexAsciidoc> generateSampleIndex = tasks.register("generateSampleIndex", GenerateSampleIndexAsciidoc.class, task -> {
             task.getSamples().convention(extension.getPublishedSamples());
             // TODO: This ignores changes to the temporary directory
-            task.getOutputFile().set(new File(task.getTemporaryDir(), "index_samples.adoc"));
+            task.getOutputFile().set(new File(task.getTemporaryDir(), "index.adoc"));
         });
         extension.getSampleIndexFile().convention(generateSampleIndex.flatMap(GenerateSampleIndexAsciidoc::getOutputFile));
     }
@@ -154,8 +207,9 @@ public class SamplesPlugin implements Plugin<Project> {
 
     private void registerGenerateSamplePage(TaskContainer tasks, Sample sample) {
         TaskProvider<GenerateSamplePageAsciidoc> generateSamplePage = tasks.register("generate" + capitalize(sample.getName()) + "Page", GenerateSamplePageAsciidoc.class, task -> {
+            task.getSampleSummary().convention(sample);
             task.getReadmeFile().convention(sample.getReadMeFile());
-            task.getOutputFile().fileProvider(sample.getSampleDocName().map(fileName -> new File(task.getTemporaryDir(), fileName)));
+            task.getOutputFile().fileProvider(sample.getSampleDocName().map(fileName -> new File(task.getTemporaryDir(), fileName + ".adoc")));
             task.setDescription("Generates asciidoc page for sample '" + sample.getName() + "'");
         });
         sample.getSamplePageFile().convention(generateSamplePage.flatMap(GenerateSamplePageAsciidoc::getOutputFile));
@@ -166,15 +220,24 @@ public class SamplesPlugin implements Plugin<Project> {
         sample.getDisplayName().convention(toTitleCase(name));
         // Converts names like androidApplication to android-application
         sample.getSampleDirectory().convention(extension.getSamplesRoot().dir(toKebabCase(name)));
-        sample.getInstallDirectory().convention(extension.getInstallRoot().dir(name));
-        sample.getSampleDocName().convention("sample_" + toSnakeCase(name) + ".adoc");
+        sample.getInstallDirectory().convention(extension.getInstallRoot().dir(toKebabCase(name)));
+        sample.getSampleDocName().convention("sample_" + toSnakeCase(name));
         sample.getDescription().convention("");
         sample.getCategory().convention("Uncategorized");
 
         sample.getLicenseFile().convention(sample.getSampleDirectory().file("LICENSE"));
         sample.getReadMeFile().convention(sample.getSampleDirectory().file("README.adoc"));
 
-        sample.getDsls().convention(Arrays.asList(Dsl.values()));
+        sample.getDsls().convention(sample.getSampleDirectory().map(sampleDirectory -> {
+            List<Dsl> dsls = new ArrayList<>();
+            for (Dsl dsl : Dsl.values()) {
+                if (sampleDirectory.dir(dsl.getConventionalDirectory()).getAsFile().exists()) {
+                    dsls.add(dsl);
+                }
+            }
+            return dsls;
+        }));
+
         sample.common(content -> {
             content.from(sample.getLicenseFile());
             content.from(sample.getSamplePageFile());
@@ -198,7 +261,7 @@ public class SamplesPlugin implements Plugin<Project> {
     private Provider<SampleBinary> registerSampleBinaryForDsl(SamplesExtension extension, Sample sample, Dsl dsl) {
         return extension.getBinaries().register(sample.getName() + dsl.getDisplayName(), binary -> {
             binary.getDsl().convention(dsl).disallowChanges();
-            binary.getSamplePageFile().convention(sample.getSamplePageFile()).disallowChanges();
+            binary.getSampleLinkName().convention(sample.getSampleDocName()).disallowChanges();
             switch (dsl) {
                 case GROOVY:
                     binary.getWorkingDirectory().convention(sample.getInstallDirectory().dir(dsl.getConventionalDirectory())).disallowChanges();
@@ -222,7 +285,6 @@ public class SamplesPlugin implements Plugin<Project> {
         TaskProvider<ValidateSampleBinary> validateSample = tasks.register("validateSample" + capitalize(binary.getName()), ValidateSampleBinary.class, task -> {
             task.getDsl().convention(binary.getDsl());
             task.getSampleName().convention(binary.getName());
-            task.getReadmeName().convention(binary.getSamplePageFile().map(f -> f.getAsFile().getName()));
             task.getZipFile().convention(binary.getZipFile());
             task.getReportFile().convention(layout.getBuildDirectory().file("reports/sample-validation/" + task.getName() + ".txt"));
             task.setDescription("Checks the sample '" + binary.getName() + "' is valid.");
@@ -237,11 +299,12 @@ public class SamplesPlugin implements Plugin<Project> {
         binary.getInstallDirectory().convention(installSampleTask.flatMap(InstallSample::getInstallDirectory));
 
         TaskProvider<ZipSample> zipTask = tasks.register("zipSample" + capitalize(binary.getName()), ZipSample.class, task -> {
+            task.setDescription("Creates a zip for sample '" + binary.getName() + "'.");
             task.getSource().from(binary.getContent());
             task.getMainSource().from(binary.getDslSpecificContent());
-            task.getArchiveFile().convention(layout.getBuildDirectory().file("sample-zips/" + capitalize(binary.getName()) + ".zip"));
+            task.getReadmeName().convention(binary.getSampleLinkName().map(name -> name + ".adoc"));
             task.getExcludes().convention(binary.getExcludes());
-            task.setDescription("Creates a zip for sample '" + binary.getName() + "'.");
+            task.getArchiveFile().convention(layout.getBuildDirectory().file(binary.getSampleLinkName().map(name -> String.format("sample-zips/%s-%s.zip", name, binary.getDsl().get().getDslLabel()))));
         });
         binary.getZipFile().convention(zipTask.flatMap(ZipSample::getArchiveFile));
     }
@@ -278,7 +341,7 @@ public class SamplesPlugin implements Plugin<Project> {
 
             sample.getDsls().disallowChanges();
             // TODO: This should only be enforced if we are trying to build the given sample
-            List<Dsl> dsls = sample.getDsls().get();
+            Set<Dsl> dsls = sample.getDsls().get();
             if (dsls.isEmpty()) {
                 throw new GradleException("Samples must have at least one DSL, sample '" + sample.getName() + "' has none.");
             }

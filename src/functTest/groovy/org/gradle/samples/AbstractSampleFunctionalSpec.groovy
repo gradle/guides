@@ -73,11 +73,11 @@ rootProject.name = "demo"
     }
 
     protected TestFile getGroovyDslZipFile() {
-        return file("build/sample-zips/DemoGroovy.zip")
+        return file("build/sample-zips/sample_demo-groovy-dsl.zip")
     }
 
     protected TestFile getKotlinDslZipFile() {
-        return file("build/sample-zips/DemoKotlin.zip")
+        return file("build/sample-zips/sample_demo-kotlin-dsl.zip")
     }
 
     protected static String getSampleUnderTestDsl() {
@@ -102,22 +102,10 @@ rootProject.name = "demo"
         assertDslSampleTasksNotExecuted(result, "Kotlin")
     }
 
-    protected static void assertGroovyDslTasksExecutedAndKotlinSkipped(BuildResult result) {
-        assertCommonSampleTasksExecutedAndNotSkipped(result)
-        assertDslSampleTasksExecutedAndNotSkipped(result, "Groovy")
-        assertDslSampleTasksSkipped(result, "Kotlin")
-    }
-
     protected static void assertOnlyKotlinDslTasksExecutedAndNotSkipped(BuildResult result) {
         assertCommonSampleTasksExecutedAndNotSkipped(result)
         assertDslSampleTasksExecutedAndNotSkipped(result, "Kotlin")
         assertDslSampleTasksNotExecuted(result, "Groovy")
-    }
-
-    protected static void assertKotlinDslTasksExecutedAndGroovySkipped(BuildResult result) {
-        assertCommonSampleTasksExecutedAndNotSkipped(result)
-        assertDslSampleTasksExecutedAndNotSkipped(result, "Kotlin")
-        assertDslSampleTasksSkipped(result, "Groovy")
     }
 
     private static void assertDslSampleTasksNotExecuted(BuildResult result, String dsl) {

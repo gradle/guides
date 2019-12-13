@@ -23,10 +23,10 @@ tasks.register("publishSamples", Sync) {
         build('publishSamples')
 
         then:
-        file("build/published/samples/index_samples.adoc").assertExists()
+        file("build/published/samples/index.adoc").assertExists()
         file("build/published/samples/sample_demo.adoc").assertExists()
-        file("build/published/samples/zips/DemoGroovy.zip").assertExists()
-        file("build/published/samples/zips/DemoKotlin.zip").assertExists()
+        file("build/published/samples/zips/sample_demo-groovy-dsl.zip").assertExists()
+        file("build/published/samples/zips/sample_demo-groovy-dsl.zip").assertExists()
     }
 
     def "can generate content for the sample"() {
@@ -55,8 +55,8 @@ ${sampleUnderTestDsl}.common {
 
         then:
         result.task(":generate").outcome == SUCCESS
-        file("build/sample-zips/DemoGroovy.zip").asZip().assertContainsDescendants("generated.txt")
-        file("build/sample-zips/DemoKotlin.zip").asZip().assertContainsDescendants("generated.txt")
+        file("build/sample-zips/sample_demo-groovy-dsl.zip").asZip().assertContainsDescendants("generated.txt")
+        file("build/sample-zips/sample_demo-groovy-dsl.zip").asZip().assertContainsDescendants("generated.txt")
     }
 
     def "fails when settings.gradle.kts is missing from Kotlin DSL sample"() {
@@ -131,14 +131,14 @@ samples.binaries.configureEach {
 
         then:
         result.task(":validateSampleDemoGroovy").outcome == FAILED
-        result.output.contains("Sample 'demoGroovy' for Groovy DSL is invalid due to missing 'sample_demo.adoc' file.")
+        result.output.contains("Sample 'demoGroovy' for Groovy DSL is invalid due to missing 'README' file.")
 
         when:
         buildAndFail("validateSampleDemoKotlin")
 
         then:
         result.task(":validateSampleDemoKotlin").outcome == FAILED
-        result.output.contains("Sample 'demoKotlin' for Kotlin DSL is invalid due to missing 'sample_demo.adoc' file.")
+        result.output.contains("Sample 'demoKotlin' for Kotlin DSL is invalid due to missing 'README' file.")
     }
 
     def "fails if the sample uses no dsls"() {
@@ -155,18 +155,11 @@ ${sampleUnderTestDsl}.dsls = []
         result.output.contains("Samples must have at least one DSL, sample 'demo' has none.")
     }
 
-    def "fails if the sample does not have content for expected DSLs"() {
+    def "detects DSL based on content available"() {
         makeSingleProject()
-        // By default, we expect to produce samples for both Groovy and Kotlin, this should fail.
         def sampleDirectory = file("src/samples/demo")
         writeReadmeTo(sampleDirectory)
         writeGroovyDslSample(sampleDirectory)
-
-        when:
-        buildAndFail('check')
-
-        then:
-        result.task(":validateSampleDemoKotlin").outcome == FAILED
 
         when:
         // Only expect Groovy DSL content
@@ -183,12 +176,12 @@ ${sampleUnderTestDsl}.dsls = [ Dsl.GROOVY ]
     def "sample index contains description"() {
         makeSingleProject()
         writeSampleUnderTest()
-        def indexFile = file("build/samples/docs/index_samples.adoc")
+        def indexFile = file("build/samples/docs/index.adoc")
 
         when:
         build('assemble')
         then:
-        indexFile.text.contains('- <<sample_demo.adoc,Demo>>')
+        indexFile.text.contains('- <<sample_demo#,Demo>>')
 
         when:
         buildFile << """
@@ -197,25 +190,31 @@ ${sampleUnderTestDsl}.dsls = [ Dsl.GROOVY ]
         and:
         build('assemble')
         then:
-        indexFile.text.contains('- <<sample_demo.adoc,Demo>>: Some description')
+        indexFile.text.contains('- <<sample_demo#,Demo>>: Some description')
     }
 
     @Unroll
     def "uses '#displayName' instead of '#name' when generating sample index"() {
+        writeSampleUnderTest("src/samples/${name}")
         buildFile << """
             plugins {
                 id 'org.gradle.samples'
             }
 
-            samples.publishedSamples.create("${name}")
+            samples {
+                publishedSamples {
+                    ${name} {
+                        sampleDirectory = samplesRoot.dir("${name}")
+                    }
+                }
+            }
         """
-        writeSampleUnderTest("src/samples/${name}")
 
         when:
         build('generateSampleIndex')
 
         then:
-        def indexFile = file("build/tmp/generateSampleIndex/index_samples.adoc")
+        def indexFile = file("build/tmp/generateSampleIndex/index.adoc")
         indexFile.text.contains("${displayName}")
 
         where:
@@ -226,7 +225,7 @@ ${sampleUnderTestDsl}.dsls = [ Dsl.GROOVY ]
     }
 
     def "can configure sample display name on the generated sample index"() {
-        writeSampleUnderTest('src/samples/demoXUnit')
+        writeSampleUnderTest('src/samples/demo')
         buildFile << """
             plugins {
                 id 'org.gradle.samples'
@@ -234,7 +233,7 @@ ${sampleUnderTestDsl}.dsls = [ Dsl.GROOVY ]
 
             samples {
                 publishedSamples {                
-                    demoXUnit {
+                    demo {
                         displayName = "Demo XUnit"
                     }
                 }
@@ -245,29 +244,38 @@ ${sampleUnderTestDsl}.dsls = [ Dsl.GROOVY ]
         build('generateSampleIndex')
 
         then:
-        def indexFile = file("build/tmp/generateSampleIndex/index_samples.adoc")
+        def indexFile = file("build/tmp/generateSampleIndex/index.adoc")
         indexFile.text.contains("Demo XUnit")
     }
 
     def "can use template for source of common content"() {
         makeSingleProject()
         writeSampleUnderTest()
-        file("src/templates/template-dir/a.txt") << "aaaa"
-        file("src/templates/template-dir/subdir/b.txt") << "bbbb"
+        file("src/samples/templates/template-dir/a.txt") << "aaaa"
+        file("src/samples/templates/template-dir/subdir/b.txt") << "bbbb"
         buildFile << """
-${sampleUnderTestDsl}.common {
-    from("src/templates/template-dir")
+samples {
+    templates {
+        templateDir
+    }
+    publishedSamples {
+        demo {
+            common {
+                from(templates.templateDir)
+            }
+        }
+    }
 }
 """
         when:
         build("assembleDemoSample")
 
         then:
-        def demoGroovyZip = file("build/sample-zips/DemoGroovy.zip").asZip()
+        def demoGroovyZip = file("build/sample-zips/sample_demo-groovy-dsl.zip").asZip()
         demoGroovyZip.assertDescendantHasContent("a.txt", equalTo("aaaa"))
         demoGroovyZip.assertDescendantHasContent("subdir/b.txt", equalTo("bbbb"))
 
-        def demoKotlinZip = file("build/sample-zips/DemoKotlin.zip").asZip()
+        def demoKotlinZip = file("build/sample-zips/sample_demo-groovy-dsl.zip").asZip()
         demoKotlinZip.assertDescendantHasContent("a.txt", equalTo("aaaa"))
         demoKotlinZip.assertDescendantHasContent("subdir/b.txt", equalTo("bbbb"))
     }
@@ -292,6 +300,7 @@ ${sampleUnderTestDsl}.common {
             }
             samples.publishedSamples.create("mmm")
             samples.publishedSamples.create("aaa")
+            samples.publishedSamples.all { dsls = [ ${Dsl.canonicalName}.GROOVY ] }
         """
 
         when:
@@ -301,17 +310,19 @@ ${sampleUnderTestDsl}.common {
         result.task(":generateSampleIndex").outcome == SUCCESS
 
         and:
-        def indexFile = file("build/tmp/generateSampleIndex/index_samples.adoc")
+        def indexFile = file("build/tmp/generateSampleIndex/index.adoc")
         indexFile.text == """= Sample Index
 
 == Special
 
-- <<sample_zzz.adoc,Zzz>>
+- <<sample_zzz#,Zzz>>
+
 == Uncategorized
 
-- <<sample_aaa.adoc,Aaa>>
-- <<sample_demo.adoc,Demo>>
-- <<sample_mmm.adoc,Mmm>>
+- <<sample_aaa#,Aaa>>
+- <<sample_demo#,Demo>>
+- <<sample_mmm#,Mmm>>
+
 """
     }
 

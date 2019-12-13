@@ -8,6 +8,8 @@ import org.gradle.api.file.FileVisitDetails;
 import org.gradle.api.file.FileVisitor;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
+import org.gradle.api.provider.Property;
+import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputFile;
@@ -45,6 +47,9 @@ public abstract class ZipSample extends DefaultTask {
     @Internal
     public abstract ListProperty<String> getExcludes();
 
+    @Input
+    public abstract Property<String> getReadmeName();
+
     @OutputFile
     public abstract RegularFileProperty getArchiveFile();
 
@@ -64,7 +69,11 @@ public abstract class ZipSample extends DefaultTask {
                 @Override
                 public void visitFile(FileVisitDetails fileDetails) {
                     try {
-                        zipStream.putNextEntry(new ZipEntry(fileDetails.getRelativePath().getPathString()));
+                        if (fileDetails.getName().equals(getReadmeName().get())) {
+                            zipStream.putNextEntry(new ZipEntry("README"));
+                        } else {
+                            zipStream.putNextEntry(new ZipEntry(fileDetails.getRelativePath().getPathString()));
+                        }
                         fileDetails.copyTo(zipStream);
                         zipStream.closeEntry();
                     } catch (IOException e) {

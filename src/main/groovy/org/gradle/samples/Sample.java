@@ -6,10 +6,7 @@ import org.gradle.api.Task;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
-import org.gradle.api.provider.ListProperty;
-import org.gradle.api.provider.Property;
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.Internal;
+import org.gradle.api.provider.SetProperty;
 import org.gradle.api.tasks.TaskProvider;
 
 /**
@@ -74,13 +71,6 @@ public interface Sample extends Named, SampleSummary {
      * @param action coniguration action
      */
     void kotlin(Action<? super ConfigurableFileCollection> action);
-
-    /**
-     * @return DSLs that should be expected for this sample.
-     * By convention, this is both Groovy and Kotlin.
-     * Every sample must have at least one DSL.
-     */
-    ListProperty<Dsl> getDsls();
 
     /**
      * @return Root installation directory for each DSL.

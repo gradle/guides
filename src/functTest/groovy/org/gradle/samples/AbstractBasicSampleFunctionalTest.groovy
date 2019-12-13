@@ -20,9 +20,9 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
         result.task(":generateWrapperForSamples").outcome == SUCCESS
         assertSampleTasksExecutedAndNotSkipped(result)
         and:
-        def indexFile = file("build/samples/docs/index_samples.adoc")
-        indexFile.text.contains('- <<sample_demo.adoc,Demo>>')
-        // TODO: Assert sample page content
+        def indexFile = file("build/samples/docs/index.adoc")
+        indexFile.text.contains('- <<sample_demo#,Demo>>')
+        assertReadmeHasContent()
         and:
         assertDslZipsHaveContent()
     }
@@ -152,6 +152,8 @@ sample.common {
     protected abstract List<TestFile> getDslZipFiles()
 
     protected abstract void assertSampleTasksExecutedAndNotSkipped(BuildResult result)
+
+    protected abstract void assertReadmeHasContent()
 
     protected abstract void assertDslZipsHaveContent()
 

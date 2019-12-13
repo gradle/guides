@@ -2,6 +2,7 @@ package org.gradle.samples;
 
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.file.ConfigurableFileCollection;
+import org.gradle.api.file.ConfigurableFileTree;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
@@ -28,6 +29,8 @@ public interface SamplesExtension {
      * By convention, this is buildDir/install/samples
      */
     DirectoryProperty getInstallRoot();
+    ConfigurableFileTree getInstalledSamples();
+    ConfigurableFileCollection getZippedSamples();
 
     /**
      * @return The root directory for all documentation.
@@ -36,12 +39,15 @@ public interface SamplesExtension {
      */
     DirectoryProperty getDocumentationRoot();
 
+    DirectoryProperty getRenderedDocumentationRoot();
+    ConfigurableFileCollection getRenderedDocumentation();
+
     /**
      * @return The generated samples index file.
      *
      * This is an asciidoc file, not the generated HTML.
      *
-     * By convention, this is documentationRoot/index_samples.adoc
+     * By convention, this is documentationRoot/index.adoc
      */
     RegularFileProperty getSampleIndexFile();
 

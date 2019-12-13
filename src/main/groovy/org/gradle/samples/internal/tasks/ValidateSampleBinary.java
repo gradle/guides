@@ -27,9 +27,6 @@ public abstract class ValidateSampleBinary extends DefaultTask {
     @Input
     public abstract Property<Dsl> getDsl();
 
-    @Input
-    public abstract Property<String> getReadmeName();
-
     @Internal
     public abstract Property<String> getSampleName();
 
@@ -42,8 +39,7 @@ public abstract class ValidateSampleBinary extends DefaultTask {
         Dsl dsl = getDsl().get();
         String settingsFileName = getSettingsFileName(dsl);
         String name = getSampleName().get();
-        String readme = getReadmeName().get();
-        List<String> requiredContents = Arrays.asList(readme, settingsFileName, "gradlew", "gradlew.bat", "gradle/wrapper/gradle-wrapper.jar", "gradle/wrapper/gradle-wrapper.properties");
+        List<String> requiredContents = Arrays.asList("README", settingsFileName, "gradlew", "gradlew.bat", "gradle/wrapper/gradle-wrapper.jar", "gradle/wrapper/gradle-wrapper.properties");
 
         // Does the Zip look correct?
         File zipFile = getZipFile().get().getAsFile();
