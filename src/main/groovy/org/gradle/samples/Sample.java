@@ -6,7 +6,6 @@ import org.gradle.api.Task;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
-import org.gradle.api.provider.SetProperty;
 import org.gradle.api.tasks.TaskProvider;
 
 /**

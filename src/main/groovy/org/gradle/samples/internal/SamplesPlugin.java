@@ -30,6 +30,7 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin;
 import org.gradle.samples.Dsl;
 import org.gradle.samples.Sample;
 import org.gradle.samples.SampleBinary;
+import org.gradle.samples.SampleSummary;
 import org.gradle.samples.SamplesExtension;
 import org.gradle.samples.Template;
 import org.gradle.samples.internal.tasks.GenerateSampleIndexAsciidoc;
@@ -58,7 +59,8 @@ public class SamplesPlugin implements Plugin<Project> {
     public void apply(Project project) {
         ProjectLayout layout = project.getLayout();
         TaskContainer tasks = project.getTasks();
-        ObjectFactory objectFactory = project.getObjects();
+        ProviderFactory providers = project.getProviders();
+        ObjectFactory objects = project.getObjects();
 
         project.getPluginManager().apply("java-base");
 
@@ -70,7 +72,7 @@ public class SamplesPlugin implements Plugin<Project> {
 
         // Samples
         // Generate wrapper files that can be shared by all samples
-        FileTree wrapperFiles = createWrapperFiles(tasks, objectFactory);
+        FileTree wrapperFiles = createWrapperFiles(tasks, objects);
         extension.getPublishedSamples().configureEach(sample -> applyConventionsForSamples(extension, wrapperFiles, sample));
 
         // Sample binaries
@@ -79,7 +81,7 @@ public class SamplesPlugin implements Plugin<Project> {
         extension.getBinaries().all(binary -> createTasksForSampleBinary(tasks, layout, binary));
 
         // Documentation for sample index
-        registerGenerateSampleIndex(tasks, extension);
+        registerGenerateSampleIndex(tasks, providers, objects, extension);
 
         TaskProvider<Sync> assembleDocs = tasks.register("assembleSamples", Sync.class, task -> {
             task.from(extension.getSampleIndexFile());
@@ -136,7 +138,7 @@ public class SamplesPlugin implements Plugin<Project> {
         addExemplarTestsForSamples(project, layout, tasks, extension, check);
 
         // Trigger everything by realizing sample container
-        project.afterEvaluate(p -> realizeSamples(tasks, extension, assemble, check));
+        project.afterEvaluate(p -> realizeSamples(tasks, objects, extension, assemble, check));
     }
 
     private void createTasksForTemplates(ProjectLayout layout, TaskContainer tasks, Template template) {
@@ -184,9 +186,9 @@ public class SamplesPlugin implements Plugin<Project> {
         return extension;
     }
 
-    private void registerGenerateSampleIndex(TaskContainer tasks, SamplesExtension extension) {
+    private void registerGenerateSampleIndex(TaskContainer tasks, ProviderFactory providers, ObjectFactory objects, SamplesExtension extension) {
         TaskProvider<GenerateSampleIndexAsciidoc> generateSampleIndex = tasks.register("generateSampleIndex", GenerateSampleIndexAsciidoc.class, task -> {
-            task.getSamples().convention(extension.getPublishedSamples());
+            task.getSamples().convention(providers.provider(() -> extension.getPublishedSamples().stream().map(sample -> toSummary(objects, sample)).collect(Collectors.toSet())));
             // TODO: This ignores changes to the temporary directory
             task.getOutputFile().set(new File(task.getTemporaryDir(), "index.adoc"));
         });
@@ -205,9 +207,9 @@ public class SamplesPlugin implements Plugin<Project> {
         return wrapperFiles.getAsFileTree();
     }
 
-    private void registerGenerateSamplePage(TaskContainer tasks, Sample sample) {
+    private void registerGenerateSamplePage(TaskContainer tasks, ObjectFactory objects, Sample sample) {
         TaskProvider<GenerateSamplePageAsciidoc> generateSamplePage = tasks.register("generate" + capitalize(sample.getName()) + "Page", GenerateSamplePageAsciidoc.class, task -> {
-            task.getSampleSummary().convention(sample);
+            task.getSampleSummary().convention(toSummary(objects, sample));
             task.getReadmeFile().convention(sample.getReadMeFile());
             task.getOutputFile().fileProvider(sample.getSampleDocName().map(fileName -> new File(task.getTemporaryDir(), fileName + ".adoc")));
             task.setDescription("Generates asciidoc page for sample '" + sample.getName() + "'");
@@ -328,7 +330,7 @@ public class SamplesPlugin implements Plugin<Project> {
         });
     }
 
-    private void realizeSamples(TaskContainer tasks, SamplesExtension extension, TaskProvider<Task> assemble, TaskProvider<Task> check) {
+    private void realizeSamples(TaskContainer tasks, ObjectFactory objects, SamplesExtension extension, TaskProvider<Task> assemble, TaskProvider<Task> check) {
         // TODO: Disallow changes to published samples container after this point.
         for (Sample sample : extension.getPublishedSamples()) {
             if (sample.getName().contains("_") || sample.getName().contains("-")) {
@@ -337,7 +339,7 @@ public class SamplesPlugin implements Plugin<Project> {
             // TODO: To make this lazy without afterEvaluate/eagerness, we need to be able to tell the tasks container that the samples container should be consulted
             assemble.configure(t -> t.dependsOn(sample.getAssembleTask()));
             check.configure(t -> t.dependsOn(sample.getCheckTask()));
-            registerGenerateSamplePage(tasks, sample);
+            registerGenerateSamplePage(tasks, objects, sample);
 
             sample.getDsls().disallowChanges();
             // TODO: This should only be enforced if we are trying to build the given sample
@@ -351,5 +353,15 @@ public class SamplesPlugin implements Plugin<Project> {
                 sample.getCheckTask().configure(task -> task.dependsOn(binary.flatMap(SampleBinary::getValidationReport)));
             }
         }
+    }
+
+    private SampleSummary toSummary(ObjectFactory objects, Sample sample) {
+        SampleSummary summary = objects.newInstance(SampleSummary.class);
+        summary.getDisplayName().set(sample.getDisplayName());
+        summary.getDsls().set(sample.getDsls());
+        summary.getCategory().set(sample.getCategory());
+        summary.getDescription().set(sample.getDescription());
+        summary.getSampleDocName().set(sample.getSampleDocName());
+        return summary;
     }
 }
