@@ -58,6 +58,13 @@ public interface Sample extends Named, ExtensionAware {
     ConfigurableFileCollection getArchiveContent();
 
     /**
+     * Property for configuring the sample permalink.
+     *
+     * @return a property for the sample permalink
+     */
+    Property<String> getPermalink();
+
+    /**
      * Explicitly declare a Groovy DSL sample at the conventional location (e.g. {@code src/samples/<name>/groovy}).
      *
      * NOTE: Explicitly declaring a domain specific sample exclude any implicit conventional declaration.

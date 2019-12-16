@@ -125,89 +125,96 @@ Hello world!
 
     def "defaults to current Gradle version for minimum Gradle version of the guide"() {
         given:
-        buildFile << """
-            task verifyAsciidoctorAttributes {
-                doLast {
-                    assert asciidoctor.attributes['gradle-version'] == gradle.gradleVersion
-                    assert asciidoctor.attributes['user-manual'] == "https://docs.gradle.org/\${gradle.gradleVersion}/userguide/".toString()
-                    assert asciidoctor.attributes['language-reference'] == "https://docs.gradle.org/\${gradle.gradleVersion}/dsl/".toString()
-                    assert asciidoctor.attributes['api-reference'] == "https://docs.gradle.org/\${gradle.gradleVersion}/javadoc/".toString()
-                }
-            }
-        """
+        asciidocSourceFile << """
+Gradle version: {gradle-version}
+User manual link: {user-manual}
+Language reference link: {language-reference}
+API reference link: {api-reference}
+"""
+        createSamplesCodeDir()
+        createSamplesOutputDir()
 
         when:
-        build('verifyAsciidoctorAttributes')
+        usingGradleVersion('5.5.1')
+        build('asciidoctor')
 
         then:
-        noExceptionThrown()
+        def htmlFile = new File(temporaryFolder.root, 'build/html5/index.html').text
+        htmlFile.contains('Gradle version: 5.5.1')
+        (htmlFile =~ /User manual link: <a href=.+>https:\/\/docs.gradle.org\/5\.5\.1\/userguide\/<\/a>/).find()
+        (htmlFile =~ /Language reference link: <a href=.+>https:\/\/docs.gradle.org\/5\.5\.1\/dsl\/<\/a>/).find()
+        (htmlFile =~ /API reference link: <a href=.+>https:\/\/docs.gradle.org\/5\.5\.1\/javadoc\/<\/a>/).find()
     }
 
     def "can configure the minimum Gradle version of the guide"() {
         given:
+        asciidocSourceFile << """
+Gradle version: {gradle-version}
+User manual link: {user-manual}
+Language reference link: {language-reference}
+API reference link: {api-reference}
+"""
         buildFile << """
             guide {
                 minimumGradleVersion = "5.2"
             }
-
-            task verifyAsciidoctorAttributes {
-                doLast {
-                    assert asciidoctor.attributes['gradle-version'] == '5.2'
-                    assert asciidoctor.attributes['user-manual'] == 'https://docs.gradle.org/5.2/userguide/'
-                    assert asciidoctor.attributes['language-reference'] == 'https://docs.gradle.org/5.2/dsl/'
-                    assert asciidoctor.attributes['api-reference'] == 'https://docs.gradle.org/5.2/javadoc/'
-                }
-            }
         """
+        createSamplesCodeDir()
+        createSamplesOutputDir()
 
         when:
-        build('verifyAsciidoctorAttributes')
+        build('asciidoctor')
 
         then:
-        noExceptionThrown()
+        def htmlFile = new File(temporaryFolder.root, 'build/html5/index.html').text
+        htmlFile.contains('Gradle version: 5.2')
+        (htmlFile =~ /User manual link: <a href=.+>https:\/\/docs.gradle.org\/5\.2\/userguide\/<\/a>/).find()
+        (htmlFile =~ /Language reference link: <a href=.+>https:\/\/docs.gradle.org\/5\.2\/dsl\/<\/a>/).find()
+        (htmlFile =~ /API reference link: <a href=.+>https:\/\/docs.gradle.org\/5\.2\/javadoc\/<\/a>/).find()
     }
 
     def "can configure the title of the guide"() {
         given:
+        asciidocSourceFile << """
+Guide title: {guide-title}
+"""
         buildFile << """
             guide {
                 title = "Some Title"
             }
-
-            task verifyAsciidoctorAttributes {
-                doLast {
-                    assert asciidoctor.attributes['guide-title'] == 'Some Title'
-                }
-            }
         """
+        createSamplesCodeDir()
+        createSamplesOutputDir()
 
         when:
-        build('verifyAsciidoctorAttributes')
+        build('asciidoc')
 
         then:
-        noExceptionThrown()
+        def htmlFile = new File(temporaryFolder.root, 'build/html5/index.html').text
+        htmlFile.contains('Guide title: Some Title')
     }
 
     def "can configure the repository path of the guide"() {
         given:
+        asciidocSourceFile << """
+Repo path: {repo-path}
+Repository path: {repository-path}
+"""
         buildFile << """
             guide {
                 repositoryPath = "foo/bar"
             }
-
-            task verifyAsciidoctorAttributes {
-                doLast {
-                    assert asciidoctor.attributes['repo-path'] == 'foo/bar'
-                    assert asciidoctor.attributes['repository-path'] == 'foo/bar'
-                }
-            }
         """
+        createSamplesCodeDir()
+        createSamplesOutputDir()
 
         when:
-        build('verifyAsciidoctorAttributes')
+        build('asciidoc')
 
         then:
-        noExceptionThrown()
+        def htmlFile = new File(temporaryFolder.root, 'build/html5/index.html').text
+        htmlFile.contains('Repo path: foo/bar')
+        htmlFile.contains('Repository path: foo/bar')
     }
 
     def "defaults guide title to project name as title case"() {

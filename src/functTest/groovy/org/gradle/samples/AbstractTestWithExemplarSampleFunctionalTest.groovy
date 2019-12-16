@@ -7,6 +7,7 @@ import static org.gradle.testkit.runner.TaskOutcome.NO_SOURCE
 import static org.gradle.testkit.runner.TaskOutcome.SKIPPED
 import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import static org.gradle.testkit.runner.TaskOutcome.FAILED
 
 abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSampleFunctionalSpec {
     private static final SKIPPED_TASK_OUTCOMES = [FROM_CACHE, UP_TO_DATE, SKIPPED, NO_SOURCE]
@@ -158,22 +159,56 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
         assertExemplarTasksExecutedAndNotSkipped(result)
         assertExemplarTestSucceeds(['demo', 'anotherDemo'])
     }
+
+    def "can disable sample testing by renaming the .sample.config file"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        writeExemplarConfigurationToDirectory()
+        buildFile << '''
+            samples.create('anotherDemo')
+        '''
+        writeSampleUnderTestToDirectory('src/samples/anotherDemo')
+        writeExemplarConfigurationToDirectory('src/samples/anotherDemo')
+        def anotherDemoConfigFile = new File(temporaryFolder.root, 'src/samples/anotherDemo/showDemoSample.sample.conf')
+        anotherDemoConfigFile.text = anotherDemoConfigFile.text.replaceAll('help', 'belp') // make the test fail
+
+        when:
+        def result1 = buildAndFail("samplesExemplarFunctionalTest")
+
+        then:
+        result1.task(':installDemoExemplarSample').outcome == SUCCESS
+        result1.task(':samplesExemplarFunctionalTest').outcome == FAILED
+        assertExemplarTestExecuted(['demo'], ['anotherDemo'])
+
+        when:
+        assert anotherDemoConfigFile.renameTo(new File(temporaryFolder.root, "src/samples/anotherDemo/showDemoSample.sample.confz"))
+        def result2 = build("samplesExemplarFunctionalTest")
+
+        then:
+        assertExemplarTasksExecutedAndNotSkipped(result2)
+        assertExemplarTestSucceeds(['demo'])
+    }
     // TODO: Test when the content of an archive is generated
 
     protected void assertExemplarTestSucceeds(List<String> testCases = ['demo']) {
+        assertExemplarTestExecuted(testCases)
+    }
+
+    protected void assertExemplarTestExecuted(List<String> passingTestCases = ['demo'], List<String> failingTestCases = []) {
         assert new File(temporaryFolder.root, "build/reports/tests/samplesExemplarFunctionalTest").exists()
 
         def testsuiteXmlFile = new File(temporaryFolder.root, "build/test-results/samplesExemplarFunctionalTest/TEST-org.gradle.samples.ExemplarExternalSamplesFunctionalTest.xml")
         assert testsuiteXmlFile.exists()
         def testsuiteNode = new XmlSlurper().parseText(testsuiteXmlFile.text)
         assert testsuiteNode.@name == 'org.gradle.samples.ExemplarExternalSamplesFunctionalTest'
-        assert testsuiteNode.@tests == "${testCases.size()}"
+        assert testsuiteNode.@tests == "${passingTestCases.size() + failingTestCases.size()}"
         assert testsuiteNode.@skipped == '0'
-        assert testsuiteNode.@failures == '0'
+        assert testsuiteNode.@failures == "${failingTestCases.size()}"
         assert testsuiteNode.@errors == '0'
 
-        testsuiteNode.testcase*.@name == testCases.collect { "${it}_showDemoSample.sample" }
+        testsuiteNode.testcase*.@name == (passingTestCases + failingTestCases).collect { "${it}_showDemoSample.sample" }
     }
+
 
     protected void assertExemplarTasksSkipped(BuildResult result) {
         assert result.task(':installDemoExemplarSample').outcome in SKIPPED_TASK_OUTCOMES

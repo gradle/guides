@@ -25,6 +25,7 @@ import org.gradle.samples.internal.tasks.SampleZipTask;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,7 @@ import java.util.stream.StreamSupport;
 import static org.gradle.samples.internal.StringUtils.capitalize;
 import static org.gradle.samples.internal.StringUtils.toTitleCase;
 
+@SuppressWarnings("Convert2Lambda") // Additional task actions are not supported to be lambdas
 public class SamplesPlugin implements Plugin<Project> {
     @Inject
     protected ObjectFactory getObjectFactory() {
@@ -52,10 +54,11 @@ public class SamplesPlugin implements Plugin<Project> {
             DefaultSample result = project.getObjects().newInstance(DefaultSample.class, name);
             result.getGradleVersion().convention(project.getGradle().getGradleVersion());
             result.getIntermediateDirectory().set(project.getLayout().getBuildDirectory().dir("sample-intermediate/" + name));
-            result.getArchiveBaseName().set(project.provider(() -> name + (project.getVersion().equals(Project.DEFAULT_VERSION) ? "" : "-" + project.getVersion().toString())));
-            result.getInstallDirectory().set(project.getLayout().getBuildDirectory().dir("gradle-samples/" + name));
+            result.getArchiveBaseName().set(project.provider(() -> capitalize(name) + (project.getVersion().equals(Project.DEFAULT_VERSION) ? "" : "-" + project.getVersion().toString())));
+            result.getInstallDirectory().set(project.getLayout().getBuildDirectory().dir(result.getPermalink().map(it -> "gradle-samples/" + it)));
             result.getSampleDirectory().convention(project.getLayout().getProjectDirectory().dir("src/samples/" + name));
             result.getDisplayName().convention(toTitleCase(name));
+            result.getPermalink().convention(name);
             result.setAsciidoctorTask(createAsciidoctorTask(project.getTasks(), result, getObjectFactory()));
 
             return result;
@@ -90,12 +93,23 @@ public class SamplesPlugin implements Plugin<Project> {
             });
         });
 
-        TaskProvider<GenerateSampleIndexAsciidoc> indexGeneratorTask = createSampleIndexGeneratorTask(project.getTasks(), samples, project.getLayout(), project.getProviders());
+        List<Sample> orderedSampleList = new ArrayList<>();
+        samples.configureEach(orderedSampleList::add);
+        TaskProvider<GenerateSampleIndexAsciidoc> indexGeneratorTask = createSampleIndexGeneratorTask(project.getTasks(), orderedSampleList, project.getLayout(), project.getProviders());
+
         TaskProvider<? extends Task> asciidocTask = createIndexAsciidocTask(project.getTasks(), indexGeneratorTask, project.getLayout());
         project.getTasks().named("assemble").configure(it -> it.dependsOn(asciidocTask));
 
         project.afterEvaluate(evaluatedProject -> {
             samples.stream().map(it -> (DefaultSample) it).forEach(this::configureDefaultDomainSpecificSampleIfNeeded);
+        });
+
+        PermalinkCollisionHandler permalinkCollisionHandler = new PermalinkCollisionHandler(samples.withType(DefaultSample.class));
+        project.getTasks().withType(InstallSampleTask.class).configureEach(task -> {
+            task.doFirst(permalinkCollisionHandler.throwOrWarnOnPermalinkCollision());
+        });
+        project.getTasks().withType(GenerateSampleIndexAsciidoc.class).configureEach(task -> {
+            task.doFirst(permalinkCollisionHandler.throwOnPermalinkCollision());
         });
 
         project.getPluginManager().apply(TestingSamplesWithExemplarPlugin.class);
@@ -184,7 +198,7 @@ public class SamplesPlugin implements Plugin<Project> {
     }
 
     private static TaskProvider<InstallSampleTask> createSampleInstallTask(TaskContainer tasks, DefaultSample sample) {
-        return tasks.register("install" + capitalize(sample.getName()) + "Sample", InstallSampleTask.class, task -> {
+        return tasks.register(sample.getInstallTaskName(), InstallSampleTask.class, task -> {
             task.getSource().from(sample.getSource());
             task.getInstallDirectory().set(sample.getInstallDirectory());
         });
@@ -207,30 +221,51 @@ public class SamplesPlugin implements Plugin<Project> {
 
             Provider<String> zipBaseFileName = sample.getArchiveBaseName();
             task.getInputs().property("zipBaseFileName", zipBaseFileName);
-            task.doFirst(it -> task.getAttributes().put("zip-base-file-name", zipBaseFileName.get()));
-
-            Provider<Directory> samplesDir = sample.getSampleDirectory();
-            task.getInputs().dir(samplesDir).withPropertyName("samplesDir").withPathSensitivity(PathSensitivity.RELATIVE);
-            task.doFirst(it -> task.getAttributes().put("samples-dir", samplesDir.get().getAsFile().getAbsolutePath()));
-
-            Provider<String> sampleDisplayName = sample.getDisplayName();
-            task.getInputs().property("sampleDisplayName", sampleDisplayName);
-            task.doFirst(it -> task.getAttributes().put("sample-displayName", sampleDisplayName.get()));
-
-            Provider<String> sampleDescription = sample.getDescription();
-            task.getInputs().property("sampleDescription", sampleDescription).optional(true);
-            task.doFirst(it -> {
-                if (sampleDescription.isPresent()) {
-                    task.getAttributes().put("sample-description", sampleDescription.get());
+            task.doFirst(new Action<Task>() {
+                @Override
+                public void execute(Task it) {
+                    task.getAttributes().put("zip-base-file-name", zipBaseFileName.get());
                 }
             });
 
-            task.doLast(it -> {
-                task.getProject().sync(spec -> {
-                    spec.from(new File(task.getTemporaryDir(), "out"));
-                    spec.into(contentDirectory);
-                    spec.rename("README.html", "index.html");
-                });
+            Provider<Directory> samplesDir = sample.getSampleDirectory();
+            task.getInputs().dir(samplesDir).withPropertyName("samplesDir").withPathSensitivity(PathSensitivity.RELATIVE);
+            task.doFirst(new Action<Task>() {
+                @Override
+                public void execute(Task it) {
+                    task.getAttributes().put("samples-dir", samplesDir.get().getAsFile().getAbsolutePath());
+                }
+            });
+
+            Provider<String> sampleDisplayName = sample.getDisplayName();
+            task.getInputs().property("sampleDisplayName", sampleDisplayName);
+            task.doFirst(new Action<Task>() {
+                @Override
+                public void execute(Task it) {
+                    task.getAttributes().put("sample-displayName", sampleDisplayName.get());
+                }
+            });
+
+            Provider<String> sampleDescription = sample.getDescription();
+            task.getInputs().property("sampleDescription", sampleDescription).optional(true);
+            task.doFirst(new Action<Task>() {
+                @Override
+                public void execute(Task it) {
+                    if (sampleDescription.isPresent()) {
+                        task.getAttributes().put("sample-description", sampleDescription.get());
+                    }
+                }
+            });
+
+            task.doLast(new Action<Task>() {
+                @Override
+                public void execute(Task it) {
+                    task.getProject().sync(spec -> {
+                        spec.from(new File(task.getTemporaryDir(), "out"));
+                        spec.into(contentDirectory);
+                        spec.rename("README.html", "index.html");
+                    });
+                }
             });
             // TODO: Filter to only README.adoc
             // TODO: Fail if no README.adoc file
@@ -247,7 +282,7 @@ public class SamplesPlugin implements Plugin<Project> {
         return tasks.register("generateSampleIndex", GenerateSampleIndexAsciidoc.class, task -> {
             task.getSampleInformation().set(providerFactory.provider(() -> StreamSupport.stream(samples.spliterator(), false)
                     .filter(it -> !it.getSampleDirectory().getAsFileTree().isEmpty())
-                    .map(it -> new GenerateSampleIndexAsciidoc.SampleInformation(it.getName(), it.getDisplayName().get(), it.getDescription().getOrNull()))
+                    .map(it -> new GenerateSampleIndexAsciidoc.SampleInformation(it.getPermalink().get(), it.getDisplayName().get(), it.getDescription().getOrNull()))
                     .collect(Collectors.toList())));
             task.getOutputFile().set(projectLayout.getBuildDirectory().file("tmp/" + task.getName() + "/index.adoc"));
         });

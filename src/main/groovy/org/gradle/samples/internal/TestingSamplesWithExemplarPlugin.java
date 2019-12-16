@@ -18,6 +18,7 @@ import org.gradle.api.tasks.testing.Test;
 import org.gradle.samples.ExemplarExtension;
 import org.gradle.samples.Sample;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
@@ -95,12 +96,30 @@ public class TestingSamplesWithExemplarPlugin implements Plugin<Project> {
 
     private static TaskProvider<Sync> createSampleExemplarInstallTask(TaskContainer tasks, DefaultSample sample, DefaultExemplarExtension exemplar, Provider<Directory> samplesExemplarDirectory) {
         return tasks.register("install" + capitalize(sample.getName()) + "ExemplarSample", Sync.class, task -> {
-            task.onlyIf(it -> exemplarConfigurationArePresent(sample));
+            task.onlyIf(it -> exemplarConfigurationArePresent(sample) || samplesExemplarDirectory.get().dir(sample.getName()).getAsFile().exists());
             task.setDestinationDir(samplesExemplarDirectory.get().dir(sample.getName()).getAsFile());
             task.from(exemplar.getSource());
 
             exemplar.actions.forEach(it -> it.execute(task));
+
+            task.doLast(t -> {
+                if (!exemplarConfigurationArePresent(sample)) {
+                    deleteDirectory(samplesExemplarDirectory.get().dir(sample.getName()).getAsFile());
+                }
+            });
         });
+    }
+
+    private static void deleteDirectory(File file) {
+        File[] contents = file.listFiles();
+        if (contents != null) {
+            for (File f : contents) {
+                if (!Files.isSymbolicLink(f.toPath())) {
+                    deleteDirectory(f);
+                }
+            }
+        }
+        file.delete();
     }
 
     private static boolean exemplarConfigurationArePresent(Sample sample) {

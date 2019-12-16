@@ -81,8 +81,8 @@ endif::[]
         and:
         def sampleIndexFile = new File(projectDir, "build/gradle-samples/demo/index.html")
         sampleIndexFile.exists()
-        sampleIndexFile.text.contains('<a href="demo-groovy-dsl.zip">')
-        !sampleIndexFile.text.contains('<a href="demo-kotlin-dsl.zip">')
+        sampleIndexFile.text.contains('<a href="Demo-groovy-dsl.zip">')
+        !sampleIndexFile.text.contains('<a href="Demo-kotlin-dsl.zip">')
 
         and:
         def indexFile = new File(projectDir, "build/gradle-samples/index.html")
@@ -110,8 +110,8 @@ endif::[]
         and:
         def sampleIndexFile = new File(projectDir, "build/gradle-samples/demo/index.html")
         sampleIndexFile.exists()
-        !sampleIndexFile.text.contains('<a href="demo-groovy-dsl.zip">')
-        sampleIndexFile.text.contains('<a href="demo-kotlin-dsl.zip">')
+        !sampleIndexFile.text.contains('<a href="Demo-groovy-dsl.zip">')
+        sampleIndexFile.text.contains('<a href="Demo-kotlin-dsl.zip">')
 
         and:
         def indexFile = new File(projectDir, "build/gradle-samples/index.html")
@@ -128,18 +128,34 @@ endif::[]
 
         then:
         assertSampleTasksExecutedAndNotSkipped(result1)
-        result1.task(':assemble').outcome == SUCCESS
         result1.task(':generateSampleIndex').outcome == SUCCESS
         result1.task(':asciidocSampleIndex').outcome == SUCCESS
+        result1.task(':asciidoctorDemoSample').outcome == SUCCESS
+        result1.task(':generateWrapperForDemoSample').outcome == SUCCESS
+        result1.task(':installDemoGroovyDslSample').outcome == SUCCESS
+        result1.task(':compressDemoGroovyDslSample').outcome == SUCCESS
+        result1.task(':installDemoKotlinDslSample').outcome == SUCCESS
+        result1.task(':compressDemoKotlinDslSample').outcome == SUCCESS
+        result1.task(':installDemoSample').outcome == SUCCESS
+        result1.task(':assembleDemoSample').outcome == SUCCESS
+        result1.task(':assemble').outcome == SUCCESS
 
         when:
         def result2 = build("assemble")
 
         then:
         assertSampleTasksSkipped(result2)
-        result2.task(':assemble').outcome in SKIPPED_TASK_OUTCOMES
         result2.task(':generateSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
         result2.task(':asciidocSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':asciidoctorDemoSample').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':generateWrapperForDemoSample').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':installDemoGroovyDslSample').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':compressDemoGroovyDslSample').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':installDemoKotlinDslSample').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':compressDemoKotlinDslSample').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':installDemoSample').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':assembleDemoSample').outcome in SKIPPED_TASK_OUTCOMES
+        result2.task(':assemble').outcome in SKIPPED_TASK_OUTCOMES
     }
 
     def "executes Asciidoctor and Zip tasks when README content change"() {
@@ -201,8 +217,8 @@ endif::[]
         and:
         def sampleIndexFile1 = new File(projectDir, "build/gradle-samples/demo/index.html")
         sampleIndexFile1.exists()
-        sampleIndexFile1.text.contains('<a href="demo-groovy-dsl.zip">')
-        sampleIndexFile1.text.contains('<a href="demo-kotlin-dsl.zip">')
+        sampleIndexFile1.text.contains('<a href="Demo-groovy-dsl.zip">')
+        sampleIndexFile1.text.contains('<a href="Demo-kotlin-dsl.zip">')
 
         and:
         groovyDslZipFile.exists()
@@ -237,8 +253,8 @@ endif::[]
         and:
         def sampleIndexFile2 = new File(projectDir, "build/gradle-samples/demo/index.html")
         sampleIndexFile2.exists()
-        sampleIndexFile2.text.contains('<a href="demo-4.2-groovy-dsl.zip">')
-        sampleIndexFile2.text.contains('<a href="demo-4.2-kotlin-dsl.zip">')
+        sampleIndexFile2.text.contains('<a href="Demo-4.2-groovy-dsl.zip">')
+        sampleIndexFile2.text.contains('<a href="Demo-4.2-kotlin-dsl.zip">')
 
         and:
         !groovyDslZipFile.exists()

@@ -55,8 +55,8 @@ endif::[]
 
         def sampleIndexFile = new File(projectDir, "build/gradle-samples/demo/index.html")
         assert sampleIndexFile.exists()
-        assert sampleIndexFile.text.contains("""<a href="demo${version}-groovy-dsl.zip">""")
-        assert sampleIndexFile.text.contains("""<a href="demo${version}-kotlin-dsl.zip">""")
+        assert sampleIndexFile.text.contains("""<a href="Demo${version}-groovy-dsl.zip">""")
+        assert sampleIndexFile.text.contains("""<a href="Demo${version}-kotlin-dsl.zip">""")
     }
 
     @Override
@@ -69,8 +69,8 @@ endif::[]
 
         def sampleIndexFile = new File(projectDir, "build/gradle-samples/demo/index.html")
         assert sampleIndexFile.exists()
-        assert !sampleIndexFile.text.contains("""<a href="demo${version}-groovy-dsl.zip">""")
-        assert !sampleIndexFile.text.contains("""<a href="demo${version}-kotlin-dsl.zip">""")
+        assert !sampleIndexFile.text.contains("""<a href="Demo${version}-groovy-dsl.zip">""")
+        assert !sampleIndexFile.text.contains("""<a href="Demo${version}-kotlin-dsl.zip">""")
     }
 
     @Override

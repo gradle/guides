@@ -93,6 +93,10 @@ public abstract class DefaultSample implements Sample {
         return "generateWrapperFor" + capitalize(name) + "Sample";
     }
 
+    String getInstallTaskName() {
+        return "install" + capitalize(name) + "Sample";
+    }
+
     DomainObjectSet<DslSampleArchive> getDslSampleArchives() {
         return archives;
     }

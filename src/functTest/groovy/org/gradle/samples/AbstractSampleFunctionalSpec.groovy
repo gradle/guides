@@ -83,9 +83,12 @@ rootProject.name = "demo"
 
     private File getDslZipFile(Map m) {
         def versionToken = m.version ? "${m.version}-" : ''
+        def name = m.name ? m.name : 'demo'
+        def permalink = m.permalink ? m.permalink : name
+        def baseName = name.capitalize()
         def buildDirectoryRelativePathToken = m.getOrDefault('buildDirectoryRelativePath', 'gradle-samples')
         def dslToken = m.dsl
-        return new File(projectDir, "build/${buildDirectoryRelativePathToken}/demo/demo-${versionToken}${dslToken}.zip")
+        return new File(projectDir, "build/${buildDirectoryRelativePathToken}/${permalink}/${baseName}-${versionToken}${dslToken}.zip")
     }
 
     protected File getSampleReadMeFile() {
