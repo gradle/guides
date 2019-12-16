@@ -217,7 +217,7 @@ $ mkdir -p greeter/src/main/java/greeter
 include::{groovy-example-dir}/greeter/src/main/java/greeter/Greeter.java[]
 ----
 
-As the target is a Java application, you also need to tell Gradle the name of the class which is the entry point. Edit the root project build script file again and assign the `mainClassName` property to Java class that contains the `main` method.
+As the target is a Java application, you also need to tell Gradle the name of the class which is the entry point. Edit the build script of the `greeter` sub-project and assign the `mainClassName` property to Java class that contains the `main` method.
 
 .greeter/build.gradle
 [source.multi-language-sample,groovy]
