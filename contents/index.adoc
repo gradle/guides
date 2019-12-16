@@ -107,7 +107,7 @@ Think of a build scan like a web-based, detailed build report. Super handy for d
 
 == Step 2: Add testing with JUnit
 
-https://junit.org/junit4/[JUnit 4] is the simplest of testing libraries to add to our project. If you happen to prefer the https://spekframework.org/[Spek framework] for Kotlin-based specifications, check out the hhttps://spekframework.org/setup-jvm/#gradle[Spek docs].
+https://junit.org/junit4/[JUnit 4] is the simplest of testing libraries to add to our project. If you happen to prefer the https://spekframework.org/[Spek framework] for Kotlin-based specifications, check out the https://spekframework.org/setup-jvm/#gradle[Spek docs].
 
 .build.gradle.kts
 [source,diff]
