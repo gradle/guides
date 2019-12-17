@@ -1,0 +1,16 @@
+// tag::all[]
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.0.2.RELEASE'
+}
+
+bootJar {
+    archiveName = 'app.jar'
+    mainClassName = 'com.example.demo.Demo'
+}
+
+bootRun {
+    main = 'com.example.demo.Demo'
+    args '--spring.profiles.active=demo'
+}
+// end::all[]
