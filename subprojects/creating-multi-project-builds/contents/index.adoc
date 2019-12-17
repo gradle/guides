@@ -1,0 +1,512 @@
+= Creating Multi-project Builds
+
+Multi-project builds helps with modularization. It allows a person to concentrate on one area of work in a larger project, while Gradle takes care of dependencies from other parts of the project.
+
+== What you'll build
+
+You'll build a greeting app which also includes documentation. In the process you will create a Groovy-based library project, an Asciidoctor-based documentation project and a Java distributable command-line application. You will see how to connect these projects together to create a final product.
+
+== What you'll need
+
+* About +++<span class="time-to-complete-text"></span>+++
+* A text editor
+* A command prompt
+* The Java Development Kit (JDK) version 1.8 or higher
+* A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
+
+== Create a root project
+
+The first step is to create a folder for the new project and add a {user-manual}gradle_wrapper.html#sec:wrapper_generation[Gradle Wrapper] to the project. If you use the link:{user-manual}build_init_plugin.html[Build Init plugin] then the necessary settings and build scripts will also be added.
+
+[source.multi-language-sample,groovy]
+.Groovy DSL
+----
+$ mkdir creating-multi-project-builds
+$ cd creating-multi-project-builds
+$ gradle init // <1> <2>
+
+:wrapper
+:init
+
+BUILD SUCCESSFUL
+----
+[source.multi-language-sample,kotlin]
+.Kotlin DSL
+----
+$ mkdir creating-multi-project-builds
+$ cd creating-multi-project-builds
+$ gradle init --dsl kotlin // <1> <2>
+
+:wrapper
+:init
+
+BUILD SUCCESSFUL
+----
+<1> Use of `init` will create skeleton build and settings files which can be customized.
+<2> This allows a version of Gradle to be locked to a project, and afterwards you can use `./gradlew` (or `gradlew.bat` on Windows) instead of `gradle`.
+
+Open the settings script. There will be a number of auto-generated comments which you can remove, leaving only:
+
+.settings.gradle
+[source.multi-language-sample,groovy]
+----
+include::{groovy-example-dir}/settings.gradle[tags=after-init]
+----
+.settings.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/settings.gradle.kts[tags=after-init]
+----
+
+Great! You are now ready to start development. (Remember to save your file.)
+
+== Configure from above
+
+In a multi-project you can use the top-level build script (also known as the root project) to configure as much commonality as possible, leaving sub-projects to customize only what is necessary for that subproject.
+
+When using the `init` task with no parameters, Gradle generates a build script file with a basic Java layout in a comment block. Open it and replace its contents with:
+
+.build.gradle
+[source.multi-language-sample,groovy]
+----
+include::{groovy-example-dir}/build.gradle[tags=jcenter]
+----
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/build.gradle.kts[tags=jcenter]
+----
+<1> Add the JCenter repository to all projects.
+
+The `allprojects` block is used to add configuration items that will apply to all sub-projects as well as the root project. In a similar fashion, the `subprojects` block can be used to add configurations items for all sub-projects only. You can use these two blocks as many times as you want in the root project.
+
+Now set the version for each of the modules which you will be adding, via the `subproject` block in the top-level build script as follows
+
+.build.gradle
+[source.multi-language-sample,groovy]
+----
+include::{groovy-example-dir}/build.gradle[tags=subproject-versions]
+----
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/build.gradle.kts[tags=subproject-versions]
+----
+
+== Add a Groovy library subproject
+
+Create the directory for your library subproject.
+
+[listing]
+----
+$ mkdir greeting-library
+----
+
+Create a build script in the `greeting-library` and add the basic Groovy library project content as follows.
+
+(Don't worry if you've never built a Groovy library before. The complete contents will be supplied here. If you are interested in the details, you might want to look at the Getting Started Guide for {guides}/building-groovy-libraries[Building Groovy Libraries] in the User Manual).
+
+.greeting-library/build.gradle
+[source.multi-language-sample,groovy]
+----
+include::{groovy-example-dir}/greeting-library/build.gradle[]
+----
+.greeting-library/build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/greeting-library/build.gradle.kts[]
+----
+
+Now edit the settings script _in the top-level project_ to make the new Groovy library project part of the multi-project build.
+
+.settings.gradle
+[source.multi-language-sample,groovy]
+----
+include::{groovy-example-dir}/settings.gradle[tags=greeting-library]
+----
+.settings.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/settings.gradle.kts[tags=greeting-library]
+----
+
+Finally, create the `src/main/groovy` folder under `greeting-library` and add the package folder `greeter`.
+
+[listing]
+----
+$ mkdir -p src/main/groovy/greeter
+$ mkdir -p src/test/groovy/greeter
+----
+
+Add a `GreetingFormatter` class to the `greeter` package in `src/main/groovy`.
+
+.greeting-library/src/main/groovy/greeter/GreetingFormatter.groovy
+[source,groovy]
+----
+include::{groovy-example-dir}/greeting-library/src/main/groovy/greeter/GreetingFormatter.groovy[]
+----
+
+Add a Spock Framework test called `GreetingFormatterSpec` in the `greeter` package under `src/test/groovy`.
+
+.greeting-library/src/test/groovy/greeter/GreetingFormatterSpec.groovy
+[source,groovy]
+----
+include::{groovy-example-dir}/greeting-library/src/test/groovy/greeter/GreetingFormatterSpec.groovy[]
+----
+
+Run `./gradlew build` from the top-level project directory.
+
+[listing]
+----
+$ ./gradlew build
+
+include::{gradle-outdir}/groovy-dsl-clean-output-build-greeting-library/out.txt[]
+----
+
+Gradle automatically detected that there is a `build` task in `greeting-library` and executed it. This is one of the powerful features of a Gradle multi-project build. When tasks in sub-projects have the same names as those in the top-level project, then maintenance of the build will be easier, and Gradle is able to execute the same tasks in each project by specifying the common task name at the top level.
+
+A single subproject does not truly make a multi-project build, however. Therefore the next step is to add a sub-project which will consume this library,
+
+== Add a Java application sub-project
+
+Create a folder in the root project for the sub-project which will contain the application.
+
+[listing]
+----
+$ mkdir greeter
+----
+
+.greeter/build.gradle
+[source.multi-language-sample,groovy]
+----
+include::{groovy-example-dir}/greeter/build.gradle[tags=basic-script]
+----
+.greeter/build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/greeter/build.gradle.kts[tags=basic-script]
+----
+<1> This is a Java project, so the link:{user-manual}java_plugin.html[Java plugin] is required.
+<2> Add the link:{user-manual}application_plugin.html[Application plugin] to make this a Java application.
+
+The link:{user-manual}application_plugin.html[Application plugin] allows you to bundle all of your applications JARs as well as all of their transitive dependencies into a single ZIP or TAR file. It will also add two startup scripts (one for UNIX-like operations systems and one for Windows) to the archive to make it easy for your users to run your application.
+
+Once again, update the settings script to add the new project
+
+.settings.gradle
+[source.multi-language-sample,groovy]
+----
+include::{groovy-example-dir}/settings.gradle[tags=application]
+----
+.settings.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/settings.gradle.kts[tags=application]
+----
+
+Now create a Java class file with a main function, which will consume the `Greeter` library from the `greeting-library` subproject.
+
+[listing]
+----
+$ mkdir -p greeter/src/main/java/greeter
+----
+
+.greeter/src/main/java/greeter/Greeter.java
+[source,java]
+----
+include::{groovy-example-dir}/greeter/src/main/java/greeter/Greeter.java[]
+----
+
+As the target is a Java application, you also need to tell Gradle the name of the class which is the entry point. Edit the build script of the `greeter` sub-project and assign the `mainClassName` property to Java class that contains the `main` method.
+
+.greeter/build.gradle
+[source.multi-language-sample,groovy]
+----
+include::{groovy-example-dir}/greeter/build.gradle[tags=main-class-name]
+----
+.greeter/build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/greeter/build.gradle.kts[tags=main-class-name]
+----
+<1> Use `mainClassName` to set the entry point. (The assigned class must have a standard `main` method).
+
+Run the build (which will fail, because we haven't resolved all dependencies yet).
+
+[listing]
+----
+$ ./gradlew build
+
+...
+include::{gradle-outdir}/groovy-dsl-clean-error-message-1/err.txt[]
+----
+
+This is because the `greeter` project does not know where to find the `greeting-library`. Creating a collection of sub-projects does not automatically make their respective artifacts automatically available to other sub-projects - that would lead to very brittle projects. Gradle has a specific syntax to link the artifacts of one subproject to the dependencies of another sub-project. Edit the build script of the `greeter` sub-project again and add:
+
+.greeter/build.gradle
+[source.multi-language-sample,groovy]
+----
+include::{groovy-example-dir}/greeter/build.gradle[tags=project-dependency]
+----
+.greeter/build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/greeter/build.gradle.kts[tags=project-dependency]
+----
+<1> Use the `project(NAME)` syntax to add the artifacts of one subproject to the dependencies of another subproject.
+
+Run the build again, which should now succeed.
+
+
+[listing]
+----
+$ ./gradlew build
+
+include::{gradle-outdir}/groovy-dsl-clean-output-greeter-app/out.txt[]
+----
+
+Notice how each subproject is prefixed in the output, so that you know which task from which project is being executed. Also note that Gradle does not process all tasks from one subproject before moving onto another.
+
+Add a test to ensure your code in the application itself works. As Spock Framework is a popular approach to testing Java code as well, create the test by first adding the link:{user-manual}groovy_plugin.html[Groovy plugin] to the build script of the `greeter` sub-project. This requires the `groovy` plugin, and that includes the `java` plugin, so you can replace the word `java` with `groovy` as shown.
+
+.greeter/build.gradle
+[source.multi-language-sample,groovy]
+----
+plugins {
+    id 'groovy' // <1>
+}
+
+// then, add the following testCompile dependency to the dependencies block:
+
+include::{groovy-example-dir}/spock.gradle[]
+----
+.greeter/build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+plugins {
+    groovy // <1>
+}
+
+// then, add the following testCompile dependency to the dependencies block:
+
+include::{kotlin-example-dir}/spock-declarative.gradle.kts[]
+----
+<1> Having `groovy` plugin automatically applies the `java` plugin, so you could actually delete the line applying the `java` plugin.
+However for semantics it might be better to keep both as it indicates that you are primarily building a Java project.
+
+Then add a test called `GreeterSpec` in the `greeter` package to the sub-project in the `src/test/groovy/greeter` directory (you'll have to create that directory if it does not already exist).
+
+.greeter/src/test/groovy/greeter/GreeterSpec.groovy
+[source,java]
+----
+include::{groovy-example-dir}/greeter/src/test/groovy/greeter/GreeterSpec.groovy[]
+----
+
+Instead of running the complete build again, just run the test inside the `greeter` subproject. The Gradle wrapper script `gradlew` only exists at top-level, so change directory to there first.
+
+
+[listing]
+----
+$ ./gradlew :greeter:test
+
+include::{gradle-outdir}/groovy-dsl-clean-output-test-app/out.txt[]
+----
+
+It is possible to run any task in any sub-project from the top (or any other subproject), by using the format `:SUBPROJECT:TASK` as the task name. This removes the need to do the following alternative (which also works):
+
+[listing]
+----
+$ cd greeter
+$ ../gradlew test // <1>
+$ cd ..
+----
+<1> The parent directory, which contains the generated Gradle wrapper script
+
+If you were to spend a lot of time working in one sub-project, changing to that directory and running the build from there is normal. However, if you need to quickly run a task in a specific subproject, having the flexibility to specify the task by subproject path is very helpful.
+
+NOTE: Did you notice that the task executed was `:greeter:test`, but when running it Gradle first visited `greeting-library` to ensure that the dependencies were up to date? This is one more example how the powerful task graph implementation in Gradle saves you time.
+
+== Add documentation
+
+It is considered good practice to create documentation for a software project. Although there is a number of authoring methods to accomplish this goal, you will be using the very popular https://asciidoctor.org/[Asciidoctor] tool.
+
+Start by adding the https://plugins.gradle.org/plugin/org.asciidoctor.convert[Asciidoctor plugin] to a link:{user-manual}plugins.html#sec:plugins_block[plugins block] to the top of the root project build script.
+
+.build.gradle
+[source.multi-language-sample,groovy]
+----
+include::{groovy-example-dir}/build.gradle[tags=plugins]
+----
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/build.gradle.kts[tags=plugins]
+----
+<1> The use of `apply false` adds the plugin to the overall project, but does not add it to the root project.
+
+Now create another subproject folder, called `docs`, for the documentation.
+
+[listing]
+----
+$ mkdir docs
+----
+
+Create a build script file in the `docs` folder with the following content:
+
+.docs/build.gradle
+[source.multi-language-sample,groovy]
+----
+include::{groovy-example-dir}/docs/build.gradle[]
+----
+.docs/build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/docs/build.gradle.kts[]
+----
+<1> Apply the Asciidoctor plugin to this subproject. This technique lets you selectively apply plugins to sub-projects while defining all of the plugins in the root project.
+<2> Tells the plugin to look for a document called `greeter.adoc` in the default source folder `src/docs/asciidoc`
+<3> Adds `asciidoctor` task into the build lifecycle so that if `build` is executed for the top-level project, then documentation will be built as well.
+
+Add this subproject to `settings.gradle`.
+
+.settings.gradle
+[source.multi-language-sample,groovy]
+----
+include::{groovy-example-dir}/settings.gradle[tags=documentation]
+----
+.settings.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/settings.gradle.kts[tags=documentation]
+----
+
+Add a document called `greeter.adoc` in the Asciidoctor source folder, `src/docs/asciidoc`, in the `docs` sub-project. You'll need to generate that directory if it doesn't exist.
+
+.docs/src/docs/asciidoc/greeter.adoc
+[literal,subs=none]
+....
+include::{groovy-example-dir}/docs/src/docs/asciidoc/greeter.adoc[]
+....
+
+Run `asciidoctor` task from the top-level project.
+
+NOTE: If you run the command `./gradlew tasks`, you will now see a task called `asciidoctor` in the "Documentation tasks" category.
+
+[listing]
+----
+$ ./gradlew asciidoctor
+
+include::{gradle-outdir}/groovy-dsl-clean-output-run-asciidoctor/out.txt[]
+----
+
+NOTE: Did you notice that Gradle knew to only run this task in the `docs` subproject? This is because when you run a task from the level of a root project and this task does not exist in the root, then Gradle will run the task in each of the sub-projects where a task by that name exists.
+
+The documentation artifact will appear in `docs/build/asciidoc/html5`. Feel free to open the the `greeter.html` file and inspect the output.
+
+== Include the documentation in the distribution archive
+
+Documentation is useful when published, but usage documentation distributed with an application is very valuable for people trying out your application. Add this generated documentation to your distribution by updating task dependencies in the build script of the `greeter` sub-project.
+
+.greeter/build.gradle
+[source.multi-language-sample,groovy]
+----
+include::{groovy-example-dir}/greeter/build.gradle[tags=link-docs]
+----
+.greeter/build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/greeter/build.gradle.kts[tags=link-docs]
+----
+<1> Use `project(:NAME)` to reference another project and its tasks.
+
+Build from the top again, and this time the resulting archive will include the docs.
+
+[listing]
+----
+$ ./gradlew build
+
+include::{gradle-outdir}/groovy-dsl-clean-output-build-with-docs/out.txt[]
+----
+
+Notice how most tasks are still up to date, but both the `distZip` and `distTar` tasks have been re-run to include the documentation. If you unpack one of the archives (`greeter-1.0.zip` or `greeter-1.0.tar` in the `greeter/build/distributions` directory) you will see the documentation included in the `html5` folder.
+
+NOTE: A strong feature of Gradle that sets it apart from some other build tools is how well it handles incremental building. It is not necessary to do a `./gradlew clean` before each build.
+
+== Refactor common build script code
+
+At this point you might have noticed that you have common script code in both `greeting-library` and `greeter` sub-projects build scripts. A key feature of Gradle is the ability to place such common build script code in the root project.
+
+Edit the root project build script and add the following code
+
+.build.gradle
+[source.multi-language-sample,groovy]
+----
+include::{groovy-example-dir}/build.gradle[tags=common-code-1]
+
+include::{groovy-example-dir}/spock.gradle[indent=4]
+include::{groovy-example-dir}/build.gradle[tags=common-code-2]
+----
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{kotlin-example-dir}/build.gradle.kts[tags=common-code-1]
+
+include::{kotlin-example-dir}/spock.gradle.kts[indent=4]
+include::{kotlin-example-dir}/build.gradle.kts[tags=common-code-2]
+----
+<1> Use of `configure` along with a predicate closure allows for selective sub-projects to be configured. The predicate closure is passed a subproject whose name can be queried. In this case only sub-projects with specific name matches will be configured.
+
+In the same time remove the following lines from the build script of the `greeting-library` sub-project:
+
+// This is unclear: you want to remove the `groovy` plugin and the `spock` dependency, but you still want the `dependencies` block!
+
+.greeting-library/build.gradle (Removed code)
+[source.multi-language-sample,groovy]
+----
+plugins {
+    id 'groovy'
+}
+
+include::{groovy-example-dir}/spock.gradle[]
+----
+.greeting-library/build.gradle.kts (Removed code)
+[source.multi-language-sample,kotlin]
+----
+plugins {
+    id("groovy")
+}
+
+include::{kotlin-example-dir}/spock-declarative.gradle.kts[]
+----
+
+also remove similar lines from the build script of the `greeter` sub-project. In other words, remove the `groovy` plugin from the `plugins` block and the `spock` dependency from the `dependencies` block, but leave the `dependencies` block itself.
+
+Re-run everything from the top-level to make sure it all still works.
+
+[listing]
+----
+$ ./gradlew clean build
+----
+
+//== Build scan
+//
+//*TODO ??*
+
+== Summary
+
+By following the steps you have seen how to
+
+* Create a modular software project by combining multiple sub-projects.
+* Have one sub-project consume artifacts from another sub-project.
+* Use a polyglot project with ease.
+* Run similar named tasks in all sub-projects.
+* Run tasks in specific sub-projects without changing to that subproject's folder.
+* Refactor common sub-project settings into the root project.
+* Selectively configure sub-projects from the root project.
+
+== Next Steps
+
+* Remembering to type `./gradlew`, `../gradlew` or even `../../gradlew` can become an arduous task. If you are on a Unix-like operating system consider installing https://github.com/dougborg/gdub[gdub].
+* Read about multi-project in the link:{user-manual}multi_project_builds.html[{user-manual-name}]
+
+include::contribute[repo-path="gradle-guides/creating-multi-project-builds"]
