@@ -1,0 +1,25 @@
+class Greeting extends DefaultTask {
+    String message
+    String recipient
+
+    @TaskAction
+    void sayGreeting() {
+        println "${message}, ${recipient}!"
+    }
+}
+
+tasks.register("hello", Greeting) {
+    group = 'Welcome'
+    description = 'Produces a world greeting'
+    message = 'Hello'
+    recipient = 'World'
+}
+
+// tag::german[]
+tasks.register("gutenTag", Greeting) {
+    group = 'Welcome'
+    description = 'Produces a German greeting'
+    message = 'Guten Tag'
+    recipient = 'Welt'
+}
+// end::german[]
