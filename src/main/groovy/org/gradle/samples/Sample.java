@@ -53,6 +53,7 @@ public interface Sample extends Named, SampleSummary {
      * By convention, this is the "groovy" directory in the sample directory.
      */
     ConfigurableFileCollection getGroovyContent();
+
     /**
      * Configure Groovy content.
      *
@@ -64,6 +65,7 @@ public interface Sample extends Named, SampleSummary {
      * @return Sample content that is used for Groovy DSL.
      */
     ConfigurableFileCollection getKotlinContent();
+
     /**
      * Configure Kotlin content.
      *
@@ -72,9 +74,27 @@ public interface Sample extends Named, SampleSummary {
     void kotlin(Action<? super ConfigurableFileCollection> action);
 
     /**
+     * @return Sample content that is used for Exemplar testing
+     */
+    ConfigurableFileCollection getTestsContent();
+
+    /**
+     * Configure testing content.
+     *
+     * @param action coniguration action
+     */
+    void tests(Action<? super ConfigurableFileCollection> action);
+
+    /**
      * @return Root installation directory for each DSL.
      */
     DirectoryProperty getInstallDirectory();
+
+    /**
+     * TODO:
+     * @return Root installation directory for each DSL.
+     */
+    DirectoryProperty getTestedInstallDirectory();
 
     /**
      * @return The generated sample (asciidoc) page.

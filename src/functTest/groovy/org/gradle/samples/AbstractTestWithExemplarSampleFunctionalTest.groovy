@@ -47,7 +47,7 @@ def generatorTask = tasks.register("generate", GenerateTask) {
     outputDirectory = temporaryDir
 }
 
-${sampleUnderTestDsl}.common { 
+${sampleUnderTestDsl}.tests { 
     from(generatorTask)
 }
         """
@@ -88,7 +88,7 @@ ${sampleUnderTestDsl}.common {
         writeSampleUnderTest('src/samples/another')
         writeExemplarConfigurationToDirectory('src/samples/another')
 
-        def anotherDemoConfigFile = file('src/samples/another/tests/sanityCheck.sample.conf')
+        def anotherDemoConfigFile = file('src/samples/another/tests/handWritten.sample.conf')
         anotherDemoConfigFile.text = anotherDemoConfigFile.text.replaceAll('help', 'belp') // make the test fail
 
         when:
@@ -98,7 +98,7 @@ ${sampleUnderTestDsl}.common {
         result.task(':samplesExemplarFunctionalTest').outcome == FAILED
 
         when:
-        assert anotherDemoConfigFile.renameTo(file("src/samples/another/tests/sanityCheck.sample.confz"))
+        assert anotherDemoConfigFile.renameTo(file("src/samples/another/tests/handWritten.sample.confz"))
         build("samplesExemplarFunctionalTest")
 
         then:
@@ -115,11 +115,11 @@ ${sampleUnderTestDsl}.common {
 
     protected void writeExemplarConfigurationToDirectory(String directory = 'src/samples/demo') {
         def destination = file(directory)
-        destination.file("tests/sanityCheck.sample.conf") << getExemplarSampleConfigFileContent()
-        destination.file("tests/sanityCheck.sample.out") << getExemplarSampleOutFileContent()
+        destination.file("tests/handWritten.sample.conf") << getExemplarSampleConfigFileContent()
+        destination.file("tests/handWritten.sample.out") << getExemplarSampleOutFileContent()
     }
 
-    protected abstract List<String> getExpectedTestsFor(String sampleName, String testName="sanityCheck")
+    protected abstract List<String> getExpectedTestsFor(String sampleName, String... testNames = ["handWritten", "sanityCheck"])
 
     protected static String expectTestsExecuted(List<String> expected) {
         def script = """
@@ -137,7 +137,8 @@ task assertTestsExecuted {
 
 tasks.withType(Test).configureEach {
     beforeTest { descriptor ->
-         assertTestsExecuted.tests << descriptor.className + "." + descriptor.name
+        println("test: " + descriptor)
+        assertTestsExecuted.tests << descriptor.className + "." + descriptor.name
     }
     finalizedBy assertTestsExecuted
 }
@@ -145,7 +146,7 @@ tasks.withType(Test).configureEach {
         return script
     }
 
-    protected static String getExemplarSampleConfigFileContent(String outputFile="sanityCheck.sample.out") {
+    protected static String getExemplarSampleConfigFileContent(String outputFile="handWritten.sample.out") {
         return """
 commands: [{
     executable: gradle

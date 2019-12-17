@@ -40,6 +40,10 @@ public abstract class DefaultSample implements Sample {
     public void kotlin(Action<? super ConfigurableFileCollection> action) {
         action.execute(getKotlinContent());
     }
+    @Override
+    public void tests(Action<? super ConfigurableFileCollection> action) {
+        action.execute(getTestsContent());
+    }
 
     @Override
     public TaskProvider<Task> getAssembleTask() {

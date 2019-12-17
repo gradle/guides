@@ -26,7 +26,7 @@ public interface SampleBinary extends Named {
      */
     ConfigurableFileCollection getDslSpecificContent();
 
-    ConfigurableFileCollection getTestContent();
+    ConfigurableFileCollection getTestsContent();
 
     /**
      * @return The documentation page for this sample
@@ -34,9 +34,12 @@ public interface SampleBinary extends Named {
     Property<String> getSampleLinkName();
 
     /**
-     * @return Working directory used by the plugin to validate or test this sample.
+     * @return Working directory used by the plugin to expose an assembled sample to consumers.
      */
     DirectoryProperty getWorkingDirectory();
+
+    // TODO:
+    DirectoryProperty getTestedWorkingDirectory();
 
     /**
      * @return Exclude patterns for files included in this sample
@@ -55,8 +58,11 @@ public interface SampleBinary extends Named {
 
     /**
      * @return A installation directory containing this sample.  This can be used to get an installed version of the sample.
-     *
-     * NOTE: This directory may be reused by other consumers.
      */
     DirectoryProperty getInstallDirectory();
+
+    /**
+     * TODO:
+     */
+    DirectoryProperty getTestedInstallDirectory();
 }

@@ -10,6 +10,7 @@ import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.CopySpec;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.FileTree;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.file.RegularFileProperty;
@@ -35,6 +36,7 @@ import org.gradle.samples.SamplesExtension;
 import org.gradle.samples.Template;
 import org.gradle.samples.internal.tasks.GenerateSampleIndexAsciidoc;
 import org.gradle.samples.internal.tasks.GenerateSamplePageAsciidoc;
+import org.gradle.samples.internal.tasks.GenerateSanityCheckTests;
 import org.gradle.samples.internal.tasks.GenerateTestSource;
 import org.gradle.samples.internal.tasks.InstallSample;
 import org.gradle.samples.internal.tasks.SyncWithProvider;
@@ -73,7 +75,8 @@ public class SamplesPlugin implements Plugin<Project> {
         // Samples
         // Generate wrapper files that can be shared by all samples
         FileTree wrapperFiles = createWrapperFiles(tasks, objects);
-        extension.getPublishedSamples().configureEach(sample -> applyConventionsForSamples(extension, wrapperFiles, sample));
+        FileCollection generatedTests = createGeneratedTests(tasks, objects, layout);
+        extension.getPublishedSamples().configureEach(sample -> applyConventionsForSamples(extension, wrapperFiles, generatedTests, sample));
 
         // Sample binaries
         // Create tasks for each sample binary (a sample for a particular DSL)
@@ -141,6 +144,15 @@ public class SamplesPlugin implements Plugin<Project> {
         project.afterEvaluate(p -> realizeSamples(tasks, objects, extension, assemble, check));
     }
 
+    private FileCollection createGeneratedTests(TaskContainer tasks, ObjectFactory objects, ProjectLayout layout) {
+        TaskProvider<GenerateSanityCheckTests> generateSanityCheckTests = tasks.register("generateSanityCheckTests", GenerateSanityCheckTests.class, task -> {
+            task.getOutputFile().convention(layout.getBuildDirectory().file("tmp/" + task.getName() + "/sanityCheck.sample.conf"));
+        });
+        ConfigurableFileCollection generatedFiles = objects.fileCollection();
+        generatedFiles.from(generateSanityCheckTests);
+        return generatedFiles;
+    }
+
     private void createTasksForTemplates(ProjectLayout layout, TaskContainer tasks, Template template) {
         TaskProvider<SyncWithProvider> generateTemplate = tasks.register("generateTemplate" + capitalize(template.getName()), SyncWithProvider.class, task -> {
             task.from(template.getSourceDirectory(), copySpec -> copySpec.into(template.getTarget()));
@@ -175,12 +187,17 @@ public class SamplesPlugin implements Plugin<Project> {
         SamplesExtension extension = project.getExtensions().create(SamplesExtension.class, "samples", DefaultSamplesExtension.class);
         extension.getSamplesRoot().convention(layout.getProjectDirectory().dir("src/samples"));
         extension.getTemplatesRoot().convention(layout.getProjectDirectory().dir("src/samples/templates"));
-        extension.getInstallRoot().convention(layout.getBuildDirectory().dir("install/samples"));
         extension.getDocumentationRoot().convention(layout.getBuildDirectory().dir("samples/docs/"));
         extension.getCommonExcludes().convention(Arrays.asList("**/build/**", "**/.gradle/**"));
+
+        extension.getInstallRoot().convention(layout.getBuildDirectory().dir("install/samples"));
         extension.getInstalledSamples().from(extension.getInstallRoot());
         extension.getInstalledSamples().builtBy((Callable<List<DirectoryProperty>>) () -> extension.getBinaries().stream().map(SampleBinary::getInstallDirectory).collect(Collectors.toList()));
         extension.getZippedSamples().from((Callable<List<RegularFileProperty>>) () -> extension.getBinaries().stream().map(SampleBinary::getZipFile).collect(Collectors.toList()));
+
+        extension.getTestedInstallRoot().convention(layout.getBuildDirectory().dir("install/tested-samples"));
+        extension.getTestedInstalledSamples().from(extension.getTestedInstallRoot());
+        extension.getTestedInstalledSamples().builtBy(extension.getInstalledSamples().builtBy((Callable<List<DirectoryProperty>>) () -> extension.getBinaries().stream().map(SampleBinary::getTestedInstallDirectory).collect(Collectors.toList())));
 
         extension.getRenderedDocumentationRoot().convention(layout.getBuildDirectory().dir("working/samples/render-samples"));
         return extension;
@@ -217,12 +234,13 @@ public class SamplesPlugin implements Plugin<Project> {
         sample.getSamplePageFile().convention(generateSamplePage.flatMap(GenerateSamplePageAsciidoc::getOutputFile));
     }
 
-    private void applyConventionsForSamples(SamplesExtension extension, FileTree wrapperFiles, Sample sample) {
+    private void applyConventionsForSamples(SamplesExtension extension, FileTree wrapperFiles, FileCollection generatedTests, Sample sample) {
         String name = sample.getName();
         sample.getDisplayName().convention(toTitleCase(name));
         // Converts names like androidApplication to android-application
         sample.getSampleDirectory().convention(extension.getSamplesRoot().dir(toKebabCase(name)));
         sample.getInstallDirectory().convention(extension.getInstallRoot().dir(toKebabCase(name)));
+        sample.getTestedInstallDirectory().convention(extension.getTestedInstallRoot().dir(toKebabCase(name)));
         sample.getSampleDocName().convention("sample_" + toSnakeCase(name));
         sample.getDescription().convention("");
         sample.getCategory().convention("Uncategorized");
@@ -240,11 +258,13 @@ public class SamplesPlugin implements Plugin<Project> {
             return dsls;
         }));
 
+        sample.tests(content -> {
+            content.from(sample.getSampleDirectory().dir("tests"));
+            content.from(generatedTests);
+        });
         sample.common(content -> {
             content.from(sample.getLicenseFile());
             content.from(sample.getSamplePageFile());
-            // TODO: Generate sanity check configuration file
-            content.from(sample.getSampleDirectory().dir("tests"));
             content.from(wrapperFiles);
         });
         sample.groovy(content -> content.from(sample.getSampleDirectory().dir(Dsl.GROOVY.getConventionalDirectory())));
@@ -264,13 +284,13 @@ public class SamplesPlugin implements Plugin<Project> {
         return extension.getBinaries().register(sample.getName() + dsl.getDisplayName(), binary -> {
             binary.getDsl().convention(dsl).disallowChanges();
             binary.getSampleLinkName().convention(sample.getSampleDocName()).disallowChanges();
+            binary.getWorkingDirectory().convention(sample.getInstallDirectory().dir(dsl.getConventionalDirectory())).disallowChanges();
+            binary.getTestedWorkingDirectory().convention(sample.getTestedInstallDirectory().dir(dsl.getConventionalDirectory())).disallowChanges();
             switch (dsl) {
                 case GROOVY:
-                    binary.getWorkingDirectory().convention(sample.getInstallDirectory().dir(dsl.getConventionalDirectory())).disallowChanges();
                     binary.getDslSpecificContent().from(sample.getGroovyContent()).disallowChanges();
                     break;
                 case KOTLIN:
-                    binary.getWorkingDirectory().convention(sample.getInstallDirectory().dir(dsl.getConventionalDirectory())).disallowChanges();
                     binary.getDslSpecificContent().from(sample.getKotlinContent()).disallowChanges();
                     break;
                 default:
@@ -280,6 +300,8 @@ public class SamplesPlugin implements Plugin<Project> {
             binary.getContent().from(sample.getCommonContent());
             binary.getContent().from(binary.getDslSpecificContent());
             binary.getContent().disallowChanges();
+
+            binary.getTestsContent().from(sample.getTestsContent());
         });
     }
 
@@ -294,11 +316,23 @@ public class SamplesPlugin implements Plugin<Project> {
         binary.getValidationReport().convention(validateSample.flatMap(ValidateSampleBinary::getReportFile));
 
         TaskProvider<InstallSample> installSampleTask = tasks.register("installSample" + capitalize(binary.getName()), InstallSample.class, task -> {
-            task.getSource().from(binary.getZipFile());
+            // TODO: zipTree should be lazy
+            task.dependsOn(binary.getZipFile());
+            task.getSource().from((Callable<FileTree>)() -> task.getProject().zipTree(binary.getZipFile()));
             task.getInstallDirectory().convention(binary.getWorkingDirectory());
             task.setDescription("Installs sample '" + binary.getName() + "' into a local directory.");
         });
         binary.getInstallDirectory().convention(installSampleTask.flatMap(InstallSample::getInstallDirectory));
+
+        TaskProvider<InstallSample> installSampleTaskForTesting = tasks.register("installSample" + capitalize(binary.getName()) + "ForTest", InstallSample.class, task -> {
+            // TODO: zipTree should be lazy
+            task.dependsOn(binary.getZipFile());
+            task.getSource().from((Callable<FileTree>)() -> task.getProject().zipTree(binary.getZipFile()));
+            task.getSource().from(binary.getTestsContent());
+            task.getInstallDirectory().convention(binary.getTestedWorkingDirectory());
+            task.setDescription("Installs sample '" + binary.getName() + "' into a local directory with testing support.");
+        });
+        binary.getTestedInstallDirectory().convention(installSampleTaskForTesting.flatMap(InstallSample::getInstallDirectory));
 
         TaskProvider<ZipSample> zipTask = tasks.register("zipSample" + capitalize(binary.getName()), ZipSample.class, task -> {
             task.setDescription("Creates a zip for sample '" + binary.getName() + "'.");
@@ -318,15 +352,16 @@ public class SamplesPlugin implements Plugin<Project> {
     }
 
     private static TaskProvider<Test> createExemplarTestTask(TaskContainer tasks, SourceSet sourceSet, ProjectLayout layout, SamplesExtension extension) {
+        DirectoryProperty samplesDirectory = extension.getTestedInstallRoot();
+
         return tasks.register(sourceSet.getName(), Test.class, task -> {
-            DirectoryProperty samplesDirectory = extension.getInstallRoot();
             task.getInputs().dir(samplesDirectory).withPathSensitivity(PathSensitivity.RELATIVE);
             task.setTestClassesDirs(sourceSet.getRuntimeClasspath());
             task.setClasspath(sourceSet.getRuntimeClasspath());
             task.setWorkingDir(layout.getProjectDirectory().getAsFile());
             // TODO: This isn't lazy.  Need a different API here.
             task.systemProperty("integTest.samplesdir", samplesDirectory.get().getAsFile().getAbsolutePath());
-            task.dependsOn((Callable<Object[]>) () -> extension.getBinaries().stream().map(SampleBinary::getInstallDirectory).toArray());
+            task.dependsOn(extension.getTestedInstalledSamples());
         });
     }
 

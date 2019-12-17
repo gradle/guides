@@ -32,6 +32,9 @@ public interface SamplesExtension {
     ConfigurableFileTree getInstalledSamples();
     ConfigurableFileCollection getZippedSamples();
 
+    DirectoryProperty getTestedInstallRoot();
+    ConfigurableFileTree getTestedInstalledSamples();
+
     /**
      * @return The root directory for all documentation.
      *

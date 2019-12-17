@@ -29,7 +29,7 @@ public abstract class InstallSample extends DefaultTask {
     @TaskAction
     private void doInstall() {
         getProject().sync(spec -> {
-            spec.from(getProject().zipTree(getSource().getSingleFile()));
+            spec.from(getSource());
             spec.into(getInstallDirectory());
         });
     }
