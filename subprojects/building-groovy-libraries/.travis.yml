@@ -1,0 +1,21 @@
+language: java
+os: linux
+dist: trusty
+jdk: oraclejdk8
+script: GRGIT_PASS= ./gradlew build gitPublishPush --stacktrace
+before_cache:
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+- rm -fr $HOME/.gradle/caches/*/scripts/
+cache:
+  directories:
+  - $HOME/.gradle/caches/
+  - $HOME/.gradle/wrapper/
+env:
+  global:
+    secure: "iMJ9npZ1cqjehSA+hXYVR3kCR2URiEeuLYrxmdqIvGLodVlWuPg/wbIC3FIDoBr9ljudOGwhzBTO+0PmyR9H3ixI7Cm0hPNf+R4xrpr52zB4Nbuc4hslZ65UMzIT337Jd9Yaf0a3Dp7Mif+aRxvbDDvqd5WMbvd4zmUbcnG5RrYhW8deLA+OtVk1RtlgFwO8Bofk5++KuR7lCd0bNpXg9uak6qNNHtyt3QQ1BJIUaaQgrfg+Fy8+1D/MBY7X4EWgF5Mb4r13Wx2ohM2NpQkYSLBsqwZYHK2XOlu6X7aoq2+75HVnaEUOd6lRVEFPbih3QvECLIYfQxXiztQlG+gwphlIB3Ij8rxWobbucIHzAw0b4NY0eg0JAvb8hlrXLs/fKtDlYqp6FvSgTmtW5c8fdKJ9bu7Q44PqPGJklTiokFL7/G1KTrX7RGcOPIgjsa0fRVmk3hwhO1dj2A9UwwcJpuME+cBOxwRQL/Q+ru5hPrdlreim1STh1MDFHbhaO+Fooe/YkxRZ3nkDoEKmKiKJCqP+gJ1Ma2KZc4Bo3+IEofGy1UReY4Ci3BJoSTWmkY+LDVnIn3+2NPHbLQI7nKJ2iGcy19lqB2pKsDPz+2s5A9iC9O/590zRsgM3dTcxwe7+uSyCtmDVVgOB70WKXKKRW0thQeC0oRDo6cUMSWLKo34="
+notifications:
+  slack:
+    on_success: change
+    rooms:
+      secure: 1pJzgkUfiSP/KX5TuAsAgKhFtaVcfVWwdK+rbHMpzX0herxB4aAtVh3V1EnkiOgPkCcehviLC5MsEDxgwMsLt7Ko7RQsZLd42w8dxv+cxQad4f3LPlej6G2QJMjO0+JeDDC++lBcYsj932buT7XqZQ37QYGuM2GOp3bOqwhZ0mpHgyQ/pWw+m0upiJL1Z/snjt6tLsQejUKFkl71omDleB/JPmgSDgXWIBBtPkR+J4ScH9cSXWgtuks30kk/BcI6NOGNDkieJb32K8xDxE8VlK7OY2TNGAEzHD4tFBHQMDLeWQvkc7tPWq9D4GZ2YyJpeq+wnKqu2xZOTkqq6hCDAHhaEGj8CPztHCsg1BdSc6Sq7yJxA8JDvWzh8v8nqRkhiIRPwAjX83DEJYvsA32ytQmibfBq2TEQMhiIDPp5H4YixdGqLxPCXFqR5H+JOwARllYCoMTbSxJimnfLdCFyFhXiX3LTne8GPJnoJx7nsizLSdJ4Ww8XdYmMAHP2QDBQFTdsJpHorm1/FCdqBXdcXNiY6vqRnGHzmiun+3cQEmHfwsiZ3pd4DFgaNjnjxc0zoW+0Qci7ybVtxG5xdFOg8jA/NvnDiEzdg20evNJk1WDboEuHg6eFjVJsjYhElQAcmZEgMjn24Ve/jAqxwcrcGIh5F6p3vmQWeBlgAdptbWU=
