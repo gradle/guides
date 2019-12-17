@@ -1,0 +1,96 @@
+plugins {
+    id 'groovy'
+    id 'java-gradle-plugin'
+    id 'com.gradle.plugin-publish' version '0.10.1'
+    id 'maven-publish'
+}
+
+apply from: "$rootDir/gradle/functional-test.gradle"
+
+group = 'org.gradle.guides'
+version = '0.15.28-SNAPSHOT'
+
+repositories {
+    jcenter()
+    gradlePluginPortal()
+}
+
+dependencies {
+    compile 'net.sourceforge.nekohtml:nekohtml:1.9.21'
+    compile 'org.codehaus.groovy.modules:http-builder-ng-core:0.11.1'
+
+    compile 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.9.2'
+    compile 'org.ajoberstar:gradle-git-publish:2.1.3'
+    compile 'org.apache.ant:ant:1.9.13'
+
+    runtime 'gradle.plugin.org.ysb33r.gradle:gradle-cloudci-plugin:2.3'
+    runtime 'gradle.plugin.org.ysb33r.gradle:gradle-runner:1.1'
+
+    testImplementation "org.spockframework:spock-core:1.2-groovy-2.5", {
+        exclude module : 'groovy-all'
+    }
+    testImplementation "org.yaml:snakeyaml:1.21"
+}
+
+pluginBundle {
+    website = 'https://github.com/gradle-guides/gradle-guides-plugin'
+    vcsUrl = 'https://github.com/gradle-guides/gradle-guides-plugin'
+    tags = ['gradle', 'guides', 'documentation']
+}
+
+gradlePlugin {
+    plugins {
+        basePlugin {
+            id = 'org.gradle.guides.base'
+            implementationClass = 'org.gradle.guides.BasePlugin'
+            displayName = 'Gradle Guides Base Plugin'
+            description = 'Base plugin required by new Gradle guide plugins'
+        }
+        gsPlugin {
+            id = 'org.gradle.guides.getting-started'
+            implementationClass = 'org.gradle.guides.GettingStartedPlugin'
+            displayName = 'Gradle Guides Getting Started Plugin'
+            description = 'Plugin required for authoring new Gradle Getting Started guides'
+        }
+        topicalPlugin {
+            id = 'org.gradle.guides.topical'
+            implementationClass = 'org.gradle.guides.TopicalPlugin'
+            displayName = 'Gradle Guides Topical Plugin'
+            description = 'Plugin required for authoring new Gradle Topical guides'
+        }
+        tutorialPlugin {
+            id = 'org.gradle.guides.tutorial'
+            implementationClass = 'org.gradle.guides.TutorialPlugin'
+            displayName = 'Gradle Guides Topical Plugin'
+            description = 'Plugin required for authoring new Gradle Tutorial guides'
+        }
+        jvmtestPlugin {
+            id = 'org.gradle.guides.test-jvm-code'
+            implementationClass = 'org.gradle.guides.TestJvmCodePlugin'
+            displayName = 'Gradle Guides JVM Code Snippet Test Plugin'
+            description = 'Plugin required for testing of JVM code snippets used in guides'
+        }
+        setupPlugin {
+            id = 'org.gradle.guides.setup'
+            implementationClass = 'org.gradle.guides.SetupPlugin'
+            displayName = 'Gradle Guides Setup Plugin'
+            description = 'Plugin required for configuring a guide'
+        }
+        samplePlugin {
+            id = 'org.gradle.samples'
+            implementationClass = 'org.gradle.samples.internal.SamplesPlugin'
+            displayName = 'Gradle Sample Plugin'
+            description = 'Plugin required for authoring new Gradle Samples'
+        }
+    }
+}
+
+publishPlugins {
+    dependsOn build
+
+    onlyIf { !version.endsWith('-SNAPSHOT')}
+}
+
+task release {
+    dependsOn build, publishPlugins
+}
