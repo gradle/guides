@@ -1,0 +1,22 @@
+= @@GUIDE_NAME@@
+:numbered:
+
+*INTRO_TBC*
+
+== CONTENT_TBC
+
+////
+Write your content using a selection of section levels as you wish.
+You can also use include blocks to split your topical guide into more manageable
+chunks. Have a look in build.gradle to see which attributes are already available
+to use. This should among others include {user-manual}, {guides}, {gradle-version}.
+////
+
+*TBC*
+
+== Summary
+
+*TBC*
+
+
+include::contribute[repo-path="gradle-guides/your-repo-here"]
