@@ -1,0 +1,18 @@
+initscript {
+    repositories {
+        gradlePluginPortal()
+    }
+
+    dependencies {
+        classpath 'com.gradle:build-scan-plugin:@scanPluginVersion@'
+    }
+}
+
+rootProject {
+    apply plugin: com.gradle.scan.plugin.BuildScanPlugin
+
+    buildScan {
+        termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+        termsOfServiceAgree = 'yes'
+    }
+}
