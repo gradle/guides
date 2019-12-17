@@ -1,0 +1,15 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+dependencies {
+    implementation project(':tale')
+
+    runtimeOnly project(':pigs')
+    runtimeOnly project(':bears')
+}
+
+ext.moduleName = 'org.gradle.fairy.app'
+
+mainClassName = 'org.gradle.fairy.app.StoryTeller'

@@ -1,0 +1,46 @@
+digraph G {
+    fontname="sans-serif";
+    penwidth="0.1";
+    edge [comment="Wildcard edge",
+          labelfontcolor="SeaGreen4",
+          fontname="sans-serif",
+          fontsize=10,
+          color="SeaGreen4",
+          fontcolor="SeaGreen4"];
+    node [shape="rectangle",
+          fontname="serif",
+          fontsize=13,
+          fillcolor="LemonChiffon",
+          color="LemonChiffon",
+          fontcolor="SeaGreen4",
+          style="filled"];
+    "fairy" [shape="rectangle",
+             label="fairy
+(plugin: application)"];
+    "tale" [shape="rectangle",
+            label="tale
+(plugin: java-library)"];
+    "actors" [shape="rectangle",
+              label="actors
+(plugin: java-library)"];
+    "formula" [shape="rectangle",
+               label="formula
+(plugin: java-library)"];
+    "pigs" [shape="rectangle",
+            label="pigs
+(plugin: java-library)"];
+    "bears" [shape="rectangle",
+             label="bears
+(plugin: java-library)"];
+    "fairy" -> "tale"  [label="implementation"];
+    "fairy" -> "pigs"  [label="runtimeOnly"];
+    "fairy" -> "bears"  [label="runtimeOnly"];
+    "bears" -> "tale"  [label="api"];
+    "bears" -> "actors"  [label="implementation"];
+    "bears" -> "formula"  [label="implementation"];
+    "pigs" -> "tale"  [label="api"];
+    "pigs" -> "actors"  [label="implementation"];
+    "pigs" -> "formula"  [label="implementation"];
+    "formula" -> "actors"  [label="api"];
+    "formula" -> "tale"  [label="api"];
+}
