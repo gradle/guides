@@ -1,0 +1,16 @@
+plugins {
+    id "org.gradle.guides.getting-started" version "0.15.13"
+    id "org.gradle.guides.test-jvm-code" version "0.15.13"
+}
+
+guide {
+    repositoryPath.set("gradle-guides/building-java-web-applications")
+    minimumGradleVersion = "4.10.3"
+}
+
+asciidoctor {
+    inputs.dir 'samples'
+    attributes 'groovy-example-dir': file('samples/groovy-dsl')
+    attributes 'kotlin-example-dir': file('samples/kotlin-dsl')
+}
+
