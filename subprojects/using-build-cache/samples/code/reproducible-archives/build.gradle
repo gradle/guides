@@ -1,0 +1,8 @@
+
+// tag::reproducibleZip[]
+task createZip(type: Zip) {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+    // ...
+}
+// end::reproducibleZip[]

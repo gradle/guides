@@ -1,0 +1,14 @@
+allprojects {
+    apply plugin: 'java'
+}
+
+// tag::customAction[]
+jar {
+    doFirst {
+        manifest {
+            def classPath = [':core', ':baseServices'].collect { project(it).jar.archivePath.name }.join(" ")
+            attributes('Class-Path': classPath)
+        }
+    }
+}
+// end::customAction[]

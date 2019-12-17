@@ -1,0 +1,80 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+import org.apache.commons.io.FileUtils
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "commons-io:commons-io:2.5"
+    }
+}
+
+apply plugin: 'groovy'
+
+ext.chromeDriverVersion = '2.33'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    testCompile "org.gebish:geb-core:1.1.1"
+    testCompile 'org.seleniumhq.selenium:selenium-chrome-driver:3.4.0'
+    testCompile "org.seleniumhq.selenium:selenium-support:2.52.0"
+    testCompile "io.ratpack:ratpack-groovy-test:1.5.0-rc-2"
+    testCompile "org.gebish:geb-junit4:1.1.1"
+    testRuntime 'org.slf4j:slf4j-simple:1.7.25'
+}
+
+task downloadChromeDriver {
+    def outputFile = file("$buildDir/webdriver/chromedriver.zip")
+    inputs.property("chromeDriverVersion", chromeDriverVersion)
+    outputs.file(outputFile)
+
+    doLast {
+        def driverOsFilenamePart
+        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+            driverOsFilenamePart = "win32"
+        } else if (Os.isFamily(Os.FAMILY_MAC)) {
+            driverOsFilenamePart = "mac64"
+        } else if (Os.isFamily(Os.FAMILY_UNIX)) {
+            driverOsFilenamePart = Os.isArch("amd64") ? "linux64" : "linux32"
+        }
+        FileUtils.copyURLToFile(new URL("https://chromedriver.storage.googleapis.com/${chromeDriverVersion}/chromedriver_${driverOsFilenamePart}.zip"), outputFile)
+    }
+}
+
+task unzipChromeDriver(type: Copy) {
+    def outputDir = file("$buildDir/webdriver/chromedriver")
+    dependsOn downloadChromeDriver
+    outputs.dir(outputDir)
+
+    from(zipTree(downloadChromeDriver.outputs.files.singleFile))
+    into(outputDir)
+}
+
+test {
+    enabled = false
+}
+
+task takeScreenshots(type: Test) {
+    ext.screenshotDir = file("${buildDir}/screenshots")
+    outputs.dir(screenshotDir).withPropertyName('screenshotDir')
+    outputs.upToDateWhen { false }
+    outputs.doNotCacheIf('Depending on external service') { true }
+
+    dependsOn unzipChromeDriver
+
+    def chromedriverFilename = Os.isFamily(Os.FAMILY_WINDOWS) ? "chromedriver.exe" : "chromedriver"
+    systemProperty "webdriver.chrome.driver", new File(unzipChromeDriver.outputs.files.singleFile, chromedriverFilename).absolutePath
+    systemProperty "screenshot.dir", screenshotDir
+
+
+    ['dev', 'dogfood', 'cache-admin'].each { name ->
+        String prefix = "scans.${name}"
+        systemProperty "${prefix}.host", findProperty("${prefix}.host")
+        systemProperty "${prefix}.username", findProperty("${prefix}.username")
+        systemProperty "${prefix}.password", findProperty("${prefix}.password")
+    }
+}

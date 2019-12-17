@@ -1,0 +1,42 @@
+plugins {
+    id('java')
+}
+
+version = "3.2-${System.currentTimeMillis()}"
+
+// tag::normalization[]
+normalization {
+    runtimeClasspath {
+        ignore "build-info.properties"
+    }
+}
+// end::normalization[]
+
+ext.generatedResourcesDir = file("$buildDir/generated-resources")
+// tag::versionInfo[]
+task currentVersionInfo(type: CurrentVersionInfo) {
+    version = project.version
+    versionInfoFile = new File(generatedResourcesDir, "currentVersion.properties")
+}
+
+sourceSets.main.output.dir generatedResourcesDir, builtBy: currentVersionInfo
+
+class CurrentVersionInfo extends DefaultTask {
+    @Input
+    String version
+
+    @OutputFile
+    File versionInfoFile
+
+    @TaskAction
+    void writeVersionInfo() {
+        def properties = new Properties()
+        properties.setProperty("latestMilestone", version)
+        versionInfoFile.withOutputStream { out ->
+            properties.store(out, null)
+        }
+    }
+}
+// end::versionInfo[]
+
+

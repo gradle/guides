@@ -1,0 +1,34 @@
+= Taking screenshots automatically
+
+This project tries to automate the process of taking screenshots of GE by using Chrome headless and Geb.
+
+In order to take screenshots you need to have Chrome Canary installed (see `src/test/resource/GebConfig.groovy`).
+Moreover, you need to define the locations and credentials for the GE dev and dogfooding instance in your `gradle.properties`:
+
+[source,properties]
+.gradle.properties
+----
+scans.dogfood.host=e....
+scans.dogfood.username=<username>
+scans.dogfood.password=<password>
+scans.cache-admin.host=e....
+scans.cache-admin.username=<username>
+scans.cache-admin.password=<password>
+scans.dev.host=scans....
+scans.dev.username=<username>
+scans.dev.password=<password>
+----
+
+Then you can run the `test` task which will generate the screenshots into `build/screenshots`.
+
+The configuration which screenshots to take can be found in `src/test/resources/screenshots.properties`.
+This file looks like this:
+
+[source,properties]
+.screenshots.properties
+----
+cache-admin-hit-rate=dogfood:cache-admin
+caching-disabled=dev:example/s/cacheability-not-cacheable-tasks/4.1-20170607235835+0000/1.8/timeline?cacheableFilter=ANY_REASON&search
+----
+
+The name of the property is the resulting file name. The value of the property consists of the instance to use (`dev` or `dogfood`) and then a relative path to the correspoding web page.
