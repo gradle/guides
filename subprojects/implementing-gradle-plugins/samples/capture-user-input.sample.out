@@ -1,0 +1,2 @@
+> Task :latestArtifactVersion
+Retrieving latest artifact version from URL http://my.company.com/maven2
