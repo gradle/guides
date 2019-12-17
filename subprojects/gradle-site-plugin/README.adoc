@@ -1,0 +1,54 @@
+:maven-metadata: plugins.gradle.org/m2/gradle/plugin/org/gradle/plugins/gradle-site-plugin
+:travis: https://travis-ci.org/gradle-guides/gradle-site-plugin
+:gradle-plugins-portal: https://plugins.gradle.org/plugin/gradle.site
+
+
+= Gradle Site Plugin image:{travis}.svg?branch=master["Build Status", link="{travis}"] image:https://img.shields.io/badge/build-scan-green.svg["Build Scan", link="https://gradle.com/s/thgfe3dxihijo"] image:https://img.shields.io/maven-metadata/v/https/{maven-metadata}/maven-metadata.xml.svg?label=gradlePluginPortal["Maven Central",link="{gradle-plugins-portal}"]
+
+
+A sample Gradle plugin demonstrating established techniques and practices for plugin development as described in the following guides:
+
+- link:https://guides.gradle.org/designing-gradle-plugins/[Designing Gradle plugins]
+- link:https://guides.gradle.org/implementing-gradle-plugins/[Implementing Gradle plugins]
+- link:https://guides.gradle.org/testing-gradle-plugins/[Testing Gradle plugins]
+
+== Functionality
+
+The plugin provides a task for generating a web page that derives information about the project e.g. applied plugins and available tasks. While minimalistic in functionality it serves as a show case for demonstrating best practices for Gradle plugin development. A site generated for this project can be link:https://gradle-guides.github.io/gradle-site-plugin/[viewed here].
+
+TIP: The plugin is link:{gradle-plugins-portal}[available on the Gradle plugin portal] for public consumption.
+
+== Usage example
+
+The plugin can be applied with by identifier `gradle.site`. Default values can be configured with the help of the provided extension `org.gradle.plugins.site.SitePluginExtension`. To generate the web page run the task named `generateSite` e.g. `gradle generateSiteHtml`.
+
+IMPORTANT: The plugin requires a Gradle version of 4.0 or higher. All features that are based on Gradle 4.0 are explicitly
+marked above. All other features will work with earlier versions of Gradle.
+
+```
+plugins {
+    id("gradle.site").version("0.6")
+}
+
+site {
+    outputDir.set(file("$rootDir/docs"))
+    websiteUrl.set("https://mysite.com")
+    vcsUrl.set("https://github.com/my/repo.git")
+}
+```
+
+== Applied techniques and practices
+
+- Production and test code written in Kotlin.
+- Reusable logic written as binary plugin.
+- Usage of the Plugin Development plugin to simplify plugin development. [link:https://github.com/gradle-guides/gradle-site-plugin/blob/master/build.gradle.kts#L6[Code] | link:https://guides.gradle.org/implementing-gradle-plugins/#plugin-development-plugin[More Details]]
+- Implementation of tasks as custom task type. [link:https://github.com/gradle-guides/gradle-site-plugin/blob/master/src/main/kotlin/org/gradle/plugins/site/tasks/SiteGenerate.kt[Code] | link:https://guides.gradle.org/implementing-gradle-plugins/#writing-and-using-custom-task-types[More Details]]
+- Usage of input and output properties to enable incremental tasks. [link:https://github.com/gradle-guides/gradle-site-plugin/blob/master/src/main/kotlin/org/gradle/plugins/site/tasks/SiteGenerate.kt[Code] | link:https://guides.gradle.org/implementing-gradle-plugins/#benefiting_from_incremental_tasks[More Details]]
+- Usage of an extension to capture user-configurable values. [link:https://github.com/gradle-guides/gradle-site-plugin/blob/master/src/main/kotlin/org/gradle/plugins/site/SitePlugin.kt#L33[Code] | link:https://guides.gradle.org/designing-gradle-plugins/#convention_over_configuration[More Details]]
+- Mapping of extension property values to custom task properties. [link:https://github.com/gradle-guides/gradle-site-plugin/blob/master/src/main/kotlin/org/gradle/plugins/site/SitePlugin.kt#L74-L76[Code] | link:https://guides.gradle.org/implementing-gradle-plugins/#capturing_user_input_to_configure_plugin_runtime_behavior[More Details]] image:https://img.shields.io/badge/4.0-feature-blue.svg[4.0 feature]
+- Reacting to plugins instead of applying plugins. [link:https://github.com/gradle-guides/gradle-site-plugin/blob/master/src/main/kotlin/org/gradle/plugins/site/SitePlugin.kt#L64[Code] | link:https://guides.gradle.org/implementing-gradle-plugins/#reacting_to_plugins[More Details]]
+- Declaration of appropriate plugin identifiers. [link:https://github.com/gradle-guides/gradle-site-plugin/blob/master/src/main/resources/META-INF/gradle-plugins/gradle.site.properties[Code] | link:https://guides.gradle.org/implementing-gradle-plugins/#assigning_appropriate_plugin_identifiers[More Details]]
+- Functional testing with TestKit. [link:https://github.com/gradle-guides/gradle-site-plugin/blob/master/src/intTest/kotlin/org/gradle/plugins/site/SitePluginFunctionalTest.kt[Code] | link:https://docs.gradle.org/current/userguide/test_kit.html[More Details]]
+- Publication of the plugin artifacts to the Gradle plugin portal [link:https://github.com/gradle-guides/gradle-site-plugin/blob/master/build.gradle.kts#L136-L163[Code] | link:https://guides.gradle.org/publishing-plugins-to-gradle-plugin-portal/[More Details]]
+- Continuous Integration of plugin code with link:https://travis-ci.org/[Travis CI]. [link:https://github.com/gradle-guides/gradle-site-plugin/blob/master/.travis.yml[Code] | More Details]
+- Automatic generation of build scans when build is executed from CI. [link:https://github.com/gradle-guides/gradle-site-plugin/blob/master/build.gradle.kts#L25-L33[Code] | link:https://scans.gradle.com/[More Details]]
