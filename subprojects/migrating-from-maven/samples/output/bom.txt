@@ -1,0 +1,4 @@
+implementation - Implementation only dependencies for source set 'main'. (n)
++--- org.springframework.boot:spring-boot-dependencies:1.5.8.RELEASE (n)
++--- com.google.code.gson:gson (n)
+\--- dom4j:dom4j (n)
