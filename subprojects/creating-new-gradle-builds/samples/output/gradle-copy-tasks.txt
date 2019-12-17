@@ -1,0 +1,3 @@
+Custom tasks
+------------
+copy - Copies sources to the dest directory
