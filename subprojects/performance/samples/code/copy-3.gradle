@@ -1,0 +1,13 @@
+plugins {
+    id('java')
+}
+
+// tag::copy[]
+task copyFiles(type: Copy) {
+    into "$buildDir/output"
+    from configurations.compile
+    doFirst {
+        println ">> Compilation deps: ${configurations.compile.files}"
+    }
+}
+// end::copy[]

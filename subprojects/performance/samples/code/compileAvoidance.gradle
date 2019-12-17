@@ -1,0 +1,9 @@
+plugins {
+    id('java')
+}
+
+// tag::incremental[]
+tasks.withType(JavaCompile) {
+    options.incremental = true
+}
+// end::incremental[]
