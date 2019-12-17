@@ -1,0 +1,15 @@
+plugins {
+    id 'java-gradle-plugin'
+}
+
+group = 'org.samples.greeting'
+version = '0.1'
+
+gradlePlugin {
+    plugins {
+        greetingsPlugin {
+            id = 'org.samples.greeting'
+            implementationClass = 'org.example.greeting.GreetingPlugin'
+        }
+    }
+}
