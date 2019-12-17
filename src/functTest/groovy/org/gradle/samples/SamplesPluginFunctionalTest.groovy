@@ -15,7 +15,7 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
         writeSampleUnderTest()
         buildFile << """
 tasks.register("publishSamples", Sync) {
-    from(samples.assembledDocumentation)
+    from(samples.distribution.renderedDocumentation)
     into("build/published/samples/")
 }
 """
@@ -23,8 +23,8 @@ tasks.register("publishSamples", Sync) {
         build('publishSamples')
 
         then:
-        file("build/published/samples/index.adoc").assertExists()
-        file("build/published/samples/sample_demo.adoc").assertExists()
+        file("build/published/samples/index.html").assertExists()
+        file("build/published/samples/sample_demo.html").assertExists()
         file("build/published/samples/zips/sample_demo-groovy-dsl.zip").assertExists()
         file("build/published/samples/zips/sample_demo-groovy-dsl.zip").assertExists()
     }
@@ -176,7 +176,7 @@ ${sampleUnderTestDsl}.dsls = [ Dsl.GROOVY ]
     def "sample index contains description"() {
         makeSingleProject()
         writeSampleUnderTest()
-        def indexFile = file("build/samples/docs/index.adoc")
+        def indexFile = file("build/working/samples/docs/index.adoc")
 
         when:
         build('assemble')

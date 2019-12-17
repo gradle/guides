@@ -48,9 +48,9 @@ public interface Sample extends Named, SampleSummary {
     void common(Action<? super ConfigurableFileCollection> action);
 
     /**
-     * @return Sample content that is used for Groovy DSL.
-     *
      * By convention, this is the "groovy" directory in the sample directory.
+     *
+     * @return Sample content that is used for Groovy DSL.
      */
     ConfigurableFileCollection getGroovyContent();
 
@@ -62,14 +62,16 @@ public interface Sample extends Named, SampleSummary {
     void groovy(Action<? super ConfigurableFileCollection> action);
 
     /**
-     * @return Sample content that is used for Groovy DSL.
+     * By convention, this is the "kotlin" directory in the sample directory.
+     *
+     * @return Sample content that is used for Kotlin DSL.
      */
     ConfigurableFileCollection getKotlinContent();
 
     /**
      * Configure Kotlin content.
      *
-     * @param action coniguration action
+     * @param action configuration action
      */
     void kotlin(Action<? super ConfigurableFileCollection> action);
 
@@ -81,7 +83,7 @@ public interface Sample extends Named, SampleSummary {
     /**
      * Configure testing content.
      *
-     * @param action coniguration action
+     * @param action configuration action
      */
     void tests(Action<? super ConfigurableFileCollection> action);
 
@@ -91,15 +93,14 @@ public interface Sample extends Named, SampleSummary {
     DirectoryProperty getInstallDirectory();
 
     /**
-     * TODO:
-     * @return Root installation directory for each DSL.
+     * @return Root installation directory for each DSL when tested.
      */
     DirectoryProperty getTestedInstallDirectory();
 
     /**
-     * @return The generated sample (asciidoc) page.
-     *
      * This is an asciidoc file, not the generated HTML.
+     *
+     * @return The generated sample (asciidoc) page.
      */
     RegularFileProperty getSamplePageFile();
 

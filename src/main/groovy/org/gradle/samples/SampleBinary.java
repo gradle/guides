@@ -26,6 +26,9 @@ public interface SampleBinary extends Named {
      */
     ConfigurableFileCollection getDslSpecificContent();
 
+    /**
+     * @return Content that is needed to test the sample.
+     */
     ConfigurableFileCollection getTestsContent();
 
     /**
@@ -38,7 +41,9 @@ public interface SampleBinary extends Named {
      */
     DirectoryProperty getWorkingDirectory();
 
-    // TODO:
+    /**
+     * @return Working directory used to expose an assembled sample to tests.
+     */
     DirectoryProperty getTestedWorkingDirectory();
 
     /**
@@ -62,7 +67,7 @@ public interface SampleBinary extends Named {
     DirectoryProperty getInstallDirectory();
 
     /**
-     * TODO:
+     * @return A installation directory containing this sample.  This can be used to get an installed version of the sample.
      */
     DirectoryProperty getTestedInstallDirectory();
 }

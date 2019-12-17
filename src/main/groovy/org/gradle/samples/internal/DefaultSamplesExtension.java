@@ -5,6 +5,7 @@ import org.gradle.api.model.ObjectFactory;
 import org.gradle.samples.Sample;
 import org.gradle.samples.SampleBinary;
 import org.gradle.samples.SampleSummary;
+import org.gradle.samples.SamplesDistribution;
 import org.gradle.samples.SamplesExtension;
 import org.gradle.samples.Template;
 
@@ -14,12 +15,14 @@ public abstract class DefaultSamplesExtension implements SamplesExtension {
     private final NamedDomainObjectContainer<Sample> publishedSamples;
     private final NamedDomainObjectContainer<SampleBinary> binaries;
     private final NamedDomainObjectContainer<Template> templates;
+    private final SamplesDistribution distribution;
 
     @Inject
     public DefaultSamplesExtension(ObjectFactory objectFactory) {
         this.publishedSamples = objectFactory.domainObjectContainer(Sample.class, name -> objectFactory.newInstance(DefaultSample.class, name));
         this.binaries = objectFactory.domainObjectContainer(SampleBinary.class, name -> objectFactory.newInstance(DefaultSampleBinary.class, name));
         this.templates = objectFactory.domainObjectContainer(Template.class, name -> objectFactory.newInstance(DefaultTemplate.class, name));
+        this.distribution = objectFactory.newInstance(SamplesDistribution.class);
     }
 
     @Override
@@ -35,5 +38,10 @@ public abstract class DefaultSamplesExtension implements SamplesExtension {
     @Override
     public NamedDomainObjectContainer<Template> getTemplates() {
         return templates;
+    }
+
+    @Override
+    public SamplesDistribution getDistribution() {
+        return distribution;
     }
 }

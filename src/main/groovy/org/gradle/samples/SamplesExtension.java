@@ -1,8 +1,6 @@
 package org.gradle.samples;
 
 import org.gradle.api.NamedDomainObjectContainer;
-import org.gradle.api.file.ConfigurableFileCollection;
-import org.gradle.api.file.ConfigurableFileTree;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
@@ -10,63 +8,67 @@ import org.gradle.api.provider.ListProperty;
 public interface SamplesExtension {
 
     /**
-     * @return The root sample directory.
-     *
      * By convention, this is src/samples
+     *
+     * @return The root sample directory.
      */
     DirectoryProperty getSamplesRoot();
 
     /**
-     * @return The root template directory.
-     *
      * By convention, this is src/samples/templates
+     *
+     * @return The root template directory.
      */
     DirectoryProperty getTemplatesRoot();
 
     /**
-     * @return The root install directory.
+     * By convention, this is buildDir/working/samples/install
      *
-     * By convention, this is buildDir/install/samples
+     * @return The root install directory.
      */
     DirectoryProperty getInstallRoot();
-    ConfigurableFileTree getInstalledSamples();
-    ConfigurableFileCollection getZippedSamples();
-
-    DirectoryProperty getTestedInstallRoot();
-    ConfigurableFileTree getTestedInstalledSamples();
 
     /**
-     * @return The root directory for all documentation.
+     * By convention, this is buildDir/working/samples/testing
      *
-     * By convention, this is buildDir/samples/docs
+     * @return location of installed samples ready for testing
      */
-    DirectoryProperty getDocumentationRoot();
-
-    DirectoryProperty getRenderedDocumentationRoot();
-    ConfigurableFileCollection getRenderedDocumentation();
+    DirectoryProperty getTestedInstallRoot();
 
     /**
-     * @return The generated samples index file.
+     * By convention, this is buildDir/working/samples/docs
      *
+     * @return The root directory for all documentation.
+     */
+    DirectoryProperty getDocumentationInstallRoot();
+
+    /**
+     * By convention, this is buildDir/working/samples/render-samples
+     *
+     * @return The root directory for rendered documentation.
+     */
+    DirectoryProperty getRenderedDocumentationRoot();
+
+    /**
+     * By convention, this excludes build and .gradle directories.
+     *
+     * @return List of common exclude patterns when building a zip or install directory for a sample.
+     */
+    ListProperty<String> getCommonExcludes();
+
+    /**
      * This is an asciidoc file, not the generated HTML.
      *
      * By convention, this is documentationRoot/index.adoc
+     *
+     * @return The generated samples index file.
      */
     RegularFileProperty getSampleIndexFile();
 
     /**
-     * @return All documentation for samples.
-     *
-     * This is not the generated HTML.
+     * @return Buildable elements of all the available samples.
      */
-    ConfigurableFileCollection getAssembledDocumentation();
-
-    /**
-     * @return List of common exclude patterns when building a zip or install directory for a sample.
-     *
-     * By convention, this excludes build and .gradle directories.
-     */
-    ListProperty<String> getCommonExcludes();
+    SamplesDistribution getDistribution();
 
     /**
      * @return Container of all published samples. This is the primary configuration point for all samples.

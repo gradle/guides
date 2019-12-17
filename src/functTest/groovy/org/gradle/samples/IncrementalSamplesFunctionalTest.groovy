@@ -68,7 +68,7 @@ class IncrementalSamplesFunctionalTest extends AbstractSampleFunctionalSpec {
         result.task(':generateSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
         assertBothDslSampleTasksExecutedAndNotSkipped(result)
         and:
-        def samplePage = file("build/samples/docs/sample_demo.adoc")
+        def samplePage = file("build/working/samples/docs/sample_demo.adoc")
         samplePage.text.contains("More content")
 
         when:

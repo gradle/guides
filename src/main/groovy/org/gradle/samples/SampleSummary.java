@@ -4,6 +4,9 @@ import org.gradle.api.provider.Property;
 import org.gradle.api.provider.SetProperty;
 import org.gradle.api.tasks.Input;
 
+/**
+ *
+ */
 public interface SampleSummary {
     /**
      * @return Property for configuring the sample description. The description is used within the sample index.
