@@ -1,0 +1,24 @@
+plugins {
+    id 'groovy'
+}
+
+apply from: "$rootDir/gradle/publishing.gradle"
+
+group = 'org.gradle.guides'
+version = '0.4'
+
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile gradleTestKit()
+    compile 'org.spockframework:spock-core:1.1-groovy-2.4', {
+        exclude module : 'groovy-all'
+    }
+    testCompile localGroovy()
+}
+
