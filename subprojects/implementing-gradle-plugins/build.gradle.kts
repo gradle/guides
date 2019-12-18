@@ -1,7 +1,6 @@
 import org.asciidoctor.gradle.AsciidoctorTask
 
 plugins {
-//    `build-scan`
     id("org.gradle.guides.topical") version "0.15.13"
     id("org.gradle.guides.test-jvm-code") version "0.15.13"
 }
@@ -21,15 +20,6 @@ dependencies {
     testImplementation("org.gradle:sample-check:0.6.1")
     testImplementation(gradleTestKit())
 }
-
-//buildScan {
-//    setTermsOfServiceUrl("https://gradle.com/terms-of-service")
-//    setTermsOfServiceAgree("yes")
-//    if (!System.getenv("CI").isNullOrEmpty()) {
-//        publishAlways()
-//        tag("CI")
-//    }
-//}
 
 tasks {
     getByName<AsciidoctorTask>("asciidoctor") {

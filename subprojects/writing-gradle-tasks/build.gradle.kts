@@ -1,7 +1,6 @@
 import org.asciidoctor.gradle.AsciidoctorTask
 
 plugins {
-    id("com.gradle.build-scan") version "2.3"
     id("org.gradle.guides.getting-started") version "0.15.13"
     id("org.gradle.guides.test-jvm-code") version "0.15.13"
 }
@@ -9,15 +8,6 @@ plugins {
 guide {
     repositoryPath.set("gradle-guides/writing-gradle-tasks")
     minimumGradleVersion.set("5.0")
-}
-
-buildScan {
-    setTermsOfServiceUrl("https://gradle.com/terms-of-service")
-    setTermsOfServiceAgree("yes")
-    if (!System.getenv("CI").isNullOrEmpty()) {
-        publishAlways()
-        tag("CI")
-    }
 }
 
 tasks {
