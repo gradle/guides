@@ -1,6 +1,6 @@
 plugins {
-    id("org.gradle.guides.topical") version "0.15.13"
-    id("org.gradle.guides.test-jvm-code") version "0.15.13"
+    id("org.gradle.guides.topical")
+    id("org.gradle.guides.test-jvm-code")
 }
 
 guide {

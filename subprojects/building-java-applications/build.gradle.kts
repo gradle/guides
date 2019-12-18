@@ -1,7 +1,7 @@
 plugins {
     groovy
-    id("org.gradle.guides.getting-started") version "0.15.13"
-    id("org.gradle.guides.test-jvm-code") version "0.15.13"
+    id("org.gradle.guides.getting-started")
+    id("org.gradle.guides.test-jvm-code")
 }
 
 guide {
