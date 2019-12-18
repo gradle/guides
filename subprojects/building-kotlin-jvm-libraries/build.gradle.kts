@@ -1,5 +1,5 @@
 plugins {
-    `build-scan`
+//    `build-scan`
     id("org.gradle.guides.getting-started") version "0.15.13"
     id("org.gradle.guides.test-jvm-code") version "0.15.13"
 }
@@ -10,11 +10,11 @@ guide {
     title.set("Building Kotlin JVM Libraries")
 }
 
-buildScan {
-    termsOfServiceUrl = "https://gradle.com/terms-of-service"
-    termsOfServiceAgree = "yes"
-    if (!System.getenv("CI").isNullOrEmpty()) {
-        publishAlways()
-        tag("CI")
-    }
-}
+//buildScan {
+//    termsOfServiceUrl = "https://gradle.com/terms-of-service"
+//    termsOfServiceAgree = "yes"
+//    if (!System.getenv("CI").isNullOrEmpty()) {
+//        publishAlways()
+//        tag("CI")
+//    }
+//}

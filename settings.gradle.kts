@@ -1,3 +1,7 @@
+plugins {
+    id("com.gradle.enterprise").version("3.1.1")
+}
+
 includeBuild("subprojects/gradle-guides-plugin")
 if (file("subprojects").exists()) {
     file(".mrconfig").readLines().filter { it.startsWith("[") && it.endsWith("]") }.map { it.substring(1, it.length - 1) }.forEach {

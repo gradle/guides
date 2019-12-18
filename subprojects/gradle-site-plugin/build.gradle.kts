@@ -3,13 +3,13 @@ import java.io.IOException
 import java.time.Duration
 
 plugins {
-    `build-scan`
+//    `build-scan`
     `java-gradle-plugin`
     `maven-publish`
     signing
     id("com.gradle.plugin-publish") version "0.10.0"
     id("gradle.site") version "0.6"
-    kotlin("jvm") version "1.3.10"
+    kotlin("jvm") version "1.3.61"
 }
 
 val junitPlatformVersion = "1.1.0"
@@ -22,41 +22,41 @@ description = "Generates documentation in HTML for given project"
 val webUrl = "https://gradle-guides.github.io/${project.name}/"
 val githubUrl = "https://github.com/gradle-guides/${project.name}.git"
 
-buildScan {
-    termsOfServiceUrl = "https://gradle.com/terms-of-service"
-    termsOfServiceAgree = "yes"
-
-    publishAlways()
-
-    fun execCommandWithOutput(input: String): String {
-        return try {
-            val parts = input.split("\\s".toRegex())
-            val proc = ProcessBuilder(*parts.toTypedArray())
-                    .directory(rootDir)
-                    .redirectOutput(ProcessBuilder.Redirect.PIPE)
-                    .redirectError(ProcessBuilder.Redirect.PIPE)
-                    .start()
-            proc.waitFor(20, TimeUnit.SECONDS)
-            proc.inputStream.bufferedReader().readText()
-        } catch(e: IOException) {
-            "<empty>"
-        }
-    }
-
-    // Fastest way to safely check Git https://gist.github.com/sindresorhus/3898739
-    value("Git Branch", execCommandWithOutput("git symbolic-ref --short HEAD"))
-    value("Git Commit", execCommandWithOutput("git rev-parse --verify HEAD"))
-
-    val gitStatus = execCommandWithOutput("git status --porcelain")
-    if (gitStatus.isNotEmpty()) {
-        value("Git Local Changes", gitStatus)
-        tag("dirty")
-    }
-
-    if (!System.getenv("CI").isNullOrEmpty()) {
-        tag("CI")
-    }
-}
+//buildScan {
+//    termsOfServiceUrl = "https://gradle.com/terms-of-service"
+//    termsOfServiceAgree = "yes"
+//
+//    publishAlways()
+//
+//    fun execCommandWithOutput(input: String): String {
+//        return try {
+//            val parts = input.split("\\s".toRegex())
+//            val proc = ProcessBuilder(*parts.toTypedArray())
+//                    .directory(rootDir)
+//                    .redirectOutput(ProcessBuilder.Redirect.PIPE)
+//                    .redirectError(ProcessBuilder.Redirect.PIPE)
+//                    .start()
+//            proc.waitFor(20, TimeUnit.SECONDS)
+//            proc.inputStream.bufferedReader().readText()
+//        } catch(e: IOException) {
+//            "<empty>"
+//        }
+//    }
+//
+//    // Fastest way to safely check Git https://gist.github.com/sindresorhus/3898739
+//    value("Git Branch", execCommandWithOutput("git symbolic-ref --short HEAD"))
+//    value("Git Commit", execCommandWithOutput("git rev-parse --verify HEAD"))
+//
+//    val gitStatus = execCommandWithOutput("git status --porcelain")
+//    if (gitStatus.isNotEmpty()) {
+//        value("Git Local Changes", gitStatus)
+//        tag("dirty")
+//    }
+//
+//    if (!System.getenv("CI").isNullOrEmpty()) {
+//        tag("CI")
+//    }
+//}
 
 site {
     outputDir.set(file("$rootDir/docs"))

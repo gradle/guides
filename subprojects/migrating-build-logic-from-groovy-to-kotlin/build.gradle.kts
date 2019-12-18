@@ -1,5 +1,5 @@
 plugins {
-    `build-scan`
+//    `build-scan`
     id("org.gradle.guides.topical") version "0.15.13"
     id("org.gradle.guides.test-jvm-code") version "0.15.13"
 }
@@ -10,14 +10,14 @@ guide {
     title.set("Migrating build logic from Groovy to Kotlin")
 }
 
-buildScan {
-    setTermsOfServiceUrl("https://gradle.com/terms-of-service")
-    setTermsOfServiceAgree("yes")
-    if (!System.getenv("CI").isNullOrEmpty()) {
-        publishAlways()
-        tag("CI")
-    }
-}
+//buildScan {
+//    setTermsOfServiceUrl("https://gradle.com/terms-of-service")
+//    setTermsOfServiceAgree("yes")
+//    if (!System.getenv("CI").isNullOrEmpty()) {
+//        publishAlways()
+//        tag("CI")
+//    }
+//}
 
 tasks.test {
     inputs.property("androidHome", System.getenv("ANDROID_HOME") ?: "")

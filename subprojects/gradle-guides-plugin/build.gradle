@@ -24,7 +24,7 @@ dependencies {
     compile 'org.apache.ant:ant:1.9.13'
 
     runtime 'gradle.plugin.org.ysb33r.gradle:gradle-cloudci-plugin:2.3'
-    runtime 'gradle.plugin.org.ysb33r.gradle:gradle-runner:1.1'
+    runtime 'gradle.plugin.org.ysb33r.gradle:gradle-runner:2.0'
 
     testImplementation "org.spockframework:spock-core:1.2-groovy-2.5", {
         exclude module : 'groovy-all'
