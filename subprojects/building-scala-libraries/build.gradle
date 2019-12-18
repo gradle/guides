@@ -28,7 +28,7 @@ gradleRunner {
 
     }
 
-    step 'initProject', 'init', '--type', buildType, '--package', 'guidesamples', '--project-name', project.name
+    step 'initProject', 'init', '--type', buildType, '--package', 'guidesamples', '--project-name', project.name, '--dsl', 'groovy'
 
     step 'initOutput', cleanBuildOutput.curry('initProject')
 

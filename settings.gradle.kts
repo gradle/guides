@@ -5,45 +5,51 @@ plugins {
 includeBuild("subprojects/gradle-guides-plugin")
 
 val guides = listOf(
-    "subprojects/building-cpp-applications",
-    "subprojects/building-cpp-libraries",
-    "subprojects/building-groovy-libraries",
-    "subprojects/building-java-9-modules",
-    "subprojects/building-java-applications",
-    "subprojects/building-java-libraries",
-    "subprojects/building-java-web-applications",
-    "subprojects/building-kotlin-jvm-libraries",
-    "subprojects/building-scala-libraries",
-    "subprojects/building-swift-applications",
-    "subprojects/building-swift-libraries",
-    "subprojects/building-spring-boot-2-projects-with-gradle",
-    "subprojects/creating-build-scans",
-    "subprojects/creating-multi-project-builds",
-    "subprojects/creating-new-gradle-builds",
-    "subprojects/consuming-jvm-libraries",
-    "subprojects/designing-gradle-plugins",
-    "subprojects/executing-gradle-builds-on-jenkins",
-    "subprojects/executing-gradle-builds-on-teamcity",
-    "subprojects/executing-gradle-builds-on-travisci",
-    "subprojects/implementing-gradle-plugins",
-    "subprojects/using-build-cache",
-    "subprojects/using-the-worker-api",
-    "subprojects/writing-getting-started-guides",
-    "subprojects/writing-gradle-plugins",
-    "subprojects/writing-gradle-tasks",
-    "subprojects/migrating-from-maven",
-    "subprojects/migrating-build-logic-from-groovy-to-kotlin",
-    "subprojects/performance",
-    "subprojects/publishing-plugins-to-gradle-plugin-portal",
-    "subprojects/running-webpack-with-gradle",
-    "subprojects/style-guide",
-    "subprojects/testing-gradle-plugins"
+    "building-cpp-applications",
+    "building-cpp-libraries",
+    "building-groovy-libraries",
+    "building-java-9-modules",
+    "building-java-applications",
+    "building-java-libraries",
+    "building-java-web-applications",
+    "building-kotlin-jvm-libraries",
+    "building-scala-libraries",
+    "building-swift-applications",
+    "building-swift-libraries",
+    "building-spring-boot-2-projects-with-gradle",
+    "creating-build-scans",
+    "creating-multi-project-builds",
+    "creating-new-gradle-builds",
+    "consuming-jvm-libraries",
+    "designing-gradle-plugins",
+    "executing-gradle-builds-on-jenkins",
+    "executing-gradle-builds-on-teamcity",
+    "executing-gradle-builds-on-travisci",
+    "implementing-gradle-plugins",
+    "using-build-cache",
+    "using-the-worker-api",
+    "writing-getting-started-guides",
+    "writing-gradle-plugins",
+    "writing-gradle-tasks",
+    "migrating-from-maven",
+    "migrating-build-logic-from-groovy-to-kotlin",
+    "performance",
+    "publishing-plugins-to-gradle-plugin-portal",
+    "running-webpack-with-gradle",
+    "style-guide",
+    "testing-gradle-plugins"
 )
 
-val misc = listOf("subprojects/gradle-site-plugin", "subprojects/greeting-plugin-example", "subprojects/guides-test-fixtures")
-val templates = listOf("subprojects/gs-template", "subprojects/topical-template", "subprojects/tutorial-template")
+val misc = listOf("gradle-site-plugin", "greeting-plugin-example", "guides-test-fixtures")
+val templates = listOf("gs-template", "topical-template", "tutorial-template")
 
-(guides + misc + templates).forEach { includeBuild(it) }
+(guides + misc + templates).forEach { includeBuild("subprojects/${it}") }
+
+gradle.rootProject {
+    val guideProjects by extra {
+        guides
+    }
+}
 
 gradleEnterprise {
     buildScan {
