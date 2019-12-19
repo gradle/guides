@@ -68,7 +68,7 @@ public class SamplesPlugin implements Plugin<Project> {
         project.getPluginManager().apply("org.asciidoctor.convert");
 
         TaskProvider<Task> assemble = tasks.named(LifecycleBasePlugin.ASSEMBLE_TASK_NAME);
-        TaskProvider<Task> check = tasks.named(LifecycleBasePlugin.CHECK_TASK_NAME);
+        TaskProvider<Task> check = tasks.register("checkSamples");
 
         // Register a samples extension to configure published samples
         SamplesExtension extension = createSamplesExtension(project, layout);
