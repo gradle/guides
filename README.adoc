@@ -108,6 +108,11 @@ This should be applied in the authoring of all new Topical guides
 
 == Changelog
 
+=== 0.15.28
+
+- Add checkSamples to run sample checks
+- Disable checkstyle on generated tests
+
 === 0.15.27
 
 - Major changes in samples plugin DSL
