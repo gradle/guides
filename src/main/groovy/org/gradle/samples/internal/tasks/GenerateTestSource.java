@@ -15,7 +15,8 @@ public abstract class GenerateTestSource extends DefaultTask {
 
     @TaskAction
     public void generate() {
-        String content = "package org.gradle.samples;\n"
+        String content = "//CHECKSTYLE:OFF\n"
+                + "package org.gradle.samples;\n"
                 + "\n"
                 + "import org.gradle.samples.test.normalizer.FileSeparatorOutputNormalizer;\n"
                 + "import org.gradle.samples.test.normalizer.JavaObjectSerializationOutputNormalizer;\n"
