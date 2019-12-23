@@ -73,7 +73,7 @@ object PublishPlugins : AbstractBuild({
         gradle {
             useGradleWrapper = true
             gradleParams = "-Dgradle.publish.skip.namespace.check=true -Pgradle.publish.key=%GRADLE_PUBLISH_KEY% -Pgradle.publish.secret=%GRADLE_PUBLISH_SECRET%"
-            tasks = "publishPlugins"
+            tasks = "publishDocumentationPlugins"
             buildFile = "" // Let Gradle detect the build script
         }
     }
@@ -88,7 +88,7 @@ object PublishGuides : AbstractBuild({
     steps {
         gradle {
             useGradleWrapper = true
-            tasks = "publishPlugins"
+            tasks = "publishGuides"
             buildFile = "" // Let Gradle detect the build script
         }
     }
