@@ -4,7 +4,7 @@ tasks.register("clean") {
     dependsOn(gradle.includedBuilds.map { it.task(":clean") })
 }
 
-tasks.register("build") {
+var buildTask = tasks.register("build") {
     dependsOn(gradle.includedBuilds.filter({ guideProjects.contains(it.name) }).map { it.task(":build") })
 }
 
@@ -13,5 +13,6 @@ tasks.register("publishDocumentationPlugins") {
 }
 
 tasks.register("publishGuides") {
+    dependsOn(buildTask)
     dependsOn(gradle.includedBuilds.filter({ guideProjects.contains(it.name) }).map { it.task(":gitPublishPush") })
 }
