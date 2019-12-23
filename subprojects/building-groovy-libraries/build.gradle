@@ -13,7 +13,9 @@ asciidoctor {
     attributes 'gradle-outdir' : "${gradleRunner.reportsDir.absolutePath}"
 }
 
+// TODO: Replace Gradle Runner by better alternative
 gradleRunner {
+    enabled = false
     ext {
         buildType = 'groovy-library'
 
