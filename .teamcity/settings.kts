@@ -90,6 +90,6 @@ object PublishGuides : AbstractBuild({
         }
     }
     params {
-        password("env.GRGIT_USER", "credentialsJSON:9ea244eb-7e24-44c5-8d4d-0e4d512b1618", display = ParameterDisplay.HIDDEN)
+        password("env.GRGIT_USER", "credentialsJSON:c77b23f9-e0bf-4f4b-ba31-c54802542cca", display = ParameterDisplay.HIDDEN)
     }
 })
