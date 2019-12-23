@@ -13,6 +13,7 @@ tasks.register("publishDocumentationPlugins") {
 }
 
 tasks.register("publishGuides") {
+    // TODO: Introduce instead a publishGuides task within each project to avoid this dependency
     dependsOn(buildTask)
     dependsOn(gradle.includedBuilds.filter({ guideProjects.contains(it.name) }).map { it.task(":gitPublishPush") })
 }
