@@ -7,8 +7,10 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 import java.nio.file.Files
+import java.util.regex.Pattern
 
 class ValidateSteps extends Specification {
+    private static final Pattern BUILD_RESULT_PATTERN = Pattern.compile("BUILD (SUCCESSFUL|FAILED) in( \\d+[smh]+)+");
 
     static final File SRC_CODE_DIR = new File(System.getProperty('samplesDir') ?: 'samples', 'code').absoluteFile
     static final File SRC_OUTPUT_DIR = new File(System.getProperty('samplesDir') ?: 'samples', 'output').absoluteFile
@@ -33,7 +35,14 @@ class ValidateSteps extends Specification {
         gradleArgs.add("--console=rich")
         StringWriter output = new StringWriter()
         GradleRunner.create().forwardStdOutput(output).withProjectDir(workingDir).withArguments(gradleArgs).build()
-        output.toString()
+
+        // Poor man normalizer
+        output.toString().readLines().collect { line ->
+            if (BUILD_RESULT_PATTERN.matcher(line).matches()) {
+                return BUILD_RESULT_PATTERN.matcher(line).replaceFirst("BUILD \$1 in 0s")
+            }
+            return line
+        }.join('\n')
     }
 
     @Unroll

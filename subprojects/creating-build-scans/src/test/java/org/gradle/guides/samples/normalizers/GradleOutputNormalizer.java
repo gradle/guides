@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 public class GradleOutputNormalizer implements OutputNormalizer {
     private static final Pattern STACK_TRACE_ELEMENT = Pattern.compile("\\s+(at\\s+)?([\\w.$_]+/)?[\\w.$_]+\\.[\\w$_ =+\'-<>]+\\(.+?\\)(\\x1B\\[0K)?");
-    private static final Pattern BUILD_RESULT_PATTERN = Pattern.compile("BUILD (SUCCESSFUL|FAILED) in( \\d+[smh])+");
+    private static final Pattern BUILD_RESULT_PATTERN = Pattern.compile("BUILD (SUCCESSFUL|FAILED) in( \\d+[smh]+)+");
     private static final Pattern BUILD_SCAN_URL_PATTERN = Pattern.compile("https://gradle.com/s/\\w+");
 
     public static final String DOWNLOAD_MESSAGE_PREFIX = "Download ";
