@@ -9,6 +9,12 @@ sourceSets {
 }
 // end::test-source-set[]
 
+// TODO: Explain this in the guide
+configurations {
+    integrationTestImplementation.extendsFrom testImplementation
+    integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
 // tag::test-task[]
 task integrationTest(type: Test) {
     description = 'Runs the integration tests.'
