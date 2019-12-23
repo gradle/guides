@@ -9,6 +9,3 @@ Could not find metadata org.example:my-kotlin-library/maven-metadata.xml in remo
 
 BUILD SUCCESSFUL in 4s
 7 actionable tasks: 7 executed
-
-Publishing build scan...
-https://gradle.com/s/ideifb3epyoz6

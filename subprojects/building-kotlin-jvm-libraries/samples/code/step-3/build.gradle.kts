@@ -3,10 +3,9 @@ import org.gradle.jvm.tasks.Jar
 // end::dokka-imports[]
 
 plugins {
-    `build-scan`
-    kotlin("jvm") version "1.2.71"
+    kotlin("jvm") version "1.3.61"
     // tag::apply-dokka-plugin[]
-    id("org.jetbrains.dokka") version "0.9.17"
+    id("org.jetbrains.dokka") version "0.10.0"
     // end::apply-dokka-plugin[]
 }
 
@@ -17,13 +16,6 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
     testImplementation("junit:junit:4.12")
-}
-
-buildScan {
-    termsOfServiceUrl = "https://gradle.com/terms-of-service"
-    termsOfServiceAgree = "yes"
-
-    publishAlways()
 }
 
 // tag::configure-dokka-plugin[]

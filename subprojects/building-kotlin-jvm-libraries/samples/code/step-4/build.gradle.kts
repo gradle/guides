@@ -8,14 +8,11 @@ import org.jetbrains.dokka.gradle.DokkaTask
 
 // tag::apply-maven-publish[]
 plugins {
-// end::apply-maven-publish[]
-    `build-scan`
-// tag::apply-maven-publish[]
     `maven-publish` // <1>
 // end::apply-maven-publish[]
-    kotlin("jvm") version "1.2.71"
+    kotlin("jvm") version "1.3.61"
 // tag::apply-maven-publish[]
-    id("org.jetbrains.dokka") version "0.9.17"
+    id("org.jetbrains.dokka") version "0.10.0"
 }
 // end::apply-maven-publish[]
 
@@ -31,13 +28,6 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
     testImplementation("junit:junit:4.12")
-}
-
-buildScan {
-    termsOfServiceUrl = "https://gradle.com/terms-of-service"
-    termsOfServiceAgree = "yes"
-
-    publishAlways()
 }
 
 // Configure existing Dokka task to output HTML to typical Javadoc directory

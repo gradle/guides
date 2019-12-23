@@ -1,1 +1,3 @@
-apply plugin: 'base'
+plugins {
+    id 'base'
+}

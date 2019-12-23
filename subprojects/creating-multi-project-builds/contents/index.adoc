@@ -488,10 +488,6 @@ Re-run everything from the top-level to make sure it all still works.
 $ ./gradlew clean build
 ----
 
-//== Build scan
-//
-//*TODO ??*
-
 == Summary
 
 By following the steps you have seen how to

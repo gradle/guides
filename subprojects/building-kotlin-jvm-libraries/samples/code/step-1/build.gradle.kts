@@ -1,14 +1,9 @@
 // tag::apply-kotlin-plugin[]
 
-// tag::apply-build-scan-plugin[]
 plugins {
-// end::apply-kotlin-plugin[]
-    `build-scan`
-// tag::apply-kotlin-plugin[]
-    kotlin("jvm") version "1.2.71" // <1>
+    kotlin("jvm") version "1.3.61" // <1>
 }
 // end::apply-kotlin-plugin[]
-// end::apply-build-scan-plugin[]
 
 // tag::configure-dependencies[]
 repositories {
@@ -19,12 +14,3 @@ dependencies {
     implementation(kotlin("stdlib")) // <3>
 }
 // end::configure-dependencies[]
-
-// tag::configure-build-scan[]
-buildScan {
-    termsOfServiceUrl = "https://gradle.com/terms-of-service" // <1>
-    termsOfServiceAgree = "yes"
-
-    publishAlways() // <2>
-}
-// end::configure-build-scan[]

@@ -1,6 +1,5 @@
 plugins {
-    `build-scan`
-    kotlin("jvm") version "1.2.71"
+    kotlin("jvm") version "1.3.61"
 }
 
 repositories {
@@ -13,10 +12,3 @@ dependencies {
     testImplementation("junit:junit:4.12") // <1>
 }
 // tag::configure-dependencies[]
-
-buildScan {
-    termsOfServiceUrl = "https://gradle.com/terms-of-service"
-    termsOfServiceAgree = "yes"
-
-    publishAlways()
-}

@@ -65,46 +65,6 @@ We use the `implementation` dependency configuration so that we don't expose any
 
 We're nearly ready to start testing and packaging our software.
 
-=== Digging deeper with a build scan
-
-This is not strictly required to complete this guide, but using the https://gradle.com/build-scans#what-are-build-scans[build scan plugin] will be very helpful with understanding what is happening with our builds.
-
-.build.gradle.kts
-[source,diff]
-----
-plugins {
-+    `build-scan` // <1>
-     kotlin("jvm") version "1.2.31"
-}
-----
-<1> Apply the build scan plugin in the `plugins {}` block at the top.
-
-Add the following build scan configuration below.
-
-.build.gradle.kts
-[source,kotlin]
-----
-include::{samplescodedir}/step-1/build.gradle.kts[tags=configure-build-scan]
-----
-<1> We will never share your build information, but it's important to read and agree to build scan https://gradle.com/terms-of-service[terms of service].
-<2> Configure build scan plugin to create a build scan after all builds.
-
-Now we can compile our project.
-
-.Compile Kotlin sources
-[source,console]
-----
-$ gradle compileKotlin
-
-include::{samplesoutputdir}/step-1/compileKotlin.out[]
-----
-
-For example, it is important to know that the Kotlin plugin applies Gradle's Java plugin under the covers (we can see this in the "Plugins" section of the build scan). If we look at the {user-manual}java_plugin.html[docs for the Java plugin], we learn about all of the conventions it applies for things like Javadocs and packaging we'll do later in this guide.
-
-image::build-scan-plugins.png[]
-
-Think of a build scan like a web-based, detailed build report. Super handy for digging into build failures or dependency issues. Let's move on.
-
 == Step 2: Add testing with JUnit
 
 https://junit.org/junit4/[JUnit 4] is the simplest of testing libraries to add to our project. If you happen to prefer the https://spekframework.org/[Spek framework] for Kotlin-based specifications, check out the https://spekframework.org/setup-jvm/#gradle[Spek docs].
@@ -204,7 +164,6 @@ Now our library is ready to share with the world. We're going to publish it loca
 [source,diff]
 ----
 plugins {
-     `build-scan`
 +    `maven-publish`
      kotlin("jvm") version "1.2.31"
 }
