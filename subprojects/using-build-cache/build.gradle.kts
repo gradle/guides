@@ -1,7 +1,7 @@
 plugins {
     id("org.gradle.guides.topical")
     id("org.gradle.guides.test-jvm-code")
-    kotlin("kapt") version "1.3.11" apply false
+    kotlin("kapt") version "1.3.61" apply false
 }
 
 guide {
