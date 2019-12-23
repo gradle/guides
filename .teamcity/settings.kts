@@ -27,8 +27,10 @@ To debug in IntelliJ Idea, open the 'Maven Projects' tool window (View
 version = "2019.1"
 
 project {
-    buildType(Build)
-    buildType(Release)
+    parentId("DocumentationPortal")
+    buildType(BuildGuides)
+    buildType(PublishPlugins)
+    buildType(PublishGuides)
 }
 
 open class AbstractBuild(init: BuildType.() -> Unit) : BuildType({
@@ -46,8 +48,8 @@ open class AbstractBuild(init: BuildType.() -> Unit) : BuildType({
     init()
 })
 
-object Build : AbstractBuild({
-    name = "Build"
+object BuildGuides : AbstractBuild({
+    name = "Build All Guides"
     steps {
         gradle {
             useGradleWrapper = true
@@ -64,17 +66,30 @@ object Build : AbstractBuild({
     }
 })
 
-object Release : AbstractBuild({
-    name = "Release"
+object PublishPlugins : AbstractBuild({
+    name = "Publish Documentation Plugins"
     steps {
         gradle {
             useGradleWrapper = true
             gradleParams = "-Dgradle.publish.skip.namespace.check=true -Pgradle.publish.key=%GRADLE_PUBLISH_KEY% -Pgradle.publish.secret=%GRADLE_PUBLISH_SECRET%"
-            tasks = "release"
+            tasks = "publishPlugins"
         }
     }
     params {
         password("GRADLE_PUBLISH_KEY", "credentialsJSON:9ea244eb-7e24-44c5-8d4d-0e4d512b1608", display = ParameterDisplay.HIDDEN)
         password("GRADLE_PUBLISH_SECRET", "credentialsJSON:14df9326-8326-4329-bb04-3837d010d2e8", display = ParameterDisplay.HIDDEN)
+    }
+})
+
+object PublishGuides : AbstractBuild({
+    name = "Publish All Guides"
+    steps {
+        gradle {
+            useGradleWrapper = true
+            tasks = "publishPlugins"
+        }
+    }
+    params {
+        password("env.GRGIT_USER", "credentialsJSON:9ea244eb-7e24-44c5-8d4d-0e4d512b1608", display = ParameterDisplay.HIDDEN)
     }
 })
