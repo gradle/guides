@@ -1,6 +1,3 @@
-# mr-managed repositories
-subprojects/
-
 # nginx
 nginx.pid
 
@@ -11,3 +8,4 @@ nginx.pid
 build
 .idea
 *.iml
+.DS_Store
