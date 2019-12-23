@@ -1,0 +1,14 @@
+apply plugin : 'org.gradle.guides.topical'
+apply plugin : 'org.gradle.guides.test-jvm-code'
+
+guide {
+    repositoryPath = 'foo/bar'
+}
+
+gradleRunner {
+    // Purposefully left empty
+}
+
+task runGradleTest {
+  dependsOn asciidoctorAttributes
+}

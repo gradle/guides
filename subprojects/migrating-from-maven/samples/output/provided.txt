@@ -1,0 +1,3 @@
+compileOnly - Compile only dependencies for source set 'main'. (n)
++--- org.apache.commons:commons-lang3:3.3.2 (n)
+\--- log4j:log4j:1.2.17 (n)

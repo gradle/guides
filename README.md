@@ -142,45 +142,6 @@ The mirroring process is managed as a simple Travis CI build; see [.travis.yml](
 
 Each guide is tested on Travis. This is triggered when you create a PR for the guide repo.
 
-### How to update Gradle wrapper for all guides?
-
-The following commands will update the Gradle wrapper for all guides and open a pull request on each repositories.
-
-> NOTE: _You will need to install the [`mr`](https://myrepos.branchable.com/) and [`hub`](https://hub.github.com/) utilities for the following commands to work. Your favorite package manager should have both._
-
-    git clone https://github.com/gradle/guides.git
-    cd guides
-    mr checkout
-    mr run git checkout -b <branch-name>
-    mr run ./gradlew wrapper --gradle-version=<wrapper-version> --gradle-distribution-sha256-sum=<distribution-sha256>
-    mr run git add .
-    mr run git commit --signoff --message "Update Gradle wrapper to <wrapper-version>"
-    mr run git push -u origin <branch-name>
-    mr run hub pull-request --no-edit
-
-Make sure Travis CI builds pass before merging.
-
-### How to merge PR from the CLI?
-
-The following commands will [check the CI status of the pull request](https://hub.github.com/hub-ci-status.1.html) and [merge the pull request](https://hub.github.com/hub-merge.1.html).
-
-> NOTE: _You will need to install the [`hub`](https://hub.github.com/) and [`jq`](https://stedolan.github.io/jq/) utilities for the following commands to work. Your favorite package manager should have both._
-
-    cd <repo>
-    hub ci-status `hub api repos/gradle-guides/<repo>/pulls/<pull-request-id> | jq -r ".head.ref"`
-    git checkout master
-    git pull
-    hub merge `hub api repos/gradle-guides/<repo>/pulls/<pull-request-id> | jq -r ".html_url"`
-    git push
-
-### How to remove a remote branch on all guides?
-
-The following command will remove a remote branch (from the server) for all guide repositories.
-
-> NOTE: _You will need to install the [`mr`](https://myrepos.branchable.com/) utility for the following command to work. You favorite package manager should have both._
-
-    mr run git push origin --delete <branch-name>
-
 ### What is `ImgBot` used for?
 
 The `ImgBot` will submit PR to optimized images for all guides.

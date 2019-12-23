@@ -1,0 +1,24 @@
+apply plugin: 'maven-publish'
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifactId 'test-fixtures'
+        }
+    }
+    repositories {
+        maven {
+            name 'LocalFile'
+            url rootProject.file("$buildDir/repo")
+        }
+        maven {
+            name 'GradleInternal'
+            url "https://repo.gradle.org/gradle/libs-${version.endsWith('-SNAPSHOT') ? 'snapshots' : 'releases'}-local"
+            credentials {
+                username = project.findProperty('artifactoryUsername')
+                password = project.findProperty('artifactoryPassword')
+            }
+        }
+    }
+}

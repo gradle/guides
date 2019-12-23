@@ -1,0 +1,103 @@
+import org.apache.tools.ant.filters.ConcatFilter
+
+plugins {
+    id "org.gradle.guides.getting-started"
+}
+
+guide {
+    repositoryPath.set("gradle-guides/building-groovy-libraries")
+    minimumGradleVersion = "4.10.3"
+}
+
+asciidoctor {
+    attributes 'gradle-outdir' : "${gradleRunner.reportsDir.absolutePath}"
+}
+
+// TODO: Replace Gradle Runner by better alternative
+gradleRunner {
+    enabled = false
+    ext {
+        buildType = 'groovy-library'
+
+        cleanBuildOutput =  { stepName, info ->
+            File out = new File(getStepReportDir(stepName), 'out.txt')
+            new File(info.reportDir, 'out.txt').withWriter { w ->
+                out.filterLine { line ->
+                    !(line =~ /^(Download|Cleaned up|Total time|contains source files in the default package|Trying to override old definition of task fileScanner)/)
+                }.writeTo(w)
+            }
+        }
+
+    }
+
+    step 'initProject', 'init', '--type', buildType, '--package', 'guidesamples', '--project-name', project.name, '--dsl', 'groovy'
+
+    step 'initOutput', cleanBuildOutput.curry('initProject')
+
+    step 'buildProject', 'build'
+
+    step 'buildOutput', cleanBuildOutput.curry('buildProject')
+
+    step 'editLibrary', {
+        File editLibrary = new File(workingDir,'src/main/groovy/guidesamples/Library.groovy')
+        editLibrary.text = "${file('contents/groovydoc-prefix.txt').text}${editLibrary.text}"
+    }
+
+    step 'docs', 'groovydoc'
+
+    step 'docOutput', cleanBuildOutput.curry('docs')
+
+    step 'files', { info ->
+        copy {
+            from workingDir
+            into info.reportDir
+
+            exclude '.gradle/**'
+            exclude 'build/**'
+
+            filesMatching (['build.gradle','**/*.groovy']) {
+                filter { line ->
+                    if (line =~ /^(\/\*)|(\s*\*)|(\/\/)/) {
+                        null
+                    } else {
+                        line
+                    }
+                }
+            }
+
+            filesMatching (['settings.gradle']) {
+                filter { line->
+                    if(line=~/^rootProject/) {
+                        "${line} // <1>"
+                    } else {
+                        null
+                    }
+                }
+            }
+
+            filesMatching (['build.gradle']) {
+                filter { line ->
+                    if (line=~/\s*jcenter/) {
+                        "${line} // <1>"
+                    } else if (line=~/\s*implementation.+groovy-all/) {
+                        "${line} // <2>"
+                    } else if (line=~/\s*testImplementation.+spock-core/) {
+                        "${line} // <3>"
+                    } else if (line=~/\s*testImplementation.+junit/) {
+                        "${line} // <4>"
+                    } else {
+                        line
+                    }
+                }
+            }
+
+            filesMatching( ['src/main/groovy/guidesamples/Library.groovy'] ) {
+                filter ConcatFilter, prepend: file('contents/groovydoc-prefix.txt'),
+                    append: file('contents/groovydoc-postfix.txt')
+            }
+        }
+
+    }
+}
+
+

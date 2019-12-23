@@ -1,0 +1,234 @@
+= Building Kotlin JVM Libraries
+:source-highlighter: highlightjs
+
+This guide demonstrates how to create a https://kotlinlang.org[Kotlin] library targeted for the JVM. We'll build a simple API with documentation, write and run tests, and package it all up into a something we can distribute.
+
+It makes sense to use https://github.com/gradle/kotlin-dsl[Gradle's Kotlin DSL] for build scripts since our library and tests are also in Kotlin.
+
+== What you’ll build
+
+You'll create a Kotlin library with the conventional layout, add a test to verify behavior, generate documentation, and publish the library with docs and sources.
+
+If you get stuck at any point, you can check out https://github.com/gradle-guides/building-kotlin-jvm-libraries/tree/master/samples/code/my-kotlin-library[the completed example].
+
+== What you’ll need
+
+ - About +++<span class="time-to-complete-text"></span>+++
+ - A text editor or IDE
+ - A https://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK), version 1.8 or better
+ - A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
+
+== Step 1: Bootstrap Kotlin project
+
+Let's develop the simplest of libraries with just one API class and method.
+
+=== Create project directory
+
+This is the conventional layout for a Kotlin project. Luckily, Gradle is flexible and would allow us to easily change it by https://kotlinlang.org/docs/reference/using-gradle.html#targeting-the-jvm[adjusting the `sourceSets {}`]. We won't worry about that today, though.
+
+.Kotlin project structure
+[source,console]
+----
+include::{samplesoutputdir}/step-1/tree.out[]
+----
+
+The first step is to create a folder for the new project and change directory into it. In a *nix shell this would be:
+
+[source,console]
+----
+$ mkdir -p my-kotlin-library/src/main/kotlin/org/example
+$ cd my-kotlin-library
+----
+
+In our new directory we add our library class called `MyLibrary` that returns a value object `Language`.
+
+.src/main/kotlin/org/example/MyLibrary.kt
+[source,kotlin]
+----
+include::{samplescodedir}/step-1/src/main/kotlin/org/example/MyLibrary.kt[]
+----
+
+With the following simple build script we can compile our new Kotlin library.
+
+.build.gradle.kts
+[source,kotlin]
+----
+include::{samplescodedir}/step-1/build.gradle.kts[tags=apply-kotlin-plugin]
+
+include::{samplescodedir}/step-1/build.gradle.kts[tags=configure-dependencies]
+----
+<1> Apply the Kotlin plugin, targeting the Java VM
+<2> Declare a https://docs.gradle.org/current/dsl/org.gradle.api.artifacts.dsl.RepositoryHandler.html[dependency repository] on Bintray jcenter
+<3> Declare a dependency on the https://kotlinlang.org/api/latest/jvm/stdlib/index.html[Kotlin standard library]
+
+We use the `implementation` dependency configuration so that we don't expose any of the Kotlin standard library through our API. This has https://blog.gradle.org/incremental-compiler-avoidance[architectural and performance benefits].
+
+We're nearly ready to start testing and packaging our software.
+
+== Step 2: Add testing with JUnit
+
+https://junit.org/junit4/[JUnit 4] is the simplest of testing libraries to add to our project. If you happen to prefer the https://spekframework.org/[Spek framework] for Kotlin-based specifications, check out the https://spekframework.org/setup-jvm/#gradle[Spek docs].
+
+.build.gradle.kts
+[source,diff]
+----
+dependencies {
+     implementation(kotlin("stdlib", "1.2.31"))
++    testImplementation("junit:junit:4.12") // <1>
+}
+----
+<1> Add test implementation dependency on JUnit
+
+Now we are ready to add tests for our library. We will follow the Kotlin plugin conventions and put them under `src/test/kotlin`.
+
+.src/test/kotlin/org/example/MyLibraryTest.kt
+[source,kotlin]
+----
+include::{samplescodedir}/step-2/src/test/kotlin/org/example/MyLibraryTest.kt[]
+----
+
+Nothing unexpected here. Now let's run them.
+
+.Execute tests
+[source,console]
+----
+$ gradle test
+
+include::{samplesoutputdir}/step-2/test.out[]
+----
+
+Boom. Tests.
+
+== Step 3: Add docs with Dokka
+
+A library isn't done until it's documented. https://github.com/Kotlin/dokka[Dokka] is a popular documentation engine for Kotlin projects. Let's use it.
+
+=== Apply the Dokka plugin
+
+We can declare the Dokka plugin in our `plugins {}` block:
+
+.build.gradle.kts
+[source,kotlin]
+----
+include::{samplescodedir}/step-3/build.gradle.kts[tags=apply-dokka-plugin]
+----
+
+=== Configure Dokka plugin
+
+Now we can add configuration down below in our build script.
+
+.build.gradle.kts
+[source,kotlin]
+----
+include::{samplescodedir}/step-3/build.gradle.kts[tags=configure-dokka-plugin]
+----
+<1> Configure existing Dokka task to output HTML to typical Javadoc directory
+
+There are many more configuration options available for Dokka, documented https://github.com/Kotlin/dokka#using-dokka[here], but this gets the job done for us right now. Let's run it.
+
+.Generate docs with Dokka
+[source,console]
+----
+$ gradle dokka
+
+include::{samplesoutputdir}/step-3/dokka.out[]
+----
+
+Dokka complains that we didn't document absolutely everything, but there's enough to get this if we open up `$PROJECT_DIR/build/javadoc/my-kotlin-library/index.html`. Click on the `Language` type and you should see our nice documentation.
+
+image::dokka.png[]
+
+=== Generate javadoc JAR
+
+.build.gradle.kts
+[source,kotlin]
+----
+include::{samplescodedir}/step-3/build.gradle.kts[tags=dokka-imports]
+
+include::{samplescodedir}/step-3/build.gradle.kts[tags=configure-dokka-jar]
+----
+<1> Create dokka Jar task from dokka task output
+<2> `dependsOn(dokka)` not needed; dependency automatically inferred by from(dokka)
+
+Try running `gradle dokkaJar` and see if you can find the javadoc JAR based on what you know so far.
+
+We could optionally also generate a `"sources"` JAR using the same pattern from `java.sourceSets["main"].allSource`.
+
+== Step 4: Publish to local repo
+
+Now our library is ready to share with the world. We're going to publish it locally with the {user-manual}publishing_maven.html[maven-publish plugin] just to keep things simple, but another popular choice is the https://plugins.gradle.org/plugin/com.jfrog.bintray[Gradle Bintray Plugin]. Their documentation has https://github.com/bintray/bintray-examples/tree/master/gradle-bintray-plugin-examples[several samples] you can use if you're interested.
+
+=== Apply the maven-publish plugin
+
+.build.gradle.kts
+[source,diff]
+----
+plugins {
++    `maven-publish`
+     kotlin("jvm") version "1.2.31"
+}
+----
+
+=== Set project coordinates
+
+Let us specify our project coordinates as `org.example:my-kotlin-library:0.0.1` in our build script for publishing.
+
+.build.gradle.kts
+[source,kotlin]
+----
+include::{samplescodedir}/step-4/build.gradle.kts[tags=project-coordinates]
+----
+
+The project name is set by the root project directory name by default, but it is best practice to make it explicit. This is done in a `settings.gradle.kts` file at the project root.
+
+.settings.gradle.kts
+[source,kotlin]
+----
+include::{samplescodedir}/step-4/settings.gradle.kts[]
+----
+
+=== Configure Maven publication
+
+For the `maven-publish` plugin to have any effect, a https://docs.gradle.org/current/dsl/org.gradle.api.publish.maven.MavenPublication.html[MavenPublication] must be added to the set of publications. This publication determines which artifacts are actually published as well as the details included in the associated POM file.
+
+.build.gradle.kts
+[source,kotlin]
+----
+
+include::{samplescodedir}/step-4/build.gradle.kts[tags=publishing-imports]
+
+include::{samplescodedir}/step-4/build.gradle.kts[tags=configure-publishing]
+----
+<1> Create a Maven publication called "default" from the "java" component
+<2> Declare the javadoc JAR from Dokka as an artifact
+<3> Declare a local Maven repository under the `build/` directory
+
+Now we are ready to `publish`!
+
+.Publish to local repository
+[source,console]
+----
+$ gradle publish
+
+include::{samplesoutputdir}/step-4/publish.out[]
+----
+
+Your Maven repository should now have the published artifacts.
+
+.Local Maven repository
+[source,console]
+----
+include::{samplesoutputdir}/step-4/repo.out[]
+----
+
+Congratulations! You've successfully built a Kotlin library, tested it, documented it, and packaged it as a JAR with docs and sources. The https://github.com/gradle-guides/building-kotlin-jvm-libraries/tree/master/samples/code/my-kotlin-library[complete sample project is on GitHub].
+
+== Next Steps
+
+We hope you found this fun and enlightening. Let us know what you thought of this guide via https://twitter.com/gradle[@gradle on Twitter].
+
+ - You can learn more about the https://kotlinlang.org/docs/reference/using-gradle.html[Gradle Kotlin Plugin with the official docs].
+ - JetBrains has developed a series of https://github.com/JetBrains/kotlin-examples[Kotlin example projects] the demonstrate working with Kotlin and Gradle, including https://github.com/JetBrains/kotlin-examples/tree/master/gradle/dokka-gradle-example[one for advanced Dokka usage].
+ - There are lots of https://github.com/gradle/kotlin-dsl/tree/master/samples[Kotlin DSL samples] available in the gradle/kotlin-dsl repository on GitHub, as well as additional https://docs.gradle.org/current/userguide/kotlin_dsl.html[getting started docs]
+
+include::contribute[repo-path="gradle-guides/building-kotlin-jvm-libraries"]

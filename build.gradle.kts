@@ -1,12 +1,17 @@
-plugins {
-    id("com.gradle.build-scan") version "2.3"
+val guideProjects = extra["guideProjects"] as List<String>
+
+tasks.register("clean") {
+    dependsOn(gradle.includedBuilds.map { it.task(":clean") })
 }
 
-buildScan {
-    setTermsOfServiceUrl("https://gradle.com/terms-of-service")
-    setTermsOfServiceAgree("yes")
-    if (!System.getenv("CI").isNullOrEmpty()) {
-        publishAlways()
-        tag("CI")
-    }
+tasks.register("build") {
+    dependsOn(gradle.includedBuilds.filter({ guideProjects.contains(it.name) }).map { it.task(":build") })
+}
+
+tasks.register("publishDocumentationPlugins") {
+    dependsOn(gradle.includedBuild("gradle-guides-plugin").task(":publishPlugins"))
+}
+
+tasks.register("publishGuides") {
+    dependsOn(gradle.includedBuilds.filter({ guideProjects.contains(it.name) }).map { it.task(":gitPublishPush") })
 }

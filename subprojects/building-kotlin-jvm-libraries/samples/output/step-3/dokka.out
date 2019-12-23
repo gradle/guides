@@ -1,0 +1,7 @@
+> Task :dokka
+No documentation for org.example.MyLibrary (MyLibrary.kt:11)
+No documentation for org.example.MyLibrary$<init>() (MyLibrary.kt:11)
+
+
+BUILD SUCCESSFUL in 8s
+1 actionable task: 1 executed

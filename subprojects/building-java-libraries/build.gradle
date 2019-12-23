@@ -1,0 +1,143 @@
+import org.apache.tools.ant.filters.ConcatFilter
+
+plugins {
+    id "org.gradle.guides.getting-started"
+}
+
+guide {
+    repositoryPath.set("gradle-guides/building-java-libraries")
+    minimumGradleVersion = "5.0"
+}
+
+asciidoctor {
+    attributes 'gradle-outdir' : "${gradleRunner.reportsDir.absolutePath}"
+}
+
+// TODO: Replace Gradle Runner by better alternative
+gradleRunner {
+    enabled = false
+
+    [
+        [name: 'groovy-dsl', scriptExtension: '.gradle', initArguments: [], quote: '\''],
+        [name: 'kotlin-dsl', scriptExtension: '.gradle.kts', initArguments: ['--dsl', 'kotlin'], quote: '"']
+    ].each { sample ->
+
+        ext {
+            buildType = 'java-library'
+            projectName = 'demo'
+
+            cleanBuildOutput = { stepName, info ->
+                File out = new File(getStepReportDir(stepName), 'out.txt')
+                new File(info.reportDir, 'out.txt').withWriter { w ->
+                    out.filterLine { line ->
+                        !(line =~ /^(Download|Cleaned up|Total time)/)
+                    }.writeTo(w)
+                }
+            }
+
+        }
+
+        step "${sample.name}-initProject", ['init', '--type', buildType, '--project-name', projectName] + sample.initArguments
+
+        step "${sample.name}-initOutput", cleanBuildOutput.curry("${sample.name}-initProject")
+
+        step "${sample.name}patchSettings", { info ->
+            new File(workingDir, "settings${sample.scriptExtension}").text = "rootProject.name = ${sample.quote}${project.name}${sample.quote}\n"
+        }
+
+        step "${sample.name}-buildProject", 'build'
+
+        step "${sample.name}-buildOutput", cleanBuildOutput.curry("${sample.name}-buildProject")
+
+        step "${sample.name}-addVersion", {
+            File buildPrefix = project.file("contents/${sample.name}/build-prefix.txt")
+            File editBuildFile = new File(workingDir, "build${sample.scriptExtension}")
+            String editBuildFileText = editBuildFile.text
+            File buildPostfix = project.file("contents/${sample.name}/build-postfix.txt")
+            editBuildFile.withWriter { Writer writer ->
+                writer.println buildPrefix.text
+                writer.println editBuildFileText
+                writer.println buildPostfix.text
+            }
+        }
+
+        step "${sample.name}-updateJar", 'jar'
+
+        step "${sample.name}-unpackJar", { info ->
+            copy {
+                from(zipTree(new File(workingDir, 'build/libs/building-java-libraries-0.1.0.jar'))) {
+                    include 'META-INF/MANIFEST.MF'
+                }
+                into info.reportDir
+            }
+        }
+
+        step "${sample.name}-editLibrary", {
+            File editLibrary = new File(workingDir, 'src/main/java/demo/Library.java')
+            editLibrary.text = "${file('contents/javadoc-prefix.txt').text}${editLibrary.text}"
+        }
+
+        step "${sample.name}-docs", 'javadoc'
+
+        step "${sample.name}-docOutput", cleanBuildOutput.curry("${sample.name}-docs")
+
+        step "${sample.name}-files", { info ->
+            copy {
+                from workingDir
+                into info.reportDir
+
+                exclude '.gradle/**'
+                exclude 'build/**'
+
+                filesMatching(["build${sample.scriptExtension}".toString(), '**/*.java']) {
+                    filter { line ->
+                        if (line =~ /^(\/\*)|(\s*\*)|(\/\/)/
+                            && !line.startsWith('// tag::')
+                            && !line.startsWith('// end::')
+                            && !line.startsWith("import")) {
+                            null
+                        } else {
+                            line
+                        }
+                    }
+                }
+
+                filesMatching(["settings${sample.scriptExtension}".toString()]) {
+                    filter { line ->
+                        if (line =~ /^rootProject/) {
+                            "${line} // <1>"
+                        } else {
+                            null
+                        }
+                    }
+                }
+
+                filesMatching(["build${sample.scriptExtension}".toString()]) {
+                    filter { line ->
+                        if (line =~ /\s*jcenter/) {
+                            "${line} // <1>"
+                        } else if (line =~ /\s*api.+commons-math/) {
+                            "${line} // <2>"
+                        } else if (line =~ /\s*implementation.+guava/) {
+                            "${line} // <3>"
+                        } else if (line =~ /\s*testImplementation.+junit/) {
+                            "${line} // <4>"
+                        } else {
+                            line
+                        }
+                    }
+                }
+
+                filesMatching(['src/main/java/demo/Library.java']) {
+                    filter ConcatFilter, prepend: file('contents/javadoc-prefix.txt'),
+                           append: file('contents/javadoc-postfix.txt')
+                }
+            }
+
+        }
+
+        step "${sample.name}-working-copy-cleanup", {
+            delete getWorkingDir()
+        }
+    }
+}

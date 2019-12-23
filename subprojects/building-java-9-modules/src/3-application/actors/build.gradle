@@ -1,0 +1,11 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    implementation 'com.google.guava:guava:22.0'
+
+    testImplementation 'junit:junit:4.12'
+}
+
+ext.moduleName = 'org.gradle.actors'

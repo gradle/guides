@@ -1,0 +1,13 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    api project(':tale')
+
+    implementation project(':formula')
+    implementation project(':actors')
+}
+// tag::pigModule[]
+ext.moduleName = 'org.gradle.fairy.tale.pigs'
+// tag::pigModule[]

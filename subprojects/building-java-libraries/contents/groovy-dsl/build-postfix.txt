@@ -1,0 +1,14 @@
+// end::init[]
+
+// tag::version[]
+version = '0.1.0'
+// end::version[]
+
+// tag::jar-manifest[]
+jar {
+    manifest {
+        attributes('Implementation-Title': project.name,
+                   'Implementation-Version': project.version)
+    }
+}
+// end::jar-manifest[]

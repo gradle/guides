@@ -1,0 +1,52 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+import java.util.regex.Matcher;
+
+dependencies {
+    implementation project(':tale')
+
+    runtimeOnly project(':pigs')
+    runtimeOnly project(':bears')
+}
+
+ext.moduleName = 'org.gradle.fairy.app'
+
+// tag::run[]
+mainClassName = "$moduleName/org.gradle.fairy.app.StoryTeller" // <1>
+
+run {
+    inputs.property("moduleName", moduleName)
+    doFirst {
+        jvmArgs = [
+            '--module-path', classpath.asPath,
+            '--module', mainClassName // <2>
+        ]
+        classpath = files()
+    }
+}
+// end::run[]
+
+// tag::startScripts[]
+startScripts {
+    inputs.property("moduleName", moduleName)
+    doFirst {
+        classpath = files()
+        defaultJvmOpts = [
+            '--module-path', 'APP_HOME_LIBS',  // <1>
+            '--module', mainClassName
+        ]
+    }
+    doLast{
+        def bashFile = new File(outputDir, applicationName)
+        String bashContent = bashFile.text
+        bashFile.text = bashContent.replaceFirst('APP_HOME_LIBS', Matcher.quoteReplacement('$APP_HOME/lib'))
+
+        def batFile = new File(outputDir, applicationName + ".bat")
+        String batContent = batFile.text
+        batFile.text = batContent.replaceFirst('APP_HOME_LIBS', Matcher.quoteReplacement('%APP_HOME%\\lib'))
+    }
+}
+// end::startScripts[]

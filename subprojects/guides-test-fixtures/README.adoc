@@ -1,0 +1,77 @@
+= Guides Test Fixtures image:https://travis-ci.org/gradle-guides/guides-test-fixtures.svg?branch=master["Build Status", link="https://travis-ci.org/gradle-guides/guides-test-fixtures?branch=master"]
+
+Provides functional tests fixtures for any of the guides project in the link:https://github.com/gradle-guides[gradle-guides GitHub organization]. Fixtures assume the use of the Spock framework. The library is automatically available on the test classpath if the plugin `org.gradle.guides.test-jvm-code` with version >= 0.7.1 is applied. Please see the link:https://github.com/gradle-guides/gradle-guides-plugin[gradle-guides-plugin] for more information.
+
+----
+plugins {
+    id 'org.gradle.guides.test-jvm-code' version '0.7.1'
+}
+----
+
+== Usage examples
+
+The class `AbstractFunctionalTest` provide basic functionality.
+
+- Sets up and tears down a temporary directory for test execution.
+- Creates a `GradleRunner` instance and makes it available.
+- Provides convenience methods for execution of test project with `GradleRunner`.
+- Verifies that build result output for a `GradleRunner` execution does not contain deprecation warnings or stack traces.
+- Provides convenience methods for directory and file creation.
+
+_src/test/groovy/org/gradle/guides/MyFunctionalTest.groovy_
+[source,groovy]
+----
+package org.gradle.guides
+
+import org.gradle.guides.test.fixtures.AbstractFunctionalTest
+
+import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
+
+class MyFunctionalTest extends AbstractFunctionalTest {
+    def "can execute simple task"() {
+        given:
+        buildFile << """
+            task helloWorld {
+                doLast {
+                    println 'Hello world'
+                }
+            }
+        """
+
+        when:
+        def result = succeeds('helloWorld')
+
+        then:
+        result.task(':helloWorld').outcome == SUCCESS
+        result.output.contains('Hello world')
+    }
+}
+----
+
+The class `AbstractSamplesFunctionalTest` extends `AbstractFunctionalTest` and adds helper methods for dealing with the execution of sample projects checked-in alongside the AsciiDoc content.
+
+The following class executes the sample found in the directory `samples/code/hello-world`.
+
+_src/test/groovy/org/gradle/guides/MySamplesFunctionalTest.groovy_
+[source,groovy]
+----
+package org.gradle.guides
+
+import org.gradle.guides.test.fixtures.AbstractSamplesFunctionalTest
+
+import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
+
+class MySamplesFunctionalTest extends AbstractSamplesFunctionalTest {
+    def "can execute sample"() {
+        given:
+        copySampleCode('hello-world')
+
+        when:
+        def result = succeeds('helloWorld')
+
+        then:
+        result.task(':helloWorld').outcome == SUCCESS
+        result.output.contains('Hello world')
+    }
+}
+----

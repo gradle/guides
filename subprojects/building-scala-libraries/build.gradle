@@ -1,0 +1,104 @@
+import org.apache.tools.ant.filters.ConcatFilter
+
+plugins {
+    id "org.gradle.guides.getting-started"
+}
+
+guide {
+    repositoryPath.set("gradle-guides/building-scala-libraries")
+    minimumGradleVersion = "4.10.3"
+}
+
+asciidoctor {
+    attributes 'gradle-outdir' : "${gradleRunner.reportsDir.absolutePath}"
+}
+
+// TODO: Replace Gradle Runner by better alternative
+gradleRunner {
+    enabled = false
+    ext {
+        buildType = 'scala-library'
+
+        cleanBuildOutput =  { stepName, info ->
+            File out = new File(getStepReportDir(stepName), 'out.txt')
+            new File(info.reportDir, 'out.txt').withWriter { w ->
+                out.filterLine { line ->
+                    !(line =~ /^(Download|Cleaned up|Total time|build\\/resources\\/main' does not exist)/)
+                }.writeTo(w)
+            }
+        }
+
+    }
+
+    step 'initProject', 'init', '--type', buildType, '--package', 'guidesamples', '--project-name', project.name, '--dsl', 'groovy'
+
+    step 'initOutput', cleanBuildOutput.curry('initProject')
+
+    step 'buildProject', 'build'
+
+    step 'buildOutput', cleanBuildOutput.curry('buildProject')
+
+    step 'editLibrary', {
+        File editLibrary = new File(workingDir,'src/main/scala/guidesamples/Library.scala')
+        editLibrary.text = "${file('contents/scaladoc-prefix.txt').text}${editLibrary.text}"
+    }
+
+    step 'docs', 'scaladoc'
+
+    step 'docOutput', cleanBuildOutput.curry('docs')
+
+    step 'files', { info ->
+        copy {
+            from workingDir
+            into info.reportDir
+
+            exclude '.gradle/**'
+            exclude 'build/**'
+
+            filesMatching (['build.gradle','**/*.scala']) {
+                filter { line ->
+                    if (line =~ /^(\/\*)|(\s*\*)|(\/\/)/) {
+                        null
+                    } else {
+                        line
+                    }
+                }
+            }
+
+            filesMatching (['settings.gradle']) {
+                filter { line->
+                    if(line=~/^rootProject/) {
+                        "${line} // <1>"
+                    } else {
+                        null
+                    }
+                }
+            }
+
+            filesMatching (['build.gradle']) {
+                filter { line ->
+                    if (line=~/\s*jcenter/) {
+                        "${line} // <1>"
+                    } else if (line=~/\s*implementation.+scala-library/) {
+                        "${line} // <2>"
+                    } else if (line=~/\s*testImplementation.+scalatest/) {
+                        "${line} // <4>"
+                    } else if (line=~/\s*testImplementation.+junit/) {
+                        "${line} // <3>"
+                    } else if (line=~/\s*testRuntimeOnly.+scala-xml/) {
+                        "${line} // <5>"
+                    } else {
+                        line
+                    }
+                }
+            }
+
+            filesMatching( ['src/main/scala/guidesamples/Library.scala'] ) {
+                filter ConcatFilter, prepend: file('contents/scaladoc-prefix.txt'),
+                    append: file('contents/scaladoc-postfix.txt')
+            }
+        }
+
+    }
+}
+

@@ -1,0 +1,6 @@
+plugins { id 'base' } // <1>
+
+task md5(type: CreateMD5) {
+    destinationDirectory = project.layout.buildDirectory.dir("md5") // <2>
+    source file("src") // <3>
+}

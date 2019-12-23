@@ -1,0 +1,68 @@
+plugins {
+    id "org.gradle.guides.getting-started"
+
+    // Uncomment this line if you need test JVM code snippets
+    // id "org.gradle.guides.test-jvm-code"
+}
+
+guide {
+    repositoryPath.set("gradle-guides/consuming-jvm-libraries")
+    minimumGradleVersion = "4.10.3"
+    title.set("Consuming JVM Libraries")
+}
+
+asciidoctor {
+    attributes example : file('src/example').absolutePath
+    attributes 'gradle-outdir' : "${gradleRunner.reportsDir.absolutePath}"
+}
+
+gradleRunner {
+    inputs.dir 'src/example'
+
+    ext {
+        cleanBuildOutput = { stepName, info ->
+            File out = new File(getStepReportDir(stepName), 'out.txt')
+            new File(info.reportDir, 'out.txt').withWriter { w ->
+                out.filterLine { line ->
+                    !(line =~ /^(Download|Cleaned up|Total time)/)
+                }.writeTo(w)
+            }
+        }
+    }
+
+    step 'create', {
+        copy {
+            from 'src/example', {
+                include '*.gradle'
+                include 'src/**'
+            }
+            into workingDir
+        }
+    }
+
+    step 'dependencies', 'dependencies', '--configuration=implementation'
+
+    step 'clean-dependencies', cleanBuildOutput.curry('dependencies')
+
+    step 'assemble', 'jar', '--console=rich'
+
+    step 'clean-assemble', cleanBuildOutput.curry('assemble')
+
+    step 'build', 'build', '--console=rich'
+
+    step 'install', 'installDist', '--console=rich'
+
+    step 'run', { info ->
+
+        File runFile = file("${info.reportDir}/run.txt")
+        runFile.withOutputStream { runOutput ->
+            project.exec {
+                workingDir file("${gradleRunner.workingDir}/build/install/greeterApp")
+                executable 'bin/greeterApp'
+                args 'Gradle'
+
+                standardOutput runOutput
+            }
+        }
+    }
+}

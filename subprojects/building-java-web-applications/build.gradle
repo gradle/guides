@@ -1,0 +1,20 @@
+plugins {
+    id "org.gradle.guides.getting-started"
+    id "org.gradle.guides.test-jvm-code"
+}
+
+guide {
+    repositoryPath.set("gradle-guides/building-java-web-applications")
+    minimumGradleVersion = "4.10.3"
+}
+
+asciidoctor {
+    inputs.dir 'samples'
+    attributes 'groovy-example-dir': file('samples/groovy-dsl')
+    attributes 'kotlin-example-dir': file('samples/kotlin-dsl')
+}
+
+// TODO: Test are hanging, disabling for now
+test {
+    enabled = false
+}

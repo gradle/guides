@@ -1,0 +1,8 @@
+tasks.register("hello") {
+    group = "Welcome"
+    description = "Produces a greeting"
+
+    doLast {
+        println("Hello, World")
+    }
+}

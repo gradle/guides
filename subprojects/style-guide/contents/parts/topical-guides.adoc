@@ -1,0 +1,10 @@
+== Topical guides
+
+A topical guide has very few special requirements, which we cover here.
+
+=== Use a title with a readable form of "On <topic>"
+
+For example, "_On_ Performance" or "_On_ Migrating from Maven to Gradle".
+
+Don't use the _On_ when creating the repository, just allow for the title to be readable in that way.
+

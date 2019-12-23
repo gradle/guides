@@ -1,0 +1,14 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+// tag::deps[]
+dependencies {
+    implementation project(':tale')
+
+    runtimeOnly project(':pigs')
+    runtimeOnly project(':bears')
+}
+// end::deps[]
+
+mainClassName = 'org.gradle.fairy.app.StoryTeller'
