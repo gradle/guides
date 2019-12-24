@@ -84,7 +84,7 @@ class BasePlugin implements Plugin<Project> {
         task.indexDocument = { project.file("${asciidoc.outputDir}/html5/index.html") }
         task.dependsOn asciidoc
 
-        project.tasks.check.dependsOn(task)
+        project.tasks.named("check") { it.dependsOn(task) }
     }
 
     @CompileDynamic
