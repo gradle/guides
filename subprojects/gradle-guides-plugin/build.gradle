@@ -57,12 +57,6 @@ gradlePlugin {
             displayName = 'Gradle Guides JVM Code Snippet Test Plugin'
             description = 'Plugin required for testing of JVM code snippets used in guides'
         }
-        setupPlugin {
-            id = 'org.gradle.guides.setup'
-            implementationClass = 'org.gradle.guides.SetupPlugin'
-            displayName = 'Gradle Guides Setup Plugin'
-            description = 'Plugin required for configuring a guide'
-        }
         samplePlugin {
             id = 'org.gradle.samples'
             implementationClass = 'org.gradle.docs.samples.internal.SamplesPlugin'
