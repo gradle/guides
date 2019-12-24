@@ -41,19 +41,19 @@ gradlePlugin {
     plugins {
         guidePlugin {
             id = 'org.gradle.guides'
-            implementationClass = 'org.gradle.guides.BasePlugin'
+            implementationClass = 'org.gradle.docs.guides.BasePlugin'
             displayName = 'Gradle Guides Plugin'
             description = 'Plugin for authoring Gradle guides'
         }
         basePlugin {
             id = 'org.gradle.guides.base'
-            implementationClass = 'org.gradle.guides.BasePlugin'
+            implementationClass = 'org.gradle.docs.guides.BasePlugin'
             displayName = 'Gradle Guides Base Plugin'
             description = 'Base plugin required by new Gradle guide plugins'
         }
         jvmtestPlugin {
             id = 'org.gradle.guides.test-jvm-code'
-            implementationClass = 'org.gradle.guides.TestJvmCodePlugin'
+            implementationClass = 'org.gradle.docs.guides.TestJvmCodePlugin'
             displayName = 'Gradle Guides JVM Code Snippet Test Plugin'
             description = 'Plugin required for testing of JVM code snippets used in guides'
         }
@@ -65,7 +65,7 @@ gradlePlugin {
         }
         samplePlugin {
             id = 'org.gradle.samples'
-            implementationClass = 'org.gradle.samples.internal.SamplesPlugin'
+            implementationClass = 'org.gradle.docs.samples.internal.SamplesPlugin'
             displayName = 'Gradle Sample Plugin'
             description = 'Plugin required for authoring new Gradle Samples'
         }
