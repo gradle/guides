@@ -52,24 +52,6 @@ gradlePlugin {
             displayName = 'Gradle Guides Base Plugin'
             description = 'Base plugin required by new Gradle guide plugins'
         }
-        gsPlugin {
-            id = 'org.gradle.guides.getting-started'
-            implementationClass = 'org.gradle.guides.GettingStartedPlugin'
-            displayName = 'Gradle Guides Getting Started Plugin'
-            description = 'Plugin required for authoring new Gradle Getting Started guides'
-        }
-        topicalPlugin {
-            id = 'org.gradle.guides.topical'
-            implementationClass = 'org.gradle.guides.TopicalPlugin'
-            displayName = 'Gradle Guides Topical Plugin'
-            description = 'Plugin required for authoring new Gradle Topical guides'
-        }
-        tutorialPlugin {
-            id = 'org.gradle.guides.tutorial'
-            implementationClass = 'org.gradle.guides.TutorialPlugin'
-            displayName = 'Gradle Guides Topical Plugin'
-            description = 'Plugin required for authoring new Gradle Tutorial guides'
-        }
         jvmtestPlugin {
             id = 'org.gradle.guides.test-jvm-code'
             implementationClass = 'org.gradle.guides.TestJvmCodePlugin'
