@@ -1,13 +1,14 @@
 import org.asciidoctor.gradle.AsciidoctorTask
 
 plugins {
-    id("org.gradle.guides.topical")
+    id("org.gradle.guides")
     id("org.gradle.guides.test-jvm-code")
 }
 
 guide {
     repositoryPath.set("gradle-guides/implementing-gradle-plugins")
     minimumGradleVersion.set("5.0")
+    category.set("Topical")
 }
 
 repositories {

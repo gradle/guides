@@ -25,7 +25,7 @@ import org.gradle.api.provider.Property
  * @since 0.1
  */
 @CompileStatic
-abstract class GuidesExtension {
+abstract class GuidesExtension implements GuideSummary {
     /**
      * Path of repository relative to {@code https://github.com}.
      * @since 0.15.8

@@ -1,5 +1,5 @@
 plugins {
-    id("org.gradle.guides.topical")
+    id("org.gradle.guides")
     id("org.gradle.guides.test-jvm-code")
 }
 
@@ -7,6 +7,7 @@ guide {
     repositoryPath.set("gradle-guides/migrating-build-logic-from-groovy-to-kotlin")
     minimumGradleVersion.set("5.0")
     title.set("Migrating build logic from Groovy to Kotlin")
+    category.set("Topical")
 }
 
 tasks.test {

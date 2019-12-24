@@ -1,13 +1,14 @@
 import org.asciidoctor.gradle.AsciidoctorTask
 
 plugins {
-    id("org.gradle.guides.getting-started")
+    id("org.gradle.guides")
     id("org.gradle.guides.test-jvm-code")
 }
 
 guide {
     repositoryPath.set("gradle-guides/writing-gradle-tasks")
     minimumGradleVersion.set("5.0")
+    category.set("Getting Started")
 }
 
 tasks {

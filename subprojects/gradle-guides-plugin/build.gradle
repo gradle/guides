@@ -40,6 +40,12 @@ pluginBundle {
 
 gradlePlugin {
     plugins {
+        guidePlugin {
+            id = 'org.gradle.guides'
+            implementationClass = 'org.gradle.guides.BasePlugin'
+            displayName = 'Gradle Guides Plugin'
+            description = 'Plugin for authoring Gradle guides'
+        }
         basePlugin {
             id = 'org.gradle.guides.base'
             implementationClass = 'org.gradle.guides.BasePlugin'

@@ -1,10 +1,11 @@
 plugins {
-    id("org.gradle.guides.getting-started")
+    id("org.gradle.guides")
 }
 
 guide {
     repositoryPath.set("gradle-guides/building-swift-libraries")
     minimumGradleVersion.set("5.6.1")
+    category.set("Getting Started")
 }
 
 // NOTE: Patch until we fix this in guide plugin

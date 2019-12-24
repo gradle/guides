@@ -1,12 +1,13 @@
 plugins {
     groovy
-    id("org.gradle.guides.getting-started")
+    id("org.gradle.guides")
     id("org.gradle.guides.test-jvm-code")
 }
 
 guide {
     repositoryPath.set("gradle-guides/building-java-applications")
     minimumGradleVersion.set("5.4.1")
+    category.set("Getting Started")
 }
 
 repositories {

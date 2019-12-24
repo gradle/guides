@@ -1,11 +1,12 @@
 plugins {
-    id "org.gradle.guides.getting-started"
+    id "org.gradle.guides"
     id "org.gradle.guides.test-jvm-code"
 }
 
 guide {
     repositoryPath.set("gradle-guides/building-java-web-applications")
     minimumGradleVersion = "4.10.3"
+    category.set("Getting Started")
 }
 
 asciidoctor {

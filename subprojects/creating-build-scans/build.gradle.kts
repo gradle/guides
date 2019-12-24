@@ -9,13 +9,14 @@ import javax.xml.xpath.XPathConstants
 import javax.xml.xpath.XPathFactory
 
 plugins {
-    id("org.gradle.guides.getting-started")
+    id("org.gradle.guides")
     id("org.gradle.guides.test-jvm-code")
 }
 
 guide {
     repositoryPath.set("gradle-guides/creating-build-scans")
     minimumGradleVersion.set("5.1.1")
+    category.set("Getting Started")
 }
 
 repositories {
