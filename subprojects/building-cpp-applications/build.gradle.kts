@@ -1,5 +1,3 @@
-import org.gradle.guides.GenerateReadMeFile
-
 plugins {
     id("org.gradle.guides")
 }
