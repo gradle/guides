@@ -6,11 +6,7 @@ rootProject.name = "gradle-guides"
 
 includeBuild("subprojects/gradle-guides-plugin")
 
-val guideAsCompositeBuilds = listOf(
-    "using-build-cache",
-    "using-the-worker-api"
-)
-val guideAsProjectBuilds = listOf(
+val guides = listOf(
         "building-cpp-applications",
         "building-cpp-libraries",
         "building-groovy-libraries",
@@ -39,6 +35,8 @@ val guideAsProjectBuilds = listOf(
         "running-webpack-with-gradle",
         "style-guide",
         "testing-gradle-plugins",
+        "using-build-cache",
+        "using-the-worker-api",
         "writing-getting-started-guides",
         "writing-gradle-plugins",
         "writing-gradle-tasks"
@@ -47,18 +45,20 @@ val guideAsProjectBuilds = listOf(
 val misc = listOf("gradle-site-plugin", "greeting-plugin-example", "guides-test-fixtures")
 val templates = listOf("gs-template", "topical-template", "tutorial-template")
 
-(guideAsCompositeBuilds + misc + templates).forEach { includeBuild("subprojects/${it}") }
-guideAsProjectBuilds.forEach {
+(misc + templates).forEach { includeBuild("subprojects/${it}") }
+guides.forEach {
     include(it)
     project(":${it}").projectDir = file("subprojects/${it}")
+
+    if (it == "using-build-cache") {
+        include("${it}:screenshots")
+        project(":${it}:screenshots").projectDir = file("subprojects/${it}/screenshots")
+    }
 }
 
 gradle.rootProject {
-    val guideAsCompositeProjects by extra {
-        guideAsCompositeBuilds
-    }
-    val guideAsProjects by extra {
-        guideAsProjectBuilds
+    val guideProjects by extra {
+        guides
     }
 }
 
