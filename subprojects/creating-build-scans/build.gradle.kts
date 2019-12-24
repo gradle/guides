@@ -21,6 +21,13 @@ dependencies {
     testImplementation(gradleTestKit())
 }
 
+fun resolveLatestBuildScanPluginVersion() : String {
+    val xml: String = java.net.URL("https://plugins.gradle.org/m2/com/gradle/build-scan/com.gradle.build-scan.gradle.plugin/maven-metadata.xml").readText()
+    val doc: org.w3c.dom.Document = javax.xml.parsers.DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(org.xml.sax.InputSource(java.io.StringReader(xml)))
+    val latestVersionNode = javax.xml.xpath.XPathFactory.newInstance().newXPath().evaluate("/metadata/versioning/latest", doc, javax.xml.xpath.XPathConstants.NODE) as org.w3c.dom.Node
+    return latestVersionNode.textContent
+}
+
 tasks {
     val preProcessSamples by registering(Copy::class) {
         into("$buildDir/samples")

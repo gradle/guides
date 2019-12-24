@@ -7,7 +7,6 @@ rootProject.name = "gradle-guides"
 includeBuild("subprojects/gradle-guides-plugin")
 
 val guideAsCompositeBuilds = listOf(
-    "creating-build-scans",
     "using-build-cache",
     "using-the-worker-api"
 )
@@ -25,6 +24,7 @@ val guideAsProjectBuilds = listOf(
         "building-swift-applications",
         "building-swift-libraries",
         "consuming-jvm-libraries",
+        "creating-build-scans",
         "creating-multi-project-builds",
         "creating-new-gradle-builds",
         "designing-gradle-plugins",
