@@ -51,7 +51,6 @@ class BasePlugin implements Plugin<Project> {
         addGradleRunnerSteps(project)
         addAsciidoctor(project, guides)
         addGitHubPages(project)
-        addCloudCI(project)
         addCheckLinks(project)
     }
 
@@ -206,29 +205,6 @@ class BasePlugin implements Plugin<Project> {
                 githubPages.repoUri.set(guide.repositoryPath.map { "https://github.com/${it}.git".toString() })
             } else {
                 githubPages.repoUri.set(guide.repositoryPath.map { "git@github.com:${it}.git".toString() })
-            }
-        }
-    }
-
-    @CompileDynamic
-    private void addCloudCI(Project project) {
-        project.apply plugin : 'org.ysb33r.cloudci'
-
-        project.cloudci {
-            travisci {
-                check.dependsOn CHECK_LINKS_TASK
-
-                gitPublishPush {
-                    enabled = System.getenv('TRAVIS_BRANCH') == 'master' && System.getenv('TRAVIS_PULL_REQUEST') == 'false' && System.getenv('TRAVIS_OS_NAME') == 'linux'
-                }
-
-                if(System.getenv('TRAVIS_OS_NAME') != 'linux') {
-                    project.tasks.each { t ->
-                        if( t.name.startsWith('gitPublish')) {
-                            t.enabled = false
-                        }
-                    }
-                }
             }
         }
     }
