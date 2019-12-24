@@ -14,40 +14,35 @@
  * limitations under the License.
  */
 
-package org.gradle.guides
+package org.gradle.guides;
 
-import groovy.transform.CompileStatic
-import org.gradle.api.model.ReplacedBy
-import org.gradle.api.provider.Property
+import org.gradle.api.provider.Property;
 
 /**
- *
  * @since 0.1
  */
-@CompileStatic
-abstract class GuidesExtension implements GuideSummary {
+public interface GuidesExtension extends GuideSummary {
     /**
      * Path of repository relative to {@code https://github.com}.
      * @since 0.15.8
      */
-    abstract Property<String> getRepositoryPath()
+    Property<String> getRepositoryPath();
 
     /**
      * Minimum Gradle version this guide works on.
      * @since 0.15.7
      */
-    abstract Property<String> getMinimumGradleVersion()
+    Property<String> getMinimumGradleVersion();
 
     /**
      * Short description of the guide.
      * @since 0.15.8
      */
-    abstract Property<String> getDescription()
+    Property<String> getDescription();
 
     /**
      * Title of the guide.
-     *
      * @since 0.15.8
      */
-    abstract Property<String> getTitle()
+    Property<String> getTitle();
 }

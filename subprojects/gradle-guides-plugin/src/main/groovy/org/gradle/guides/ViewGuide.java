@@ -14,27 +14,30 @@
  * limitations under the License.
  */
 
-package org.gradle.guides
+package org.gradle.guides;
 
-import org.gradle.api.DefaultTask
-import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.specs.Specs
-import org.gradle.api.tasks.InputFile
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.DefaultTask;
+import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.specs.Specs;
+import org.gradle.api.tasks.InputFile;
+import org.gradle.api.tasks.TaskAction;
 
-import java.awt.*
+import javax.inject.Inject;
+import java.awt.*;
+import java.io.IOException;
 
-abstract class ViewGuide extends DefaultTask {
+public abstract class ViewGuide extends DefaultTask {
 
     @InputFile
-    abstract RegularFileProperty getIndexFile()
+    public abstract RegularFileProperty getIndexFile();
 
-    ViewGuide() {
-        outputs.upToDateWhen(Specs.satisfyNone())
+    @Inject
+    public ViewGuide() {
+        getOutputs().upToDateWhen(Specs.satisfyNone());
     }
 
     @TaskAction
-    void action() {
-        Desktop.desktop.open(getIndexFile().get().asFile)
+    void action() throws IOException {
+        Desktop.getDesktop().open(getIndexFile().get().getAsFile());
     }
 }
