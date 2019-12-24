@@ -26,6 +26,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.provider.ProviderFactory
 import org.gradle.api.tasks.PathSensitivity
+import org.gradle.docs.guides.internal.GuidesDocumentationPlugin
 import org.gradle.docs.guides.internal.GuideInternal
 
 import javax.inject.Inject
@@ -46,7 +47,7 @@ class BasePlugin implements Plugin<Project> {
     static final String CHECK_LINKS_TASK = 'checkLinks'
 
     void apply(Project project) {
-        project.apply plugin : 'lifecycle-base'
+        project.getPluginManager().apply(GuidesDocumentationPlugin.class);
 
         def guides = addGuidesExtension(project)
         addGradleRunnerSteps(project)
