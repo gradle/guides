@@ -46,7 +46,7 @@ open class AbstractBuildType(init: BuildType.() -> Unit) : BuildType({
     init()
 })
 
-open class AbstractBuild(init: BuildType.() -> Unit) : AbstractBuildType({
+open class AbstractBuildGuideType(init: BuildType.() -> Unit) : AbstractBuildType({
     steps {
         gradle {
             useGradleWrapper = true
@@ -66,7 +66,7 @@ open class AbstractBuild(init: BuildType.() -> Unit) : AbstractBuildType({
     init()
 })
 
-object BuildGuidesOnLinux : AbstractBuildType({
+object BuildGuidesOnLinux : AbstractBuildGuideType({
     name = "Build All Guides (Linux)"
 
     requirements {
@@ -77,7 +77,7 @@ object BuildGuidesOnLinux : AbstractBuildType({
     }
 })
 
-object BuildGuidesOnMac : AbstractBuildType({
+object BuildGuidesOnMac : AbstractBuildGuideType({
     name = "Build All Guides (macOS)"
 
     requirements {
@@ -87,7 +87,7 @@ object BuildGuidesOnMac : AbstractBuildType({
         param("env.JAVA_HOME", "%macos.java8.oracle.64bit%")
     }
 })
-object BuildGuidesOnWindows : AbstractBuildType({
+object BuildGuidesOnWindows : AbstractBuildGuideType({
     name = "Build All Guides (Windows)"
 
     requirements {
