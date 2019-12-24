@@ -84,7 +84,7 @@ object BuildGuidesOnMac : AbstractBuildType({
         startsWith("teamcity.agent.jvm.os.name", "Mac")
     }
     params {
-        param("env.JAVA_HOME", "%macosx.java8.oracle.64bit%")
+        param("env.JAVA_HOME", "%macos.java8.oracle.64bit%")
     }
 })
 object BuildGuidesOnWindows : AbstractBuildType({
