@@ -9,7 +9,7 @@ includeBuild("subprojects/gradle-guides-plugin")
 val guideAsCompositeBuilds = listOf(
     "creating-build-scans",
     "using-build-cache",
-    "using-the-worker-api",
+    "using-the-worker-api"
 )
 val guideAsProjectBuilds = listOf(
         "building-cpp-applications",
