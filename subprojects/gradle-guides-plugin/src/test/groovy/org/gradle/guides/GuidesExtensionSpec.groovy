@@ -24,39 +24,6 @@ class GuidesExtensionSpec extends Specification {
 
     Project project = ProjectBuilder.builder().build()
 
-    def 'Declarative style works'() {
-        when:
-        project.apply plugin : 'org.gradle.guides.base'
-
-        project.allprojects {
-            guide {
-                repoPath   'foo/bar'
-                mainAuthor 'John Doe'
-            }
-        }
-        project.evaluate()
-
-        then:
-        project.guide.repoPath == 'foo/bar'
-        project.guide.mainAuthor == 'John Doe'
-    }
-
-    def 'can change repositoryPath property using repoPath property'() {
-        when:
-        project.apply plugin : 'org.gradle.guides.base'
-
-        project.allprojects {
-            guide {
-                repoPath   'foo/bar'
-            }
-        }
-        project.evaluate()
-
-        then:
-        project.guide.repoPath == 'foo/bar'
-        project.guide.repositoryPath.get() == 'foo/bar'
-    }
-
     def 'can change repoPath property using repositoryPath property'() {
         when:
         project.apply plugin : 'org.gradle.guides.base'
@@ -69,7 +36,6 @@ class GuidesExtensionSpec extends Specification {
         project.evaluate()
 
         then:
-        project.guide.repoPath == 'foo/bar'
         project.guide.repositoryPath.get() == 'foo/bar'
     }
 }

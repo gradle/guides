@@ -28,28 +28,9 @@ import org.gradle.api.provider.Property
 abstract class GuidesExtension {
     /**
      * Path of repository relative to {@code https://github.com}.
-     * @deprecated
-     */
-    @ReplacedBy('repositoryPath')
-    String getRepoPath() {
-        return getRepositoryPath().get()
-    }
-    void setRepoPath(String value) {
-        getRepositoryPath().set(value)
-    }
-
-    /**
-     * Path of repository relative to {@code https://github.com}.
      * @since 0.15.8
      */
     abstract Property<String> getRepositoryPath()
-
-    /** Name of main author
-     *
-     * @deprecated
-     * @since 0.5
-     */
-    String mainAuthor
 
     /**
      * Minimum Gradle version this guide works on.
