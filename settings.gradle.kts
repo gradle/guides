@@ -43,9 +43,8 @@ val guides = listOf(
 )
 
 val misc = listOf("gradle-site-plugin", "greeting-plugin-example", "guides-test-fixtures")
-val templates = listOf("gs-template", "topical-template", "tutorial-template")
 
-(misc + templates).forEach { includeBuild("subprojects/${it}") }
+misc.forEach { includeBuild("subprojects/${it}") }
 guides.forEach {
     include(it)
     project(":${it}").projectDir = file("subprojects/${it}")
