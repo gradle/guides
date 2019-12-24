@@ -11,10 +11,6 @@ guide {
     category.set("Getting Started")
 }
 
-tasks.withType(GenerateReadMeFile::class).configureEach {
-    title.set(guide.title.map { it.replace("C++", "{cpp}") })
-}
-
 // NOTE: Patch until we fix this in guide plugin
 afterEvaluate {
     tasks.named("gitPublishReset") {
