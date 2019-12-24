@@ -17,6 +17,7 @@
 package org.gradle.guides
 
 import org.gradle.testkit.runner.TaskOutcome
+import spock.lang.Unroll
 
 class BasePluginFunctionalTest extends AbstractGuidesPluginFunctionalTest {
     String pluginId = "org.gradle.guides.base"
@@ -276,5 +277,26 @@ Repository path: {repository-path}
 
         then:
         noExceptionThrown()
+    }
+
+    @Unroll
+    def "succeeds when #placeholderDirectory is missing"() {
+        given:
+        asciidocSourceFile << """
+A simple guide
+"""
+        // Should not need to create this
+        temporaryFolder.newFolder("samples")
+
+        when:
+        def placeholderDir = file(placeholderDirectory)
+        placeholderDir.deleteDir()
+        build('assemble')
+
+        then:
+        noExceptionThrown()
+
+        where:
+        placeholderDirectory << ['samples', 'contents/images', 'contents']
     }
 }

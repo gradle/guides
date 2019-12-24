@@ -153,7 +153,7 @@ class BasePlugin implements Plugin<Project> {
             sourceDir 'contents'
             outputDir { project.buildDir }
             backends 'html5'
-            inputs.dir('samples').withPropertyName('samplesDir').withPathSensitivity(PathSensitivity.RELATIVE)
+            inputs.files('samples').withPropertyName('samplesDir').withPathSensitivity(PathSensitivity.RELATIVE).optional()
 
             attributes 'source-highlighter': 'prettify',
                     imagesdir            : 'images',
