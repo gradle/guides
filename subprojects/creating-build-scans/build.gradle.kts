@@ -1,4 +1,12 @@
 import org.apache.tools.ant.filters.ReplaceTokens
+import org.w3c.dom.Document
+import org.w3c.dom.Node
+import org.xml.sax.InputSource
+import java.io.StringReader
+import java.net.URL
+import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.xpath.XPathConstants
+import javax.xml.xpath.XPathFactory
 
 plugins {
     id("org.gradle.guides.getting-started")
@@ -22,9 +30,9 @@ dependencies {
 }
 
 fun resolveLatestBuildScanPluginVersion() : String {
-    val xml: String = java.net.URL("https://plugins.gradle.org/m2/com/gradle/build-scan/com.gradle.build-scan.gradle.plugin/maven-metadata.xml").readText()
-    val doc: org.w3c.dom.Document = javax.xml.parsers.DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(org.xml.sax.InputSource(java.io.StringReader(xml)))
-    val latestVersionNode = javax.xml.xpath.XPathFactory.newInstance().newXPath().evaluate("/metadata/versioning/latest", doc, javax.xml.xpath.XPathConstants.NODE) as org.w3c.dom.Node
+    val xml: String = URL("https://plugins.gradle.org/m2/com/gradle/build-scan/com.gradle.build-scan.gradle.plugin/maven-metadata.xml").readText()
+    val doc: Document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(InputSource(StringReader(xml)))
+    val latestVersionNode = XPathFactory.newInstance().newXPath().evaluate("/metadata/versioning/latest", doc, XPathConstants.NODE) as Node
     return latestVersionNode.textContent
 }
 
