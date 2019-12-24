@@ -21,7 +21,7 @@ import org.gradle.api.provider.Property;
 /**
  * @since 0.1
  */
-public interface GuidesExtension extends GuideSummary {
+public interface Guide extends GuideSummary {
     /**
      * Path of repository relative to {@code https://github.com}.
      * @since 0.15.8

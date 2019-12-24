@@ -26,6 +26,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.provider.ProviderFactory
 import org.gradle.api.tasks.PathSensitivity
+import org.gradle.docs.guides.internal.GuideInternal
 
 import javax.inject.Inject
 
@@ -59,12 +60,14 @@ class BasePlugin implements Plugin<Project> {
         throw new UnsupportedOperationException()
     }
 
-    private GuidesExtension addGuidesExtension(Project project) {
-        GuidesExtension result = project.extensions.create(GUIDE_EXTENSION_NAME, GuidesExtension)
+    private Guide addGuidesExtension(Project project) {
+        GuideInternal result = project.getObjects().newInstance(GuideInternal.class);
+        project.getExtensions().add(Guide, GUIDE_EXTENSION_NAME, result);
         result.repositoryPath.convention("gradle-guides/${project.name}".toString())
         result.minimumGradleVersion.convention(project.gradle.gradleVersion)
         result.title.convention(result.repositoryPath.map { project.name.split('-').collect { it.capitalize() }.join(' ') })
         result.description.convention(result.title)
+        result.category.convention("Uncategorized")
         return result
     }
 
@@ -84,7 +87,7 @@ class BasePlugin implements Plugin<Project> {
     }
 
     @CompileDynamic
-    private void addAsciidoctor(Project project, GuidesExtension guides) {
+    private void addAsciidoctor(Project project, Guide guides) {
 
         def minimumGradleVersion = guides.minimumGradleVersion
 
@@ -181,7 +184,7 @@ class BasePlugin implements Plugin<Project> {
     @CompileDynamic
     private void lazyConfigureMoreAsciidoc(AsciidoctorTask asciidoc) {
 
-        GuidesExtension guide = (GuidesExtension)(asciidoc.project.extensions.getByName(BasePlugin.GUIDE_EXTENSION_NAME))
+        Guide guide = (Guide)(asciidoc.project.extensions.getByName(BasePlugin.GUIDE_EXTENSION_NAME))
 
         asciidoc.configure {
             sources {
@@ -194,7 +197,7 @@ class BasePlugin implements Plugin<Project> {
         project.apply plugin : 'org.ajoberstar.git-publish'
 
         GitPublishExtension githubPages = (GitPublishExtension)(project.extensions.getByName('gitPublish'))
-        GuidesExtension guide = (GuidesExtension)(project.extensions.getByName(BasePlugin.GUIDE_EXTENSION_NAME))
+        Guide guide = (Guide)(project.extensions.getByName(BasePlugin.GUIDE_EXTENSION_NAME))
         AsciidoctorTask asciidoc = (AsciidoctorTask)(project.tasks.getByName('asciidoctor'))
         String ghToken = System.getenv("GRGIT_USER")
 
