@@ -53,26 +53,6 @@ class BasePlugin implements Plugin<Project> {
         addGitHubPages(project)
         addCloudCI(project)
         addCheckLinks(project)
-        addGuideSetup(project, guides)
-    }
-
-    private void addGuideSetup(Project project, GuidesExtension guide) {
-        project.apply plugin: 'org.gradle.guides.setup'
-
-        project.tasks.withType(GenerateReadMeFile).configureEach {
-            it.repositorySlug.set(guide.repositoryPath)
-            it.title.set(guide.title)
-        }
-
-        def configureGitHubRepositoryTask = project.tasks.register("configureGitHubRepository", ConfigureGitHubRepository) {
-            it.repositorySlug.set(guide.repositoryPath)
-            it.repositoryHomepage.set(guide.repositoryPath.map { new URL("https://guides.gradle.org/${it.split('/')[1]}") })
-            it.repositoryDescription.set(guide.description)
-        }
-
-        project.tasks.named(SetupPlugin.SETUP_GUIDE_TASK_NAME) { Task it ->
-            it.dependsOn(configureGitHubRepositoryTask)
-        }
     }
 
     @Inject
