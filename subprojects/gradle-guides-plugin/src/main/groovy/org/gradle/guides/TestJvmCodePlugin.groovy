@@ -93,7 +93,7 @@ class TestJvmCodePlugin implements Plugin<Project> {
     private void configureSamplesConventions(Project project) {
         Test testTask = (Test)project.tasks.getByName(JavaPlugin.TEST_TASK_NAME)
         def samplesBaseDir = project.file(SAMPLES_BASE_DIR)
-        testTask.inputs.dir(samplesBaseDir).withPropertyName('samplesDir').withPathSensitivity(PathSensitivity.RELATIVE)
+        testTask.inputs.files(samplesBaseDir).withPropertyName('samplesDir').withPathSensitivity(PathSensitivity.RELATIVE).optional()
         // This breaks relocatability of the test task. If caching becomes important we should consider redefining the inputs for the test task
         testTask.systemProperties('samplesDir': samplesBaseDir.absolutePath)
     }
