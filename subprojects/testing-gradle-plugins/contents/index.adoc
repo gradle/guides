@@ -14,7 +14,7 @@ If you happen to be a beginner to Gradle please start by working through the lin
 
 == The sample project
 
-All discussions in this guide are centered around a sample project called URL verifier plugin. The plugin creates a task named `verifyUrl` that checks whether a given URL can be resolved via HTTP GET. The end user can provide the URL via an extension named `verification`. To get familiar with the functionality of the plugin you can inspect the link:https://github.com/gradle-guides/testing-gradle-plugins/tree/master/samples/code/url-verifier-plugin[source code] on GitHub.
+All discussions in this guide are centered around a sample project called URL verifier plugin. The plugin creates a task named `verifyUrl` that checks whether a given URL can be resolved via HTTP GET. The end user can provide the URL via an extension named `verification`. To get familiar with the functionality of the plugin you can inspect the https://github.com/gradle/guides/tree/master/subprojects/testing-gradle-plugins/samples/code/url-verifier-plugin[source code] on GitHub.
 
 The following build script assumes that the plugin JAR file has been published to a binary repository. In a nutshell, the script demonstrates how to apply the plugin to the project and configure its exposed extension.
 
@@ -170,7 +170,7 @@ NOTE: Spock is a Groovy-based BDD test framework that even includes APIs for cre
 
 == Implementing automated tests
 
-This section discusses representative implementation examples for unit, integration and functional tests. All test classes are based on the use of Spock though it should be relatively easy to adapt the code to a different test framework. You can find all classes in the link:https://github.com/gradle-guides/testing-gradle-plugins/tree/master/samples/code/url-verifier-plugin[source code repository for this guide]. Please revisit the section <<testing-pyramid,the testing pyramid>> for a formal discussion of the definition of each test type.
+This section discusses representative implementation examples for unit, integration and functional tests. All test classes are based on the use of Spock though it should be relatively easy to adapt the code to a different test framework. You can find all classes in the https://github.com/gradle/guides/tree/master/subprojects/testing-gradle-plugins/samples/code/url-verifier-plugin[source code repository for this guide]. Please revisit the section <<testing-pyramid,the testing pyramid>> for a formal discussion of the definition of each test type.
 
 [[unit-tests]]
 === Implementing unit tests
