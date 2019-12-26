@@ -9,7 +9,7 @@ import org.gradle.docs.samples.Sample;
 
 import javax.inject.Inject;
 
-import static org.gradle.docs.samples.internal.StringUtils.capitalize;
+import static org.gradle.docs.internal.StringUtils.capitalize;
 
 public abstract class DefaultSample implements Sample {
     private final String name;

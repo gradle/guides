@@ -53,7 +53,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
-import static org.gradle.docs.samples.internal.StringUtils.*;
+import static org.gradle.docs.internal.StringUtils.*;
 
 @SuppressWarnings("UnstableApiUsage")
 public class SamplesPlugin implements Plugin<Project> {

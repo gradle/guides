@@ -28,9 +28,10 @@ import org.gradle.api.provider.ProviderFactory
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.docs.DocumentationExtension
 import org.gradle.docs.guides.internal.GuidesDocumentationPlugin
-import org.gradle.docs.guides.internal.GuideInternal
 
 import javax.inject.Inject
+
+import static org.gradle.docs.internal.StringUtils.toLowerCamelCase
 
 /**
  * The guides base plugin provides conventions for all Gradle guides.
@@ -63,7 +64,7 @@ class BasePlugin implements Plugin<Project> {
     }
 
     private Guide addGuidesExtension(Project project) {
-        Guide result = project.getExtensions().getByType(DocumentationExtension.class).guides.publishedGuides.create(project.name)
+        Guide result = project.getExtensions().getByType(DocumentationExtension.class).guides.publishedGuides.create(toLowerCamelCase(project.name))
         project.getExtensions().add(Guide, GUIDE_EXTENSION_NAME, result);
         result.repositoryPath.convention("gradle-guides/${project.name}".toString())
         result.minimumGradleVersion.convention(project.gradle.gradleVersion)
