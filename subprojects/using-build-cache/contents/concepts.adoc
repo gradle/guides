@@ -6,7 +6,7 @@ https://gradle.com/build-scans[Build scans] are part of that toolchain and will 
 
 === Build cache key
 
-Artifacts in the build cache are uniquely identified by a _{user-manual}build_cache.html#sec:task_output_caching_details[build cache key]._
+Artifacts in the build cache are uniquely identified by a _link:{user-manual}build_cache.html#sec:task_output_caching_details[build cache key]._
 A build cache key is assigned to each cacheable task when running with the build cache enabled and is used for both loading and storing task outputs to the build cache.
 The following inputs contribute to the build cache key for a task:
 
@@ -73,7 +73,7 @@ Having stable inputs is crucial for cacheable tasks.
 However, achieving byte for byte identical inputs for each task can be challenging.
 In some cases sanitizing the output of a task to remove unnecessary information can be a good approach, but this also means that a task's output can only be normalized for a single purpose.
 
-This is where {user-manual}more_about_tasks.html#sec:configure_input_normalization[input normalization] comes into play.
+This is where link:{user-manual}more_about_tasks.html#sec:configure_input_normalization[input normalization] comes into play.
 Input normalization is used by Gradle to determine if two task inputs are _essentially_ the same.
 Gradle uses normalized inputs when doing up-to-date checks and when determining if a cached result can be re-used instead of executing the task.
 As input normalization is declared by the task _consuming_ the data as input, different tasks can define different ways to normalize the same data.
@@ -110,7 +110,7 @@ When it comes to the dependencies of a `JavaCompile` task (i.e. its _compile cla
 Gradle has a deep understanding of what a compile classpath is and uses a sophisticated normalization strategy for it.
 Task outputs can be re-used as long as the ABI of the classes on the compile classpath stays the same.
 This enables Gradle to avoid Java compilation by using incremental builds, or load results from the cache that were produced by different (but ABI-compatible) versions of dependencies.
-For more information on compile avoidance see the corresponding section in the {user-manual}java_plugin.html#sec:java_compile_avoidance[user guide].
+For more information on compile avoidance see the corresponding section in the link:{user-manual}java_plugin.html#sec:java_compile_avoidance[user guide].
 
 [[runtime_classpath,"Runtime classpath normalization"]]
 ===== Runtime classpath normalization
@@ -118,12 +118,12 @@ For more information on compile avoidance see the corresponding section in the {
 Similar to compile avoidance, Gradle also understands the concept of a runtime classpath, and uses tailored input normalization to avoid running e.g. tests.
 For runtime classpaths Gradle inspects the contents of jar files and ignores the timestamps and order of the entries in the jar file.
 This means that a rebuilt jar file would be considered the same runtime classpath input.
-For details on what level of understanding Gradle has for detecting changes to classpaths and what is considered as a classpath see the {user-manual}more_about_tasks.html#sec:task_input_using_classpath_annotations[user guide].
+For details on what level of understanding Gradle has for detecting changes to classpaths and what is considered as a classpath see the link:{user-manual}more_about_tasks.html#sec:task_input_using_classpath_annotations[user guide].
 
 [[filter_runtime_classpath,"Filtering runtime classpaths"]]
 ====== Filtering runtime classpaths
 
-For a runtime classpath it is possible to provide better insights to Gradle which files are essential to the input by {user-manual}more_about_tasks.html#sec:configure_input_normalization[configuring input normalization].
+For a runtime classpath it is possible to provide better insights to Gradle which files are essential to the input by link:{user-manual}more_about_tasks.html#sec:configure_input_normalization[configuring input normalization].
 
 Given that you want to add a file `build-info.properties` to all your produced jar files which contains volatile information about the build, e.g. the timestamp when the build started or some ID to identify the CI job that published the artifact.
 This file is only used for auditing purposes, and has no effect on the outcome of running tests.
@@ -152,7 +152,7 @@ This will not change the runtime behavior of the `test` task -- i.e. any test is
 
 When two tasks write to the same output directory or output file, it is difficult for Gradle to determine which output belongs to which task.
 There are many edge cases, and executing the tasks in parallel cannot be done safely.
-For the same reason, Gradle cannot remove {user-manual}more_about_tasks.html#sec:stale_task_outputs[stale output files] for these tasks.
+For the same reason, Gradle cannot remove link:{user-manual}more_about_tasks.html#sec:stale_task_outputs[stale output files] for these tasks.
 Tasks that have discrete, non-overlapping outputs can always be handled in a safe fashion by Gradle.
 For the aforementioned reasons, task output caching is automatically disabled for tasks whose output directories overlap with another task.
 

@@ -16,7 +16,7 @@ You'll generate a Java application with the standard layout. You will then add a
 
 == Create project
 
-The first step is to create a folder for the new project and add a {user-manual}gradle_wrapper.html#sec:wrapper_generation[Gradle Wrapper] to the project.
+The first step is to create a folder for the new project and add a link:{user-manual}gradle_wrapper.html#sec:wrapper_generation[Gradle Wrapper] to the project.
 
 [listing]
 ----
@@ -30,7 +30,7 @@ BUILD SUCCESSFUL
 ----
 <1> This allows a version of Gradle to be locked to a project and henceforth you can use `./gradlew` instead of `gradle`.
 
-TIP: Instead of using the built-in wrapper task, you may wish to use the `init` task from the {user-manual}build_init_plugin.html[Build Init] plugin instead. This will create the initial project structure for you. See the {guides}/building-java-applications[Building Java Applications guide] for a detailed explanation of how to do this.
+TIP: Instead of using the built-in wrapper task, you may wish to use the `init` task from the link:{user-manual}build_init_plugin.html[Build Init] plugin instead. This will create the initial project structure for you. See the {guides}/building-java-applications[Building Java Applications guide] for a detailed explanation of how to do this.
 
 Create a `settings.gradle` file and set the name of the project. Doing this will ensure that the project builds with the correct name regardless of the name of the project root folder.
 
@@ -173,7 +173,7 @@ You now have JVM application that consumes an external library. In this process 
 // TODO: If guide about artifact resolution is written, then this guide needs to point to that
 ////
 
-* Read about using your own {user-manual}repository_types.html#sub:maven_repo[Maven repository] installations
+* Read about using your own link:{user-manual}repository_types.html#sub:maven_repo[Maven repository] installations
 * Read about configuring link:{user-manual}repository_types.html#sec:ivy_repositories[Ivy repositories].
 * Read about finding artifacts without metadata in link:{user-manual}repository_types.html#sec:flat_dir_resolver[local folders].
 * Read about link:{user-manual}customizing_dependency_resolution_behavior.html[advanced artifact resolution] and how to deal with version & dependency conflicts.

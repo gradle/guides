@@ -10,7 +10,7 @@ This guide assumes you have:
 - Knowledge of link:https://guides.gradle.org/implementing-gradle-plugins/[Gradle plugin implementation techniques]
 - Working knowledge in writing Java code
 
-If you happen to be a beginner to Gradle please start by working through the link:https://gradle.org/guides#getting-started[Getting Started Guides on Gradle development] first while referencing the {user-manual}userguide.html[Gradle User Manual] to go deeper.
+If you happen to be a beginner to Gradle please start by working through the link:https://gradle.org/guides#getting-started[Getting Started Guides on Gradle development] first while referencing the link:{user-manual}userguide.html[Gradle User Manual] to go deeper.
 
 == The sample project
 
@@ -64,16 +64,16 @@ Implementing manual and automated testing for Gradle plugins is straight forward
 [cols="20%,80%",options="header"]
 |======================
 |Test type                               |Tooling support
-|<<manual-tests,Manual tests>>           |{user-manual}composite_builds.html[Gradle composite builds]
+|<<manual-tests,Manual tests>>           |link:{user-manual}composite_builds.html[Gradle composite builds]
 |<<unit-tests,Unit tests>>               |Any JVM-based test framework
 |<<integration-tests,Integration tests>> |Any JVM-based test framework
-|<<functional-tests,Functional tests>>   |Any JVM-based test framework and {user-manual}test_kit.html[Gradle TestKit]
+|<<functional-tests,Functional tests>>   |Any JVM-based test framework and link:{user-manual}test_kit.html[Gradle TestKit]
 |======================
 
 [[manual-tests]]
 == Setting up manual tests
 
-The {user-manual}composite_builds.html[composite builds] feature introduced in Gradle 3.1 makes it very easy to test a plugin manually. The standalone plugin project and the consuming project can be combined together into a single unit making it much more straight forward to try out or debug changes without the hassle of re-publishing the binary file.
+The link:{user-manual}composite_builds.html[composite builds] feature introduced in Gradle 3.1 makes it very easy to test a plugin manually. The standalone plugin project and the consuming project can be combined together into a single unit making it much more straight forward to try out or debug changes without the hassle of re-publishing the binary file.
 
 ----
 .
@@ -140,7 +140,7 @@ In the next section, you will learn how to configure those source directories fo
 
 === Modeling test types
 
-Gradle models source code directories with the help of the {user-manual}java_plugin.html#sec:working_with_java_source_sets[source set concept]. By pointing an instance of a source set to one or many source code directories, _Gradle will automatically create a corresponding compilation task out-of-the-box_. The following script plugin demonstrates the creation of a source set for integration tests.
+Gradle models source code directories with the help of the link:{user-manual}java_plugin.html#sec:working_with_java_source_sets[source set concept]. By pointing an instance of a source set to one or many source code directories, _Gradle will automatically create a corresponding compilation task out-of-the-box_. The following script plugin demonstrates the creation of a source set for integration tests.
 
 .integration-test.gradle
 [source,groovy]
@@ -223,7 +223,7 @@ Functional tests verify the correctness of the plugin end-to-end. In practice th
 include::{samplescodedir}/url-verifier-plugin/src/main/java/org/gradle/sample/UrlVerifierPlugin.java[]
 ----
 
-Every Gradle plugin project should apply the {user-manual}java_gradle_plugin.html[plugin development plugin] to reduce boilerplate code. By applying the plugin development plugin, the test source set is preconfigured for the use with TestKit. If we want to use a custom source set for functional tests and leave the default test source set for only unit tests, we can configure the plugin development plugin to look for TestKit tests elsewhere.
+Every Gradle plugin project should apply the link:{user-manual}java_gradle_plugin.html[plugin development plugin] to reduce boilerplate code. By applying the plugin development plugin, the test source set is preconfigured for the use with TestKit. If we want to use a custom source set for functional tests and leave the default test source set for only unit tests, we can configure the plugin development plugin to look for TestKit tests elsewhere.
 
 .functional-test.gradle
 [source,groovy]
@@ -231,7 +231,7 @@ Every Gradle plugin project should apply the {user-manual}java_gradle_plugin.htm
 include::{samplescodedir}/url-verifier-plugin/gradle/functional-test.gradle[tags=source-set-config]
 ----
 
-Functional tests for Gradle plugins use a instance of `GradleRunner` to execute the build under test. `GradleRunner` is an API provided by TestKit which internally uses the Tooling API to execute the build. The following example applies the plugin to the build script under test, configures the extension and executes the build with the task `verifyUrl`. Please see the {user-manual}test_kit.html[TestKit documentation] to get more familiar with the functionality of TestKit.
+Functional tests for Gradle plugins use a instance of `GradleRunner` to execute the build under test. `GradleRunner` is an API provided by TestKit which internally uses the Tooling API to execute the build. The following example applies the plugin to the build script under test, configures the extension and executes the build with the task `verifyUrl`. Please see the link:{user-manual}test_kit.html[TestKit documentation] to get more familiar with the functionality of TestKit.
 
 .UrlVerifierPluginFunctionalTest.groovy
 [source,groovy]

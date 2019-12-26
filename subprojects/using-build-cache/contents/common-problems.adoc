@@ -114,7 +114,7 @@ Currently, it does _not_ track the vendor nor the minor version.
 Still, the vendor and the minor version may influence the bytecode produced by compilation.
 
 If you use different JVM vendors for compiling or running Java we strongly suggest that you add the vendor as an input to the corresponding tasks.
-This can be achieved by using the {user-manual}more_about_tasks.html#sec:task_input_output_runtime_api[runtime API] as shown in the following snippet.
+This can be achieved by using the link:{user-manual}more_about_tasks.html#sec:task_input_output_runtime_api[runtime API] as shown in the following snippet.
 
 .build.gradle
 [source.multi-language-sample,groovy]
@@ -134,7 +134,7 @@ However, the bytecode should still result in the same runtime behavior.
 
 [NOTE]
 ====
-{user-manual}java_plugin.html#sec:java_compile_avoidance[Java compile avoidance] will treat this bytecode the same since it extracts the ABI.
+link:{user-manual}java_plugin.html#sec:java_compile_avoidance[Java compile avoidance] will treat this bytecode the same since it extracts the ABI.
 ====
 
 Treating the minor number as an input can decrease the likelihood of a cache hit for developer builds.
@@ -159,7 +159,7 @@ Never re-release a non-changing binary dependency with the same version number b
 
 Using ``SNAPSHOT``s or other changing dependencies in your build by design violates the <<stable_task_inputs,stable task inputs>> principle.
 To use the build cache effectively, you should depend on fixed dependencies.
-You may want to look into the https://github.com/nebula-plugins/gradle-dependency-lock-plugin[dependency lock plugin] or switch to using {user-manual}composite_builds.html[composite builds] instead.
+You may want to look into the https://github.com/nebula-plugins/gradle-dependency-lock-plugin[dependency lock plugin] or switch to using link:{user-manual}composite_builds.html[composite builds] instead.
 
 The same is true for depending on volatile external resources, for example a list of released versions.
 One way of locking the changes would be to check the volatile resource into source control whenever it changes so that the builds only depend on the state in source control and not on the volatile resource itself.
@@ -260,7 +260,7 @@ As described in <<stable_task_inputs>> you can either make the task outputs repe
 You already learned about the possibilities with <<filter_runtime_classpath,configurable input normalization>>.
 
 Gradle includes some support for creating repeatable output for archive tasks.
-For tar and zip files Gradle can be configured to create {user-manual}working_with_files.html#sec:reproducible_archives[reproducible archives].
+For tar and zip files Gradle can be configured to create link:{user-manual}working_with_files.html#sec:reproducible_archives[reproducible archives].
 This is done by configuring e.g. the `Zip` task via the following snippet.
 
 .build.gradle

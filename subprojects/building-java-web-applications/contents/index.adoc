@@ -13,7 +13,7 @@ Gradle includes a `war` plugin for building Java web applications, and the commu
 
 == Create the structure of a web application
 
-Gradle includes a `war` plugin that is documented in the {user-manual}war_plugin.html[WAR plugin chapter] of the user manual. The `war` plugin extends the Java plugin to add support for web applications. By default, it uses a folder called `src/main/webapp` for web-related resources.
+Gradle includes a `war` plugin that is documented in the link:{user-manual}war_plugin.html[WAR plugin chapter] of the user manual. The `war` plugin extends the Java plugin to add support for web applications. By default, it uses a folder called `src/main/webapp` for web-related resources.
 
 NOTE: The "Web Application Quickstart" section in the User Manual still refers to the `jetty` plugin, which is deprecated in favor of the `gretty` plugin used here. The parts specific to the `war` plugin are fine, however, and the section will be updated soon.
 
@@ -63,7 +63,7 @@ $ gradle wrapper --gradle-version={gradle-version}
 :wrapper
 ----
 
-This will produce `gradlew` and `gradlew.bat` scripts and the `gradle` folder with the wrapper jar inside as described in the {user-manual}gradle_wrapper.html[wrapper section] of the User Manual.
+This will produce `gradlew` and `gradlew.bat` scripts and the `gradle` folder with the wrapper jar inside as described in the link:{user-manual}gradle_wrapper.html[wrapper section] of the User Manual.
 
 NOTE: If you are using Gradle 4.0 or later you may see less output from the console that you might see in this guide. In this guide, output is shown using the `--console=plain` flag on the command-line. This is done to show the tasks that Gradle is executing.
 

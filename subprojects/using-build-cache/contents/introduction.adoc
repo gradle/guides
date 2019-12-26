@@ -1,8 +1,8 @@
 TIP: Want to learn the tips and tricks top engineering teams use to keep builds fast and performant? https://gradle.com/training/build-cache-deep-dive/?bid=guides-build-cache[Register here] for our Build Cache Training.
 
 The best way to do work faster is to not do work that doesn’t need doing.
-Gradle's {user-manual}more_about_tasks.html#sec:up_to_date_checks[incremental build] feature does exactly that by not running a task if its inputs and outputs are equivalent to what they were during its previous execution.
-{user-manual}build_cache.html#sec:task_output_caching[Task output caching] extends on this by re-using task outputs produced with the same inputs anytime before, on any machine that is connected to the same build cache backend.
+Gradle's link:{user-manual}more_about_tasks.html#sec:up_to_date_checks[incremental build] feature does exactly that by not running a task if its inputs and outputs are equivalent to what they were during its previous execution.
+link:{user-manual}build_cache.html#sec:task_output_caching[Task output caching] extends on this by re-using task outputs produced with the same inputs anytime before, on any machine that is connected to the same build cache backend.
 
 This guide covers the different use cases for Gradle’s build cache, from local-only development to caching task outputs across large teams.
 Our intended audience is build engineers already familiar with the build cache who are looking to enable it for their existing builds.

@@ -153,7 +153,7 @@ Techniques for debugging a cache miss are explained in the following section.
 
 A cache miss happens when Gradle calculates a build cache key for a task which is different from any existing build cache key in the cache.
 Only comparing the build cache key on its own does not give much information, so we need to look at some finer grained data to be able to diagnose the cache miss.
-A list of all inputs to the computed build cache key can be found in the {user-manual}build_cache.html#sec:task_output_caching_details[user guide].
+A list of all inputs to the computed build cache key can be found in the link:{user-manual}build_cache.html#sec:task_output_caching_details[user guide].
 
 From most coarse grained to most fine grained, the items we will use to compare two tasks are:
 
@@ -165,7 +165,7 @@ From most coarse grained to most fine grained, the items we will use to compare 
 * Individual task property input hashes
 * Hashes of files which are part of task input properties
 
-If you want information about the build cache key and individual input property hashes, use {user-manual}build_environment.html#sec:gradle_configuration_properties[`-Dorg.gradle.caching.debug=true`]:
+If you want information about the build cache key and individual input property hashes, use link:{user-manual}build_environment.html#sec:gradle_configuration_properties[`-Dorg.gradle.caching.debug=true`]:
 
 [listing]
 ----

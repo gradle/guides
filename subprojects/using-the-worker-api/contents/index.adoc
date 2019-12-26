@@ -37,7 +37,7 @@ MD5 hashes.
 
 TIP: If you are not familiar with `buildSrc`, this is a special directory that allows you to define and build
 custom classes that should be available for use in your build script.  See
-{user-manual}organizing_build_logic.html#sec:build_sources[the user manual] for further information.
+link:{user-manual}organizing_build_logic.html#sec:build_sources[the user manual] for further information.
 
 
 Now, create a custom task class in your `buildSrc/src/main/java` directory.  You should name this class `CreateMD5`.

@@ -15,7 +15,7 @@ You'll generate a Java library that follows Gradle's conventions.
 
 == Create a library project
 
-Gradle comes with a built-in plugin called the Build Init plugin. It is documented in the https://docs.gradle.org/current/userguide/build_init_plugin.html[Gradle User Manual]. The plugin provides a task, called `init`, that generates the project. The `init` task uses the (also built-in) `wrapper` task to create a Gradle wrapper script, `gradlew`.
+Gradle comes with a built-in plugin called the Build Init plugin. It is documented in the link:{user-manual}build_init_plugin.html[Gradle User Manual]. The plugin provides a task, called `init`, that generates the project. The `init` task uses the (also built-in) `wrapper` task to create a Gradle wrapper script, `gradlew`.
 
 The first step is to create a folder for the new project and change directory into it.
 
@@ -124,7 +124,7 @@ include::{gradle-outdir}/kotlin-dsl-files/build.gradle.kts[tags=init]
 <3> This is an example of a dependency which is used internally, and not exposed to consumers on their own compile classpath.
 <4> JUnit testing library
 
-The build script adds the {user-manual}java_library_plugin.html[java-library] plugin. This is an extension of the `java-base` plugin and adds additional tasks for compiling Java source code.
+The build script adds the link:{user-manual}java_library_plugin.html[java-library] plugin. This is an extension of the `java-base` plugin and adds additional tasks for compiling Java source code.
 
 The file `src/main/java/demo/Library.java` is shown here:
 
@@ -178,7 +178,7 @@ You should see the required manifest file —`MANIFEST.MF`— and the compiled `
 
 [NOTE]
 ====
-All of this happens without any additional configuration in the build script because Gradle's `java-library` plugin assumes your project sources are arranged in a {user-manual}java_plugin.html#sec:java_project_layout[conventional project layout]. You can customize the project layout if you wish {user-manual}java_plugin.html#sec:changing_java_project_layout[as described in the user manual].
+All of this happens without any additional configuration in the build script because Gradle's `java-library` plugin assumes your project sources are arranged in a link:{user-manual}java_plugin.html#sec:java_project_layout[conventional project layout]. You can customize the project layout if you wish {user-manual}java_plugin.html#sec:changing_java_project_layout[as described in the user manual].
 ====
 
 Congratulations, you have just completed the first step of creating a Java library! You
@@ -208,7 +208,7 @@ $ ./gradlew jar
 
 and notice that the resulting JAR file at `build/libs/building-java-libraries-0.1.0.jar` contains the version as expected.
 
-Another common requirement is customizing the manifest file, typically by adding one or more attributes. Let's include the library name and version in the manifest file by {user-manual}more_about_tasks.html#sec:configuring_tasks[configuring the `jar` task]. Add the following to the end of your build script:
+Another common requirement is customizing the manifest file, typically by adding one or more attributes. Let's include the library name and version in the manifest file by link:{user-manual}more_about_tasks.html#sec:configuring_tasks[configuring the `jar` task]. Add the following to the end of your build script:
 
 .build.gradle
 [source.multi-language-sample,groovy]
@@ -240,7 +240,7 @@ include::{gradle-outdir}/groovy-dsl-unpackJar/META-INF/MANIFEST.MF[]
 [NOTE]
 .Learn more about configuring JARs
 ====
-The `manifest` is just one of many properties that can be configured on the `jar` task. For a complete list, see the {language-reference}org.gradle.api.tasks.bundling.Jar.html[Jar section] of the {language-reference}[Gradle Language Reference] as well as the {user-manual}java_plugin.html#sec:jar[Jar] and {user-manual}working_with_files.html#sec:archives[Creating Archives] sections of the Gradle {user-manual}userguide.html[User Manual].
+The `manifest` is just one of many properties that can be configured on the `jar` task. For a complete list, see the {language-reference}org.gradle.api.tasks.bundling.Jar.html[Jar section] of the {language-reference}[Gradle Language Reference] as well as the link:{user-manual}java_plugin.html#sec:jar[Jar] and {user-manual}working_with_files.html#sec:archives[Creating Archives] sections of the Gradle {user-manual}userguide.html[User Manual].
 ====
 
 Now you can complete this exercise by trying to compile some Java code that uses the library you just built.
@@ -281,9 +281,9 @@ That's it! You've now successfully built a Java library project, packaged it as 
 
 Building a library is just one aspect of reusing code across project boundaries. From here, you may be interested in:
 
- - {user-manual}artifact_dependencies_tutorial.html[Consuming JVM libraries]
- - {user-manual}artifact_management.html[Publishing JVM libraries]
- - {user-manual}intro_multi_project_builds.html[Working with multi-project builds]
+ - link:{user-manual}artifact_dependencies_tutorial.html[Consuming JVM libraries]
+ - link:{user-manual}artifact_management.html[Publishing JVM libraries]
+ - link:{user-manual}intro_multi_project_builds.html[Working with multi-project builds]
 
 
 include::contribute[repo-path="gradle-guides/building-java-libraries"]

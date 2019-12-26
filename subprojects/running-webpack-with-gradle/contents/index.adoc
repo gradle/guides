@@ -8,7 +8,7 @@ This guide will start you down a path that leverages the benefits of both Gradle
 
 == What you'll build
 
-You will create a Gradle task that bundles web assets with https://webpack.js.org/[Webpack] in a way that leverages Gradle's https://docs.gradle.org/current/userguide/more_about_tasks.html#sec:up_to_date_checks[up-to-date checks] and https://docs.gradle.org/current/userguide/build_cache.html[build cache].
+You will create a Gradle task that bundles web assets with https://webpack.js.org/[Webpack] in a way that leverages Gradle's link:{user-manual}more_about_tasks.html#sec:up_to_date_checks[up-to-date checks] and link:{user-manual}build_cache.html[build cache].
 
 == What you'll need
 
@@ -90,7 +90,7 @@ NOTE: package-lock.json is present only for npm v5+, which is a recommended upgr
 
 == Step 2: Use an Exec Task
 
-Command-line tools can be invoked through Gradle https://docs.gradle.org/current/dsl/org.gradle.api.tasks.Exec.html[Exec] tasks.
+Command-line tools can be invoked through Gradle link:{language-reference}org.gradle.api.tasks.Exec.html[Exec] tasks.
 
 NOTE: https://guides.gradle.org/writing-gradle-tasks/[Custom Task Classes] are highly recommended for any applications where configuration or reusability is desired; for example, to allow dev (debug with sourcemaps) and production variants.
 
@@ -130,7 +130,7 @@ You can now open `index.html` and see "Build together; not alone".
 
 == Step 3: Declare task inputs and outputs
 
-You are now able to execute Webpack through Gradle. Let's move on to only running Webpack when you _need_ to, through Gradle's https://docs.gradle.org/current/userguide/more_about_tasks.html#sec:up_to_date_checks[up-to-date checks] (AKA incremental build).
+You are now able to execute Webpack through Gradle. Let's move on to only running Webpack when you _need_ to, through Gradle's link:{user-manual}more_about_tasks.html#sec:up_to_date_checks[up-to-date checks] (AKA incremental build).
 
 In order to take advantage of up-to-date checks, you must declare the inputs and outputs of your task. Change your task configuration in your Gradle build this way:
 
@@ -165,7 +165,7 @@ BUILD SUCCESSFUL in 0s
 
 == Step 4: Leverage Gradle Build Cache
 
-As of Gradle 4.0, Gradle can avoid work that has already been done on different VCS branches or by other machines via the https://docs.gradle.org/current/userguide/build_cache.html[Build Cache].
+As of Gradle 4.0, Gradle can avoid work that has already been done on different VCS branches or by other machines via the link:{user-manual}build_cache.html[Build Cache].
 
 Suppose someone else pushed JS changes that were subsequently built by CI and shared in a remote build cache. If you have the same Webpack config and no JS changes, you can avoid re-bundling JS via Webpack and download the bundles straight from the build cache, thus saving your build's bundling time.
 
@@ -186,7 +186,7 @@ task webpack(type: Exec) {
 <1> Declare package-lock.json and app to be relocatable. https://guides.gradle.org/using-build-cache/#relocatability[Learn why this is important for caching].
 <2> Tell Gradle to always cache this task's outputs if the build cache is enabled.
 
-It is strongly advised to use a https://docs.gradle.org/current/userguide/custom_tasks.html[custom task class] when writing cacheable tasks. An example of one for Webpack is provided in the Managing JavaScript topical guide (coming soon). Furthermore, you may want to declare property names for better diagnostics.
+It is strongly advised to use a link:{user-manual}custom_tasks.html[custom task class] when writing cacheable tasks. An example of one for Webpack is provided in the Managing JavaScript topical guide (coming soon). Furthermore, you may want to declare property names for better diagnostics.
 
 Learn more about best practices of using the Gradle Build Cache from the https://guides.gradle.org/using-build-cache/[Build Cache topical guide].
 

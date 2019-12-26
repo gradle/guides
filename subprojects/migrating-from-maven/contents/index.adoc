@@ -48,7 +48,7 @@ from the root project directory and let Gradle do its thing.
 That basically consists of parsing the existing POMs and generating corresponding Gradle build files plus a `settings.gradle` file if it's a multi-project build.
 
 You'll find that the new Gradle build includes any custom repositories specified in the POM, your external and inter-project dependencies, the appropriate plugins (any of `maven`, `java`, and `war`), and more.
-See the user guide for {user-manual}build_init_plugin.html#sec:pom_maven_conversion_[a complete list of the automatic conversion features].
+See the user guide for link:{user-manual}build_init_plugin.html#sec:pom_maven_conversion_[a complete list of the automatic conversion features].
 
 One thing to bear in mind is that assemblies are not automatically converted.
 They aren't necessarily problematic to convert, but you will need to do some manual work.
@@ -102,7 +102,7 @@ The same basic behavior can be had from the https://blog.gradle.org/introducing-
 Regarding `optional` dependencies, Gradle 4.6+ creates dependency constraints when consuming POM files.
 For versions before Gradle 5.0, you must add `enableFeaturePreview('IMPROVED_POM_SUPPORT')` to _settings.gradle_.
 
-Learn more about dependency constraints in the {user-manual}managing_transitive_dependencies.html#sec:dependency_constraints[Gradle user manual on managing transitive dependencies].
+Learn more about dependency constraints in the link:{user-manual}managing_transitive_dependencies.html#sec:dependency_constraints[Gradle user manual on managing transitive dependencies].
 
 NOTE: Gradle 4.5 and lower do not support optional dependencies, but you can make use of them in your Gradle builds by using the https://plugins.gradle.org/plugin/nebula.optional-base[optional-base plugin] from Netflix.
 
@@ -317,7 +317,7 @@ include::{samplescodedir}/ant.gradle[]
 ----
 
 Even Ant properties and filesets are supported natively.
-To learn more, check out the {user-manual}ant.html[Ant chapter] of the user guide.
+To learn more, check out the link:{user-manual}ant.html[Ant chapter] of the user guide.
 
 
 == Plugins you don't need
@@ -355,7 +355,7 @@ The main entry point is the `Project` interface as that's the top-level object t
 You did it! **Welcome to the Gradle community!** 🎉
 
 Once you have your Gradle build working functionally, it is always worth a 2nd pass to ensure that your build is fast and maintainable.
-See Gradle documentation on {user-manual}organizing_build_logic.html[organizing build logic] and link:https://guides.gradle.org/performance/[optimizing build performance].
+See Gradle documentation on link:{user-manual}organizing_build_logic.html[organizing build logic] and link:https://guides.gradle.org/performance/[optimizing build performance].
 It would also be good to document any decisions made for your build, such as how you store and maintain dependency versions.
 
 If you mailto:developer-experience@gradle.com[email us a build scan of your new Gradle build], we'll send you a claim code for some free Gradle swag.

@@ -10,7 +10,7 @@ The guide assumes you have:
 - Knowledge of Gradle fundamentals like project organization, task creation and configuration as well as the Gradle build lifecycle
 - Working knowledge in writing Java code
 
-If you happen to be a beginner to Gradle please start by working through the link:https://gradle.org/guides#getting-started[Getting Started Guides on Gradle development] first while referencing the {user-manual}userguide.html[Gradle User Manual] to go deeper.
+If you happen to be a beginner to Gradle please start by working through the link:https://gradle.org/guides#getting-started[Getting Started Guides on Gradle development] first while referencing the link:{user-manual}userguide.html[Gradle User Manual] to go deeper.
 
 == What you'll need
 
@@ -24,7 +24,7 @@ If you happen to be a beginner to Gradle please start by working through the lin
 [[plugin-development-plugin]]
 === Using the Plugin Development plugin for writing plugins
 
-Setting up a Gradle plugin project should require as little boilerplate code as possible. The {user-manual}java_gradle_plugin.html[Java Gradle Plugin Development plugin] provides aid in this concern. To get started add the following code to your _build.gradle_ file:
+Setting up a Gradle plugin project should require as little boilerplate code as possible. The link:{user-manual}java_gradle_plugin.html[Java Gradle Plugin Development plugin] provides aid in this concern. To get started add the following code to your _build.gradle_ file:
 
 ====
 include::sample[dir="groovy-dsl/code/plugin-dev-plugin",files="build.gradle[]"]
@@ -36,7 +36,7 @@ By applying the plugin, necessary plugins are applied and relevant dependencies 
 [[writing-and-using-custom-task-types]]
 === Prefer writing and using custom task types
 
-Gradle tasks can be defined as {guides}/writing-gradle-tasks[ad-hoc tasks], simple task definitions of type `DefaultTask` with one or many actions, or as {user-manual}more_about_tasks.html[enhanced tasks], the ones that use a custom task type and expose its configurability with the help of properties. Generally speaking, custom tasks provide the means for reusability, maintainability, configurability and testability. The same principles hold true when providing tasks as part of plugins. Always prefer custom task types over ad-hoc tasks. Consumers of your plugin will also have the chance to reuse the existing task type if they want to add more tasks to the build script.
+Gradle tasks can be defined as {guides}/writing-gradle-tasks[ad-hoc tasks], simple task definitions of type `DefaultTask` with one or many actions, or as link:{user-manual}more_about_tasks.html[enhanced tasks], the ones that use a custom task type and expose its configurability with the help of properties. Generally speaking, custom tasks provide the means for reusability, maintainability, configurability and testability. The same principles hold true when providing tasks as part of plugins. Always prefer custom task types over ad-hoc tasks. Consumers of your plugin will also have the chance to reuse the existing task type if they want to add more tasks to the build script.
 
 Let’s say you implemented a plugin that resolves the latest version of a dependency in a binary repository by making HTTP calls by providing a custom task type. The custom task is provided by a plugin that takes care of communicating via HTTP and processing the response in machine-readable format like XML or JSON.
 
@@ -55,7 +55,7 @@ include::sample[dir="kotlin-dsl/code/custom-task",files="build.gradle.kts[]"]
 
 === Benefiting from incremental tasks
 
-Gradle uses declared inputs and outputs to determine if a task is up-to-date and needs to perform any work. If none of the inputs or outputs have changed, Gradle can skip that task. Gradle calls this mechanism incremental build support. The advantage of {user-manual}more_about_tasks.html#sec:up_to_date_checks[incremental build support] is that it can significantly improve the performance of a build.
+Gradle uses declared inputs and outputs to determine if a task is up-to-date and needs to perform any work. If none of the inputs or outputs have changed, Gradle can skip that task. Gradle calls this mechanism incremental build support. The advantage of link:{user-manual}more_about_tasks.html#sec:up_to_date_checks[incremental build support] is that it can significantly improve the performance of a build.
 
 It’s very common for Gradle plugins to introduce custom task types. As a plugin author that means that you’ll have to annotate all properties of a task with input or output annotations. It’s highly recommended to equip every task with the information to run up-to-date checking. Remember: for up-to-date checking to work properly a task needs to define both inputs and outputs.
 
@@ -122,7 +122,7 @@ include::sample[dir="groovy-dsl/code/capture-user-input",files="build.gradle[]"]
 include::sample[dir="kotlin-dsl/code/capture-user-input",files="build.gradle.kts[]"]
 ====
 
-Let's assume that you'll also want to do something with the value of `serverUrl` once captured. In many cases the exposed extension property is directly mapped to a task property that actually uses the value when performing work. To avoid evaluation order problems you should use {user-manual}lazy_configuration.html#lazy_properties[the public API `Property`] which was introduced in Gradle 4.0.
+Let's assume that you'll also want to do something with the value of `serverUrl` once captured. In many cases the exposed extension property is directly mapped to a task property that actually uses the value when performing work. To avoid evaluation order problems you should use link:{user-manual}lazy_configuration.html#lazy_properties[the public API `Property`] which was introduced in Gradle 4.0.
 
 Let's have a look at the internals of the plugin `BinaryRepositoryVersionPlugin` to give you a better idea. The plugin creates the extension of type `BinaryRepositoryExtension` and maps the extension property `serverUrl` to the task property `serverUrl.`
 
@@ -214,7 +214,7 @@ include::{samplescodedir}/react-to-task/buildSrc/src/main/java/InhouseConvention
 
 The implementation of a plugin sometimes requires the use of an external dependency. You might want to automatically download an artifact using Gradle’s dependency management mechanism and later use it in the action of a task type declared in the plugin. Optimally, the plugin implementation doesn’t need to ask the user for the coordinates of that dependency - it can simply predefine a sensible default version.
 
-Let’s have a look at an example. You wrote a plugin that downloads files containing data for further processing. The plugin implementation declares a custom configuration that allows for {user-manual}declaring_dependencies.html#sub:scope_of_dependency_configurations[assigning those external dependencies with default dependency coordinates].
+Let’s have a look at an example. You wrote a plugin that downloads files containing data for further processing. The plugin implementation declares a custom configuration that allows for link:{user-manual}declaring_dependencies.html#sub:scope_of_dependency_configurations[assigning those external dependencies with default dependency coordinates].
 
 .DataProcessingPlugin.java
 [source,java]
@@ -235,7 +235,7 @@ include::sample[dir="groovy-dsl/code/default-dependency",files="build.gradle[]"]
 include::sample[dir="kotlin-dsl/code/default-dependency",files="build.gradle.kts[]"]
 ====
 
-You will find that this pattern works well for tasks that require an external dependency when the action of the task is actually executed. The method is heavily used for custom tasks that execute an external Ant task like many of the {user-manual}plugin_reference.html#code_analysis[Gradle core static analysis plugins] do e.g. the FindBugs and Checkstyle plugin. In fact those plugins even go further and abstract the version to be used for the external dependency by exposing an extension property (e.g. `toolVersion` {language-reference}org.gradle.testing.jacoco.plugins.JacocoPluginExtension.html#org.gradle.testing.jacoco.plugins.JacocoPluginExtension:toolVersion[in the JaCoCo plugin]).
+You will find that this pattern works well for tasks that require an external dependency when the action of the task is actually executed. The method is heavily used for custom tasks that execute an external Ant task like many of the link:{user-manual}plugin_reference.html#code_analysis[Gradle core static analysis plugins] do e.g. the FindBugs and Checkstyle plugin. In fact those plugins even go further and abstract the version to be used for the external dependency by exposing an extension property (e.g. `toolVersion` {language-reference}org.gradle.testing.jacoco.plugins.JacocoPluginExtension.html#org.gradle.testing.jacoco.plugins.JacocoPluginExtension:toolVersion[in the JaCoCo plugin]).
 
 === Assigning appropriate plugin identifiers
 

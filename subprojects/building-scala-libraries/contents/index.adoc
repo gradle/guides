@@ -16,7 +16,7 @@ You'll generate a Scala library with the standard layout.
 
 == Check the user manual
 
-Gradle comes with a built-in plugin called the Build Init plugin. It is documented in the https://docs.gradle.org/current/userguide/build_init_plugin.html[Gradle User Manual]. The plugin has one task, called `init`, that generates the project. The `init` task calls the (also built-in) `wrapper` task to create a Gradle wrapper script, `gradlew`.
+Gradle comes with a built-in plugin called the Build Init plugin. It is documented in the link:{user-manual}build_init_plugin.html[Gradle User Manual]. The plugin has one task, called `init`, that generates the project. The `init` task calls the (also built-in) `wrapper` task to create a Gradle wrapper script, `gradlew`.
 
 The first step is to create a folder for the new project and change directory into it.
 
@@ -144,7 +144,7 @@ You now have a new Scala project that you generated using Gradle's build init pl
 
 == Next Steps
 
-* Read about the {user-manual}scala_plugin.html[Scala Plugin]
+* Read about the link:{user-manual}scala_plugin.html[Scala Plugin]
 * Get to know the configurations for the {language-reference}org.gradle.api.tasks.scala.ScalaCompile.html[ScalaCompile] and {language-reference}org.gradle.api.tasks.scala.ScalaDoc.html[Scaladoc] task types.
 
 

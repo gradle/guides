@@ -12,7 +12,7 @@ This guide demonstrates how to use Gradle's Build Init plugin to create a new Ja
 
 == Check the user manual
 
-Gradle comes with a built-in plugin called the Build Init plugin. It is documented in the https://docs.gradle.org/{gradle-version}/userguide/build_init_plugin.html[Gradle User Manual].
+Gradle comes with a built-in plugin called the Build Init plugin. It is documented in the link:{user-manual}build_init_plugin.html[Gradle User Manual].
 The plugin provides a task, called `init`, that generates the project. The plugin also uses the (also built-in) `wrapper` task to create a Gradle wrapper script, `gradlew`.
 
 == Setup

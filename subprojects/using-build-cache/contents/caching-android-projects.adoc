@@ -29,7 +29,7 @@ CI already built this commit -- why should you re-do that work?
 ==== Switching branches
 
 During local development, it is not uncommon to switch branches several times per day.
-This defeats https://docs.gradle.org/current/userguide/more_about_tasks.html#sec:up_to_date_checks[incremental build] (i.e., `UP-TO-DATE` checks), but this issue is mitigated via use of the local build cache.
+This defeats link:{user-manual}more_about_tasks.html#sec:up_to_date_checks[incremental build] (i.e., `UP-TO-DATE` checks), but this issue is mitigated via use of the local build cache.
 You might run a build on Branch A, which will populate the local cache.
 You then switch to Branch B to conduct a code review, help a colleague, or address feedback on an open PR.
 You then switch back to Branch A to continue your original work.
@@ -43,7 +43,7 @@ Each new version of these tools includes many performance improvements, not leas
 
 === Java and Kotlin compilation
 
-The https://guides.gradle.org/using-build-cache/#java_compilation[discussion] above in “Caching Java projects” is equally relevant here, with the caveat that, for projects that include Kotlin source code, the Kotlin compiler does not currently support https://docs.gradle.org/current/userguide/java_plugin.html#sec:java_compile_avoidance[compile avoidance] in the way that the Java compiler does.
+The https://guides.gradle.org/using-build-cache/#java_compilation[discussion] above in “Caching Java projects” is equally relevant here, with the caveat that, for projects that include Kotlin source code, the Kotlin compiler does not currently support link:{user-manual}java_plugin.html#sec:java_compile_avoidance[compile avoidance] in the way that the Java compiler does.
 
 === Annotation processors and Kotlin
 
@@ -87,7 +87,7 @@ This is another reason to always use the latest version of the Android plugin!
 The https://docs.fabric.io/android/fabric/overview.html[Fabric] plugin, which is used to integrate the Crashlytics crash-reporting tool (among others), is very popular, yet imposes some hefty performance penalties during the build process.
 This is due to the need for each version of your app to have a unique identifier so that it can be identified in the Crashlytics dashboard.
 In practice, the default behavior of Crashlytics is to treat “each version” as synonymous with “each build”.
-This defeats https://docs.gradle.org/current/userguide/more_about_tasks.html#sec:up_to_date_checks[incremental build], because each build will be unique.
+This defeats link:{user-manual}more_about_tasks.html#sec:up_to_date_checks[incremental build], because each build will be unique.
 It also breaks the cacheability of certain tasks in the build, and for the same reason.
 This can be fixed by simply disabling Crashlytics in “debug” builds.
 You may find instructions for that in the https://docs.fabric.io/android/crashlytics/build-tools.html[Crashlytics documentation].
@@ -100,7 +100,7 @@ The fix described in the referenced documentation does not work directly if you 
 ==== Kotlin DSL
 
 The fix described in the referenced documentation does not work directly if you are using the Kotlin DSL; this is due to incompatibilities between that Kotlin DSL and the Fabric plugin.
-There is a simple workaround for this, based on https://docs.gradle.org/5.0/userguide/kotlin_dsl.html#using_a_groovy_script[this advice] from the Kotlin DSL primer.
+There is a simple workaround for this, based on link:{user-manual}kotlin_dsl.html#using_a_groovy_script[this advice] from the Kotlin DSL primer.
 
 Create a file, `fabric.gradle`, in the module where you apply the `io.fabric` plugin. This file (known as a script plugin), should have the following contents:
 

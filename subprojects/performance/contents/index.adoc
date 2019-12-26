@@ -37,7 +37,7 @@ Most builds consist of more than one project and some of those projects are usua
 
 You could see big improvements in build times as soon as you enable parallel builds. The extent of those improvements depends on your project structure and how many dependencies you have between them. A build whose execution time is dominated by a single project won't benefit much at all, for example. Or one that has lots of inter-project dependencies resulting in few tasks that can be executed in parallel. But most multi-project builds should see a worthwhile boost to build times.
 
-NOTE: Parallel builds require projects to be decoupled at execution time, i.e. tasks in different projects must not modify shared state. Read more about that topic in https://docs.gradle.org/current/userguide/multi_project_builds.html#sec:parallel_execution[the User Manual] before using `--parallel` extensively. Also be aware that Gradle versions before 4.0 could run `clean` and `build` tasks in parallel, resulting in failures. On these older versions it is best to call `clean` separately.
+NOTE: Parallel builds require projects to be decoupled at execution time, i.e. tasks in different projects must not modify shared state. Read more about that topic in link:{user-manual}multi_project_builds.html#sec:parallel_execution[the User Manual] before using `--parallel` extensively. Also be aware that Gradle versions before 4.0 could run `clean` and `build` tasks in parallel, resulting in failures. On these older versions it is best to call `clean` separately.
 
 You can also make building in parallel the default for a project by adding the following setting to the project's _gradle.properties_ file:
 
@@ -74,7 +74,7 @@ In addition to the top-level performance summary of your build execution, you ca
 
 == Configuration
 
-As the user guide describes in https://docs.gradle.org/current/userguide/build_lifecycle.html[the build lifecycle chapter], a Gradle build goes through 3 phases: initialization, configuration, and execution. The important thing to understand here is that configuration code always executes regardless of which tasks will run. That means any expensive work performed during configuration will slow every invocation down, even simple ones like `gradle help` and `gradle tasks`.
+As the user guide describes in link:{user-manual}build_lifecycle.html[the build lifecycle chapter], a Gradle build goes through 3 phases: initialization, configuration, and execution. The important thing to understand here is that configuration code always executes regardless of which tasks will run. That means any expensive work performed during configuration will slow every invocation down, even simple ones like `gradle help` and `gradle tasks`.
 
 In the above xref:build-scan-performance[], you can see that build configuration is taking over 16 seconds. Clicking on the _"Configuration"_&nbsp; tab at the top of the page will break this stage down into its component parts, exposing what is causing any slowness.
 
@@ -168,7 +168,7 @@ include::{samplescodedir}/copy-3.gradle[tags=copy]
 include::{samplescodedir}/copy-3.gradle.kts[tags=copy]
 ----
 
-Note that the `from()` declaration doesn’t resolve the dependencies because you’re using the https://docs.gradle.org/current/userguide/artifact_dependencies_tutorial.html#configurations[dependency configuration] itself as an argument, not its files. The `Copy` task handles the resolution of the configuration itself during task execution, which is exactly what you want.
+Note that the `from()` declaration doesn’t resolve the dependencies because you’re using the link:{user-manual}artifact_dependencies_tutorial.html#configurations[dependency configuration] itself as an argument, not its files. The `Copy` task handles the resolution of the configuration itself during task execution, which is exactly what you want.
 
 The "Dependency resolution" tab on the performance page of a build scan explicitly shows how dependency resolution time is split across project configuration and task execution:
 
@@ -236,7 +236,7 @@ It definitely requires some effort and an investment in time to craft suitable b
 
 You can can avoid executing tasks, even if they’re required by a user. If neither a task’s inputs nor its outputs have changed since the last time it was run, Gradle will not run it again.
 
-Incremental build is the name Gradle gives to this feature of checking inputs and outputs to determine whether a task needs to run again or not. Most tasks provided by Gradle take part in incremental build because they have been defined that way. You can also make your own tasks integrate with incremental build, as described in the user guide. The basic idea is to mark the task’s properties that have an impact on whether a task needs to run. You can learn more https://docs.gradle.org/current/userguide/more_about_tasks.html#sec:up_to_date_checks[in the user guide].
+Incremental build is the name Gradle gives to this feature of checking inputs and outputs to determine whether a task needs to run again or not. Most tasks provided by Gradle take part in incremental build because they have been defined that way. You can also make your own tasks integrate with incremental build, as described in the user guide. The basic idea is to mark the task’s properties that have an impact on whether a task needs to run. You can learn more link:{user-manual}more_about_tasks.html#sec:up_to_date_checks[in the user guide].
 
 You can easily identify good candidates for participation in incremental builds, and learn why tasks were not up to date when you expected them to be by looking at the timeline view in a build scan:
 
@@ -272,7 +272,7 @@ Subsequently sorting by task duration on the Timeline screen will highlight task
 
 === Enable the daemon on old Gradle versions
 
-The Gradle daemon is a mechanism for improving the performance of Gradle. As of Gradle 3.0, the daemon is enabled by default, but if you are using an older version, you should definitely enable it on local developer machines. You will see big improvements in build speed by doing so. You can learn how to do that https://docs.gradle.org/2.14/userguide/gradle_daemon.html[in the 2.14 user guide].
+The Gradle daemon is a mechanism for improving the performance of Gradle. As of Gradle 3.0, the daemon is enabled by default, but if you are using an older version, you should definitely enable it on local developer machines. You will see big improvements in build speed by doing so. You can learn how to do that link:{user-manual}gradle_daemon.html[in the 2.14 user guide].
 
 On CI machines the benefit you can expect from the daemon depends on your setup. If you have long-lived CI agents and you build lots of small projects that all use the same Gradle version and JVM arguments, then the daemon can reduce your turnarounds. If your projects are big or more diverse, you probably won't see much benefit. Generally it is safe to leave the daemon on, as Gradle 3.0 introduced health monitoring which will shut daemons down on memory pressure.
 
@@ -442,7 +442,7 @@ It's unlikely to be useful for small projects, but you should definitely conside
 A lot of the time, you are only changing internal implementation details of your code, e.g. editing a method body. Starting with Gradle 3.4, these so-called ABI-compatible
 changes no longer trigger recompilation of downstream projects. This especially improves build times in large multi-project builds with deep dependency chains.
 
-Note: If you use annotation processors, you need to explicitly declare them in order for compile avoidance to work. Read more about https://docs.gradle.org/current/userguide/java_plugin.html#sec:java_compile_avoidance[compile avoidance] in the user guide.
+Note: If you use annotation processors, you need to explicitly declare them in order for compile avoidance to work. Read more about link:{user-manual}java_plugin.html#sec:java_compile_avoidance[compile avoidance] in the user guide.
 
 === The java-library plugin
 
@@ -468,7 +468,7 @@ dependencies {
 ----
 
 This can significantly reduce the "ripple" effect of a single change in large multi-project builds. The `implementation` Configuration is available in the `java`
-plugin. `api` dependencies can only be defined by libraries, which should use the new https://docs.gradle.org/current/userguide/java_library_plugin.html[`java-library`] plugin.
+plugin. `api` dependencies can only be defined by libraries, which should use the new link:{user-manual}java_library_plugin.html[`java-library`] plugin.
 
 === Incremental compilation
 
