@@ -63,6 +63,12 @@ gradlePlugin {
             displayName = 'Gradle Sample Plugin'
             description = 'Plugin required for authoring new Gradle Samples'
         }
+        documentationPlugin {
+            id = 'org.gradle.documentation'
+            implementationClass = 'org.gradle.docs.internal.BuildDocumentationPlugin'
+            displayName = 'Gradle Documentation Plugin'
+            description = 'Plugin for authoring Gradle documentation'
+        }
     }
 }
 
