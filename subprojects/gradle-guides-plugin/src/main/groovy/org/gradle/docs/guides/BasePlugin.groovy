@@ -26,6 +26,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.provider.ProviderFactory
 import org.gradle.api.tasks.PathSensitivity
+import org.gradle.docs.DocumentationExtension
 import org.gradle.docs.guides.internal.GuidesDocumentationPlugin
 import org.gradle.docs.guides.internal.GuideInternal
 
@@ -62,7 +63,7 @@ class BasePlugin implements Plugin<Project> {
     }
 
     private Guide addGuidesExtension(Project project) {
-        GuideInternal result = project.getObjects().newInstance(GuideInternal.class);
+        Guide result = project.getExtensions().getByType(DocumentationExtension.class).guides.publishedGuides.create(project.name)
         project.getExtensions().add(Guide, GUIDE_EXTENSION_NAME, result);
         result.repositoryPath.convention("gradle-guides/${project.name}".toString())
         result.minimumGradleVersion.convention(project.gradle.gradleVersion)

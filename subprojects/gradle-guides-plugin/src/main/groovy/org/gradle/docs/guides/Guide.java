@@ -16,12 +16,13 @@
 
 package org.gradle.docs.guides;
 
+import org.gradle.api.Named;
 import org.gradle.api.provider.Property;
 
 /**
  * @since 0.1
  */
-public interface Guide extends GuideSummary {
+public interface Guide extends Named, GuideSummary {
     /**
      * Path of repository relative to {@code https://github.com}.
      * @since 0.15.8
