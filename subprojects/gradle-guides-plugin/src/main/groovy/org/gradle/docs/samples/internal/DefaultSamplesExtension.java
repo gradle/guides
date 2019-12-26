@@ -5,12 +5,12 @@ import org.gradle.api.model.ObjectFactory;
 import org.gradle.docs.samples.Sample;
 import org.gradle.docs.samples.SampleBinary;
 import org.gradle.docs.samples.SamplesDistribution;
-import org.gradle.docs.samples.SamplesExtension;
+import org.gradle.docs.samples.Samples;
 import org.gradle.docs.samples.Template;
 
 import javax.inject.Inject;
 
-public abstract class DefaultSamplesExtension implements SamplesExtension {
+public abstract class DefaultSamplesExtension implements Samples {
     private final NamedDomainObjectContainer<Sample> publishedSamples;
     private final NamedDomainObjectContainer<SampleBinary> binaries;
     private final NamedDomainObjectContainer<Template> templates;

@@ -40,7 +40,7 @@ import org.gradle.docs.samples.Dsl;
 import org.gradle.docs.samples.Sample;
 import org.gradle.docs.samples.SampleBinary;
 import org.gradle.docs.samples.SampleSummary;
-import org.gradle.docs.samples.SamplesExtension;
+import org.gradle.docs.samples.Samples;
 import org.gradle.docs.samples.Template;
 
 import java.io.File;
@@ -71,7 +71,7 @@ public class SamplesPlugin implements Plugin<Project> {
         TaskProvider<Task> check = tasks.register("checkSamples");
 
         // Register a samples extension to configure published samples
-        SamplesExtension extension = createSamplesExtension(project, layout);
+        Samples extension = createSamplesExtension(project, layout);
 
         // Samples
         // Generate wrapper files that can be shared by all samples
@@ -101,7 +101,7 @@ public class SamplesPlugin implements Plugin<Project> {
         project.afterEvaluate(p -> realizeSamples(tasks, objects, extension, assemble, check));
     }
 
-    private void renderSamplesDocumentation(TaskContainer tasks, TaskProvider<Task> assemble, SamplesExtension extension) {
+    private void renderSamplesDocumentation(TaskContainer tasks, TaskProvider<Task> assemble, Samples extension) {
         TaskProvider<Sync> assembleDocs = tasks.register("assembleSamples", Sync.class, task -> {
             task.setGroup("documentation");
             task.setDescription("Assembles all intermediate files needed to generate the samples documentation.");
@@ -174,12 +174,12 @@ public class SamplesPlugin implements Plugin<Project> {
         template.getTemplateDirectory().convention(generateTemplate.flatMap(SyncWithProvider::getDestinationDirectory));
     }
 
-    private void applyConventionsForTemplates(SamplesExtension extension, Template template) {
+    private void applyConventionsForTemplates(Samples extension, Template template) {
         template.getTarget().convention("");
         template.getSourceDirectory().convention(extension.getTemplatesRoot().dir(toKebabCase(template.getName())));
     }
 
-    private void addExemplarTestsForSamples(Project project, ProjectLayout layout, TaskContainer tasks, SamplesExtension extension, TaskProvider<Task> check) {
+    private void addExemplarTestsForSamples(Project project, ProjectLayout layout, TaskContainer tasks, Samples extension, TaskProvider<Task> check) {
         SourceSet sourceSet = project.getExtensions().getByType(SourceSetContainer.class).create("samplesExemplarFunctionalTest");
         TaskProvider<GenerateTestSource> generatorTask = createExemplarGeneratorTask(tasks, layout, sourceSet);
         sourceSet.getJava().srcDir(generatorTask.flatMap(GenerateTestSource::getOutputDirectory));
@@ -195,8 +195,8 @@ public class SamplesPlugin implements Plugin<Project> {
         check.configure(task -> task.dependsOn(exemplarTest));
     }
 
-    private SamplesExtension createSamplesExtension(Project project, ProjectLayout layout) {
-        SamplesExtension extension = project.getExtensions().create(SamplesExtension.class, "samples", DefaultSamplesExtension.class);
+    private Samples createSamplesExtension(Project project, ProjectLayout layout) {
+        Samples extension = project.getExtensions().create(Samples.class, "samples", DefaultSamplesExtension.class);
         extension.getSamplesRoot().convention(layout.getProjectDirectory().dir("src/samples"));
         extension.getTemplatesRoot().convention(layout.getProjectDirectory().dir("src/samples/templates"));
         extension.getDocumentationInstallRoot().convention(layout.getBuildDirectory().dir("working/samples/docs/"));
@@ -215,7 +215,7 @@ public class SamplesPlugin implements Plugin<Project> {
         return extension;
     }
 
-    private void registerGenerateSampleIndex(TaskContainer tasks, ProviderFactory providers, ObjectFactory objects, SamplesExtension extension) {
+    private void registerGenerateSampleIndex(TaskContainer tasks, ProviderFactory providers, ObjectFactory objects, Samples extension) {
         TaskProvider<GenerateSampleIndexAsciidoc> generateSampleIndex = tasks.register("generateSampleIndex", GenerateSampleIndexAsciidoc.class, task -> {
             task.setGroup("documentation");
             task.setDescription("Generate index page that contains all published samples.");
@@ -249,7 +249,7 @@ public class SamplesPlugin implements Plugin<Project> {
         sample.getSamplePageFile().convention(generateSamplePage.flatMap(GenerateSamplePageAsciidoc::getOutputFile));
     }
 
-    private void applyConventionsForSamples(SamplesExtension extension, FileTree wrapperFiles, FileCollection generatedTests, Sample sample) {
+    private void applyConventionsForSamples(Samples extension, FileTree wrapperFiles, FileCollection generatedTests, Sample sample) {
         String name = sample.getName();
         sample.getDisplayName().convention(toTitleCase(name));
         // Converts names like androidApplication to android-application
@@ -295,7 +295,7 @@ public class SamplesPlugin implements Plugin<Project> {
         });
     }
 
-    private Provider<SampleBinary> registerSampleBinaryForDsl(SamplesExtension extension, Sample sample, Dsl dsl) {
+    private Provider<SampleBinary> registerSampleBinaryForDsl(Samples extension, Sample sample, Dsl dsl) {
         return extension.getBinaries().register(sample.getName() + dsl.getDisplayName(), binary -> {
             binary.getDsl().convention(dsl).disallowChanges();
             binary.getSampleLinkName().convention(sample.getSampleDocName()).disallowChanges();
@@ -368,7 +368,7 @@ public class SamplesPlugin implements Plugin<Project> {
         });
     }
 
-    private static TaskProvider<Test> createExemplarTestTask(TaskContainer tasks, SourceSet sourceSet, ProjectLayout layout, SamplesExtension extension) {
+    private static TaskProvider<Test> createExemplarTestTask(TaskContainer tasks, SourceSet sourceSet, ProjectLayout layout, Samples extension) {
         DirectoryProperty samplesDirectory = extension.getTestedInstallRoot();
 
         return tasks.register(sourceSet.getName(), Test.class, task -> {
@@ -384,7 +384,7 @@ public class SamplesPlugin implements Plugin<Project> {
         });
     }
 
-    private void realizeSamples(TaskContainer tasks, ObjectFactory objects, SamplesExtension extension, TaskProvider<Task> assemble, TaskProvider<Task> check) {
+    private void realizeSamples(TaskContainer tasks, ObjectFactory objects, Samples extension, TaskProvider<Task> assemble, TaskProvider<Task> check) {
         // TODO: Disallow changes to published samples container after this point.
         for (Sample sample : extension.getPublishedSamples()) {
             if (sample.getName().contains("_") || sample.getName().contains("-")) {

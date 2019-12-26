@@ -5,7 +5,7 @@ import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.ListProperty;
 
-public interface SamplesExtension {
+public interface Samples {
 
     /**
      * By convention, this is src/samples
