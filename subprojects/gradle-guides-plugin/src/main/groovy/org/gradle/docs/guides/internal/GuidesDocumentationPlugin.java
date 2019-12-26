@@ -5,9 +5,16 @@ import org.asciidoctor.gradle.AsciidoctorTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.ConfigurationContainer;
+import org.gradle.api.artifacts.component.ComponentIdentifier;
+import org.gradle.api.artifacts.dsl.DependencyHandler;
+import org.gradle.api.attributes.Attribute;
+import org.gradle.api.attributes.Usage;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.invocation.Gradle;
+import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.Sync;
@@ -34,6 +41,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         ProjectLayout layout = project.getLayout();
         TaskContainer tasks = project.getTasks();
         ProviderFactory providers = project.getProviders();
+        ObjectFactory objects = project.getObjects();
         Gradle gradle = project.getGradle();
 
         project.getPluginManager().apply(DocumentationBasePlugin.class);
@@ -52,10 +60,24 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         extension.getBinaries().all(binary -> createTasksForGuideBinary(tasks, layout, providers, binary));
 
         // Render all the documentation out to HTML
-        renderGuidesDocumentation(tasks, assemble, extension);
+        TaskProvider<? extends Task> renderTask = renderGuidesDocumentation(tasks, assemble, extension);
+
+        // Publish the guides to consumers
+        createPublishGuidesElements(project.getConfigurations(), objects, renderTask, extension);
 
         // Trigger everything by realizing guide container
         project.afterEvaluate(p -> realizeGuides(extension));
+    }
+
+    private Configuration createPublishGuidesElements(ConfigurationContainer configurations, ObjectFactory objects, TaskProvider<? extends Task> renderTask, GuidesInternal extension) {
+        return configurations.create("guideDocsElements", configuration -> {
+            configuration.setVisible(true);
+            configuration.setCanBeResolved(false);
+            configuration.setCanBeConsumed(true);
+            configuration.getAttributes().attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.class, "docs"));
+            configuration.getAttributes().attribute(Attribute.of("type", String.class), "guide-docs");
+            configuration.getOutgoing().artifact(extension.getRenderedDocumentationRoot(), it -> it.builtBy(renderTask));
+        });
     }
 
     private GuidesInternal configureGuidesExtension(Project project, ProjectLayout layout) {
@@ -101,7 +123,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         binary.getIndexPageFile().convention(generateGuidePage.flatMap(GenerateGuidePageAsciidoc::getOutputFile));
     }
 
-    private void renderGuidesDocumentation(TaskContainer tasks, TaskProvider<Task> assemble, GuidesInternal extension) {
+    private TaskProvider<? extends Task> renderGuidesDocumentation(TaskContainer tasks, TaskProvider<Task> assemble, GuidesInternal extension) {
         TaskProvider<Sync> assembleDocs = tasks.register("assembleGuides", Sync.class, task -> {
             task.setGroup("documentation");
             task.setDescription("Assembles all intermediate files needed to generate the samples documentation.");
@@ -158,6 +180,8 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         extension.getDistribution().getRenderedDocumentation().from(guidesMultiPage);
 
         assemble.configure(t -> t.dependsOn(extension.getDistribution().getRenderedDocumentation()));
+
+        return guidesMultiPage;
     }
 
     private void realizeGuides(GuidesInternal extension) {
