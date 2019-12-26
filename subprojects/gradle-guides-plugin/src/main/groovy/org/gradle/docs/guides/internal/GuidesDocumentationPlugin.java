@@ -105,7 +105,10 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         TaskProvider<Sync> assembleDocs = tasks.register("assembleGuides", Sync.class, task -> {
             task.setGroup("documentation");
             task.setDescription("Assembles all intermediate files needed to generate the samples documentation.");
-            task.from((Callable<List<RegularFileProperty>>) () -> extension.getBinaries().stream().map(GuideBinary::getIndexPageFile).collect(Collectors.toList()));
+
+            extension.getBinaries().forEach(binary -> {
+                task.from(binary.getIndexPageFile(), sub -> sub.into(binary.getPermalink()));
+            });
             task.into(extension.getDocumentationInstallRoot());
         });
 
@@ -169,6 +172,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             binary.getRepositoryPath().convention(guide.getRepositoryPath());
             binary.getDisplayName().convention(guide.getTitle());
             binary.getGuideDirectory().convention(guide.getGuideDirectory());
+            binary.getPermalink().convention(toSnakeCase(guide.getName()));
         }
     }
 }

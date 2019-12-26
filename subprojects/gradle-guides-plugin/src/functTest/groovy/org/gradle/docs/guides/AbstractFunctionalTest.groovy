@@ -98,16 +98,16 @@ abstract class AbstractFunctionalTest extends Specification {
         }
 
         ExecutionResult assertTasksExecuted(Object... taskPaths) {
-            def expectedTasks = taskPaths.flatten()
-            def actualTasks = tasks.collect { it.path }
+            def expectedTasks = taskPaths.flatten() as Set
+            def actualTasks = tasks.collect { it.path } as Set
 
             assert expectedTasks == actualTasks
             return this
         }
 
         ExecutionResult assertTasksNotSkipped(Object... taskPaths) {
-            def expectedTasks = taskPaths.flatten()
-            def tasks = tasks.findAll { !(it.outcome in SKIPPED_TASK_OUTCOMES) }.collect { it.path }
+            def expectedTasks = taskPaths.flatten() as Set
+            def tasks = tasks.findAll { !(it.outcome in SKIPPED_TASK_OUTCOMES) }.collect { it.path } as Set
 
             assert expectedTasks == tasks
             return this

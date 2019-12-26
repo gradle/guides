@@ -72,4 +72,28 @@ class BasicGuidesDocumentationFunctionalTest extends AbstractGuideFunctionalSpec
         then:
         result.assertTasksExecutedAndNotSkipped(':generateDemoPage', ':assembleGuides', ':guidesMultiPage', ':assemble')
     }
+
+    def "separate each rendered guides to individual workspace with snake case naming"() {
+        buildFile << applyDocumentationPlugin() << createGuide('foo') << createGuide('fooBar')
+        writeGuideUnderTest('src/docs/guides/foo')
+        writeGuideUnderTest('src/docs/guides/foo-bar')
+
+        when:
+        assert !file("build/working/guides/docs/foo/index.adoc").exists()
+        assert !file("build/working/guides/render-guides/foo/index.html").exists()
+        assert !file("build/working/guides/docs/foo_bar/index.adoc").exists()
+        assert !file("build/working/guides/render-guides/foo_bar/index.html").exists()
+        def result = build('assemble')
+
+        then:
+        result.assertTasksExecutedAndNotSkipped(':generateFooPage', ':generateFooBarPage', ':assembleGuides', ':guidesMultiPage', ':assemble')
+
+        and:
+        file("build/working/guides/docs/foo/index.adoc").exists()
+        file("build/working/guides/render-guides/foo/index.html").exists()
+
+        and:
+        file("build/working/guides/docs/foo_bar/index.adoc").exists()
+        file("build/working/guides/render-guides/foo_bar/index.html").exists()
+    }
 }
