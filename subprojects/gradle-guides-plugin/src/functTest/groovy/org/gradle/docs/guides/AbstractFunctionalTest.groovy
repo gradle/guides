@@ -22,6 +22,11 @@ import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 
+import static org.gradle.testkit.runner.TaskOutcome.FROM_CACHE
+import static org.gradle.testkit.runner.TaskOutcome.NO_SOURCE
+import static org.gradle.testkit.runner.TaskOutcome.SKIPPED
+import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
+
 abstract class AbstractFunctionalTest extends Specification {
     @Rule
     TemporaryFolder temporaryFolder = new TemporaryFolder()
@@ -38,14 +43,14 @@ abstract class AbstractFunctionalTest extends Specification {
         file("gradle.properties").text = "org.gradle.jvmargs=-XX:MaxMetaspaceSize=500m -Xmx500m"
     }
 
-    protected BuildResult build(String... arguments) {
+    protected ExecutionResult build(String... arguments) {
         result = createAndConfigureGradleRunner(arguments).build()
-        result
+        return new ExecutionResult(result)
     }
 
-    protected BuildResult buildAndFail(String... arguments) {
+    protected ExecutionResult buildAndFail(String... arguments) {
         result = createAndConfigureGradleRunner(arguments).buildAndFail()
-        result
+        return new ExecutionResult(result)
     }
 
     private GradleRunner createAndConfigureGradleRunner(String... arguments) {
@@ -74,5 +79,38 @@ abstract class AbstractFunctionalTest extends Specification {
 
     TestFile file(Object... paths) {
         return projectDir.file(paths)
+    }
+
+    static class ExecutionResult implements BuildResult {
+        private static final SKIPPED_TASK_OUTCOMES = [FROM_CACHE, UP_TO_DATE, SKIPPED, NO_SOURCE]
+
+        @Delegate
+        private final BuildResult delegate
+
+        ExecutionResult(BuildResult delegate) {
+            this.delegate = delegate
+        }
+
+        ExecutionResult assertTasksExecutedAndNotSkipped(Object... taskPaths) {
+            assertTasksExecuted(taskPaths)
+            assertTasksNotSkipped(taskPaths)
+            return this
+        }
+
+        ExecutionResult assertTasksExecuted(Object... taskPaths) {
+            def expectedTasks = taskPaths.flatten()
+            def actualTasks = tasks.collect { it.path }
+
+            assert expectedTasks == actualTasks
+            return this
+        }
+
+        ExecutionResult assertTasksNotSkipped(Object... taskPaths) {
+            def expectedTasks = taskPaths.flatten()
+            def tasks = tasks.findAll { !(it.outcome in SKIPPED_TASK_OUTCOMES) }.collect { it.path }
+
+            assert expectedTasks == tasks
+            return this
+        }
     }
 }

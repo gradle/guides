@@ -31,6 +31,7 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.api.tasks.util.PatternSet
 import org.gradle.docs.DocumentationExtension
 import org.gradle.docs.guides.internal.GuidesDocumentationPlugin
+import org.gradle.docs.guides.internal.tasks.GenerateGuidePageAsciidoc
 
 import javax.inject.Inject
 
@@ -70,6 +71,7 @@ class BasePlugin implements Plugin<Project> {
         Guide result = project.getExtensions().getByType(DocumentationExtension.class).guides.publishedGuides.create(toLowerCamelCase(project.name))
         project.getExtensions().add(Guide, GUIDE_EXTENSION_NAME, result);
         result.description.set(result.title)
+        result.guideDirectory.set(project.projectDir)
         return result
     }
 
@@ -98,6 +100,7 @@ class BasePlugin implements Plugin<Project> {
         project.dependencies.add("asciidoctor", "org.gradle:docs-asciidoctor-extensions:0.4.0")
 
         TaskProvider<AsciidoctorTask> asciidoc = project.tasks.named("asciidoctor", AsciidoctorTask.class);
+        project.afterEvaluate { project.tasks.named("generate${toLowerCamelCase(project.name).capitalize()}Page") { it.onlyIf { project.file('contents').exists() } } }
         project.tasks.getByName('build').dependsOn asciidoc
 
         Task asciidocAttributes = project.tasks.create('asciidoctorAttributes')

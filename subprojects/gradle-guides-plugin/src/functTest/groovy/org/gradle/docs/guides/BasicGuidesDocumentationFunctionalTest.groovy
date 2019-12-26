@@ -2,7 +2,7 @@ package org.gradle.docs.guides
 
 import spock.lang.Unroll
 
-class BasicGuidesDocumentationFunctionalTest extends AbstractFunctionalTest {
+class BasicGuidesDocumentationFunctionalTest extends AbstractGuideFunctionalSpec {
 
     def "verify guide description default values"() {
         buildFile << applyDocumentationPlugin() << createGuide('foo') << createGuide('fooBar')
@@ -62,28 +62,14 @@ class BasicGuidesDocumentationFunctionalTest extends AbstractFunctionalTest {
         name << ['foo_bar', 'foo-bar']
     }
 
-    protected void makeSingleProject() {
-        buildFile << applyDocumentationPlugin() << createGuide('demo')
-    }
+    def "can render single page guide"() {
+        makeSingleProject()
+        writeGuideUnderTest()
 
-    protected static String applyDocumentationPlugin() {
-        return  """
-            plugins {
-                id 'org.gradle.documentation'
-            }
-        """
-    }
-    protected static String createGuide(String name) {
-        return """
-            documentation.guides.publishedGuides.create('${name}')
-        """
-    }
+        when:
+        def result = build('assemble')
 
-    protected String getGuideUnderTestDsl() {
-        return guideDsl('demo')
-    }
-
-    protected static String guideDsl(String name) {
-        return "documentation.guides.publishedGuides.${name}"
+        then:
+        result.assertTasksExecutedAndNotSkipped(':generateDemoPage', ':assembleGuides', ':guidesMultiPage', ':assemble')
     }
 }

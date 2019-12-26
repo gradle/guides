@@ -17,12 +17,20 @@
 package org.gradle.docs.guides;
 
 import org.gradle.api.Named;
+import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.provider.Property;
 
 /**
  * @since 0.1
  */
 public interface Guide extends Named, GuideSummary {
+    /**
+     * By convention, this is the guide name off the extension's guide root directory.
+     *
+     * @return Property for configuring the guide root directory.
+     */
+    DirectoryProperty getGuideDirectory();
+
     /**
      * Path of repository relative to {@code https://github.com}.
      * @since 0.15.8

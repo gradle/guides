@@ -136,15 +136,15 @@ API reference link: {api-reference}
         createSamplesOutputDir()
 
         when:
-        usingGradleVersion('5.5.1')
+        usingGradleVersion('6.0')
         build('asciidoctor')
 
         then:
         def htmlFile = new File(temporaryFolder.root, 'build/html5/index.html').text
-        htmlFile.contains('Gradle version: 5.5.1')
-        (htmlFile =~ /User manual link: <a href=.+>https:\/\/docs.gradle.org\/5\.5\.1\/userguide\/<\/a>/).find()
-        (htmlFile =~ /Language reference link: <a href=.+>https:\/\/docs.gradle.org\/5\.5\.1\/dsl\/<\/a>/).find()
-        (htmlFile =~ /API reference link: <a href=.+>https:\/\/docs.gradle.org\/5\.5\.1\/javadoc\/<\/a>/).find()
+        htmlFile.contains('Gradle version: 6.0')
+        (htmlFile =~ /User manual link: <a href=.+>https:\/\/docs.gradle.org\/6\.0\/userguide\/<\/a>/).find()
+        (htmlFile =~ /Language reference link: <a href=.+>https:\/\/docs.gradle.org\/6\.0\/dsl\/<\/a>/).find()
+        (htmlFile =~ /API reference link: <a href=.+>https:\/\/docs.gradle.org\/6\.0\/javadoc\/<\/a>/).find()
     }
 
     def "can configure the minimum Gradle version of the guide"() {
@@ -198,7 +198,6 @@ Guide title: {guide-title}
     def "can configure the repository path of the guide"() {
         given:
         asciidocSourceFile << """
-Repo path: {repo-path}
 Repository path: {repository-path}
 """
         buildFile << """
@@ -214,7 +213,6 @@ Repository path: {repository-path}
 
         then:
         def htmlFile = new File(temporaryFolder.root, 'build/html5/index.html').text
-        htmlFile.contains('Repo path: foo/bar')
         htmlFile.contains('Repository path: foo/bar')
     }
 
