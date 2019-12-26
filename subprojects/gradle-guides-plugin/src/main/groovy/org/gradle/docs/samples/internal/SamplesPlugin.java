@@ -30,7 +30,6 @@ import org.gradle.api.tasks.wrapper.Wrapper;
 import org.gradle.docs.internal.DocumentationExtensionInternal;
 import org.gradle.docs.samples.Dsl;
 import org.gradle.docs.samples.Sample;
-import org.gradle.docs.samples.SampleBinary;
 import org.gradle.docs.samples.SampleSummary;
 import org.gradle.docs.samples.Samples;
 import org.gradle.docs.samples.Template;

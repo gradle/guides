@@ -22,34 +22,6 @@ public interface Samples {
     DirectoryProperty getTemplatesRoot();
 
     /**
-     * By convention, this is buildDir/working/samples/install
-     *
-     * @return The root install directory.
-     */
-    DirectoryProperty getInstallRoot();
-
-    /**
-     * By convention, this is buildDir/working/samples/testing
-     *
-     * @return location of installed samples ready for testing
-     */
-    DirectoryProperty getTestedInstallRoot();
-
-    /**
-     * By convention, this is buildDir/working/samples/docs
-     *
-     * @return The root directory for all documentation.
-     */
-    DirectoryProperty getDocumentationInstallRoot();
-
-    /**
-     * By convention, this is buildDir/working/samples/render-samples
-     *
-     * @return The root directory for rendered documentation.
-     */
-    DirectoryProperty getRenderedDocumentationRoot();
-
-    /**
      * By convention, this excludes build and .gradle directories.
      *
      * @return List of common exclude patterns when building a zip or install directory for a sample.
@@ -79,11 +51,4 @@ public interface Samples {
      * @return Container of all templates.  Templates are reusable parts of a sample.
      */
     NamedDomainObjectContainer<? extends Template> getTemplates();
-
-    /**
-     * @return Container of all "sample binaries".  A sample binary is a sample for a particular DSL.
-     *
-     * Most configuration should happen in the "published samples" container.
-     */
-    NamedDomainObjectContainer<SampleBinary> getBinaries();
 }

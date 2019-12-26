@@ -37,7 +37,17 @@ public abstract class GuidesInternal implements Guides {
         return guidesDistribution;
     }
 
+    /**
+     * By convention, this is buildDir/working/guides/docs
+     *
+     * @return The root directory for all documentation.
+     */
     public abstract DirectoryProperty getDocumentationInstallRoot();
 
+    /**
+     * By convention, this is buildDir/working/guides/render-samples
+     *
+     * @return The root directory for rendered documentation.
+     */
     public abstract DirectoryProperty getRenderedDocumentationRoot();
 }
