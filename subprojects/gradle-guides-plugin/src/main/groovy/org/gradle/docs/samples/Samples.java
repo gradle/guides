@@ -73,12 +73,12 @@ public interface Samples {
     /**
      * @return Container of all published samples. This is the primary configuration point for all samples.
      */
-    NamedDomainObjectContainer<Sample> getPublishedSamples();
+    NamedDomainObjectContainer<? extends Sample> getPublishedSamples();
 
     /**
      * @return Container of all templates.  Templates are reusable parts of a sample.
      */
-    NamedDomainObjectContainer<Template> getTemplates();
+    NamedDomainObjectContainer<? extends Template> getTemplates();
 
     /**
      * @return Container of all "sample binaries".  A sample binary is a sample for a particular DSL.

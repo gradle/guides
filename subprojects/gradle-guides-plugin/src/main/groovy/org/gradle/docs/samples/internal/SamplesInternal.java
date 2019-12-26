@@ -11,21 +11,21 @@ import org.gradle.docs.samples.Template;
 import javax.inject.Inject;
 
 public abstract class SamplesInternal implements Samples {
-    private final NamedDomainObjectContainer<Sample> publishedSamples;
+    private final NamedDomainObjectContainer<SampleInternal> publishedSamples;
     private final NamedDomainObjectContainer<SampleBinary> binaries;
-    private final NamedDomainObjectContainer<Template> templates;
+    private final NamedDomainObjectContainer<TemplateInternal> templates;
     private final SamplesDistribution distribution;
 
     @Inject
     public SamplesInternal(ObjectFactory objectFactory) {
-        this.publishedSamples = objectFactory.domainObjectContainer(Sample.class, name -> objectFactory.newInstance(SampleInternal.class, name));
+        this.publishedSamples = objectFactory.domainObjectContainer(SampleInternal.class, name -> objectFactory.newInstance(SampleInternal.class, name));
         this.binaries = objectFactory.domainObjectContainer(SampleBinary.class, name -> objectFactory.newInstance(SampleBinaryInternal.class, name));
-        this.templates = objectFactory.domainObjectContainer(Template.class, name -> objectFactory.newInstance(TemplateInternal.class, name));
+        this.templates = objectFactory.domainObjectContainer(TemplateInternal.class, name -> objectFactory.newInstance(TemplateInternal.class, name));
         this.distribution = objectFactory.newInstance(SamplesDistribution.class);
     }
 
     @Override
-    public NamedDomainObjectContainer<Sample> getPublishedSamples() {
+    public NamedDomainObjectContainer<? extends SampleInternal> getPublishedSamples() {
         return publishedSamples;
     }
 
@@ -35,7 +35,7 @@ public abstract class SamplesInternal implements Samples {
     }
 
     @Override
-    public NamedDomainObjectContainer<Template> getTemplates() {
+    public NamedDomainObjectContainer<? extends TemplateInternal> getTemplates() {
         return templates;
     }
 

@@ -27,6 +27,13 @@ import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.api.tasks.util.PatternSet;
 import org.gradle.api.tasks.wrapper.Wrapper;
+import org.gradle.docs.internal.DocumentationExtensionInternal;
+import org.gradle.docs.samples.Dsl;
+import org.gradle.docs.samples.Sample;
+import org.gradle.docs.samples.SampleBinary;
+import org.gradle.docs.samples.SampleSummary;
+import org.gradle.docs.samples.Samples;
+import org.gradle.docs.samples.Template;
 import org.gradle.docs.samples.internal.tasks.GenerateSampleIndexAsciidoc;
 import org.gradle.docs.samples.internal.tasks.GenerateSamplePageAsciidoc;
 import org.gradle.docs.samples.internal.tasks.GenerateSanityCheckTests;
@@ -36,12 +43,6 @@ import org.gradle.docs.samples.internal.tasks.SyncWithProvider;
 import org.gradle.docs.samples.internal.tasks.ValidateSampleBinary;
 import org.gradle.docs.samples.internal.tasks.ZipSample;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
-import org.gradle.docs.samples.Dsl;
-import org.gradle.docs.samples.Sample;
-import org.gradle.docs.samples.SampleBinary;
-import org.gradle.docs.samples.SampleSummary;
-import org.gradle.docs.samples.Samples;
-import org.gradle.docs.samples.Template;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -64,6 +65,7 @@ public class SamplesPlugin implements Plugin<Project> {
         ProviderFactory providers = project.getProviders();
         ObjectFactory objects = project.getObjects();
 
+        project.getPluginManager().apply(SamplesDocumentationPlugin.class);
         project.getPluginManager().apply("java-base");
         project.getPluginManager().apply("org.asciidoctor.convert");
 
@@ -71,7 +73,7 @@ public class SamplesPlugin implements Plugin<Project> {
         TaskProvider<Task> check = tasks.register("checkSamples");
 
         // Register a samples extension to configure published samples
-        Samples extension = createSamplesExtension(project, layout);
+        SamplesInternal extension = configureSamplesExtension(project, layout);
 
         // Samples
         // Generate wrapper files that can be shared by all samples
@@ -101,7 +103,7 @@ public class SamplesPlugin implements Plugin<Project> {
         project.afterEvaluate(p -> realizeSamples(tasks, objects, extension, assemble, check));
     }
 
-    private void renderSamplesDocumentation(TaskContainer tasks, TaskProvider<Task> assemble, Samples extension) {
+    private void renderSamplesDocumentation(TaskContainer tasks, TaskProvider<Task> assemble, SamplesInternal extension) {
         TaskProvider<Sync> assembleDocs = tasks.register("assembleSamples", Sync.class, task -> {
             task.setGroup("documentation");
             task.setDescription("Assembles all intermediate files needed to generate the samples documentation.");
@@ -195,8 +197,10 @@ public class SamplesPlugin implements Plugin<Project> {
         check.configure(task -> task.dependsOn(exemplarTest));
     }
 
-    private Samples createSamplesExtension(Project project, ProjectLayout layout) {
-        Samples extension = project.getExtensions().create(Samples.class, "samples", SamplesInternal.class);
+    private SamplesInternal configureSamplesExtension(Project project, ProjectLayout layout) {
+        SamplesInternal extension = project.getExtensions().getByType(DocumentationExtensionInternal.class).getSamples();
+
+        project.getExtensions().add(Samples.class, "samples", extension);
         extension.getSamplesRoot().convention(layout.getProjectDirectory().dir("src/samples"));
         extension.getTemplatesRoot().convention(layout.getProjectDirectory().dir("src/samples/templates"));
         extension.getDocumentationInstallRoot().convention(layout.getBuildDirectory().dir("working/samples/docs/"));
@@ -215,7 +219,7 @@ public class SamplesPlugin implements Plugin<Project> {
         return extension;
     }
 
-    private void registerGenerateSampleIndex(TaskContainer tasks, ProviderFactory providers, ObjectFactory objects, Samples extension) {
+    private void registerGenerateSampleIndex(TaskContainer tasks, ProviderFactory providers, ObjectFactory objects, SamplesInternal extension) {
         TaskProvider<GenerateSampleIndexAsciidoc> generateSampleIndex = tasks.register("generateSampleIndex", GenerateSampleIndexAsciidoc.class, task -> {
             task.setGroup("documentation");
             task.setDescription("Generate index page that contains all published samples.");
@@ -239,7 +243,7 @@ public class SamplesPlugin implements Plugin<Project> {
         return wrapperFiles.getAsFileTree();
     }
 
-    private void registerGenerateSamplePage(TaskContainer tasks, ObjectFactory objects, Sample sample) {
+    private void registerGenerateSamplePage(TaskContainer tasks, ObjectFactory objects, SampleInternal sample) {
         TaskProvider<GenerateSamplePageAsciidoc> generateSamplePage = tasks.register("generate" + capitalize(sample.getName()) + "Page", GenerateSamplePageAsciidoc.class, task -> {
             task.setDescription("Generates asciidoc page for sample '" + sample.getName() + "'");
             task.getSampleSummary().convention(toSummary(objects, sample));
@@ -249,7 +253,7 @@ public class SamplesPlugin implements Plugin<Project> {
         sample.getSamplePageFile().convention(generateSamplePage.flatMap(GenerateSamplePageAsciidoc::getOutputFile));
     }
 
-    private void applyConventionsForSamples(Samples extension, FileTree wrapperFiles, FileCollection generatedTests, Sample sample) {
+    private void applyConventionsForSamples(Samples extension, FileTree wrapperFiles, FileCollection generatedTests, SampleInternal sample) {
         String name = sample.getName();
         sample.getDisplayName().convention(toTitleCase(name));
         // Converts names like androidApplication to android-application
@@ -295,7 +299,7 @@ public class SamplesPlugin implements Plugin<Project> {
         });
     }
 
-    private Provider<SampleBinary> registerSampleBinaryForDsl(Samples extension, Sample sample, Dsl dsl) {
+    private Provider<SampleBinary> registerSampleBinaryForDsl(SamplesInternal extension, SampleInternal sample, Dsl dsl) {
         return extension.getBinaries().register(sample.getName() + dsl.getDisplayName(), binary -> {
             binary.getDsl().convention(dsl).disallowChanges();
             binary.getSampleLinkName().convention(sample.getSampleDocName()).disallowChanges();
@@ -384,9 +388,9 @@ public class SamplesPlugin implements Plugin<Project> {
         });
     }
 
-    private void realizeSamples(TaskContainer tasks, ObjectFactory objects, Samples extension, TaskProvider<Task> assemble, TaskProvider<Task> check) {
+    private void realizeSamples(TaskContainer tasks, ObjectFactory objects, SamplesInternal extension, TaskProvider<Task> assemble, TaskProvider<Task> check) {
         // TODO: Disallow changes to published samples container after this point.
-        for (Sample sample : extension.getPublishedSamples()) {
+        for (SampleInternal sample : extension.getPublishedSamples()) {
             if (sample.getName().contains("_") || sample.getName().contains("-")) {
                 throw new IllegalArgumentException(String.format("Sample '%s' has disallowed characters", sample.getName()));
             }
@@ -409,7 +413,7 @@ public class SamplesPlugin implements Plugin<Project> {
         }
     }
 
-    private SampleSummary toSummary(ObjectFactory objects, Sample sample) {
+    private SampleSummary toSummary(ObjectFactory objects, SampleInternal sample) {
         SampleSummary summary = objects.newInstance(SampleSummary.class);
         summary.getDisplayName().set(sample.getDisplayName());
         summary.getDsls().set(sample.getDsls());
