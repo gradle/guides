@@ -16,7 +16,7 @@ public abstract class GuidesInternal implements Guides {
     }
 
     @Override
-    public NamedDomainObjectContainer<? extends Guide> getPublishedGuides() {
+    public NamedDomainObjectContainer<? extends GuideInternal> getPublishedGuides() {
         return publishedGuides;
     }
 }

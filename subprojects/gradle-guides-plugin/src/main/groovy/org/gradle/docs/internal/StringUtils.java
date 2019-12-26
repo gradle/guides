@@ -20,7 +20,7 @@ public class StringUtils {
     }
 
     public static String toLowerCamelCase(String s) {
-        return uncapitalize(toTitleCase(s));
+        return uncapitalize(Arrays.stream(toTitleCase(s).split(" ")).collect(Collectors.joining()));
     }
     public static String toSnakeCase(String s) {
         return s.replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();

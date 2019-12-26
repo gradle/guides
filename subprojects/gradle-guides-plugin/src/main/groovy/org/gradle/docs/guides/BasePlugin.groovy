@@ -66,11 +66,7 @@ class BasePlugin implements Plugin<Project> {
     private Guide addGuidesExtension(Project project) {
         Guide result = project.getExtensions().getByType(DocumentationExtension.class).guides.publishedGuides.create(toLowerCamelCase(project.name))
         project.getExtensions().add(Guide, GUIDE_EXTENSION_NAME, result);
-        result.repositoryPath.convention("gradle-guides/${project.name}".toString())
-        result.minimumGradleVersion.convention(project.gradle.gradleVersion)
-        result.title.convention(result.repositoryPath.map { project.name.split('-').collect { it.capitalize() }.join(' ') })
-        result.description.convention(result.title)
-        result.category.convention("Uncategorized")
+        result.description.set(result.title)
         return result
     }
 
