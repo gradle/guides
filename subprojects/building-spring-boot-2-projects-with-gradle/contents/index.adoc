@@ -31,7 +31,7 @@ First we need to initialize the Gradle project.
 For that we use Gradle’s `init` task which creates a template project with an empty build file.
 The generated project includes the Gradle wrapper out of the box such that you can easily share the project with users that do not have Gradle locally installed.
 It also adds the default source directories, test dependencies and JCenter as default dependency repository.
-Please have a look at its https://docs.gradle.org/current/userguide/build_init_plugin.html[documentation] to read more about the `init` task.
+Please have a look at its link:{user-manual}/build_init_plugin.html[documentation] to read more about the `init` task.
 
 First we need to create the sample project folder in our home directory and initialize the project:
 
@@ -81,7 +81,7 @@ include::{samplescodedir}/sample-project/build.gradle[tags=plugins]
 Next we need to add the dependencies needed to compile and run our example as we are not using Spring’s dependency management plugin.
 For that we use the Gradle's BOM support and load the Spring Boot BOM file to be able to resolve all required dependencies with the proper version.
 
-NOTE: If you’d like to read more about Gradle’s BOM support please visit https://docs.gradle.org/current/userguide/managing_transitive_dependencies.html#sec:bom_import[this page].
+NOTE: If you’d like to read more about Gradle’s BOM support please visit link:{user-manual}/managing_transitive_dependencies.html#sec:bom_import[this page].
 
 To define the dependencies adapt the `dependencies` block as shown below.
 This snippet will add the Spring Boot BOM file as first dependency with the specified Spring Boot version.
