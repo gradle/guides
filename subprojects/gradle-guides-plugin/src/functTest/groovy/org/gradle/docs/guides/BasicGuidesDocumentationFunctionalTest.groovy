@@ -1,5 +1,7 @@
 package org.gradle.docs.guides
 
+import spock.lang.Unroll
+
 class BasicGuidesDocumentationFunctionalTest extends AbstractFunctionalTest {
 
     def "verify guide description default values"() {
@@ -45,6 +47,19 @@ class BasicGuidesDocumentationFunctionalTest extends AbstractFunctionalTest {
 
         expect:
         build('verify')
+    }
+
+    // TODO: Add this test for samples as well
+    @Unroll
+    def "fails if disallowed characters in guide name"(String name) {
+        buildFile << applyDocumentationPlugin() << createGuide(name)
+
+        expect:
+        def result = buildAndFail('help')
+        result.output.contains("Guide '${name}' has disallowed characters")
+
+        where:
+        name << ['foo_bar', 'foo-bar']
     }
 
     protected void makeSingleProject() {
