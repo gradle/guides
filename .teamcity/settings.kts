@@ -34,6 +34,7 @@ project {
     //buildType(BuildGuidesOnWindows)
     buildType(PublishPlugins)
     buildType(PublishGuides)
+    buildType(PublishGuidesLegacy)
 }
 
 open class AbstractBuildType(init: BuildType.() -> Unit) : BuildType({
@@ -119,12 +120,30 @@ object PublishPlugins : AbstractBuildType({
     }
 })
 
+object PublishGuidesLegacy : AbstractBuildType({
+    name = "Publish All Guides (legacy)"
+    steps {
+        gradle {
+            useGradleWrapper = true
+            tasks = "publishGuides"
+            buildFile = "" // Let Gradle detect the build script
+        }
+    }
+    requirements {
+        contains("teamcity.agent.jvm.os.name", "Linux")
+    }
+    params {
+        param("env.JAVA_HOME", "%linux.java8.oracle.64bit%")
+        password("env.GRGIT_USER", "credentialsJSON:c77b23f9-e0bf-4f4b-ba31-c54802542cca", display = ParameterDisplay.HIDDEN)
+    }
+})
+
 object PublishGuides : AbstractBuildType({
     name = "Publish All Guides"
     steps {
         gradle {
             useGradleWrapper = true
-            tasks = "publishGuides"
+            tasks = ":gitPublishPush"
             buildFile = "" // Let Gradle detect the build script
         }
     }
