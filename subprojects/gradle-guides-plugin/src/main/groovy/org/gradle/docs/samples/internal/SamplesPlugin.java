@@ -180,7 +180,7 @@ public class SamplesPlugin implements Plugin<Project> {
         template.getSourceDirectory().convention(extension.getTemplatesRoot().dir(toKebabCase(template.getName())));
     }
 
-    private void addExemplarTestsForSamples(Project project, ProjectLayout layout, TaskContainer tasks, Samples extension, TaskProvider<Task> check) {
+    private void addExemplarTestsForSamples(Project project, ProjectLayout layout, TaskContainer tasks, SamplesInternal extension, TaskProvider<Task> check) {
         SourceSet sourceSet = project.getExtensions().getByType(SourceSetContainer.class).create("samplesExemplarFunctionalTest");
         TaskProvider<GenerateTestSource> generatorTask = createExemplarGeneratorTask(tasks, layout, sourceSet);
         sourceSet.getJava().srcDir(generatorTask.flatMap(GenerateTestSource::getOutputDirectory));
@@ -252,7 +252,7 @@ public class SamplesPlugin implements Plugin<Project> {
         sample.getSamplePageFile().convention(generateSamplePage.flatMap(GenerateSamplePageAsciidoc::getOutputFile));
     }
 
-    private void applyConventionsForSamples(Samples extension, FileTree wrapperFiles, FileCollection generatedTests, SampleInternal sample) {
+    private void applyConventionsForSamples(SamplesInternal extension, FileTree wrapperFiles, FileCollection generatedTests, SampleInternal sample) {
         String name = sample.getName();
         sample.getDisplayName().convention(toTitleCase(name));
         // Converts names like androidApplication to android-application
@@ -371,7 +371,7 @@ public class SamplesPlugin implements Plugin<Project> {
         });
     }
 
-    private static TaskProvider<Test> createExemplarTestTask(TaskContainer tasks, SourceSet sourceSet, ProjectLayout layout, Samples extension) {
+    private static TaskProvider<Test> createExemplarTestTask(TaskContainer tasks, SourceSet sourceSet, ProjectLayout layout, SamplesInternal extension) {
         DirectoryProperty samplesDirectory = extension.getTestedInstallRoot();
 
         return tasks.register(sourceSet.getName(), Test.class, task -> {
