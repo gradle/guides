@@ -24,8 +24,11 @@ import org.asciidoctor.gradle.AsciidoctorTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
 import org.gradle.api.tasks.PathSensitivity
+import org.gradle.api.tasks.TaskProvider
+import org.gradle.api.tasks.util.PatternSet
 import org.gradle.docs.DocumentationExtension
 import org.gradle.docs.guides.internal.GuidesDocumentationPlugin
 
@@ -88,13 +91,13 @@ class BasePlugin implements Plugin<Project> {
     @CompileDynamic
     private void addAsciidoctor(Project project, Guide guides) {
 
-        def minimumGradleVersion = guides.minimumGradleVersion
+        Provider<String> minimumGradleVersion = guides.getMinimumGradleVersion();
 
-        project.apply plugin: 'org.asciidoctor.convert'
+        project.getPluginManager().apply("org.asciidoctor.convert");
         project.repositories.maven { url "https://repo.gradle.org/gradle/libs-releases" }
         project.dependencies.add("asciidoctor", "org.gradle:docs-asciidoctor-extensions:0.4.0")
 
-        AsciidoctorTask asciidoc = (AsciidoctorTask) (project.tasks.getByName('asciidoctor'))
+        TaskProvider<AsciidoctorTask> asciidoc = project.tasks.named("asciidoctor", AsciidoctorTask.class);
         project.tasks.getByName('build').dependsOn asciidoc
 
         Task asciidocAttributes = project.tasks.create('asciidoctorAttributes')
@@ -103,7 +106,7 @@ class BasePlugin implements Plugin<Project> {
         asciidocAttributes.doLast {
             println 'Current Asciidoctor Attributes'
             println '=============================='
-            asciidoc.attributes.each { Object k, Object v ->
+            asciidoc.get().attributes.each { Object k, Object v ->
                 println "${k.toString()}: ${v.toString()}"
             }
             println "gradle-version: ${minimumGradleVersion.get()}"
@@ -112,61 +115,63 @@ class BasePlugin implements Plugin<Project> {
             println "api-reference: https://docs.gradle.org/${minimumGradleVersion.get()}/javadoc/"
         }
 
-        asciidoc.inputs.property("minimumGradleVersion", minimumGradleVersion)
-        asciidoc.doFirst {
-            asciidoc.attributes.put('gradle-version', minimumGradleVersion.get())
-            asciidoc.attributes.put('user-manual', "https://docs.gradle.org/${minimumGradleVersion.get()}/userguide/")
-            asciidoc.attributes.put('language-reference', "https://docs.gradle.org/${minimumGradleVersion.get()}/dsl/")
-            asciidoc.attributes.put('api-reference', "https://docs.gradle.org/${minimumGradleVersion.get()}/javadoc/")
+        asciidoc.configure {task ->
+            task.getInputs().property("minimumGradleVersion", minimumGradleVersion);
+            task.doFirst {
+                task.attributes.put("gradle-version", minimumGradleVersion.get());
+                task.attributes.put("user-manual", "https://docs.gradle.org/${minimumGradleVersion.get()}/userguide/");
+                task.attributes.put("language-reference", "https://docs.gradle.org/${minimumGradleVersion.get()}/dsl/");
+                task.attributes.put("api-reference", "https://docs.gradle.org/${minimumGradleVersion.get()}/javadoc/");
+            }
+
+            task.getInputs().property("repositoryPath", guides.repositoryPath);
+            task.doFirst {
+                task.attributes.put("repository-path", guides.repositoryPath.get());
+            }
+
+            task.getInputs().property("guideTitle", guides.title);
+            task.doFirst {
+                task.attributes.put("guide-title", guides.title.get());
+            }
+
+            task.setSourceDir(project.file("contents"));
+            task.setOutputDir(project.buildDir);
+            task.backends("html5");
+            task.getInputs().files("samples").withPropertyName("samplesDir").withPathSensitivity(PathSensitivity.RELATIVE).optional();
+
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("doctype", "book");
+            attributes.put("icons", "font");
+            attributes.put("source-highlighter", "prettify");
+            attributes.put("toc", "auto");
+            attributes.put("toclevels", 1);
+            attributes.put("toc-title", "Contents");
+            // TODO: This is specific to guides
+            attributes.put("imagesdir", "images");
+            attributes.put("stylesheet", null);
+            attributes.put("linkcss", true);
+            attributes.put("docinfodir", ".");
+            attributes.put("docinfo1", "");
+            attributes.put("nofooter", true);
+            attributes.put("sectanchors", true);
+            attributes.put("sectlinks", true);
+            attributes.put("linkattrs", true);
+            attributes.put("encoding", "utf-8");
+            attributes.put("idprefix", "");
+            attributes.put("guides", "https://guides.gradle.org");
+            attributes.put("user-manual-name", "User Manual");
+            attributes.put("projdir", project.projectDir);
+            attributes.put("codedir", project.file("src/main"));
+            attributes.put("testdir", project.file("src/test"));
+            attributes.put("samplescodedir", project.file("samples/code"));
+            attributes.put("samplesoutputdir", project.file("samples/output"));
+            attributes.put("samples-dir", project.file("samples"));
+            task.attributes(attributes);
+
+            task.sources { include("index.adoc") }
         }
 
-        asciidoc.inputs.property('repositoryPath', guides.repositoryPath)
-        asciidoc.doFirst {
-            asciidoc.attributes.put('repo-path', guides.repositoryPath.get())
-            asciidoc.attributes.put('repository-path', guides.repositoryPath.get())
-        }
-
-        asciidoc.inputs.property('guideTitle', guides.title)
-        asciidoc.doFirst {
-            asciidoc.attributes.put('guide-title', guides.title.get())
-        }
-
-        asciidoc.with {
-            dependsOn project.tasks.getByPath('gradleRunner')
-            sourceDir 'contents'
-            outputDir { project.buildDir }
-            backends 'html5'
-            inputs.files('samples').withPropertyName('samplesDir').withPathSensitivity(PathSensitivity.RELATIVE).optional()
-
-            attributes 'source-highlighter': 'prettify',
-                    imagesdir            : 'images',
-                    stylesheet           : null,
-                    linkcss              : true,
-                    docinfodir           : '.',
-                    docinfo1             : '',
-                    nofooter             : true,
-                    icons                : 'font',
-                    sectanchors          : true,
-                    sectlinks            : true,
-                    linkattrs            : true,
-                    encoding             : 'utf-8',
-                    idprefix             : '',
-                    toc                  : 'auto',
-                    toclevels            : 1,
-                    'toc-title'          : 'Contents',
-                    guides               : 'https://guides.gradle.org',
-                    'user-manual-name'   : 'User Manual',
-                    'projdir'            : project.projectDir,
-                    'codedir'            : project.file('src/main'),
-                    'testdir'            : project.file('src/test'),
-                    'samplescodedir'     : project.file('samples/code'),
-                    'samplesoutputdir'   : project.file('samples/output'),
-                    'samples-dir'        : project.file('samples')
-
-        }
-
-        lazyConfigureMoreAsciidoc(asciidoc)
-
+        project.tasks.getByName("asciidoctor").dependsOn project.tasks.getByPath('gradleRunner')
         project.tasks.getByName("assemble").dependsOn asciidoc
 
         // TODO - rework the above to use lazy configuration
@@ -177,18 +182,6 @@ class BasePlugin implements Plugin<Project> {
             group = "Documentation"
             description = "Generates the guide and open in the browser"
             indexFile = asciidocIndexFile
-        }
-    }
-
-    @CompileDynamic
-    private void lazyConfigureMoreAsciidoc(AsciidoctorTask asciidoc) {
-
-        Guide guide = (Guide)(asciidoc.project.extensions.getByName(BasePlugin.GUIDE_EXTENSION_NAME))
-
-        asciidoc.configure {
-            sources {
-                include 'index.adoc'
-            }
         }
     }
 
