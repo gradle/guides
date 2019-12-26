@@ -1,4 +1,0 @@
-package org.gradle.docs.samples
-
-class TestWithExemplarConventionalBothDslSampleFunctionalTest extends AbstractExemplarBothDslSampleFunctionalTest {
-}

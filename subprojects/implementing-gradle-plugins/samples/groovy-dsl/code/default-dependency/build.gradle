@@ -1,5 +1,0 @@
-apply plugin: DataProcessingPlugin
-
-dependencies {
-    dataFiles 'com.company:more-data:2.6'
-}

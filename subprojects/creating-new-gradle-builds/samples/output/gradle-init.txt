@@ -1,4 +1,0 @@
-Starting a Gradle Daemon (subsequent builds will be faster)
-
-BUILD SUCCESSFUL in 3s
-2 actionable tasks: 2 executed

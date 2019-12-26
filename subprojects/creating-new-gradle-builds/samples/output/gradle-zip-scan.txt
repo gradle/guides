@@ -1,8 +1,0 @@
-BUILD SUCCESSFUL in 0s
-1 actionable task: 1 up-to-date
-
-Publishing a build scan to scans.gradle.com requires accepting the Terms of Service defined at https://scans.gradle.com/terms-of-service. Do you accept these terms? [yes, no]
-Gradle Cloud Services license agreement accepted.
-
-Publishing build scan...
-https://gradle.com/s/repnge6srr5qs

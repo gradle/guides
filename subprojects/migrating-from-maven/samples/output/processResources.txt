@@ -1,1 +1,0 @@
-:processResources NO-SOURCE

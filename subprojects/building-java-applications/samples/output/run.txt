@@ -1,9 +1,0 @@
-> Task :compileJava UP-TO-DATE
-> Task :processResources NO-SOURCE
-> Task :classes UP-TO-DATE
-
-> Task :run
-Hello world.
-
-BUILD SUCCESSFUL in 0s
-2 actionable tasks: 1 executed, 1 up-to-date
