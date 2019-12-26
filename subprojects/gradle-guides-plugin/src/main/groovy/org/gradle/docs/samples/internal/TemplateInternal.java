@@ -6,11 +6,11 @@ import org.gradle.docs.samples.Template;
 import javax.inject.Inject;
 import java.util.concurrent.Callable;
 
-public abstract class DefaultTemplate implements Template, Callable<DirectoryProperty> {
+public abstract class TemplateInternal implements Template, Callable<DirectoryProperty> {
     private final String name;
 
     @Inject
-    public DefaultTemplate(String name) {
+    public TemplateInternal(String name) {
         this.name = name;
     }
 

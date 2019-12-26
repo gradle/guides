@@ -11,13 +11,13 @@ import javax.inject.Inject;
 
 import static org.gradle.docs.internal.StringUtils.capitalize;
 
-public abstract class DefaultSample implements Sample {
+public abstract class SampleInternal implements Sample {
     private final String name;
     private final TaskProvider<Task> assemble;
     private final TaskProvider<Task> check;
 
     @Inject
-    public DefaultSample(String name, TaskContainer tasks) {
+    public SampleInternal(String name, TaskContainer tasks) {
         this.name = name;
         this.assemble = tasks.register("assemble" + capitalize(name + "Sample"));
         this.check = tasks.register("check" + capitalize(name + "Sample"));

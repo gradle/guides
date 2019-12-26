@@ -4,11 +4,11 @@ import org.gradle.docs.samples.SampleBinary;
 
 import javax.inject.Inject;
 
-public abstract class DefaultSampleBinary implements SampleBinary {
+public abstract class SampleBinaryInternal implements SampleBinary {
     private final String name;
 
     @Inject
-    public DefaultSampleBinary(String name) {
+    public SampleBinaryInternal(String name) {
         this.name = name;
     }
 

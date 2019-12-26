@@ -196,7 +196,7 @@ public class SamplesPlugin implements Plugin<Project> {
     }
 
     private Samples createSamplesExtension(Project project, ProjectLayout layout) {
-        Samples extension = project.getExtensions().create(Samples.class, "samples", DefaultSamplesExtension.class);
+        Samples extension = project.getExtensions().create(Samples.class, "samples", SamplesInternal.class);
         extension.getSamplesRoot().convention(layout.getProjectDirectory().dir("src/samples"));
         extension.getTemplatesRoot().convention(layout.getProjectDirectory().dir("src/samples/templates"));
         extension.getDocumentationInstallRoot().convention(layout.getBuildDirectory().dir("working/samples/docs/"));

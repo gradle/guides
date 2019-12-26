@@ -10,17 +10,17 @@ import org.gradle.docs.samples.Template;
 
 import javax.inject.Inject;
 
-public abstract class DefaultSamplesExtension implements Samples {
+public abstract class SamplesInternal implements Samples {
     private final NamedDomainObjectContainer<Sample> publishedSamples;
     private final NamedDomainObjectContainer<SampleBinary> binaries;
     private final NamedDomainObjectContainer<Template> templates;
     private final SamplesDistribution distribution;
 
     @Inject
-    public DefaultSamplesExtension(ObjectFactory objectFactory) {
-        this.publishedSamples = objectFactory.domainObjectContainer(Sample.class, name -> objectFactory.newInstance(DefaultSample.class, name));
-        this.binaries = objectFactory.domainObjectContainer(SampleBinary.class, name -> objectFactory.newInstance(DefaultSampleBinary.class, name));
-        this.templates = objectFactory.domainObjectContainer(Template.class, name -> objectFactory.newInstance(DefaultTemplate.class, name));
+    public SamplesInternal(ObjectFactory objectFactory) {
+        this.publishedSamples = objectFactory.domainObjectContainer(Sample.class, name -> objectFactory.newInstance(SampleInternal.class, name));
+        this.binaries = objectFactory.domainObjectContainer(SampleBinary.class, name -> objectFactory.newInstance(SampleBinaryInternal.class, name));
+        this.templates = objectFactory.domainObjectContainer(Template.class, name -> objectFactory.newInstance(TemplateInternal.class, name));
         this.distribution = objectFactory.newInstance(SamplesDistribution.class);
     }
 
