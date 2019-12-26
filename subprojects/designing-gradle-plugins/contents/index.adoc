@@ -38,7 +38,7 @@ As long as the user of the plugin does not prefer to use other conventions, no a
 
 In practice you will find that most users are comfortable with the default conventions until there’s a good reason to change them e.g. if you have to work with a legacy project. When writing your own plugins, make sure that you pick sensible defaults. You can find out if you did pick sensible conventions for your plugin if you see that the majority of plugin consumers don’t have to reconfigure them.
 
-Let’s have a look at an example for conventions introduced by a plugin. The plugin retrieves information from a server by making HTTP calls. The default URL used by the plugin is configured to point to a server within an organization developing the plugin: http://www.myorg.com/server. A good way to make the default URL configurable is to introduce an link:{user-manual}custom_plugins.html#sec:getting_input_from_the_build[extension]. An extension exposes a custom DSL for capturing user input that influences the runtime behavior. The following example shows such a custom DSL for the discussed example:
+Let’s have a look at an example for conventions introduced by a plugin. The plugin retrieves information from a server by making HTTP calls. The default URL used by the plugin is configured to point to a server within an organization developing the plugin: +++http://www.myorg.com/server+++. A good way to make the default URL configurable is to introduce an link:{user-manual}custom_plugins.html#sec:getting_input_from_the_build[extension]. An extension exposes a custom DSL for capturing user input that influences the runtime behavior. The following example shows such a custom DSL for the discussed example:
 
 .build.gradle
 [source,groovy]
