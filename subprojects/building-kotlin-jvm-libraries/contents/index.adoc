@@ -9,7 +9,7 @@ It makes sense to use https://github.com/gradle/kotlin-dsl[Gradle's Kotlin DSL] 
 
 You'll create a Kotlin library with the conventional layout, add a test to verify behavior, generate documentation, and publish the library with docs and sources.
 
-If you get stuck at any point, you can check out https://github.com/gradle-guides/building-kotlin-jvm-libraries/tree/master/samples/code/my-kotlin-library[the completed example].
+If you get stuck at any point, you can check out https://github.com/gradle/guides/tree/master/subprojects/building-kotlin-jvm-libraries/samples/code/my-kotlin-library[the completed example].
 
 == What you’ll need
 
@@ -221,7 +221,7 @@ Your Maven repository should now have the published artifacts.
 include::{samplesoutputdir}/step-4/repo.out[]
 ----
 
-Congratulations! You've successfully built a Kotlin library, tested it, documented it, and packaged it as a JAR with docs and sources. The https://github.com/gradle-guides/building-kotlin-jvm-libraries/tree/master/samples/code/my-kotlin-library[complete sample project is on GitHub].
+Congratulations! You've successfully built a Kotlin library, tested it, documented it, and packaged it as a JAR with docs and sources. The https://github.com/gradle/guides/tree/master/subprojects/building-kotlin-jvm-libraries/samples/code/my-kotlin-library[complete sample project is on GitHub].
 
 == Next Steps
 
