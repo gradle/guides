@@ -28,10 +28,8 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.provider.ProviderFactory
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskProvider
-import org.gradle.api.tasks.util.PatternSet
 import org.gradle.docs.DocumentationExtension
 import org.gradle.docs.guides.internal.GuidesDocumentationPlugin
-import org.gradle.docs.guides.internal.tasks.GenerateGuidePageAsciidoc
 
 import javax.inject.Inject
 
@@ -178,14 +176,6 @@ class BasePlugin implements Plugin<Project> {
         project.tasks.getByName("assemble").dependsOn asciidoc
 
         // TODO - rework the above to use lazy configuration
-
-        def asciidocIndexFile = project.layout.file(project.tasks.named("asciidoctor").map { new File(it.outputDir, "html5/index.html") })
-
-        project.tasks.register("viewGuide", ViewGuide) {
-            group = "Documentation"
-            description = "Generates the guide and open in the browser"
-            indexFile = asciidocIndexFile
-        }
     }
 
     private void addGitHubPages(Project project) {

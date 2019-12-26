@@ -2,10 +2,8 @@ package org.gradle.docs.guides.internal;
 
 import org.gradle.api.Named;
 import org.gradle.api.file.DirectoryProperty;
-import org.gradle.api.file.RegularFile;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.Property;
-import org.gradle.api.provider.Provider;
 
 import javax.inject.Inject;
 

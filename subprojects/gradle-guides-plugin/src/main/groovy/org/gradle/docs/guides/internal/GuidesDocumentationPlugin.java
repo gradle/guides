@@ -7,12 +7,9 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
-import org.gradle.api.artifacts.component.ComponentIdentifier;
-import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.attributes.Attribute;
 import org.gradle.api.attributes.Usage;
 import org.gradle.api.file.ProjectLayout;
-import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.invocation.Gradle;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ProviderFactory;
@@ -21,6 +18,7 @@ import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.util.PatternSet;
+import org.gradle.docs.guides.internal.tasks.ViewGuide;
 import org.gradle.docs.guides.internal.tasks.GenerateGuidePageAsciidoc;
 import org.gradle.docs.internal.DocumentationBasePlugin;
 import org.gradle.docs.internal.DocumentationExtensionInternal;
@@ -28,10 +26,7 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.stream.Collectors;
 
 import static org.gradle.docs.internal.StringUtils.*;
 
@@ -104,6 +99,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         TaskProvider<GenerateGuidePageAsciidoc> generateGuidePage = tasks.register("generate" + capitalize(binary.getName()) + "Page", GenerateGuidePageAsciidoc.class, task -> {
             task.setDescription("Generates asciidoc page for sample '" + binary.getName() + "'");
 
+            // TODO: Allow multiple guide per project
             task.getAttributes().empty();
             task.getAttributes().put("projdir", layout.getProjectDirectory().getAsFile().getAbsolutePath());
             task.getAttributes().put("codedir", layout.getProjectDirectory().file("src/main").getAsFile().getAbsolutePath());
@@ -180,6 +176,14 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         extension.getDistribution().getRenderedDocumentation().from(guidesMultiPage);
 
         assemble.configure(t -> t.dependsOn(extension.getDistribution().getRenderedDocumentation()));
+
+        extension.getBinaries().configureEach(binary -> {
+            tasks.register("view" + capitalize(binary.getName()) + "Guide", ViewGuide.class, task -> {
+                task.setGroup("Documentation");
+                task.setDescription("Generates the guide and open in the browser");
+                task.getIndexFile().fileProvider(guidesMultiPage.map(it -> new File(it.getOutputDir(), binary.getPermalink().get() + "/index.html")));
+            });
+        });
 
         return guidesMultiPage;
     }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.gradle.docs.guides;
+package org.gradle.docs.guides.internal.tasks;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.RegularFileProperty;
