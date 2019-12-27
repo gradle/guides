@@ -24,7 +24,7 @@ Starting with Gradle 4.3, you can enable build scans without any additional conf
 ----
 $ ./gradlew build --scan
 
-include::../samples/auto-applied-build-scan-plugin.sample.out[]
+include::{samples-dir}/auto-applied-build-scan-plugin.sample.out[]
 ----
 
 This mechanism makes it very easy to generate ad-hoc, one-off build scans without having to configure the build scan plugin in your build. If you need finer grained configuration, you can configure the build scan plugin in a build or init script as described in the following sections.
@@ -58,7 +58,7 @@ Run a `build` task with the `--scan` option. When the build is completed, after 
 ----
 $ ./gradlew build --scan
 
-include::../samples/build-scan-from-build-script.sample.out[]
+include::{samples-dir}/build-scan-from-build-script.sample.out[]
 ----
 
 == Access the build scan online
