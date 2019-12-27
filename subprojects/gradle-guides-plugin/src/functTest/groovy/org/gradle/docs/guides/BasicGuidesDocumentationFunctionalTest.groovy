@@ -238,6 +238,19 @@ image::image-1.png[]
         file('build/working/guides/render-guides/d-e-m-o/index.html').exists()
     }
 
+    def "fails rendering on error"() {
+        makeSingleProject()
+        writeGuideUnderTest()
+        file('src/docs/guides/demo/contents/index.adoc') << """
+include::step-1.adoc[]
+
+include::step-2.adoc[]
+"""
+
+        expect:
+        buildAndFail('assemble')
+    }
+
     private TestFile image(Object... path) {
         def result = file(path)
         result.parentFile.mkdirs()
