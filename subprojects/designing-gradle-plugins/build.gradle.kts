@@ -1,6 +1,5 @@
 plugins {
     id("org.gradle.guides")
-    id("org.gradle.guides.test-jvm-code")
 }
 
 guide {

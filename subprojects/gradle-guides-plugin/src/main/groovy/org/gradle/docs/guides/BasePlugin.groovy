@@ -56,6 +56,7 @@ class BasePlugin implements Plugin<Project> {
         addGradleRunnerSteps(project)
         addAsciidoctor(project, guides)
         addCheckLinks(project)
+        addTestJvmCode(project)
     }
 
     @Inject
@@ -176,5 +177,9 @@ class BasePlugin implements Plugin<Project> {
         project.tasks.getByName("assemble").dependsOn asciidoc
 
         // TODO - rework the above to use lazy configuration
+    }
+
+    void addTestJvmCode(Project project) {
+        project.pluginManager.apply(TestJvmCodePlugin)
     }
 }

@@ -10,7 +10,6 @@ import javax.xml.xpath.XPathFactory
 
 plugins {
     id("org.gradle.guides")
-    id("org.gradle.guides.test-jvm-code")
 }
 
 guide {

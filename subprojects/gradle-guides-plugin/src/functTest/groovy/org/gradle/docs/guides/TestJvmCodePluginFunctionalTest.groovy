@@ -23,7 +23,7 @@ class TestJvmCodePluginFunctionalTest extends AbstractFunctionalTest {
     def setup() {
         buildFile << """
             plugins {
-                id 'org.gradle.guides.test-jvm-code'
+                id 'org.gradle.guides'
             }
         """
     }
