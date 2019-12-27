@@ -1,7 +1,7 @@
 package org.gradle.docs.samples
 
 
-import org.gradle.docs.guides.TestFile
+import org.gradle.docs.TestFile
 import org.gradle.testkit.runner.BuildResult
 import spock.lang.Unroll
 

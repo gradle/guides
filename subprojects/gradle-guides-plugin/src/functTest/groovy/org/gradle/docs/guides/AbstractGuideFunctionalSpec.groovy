@@ -1,5 +1,7 @@
 package org.gradle.docs.guides
 
+import org.gradle.docs.AbstractFunctionalTest
+
 class AbstractGuideFunctionalSpec extends AbstractFunctionalTest {
     protected void makeSingleProject() {
         buildFile << applyDocumentationPlugin() << createGuide('demo')

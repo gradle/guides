@@ -16,8 +16,8 @@
 
 package org.gradle.docs.samples
 
-import org.gradle.docs.guides.AbstractFunctionalTest
-import org.gradle.docs.guides.TestFile
+import org.gradle.docs.AbstractFunctionalTest
+import org.gradle.docs.TestFile
 import org.gradle.testkit.runner.BuildResult
 
 import static org.gradle.testkit.runner.TaskOutcome.FROM_CACHE

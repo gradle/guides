@@ -1,5 +1,6 @@
-package org.gradle.docs.guides;
+package org.gradle.docs;
 
+import org.gradle.docs.TestFile;
 import org.hamcrest.Matcher;
 
 import java.io.ByteArrayOutputStream;

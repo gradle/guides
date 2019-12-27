@@ -16,7 +16,7 @@
 
 package org.gradle.docs.guides
 
-
+import org.gradle.docs.AbstractFunctionalTest
 import spock.lang.Unroll
 
 abstract class AbstractGuidesPluginFunctionalTest extends AbstractFunctionalTest {

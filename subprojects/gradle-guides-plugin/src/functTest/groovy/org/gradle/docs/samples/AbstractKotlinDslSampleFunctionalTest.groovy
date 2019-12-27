@@ -1,6 +1,6 @@
 package org.gradle.docs.samples
 
-import org.gradle.docs.guides.TestFile
+import org.gradle.docs.TestFile
 
 abstract class AbstractKotlinDslSampleFunctionalTest extends AbstractBasicSampleFunctionalTest {
     @Override

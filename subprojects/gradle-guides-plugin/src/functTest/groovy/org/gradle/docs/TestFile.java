@@ -1,4 +1,4 @@
-package org.gradle.docs.guides;
+package org.gradle.docs;
 
 import org.codehaus.groovy.runtime.ResourceGroovyMethods;
 

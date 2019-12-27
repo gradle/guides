@@ -1,5 +1,6 @@
 package org.gradle.docs.guides
 
+import org.gradle.docs.TestFile
 import spock.lang.Unroll
 
 import javax.imageio.ImageIO

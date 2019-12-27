@@ -16,6 +16,7 @@
 
 package org.gradle.docs.guides
 
+import org.gradle.docs.AbstractFunctionalTest
 import org.gradle.testkit.runner.TaskOutcome
 
 class TestJvmCodePluginFunctionalTest extends AbstractFunctionalTest {
