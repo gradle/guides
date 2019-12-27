@@ -18,8 +18,8 @@ import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.util.PatternSet;
-import org.gradle.docs.guides.internal.tasks.ViewGuide;
 import org.gradle.docs.guides.internal.tasks.GenerateGuidePageAsciidoc;
+import org.gradle.docs.guides.internal.tasks.ViewGuide;
 import org.gradle.docs.internal.DocumentationBasePlugin;
 import org.gradle.docs.internal.DocumentationExtensionInternal;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
@@ -125,6 +125,11 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             task.setDescription("Assembles all intermediate files needed to generate the samples documentation.");
 
             extension.getBinaries().forEach(binary -> {
+                task.from(binary.getGuideDirectory().dir("contents"), sub -> {
+                    sub.into(binary.getPermalink());
+                    sub.include("**/*.adoc");
+                    sub.include("**/*.txt");
+                });
                 task.from(binary.getIndexPageFile(), sub -> sub.into(binary.getPermalink()));
             });
             task.into(extension.getDocumentationInstallRoot());
@@ -139,9 +144,21 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
 
             task.sources(new Closure(null) {
                 public Object doCall(Object ignore) {
-                    ((PatternSet)this.getDelegate()).include("**/*.adoc");
+                    // Render only the index.adoc file
+                    ((PatternSet)this.getDelegate()).include("**/index.adoc");
                     return null;
                 }
+            });
+
+            task.doLast(t -> {
+                task.getProject().sync(spec -> {
+                    extension.getBinaries().forEach(binary -> {
+                        spec.from(binary.getGuideDirectory().dir("contents/images"), sub -> {
+                            sub.into(binary.getPermalink().get() + "/images");
+                        });
+                    });
+                    spec.into(extension.getRenderedDocumentationRoot());
+                });
             });
 
             // TODO: This breaks the provider
