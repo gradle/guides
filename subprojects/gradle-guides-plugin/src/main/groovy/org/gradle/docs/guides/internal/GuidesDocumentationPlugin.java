@@ -20,7 +20,7 @@ import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.util.PatternSet;
 import org.gradle.docs.guides.internal.tasks.GenerateGuidePageAsciidoc;
-import org.gradle.docs.guides.internal.tasks.ViewGuide;
+import org.gradle.docs.internal.tasks.ViewDocumentation;
 import org.gradle.docs.internal.DocumentationBasePlugin;
 import org.gradle.docs.internal.DocumentationExtensionInternal;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
@@ -221,7 +221,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         assemble.configure(t -> t.dependsOn(extension.getDistribution().getRenderedDocumentation()));
 
         extension.getBinaries().configureEach(binary -> {
-            tasks.register("view" + capitalize(binary.getName()) + "Guide", ViewGuide.class, task -> {
+            tasks.register("view" + capitalize(binary.getName()) + "Guide", ViewDocumentation.class, task -> {
                 task.setGroup("Documentation");
                 task.setDescription("Generates the guide and open in the browser");
                 task.getIndexFile().fileProvider(guidesMultiPage.map(it -> new File(it.getOutputDir(), binary.getPermalink().get() + "/index.html")));

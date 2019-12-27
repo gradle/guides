@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.gradle.docs.guides.internal.tasks;
+package org.gradle.docs.internal.tasks;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.RegularFileProperty;
@@ -26,13 +26,13 @@ import javax.inject.Inject;
 import java.awt.*;
 import java.io.IOException;
 
-public abstract class ViewGuide extends DefaultTask {
+public abstract class ViewDocumentation extends DefaultTask {
 
     @InputFile
     public abstract RegularFileProperty getIndexFile();
 
     @Inject
-    public ViewGuide() {
+    public ViewDocumentation() {
         getOutputs().upToDateWhen(Specs.satisfyNone());
     }
 

@@ -27,6 +27,7 @@ import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.api.tasks.util.PatternSet;
 import org.gradle.api.tasks.wrapper.Wrapper;
+import org.gradle.docs.internal.tasks.ViewDocumentation;
 import org.gradle.docs.internal.DocumentationExtensionInternal;
 import org.gradle.docs.samples.Dsl;
 import org.gradle.docs.samples.Sample;
@@ -153,6 +154,14 @@ public class SamplesPlugin implements Plugin<Project> {
         extension.getDistribution().getRenderedDocumentation().from(samplesMultiPage);
 
         assemble.configure(t -> t.dependsOn(extension.getDistribution().getRenderedDocumentation()));
+
+        extension.getPublishedSamples().configureEach(sample -> {
+            tasks.register("view" + capitalize(sample.getName()) + "Sample", ViewDocumentation.class, task -> {
+                task.setGroup("Documentation");
+                task.setDescription("Generates the guide and open in the browser");
+                task.getIndexFile().fileProvider(samplesMultiPage.map(it -> new File(it.getOutputDir(), sample.getSampleDocName().get() + ".html")));
+            });
+        });
     }
 
     private FileCollection createGeneratedTests(TaskContainer tasks, ObjectFactory objects, ProjectLayout layout) {
