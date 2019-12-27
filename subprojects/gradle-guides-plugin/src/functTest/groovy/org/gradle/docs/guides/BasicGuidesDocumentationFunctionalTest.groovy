@@ -219,6 +219,25 @@ image::image-1.png[]
         !file('build/working/guides/render-guides/demo/images/image-2.png').exists()
     }
 
+    def "can configure permalink of guides"() {
+        makeSingleProject()
+        writeGuideUnderTest()
+        buildFile << """
+            ${guideUnderTestDsl} {
+                permalink = 'd-e-m-o'
+            }
+        """
+
+        when:
+        !file('build/working/guides/render-guides/demo/index.html').exists()
+        !file('build/working/guides/render-guides/d-e-m-o/index.html').exists()
+        build('assemble')
+
+        then:
+        !file('build/working/guides/render-guides/demo/index.html').exists()
+        file('build/working/guides/render-guides/d-e-m-o/index.html').exists()
+    }
+
     private TestFile image(Object... path) {
         def result = file(path)
         result.parentFile.mkdirs()

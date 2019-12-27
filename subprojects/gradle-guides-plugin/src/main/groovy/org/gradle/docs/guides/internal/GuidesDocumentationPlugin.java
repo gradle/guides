@@ -94,6 +94,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         guide.getTitle().convention(toTitleCase(name));
         guide.getDescription().convention("");
         guide.getCategory().convention("Uncategorized");
+        guide.getPermalink().convention(toSnakeCase(guide.getName()));
     }
 
     private void createTasksForGuideBinary(TaskContainer tasks, ProjectLayout layout, ProviderFactory providers, GuideBinary binary) {
@@ -222,7 +223,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             binary.getRepositoryPath().convention(guide.getRepositoryPath());
             binary.getDisplayName().convention(guide.getTitle());
             binary.getGuideDirectory().convention(guide.getGuideDirectory());
-            binary.getPermalink().convention(toSnakeCase(guide.getName()));
+            binary.getPermalink().convention(guide.getPermalink());
         }
     }
 }

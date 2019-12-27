@@ -33,6 +33,7 @@ import org.gradle.docs.guides.internal.GuidesDocumentationPlugin
 
 import javax.inject.Inject
 
+import static org.gradle.docs.internal.StringUtils.toKebabCase
 import static org.gradle.docs.internal.StringUtils.toLowerCamelCase
 
 /**
@@ -70,6 +71,7 @@ class BasePlugin implements Plugin<Project> {
         project.getExtensions().add(Guide, GUIDE_EXTENSION_NAME, result);
         result.description.set(result.title)
         result.guideDirectory.set(project.projectDir)
+        result.permalink.set(toKebabCase(result.name))
         return result
     }
 
