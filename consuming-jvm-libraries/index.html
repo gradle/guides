@@ -373,7 +373,22 @@ You can learn more about using configurations for your own custom purposes by st
 <div class="content">
 <pre>./gradlew dependencies --configuration implementation <i class="conum" data-value="1"></i><b>(1)</b>
 
-Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/consuming-jvm-libraries/build/reports/runners/gradleRunner/clean-dependencies/out.txt[]</pre>
+
+&gt; Task :dependencies
+
+------------------------------------------------------------
+Root project
+------------------------------------------------------------
+
+implementation - Implementation only dependencies for source set 'main'. (n)
+\--- com.github.lalyos:jfiglet:0.0.8 (n)
+
+(n) - Not resolved (configuration is not meant to be resolved)
+
+A web-based, searchable dependency report is available by adding the --scan option.
+
+BUILD SUCCESSFUL in 22s
+1 actionable task: 1 executed</pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -437,7 +452,13 @@ Due to simplicity of this two line application, testing will not be included in 
 <div class="content">
 <pre>$ ./gradlew jar
 
-Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/consuming-jvm-libraries/build/reports/runners/gradleRunner/clean-assemble/out.txt[]</pre>
+&gt; Task :compileJava
+&gt; Task :processResources NO-SOURCE
+&gt; Task :classes
+&gt; Task :jar
+
+BUILD SUCCESSFUL in 974ms
+2 actionable tasks: 2 executed</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -469,7 +490,23 @@ mainClassName = 'GreeterApp' <i class="conum" data-value="2"></i><b>(2)</b></cod
 <div class="content">
 <pre>$ ./gradlew build
 
-Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/consuming-jvm-libraries/build/reports/runners/gradleRunner/build/out.txt[]</pre>
+&gt; Task :compileJava UP-TO-DATE
+&gt; Task :processResources NO-SOURCE
+&gt; Task :classes UP-TO-DATE
+&gt; Task :jar UP-TO-DATE
+&gt; Task :startScripts
+&gt; Task :distTar
+&gt; Task :distZip
+&gt; Task :assemble
+&gt; Task :compileTestJava NO-SOURCE
+&gt; Task :processTestResources NO-SOURCE
+&gt; Task :testClasses UP-TO-DATE
+&gt; Task :test NO-SOURCE
+&gt; Task :check UP-TO-DATE
+&gt; Task :build
+
+BUILD SUCCESSFUL in 314ms
+5 actionable tasks: 3 executed, 2 up-to-date</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -479,7 +516,15 @@ Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides
 <div class="content">
 <pre>$ ./gradlew installDist
 
-Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/consuming-jvm-libraries/build/reports/runners/gradleRunner/install/out.txt[]</pre>
+&gt; Task :compileJava UP-TO-DATE
+&gt; Task :processResources NO-SOURCE
+&gt; Task :classes UP-TO-DATE
+&gt; Task :jar UP-TO-DATE
+&gt; Task :startScripts UP-TO-DATE
+&gt; Task :installDist
+
+BUILD SUCCESSFUL in 239ms
+4 actionable tasks: 1 executed, 3 up-to-date</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -493,7 +538,12 @@ Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides
 <pre>$ cd build/install/greeterApp
 $ ./bin/greeterApp Gradle
 
-Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/consuming-jvm-libraries/build/reports/runners/gradleRunner/run/run.txt[]</pre>
+  _   _          _   _                  ____                      _   _
+ | | | |   ___  | | | |   ___          / ___|  _ __    __ _    __| | | |   ___
+ | |_| |  / _ \ | | | |  / _ \        | |  _  | '__|  / _` |  / _` | | |  / _ \
+ |  _  | |  __/ | | | | | (_) |  _    | |_| | | |    | (_| | | (_| | | | |  __/
+ |_| |_|  \___| |_| |_|  \___/  ( )    \____| |_|     \__,_|  \__,_| |_|  \___|
+                                |/</pre>
 </div>
 </div>
 <div class="paragraph">

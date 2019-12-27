@@ -268,7 +268,13 @@ $ cd building-groovy-libraries</pre>
 <div class="listingblock">
 <div class="content">
 <pre>$ gradle init --type groovy-library --package guidesamples
-Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/building-groovy-libraries/build/reports/runners/gradleRunner/initOutput/out.txt[]</pre>
+&gt; Task :wrapper
+
+&gt; Task :init
+Get more help with your project: https://docs.gradle.org/6.0.1/userguide/tutorial_groovy_projects.html
+
+BUILD SUCCESSFUL in 191ms
+2 actionable tasks: 2 executed</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -322,7 +328,7 @@ Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides
 <div class="listingblock">
 <div class="title">Generated settings.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/building-groovy-libraries/build/reports/runners/gradleRunner/files/settings.gradle[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">rootProject.name = 'building-groovy-libraries' <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -339,7 +345,21 @@ Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides
 <div class="listingblock">
 <div class="title">Generated build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/building-groovy-libraries/build/reports/runners/gradleRunner/files/build.gradle[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">plugins {
+    id 'groovy'
+
+    id 'java-library'
+}
+
+repositories {
+    jcenter() <i class="conum" data-value="1"></i><b>(1)</b>
+}
+
+dependencies {
+    implementation 'org.codehaus.groovy:groovy-all:2.5.8' <i class="conum" data-value="2"></i><b>(2)</b>
+
+    testImplementation 'org.spockframework:spock-core:1.3-groovy-2.5' <i class="conum" data-value="3"></i><b>(3)</b>
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -371,7 +391,13 @@ Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides
 <div class="listingblock">
 <div class="title">Generated src/main/groovy/Library.groovy</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/building-groovy-libraries/build/reports/runners/gradleRunner/files/src/main/groovy/guidesamples/Library.groovy[tags=source-code]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">package guidesamples
+
+class Library {
+    boolean someLibraryMethod() {
+        true
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -380,7 +406,22 @@ Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides
 <div class="listingblock">
 <div class="title">Generated  src/test/groovy/LibraryTest.groovy</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/building-groovy-libraries/build/reports/runners/gradleRunner/files/src/test/groovy/guidesamples/LibraryTest.groovy[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">package guidesamples
+
+import spock.lang.Specification
+
+class LibraryTest extends Specification {
+    def "someLibraryMethod returns true"() {
+        setup:
+        def lib = new Library()
+
+        when:
+        def result = lib.someLibraryMethod()
+
+        then:
+        result == true
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -397,7 +438,24 @@ Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides
 <div class="listingblock">
 <div class="content">
 <pre>$ ./gradlew build
-Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/building-groovy-libraries/build/reports/runners/gradleRunner/buildOutput/out.txt[]</pre>
+&gt; Task :compileJava NO-SOURCE
+&gt; Task :compileGroovy
+&gt; Task :processResources NO-SOURCE
+&gt; Task :classes
+&gt; Task :jar
+&gt; Task :assemble
+&gt; Task :compileTestJava NO-SOURCE
+&gt; Task :compileTestGroovy
+&gt; Task :processTestResources NO-SOURCE
+&gt; Task :testClasses
+
+&gt; Task :test
+
+&gt; Task :check
+&gt; Task :build
+
+BUILD SUCCESSFUL in 14s
+4 actionable tasks: 4 executed</pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -443,7 +501,15 @@ The first time you run the wrapper script, <code>gradlew</code>, there may be a 
 <div class="listingblock">
 <div class="title">src/main/groovy/Library.groovy</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/building-groovy-libraries/build/reports/runners/gradleRunner/files/src/main/groovy/guidesamples/Library.groovy[tags=groovy-doc]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">/** This Groovy source file was generated by the Gradle 'init' task.
+ */
+package guidesamples
+
+class Library {
+    boolean someLibraryMethod() {
+        true
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -452,7 +518,15 @@ The first time you run the wrapper script, <code>gradlew</code>, there may be a 
 <div class="listingblock">
 <div class="content">
 <pre>$ ./gradlew groovydoc
-Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/building-groovy-libraries/build/reports/runners/gradleRunner/docOutput/out.txt[]</pre>
+&gt; Task :compileJava NO-SOURCE
+&gt; Task :compileGroovy
+&gt; Task :processResources NO-SOURCE
+&gt; Task :classes
+
+&gt; Task :groovydoc
+
+BUILD SUCCESSFUL in 26s
+2 actionable tasks: 2 executed</pre>
 </div>
 </div>
 <div class="paragraph">

@@ -277,7 +277,13 @@ $ cd building-scala-libraries</pre>
 <div class="listingblock">
 <div class="content">
 <pre>$ gradle init --type scala-library --package guidesamples
-Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/building-scala-libraries/build/reports/runners/gradleRunner/initOutput/out.txt[]</pre>
+&gt; Task :wrapper
+
+&gt; Task :init
+Get more help with your project: https://docs.gradle.org/6.0.1/userguide/scala_plugin.html
+
+BUILD SUCCESSFUL in 20s
+2 actionable tasks: 2 executed</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -331,7 +337,7 @@ Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides
 <div class="listingblock">
 <div class="title">Generated settings.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/building-scala-libraries/build/reports/runners/gradleRunner/files/settings.gradle[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">rootProject.name = 'building-scala-libraries' <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -348,7 +354,24 @@ Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides
 <div class="listingblock">
 <div class="title">Generated build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/building-scala-libraries/build/reports/runners/gradleRunner/files/build.gradle[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">plugins {
+    id 'scala'
+
+    id 'java-library'
+}
+
+repositories {
+    jcenter() <i class="conum" data-value="1"></i><b>(1)</b>
+}
+
+dependencies {
+    implementation 'org.scala-lang:scala-library:2.12.9' <i class="conum" data-value="2"></i><b>(2)</b>
+
+    testImplementation 'junit:junit:4.12' <i class="conum" data-value="3"></i><b>(3)</b>
+    testImplementation 'org.scalatest:scalatest_2.12:3.0.8' <i class="conum" data-value="4"></i><b>(4)</b>
+
+    testRuntimeOnly 'org.scala-lang.modules:scala-xml_2.12:1.2.0' <i class="conum" data-value="5"></i><b>(5)</b>
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -384,7 +407,11 @@ Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides
 <div class="listingblock">
 <div class="title">Generated src/main/scala/Library.scala</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-scala" data-lang="scala">Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/building-scala-libraries/build/reports/runners/gradleRunner/files/src/main/scala/guidesamples/Library.scala[tags=source-code]</code></pre>
+<pre class="prettyprint highlight"><code class="language-scala" data-lang="scala">package guidesamples
+
+class Library {
+  def someLibraryMethod(): Boolean = true
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -393,7 +420,19 @@ Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides
 <div class="listingblock">
 <div class="title">Generated  src/test/scala/LibrarySuite.scala</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-scala" data-lang="scala">Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/building-scala-libraries/build/reports/runners/gradleRunner/files/src/test/scala/guidesamples/LibrarySuite.scala[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-scala" data-lang="scala">package guidesamples
+
+import org.scalatest.FunSuite
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
+
+@RunWith(classOf[JUnitRunner])
+class LibrarySuite extends FunSuite {
+  test("someLibraryMethod is always true") {
+    def library = new Library()
+    assert(library.someLibraryMethod)
+  }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -410,7 +449,22 @@ Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides
 <div class="listingblock">
 <div class="content">
 <pre>$ ./gradlew build
-Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/building-scala-libraries/build/reports/runners/gradleRunner/buildOutput/out.txt[]</pre>
+&gt; Task :compileJava NO-SOURCE
+&gt; Task :compileScala
+&gt; Task :processResources NO-SOURCE
+&gt; Task :classes
+&gt; Task :jar
+&gt; Task :assemble
+&gt; Task :compileTestJava NO-SOURCE
+&gt; Task :compileTestScala
+&gt; Task :processTestResources NO-SOURCE
+&gt; Task :testClasses
+&gt; Task :test
+&gt; Task :check
+&gt; Task :build
+
+BUILD SUCCESSFUL in 1m 14s
+4 actionable tasks: 4 executed</pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -456,7 +510,13 @@ The first time you run the wrapper script, <code>gradlew</code>, there may be a 
 <div class="listingblock">
 <div class="title">src/main/scala/Library.scala</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-scala" data-lang="scala">Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/building-scala-libraries/build/reports/runners/gradleRunner/files/src/main/scala/guidesamples/Library.scala[tags=scala-doc]</code></pre>
+<pre class="prettyprint highlight"><code class="language-scala" data-lang="scala">/** This Scala source file was generated by the Gradle 'init' task.
+ */
+package guidesamples
+
+class Library {
+  def someLibraryMethod(): Boolean = true
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -465,7 +525,17 @@ The first time you run the wrapper script, <code>gradlew</code>, there may be a 
 <div class="listingblock">
 <div class="content">
 <pre>$ ./gradlew scaladoc
-Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/building-scala-libraries/build/reports/runners/gradleRunner/docOutput/out.txt[]</pre>
+&gt; Task :compileJava NO-SOURCE
+&gt; Task :compileScala
+&gt; Task :processResources NO-SOURCE
+&gt; Task :classes
+
+&gt; Task :scaladoc
+[ant:scaladoc] Element '/Users/daniel/gradle/guides/guides-ex/subprojects/building-scala-libraries/build/runners/gradleRunner/build/classes/java/main' does not exist.
+[ant:scaladoc] Element '/Users/daniel/gradle/guides/guides-ex/subprojects/building-scala-libraries/build/runners/gradleRunner/build/resources/main' does not exist.
+
+BUILD SUCCESSFUL in 35s
+2 actionable tasks: 2 executed</pre>
 </div>
 </div>
 <div class="paragraph">

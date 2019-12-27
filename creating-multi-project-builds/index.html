@@ -497,7 +497,28 @@ class GreetingFormatterSpec extends Specification {
 <div class="content">
 <pre>$ ./gradlew build
 
-Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/creating-multi-project-builds/build/reports/runners/gradleRunner/groovy-dsl-clean-output-build-greeting-library/out.txt[]</pre>
+&gt; Task :greeting-library:compileJava NO-SOURCE
+&gt; Task :greeting-library:compileGroovy
+&gt; Task :greeting-library:processResources NO-SOURCE
+&gt; Task :greeting-library:classes
+&gt; Task :greeting-library:jar
+&gt; Task :greeting-library:assemble
+&gt; Task :greeting-library:compileTestJava NO-SOURCE
+&gt; Task :greeting-library:compileTestGroovy
+&gt; Task :greeting-library:processTestResources NO-SOURCE
+&gt; Task :greeting-library:testClasses
+
+&gt; Task :greeting-library:test
+
+&gt; Task :greeting-library:check
+&gt; Task :greeting-library:build
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 7.0.
+Use '--warning-mode all' to show the individual deprecation warnings.
+See https://docs.gradle.org/6.0.1/userguide/command_line_interface.html#sec:command_line_warnings
+
+BUILD SUCCESSFUL in 44s
+4 actionable tasks: 4 executed</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -621,7 +642,25 @@ public class Greeter {
 <pre>$ ./gradlew build
 
 ...
-Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/creating-multi-project-builds/build/reports/runners/gradleRunner/groovy-dsl-clean-error-message-1/err.txt[]</pre>
+.../Greeter.java:5: error: cannot find symbol
+        final String output = GreetingFormatter.greeting(args[0]);
+                              ^
+  symbol:   variable GreetingFormatter
+  location: class Greeter
+1 error
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':greeter:compileJava'.
+&gt; Compilation failed; see the compiler error output for details.
+
+* Try:
+Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output. Run with --scan to get full insights.
+
+* Get more help at https://help.gradle.org
+
+BUILD FAILED in 1s</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -658,7 +697,44 @@ Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides
 <div class="content">
 <pre>$ ./gradlew build
 
-Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/creating-multi-project-builds/build/reports/runners/gradleRunner/groovy-dsl-clean-output-greeter-app/out.txt[]</pre>
+&gt; Task :greeting-library:compileJava NO-SOURCE
+&gt; Task :greeting-library:compileGroovy UP-TO-DATE
+&gt; Task :greeting-library:processResources NO-SOURCE
+&gt; Task :greeting-library:classes UP-TO-DATE
+&gt; Task :greeting-library:jar UP-TO-DATE
+&gt; Task :greeter:compileJava
+&gt; Task :greeter:compileGroovy NO-SOURCE
+&gt; Task :greeter:processResources NO-SOURCE
+&gt; Task :greeter:classes
+&gt; Task :greeter:jar
+&gt; Task :greeter:startScripts
+&gt; Task :greeter:distTar
+&gt; Task :greeter:distZip
+&gt; Task :greeter:assemble
+&gt; Task :greeter:compileTestJava NO-SOURCE
+&gt; Task :greeter:compileTestGroovy
+&gt; Task :greeter:processTestResources NO-SOURCE
+&gt; Task :greeter:testClasses
+
+&gt; Task :greeter:test
+
+&gt; Task :greeter:check
+&gt; Task :greeter:build
+&gt; Task :greeting-library:assemble UP-TO-DATE
+&gt; Task :greeting-library:compileTestJava NO-SOURCE
+&gt; Task :greeting-library:compileTestGroovy UP-TO-DATE
+&gt; Task :greeting-library:processTestResources NO-SOURCE
+&gt; Task :greeting-library:testClasses UP-TO-DATE
+&gt; Task :greeting-library:test UP-TO-DATE
+&gt; Task :greeting-library:check UP-TO-DATE
+&gt; Task :greeting-library:build UP-TO-DATE
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 7.0.
+Use '--warning-mode all' to show the individual deprecation warnings.
+See https://docs.gradle.org/6.0.1/userguide/command_line_interface.html#sec:command_line_warnings
+
+BUILD SUCCESSFUL in 15s
+11 actionable tasks: 7 executed, 4 up-to-date</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -742,7 +818,27 @@ class GreeterSpec extends Specification {
 <div class="content">
 <pre>$ ./gradlew :greeter:test
 
-Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/creating-multi-project-builds/build/reports/runners/gradleRunner/groovy-dsl-clean-output-test-app/out.txt[]</pre>
+&gt; Task :greeting-library:compileJava NO-SOURCE
+&gt; Task :greeting-library:compileGroovy UP-TO-DATE
+&gt; Task :greeting-library:processResources NO-SOURCE
+&gt; Task :greeting-library:classes UP-TO-DATE
+&gt; Task :greeting-library:jar UP-TO-DATE
+&gt; Task :greeter:compileJava UP-TO-DATE
+&gt; Task :greeter:compileGroovy NO-SOURCE
+&gt; Task :greeter:processResources NO-SOURCE
+&gt; Task :greeter:classes UP-TO-DATE
+&gt; Task :greeter:compileTestJava NO-SOURCE
+&gt; Task :greeter:compileTestGroovy UP-TO-DATE
+&gt; Task :greeter:processTestResources NO-SOURCE
+&gt; Task :greeter:testClasses UP-TO-DATE
+&gt; Task :greeter:test UP-TO-DATE
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 7.0.
+Use '--warning-mode all' to show the individual deprecation warnings.
+See https://docs.gradle.org/6.0.1/userguide/command_line_interface.html#sec:command_line_warnings
+
+BUILD SUCCESSFUL in 672ms
+5 actionable tasks: 5 up-to-date</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -933,7 +1029,15 @@ If you run the command <code>./gradlew tasks</code>, you will now see a task cal
 <div class="content">
 <pre>$ ./gradlew asciidoctor
 
-Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/creating-multi-project-builds/build/reports/runners/gradleRunner/groovy-dsl-clean-output-run-asciidoctor/out.txt[]</pre>
+
+&gt; Task :docs:asciidoctor
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 7.0.
+Use '--warning-mode all' to show the individual deprecation warnings.
+See https://docs.gradle.org/6.0.1/userguide/command_line_interface.html#sec:command_line_warnings
+
+BUILD SUCCESSFUL in 19s
+1 actionable task: 1 executed</pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -1004,7 +1108,46 @@ tasks.distTar {
 <div class="content">
 <pre>$ ./gradlew build
 
-Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/creating-multi-project-builds/build/reports/runners/gradleRunner/groovy-dsl-clean-output-build-with-docs/out.txt[]</pre>
+&gt; Task :docs:asciidoctor UP-TO-DATE
+&gt; Task :docs:assemble UP-TO-DATE
+&gt; Task :docs:check UP-TO-DATE
+&gt; Task :docs:build UP-TO-DATE
+&gt; Task :greeting-library:compileJava NO-SOURCE
+&gt; Task :greeting-library:compileGroovy UP-TO-DATE
+&gt; Task :greeting-library:processResources NO-SOURCE
+&gt; Task :greeting-library:classes UP-TO-DATE
+&gt; Task :greeting-library:jar UP-TO-DATE
+&gt; Task :greeter:compileJava UP-TO-DATE
+&gt; Task :greeter:compileGroovy NO-SOURCE
+&gt; Task :greeter:processResources NO-SOURCE
+&gt; Task :greeter:classes UP-TO-DATE
+&gt; Task :greeter:jar UP-TO-DATE
+&gt; Task :greeter:startScripts UP-TO-DATE
+&gt; Task :greeter:distTar
+&gt; Task :greeter:distZip
+&gt; Task :greeter:assemble
+&gt; Task :greeter:compileTestJava NO-SOURCE
+&gt; Task :greeter:compileTestGroovy UP-TO-DATE
+&gt; Task :greeter:processTestResources NO-SOURCE
+&gt; Task :greeter:testClasses UP-TO-DATE
+&gt; Task :greeter:test UP-TO-DATE
+&gt; Task :greeter:check UP-TO-DATE
+&gt; Task :greeter:build
+&gt; Task :greeting-library:assemble UP-TO-DATE
+&gt; Task :greeting-library:compileTestJava NO-SOURCE
+&gt; Task :greeting-library:compileTestGroovy UP-TO-DATE
+&gt; Task :greeting-library:processTestResources NO-SOURCE
+&gt; Task :greeting-library:testClasses UP-TO-DATE
+&gt; Task :greeting-library:test UP-TO-DATE
+&gt; Task :greeting-library:check UP-TO-DATE
+&gt; Task :greeting-library:build UP-TO-DATE
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 7.0.
+Use '--warning-mode all' to show the individual deprecation warnings.
+See https://docs.gradle.org/6.0.1/userguide/command_line_interface.html#sec:command_line_warnings
+
+BUILD SUCCESSFUL in 2s
+12 actionable tasks: 2 executed, 10 up-to-date</pre>
 </div>
 </div>
 <div class="paragraph">
