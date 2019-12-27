@@ -18,8 +18,6 @@ package org.gradle.docs.guides
 
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
-import org.ajoberstar.gradle.git.publish.GitPublishExtension
-import org.asciidoctor.gradle.AsciidoctorBackend
 import org.asciidoctor.gradle.AsciidoctorTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -57,7 +55,6 @@ class BasePlugin implements Plugin<Project> {
         def guides = addGuidesExtension(project)
         addGradleRunnerSteps(project)
         addAsciidoctor(project, guides)
-        addGitHubPages(project)
         addCheckLinks(project)
     }
 
@@ -179,26 +176,5 @@ class BasePlugin implements Plugin<Project> {
         project.tasks.getByName("assemble").dependsOn asciidoc
 
         // TODO - rework the above to use lazy configuration
-    }
-
-    private void addGitHubPages(Project project) {
-        project.apply plugin : 'org.ajoberstar.git-publish'
-
-        GitPublishExtension githubPages = (GitPublishExtension)(project.extensions.getByName('gitPublish'))
-        Guide guide = (Guide)(project.extensions.getByName(BasePlugin.GUIDE_EXTENSION_NAME))
-        AsciidoctorTask asciidoc = (AsciidoctorTask)(project.tasks.getByName('asciidoctor'))
-        String ghToken = System.getenv("GRGIT_USER")
-
-        githubPages.branch.set('gh-pages')
-        githubPages.commitMessage.set('Publish to GitHub Pages')
-        githubPages.contents.from {"${asciidoc.outputDir}/${AsciidoctorBackend.HTML5.id}"}
-
-        project.afterEvaluate {
-            if (ghToken) {
-                githubPages.repoUri.set(guide.repositoryPath.map { "https://github.com/${it}.git".toString() })
-            } else {
-                githubPages.repoUri.set(guide.repositoryPath.map { "git@github.com:${it}.git".toString() })
-            }
-        }
     }
 }

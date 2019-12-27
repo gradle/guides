@@ -34,7 +34,6 @@ project {
     //buildType(BuildGuidesOnWindows)
     buildType(PublishPlugins)
     buildType(PublishGuides)
-    buildType(PublishGuidesLegacy)
 }
 
 open class AbstractBuildType(init: BuildType.() -> Unit) : BuildType({
@@ -117,24 +116,6 @@ object PublishPlugins : AbstractBuildType({
         param("env.JAVA_HOME", "%linux.java8.oracle.64bit%")
         password("GRADLE_PUBLISH_KEY", "credentialsJSON:9ea244eb-7e24-44c5-8d4d-0e4d512b1608", display = ParameterDisplay.HIDDEN)
         password("GRADLE_PUBLISH_SECRET", "credentialsJSON:14df9326-8326-4329-bb04-3837d010d2e8", display = ParameterDisplay.HIDDEN)
-    }
-})
-
-object PublishGuidesLegacy : AbstractBuildType({
-    name = "Publish All Guides (legacy)"
-    steps {
-        gradle {
-            useGradleWrapper = true
-            tasks = "publishGuides"
-            buildFile = "" // Let Gradle detect the build script
-        }
-    }
-    requirements {
-        contains("teamcity.agent.jvm.os.name", "Linux")
-    }
-    params {
-        param("env.JAVA_HOME", "%linux.java8.oracle.64bit%")
-        password("env.GRGIT_USER", "credentialsJSON:c77b23f9-e0bf-4f4b-ba31-c54802542cca", display = ParameterDisplay.HIDDEN)
     }
 })
 

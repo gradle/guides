@@ -16,12 +16,6 @@ tasks.register("publishDocumentationPlugins") {
     dependsOn(gradle.includedBuild("gradle-guides-plugin").task(":publishPlugins"))
 }
 
-tasks.register("publishGuides") {
-    // TODO: Introduce instead a publishGuides task within each project to avoid this dependency
-    dependsOn(buildTask)
-    dependsOn(guideProjects.map { ":${it}:gitPublishPush" })
-}
-
 // Install guides into a single repository
 val guides by configurations.creating {
     isCanBeResolved = true

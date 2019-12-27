@@ -8,10 +8,3 @@ guide {
     title.set("Building C++ Applications")
     category.set("Getting Started")
 }
-
-// NOTE: Patch until we fix this in guide plugin
-afterEvaluate {
-    tasks.named("gitPublishReset") {
-        enabled = true
-    }
-}
