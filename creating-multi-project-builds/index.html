@@ -303,13 +303,13 @@ BUILD SUCCESSFUL</code></pre>
 <div class="listingblock multi-language-sample">
 <div class="title">settings.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/settings.gradle[tags=after-init]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">rootProject.name = 'creating-multi-project-builds'</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">settings.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{kotlin-example-dir}/settings.gradle.kts[tags=after-init]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">rootProject.name = "creating-multi-project-builds"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -329,13 +329,21 @@ BUILD SUCCESSFUL</code></pre>
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/build.gradle[tags=jcenter]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">allprojects {
+    repositories {
+        jcenter() <i class="conum" data-value="1"></i><b>(1)</b>
+    }
+}</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{kotlin-example-dir}/build.gradle.kts[tags=jcenter]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">allprojects {
+    repositories {
+        jcenter() <i class="conum" data-value="1"></i><b>(1)</b>
+    }
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -355,13 +363,17 @@ BUILD SUCCESSFUL</code></pre>
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/build.gradle[tags=subproject-versions]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">subprojects {
+    version = '1.0'
+}</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{kotlin-example-dir}/build.gradle.kts[tags=subproject-versions]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">subprojects {
+    version = "1.0"
+}</code></pre>
 </div>
 </div>
 </div>
@@ -386,13 +398,33 @@ BUILD SUCCESSFUL</code></pre>
 <div class="listingblock multi-language-sample">
 <div class="title">greeting-library/build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/greeting-library/build.gradle[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">plugins {
+    id 'groovy'
+}
+
+dependencies {
+    compile 'org.codehaus.groovy:groovy:2.4.10'
+
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4', {
+        exclude module: 'groovy-all'
+    }
+}</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">greeting-library/build.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{kotlin-example-dir}/greeting-library/build.gradle.kts[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">plugins {
+    groovy
+}
+
+dependencies {
+    compile("org.codehaus.groovy:groovy:2.4.10")
+
+    testCompile("org.spockframework:spock-core:1.0-groovy-2.4") {
+        exclude(module = "groovy-all")
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -401,13 +433,13 @@ BUILD SUCCESSFUL</code></pre>
 <div class="listingblock multi-language-sample">
 <div class="title">settings.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/settings.gradle[tags=greeting-library]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">include 'greeting-library'</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">settings.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{kotlin-example-dir}/settings.gradle.kts[tags=greeting-library]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">include("greeting-library")</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -425,7 +457,16 @@ $ mkdir -p src/test/groovy/greeter</pre>
 <div class="listingblock">
 <div class="title">greeting-library/src/main/groovy/greeter/GreetingFormatter.groovy</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/greeting-library/src/main/groovy/greeter/GreetingFormatter.groovy[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">package greeter
+
+import groovy.transform.CompileStatic
+
+@CompileStatic
+class GreetingFormatter {
+    static String greeting(final String name) {
+        "Hello, ${name.capitalize()}"
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -434,7 +475,19 @@ $ mkdir -p src/test/groovy/greeter</pre>
 <div class="listingblock">
 <div class="title">greeting-library/src/test/groovy/greeter/GreetingFormatterSpec.groovy</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/greeting-library/src/test/groovy/greeter/GreetingFormatterSpec.groovy[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">package greeter
+
+import spock.lang.Specification
+
+class GreetingFormatterSpec extends Specification {
+
+    def 'Creating a greeting'() {
+
+        expect: 'The greeting to be correctly capitalized'
+        GreetingFormatter.greeting('gradlephant') == 'Hello, Gradlephant'
+
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -444,7 +497,7 @@ $ mkdir -p src/test/groovy/greeter</pre>
 <div class="content">
 <pre>$ ./gradlew build
 
-Unresolved directive in index.adoc - include::{gradle-outdir}/groovy-dsl-clean-output-build-greeting-library/out.txt[]</pre>
+Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/creating-multi-project-builds/build/reports/runners/gradleRunner/groovy-dsl-clean-output-build-greeting-library/out.txt[]</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -469,13 +522,19 @@ Unresolved directive in index.adoc - include::{gradle-outdir}/groovy-dsl-clean-o
 <div class="listingblock multi-language-sample">
 <div class="title">greeter/build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/greeter/build.gradle[tags=basic-script]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">plugins {
+    id 'java'        <i class="conum" data-value="1"></i><b>(1)</b>
+    id 'application' <i class="conum" data-value="2"></i><b>(2)</b>
+}</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">greeter/build.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{kotlin-example-dir}/greeter/build.gradle.kts[tags=basic-script]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">plugins {
+    java        <i class="conum" data-value="1"></i><b>(1)</b>
+    application <i class="conum" data-value="2"></i><b>(2)</b>
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -499,13 +558,13 @@ Unresolved directive in index.adoc - include::{gradle-outdir}/groovy-dsl-clean-o
 <div class="listingblock multi-language-sample">
 <div class="title">settings.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/settings.gradle[tags=application]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">include 'greeter'</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">settings.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{kotlin-example-dir}/settings.gradle.kts[tags=application]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">include("greeter")</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -519,7 +578,14 @@ Unresolved directive in index.adoc - include::{gradle-outdir}/groovy-dsl-clean-o
 <div class="listingblock">
 <div class="title">greeter/src/main/java/greeter/Greeter.java</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Unresolved directive in index.adoc - include::{groovy-example-dir}/greeter/src/main/java/greeter/Greeter.java[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">package greeter;
+
+public class Greeter {
+    public static void main(String[] args) {
+        final String output = GreetingFormatter.greeting(args[0]);
+        System.out.println(output);
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -528,13 +594,15 @@ Unresolved directive in index.adoc - include::{gradle-outdir}/groovy-dsl-clean-o
 <div class="listingblock multi-language-sample">
 <div class="title">greeter/build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/greeter/build.gradle[tags=main-class-name]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">mainClassName = 'greeter.Greeter' <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">greeter/build.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{kotlin-example-dir}/greeter/build.gradle.kts[tags=main-class-name]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">application {
+    mainClassName = "greeter.Greeter" <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -553,7 +621,7 @@ Unresolved directive in index.adoc - include::{gradle-outdir}/groovy-dsl-clean-o
 <pre>$ ./gradlew build
 
 ...
-Unresolved directive in index.adoc - include::{gradle-outdir}/groovy-dsl-clean-error-message-1/err.txt[]</pre>
+Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/creating-multi-project-builds/build/reports/runners/gradleRunner/groovy-dsl-clean-error-message-1/err.txt[]</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -562,13 +630,17 @@ Unresolved directive in index.adoc - include::{gradle-outdir}/groovy-dsl-clean-e
 <div class="listingblock multi-language-sample">
 <div class="title">greeter/build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/greeter/build.gradle[tags=project-dependency]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">dependencies {
+    compile project(':greeting-library') <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">greeter/build.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{kotlin-example-dir}/greeter/build.gradle.kts[tags=project-dependency]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">dependencies {
+    compile(project(":greeting-library")) <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -586,7 +658,7 @@ Unresolved directive in index.adoc - include::{gradle-outdir}/groovy-dsl-clean-e
 <div class="content">
 <pre>$ ./gradlew build
 
-Unresolved directive in index.adoc - include::{gradle-outdir}/groovy-dsl-clean-output-greeter-app/out.txt[]</pre>
+Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/creating-multi-project-builds/build/reports/runners/gradleRunner/groovy-dsl-clean-output-greeter-app/out.txt[]</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -604,7 +676,11 @@ Unresolved directive in index.adoc - include::{gradle-outdir}/groovy-dsl-clean-o
 
 // then, add the following testCompile dependency to the dependencies block:
 
-Unresolved directive in index.adoc - include::{groovy-example-dir}/spock.gradle[]</code></pre>
+dependencies {
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4', {
+        exclude module: 'groovy-all'
+    }
+}</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -616,7 +692,11 @@ Unresolved directive in index.adoc - include::{groovy-example-dir}/spock.gradle[
 
 // then, add the following testCompile dependency to the dependencies block:
 
-Unresolved directive in index.adoc - include::{kotlin-example-dir}/spock-declarative.gradle.kts[]</code></pre>
+dependencies {
+    testCompile("org.spockframework:spock-core:1.0-groovy-2.4") {
+        exclude(module = "groovy-all")
+    }
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -634,7 +714,25 @@ However for semantics it might be better to keep both as it indicates that you a
 <div class="listingblock">
 <div class="title">greeter/src/test/groovy/greeter/GreeterSpec.groovy</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Unresolved directive in index.adoc - include::{groovy-example-dir}/greeter/src/test/groovy/greeter/GreeterSpec.groovy[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">package greeter
+
+import spock.lang.Specification
+
+class GreeterSpec extends Specification {
+
+    def 'Calling the entry point'() {
+
+        setup: 'Re-route standard out'
+        def buf = new ByteArrayOutputStream(1024)
+        System.out = new PrintStream(buf)
+
+        when: 'The entrypoint is executed'
+        Greeter.main('gradlephant')
+
+        then: 'The correct greeting is output'
+        buf.toString() == "Hello, Gradlephant\n".denormalize()
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -644,7 +742,7 @@ However for semantics it might be better to keep both as it indicates that you a
 <div class="content">
 <pre>$ ./gradlew :greeter:test
 
-Unresolved directive in index.adoc - include::{gradle-outdir}/groovy-dsl-clean-output-test-app/out.txt[]</pre>
+Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/creating-multi-project-builds/build/reports/runners/gradleRunner/groovy-dsl-clean-output-test-app/out.txt[]</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -694,13 +792,17 @@ Did you notice that the task executed was <code>:greeter:test</code>, but when r
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/build.gradle[tags=plugins]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">plugins {
+    id 'org.asciidoctor.convert' version '1.5.6' apply false <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{kotlin-example-dir}/build.gradle.kts[tags=plugins]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">plugins {
+    id("org.asciidoctor.convert") version "1.5.6" apply false <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -725,13 +827,35 @@ Did you notice that the task executed was <code>:greeter:test</code>, but when r
 <div class="listingblock multi-language-sample">
 <div class="title">docs/build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/docs/build.gradle[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">plugins {
+    id 'org.asciidoctor.convert' <i class="conum" data-value="1"></i><b>(1)</b>
+}
+
+asciidoctor {
+    sources {
+        include 'greeter.adoc'   <i class="conum" data-value="2"></i><b>(2)</b>
+    }
+}
+
+build.dependsOn 'asciidoctor'    <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">docs/build.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{kotlin-example-dir}/docs/build.gradle.kts[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">import org.asciidoctor.gradle.AsciidoctorTask
+
+plugins {
+    id("org.asciidoctor.convert")               <i class="conum" data-value="1"></i><b>(1)</b>
+}
+
+tasks.asciidoctor {
+    sources(delegateClosureOf&lt;PatternSet&gt; {
+        include("greeter.adoc")                 <i class="conum" data-value="2"></i><b>(2)</b>
+    })
+}
+
+tasks.build { dependsOn(tasks.asciidoctor) }    <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -756,13 +880,13 @@ Did you notice that the task executed was <code>:greeter:test</code>, but when r
 <div class="listingblock multi-language-sample">
 <div class="title">settings.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/settings.gradle[tags=documentation]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">include 'docs'</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">settings.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{kotlin-example-dir}/settings.gradle.kts[tags=documentation]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">include("docs")</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -771,7 +895,23 @@ Did you notice that the task executed was <code>:greeter:test</code>, but when r
 <div class="literalblock">
 <div class="title">docs/src/docs/asciidoc/greeter.adoc</div>
 <div class="content">
-<pre>Unresolved directive in index.adoc - include::{groovy-example-dir}/docs/src/docs/asciidoc/greeter.adoc[]</pre>
+<pre>= Greeter Command-line Application
+
+A simple application demonstrating the flexibility of a Gradle multi-project.
+
+== Installation
+
+Unpack the ZIP or TAR file in a suitable location
+
+== Usage
+
+[listing]
+----
+$ cd greeter-1.0
+$ ./bin/greeter gradlephant
+
+Hello, Gradlephant
+----</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -793,7 +933,7 @@ If you run the command <code>./gradlew tasks</code>, you will now see a task cal
 <div class="content">
 <pre>$ ./gradlew asciidoctor
 
-Unresolved directive in index.adoc - include::{gradle-outdir}/groovy-dsl-clean-output-run-asciidoctor/out.txt[]</pre>
+Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/creating-multi-project-builds/build/reports/runners/gradleRunner/groovy-dsl-clean-output-run-asciidoctor/out.txt[]</pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -822,13 +962,31 @@ Did you notice that Gradle knew to only run this task in the <code>docs</code> s
 <div class="listingblock multi-language-sample">
 <div class="title">greeter/build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/greeter/build.gradle[tags=link-docs]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">distZip {
+    from project(':docs').asciidoctor, { <i class="conum" data-value="1"></i><b>(1)</b>
+        into "${project.name}-${version}"
+    }
+}
+distTar {
+    from project(':docs').asciidoctor, {
+        into "${project.name}-${version}"
+    }
+}</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">greeter/build.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{kotlin-example-dir}/greeter/build.gradle.kts[tags=link-docs]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">tasks.distZip {
+    from(project(":docs").tasks["asciidoctor"]) { <i class="conum" data-value="1"></i><b>(1)</b>
+        into("${project.name}-$version")
+    }
+}
+tasks.distTar {
+    from(project(":docs").tasks["asciidoctor"]) {
+        into("${project.name}-$version")
+    }
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -846,7 +1004,7 @@ Did you notice that Gradle knew to only run this task in the <code>docs</code> s
 <div class="content">
 <pre>$ ./gradlew build
 
-Unresolved directive in index.adoc - include::{gradle-outdir}/groovy-dsl-clean-output-build-with-docs/out.txt[]</pre>
+Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/creating-multi-project-builds/build/reports/runners/gradleRunner/groovy-dsl-clean-output-build-with-docs/out.txt[]</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -878,19 +1036,31 @@ A strong feature of Gradle that sets it apart from some other build tools is how
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/build.gradle[tags=common-code-1]
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">configure(subprojects.findAll { it.name == 'greeter' || it.name == 'greeting-library' }) { <i class="conum" data-value="1"></i><b>(1)</b>
 
-Unresolved directive in index.adoc - include::{groovy-example-dir}/spock.gradle[indent=4]
-Unresolved directive in index.adoc - include::{groovy-example-dir}/build.gradle[tags=common-code-2]</code></pre>
+    apply plugin: 'groovy'
+
+    dependencies {
+        testCompile 'org.spockframework:spock-core:1.0-groovy-2.4', {
+            exclude module: 'groovy-all'
+        }
+    }
+}</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{kotlin-example-dir}/build.gradle.kts[tags=common-code-1]
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">configure(subprojects.filter { it.name == "greeter" || it.name == "greeting-library" }) { <i class="conum" data-value="1"></i><b>(1)</b>
 
-Unresolved directive in index.adoc - include::{kotlin-example-dir}/spock.gradle.kts[indent=4]
-Unresolved directive in index.adoc - include::{kotlin-example-dir}/build.gradle.kts[tags=common-code-2]</code></pre>
+    apply(plugin = "groovy")
+
+    dependencies {
+        "testCompile"("org.spockframework:spock-core:1.0-groovy-2.4") {
+            exclude(module = "groovy-all")
+        }
+    }
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -911,7 +1081,11 @@ Unresolved directive in index.adoc - include::{kotlin-example-dir}/build.gradle.
     id 'groovy'
 }
 
-Unresolved directive in index.adoc - include::{groovy-example-dir}/spock.gradle[]</code></pre>
+dependencies {
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4', {
+        exclude module: 'groovy-all'
+    }
+}</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -921,7 +1095,11 @@ Unresolved directive in index.adoc - include::{groovy-example-dir}/spock.gradle[
     id("groovy")
 }
 
-Unresolved directive in index.adoc - include::{kotlin-example-dir}/spock-declarative.gradle.kts[]</code></pre>
+dependencies {
+    testCompile("org.spockframework:spock-core:1.0-groovy-2.4") {
+        exclude(module = "groovy-all")
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">

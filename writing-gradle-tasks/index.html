@@ -265,13 +265,21 @@
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/code/part1/custom-hello.gradle[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">tasks.register("hello") { <i class="conum" data-value="1"></i><b>(1)</b>
+    doLast { <i class="conum" data-value="2"></i><b>(2)</b>
+        println 'Hello, World!'
+    }
+}</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{kotlin-example-dir}/code/part1/custom-hello.gradle.kts[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">tasks.register("hello") { <i class="conum" data-value="1"></i><b>(1)</b>
+    doLast { <i class="conum" data-value="2"></i><b>(2)</b>
+        println("Hello, World!")
+    }
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -294,7 +302,9 @@
 <div class="content">
 <pre>$ gradle tasks --all
 
-Unresolved directive in index.adoc - include::{groovy-example-dir}/output/part1/gradle-tasks.txt[]</pre>
+Other tasks
+-----------
+hello</pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -350,7 +360,10 @@ Hello, World <i class="conum" data-value="2"></i><b>(2)</b></pre>
 <div class="listingblock terminal">
 <div class="title">Well-documented tasks</div>
 <div class="content">
-<pre>Unresolved directive in index.adoc - include::{groovy-example-dir}/output/part1/gradle-tasks-setup.txt[]</pre>
+<pre>Build Setup tasks
+-----------------
+init - Initializes a new Gradle build.
+wrapper - Generates Gradle wrapper files.</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -359,13 +372,27 @@ Hello, World <i class="conum" data-value="2"></i><b>(2)</b></pre>
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/code/part2/custom-hello.gradle[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">tasks.register("hello") {
+    group = 'Welcome'
+    description = 'Produces a greeting'
+
+    doLast {
+        println 'Hello, World'
+    }
+}</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{kotlin-example-dir}/code/part2/custom-hello.gradle.kts[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">tasks.register("hello") {
+    group = "Welcome"
+    description = "Produces a greeting"
+
+    doLast {
+        println("Hello, World")
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -376,7 +403,9 @@ Hello, World <i class="conum" data-value="2"></i><b>(2)</b></pre>
 <div class="content">
 <pre>$ gradle tasks
 
-Unresolved directive in index.adoc - include::{groovy-example-dir}/output/part2/gradle-tasks.txt[]</pre>
+Welcome tasks
+-------------
+hello - Produces a greeting</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -396,13 +425,43 @@ Unresolved directive in index.adoc - include::{groovy-example-dir}/output/part2/
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/code/part3/custom-hello.gradle[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">class Greeting extends DefaultTask { <i class="conum" data-value="1"></i><b>(1)</b> <i class="conum" data-value="2"></i><b>(2)</b>
+    String message <i class="conum" data-value="3"></i><b>(3)</b>
+    String recipient
+
+    @TaskAction <i class="conum" data-value="4"></i><b>(4)</b>
+    void sayGreeting() {
+        println "${message}, ${recipient}!" <i class="conum" data-value="5"></i><b>(5)</b>
+    }
+}
+
+tasks.register("hello", Greeting) { <i class="conum" data-value="6"></i><b>(6)</b>
+    group = 'Welcome'
+    description = 'Produces a world greeting'
+    message = 'Hello' <i class="conum" data-value="7"></i><b>(7)</b>
+    recipient = 'World'
+}</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{kotlin-example-dir}/code/part3/custom-hello.gradle.kts[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">open class Greeting: DefaultTask() { <i class="conum" data-value="1"></i><b>(1)</b> <i class="conum" data-value="2"></i><b>(2)</b>
+    lateinit var message: String   <i class="conum" data-value="3"></i><b>(3)</b>
+    lateinit var recipient: String
+
+    @TaskAction <i class="conum" data-value="4"></i><b>(4)</b>
+    fun sayGreeting() {
+        println("$message, $recipient!") <i class="conum" data-value="5"></i><b>(5)</b>
+    }
+}
+
+tasks.register&lt;Greeting&gt;("hello") { <i class="conum" data-value="6"></i><b>(6)</b>
+    group = "Welcome"
+    description = "Produces a world greeting"
+    message = "Hello" <i class="conum" data-value="7"></i><b>(7)</b>
+    recipient = "World"
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -445,7 +504,8 @@ Unresolved directive in index.adoc - include::{groovy-example-dir}/output/part2/
 <div class="content">
 <pre>$ gradle hello
 
-Unresolved directive in index.adoc - include::{groovy-example-dir}/output/part3/gradle-hello.txt[]</pre>
+:hello
+Hello, World!</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -454,13 +514,23 @@ Unresolved directive in index.adoc - include::{groovy-example-dir}/output/part3/
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/code/part3/german-hello.gradle[tags=german]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">tasks.register("gutenTag", Greeting) {
+    group = 'Welcome'
+    description = 'Produces a German greeting'
+    message = 'Guten Tag'
+    recipient = 'Welt'
+}</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{kotlin-example-dir}/code/part3/german-hello.gradle.kts[tags=german]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">tasks.register&lt;Greeting&gt;("gutenTag") {
+    group = "Welcome"
+    description = "Produces a German greeting"
+    message = "Guten Tag"
+    recipient = "Welt"
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -471,7 +541,10 @@ Unresolved directive in index.adoc - include::{groovy-example-dir}/output/part3/
 <div class="content">
 <pre>$ gradle tasks
 
-Unresolved directive in index.adoc - include::{groovy-example-dir}/output/part3/gradle-tasks.txt[]</pre>
+Welcome tasks
+-------------
+gutenTag - Produces a German greeting
+hello - Produces a world greeting</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -482,7 +555,8 @@ Unresolved directive in index.adoc - include::{groovy-example-dir}/output/part3/
 <div class="content">
 <pre>$ gradle gutenTag
 
-Unresolved directive in index.adoc - include::{groovy-example-dir}/output/part3/gradle-gutentag.txt[]</pre>
+:gutenTag
+Guten Tag, Welt!</pre>
 </div>
 </div>
 </div>

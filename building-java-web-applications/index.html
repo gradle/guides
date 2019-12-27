@@ -299,13 +299,35 @@ The "Web Application Quickstart" section in the User Manual still refers to the 
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/webdemo/build.gradle[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">plugins {
+    id 'war'  <i class="conum" data-value="1"></i><b>(1)</b>
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    providedCompile 'javax.servlet:javax.servlet-api:3.1.0' <i class="conum" data-value="2"></i><b>(2)</b>
+    testCompile 'junit:junit:4.12'
+}</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{kotlin-example-dir}/webdemo/build.gradle.kts[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">plugins {
+    war  <i class="conum" data-value="1"></i><b>(1)</b>
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    providedCompile("javax.servlet:javax.servlet-api:3.1.0") <i class="conum" data-value="2"></i><b>(2)</b>
+    testCompile("junit:junit:4.12")
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -364,7 +386,30 @@ If you are using Gradle 4.0 or later you may see less output from the console th
 <div class="listingblock">
 <div class="title">src/main/java/org/gradle/demo/HelloServlet.java</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Unresolved directive in index.adoc - include::{groovy-example-dir}/webdemo/src/main/java/org/gradle/demo/HelloServlet.java[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">package org.gradle.demo;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet(name = "HelloServlet", urlPatterns = {"hello"}, loadOnStartup = 1) <i class="conum" data-value="1"></i><b>(1)</b>
+public class HelloServlet extends HttpServlet {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+        response.getWriter().print("Hello, World!");  <i class="conum" data-value="2"></i><b>(2)</b>
+    }
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+        String name = request.getParameter("name");
+        if (name == null) name = "World";
+        request.setAttribute("user", name);
+        request.getRequestDispatcher("response.jsp").forward(request, response); <i class="conum" data-value="3"></i><b>(3)</b>
+    }
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -412,7 +457,20 @@ The <code>war</code> plugin supports the use of the older <code>web.xml</code> d
 <div class="listingblock">
 <div class="title">src/main/webapp/index.html</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-html" data-lang="html">Unresolved directive in index.adoc - include::{groovy-example-dir}/webdemo/src/main/webapp/index.html[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-html" data-lang="html">&lt;html&gt;
+&lt;head&gt;
+  &lt;title&gt;Web Demo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p&gt;Say &lt;a href="hello"&gt;Hello&lt;/a&gt;&lt;/p&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+
+&lt;form method="post" action="hello"&gt;  <i class="conum" data-value="2"></i><b>(2)</b>
+  &lt;h2&gt;Name:&lt;/h2&gt;
+  &lt;input type="text" id="say-hello-text-input" name="name" /&gt;
+  &lt;input type="submit" id="say-hello-button" value="Say Hello" /&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -436,7 +494,15 @@ The <code>war</code> plugin supports the use of the older <code>web.xml</code> d
 <div class="listingblock">
 <div class="title">src/main/webapp/response.jsp</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-html" data-lang="html">Unresolved directive in index.adoc - include::{groovy-example-dir}/webdemo/src/main/webapp/response.jsp[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-html" data-lang="html">&lt;%@ page contentType="text/html;charset=UTF-8" language="java" %&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Hello Page&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h2&gt;Hello, ${user}!&lt;/h2&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -456,13 +522,19 @@ The <code>war</code> plugin supports the use of the older <code>web.xml</code> d
 <div class="listingblock multi-language-sample">
 <div class="title"><code>build.gradle</code></div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/build-2.gradle[tags=add-gretty]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">plugins {
+    id 'war'
+    id 'org.gretty' version '2.2.0' <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title"><code>build.gradle.kts</code></div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{kotlin-example-dir}/build-2.gradle.kts[tags=add-gretty]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">plugins {
+    war
+    id("org.gretty") version "2.2.0" <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -514,13 +586,21 @@ BUILD SUCCESSFUL</pre>
 <div class="listingblock multi-language-sample">
 <div class="title"><code>build.gradle</code></div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/build-2.gradle[tags=add-mockito]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">dependencies {
+    providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:2.7.19'  <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title"><code>build.gradle.kts</code></div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{kotlin-example-dir}/build-2.gradle.kts[tags=add-mockito]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">dependencies {
+    providedCompile("javax.servlet:javax.servlet-api:3.1.0")
+    testCompile("junit:junit:4.12")
+    testCompile("org.mockito:mockito-core:2.7.19")  <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -537,7 +617,67 @@ BUILD SUCCESSFUL</pre>
 <div class="listingblock">
 <div class="title">src/test/java/org/gradle/demo/HelloServletTest.java</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Unresolved directive in index.adoc - include::{groovy-example-dir}/webdemo/src/test/java/org/gradle/demo/HelloServletTest.java[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">package org.gradle.demo;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
+
+public class HelloServletTest {
+    @Mock private HttpServletRequest request;
+    @Mock private HttpServletResponse response;
+    @Mock private RequestDispatcher requestDispatcher;
+
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+    }
+
+    @Test
+    public void doGet() throws Exception {
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter printWriter = new PrintWriter(stringWriter);
+
+        when(response.getWriter()).thenReturn(printWriter);
+
+        new HelloServlet().doGet(request, response);
+
+        assertEquals("Hello, World!", stringWriter.toString());
+    }
+
+    @Test
+    public void doPostWithoutName() throws Exception {
+        when(request.getRequestDispatcher("response.jsp"))
+            .thenReturn(requestDispatcher);
+
+        new HelloServlet().doPost(request, response);
+
+        verify(request).setAttribute("user", "World");
+        verify(requestDispatcher).forward(request,response);
+    }
+
+    @Test
+    public void doPostWithName() throws Exception {
+        when(request.getParameter("name")).thenReturn("Dolly");
+        when(request.getRequestDispatcher("response.jsp"))
+            .thenReturn(requestDispatcher);
+
+        new HelloServlet().doPost(request, response);
+
+        verify(request).setAttribute("user", "Dolly");
+        verify(requestDispatcher).forward(request,response);
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -586,21 +726,37 @@ BUILD SUCCESSFUL</pre>
 <div class="listingblock multi-language-sample">
 <div class="title"><code>build.gradle</code></div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{groovy-example-dir}/build-3.gradle[tags=configure-gretty]
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">gretty {
+    integrationTestTask = 'test'  <i class="conum" data-value="1"></i><b>(1)</b>
+}
 
 // ... rest from before ...
 
-Unresolved directive in index.adoc - include::{groovy-example-dir}/build-3.gradle[tags=add-selenium]</code></pre>
+dependencies {
+    providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:2.7.19'
+    testCompile 'io.github.bonigarcia:webdrivermanager:1.6.1' <i class="conum" data-value="2"></i><b>(2)</b>
+    testCompile 'org.seleniumhq.selenium:selenium-java:3.3.1' <i class="conum" data-value="3"></i><b>(3)</b>
+}</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title"><code>build.gradle.kts</code></div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{kotlin-example-dir}/build-3.gradle.kts[tags=configure-gretty]
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">gretty {
+    integrationTestTask = "test"  <i class="conum" data-value="1"></i><b>(1)</b>
+}
 
 // ... rest from before ...
 
-Unresolved directive in index.adoc - include::{kotlin-example-dir}/build-3.gradle.kts[tags=add-selenium]</code></pre>
+dependencies {
+    providedCompile("javax.servlet:javax.servlet-api:3.1.0")
+    testCompile("junit:junit:4.12")
+    testCompile("org.mockito:mockito-core:2.7.19")
+    testCompile("io.github.bonigarcia:webdrivermanager:1.6.1") <i class="conum" data-value="2"></i><b>(2)</b>
+    testCompile("org.seleniumhq.selenium:selenium-java:3.3.1") <i class="conum" data-value="3"></i><b>(3)</b>
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">

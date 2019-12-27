@@ -305,7 +305,40 @@
 <div class="listingblock">
 <div class="title">LatestArtifactVersion.java</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Unresolved directive in index.adoc - include::{groovy-example-dir}/code/custom-task/buildSrc/src/main/java/com/company/gradle/binaryrepo/LatestArtifactVersion.java[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">package com.company.gradle.binaryrepo;
+
+import org.gradle.api.DefaultTask;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.TaskAction;
+
+public class LatestArtifactVersion extends DefaultTask {
+    private String coordinates;
+    private String serverUrl;
+
+    @Input
+    public String getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(String coordinates) {
+        this.coordinates = coordinates;
+    }
+
+    @Input
+    public String getServerUrl() {
+        return serverUrl;
+    }
+
+    public void setServerUrl(String serverUrl) {
+        this.serverUrl = serverUrl;
+    }
+
+    @TaskAction
+    public void resolveLatestVersion() {
+        System.out.println("Retrieving artifact " + coordinates + " from " + serverUrl);
+        // issue HTTP call and parse response
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -370,7 +403,67 @@ tasks.register&lt;LatestArtifactVersion&gt;("latestVersionInhouseRepo") {
 <div class="listingblock">
 <div class="title">Generate.java</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Unresolved directive in index.adoc - include::{groovy-example-dir}/code/incremental-task/buildSrc/src/main/java/Generate.java[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import org.gradle.api.DefaultTask;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.OutputDirectory;
+import org.gradle.api.tasks.TaskAction;
+
+public class Generate extends DefaultTask {
+    private int fileCount;
+    private String content;
+    private File generatedFileDir;
+
+    @Input
+    public int getFileCount() {
+        return fileCount;
+    }
+
+    public void setFileCount(int fileCount) {
+        this.fileCount = fileCount;
+    }
+
+    @Input
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    @OutputDirectory
+    public File getGeneratedFileDir() {
+        return generatedFileDir;
+    }
+
+    public void setGeneratedFileDir(File generatedFileDir) {
+        this.generatedFileDir = generatedFileDir;
+    }
+
+    @TaskAction
+    public void perform() throws IOException {
+        for (int i = 1; i &lt;= fileCount; i++) {
+            writeFile(new File(generatedFileDir, i + ".txt"), content);
+        }
+    }
+
+    private void writeFile(File destination, String content) throws IOException {
+        BufferedWriter output = null;
+        try {
+            output = new BufferedWriter(new FileWriter(destination));
+            output.write(content);
+        } finally {
+            if (output != null) {
+                output.close();
+            }
+        }
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -468,7 +561,26 @@ configure&lt;SiteExtension&gt; {
 <div class="listingblock">
 <div class="title">CustomData.java</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Unresolved directive in index.adoc - include::{groovy-example-dir}/code/dsl-like-api/buildSrc/src/main/java/CustomData.java[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class CustomData {
+    private String websiteUrl;
+    private String vcsUrl;
+
+    public void setWebsiteUrl(String websiteUrl) {
+        this.websiteUrl = websiteUrl;
+    }
+
+    public String getWebsiteUrl() {
+        return websiteUrl;
+    }
+
+    public void setVcsUrl(String vcsUrl) {
+        this.vcsUrl = vcsUrl;
+    }
+
+    public String getVcsUrl() {
+        return vcsUrl;
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -477,7 +589,29 @@ configure&lt;SiteExtension&gt; {
 <div class="listingblock">
 <div class="title">SiteExtension.java</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Unresolved directive in index.adoc - include::{groovy-example-dir}/code/dsl-like-api/buildSrc/src/main/java/SiteExtension.java[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">import java.io.File;
+import org.gradle.api.Action;
+
+public class SiteExtension {
+    private File outputDir;
+    private final CustomData customData = new CustomData();
+
+    public void setOutputDir(File outputDir) {
+        this.outputDir = outputDir;
+    }
+
+    public File getOutputDir() {
+        return outputDir;
+    }
+
+    public CustomData getCustomData() {
+        return customData;
+    }
+
+    public void customData(Action&lt;? super CustomData&gt; action) {
+        action.execute(customData);
+    }
+}</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -557,7 +691,21 @@ configure&lt;BinaryRepositoryExtension&gt; {
 <div class="listingblock">
 <div class="title">BinaryRepositoryVersionPlugin.java</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Unresolved directive in index.adoc - include::{groovy-example-dir}/code/capture-user-input/buildSrc/src/main/java/BinaryRepositoryVersionPlugin.java[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">import org.gradle.api.Action;
+import org.gradle.api.Plugin;
+import org.gradle.api.Project;
+
+public class BinaryRepositoryVersionPlugin implements Plugin&lt;Project&gt; {
+    public void apply(Project project) {
+        BinaryRepositoryExtension extension = project.getExtensions().create("binaryRepo", BinaryRepositoryExtension.class, project);
+
+        project.getTasks().register("latestArtifactVersion", LatestArtifactVersion.class, new Action&lt;LatestArtifactVersion&gt;() {
+            public void execute(LatestArtifactVersion latestArtifactVersion) {
+                latestArtifactVersion.getServerUrl().set(extension.getServerUrl());
+            }
+        });
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -578,7 +726,20 @@ The Gradle classloader automatically injects setter methods alongside all getter
 <div class="listingblock">
 <div class="title">BinaryRepositoryExtension.java</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Unresolved directive in index.adoc - include::{groovy-example-dir}/code/capture-user-input/buildSrc/src/main/java/BinaryRepositoryExtension.java[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">import org.gradle.api.Project;
+import org.gradle.api.provider.Property;
+
+public class BinaryRepositoryExtension {
+    private final Property&lt;String&gt; serverUrl;
+
+    public BinaryRepositoryExtension(Project project) {
+        serverUrl = project.getObjects().property(String.class);
+    }
+
+    public Property&lt;String&gt; getServerUrl() {
+        return serverUrl;
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -587,7 +748,31 @@ The Gradle classloader automatically injects setter methods alongside all getter
 <div class="listingblock">
 <div class="title">LatestArtifactVersion.java</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Unresolved directive in index.adoc - include::{groovy-example-dir}/code/capture-user-input/buildSrc/src/main/java/LatestArtifactVersion.java[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">import org.gradle.api.DefaultTask;
+import org.gradle.api.provider.Property;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.TaskAction;
+
+public class LatestArtifactVersion extends DefaultTask {
+    private final Property&lt;String&gt; serverUrl;
+
+    public LatestArtifactVersion() {
+        serverUrl = getProject().getObjects().property(String.class);
+    }
+
+    @Input
+    public Property&lt;String&gt; getServerUrl() {
+        return serverUrl;
+    }
+
+    @TaskAction
+    public void resolveLatestVersion() {
+        // Access the raw value during the execution phase of the build lifecycle
+        System.out.println("Retrieving latest artifact version from URL " + serverUrl.get());
+
+        // do additional work
+    }
+}</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -672,7 +857,32 @@ configure&lt;NamedDomainObjectContainer&lt;ServerEnvironment&gt;&gt; {
 <div class="listingblock">
 <div class="title">ServerEnvironment.java</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Unresolved directive in index.adoc - include::{groovy-example-dir}/code/named-domain-object-container/buildSrc/src/main/java/ServerEnvironment.java[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">import org.gradle.api.provider.Property;
+import org.gradle.api.model.ObjectFactory;
+
+import javax.inject.Inject;
+
+public class ServerEnvironment {
+    private final String name;
+    private Property&lt;String&gt; url;
+
+    public ServerEnvironment(String name, ObjectFactory objectFactory) {
+        this.name = name;
+        this.url = objectFactory.property(String.class);
+    }
+
+    public void setUrl(String url) {
+        this.url.set(url);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Property&lt;String&gt; getUrl() {
+        return url;
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -681,7 +891,32 @@ configure&lt;NamedDomainObjectContainer&lt;ServerEnvironment&gt;&gt; {
 <div class="listingblock">
 <div class="title">ServerEnvironmentPlugin.java</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Unresolved directive in index.adoc - include::{groovy-example-dir}/code/named-domain-object-container/buildSrc/src/main/java/ServerEnvironmentPlugin.java[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">import org.gradle.api.*;
+
+public class ServerEnvironmentPlugin implements Plugin&lt;Project&gt; {
+    @Override
+    public void apply(final Project project) {
+        NamedDomainObjectContainer&lt;ServerEnvironment&gt; serverEnvironmentContainer = project.container(ServerEnvironment.class, new NamedDomainObjectFactory&lt;ServerEnvironment&gt;() {
+            public ServerEnvironment create(String name) {
+                return new ServerEnvironment(name, project.getObjects());
+            }
+        });
+        project.getExtensions().add("environments", serverEnvironmentContainer);
+
+        serverEnvironmentContainer.all(new Action&lt;ServerEnvironment&gt;() {
+            public void execute(ServerEnvironment serverEnvironment) {
+                String env = serverEnvironment.getName();
+                String capitalizedServerEnv = env.substring(0, 1).toUpperCase() + env.substring(1);
+                String taskName = "deployTo" + capitalizedServerEnv;
+                project.getTasks().register(taskName, Deploy.class, new Action&lt;Deploy&gt;() {
+                    public void execute(Deploy task) {
+                        task.getUrl().set(serverEnvironment.getUrl());
+                    }
+                });
+            }
+        });
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -778,13 +1013,63 @@ public class InhouseConventionWarPlugin implements Plugin&lt;Project&gt; {
 <div class="listingblock">
 <div class="title">DataProcessingPlugin.java</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Unresolved directive in index.adoc - include::{groovy-example-dir}/code/default-dependency/buildSrc/src/main/java/DataProcessingPlugin.java[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">import org.gradle.api.Action;
+import org.gradle.api.Plugin;
+import org.gradle.api.Project;
+import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.DependencySet;
+
+public class DataProcessingPlugin implements Plugin&lt;Project&gt; {
+    public void apply(Project project) {
+        final Configuration config = project.getConfigurations().create("dataFiles")
+            .setVisible(false)
+            .setDescription("The data artifacts to be processed for this plugin.");
+
+        config.defaultDependencies(new Action&lt;DependencySet&gt;() {
+            public void execute(DependencySet dependencies) {
+                dependencies.add(project.getDependencies().create("com.company:data:1.4.6"));
+            }
+        });
+
+        project.getTasks().withType(DataProcessing.class).configureEach(new Action&lt;DataProcessing&gt;() {
+            public void execute(DataProcessing dataProcessing) {
+                dataProcessing.setDataFiles(config);
+            }
+        });
+    }
+}</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">DataProcessing.java</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Unresolved directive in index.adoc - include::{groovy-example-dir}/code/default-dependency/buildSrc/src/main/java/DataProcessing.java[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">import org.gradle.api.DefaultTask;
+import org.gradle.api.file.ConfigurableFileCollection;
+import org.gradle.api.file.FileCollection;
+import org.gradle.api.tasks.InputFiles;
+import org.gradle.api.tasks.TaskAction;
+
+public class DataProcessing extends DefaultTask {
+    private final ConfigurableFileCollection dataFiles;
+
+    public DataProcessing() {
+        dataFiles = getProject().files();
+    }
+
+    @InputFiles
+    public FileCollection getDataFiles() {
+        return dataFiles;
+    }
+
+    public void setDataFiles(FileCollection dataFiles) {
+        this.dataFiles.setFrom(dataFiles);
+    }
+
+    @TaskAction
+    public void process() {
+        System.out.println(getDataFiles().getFiles());
+    }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">

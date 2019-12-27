@@ -292,7 +292,7 @@ Instead of using the built-in wrapper task, you may wish to use the <code>init</
 <div class="listingblock">
 <div class="title">settings.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{example}/settings.gradle[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">rootProject.name='greeterApp'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -301,7 +301,7 @@ Instead of using the built-in wrapper task, you may wish to use the <code>init</
 <div class="listingblock">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{example}/build.gradle[tags=java]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">apply plugin : 'java' <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -310,7 +310,9 @@ Instead of using the built-in wrapper task, you may wish to use the <code>init</
 <div class="listingblock">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{example}/build.gradle[tags=repositories]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">repositories {
+    jcenter() <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -330,7 +332,9 @@ Instead of using the built-in wrapper task, you may wish to use the <code>init</
 <div class="listingblock">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{example}/build.gradle[tags=dependencies]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">dependencies {
+    implementation 'com.github.lalyos:jfiglet:0.0.8' <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -369,7 +373,7 @@ You can learn more about using configurations for your own custom purposes by st
 <div class="content">
 <pre>./gradlew dependencies --configuration implementation <i class="conum" data-value="1"></i><b>(1)</b>
 
-Unresolved directive in index.adoc - include::{gradle-outdir}/clean-dependencies/out.txt[]</pre>
+Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/consuming-jvm-libraries/build/reports/runners/gradleRunner/clean-dependencies/out.txt[]</pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -403,7 +407,15 @@ If you are using Gradle 4.0 or later you may see less output from the console th
 <div class="listingblock">
 <div class="title">src/main/java/GreeterApp.java</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Unresolved directive in index.adoc - include::{example}/src/main/java/GreeterApp.java[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">import java.io.IOException;
+import com.github.lalyos.jfiglet.FigletFont;
+
+public class GreeterApp {
+    public static void main(String[] args) throws IOException {
+        String asciiArt = FigletFont.convertOneLine("Hello, " + args[0]);
+        System.out.println(asciiArt);
+    }
+}</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -425,7 +437,7 @@ Due to simplicity of this two line application, testing will not be included in 
 <div class="content">
 <pre>$ ./gradlew jar
 
-Unresolved directive in index.adoc - include::{gradle-outdir}/clean-assemble/out.txt[]</pre>
+Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/consuming-jvm-libraries/build/reports/runners/gradleRunner/clean-assemble/out.txt[]</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -434,7 +446,8 @@ Unresolved directive in index.adoc - include::{gradle-outdir}/clean-assemble/out
 <div class="listingblock">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{example}/build.gradle[tags=application]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">apply plugin : 'application' <i class="conum" data-value="1"></i><b>(1)</b>
+mainClassName = 'GreeterApp' <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -456,7 +469,7 @@ Unresolved directive in index.adoc - include::{gradle-outdir}/clean-assemble/out
 <div class="content">
 <pre>$ ./gradlew build
 
-Unresolved directive in index.adoc - include::{gradle-outdir}/build/out.txt[]</pre>
+Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/consuming-jvm-libraries/build/reports/runners/gradleRunner/build/out.txt[]</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -466,7 +479,7 @@ Unresolved directive in index.adoc - include::{gradle-outdir}/build/out.txt[]</p
 <div class="content">
 <pre>$ ./gradlew installDist
 
-Unresolved directive in index.adoc - include::{gradle-outdir}/install/out.txt[]</pre>
+Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/consuming-jvm-libraries/build/reports/runners/gradleRunner/install/out.txt[]</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -480,7 +493,7 @@ Unresolved directive in index.adoc - include::{gradle-outdir}/install/out.txt[]<
 <pre>$ cd build/install/greeterApp
 $ ./bin/greeterApp Gradle
 
-Unresolved directive in index.adoc - include::{gradle-outdir}/run/run.txt[]</pre>
+Unresolved directive in index.adoc - include::/Users/daniel/gradle/guides/guides-ex/subprojects/consuming-jvm-libraries/build/reports/runners/gradleRunner/run/run.txt[]</pre>
 </div>
 </div>
 <div class="paragraph">

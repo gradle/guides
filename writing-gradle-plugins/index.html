@@ -299,7 +299,19 @@ If you want to use a plugin across multiple builds, you will need to publish it.
 <div class="listingblock">
 <div class="title">buildSrc/src/main/java/org/example/greeting/GreetingPlugin.java</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Unresolved directive in index.adoc - include::{exampledir}/buildSrc/src/main/java/org/example/greeting/GreetingPlugin.java[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">package org.example.greeting;
+
+import org.gradle.api.Plugin;
+import org.gradle.api.Project;
+
+public class GreetingPlugin implements Plugin&lt;Project&gt; {
+    public void apply(Project project) {
+        project.getTasks().create("hello", Greeting.class, (task) -&gt; { <i class="conum" data-value="1"></i><b>(1)</b>
+            task.setMessage("Hello");
+            task.setRecipient("World");                                <i class="conum" data-value="2"></i><b>(2)</b>
+        });
+    }
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -335,7 +347,26 @@ Use the Gradle <a href="https://docs.gradle.org/4.10.3/dsl/">DSL Reference</a> a
 <div class="listingblock">
 <div class="title">buildSrc/src/main/java/org/example/greeting/Greeting.java</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Unresolved directive in index.adoc - include::{exampledir}/buildSrc/src/main/java/org/example/greeting/Greeting.java[]</code></pre>
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">package org.example.greeting;
+
+import org.gradle.api.DefaultTask;
+import org.gradle.api.tasks.TaskAction;
+
+public class Greeting extends DefaultTask {
+    private String message;
+    private String recipient;
+
+    public String getMessage() { return message; }
+    public void setMessage(String message) { this.message = message; }
+
+    public String getRecipient() { return recipient; }
+    public void setRecipient(String recipient) { this.recipient = recipient; }
+
+    @TaskAction
+    void sayGreeting() {
+        System.out.printf("%s, %s!\n", getMessage(), getRecipient()); <i class="conum" data-value="1"></i><b>(1)</b>
+    }
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -372,13 +403,13 @@ You can learn more about creating your own task types in the <a href="https://do
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{exampledir}/build.gradle[tags=use-plugin-class-name-with-info]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">apply plugin: org.example.greeting.GreetingPlugin <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{exampledir}/build.gradle.kts[tags=use-plugin-class-name-with-info]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">apply&lt;org.example.greeting.GreetingPlugin&gt;() <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -407,7 +438,21 @@ The syntax is different from the <code>plugins {}</code> block you may be used t
 <div class="listingblock">
 <div class="content">
 <pre>$ gradle hello
-Unresolved directive in index.adoc - include::{gradle-outdir}/hello/out.txt[]</pre>
+:buildSrc:compileJava
+:buildSrc:compileGroovy UP-TO-DATE
+:buildSrc:processResources UP-TO-DATE
+:buildSrc:classes
+:buildSrc:jar
+:buildSrc:assemble
+:buildSrc:compileTestJava UP-TO-DATE
+:buildSrc:compileTestGroovy UP-TO-DATE
+:buildSrc:processTestResources UP-TO-DATE
+:buildSrc:testClasses UP-TO-DATE
+:buildSrc:test UP-TO-DATE
+:buildSrc:check UP-TO-DATE
+:buildSrc:build
+:hello
+Hello, World!</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -419,13 +464,21 @@ Unresolved directive in index.adoc - include::{gradle-outdir}/hello/out.txt[]</p
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{exampledir}/configure-hello.gradle[tags=configure-hello]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">hello { <i class="conum" data-value="1"></i><b>(1)</b>
+    message = "Hi"
+    recipient = "Gradle"
+}</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{exampledir}/configure-hello.gradle.kts[tags=configure-hello]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">import org.example.greeting.Greeting
+
+tasks.getByName&lt;Greeting&gt;("hello") { <i class="conum" data-value="1"></i><b>(1)</b>
+    message = "Hi"
+    recipient = "Gradle"
+}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -454,7 +507,7 @@ You can learn more about the syntax for configuring tasks in the <a href="https:
 <div class="listingblock">
 <div class="content">
 <pre>$ gradle -q hello
-Unresolved directive in index.adoc - include::{gradle-outdir}/helloAgain/out.txt[]</pre>
+Hi, Gradle!</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -474,7 +527,7 @@ Unresolved directive in index.adoc - include::{gradle-outdir}/helloAgain/out.txt
 <div class="listingblock">
 <div class="title">buildSrc/src/main/resources/META-INF/gradle-plugins/org.example.greeting.properties</div>
 <div class="content">
-<pre>Unresolved directive in index.adoc - include::{exampledir}/buildSrc/src/main/resources/META-INF/gradle-plugins/org.example.greeting.properties[]</pre>
+<pre>implementation-class=org.example.greeting.GreetingPlugin</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -498,13 +551,13 @@ You must put the properties file in the directory <code>META-INF/gradle-plugins<
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{exampledir}/build.gradle[tags=use-plugin-class-name]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">apply plugin: org.example.greeting.GreetingPlugin</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{exampledir}/build.gradle.kts[tags=use-plugin-class-name]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">apply&lt;org.example.greeting.GreetingPlugin&gt;()</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -513,13 +566,17 @@ You must put the properties file in the directory <code>META-INF/gradle-plugins<
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in index.adoc - include::{exampledir}/configure-hello.gradle[tags=use-plugin-id]</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">plugins {
+  id 'org.example.greeting'
+}</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">Unresolved directive in index.adoc - include::{exampledir}/configure-hello.gradle.kts[tags=use-plugin-id]</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">plugins {
+  id("org.example.greeting")
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
