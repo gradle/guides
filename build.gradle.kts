@@ -31,7 +31,18 @@ val guides by configurations.creating {
 }
 val installGuides = tasks.register("installGuides", Sync::class.java) {
     from(guides)
+    from("js") { into("js") }
+    from("icon") { into("icon") }
+    from("css") { into("css") }
+    from("CNAME")
+    from("rebots.txt")
+    from("google0c2dba1d0e25f4f9.html")
+    from("gradle-guides.svg")
     into("$buildDir/published-guides")
+
+    doLast {
+        file("$buildDir/published-guides/.nojekyll")
+    }
 }
 dependencies {
     guideProjects.forEach {
