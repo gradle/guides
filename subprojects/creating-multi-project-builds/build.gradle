@@ -29,9 +29,7 @@ test {
     inputs.dir 'src/example'
 }
 
-// TODO: Replace Gradle Runner by better alternative
 gradleRunner {
-    enabled = false
     inputs.dir 'src/example'
 
     [

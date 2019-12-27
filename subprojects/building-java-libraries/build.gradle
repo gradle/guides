@@ -17,9 +17,7 @@ guidesMultiPage {
     attributes 'gradle-outdir' : "${gradleRunner.reportsDir.absolutePath}"
 }
 
-// TODO: Replace Gradle Runner by better alternative
 gradleRunner {
-    enabled = false
 
     [
         [name: 'groovy-dsl', scriptExtension: '.gradle', initArguments: [], quote: '\''],
