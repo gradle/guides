@@ -19,6 +19,7 @@ import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.util.PatternSet;
+import org.gradle.docs.internal.tasks.CheckLinks;
 import org.gradle.docs.guides.internal.tasks.GenerateGuidePageAsciidoc;
 import org.gradle.docs.internal.tasks.ViewDocumentation;
 import org.gradle.docs.internal.DocumentationBasePlugin;
@@ -48,6 +49,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         project.getPluginManager().apply("org.asciidoctor.convert"); // For the `asciidoctor` configuration
 
         TaskProvider<Task> assemble = tasks.named(LifecycleBasePlugin.ASSEMBLE_TASK_NAME);
+        TaskProvider<Task> check = tasks.register("checkGuides");
 
         // Configure the guides extension to configure published samples
         GuidesInternal extension = configureGuidesExtension(project, layout);
@@ -60,7 +62,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         extension.getBinaries().all(binary -> createTasksForGuideBinary(tasks, layout, providers, binary));
 
         // Render all the documentation out to HTML
-        TaskProvider<? extends Task> renderTask = renderGuidesDocumentation(tasks, assemble, extension);
+        TaskProvider<? extends Task> renderTask = renderGuidesDocumentation(tasks, assemble, check, extension);
 
         // Publish the guides to consumers
         createPublishGuidesElements(project.getConfigurations(), objects, renderTask, extension);
@@ -125,7 +127,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         binary.getIndexPageFile().convention(generateGuidePage.flatMap(GenerateGuidePageAsciidoc::getOutputFile));
     }
 
-    private TaskProvider<? extends Task> renderGuidesDocumentation(TaskContainer tasks, TaskProvider<Task> assemble, GuidesInternal extension) {
+    private TaskProvider<? extends Task> renderGuidesDocumentation(TaskContainer tasks, TaskProvider<Task> assemble, TaskProvider<Task> check, GuidesInternal extension) {
         TaskProvider<Sync> assembleDocs = tasks.register("assembleGuides", Sync.class, task -> {
             task.setGroup("documentation");
             task.setDescription("Assembles all intermediate files needed to generate the samples documentation.");
@@ -226,6 +228,12 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
                 task.setDescription("Generates the guide and open in the browser");
                 task.getIndexFile().fileProvider(guidesMultiPage.map(it -> new File(it.getOutputDir(), binary.getPermalink().get() + "/index.html")));
             });
+
+            TaskProvider<CheckLinks> checkLinksTask = tasks.register("check" + capitalize(binary.getName()) + "Links", CheckLinks.class, task -> {
+                task.getIndexDocument().fileProvider(guidesMultiPage.map(it -> new File(it.getOutputDir(), binary.getPermalink().get() + "/index.html")));
+            });
+
+            check.configure(it -> it.dependsOn(checkLinksTask));
         });
 
         return guidesMultiPage;

@@ -47,7 +47,6 @@ import static org.gradle.docs.internal.StringUtils.toLowerCamelCase
 class BasePlugin implements Plugin<Project> {
 
     static final String GUIDE_EXTENSION_NAME = 'guide'
-    static final String CHECK_LINKS_TASK = 'checkLinks'
 
     void apply(Project project) {
         project.getPluginManager().apply(GuidesDocumentationPlugin.class);
@@ -55,7 +54,6 @@ class BasePlugin implements Plugin<Project> {
         def guides = addGuidesExtension(project)
         addGradleRunnerSteps(project)
         addAsciidoctor(project, guides)
-        addCheckLinks(project)
         addTestJvmCode(project)
     }
 
@@ -75,17 +73,6 @@ class BasePlugin implements Plugin<Project> {
 
     private void addGradleRunnerSteps(Project project) {
         project.apply plugin : 'org.ysb33r.gradlerunner'
-    }
-
-    private void addCheckLinks(Project project) {
-        CheckLinks task = project.tasks.create(CHECK_LINKS_TASK, CheckLinks)
-
-        AsciidoctorTask asciidoc = (AsciidoctorTask)(project.tasks.getByName('asciidoctor'))
-
-        task.indexDocument = { project.file("${asciidoc.outputDir}/html5/index.html") }
-        task.dependsOn asciidoc
-
-        project.tasks.getByName("check").dependsOn(task)
     }
 
     @CompileDynamic

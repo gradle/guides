@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.gradle.docs.guides
+package org.gradle.docs.internal.tasks
 
 import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
@@ -22,27 +22,22 @@ import groovyx.net.http.HttpBuilder
 import org.cyberneko.html.parsers.SAXParser
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.TaskAction
 
 @CompileStatic
-class CheckLinks extends DefaultTask {
+abstract class CheckLinks extends DefaultTask {
 
     @InputFile
-    File getIndexDocument() {
-        project.file(indexDoc)
-    }
-
-    void setIndexDocument(Object index) {
-        indexDoc = index
-    }
+    abstract RegularFileProperty getIndexDocument()
 
     @TaskAction
     void exec() {
 
         Set<URI> failures = []
 
-        getAnchors(indexDocument.toURI()).each { anchor ->
+        getAnchors(indexDocument.get().asFile.toURI()).each { anchor ->
 
             if (anchor.absolute) {
                 if (anchor.scheme.startsWith('http')) {
@@ -85,8 +80,6 @@ class CheckLinks extends DefaultTask {
             it.name() == 'A' && it.@href != null
         }.collect { "${it.@href}".toURI() }
     }
-
-    private Object indexDoc
 
     @CompileStatic
     private static class Blacklist {
