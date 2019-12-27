@@ -20,14 +20,11 @@ guidesMultiPage {
 gradleRunner {
 
     [
-        [name: 'groovy-dsl', scriptExtension: '.gradle', initArguments: [], quote: '\''],
-        [name: 'kotlin-dsl', scriptExtension: '.gradle.kts', initArguments: ['--dsl', 'kotlin'], quote: '"']
+        [name: 'groovy-dsl', scriptExtension: '.gradle', initArguments: []],
+        [name: 'kotlin-dsl', scriptExtension: '.gradle.kts', initArguments: ['--dsl', 'kotlin']]
     ].each { sample ->
 
         ext {
-            buildType = 'java-library'
-            projectName = 'demo'
-
             cleanBuildOutput = { stepName, info ->
                 File out = new File(getStepReportDir(stepName), 'out.txt')
                 new File(info.reportDir, 'out.txt').withWriter { w ->
@@ -38,13 +35,15 @@ gradleRunner {
             }
 
         }
+        def projectName = 'demo'
+        def buildType = 'java-library'
 
         step "${sample.name}-initProject", ['init', '--type', buildType, '--project-name', projectName] + sample.initArguments
 
         step "${sample.name}-initOutput", cleanBuildOutput.curry("${sample.name}-initProject")
 
         step "${sample.name}patchSettings", { info ->
-            new File(workingDir, "settings${sample.scriptExtension}").text = "rootProject.name = ${sample.quote}${project.name}${sample.quote}\n"
+            new File(workingDir, "settings${sample.scriptExtension}".toString()).text = """rootProject.name = "${project.name}"\n"""
         }
 
         step "${sample.name}-buildProject", 'build'
