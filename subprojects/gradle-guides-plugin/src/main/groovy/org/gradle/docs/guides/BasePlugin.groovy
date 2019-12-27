@@ -173,6 +173,7 @@ class BasePlugin implements Plugin<Project> {
         }
 
         project.tasks.getByName("asciidoctor").dependsOn project.tasks.getByPath('gradleRunner')
+        project.tasks.getByName("guidesMultiPage").dependsOn project.tasks.getByPath('gradleRunner')
         project.tasks.getByName("assemble").dependsOn asciidoc
 
         // TODO - rework the above to use lazy configuration
