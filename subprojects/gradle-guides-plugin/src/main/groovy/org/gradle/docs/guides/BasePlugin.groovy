@@ -69,7 +69,7 @@ class BasePlugin implements Plugin<Project> {
         project.getExtensions().add(Guide, GUIDE_EXTENSION_NAME, result);
         result.description.set(result.title)
         result.guideDirectory.set(project.projectDir)
-        result.permalink.set(toKebabCase(result.name))
+        result.permalink.set(project.name)
         return result
     }
 
