@@ -28,6 +28,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.gradle.docs.internal.FileUtils.deleteDirectory;
 import static org.gradle.docs.internal.StringUtils.*;
 
 public class GuidesDocumentationPlugin implements Plugin<Project> {
@@ -150,8 +151,12 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
                 }
             });
 
+            task.doFirst(t -> {
+                deleteDirectory(extension.getRenderedDocumentationRoot().get().getAsFile());
+            });
+
             task.doLast(t -> {
-                task.getProject().sync(spec -> {
+                task.getProject().copy(spec -> {
                     extension.getBinaries().forEach(binary -> {
                         spec.from(binary.getGuideDirectory().dir("contents/images"), sub -> {
                             sub.into(binary.getPermalink().get() + "/images");
