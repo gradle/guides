@@ -13,6 +13,10 @@ asciidoctor {
     attributes example : file('src/example').absolutePath
     attributes 'gradle-outdir' : "${gradleRunner.reportsDir.absolutePath}"
 }
+guidesMultiPage {
+    attributes example : file('src/example').absolutePath
+    attributes 'gradle-outdir' : "${gradleRunner.reportsDir.absolutePath}"
+}
 
 gradleRunner {
     inputs.dir 'src/example'

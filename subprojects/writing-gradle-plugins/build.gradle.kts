@@ -18,4 +18,12 @@ tasks {
             )
         )
     }
+    "guidesMultiPage"(org.asciidoctor.gradle.AsciidoctorTask::class) {
+        attributes(
+                mapOf(
+                        "exampledir" to file("samples/code"),
+                        "gradle-outdir" to file("samples/output")
+                )
+        )
+    }
 }

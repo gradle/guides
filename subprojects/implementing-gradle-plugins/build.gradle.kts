@@ -30,4 +30,11 @@ tasks {
                   "kotlin-example-dir" to file("samples/kotlin-dsl"))
         )
     }
+    getByName<AsciidoctorTask>("guidesMultiPage") {
+        inputs.dir("samples")
+        attributes(
+                mapOf("groovy-example-dir" to file("samples/groovy-dsl"),
+                        "kotlin-example-dir" to file("samples/kotlin-dsl"))
+        )
+    }
 }

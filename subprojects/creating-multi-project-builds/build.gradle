@@ -18,6 +18,12 @@ asciidoctor {
     attributes 'kotlin-example-dir': file('src/example/kotlin-dsl')
     attributes 'gradle-outdir': "${gradleRunner.reportsDir.absolutePath}"
 }
+guidesMultiPage {
+    inputs.dir 'src/example'
+    attributes 'groovy-example-dir': file('src/example/groovy-dsl')
+    attributes 'kotlin-example-dir': file('src/example/kotlin-dsl')
+    attributes 'gradle-outdir': "${gradleRunner.reportsDir.absolutePath}"
+}
 
 test {
     inputs.dir 'src/example'

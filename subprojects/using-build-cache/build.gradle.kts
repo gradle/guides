@@ -22,4 +22,14 @@ tasks {
             }
         })
     }
+    guidesMultiPage {
+        resources(delegateClosureOf<CopySpec> {
+            from("contents/css") {
+                into("css")
+            }
+            from("contents/images") {
+                into("images")
+            }
+        })
+    }
 }
