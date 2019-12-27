@@ -1,0 +1,9 @@
+= GradleRunner Gradle Plugin
+
+A plugin that allows scripting of various Gradle steps. The output of each step is recorded. This is very useful for writing documentation for where Gradle is involved.
+
+== Documentation
+
+Please visit the https://ysb33rorg.gitlab.io/gradle-runner-plugin[documentation website] for this Gradle plugin.
+
+

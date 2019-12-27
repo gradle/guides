@@ -1,0 +1,10 @@
+
+apply plugin : 'org.ysb33r.gradlerunner'
+
+gradleRunner {
+    step 'gradleTasks', 'tasks', '--all'
+}
+
+task runGradleTest {
+    dependsOn gradleRunner
+}

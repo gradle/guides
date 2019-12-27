@@ -1,0 +1,25 @@
+The `org.ysb33r.gradlerunner` plugin adds a default task called `gradleRunner` which is of type `GradleRunnerSteps`. This task allows people to run specific Gradle steps interleaved via other actions such as copying files..
+
+== Steps
+
+Steps are added via the `step` keyword. Each step has a name which can later be used to extract information after execution.
+
+[source,groovy]
+----
+gradleRunner {
+  step 'a simple closure', {  // <1>
+    new File(workingDir,'build.gradle').text = '/* empty build file */'
+    new File(reportsDir,'foo.txt').text = 'output to report directory'  // <2>
+  }
+
+  step 'running gradle', 'tasks', '--all' // <3>
+
+  failingStep 'this gradle will fail', 'non-existing-task' // <4>
+}
+----
+<1> A step can be a closure or an `Action`.
+<2> Every step will have an unique directory for dropping files,
+<3> A step can be a Gradle execution. Supply all command-line parameters after the name. A Gradle execution will drop `out.txt` and `err.txt` in the report directory.
+<4> A step can also be a Gradle execution that is known to fail.
+
+After execution use `gradleRunner.getStepReportDir(STEP_NAME)` to obtain the reporting directory for a step.

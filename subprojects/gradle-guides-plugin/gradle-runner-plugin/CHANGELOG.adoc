@@ -1,0 +1,41 @@
+= CHANGELOG
+
+This only documents the current in-progress changelog (or call it a roadmap if you wish). To see changelog
+for a specific release, please visit the https://ysb33rorg.gitlab.io/gradle-runner-plugin/[plugin website].
+
+== 2.0
+
+// tag::changelog[]
+=== Bugs
+
+* https://gitlab.com/ysb33rOrg/gradle-runner-plugin/issues/4[#4] Be compatible with Gradle 6.0
+
+=== Breaking changes
+
+* Version 2.0 requires Gradle 4.3 or later.
+
+// end::changelog[]
+
+== 1.0
+
+=== Features
+
+* https://github.com/ysb33r/gradleTest/issues/67[#67] - Extracted from GradleTest as stand-alone plugin
+// end::changelog[]
+
+////
+=== Bugs
+
+* NONE
+
+=== Other
+
+* NONE
+
+
+== Contributors
+
+// tag::contributors[]
+
+// end::contributors[]
+////

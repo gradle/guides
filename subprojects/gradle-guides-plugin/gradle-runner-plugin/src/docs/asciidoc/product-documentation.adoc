@@ -1,0 +1,13 @@
+= GradleRunner Gradle Plugin
+:author: Schalk W. Cronjé
+:doctype: book
+:toc: right
+:icons: font
+
+This plugin allows you to script Gradle executions as steps and then collect the output from those steps. It is particularly useful in the crafting of documentation related to Gradle. It requires requires Gradle 2.14+ or later.
+
+
+include::parts/bootstrap.adoc[]
+
+include::parts/gradle-runner.adoc[]
+

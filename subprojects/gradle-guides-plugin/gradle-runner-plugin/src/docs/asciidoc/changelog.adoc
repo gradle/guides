@@ -1,0 +1,3 @@
+= Changelog & Release Notes {revnumber}
+
+include::{projectdir}/CHANGELOG.adoc[tags=changelog,leveloffset=-1]
