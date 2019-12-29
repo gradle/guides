@@ -1,10 +1,8 @@
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
-import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFile;
 import org.gradle.api.provider.Provider;
-import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.SourceTask;
 import org.gradle.api.tasks.TaskAction;
@@ -17,23 +15,16 @@ import java.io.InputStream;
 
 public class CreateMD5 extends SourceTask { // <1>
     private final DirectoryProperty destinationDirectory; // <2>
-    private final ConfigurableFileCollection codecClasspath;
 
     @Inject
     public CreateMD5() {
         super();
         this.destinationDirectory = getProject().getObjects().directoryProperty();
-        this.codecClasspath = getProject().getObjects().fileCollection();
     }
 
     @OutputDirectory
     public DirectoryProperty getDestinationDirectory() {
         return destinationDirectory;
-    }
-
-    @InputFiles
-    public ConfigurableFileCollection getCodecClasspath() {
-        return codecClasspath;
     }
 
     @TaskAction
