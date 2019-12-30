@@ -1,10 +1,10 @@
 plugins {
-    id "org.gradle.guides"
+    id("org.gradle.guides")
 }
 
 guide {
     repositoryPath.set("gradle-guides/publishing-plugins-to-gradle-plugin-portal")
-    minimumGradleVersion = "4.10.3"
+    minimumGradleVersion.set("4.10.3")
     title.set("Publishing Plugins to the Gradle Plugin Portal")
     category.set("Getting Started")
 }

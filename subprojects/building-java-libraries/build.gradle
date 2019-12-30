@@ -1,9 +1,9 @@
 plugins {
-    id "org.gradle.guides"
+    id("org.gradle.guides")
 }
 
 guide {
     repositoryPath.set("gradle-guides/building-java-libraries")
-    minimumGradleVersion = "5.0"
+    minimumGradleVersion.set("5.0")
     category.set("Getting Started")
 }

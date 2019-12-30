@@ -1,15 +1,15 @@
 plugins {
-    id "org.gradle.guides"
+    id("org.gradle.guides")
 }
 
 guide {
     repositoryPath.set("gradle-guides/creating-multi-project-builds")
-    minimumGradleVersion = "5.0"
+    minimumGradleVersion.set("5.0")
     title.set("Creating Multi-project Builds")
     category.set("Getting Started")
 }
 
-test {
-    inputs.dir 'samples/groovy-dsl'
-    inputs.dir 'samples/kotlin-dsl'
+tasks.named("test") {
+    inputs.dir("samples/groovy-dsl")
+    inputs.dir("samples/kotlin-dsl")
 }
