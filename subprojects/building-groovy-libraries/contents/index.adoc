@@ -18,18 +18,47 @@ The first step is to create a folder for the new project and change directory in
 
 [listing]
 ----
-$ mkdir building-groovy-libraries
-$ cd building-groovy-libraries
+$ mkdir demo
+$ cd demo
 ----
 
 == Run the init task
 
 From inside the new project directory, run the `init` task with the `groovy-library` argument.
 
-[listing]
+[listing.terminal]
 ----
-$ gradle init --type groovy-library --package guidesamples
-include::{gradle-outdir}/initOutput/out.txt[]
+$ gradle init
+
+Select type of project to generate:
+  1: basic
+  2: application
+  3: library
+  4: Gradle plugin
+Enter selection (default: basic) [1..4] 3
+
+Select implementation language:
+  1: C++
+  2: Groovy
+  3: Java
+  4: Kotlin
+  5: Scala
+  6: Swift
+Enter selection (default: Java) [1..6] 2
+
+Select build script DSL:
+  1: Groovy
+  2: Kotlin
+Enter selection (default: Groovy) [1..2] 1
+
+Project name (default: demo):
+Source package (default: demo):
+
+> Task :init
+Get more help with your project: https://docs.gradle.org/{gradle-version}/userguide/tutorial_groovy_projects.html
+
+BUILD SUCCESSFUL in 1s
+2 actionable tasks: 2 executed
 ----
 
 The `init` task runs the `wrapper` task first, which generates the `gradlew` and `gradlew.bat` wrapper scripts. Then it creates the new project with the following structure:
@@ -49,7 +78,7 @@ The `settings.gradle` file is heavily commented, but has only one active line:
 .Generated settings.gradle
 [source,groovy]
 ----
-include::{gradle-outdir}/files/settings.gradle[]
+include::{samplescodedir}/settings.gradle[]
 ----
 <1>  This assigns the name of the root project.
 
@@ -58,7 +87,7 @@ The generated `build.gradle` file also has many comments. The active portion is 
 .Generated build.gradle
 [source,groovy]
 ----
-include::{gradle-outdir}/files/build.gradle[]
+include::{samplescodedir}/build.gradle[]
 ----
 <1> Public Bintray Artifactory repository
 <2> Groovy version that this project will include as dependency
@@ -67,20 +96,20 @@ include::{gradle-outdir}/files/build.gradle[]
 
 The build file adds the `groovy` plugin. This is an extension of the `java` plugins and adds additional tasks for compiling Groovy source code. It also allows for joint compilation of Groovy and Java files if found in the appropriate `groovy` source folders.
 
-The file `src/main/groovy/Library.groovy` is shown here:
+The file `src/main/groovy/demo/Library.groovy` is shown here:
 
-.Generated src/main/groovy/Library.groovy
+.Generated src/main/groovy/demo/Library.groovy
 [source,groovy]
 ----
-include::{gradle-outdir}/files/src/main/groovy/guidesamples/Library.groovy[tags=source-code]
+include::{samplescodedir}/src/main/groovy/demo/Library.groovy[tags=source-code]
 ----
 
-The generated Spock specification, `src/test/groovy/LibraryTest.groovy` is shown next:
+The generated Spock specification, `src/test/groovy/demo/LibraryTest.groovy` is shown next:
 
-.Generated  src/test/groovy/LibraryTest.groovy
+.Generated  src/test/groovy/demo/LibraryTest.groovy
 [source,groovy]
 ----
-include::{gradle-outdir}/files/src/test/groovy/guidesamples/LibraryTest.groovy[]
+include::{samplescodedir}/src/test/groovy/demo/LibraryTest.groovy[]
 ----
 
 The generated test class has a single http://spockframework.org[Spock specification]. The test instantiates the `Library` class, invokes the `someLibraryMethod` method, and checks that the returned value is `true`.
@@ -92,7 +121,24 @@ To build the project, run the `build` task. You can use the regular `gradle` com
 [listing]
 ----
 $ ./gradlew build
-include::{gradle-outdir}/buildOutput/out.txt[]
+> Task :compileJava NO-SOURCE
+> Task :compileGroovy
+> Task :processResources NO-SOURCE
+> Task :classes
+> Task :jar
+> Task :assemble
+> Task :compileTestJava NO-SOURCE
+> Task :compileTestGroovy
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+> Task :test
+
+> Task :check
+> Task :build
+
+BUILD SUCCESSFUL in 12s
+4 actionable tasks: 4 executed
 ----
 
 NOTE: The first time you run the wrapper script, `gradlew`, there may be a delay while that version of `gradle` is downloaded and stored locally in your `~/.gradle/wrapper/dists` folder.
@@ -113,10 +159,10 @@ The `groovy` plugin has built-in support for Groovy's API documentation tool `gr
 
 Annotate the `Library.groovy` file with Groovydoc markup.
 
-.src/main/groovy/Library.groovy
+.src/main/groovy/demo/Library.groovy
 [source,groovy]
 ----
-include::{gradle-outdir}/files/src/main/groovy/guidesamples/Library.groovy[tags=groovy-doc]
+include::{samplescodedir}/src/main/groovy/demo/Library.groovy[tags=groovy-doc]
 ----
 
 Run the `groovydoc` task.
@@ -124,7 +170,15 @@ Run the `groovydoc` task.
 [listing]
 ----
 $ ./gradlew groovydoc
-include::{gradle-outdir}/docOutput/out.txt[]
+> Task :compileJava NO-SOURCE
+> Task :compileGroovy
+> Task :processResources NO-SOURCE
+> Task :classes
+
+> Task :groovydoc
+
+BUILD SUCCESSFUL in 8s
+2 actionable tasks: 2 executed
 ----
 
 You can view the generated Groovydoc by opening the HTML file, located at `build/docs/groovydoc/index.html`.

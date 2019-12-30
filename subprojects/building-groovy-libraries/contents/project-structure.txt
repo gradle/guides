@@ -9,9 +9,9 @@
 └── src
     ├── main
     │   └── groovy  // <2>
-    │       └── guidesamples
+    │       └── demo
     │           └── Library.groovy
     └── test
         └── groovy // <3>
-            └── guidesamples
+            └── demo
                 └── LibraryTest.groovy
