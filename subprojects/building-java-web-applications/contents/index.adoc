@@ -39,13 +39,13 @@ Add a file called `build.gradle` (if using the Groovy DSL) or `build.gradle.kts`
 .build.gradle
 [source.multi-language-sample,groovy]
 ----
-include::{groovy-example-dir}/webdemo/build.gradle[]
+include::{samples-dir}/groovy-dsl/webdemo/build.gradle[]
 ----
 
 .build.gradle.kts
 [source.multi-language-sample,kotlin]
 ----
-include::{kotlin-example-dir}/webdemo/build.gradle.kts[]
+include::{samples-dir}/kotlin-dsl/webdemo/build.gradle.kts[]
 ----
 
 <1> Using the `war` plugin
@@ -76,7 +76,7 @@ Create a package folder `org/gradle/demo` below the `src/main/java` folder. Add 
 .src/main/java/org/gradle/demo/HelloServlet.java
 [source,java]
 ----
-include::{groovy-example-dir}/webdemo/src/main/java/org/gradle/demo/HelloServlet.java[]
+include::{samples-dir}/groovy-dsl/webdemo/src/main/java/org/gradle/demo/HelloServlet.java[]
 ----
 <1> Annotation-based servlet
 <2> GET request returns a simple string
@@ -95,7 +95,7 @@ Add an index page to the root of the application by creating the file `index.htm
 .src/main/webapp/index.html
 [source,html]
 ----
-include::{groovy-example-dir}/webdemo/src/main/webapp/index.html[]
+include::{samples-dir}/groovy-dsl/webdemo/src/main/webapp/index.html[]
 ----
 <1> Link submits GET request
 <2> Form uses POST request
@@ -107,7 +107,7 @@ In its `doPost` method, the servlet forwards control to another JSP page called 
 .src/main/webapp/response.jsp
 [source,html]
 ----
-include::{groovy-example-dir}/webdemo/src/main/webapp/response.jsp[]
+include::{samples-dir}/groovy-dsl/webdemo/src/main/webapp/response.jsp[]
 ----
 
 The `response` page accessed the `user` variable from the request and renders it inside an `h2` tag.
@@ -121,13 +121,13 @@ Add it to our project by adding the following line to the `plugins` block inside
 .`build.gradle`
 [source.multi-language-sample,groovy]
 ----
-include::{groovy-example-dir}/build-2.gradle[tags=add-gretty]
+include::{samples-dir}/groovy-dsl/build-2.gradle[tags=add-gretty]
 ----
 
 .`build.gradle.kts`
 [source.multi-language-sample,kotlin]
 ----
-include::{kotlin-example-dir}/build-2.gradle.kts[tags=add-gretty]
+include::{samples-dir}/kotlin-dsl/build-2.gradle.kts[tags=add-gretty]
 ----
 
 <1> Adding the `gretty` plugin
@@ -165,13 +165,13 @@ The open source https://site.mockito.org/[Mockito framework] makes it easy to un
 .`build.gradle`
 [source.multi-language-sample,groovy]
 ----
-include::{groovy-example-dir}/build-2.gradle[tags=add-mockito]
+include::{samples-dir}/groovy-dsl/build-2.gradle[tags=add-mockito]
 ----
 
 .`build.gradle.kts`
 [source.multi-language-sample,kotlin]
 ----
-include::{kotlin-example-dir}/build-2.gradle.kts[tags=add-mockito]
+include::{samples-dir}/kotlin-dsl/build-2.gradle.kts[tags=add-mockito]
 ----
 
 <1> Adding Mockito
@@ -181,7 +181,7 @@ To unit test the servlet, create a package folder `org.gradle.demo` beneath `src
 .src/test/java/org/gradle/demo/HelloServletTest.java
 [source,java]
 ----
-include::{groovy-example-dir}/webdemo/src/test/java/org/gradle/demo/HelloServletTest.java[]
+include::{samples-dir}/groovy-dsl/webdemo/src/test/java/org/gradle/demo/HelloServletTest.java[]
 ----
 
 The test creates mock objects for the `HttpServletRequest`, `HttpServletResponse`, and `RequestDispatcher` classes. For the `doGet` test, a `PrintWriter` that uses a `StringWriter` is created, and the mock request object is configured to return it when the `getWriter` method is invoked. After calling the `doGet` method, the test checks that the returned string is correct.
@@ -218,21 +218,21 @@ The `gretty` plugin combines with Gradle to make it easy to add functional tests
 .`build.gradle`
 [source.multi-language-sample,groovy]
 ----
-include::{groovy-example-dir}/build-3.gradle[tags=configure-gretty]
+include::{samples-dir}/groovy-dsl/build-3.gradle[tags=configure-gretty]
 
 // ... rest from before ...
 
-include::{groovy-example-dir}/build-3.gradle[tags=add-selenium]
+include::{samples-dir}/groovy-dsl/build-3.gradle[tags=add-selenium]
 ----
 
 .`build.gradle.kts`
 [source.multi-language-sample,kotlin]
 ----
-include::{kotlin-example-dir}/build-3.gradle.kts[tags=configure-gretty]
+include::{samples-dir}/kotlin-dsl/build-3.gradle.kts[tags=configure-gretty]
 
 // ... rest from before ...
 
-include::{kotlin-example-dir}/build-3.gradle.kts[tags=add-selenium]
+include::{samples-dir}/kotlin-dsl/build-3.gradle.kts[tags=add-selenium]
 ----
 
 <1> Tell gretty to start and stop the server on test
