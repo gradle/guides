@@ -32,8 +32,8 @@ class ValidateMultiProjectSpec extends Specification {
 
         where:
         dsl      | sourceDir
-        'groovy' | new File('./src/example/groovy-dsl')
-        'kotlin' | new File('./src/example/kotlin-dsl')
+        'groovy' | new File('./samples/groovy-dsl')
+        'kotlin' | new File('./samples/kotlin-dsl')
     }
 
 }
