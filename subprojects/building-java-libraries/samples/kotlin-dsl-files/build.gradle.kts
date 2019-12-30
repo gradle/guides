@@ -1,3 +1,22 @@
+// tag::init[]
+
+
+plugins {
+    `java-library`
+}
+
+repositories {
+    jcenter() // <1>
+}
+
+dependencies {
+    api("org.apache.commons:commons-math3:3.6.1") // <2>
+
+    implementation("com.google.guava:guava:28.0-jre") // <3>
+
+    testImplementation("junit:junit:4.12") // <4>
+}
+
 // end::init[]
 
 // tag::version[]
@@ -16,3 +35,4 @@ tasks {
     }
 }
 // end::jar-manifest[]
+

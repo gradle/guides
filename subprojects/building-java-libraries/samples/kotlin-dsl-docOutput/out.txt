@@ -1,0 +1,7 @@
+> Task :compileJava
+> Task :processResources NO-SOURCE
+> Task :classes
+> Task :javadoc
+
+BUILD SUCCESSFUL in 2s
+2 actionable tasks: 2 executed
