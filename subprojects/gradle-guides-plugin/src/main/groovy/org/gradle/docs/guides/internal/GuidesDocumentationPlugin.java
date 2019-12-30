@@ -49,6 +49,9 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         project.getPluginManager().apply(DocumentationBasePlugin.class);
         project.getPluginManager().apply("org.asciidoctor.convert"); // For the `asciidoctor` configuration
 
+        project.getRepositories().maven(it -> it.setUrl("https://repo.gradle.org/gradle/libs-releases"));
+        project.getDependencies().add("asciidoctor", "org.gradle:docs-asciidoctor-extensions:0.4.0");
+
         TaskProvider<Task> assemble = tasks.named(LifecycleBasePlugin.ASSEMBLE_TASK_NAME);
         TaskProvider<Task> check = tasks.register("checkGuides");
 

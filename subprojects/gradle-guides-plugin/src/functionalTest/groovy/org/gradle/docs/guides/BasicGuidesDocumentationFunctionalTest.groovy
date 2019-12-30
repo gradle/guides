@@ -470,6 +470,37 @@ Hello world!
         indexFile.text.contains('<footer class="site-layout__footer site-footer" itemscope="itemscope" itemtype="https://schema.org/WPFooter">')
     }
 
+    def "can include contribution"() {
+        given:
+        makeSingleProject()
+        writeGuideUnderTest()
+        file('src/docs/guides/demo/contents/index.adoc') << """
+include::contribute[repo-path="gradle-guides/demo"]
+"""
+
+        expect:
+        build('assemble')
+    }
+
+    def "can include sample"() {
+        given:
+        makeSingleProject()
+        writeGuideUnderTest()
+        file('src/docs/guides/demo/contents/index.adoc') << '''
+====
+include::sample[dir="groovy-dsl/code", files="settings.gradle[]"]
+include::sample[dir="kotlin-dsl/code", files="settings.gradle.kts[]"]
+====
+'''
+        temporaryFolder.newFolder('samples', 'groovy-dsl', 'code')
+        temporaryFolder.newFolder('samples', 'kotlin-dsl', 'code')
+        file('samples/groovy-dsl/code/settings.gradle') << "rootProject.name = 'demo'"
+        file('samples/kotlin-dsl/code/settings.gradle.kts') << 'rootProject.name = "demo"'
+
+        expect:
+        build('assemble')
+    }
+
     private TestFile image(Object... path) {
         def result = file(path)
         result.parentFile.mkdirs()
