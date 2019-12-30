@@ -37,7 +37,7 @@ Create a `settings.gradle` file and set the name of the project. Doing this will
 .settings.gradle
 [source,groovy]
 ----
-include::{example}/settings.gradle[]
+include::{samplescodedir}/settings.gradle[]
 ----
 
 Now create a `build.gradle` file and apply the Java plugin.
@@ -45,7 +45,7 @@ Now create a `build.gradle` file and apply the Java plugin.
 .build.gradle
 [source,groovy]
 ----
-include::{example}/build.gradle[tags=java]
+include::{samplescodedir}/build.gradle[tags=java]
 ----
 
 That is enough to build a self-contained Java project, but you will be creating a greeter application, which will print the greeting in Ascii-art. For that an external library is required. Continue editing `build.gradle` and add a `repositories` block.
@@ -53,7 +53,7 @@ That is enough to build a self-contained Java project, but you will be creating 
 .build.gradle
 [source,groovy]
 ----
-include::{example}/build.gradle[tags=repositories]
+include::{samplescodedir}/build.gradle[tags=repositories]
 ----
 <1> Use JCenter as the repository.
 
@@ -64,7 +64,7 @@ The next step is to tell Gradle which external artifacts you need for your proje
 .build.gradle
 [source,groovy]
 ----
-include::{example}/build.gradle[tags=dependencies]
+include::{samplescodedir}/build.gradle[tags=dependencies]
 ----
 <1> Add the JFiglet dependency to the `implementation` configuration.
 
@@ -82,7 +82,7 @@ You can inspect all of the dependencies you have added on a per-configuration ba
 ----
 ./gradlew dependencies --configuration implementation # <1>
 
-include::{gradle-outdir}/clean-dependencies/out.txt[]
+include::{samples-dir}/clean-dependencies/out.txt[]
 ----
 <1> The `--configuration` parameter restricts inspection to a single configuration.
 
@@ -95,7 +95,7 @@ Proceed to creating a `src/main/java` folder and place a `GreeterApp.java` file 
 .src/main/java/GreeterApp.java
 [source,java]
 ----
-include::{example}/src/main/java/GreeterApp.java[]
+include::{samplescodedir}/src/main/java/GreeterApp.java[]
 ----
 
 NOTE: Due to simplicity of this two line application, testing will not be included in this example.
@@ -106,7 +106,7 @@ Build your application by using the `jar` task.
 ----
 $ ./gradlew jar
 
-include::{gradle-outdir}/clean-assemble/out.txt[]
+include::{samples-dir}/clean-assemble/out.txt[]
 ----
 
 As this is an application, it will be useful to distribute it. Edit `build.gradle` again and add the Application plugin.
@@ -114,7 +114,7 @@ As this is an application, it will be useful to distribute it. Edit `build.gradl
 .build.gradle
 [source,groovy]
 ----
-include::{example}/build.gradle[tags=application]
+include::{samplescodedir}/build.gradle[tags=application]
 ----
 <1> The link:{user-manual}application_plugin.html[Application plugin] is a very useful plugin that allows you to bundle your application along with all of its dependencies.
 <2> This configures the entry point into the application, which needs to be a class with a class (static) method called `main`.
@@ -125,7 +125,7 @@ Finish building your application by using the `build` task.
 ----
 $ ./gradlew build
 
-include::{gradle-outdir}/build/out.txt[]
+include::{samples-dir}/build/out.txt[]
 ----
 
 If you inspect the `build/distributions` folder you will notice both `.zip` and `.tar` archives. This is the application ready for distribution. Now it is time to test your application manually. The Application plugin provides a useful `installDist` task to install your application into the `build/install` folder for validation purposes.
@@ -134,7 +134,7 @@ If you inspect the `build/distributions` folder you will notice both `.zip` and 
 ----
 $ ./gradlew installDist
 
-include::{gradle-outdir}/install/out.txt[]
+include::{samples-dir}/install/out.txt[]
 ----
 
 Look in `build/install` where you should find a `greeterApp` folder containing `lib` and `bin` folders. If you look inthe `lib` folder you will see both your application and the JFiglet JARs.
@@ -146,7 +146,7 @@ Run the application by changing to the `build/install/greeterApp` folder and exe
 $ cd build/install/greeterApp
 $ ./bin/greeterApp Gradle
 
-include::{gradle-outdir}/run/run.txt[]
+include::{samples-dir}/run/run.txt[]
 ----
 
 Congratulations! You have just created an application which consumes a third-party library from an external repository.
