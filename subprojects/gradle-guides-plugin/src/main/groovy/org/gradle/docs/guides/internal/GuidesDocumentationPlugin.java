@@ -113,18 +113,14 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
 
             // TODO: Allow multiple guide per project
             task.getAttributes().empty();
-            task.getAttributes().put("projdir", layout.getProjectDirectory().getAsFile().getAbsolutePath());
-            task.getAttributes().put("codedir", layout.getProjectDirectory().file("src/main").getAsFile().getAbsolutePath());
-            task.getAttributes().put("testdir", layout.getProjectDirectory().file("src/test").getAsFile().getAbsolutePath());
-            task.getAttributes().put("samplescodedir", layout.getProjectDirectory().file("samples/code").getAsFile().getAbsolutePath());
-            task.getAttributes().put("samplesoutputdir", layout.getProjectDirectory().file("samples/output").getAsFile().getAbsolutePath());
-            task.getAttributes().put("samples-dir", layout.getProjectDirectory().file("samples").getAsFile().getAbsolutePath());
+            task.getAttributes().put("samplescodedir", binary.getGuideDirectory().file("samples/code").map(it -> it.getAsFile().getAbsolutePath()));
+            task.getAttributes().put("samplesoutputdir", binary.getGuideDirectory().file("samples/output").map(it -> it.getAsFile().getAbsolutePath()));
+            task.getAttributes().put("samples-dir", binary.getGuideDirectory().file("samples").map(it -> it.getAsFile().getAbsolutePath()));
             task.getAttributes().put("gradle-version", binary.getGradleVersion());
             task.getAttributes().put("user-manual", binary.getGradleVersion().map(v -> "https://docs.gradle.org/" + v + "/userguide/"));
             task.getAttributes().put("language-reference", binary.getGradleVersion().map(v -> "https://docs.gradle.org/" + v + "/dsl/"));
             task.getAttributes().put("api-reference", binary.getGradleVersion().map(v -> "https://docs.gradle.org/" + v + "/javadoc/"));
             task.getAttributes().put("repository-path", binary.getRepositoryPath());
-            task.getAttributes().put("guide-title", binary.getDisplayName());
             task.getIndexFile().convention(binary.getGuideDirectory().file("contents/index.adoc"));
             task.getOutputFile().fileProvider(providers.provider(() -> new File(task.getTemporaryDir(), "index.adoc")));
         });

@@ -268,9 +268,9 @@ include::step-2.adoc[]
         then:
         def indexFile = file('build/working/guides/render-guides/demo/index.html')
         indexFile.exists()
-        indexFile.text.contains("Samples directory: ${file('samples')}")
-        indexFile.text.contains("Samples code directory: ${file('samples/code')}")
-        indexFile.text.contains("Samples output directory: ${file('samples/output')}")
+        indexFile.text.contains("Samples directory: ${file('src/docs/guides/demo/samples')}")
+        indexFile.text.contains("Samples code directory: ${file('src/docs/guides/demo/samples/code')}")
+        indexFile.text.contains("Samples output directory: ${file('src/docs/guides/demo/samples/output')}")
     }
 
     def "defaults description to empty string"() {
@@ -342,28 +342,6 @@ include::step-2.adoc[]
         def indexFile = file('build/working/guides/render-guides/demo/index.html')
         indexFile.exists()
         indexFile.text.contains('Repository path: foo/bar')
-    }
-
-    def "can configure the display name"() {
-        given:
-        makeSingleProject()
-        writeGuideUnderTest()
-        file('src/docs/guides/demo/contents/index.adoc') << """
-* Guide title: {guide-title}
-"""
-        buildFile << """
-            ${guideUnderTestDsl} {
-                title = "Some Title"
-            }
-        """
-
-        when:
-        build('assemble')
-
-        then:
-        def indexFile = file('build/working/guides/render-guides/demo/index.html')
-        indexFile.exists()
-        indexFile.text.contains('Guide title: Some Title')
     }
 
     def "defaults to current Gradle version for minimum Gradle version of the guide"() {
