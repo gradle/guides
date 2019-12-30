@@ -2,6 +2,7 @@ package org.gradle.docs.guides.internal;
 
 import groovy.lang.Closure;
 import org.asciidoctor.gradle.AsciidoctorTask;
+import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -158,19 +159,25 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
                 }
             });
 
-            task.doFirst(t -> {
-                deleteDirectory(extension.getRenderedDocumentationRoot().get().getAsFile());
+            task.doFirst(new Action<Task>() {
+                @Override
+                public void execute(Task t) {
+                    deleteDirectory(extension.getRenderedDocumentationRoot().get().getAsFile());
+                }
             });
 
-            task.doLast(t -> {
-                task.getProject().copy(spec -> {
-                    extension.getBinaries().forEach(binary -> {
-                        spec.from(binary.getGuideDirectory().dir("contents/images"), sub -> {
-                            sub.into(binary.getPermalink().get() + "/images");
+            task.doLast(new Action<Task>() {
+                @Override
+                public void execute(Task t) {
+                    task.getProject().copy(spec -> {
+                        extension.getBinaries().forEach(binary -> {
+                            spec.from(binary.getGuideDirectory().dir("contents/images"), sub -> {
+                                sub.into(binary.getPermalink().get() + "/images");
+                            });
                         });
+                        spec.into(extension.getRenderedDocumentationRoot());
                     });
-                    spec.into(extension.getRenderedDocumentationRoot());
-                });
+                }
             });
 
             // TODO: This breaks the provider
@@ -209,12 +216,15 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             task.getLogging().addStandardErrorListener(listener);
             task.getLogging().addStandardOutputListener(listener);
 
-            task.doLast(t -> {
-                task.getLogging().removeStandardOutputListener(listener);
-                task.getLogging().removeStandardErrorListener(listener);
-                String output = capturedOutput.stream().collect(Collectors.joining());
-                if (output.indexOf("include file not found:") > 0) {
-                    throw new RuntimeException("Include file(s) not found.");
+            task.doLast(new Action<Task>() {
+                @Override
+                public void execute(Task t) {
+                    task.getLogging().removeStandardOutputListener(listener);
+                    task.getLogging().removeStandardErrorListener(listener);
+                    String output = capturedOutput.stream().collect(Collectors.joining());
+                    if (output.indexOf("include file not found:") > 0) {
+                        throw new RuntimeException("Include file(s) not found.");
+                    }
                 }
             });
         });

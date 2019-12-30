@@ -56,7 +56,7 @@ class BasicGuidesDocumentationFunctionalTest extends AbstractGuideFunctionalSpec
 
     // TODO: Add this test for samples as well
     @Unroll
-    def "fails if disallowed characters in guide name"(String name) {
+    def "fails if disallowed characters in guide name (#name)"(String name) {
         buildFile << applyDocumentationPlugin() << createGuide(name)
 
         expect:
@@ -250,6 +250,224 @@ include::step-2.adoc[]
 
         expect:
         buildAndFail('assemble')
+    }
+
+    def "adds Asciidoctor attributes for samples code and output directory"() {
+        given:
+        makeSingleProject()
+        writeGuideUnderTest()
+        file('src/docs/guides/demo/contents/index.adoc') << """
+* Samples directory: {samples-dir}
+* Samples code directory: {samplescodedir}
+* Samples output directory: {samplesoutputdir}
+"""
+
+        when:
+        build('assemble')
+
+        then:
+        def indexFile = file('build/working/guides/render-guides/demo/index.html')
+        indexFile.exists()
+        indexFile.text.contains("Samples directory: ${file('samples')}")
+        indexFile.text.contains("Samples code directory: ${file('samples/code')}")
+        indexFile.text.contains("Samples output directory: ${file('samples/output')}")
+    }
+
+    def "defaults description to empty string"() {
+        given:
+        makeSingleProject()
+        writeGuideUnderTest()
+        buildFile << """
+            tasks.register('verifyDescription') {
+                doLast {
+                    assert ${guideUnderTestDsl}.description.get() == ''
+                }
+            }
+        """
+
+        expect:
+        build('verifyDescription')
+    }
+
+    def "defaults display name to name as title case"() {
+        given:
+        makeSingleProject()
+        writeGuideUnderTest()
+        buildFile << """
+            tasks.register('verifyDisplayName') {
+                doLast {
+                    assert ${guideUnderTestDsl}.title.get() == 'Demo'
+                }
+            }
+        """
+
+        expect:
+        build('verifyDisplayName')
+    }
+
+    def "defaults guide repository path to project name under gradle-guides organization"() {
+        given:
+        makeSingleProject()
+        writeGuideUnderTest()
+        buildFile << """
+            tasks.register('verifyGuideRepositoryPath') {
+                doLast {
+                    assert ${guideUnderTestDsl}.repositoryPath.get() == 'gradle-guides/some-project-name'
+                }
+            }
+        """
+        settingsFile << "rootProject.name = 'some-project-name'"
+
+        expect:
+        build('verifyGuideRepositoryPath')
+    }
+
+    def "can configure the repository path of the guide"() {
+        given:
+        makeSingleProject()
+        writeGuideUnderTest()
+        file('src/docs/guides/demo/contents/index.adoc') << """
+* Repository path: {repository-path}
+"""
+        buildFile << """
+            ${guideUnderTestDsl} {
+                repositoryPath = "foo/bar"
+            }
+        """
+
+        when:
+        build('assemble')
+
+        then:
+        def indexFile = file('build/working/guides/render-guides/demo/index.html')
+        indexFile.exists()
+        indexFile.text.contains('Repository path: foo/bar')
+    }
+
+    def "can configure the display name"() {
+        given:
+        makeSingleProject()
+        writeGuideUnderTest()
+        file('src/docs/guides/demo/contents/index.adoc') << """
+* Guide title: {guide-title}
+"""
+        buildFile << """
+            ${guideUnderTestDsl} {
+                title = "Some Title"
+            }
+        """
+
+        when:
+        build('assemble')
+
+        then:
+        def indexFile = file('build/working/guides/render-guides/demo/index.html')
+        indexFile.exists()
+        indexFile.text.contains('Guide title: Some Title')
+    }
+
+    def "defaults to current Gradle version for minimum Gradle version of the guide"() {
+        given:
+        makeSingleProject()
+        writeGuideUnderTest()
+        file('src/docs/guides/demo/contents/index.adoc') << """
+* Gradle version: {gradle-version}
+* User manual link: {user-manual}
+* Language reference link: {language-reference}
+* API reference link: {api-reference}
+"""
+
+        when:
+        usingGradleVersion('6.0')
+        build('assemble')
+
+        then:
+        def indexFile = file('build/working/guides/render-guides/demo/index.html')
+        indexFile.exists()
+        indexFile.text.contains('Gradle version: 6.0')
+        (indexFile.text =~ /User manual link: <a href=.+>https:\/\/docs.gradle.org\/6\.0\/userguide\/<\/a>/).find()
+        (indexFile.text =~ /Language reference link: <a href=.+>https:\/\/docs.gradle.org\/6\.0\/dsl\/<\/a>/).find()
+        (indexFile.text =~ /API reference link: <a href=.+>https:\/\/docs.gradle.org\/6\.0\/javadoc\/<\/a>/).find()
+    }
+
+    def "can configure the minimum Gradle version of the guide"() {
+        given:
+        makeSingleProject()
+        writeGuideUnderTest()
+        file('src/docs/guides/demo/contents/index.adoc') << """
+* Gradle version: {gradle-version}
+* User manual link: {user-manual}
+* Language reference link: {language-reference}
+* API reference link: {api-reference}
+"""
+        buildFile << """
+            ${guideUnderTestDsl} {
+                minimumGradleVersion = "5.2"
+            }
+        """
+
+        when:
+        build('assemble')
+
+        then:
+        def indexFile = file('build/working/guides/render-guides/demo/index.html')
+        indexFile.exists()
+        indexFile.text.contains('Gradle version: 5.2')
+        (indexFile.text =~ /User manual link: <a href=.+>https:\/\/docs.gradle.org\/5\.2\/userguide\/<\/a>/).find()
+        (indexFile.text =~ /Language reference link: <a href=.+>https:\/\/docs.gradle.org\/5\.2\/dsl\/<\/a>/).find()
+        (indexFile.text =~ /API reference link: <a href=.+>https:\/\/docs.gradle.org\/5\.2\/javadoc\/<\/a>/).find()
+    }
+
+    def "can reference attributes for samples directories in Asciidoc generation"() {
+        given:
+        makeSingleProject()
+        writeGuideUnderTest()
+        file('src/docs/guides/demo/contents/index.adoc') << """
+My build file:
+include::{samplescodedir}/helloWorld/build.gradle[]
+Output:
+include::{samplesoutputdir}/helloWorld/build.out[]
+"""
+        def samplesCodeFolder = temporaryFolder.newFolder('samples', 'code')
+        File codeDir = createDir(samplesCodeFolder, 'helloWorld')
+        new File(codeDir, 'build.gradle') << """
+task helloWorld {
+    doLast {
+        println 'Hello world!'
+    }
+}
+"""
+        def samplesOutputFolder = temporaryFolder.newFolder('samples', 'output')
+        File outputDir = createDir(samplesOutputFolder, 'helloWorld')
+        new File(outputDir, 'build.out') << """
+> Task :helloWorld
+Hello world!
+"""
+
+        when:
+        build('assemble')
+
+        then:
+        def indexFile = file('build/working/guides/render-guides/demo/index.html')
+        indexFile.exists()
+        indexFile.text.contains('task helloWorld')
+        indexFile.text.contains('Task :helloWorld')
+    }
+
+    def "header and footer is injected during asciidoctor postprocessing"() {
+        given:
+        makeSingleProject()
+        writeGuideUnderTest()
+
+        when:
+        build('assemble')
+
+        then:
+        def indexFile = file('build/working/guides/render-guides/demo/index.html')
+        indexFile.exists()
+        indexFile.text.contains('<script defer src="https://guides.gradle.org/js/guides')
+        indexFile.text.contains('<header class="site-layout__header site-header js-site-header" itemscope="itemscope" itemtype="https://schema.org/WPHeader">')
+        indexFile.text.contains('<footer class="site-layout__footer site-footer" itemscope="itemscope" itemtype="https://schema.org/WPFooter">')
     }
 
     private TestFile image(Object... path) {
