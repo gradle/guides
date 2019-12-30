@@ -45,7 +45,7 @@ Create the class `GreetingPlugin` in the directory you just created — `buildS
 [source,java]
 .buildSrc/src/main/java/org/example/greeting/GreetingPlugin.java
 ----
-include::{exampledir}/buildSrc/src/main/java/org/example/greeting/GreetingPlugin.java[]
+include::{samplescodedir}/buildSrc/src/main/java/org/example/greeting/GreetingPlugin.java[]
 ----
 <1> Creates a new task named `hello` of type `Greeting` (which you will define shortly)
 <2> Sets default values for the new task
@@ -59,7 +59,7 @@ Next, you'll create the class for the task type that the plugin is using. Add a 
 [source,java]
 .buildSrc/src/main/java/org/example/greeting/Greeting.java
 ----
-include::{exampledir}/buildSrc/src/main/java/org/example/greeting/Greeting.java[]
+include::{samplescodedir}/buildSrc/src/main/java/org/example/greeting/Greeting.java[]
 ----
 <1> Prints out the configured greeting when the task runs
 
@@ -74,12 +74,12 @@ Create a build script file in the root of the host project — the `greeting-plu
 [source.multi-language-sample,groovy]
 .build.gradle
 ----
-include::{exampledir}/build.gradle[tags=use-plugin-class-name-with-info]
+include::{samplescodedir}/build.gradle[tags=use-plugin-class-name-with-info]
 ----
 [source.multi-language-sample, kotlin]
 .build.gradle.kts
 ----
-include::{exampledir}/build.gradle.kts[tags=use-plugin-class-name-with-info]
+include::{samplescodedir}/build.gradle.kts[tags=use-plugin-class-name-with-info]
 ----
 <1> This applies your plugin to the current `Project` instance, adding the `hello` task to the build.
 
@@ -89,7 +89,7 @@ You can now verify that your plugin is working by running its `hello` task in th
 
 ----
 $ gradle hello
-include::{gradle-outdir}/hello/out.txt[]
+include::{samplesoutputdir}/hello/out.txt[]
 ----
 
 The bulk of the output reflects that the files in `buildSrc` are treated as a Java project, which needs to be built first. Once that happens, the classes inside that project become available in your main build and the main build can execute the task or tasks that you specified.
@@ -99,12 +99,12 @@ Your build is currently using the default property values for the greeting, henc
 [source.multi-language-sample,groovy]
 .build.gradle
 ----
-include::{exampledir}/configure-hello.gradle[tags=configure-hello]
+include::{samplescodedir}/configure-hello.gradle[tags=configure-hello]
 ----
 [source.multi-language-sample,kotlin]
 .build.gradle.kts
 ----
-include::{exampledir}/configure-hello.gradle.kts[tags=configure-hello]
+include::{samplescodedir}/configure-hello.gradle.kts[tags=configure-hello]
 ----
 <1> Configures multiple properties of the task named `hello`
 
@@ -114,7 +114,7 @@ Now when you run the `hello` task -- using `-q` to hide the `buildSrc` output th
 
 ----
 $ gradle -q hello
-include::{gradle-outdir}/helloAgain/out.txt[]
+include::{samplesoutputdir}/helloAgain/out.txt[]
 ----
 
 Your plugin is now functionally complete and you've seen it in action in the above build. There is just one more thing we want to show you, which helps make the build script a bit tidier and also helps when it comes to publishing your plugin: adding a plugin identifier.
@@ -127,7 +127,7 @@ Create the following properties file:
 
 .buildSrc/src/main/resources/META-INF/gradle-plugins/org.example.greeting.properties
 ----
-include::{exampledir}/buildSrc/src/main/resources/META-INF/gradle-plugins/org.example.greeting.properties[]
+include::{samplescodedir}/buildSrc/src/main/resources/META-INF/gradle-plugins/org.example.greeting.properties[]
 ----
 
 Gradle uses this file to determine which class implements the `Plugin` interface. The name of this properties file excluding the `.properties` extension becomes the identifier of the plugin.
@@ -139,12 +139,12 @@ That's all you need to do in your plugin, so now you can replace the following l
 [source.multi-language-sample,groovy]
 .build.gradle
 ----
-include::{exampledir}/build.gradle[tags=use-plugin-class-name]
+include::{samplescodedir}/build.gradle[tags=use-plugin-class-name]
 ----
 [source.multi-language-sample,kotlin]
 .build.gradle.kts
 ----
-include::{exampledir}/build.gradle.kts[tags=use-plugin-class-name]
+include::{samplescodedir}/build.gradle.kts[tags=use-plugin-class-name]
 ----
 
 with one that uses the plugin ID:
@@ -152,12 +152,12 @@ with one that uses the plugin ID:
 [source.multi-language-sample,groovy]
 .build.gradle
 ----
-include::{exampledir}/configure-hello.gradle[tags=use-plugin-id]
+include::{samplescodedir}/configure-hello.gradle[tags=use-plugin-id]
 ----
 [source.multi-language-sample,kotlin]
 .build.gradle.kts
 ----
-include::{exampledir}/configure-hello.gradle.kts[tags=use-plugin-id]
+include::{samplescodedir}/configure-hello.gradle.kts[tags=use-plugin-id]
 ----
 
 Note how the name of the properties file -- `org.example.greeting.properties` -- matches the plugin ID. That is required.
