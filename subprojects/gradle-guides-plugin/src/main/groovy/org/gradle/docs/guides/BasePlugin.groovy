@@ -31,7 +31,6 @@ import org.gradle.docs.guides.internal.GuidesDocumentationPlugin
 
 import javax.inject.Inject
 
-import static org.gradle.docs.internal.StringUtils.toKebabCase
 import static org.gradle.docs.internal.StringUtils.toLowerCamelCase
 
 /**
@@ -52,7 +51,6 @@ class BasePlugin implements Plugin<Project> {
         project.getPluginManager().apply(GuidesDocumentationPlugin.class);
 
         def guides = addGuidesExtension(project)
-        addGradleRunnerSteps(project)
         addAsciidoctor(project, guides)
         addTestJvmCode(project)
     }
@@ -69,10 +67,6 @@ class BasePlugin implements Plugin<Project> {
         result.guideDirectory.set(project.projectDir)
         result.permalink.set(project.name)
         return result
-    }
-
-    private void addGradleRunnerSteps(Project project) {
-        project.apply plugin : 'org.ysb33r.gradlerunner'
     }
 
     @CompileDynamic
@@ -159,8 +153,6 @@ class BasePlugin implements Plugin<Project> {
             task.sources { include("index.adoc") }
         }
 
-        project.tasks.getByName("asciidoctor").dependsOn project.tasks.getByPath('gradleRunner')
-        project.tasks.getByName("guidesMultiPage").dependsOn project.tasks.getByPath('gradleRunner')
         project.tasks.getByName("assemble").dependsOn asciidoc
 
         // TODO - rework the above to use lazy configuration
