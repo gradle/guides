@@ -16,11 +16,11 @@ repositories {
 }
 
 dependencies {
-    compile 'net.sourceforge.nekohtml:nekohtml:1.9.21'
-    compile 'org.codehaus.groovy.modules:http-builder-ng-core:0.11.1'
+    implementation 'net.sourceforge.nekohtml:nekohtml:1.9.21'
+    implementation 'org.codehaus.groovy.modules:http-builder-ng-core:0.11.1'
 
-    compile 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.9.2'
-    compile 'org.apache.ant:ant:1.9.13'
+    implementation 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.9.2'
+    implementation 'org.apache.ant:ant:1.9.13'
 
     runtimeOnly project('gradle-runner-plugin')
 
