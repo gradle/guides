@@ -44,12 +44,6 @@ tasks {
         filter<ReplaceTokens>("tokens" to tokens)
     }
 
-    asciidoctor {
-        dependsOn(preProcessSamples)
-        attributes.putAll(mapOf(
-            "samplescodedir" to project.file("build/samples/code").absolutePath
-        ))
-    }
     guidesMultiPage {
         dependsOn(preProcessSamples)
         attributes.putAll(mapOf(
