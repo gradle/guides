@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.gradle.docs.guides;
+package org.gradle.docs.guides.internal;
 
 import org.gradle.api.JavaVersion;
 import org.gradle.api.Plugin;

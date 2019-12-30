@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.gradle.docs.guides;
+package org.gradle.docs.guides.internal;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.provider.ProviderFactory;
 import org.gradle.docs.DocumentationExtension;
-import org.gradle.docs.guides.internal.GuidesDocumentationPlugin;
+import org.gradle.docs.guides.Guide;
 
 import javax.inject.Inject;
 
@@ -35,7 +35,7 @@ import static org.gradle.docs.internal.StringUtils.toLowerCamelCase;
  *     <li>{@literal samplesoutputdir}: The directory containing expected samples output defined as {@literal "$projectDir/samples/output"}</li>
  * </ul>
  */
-public class BasePlugin implements Plugin<Project> {
+public class LegacyGuideDocumentationPlugin implements Plugin<Project> {
 
     static final String GUIDE_EXTENSION_NAME = "guide";
 

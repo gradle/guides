@@ -38,15 +38,9 @@ gradlePlugin {
     plugins {
         guidePlugin {
             id = 'org.gradle.guides'
-            implementationClass = 'org.gradle.docs.guides.BasePlugin'
+            implementationClass = 'org.gradle.docs.guides.internal.LegacyGuideDocumentationPlugin'
             displayName = 'Gradle Guides Plugin'
             description = 'Plugin for authoring Gradle guides'
-        }
-        basePlugin {
-            id = 'org.gradle.guides.base'
-            implementationClass = 'org.gradle.docs.guides.BasePlugin'
-            displayName = 'Gradle Guides Base Plugin'
-            description = 'Base plugin required by new Gradle guide plugins'
         }
         samplePlugin {
             id = 'org.gradle.samples'
