@@ -43,7 +43,7 @@ Let’s say you implemented a plugin that resolves the latest version of a depen
 .LatestArtifactVersion.java
 [source,java]
 ----
-include::{groovy-example-dir}/code/custom-task/buildSrc/src/main/java/com/company/gradle/binaryrepo/LatestArtifactVersion.java[]
+include::{samples-dir}/groovy-dsl/code/custom-task/buildSrc/src/main/java/com/company/gradle/binaryrepo/LatestArtifactVersion.java[]
 ----
 
 The end user of the task can now easily create multiple tasks of that type with different configuration. All the imperative, potentially complex logic is completely hidden in the custom task implementation.
@@ -64,7 +64,7 @@ Let’s consider the following sample task for illustration. The task generates 
 .Generate.java
 [source,java]
 ----
-include::{groovy-example-dir}/code/incremental-task/buildSrc/src/main/java/Generate.java[]
+include::{samples-dir}/groovy-dsl/code/incremental-task/buildSrc/src/main/java/Generate.java[]
 ----
 
 The first section of this guide talks about the <<plugin-development-plugin,Plugin Development plugin>>. As an added benefit of applying the plugin to your project, the task `validateTaskProperties` automatically checks for an existing input/output annotation for every public property defined in a custom task type implementation.
@@ -90,7 +90,7 @@ It's fairly easy to implement the backing objects of such an extension. First of
 .CustomData.java
 [source,java]
 ----
-include::{groovy-example-dir}/code/dsl-like-api/buildSrc/src/main/java/CustomData.java[]
+include::{samples-dir}/groovy-dsl/code/dsl-like-api/buildSrc/src/main/java/CustomData.java[]
 ----
 
 In the extension, you'll need to create an instance of the `CustomData` class and a method that can delegate the captured values to the data instance. To configure underlying data objects define a parameter of type `{api-reference}org/gradle/api/Action.html[Action]`. The following example demonstrates the use of `Action` in an extension definition.
@@ -98,7 +98,7 @@ In the extension, you'll need to create an instance of the `CustomData` class an
 .SiteExtension.java
 [source,java]
 ----
-include::{groovy-example-dir}/code/dsl-like-api/buildSrc/src/main/java/SiteExtension.java[]
+include::{samples-dir}/groovy-dsl/code/dsl-like-api/buildSrc/src/main/java/SiteExtension.java[]
 ----
 
 NOTE: If you need second- or third-level nesting, you will also have to add overloads that take a `Closure`, because Gradle cannot instrument nested extensions at the moment.
@@ -129,7 +129,7 @@ Let's have a look at the internals of the plugin `BinaryRepositoryVersionPlugin`
 .BinaryRepositoryVersionPlugin.java
 [source,java]
 ----
-include::{groovy-example-dir}/code/capture-user-input/buildSrc/src/main/java/BinaryRepositoryVersionPlugin.java[]
+include::{samples-dir}/groovy-dsl/code/capture-user-input/buildSrc/src/main/java/BinaryRepositoryVersionPlugin.java[]
 ----
 
 Instead of using a plain `String` type, the extension defines the field `serverUrl` with type `Property<String>`. The field is initialized in the constructor of the class. It's state can be set directly on the object by getting the instance via the exposed getter methods.
@@ -139,7 +139,7 @@ NOTE: The Gradle classloader automatically injects setter methods alongside all 
 .BinaryRepositoryExtension.java
 [source,java]
 ----
-include::{groovy-example-dir}/code/capture-user-input/buildSrc/src/main/java/BinaryRepositoryExtension.java[]
+include::{samples-dir}/groovy-dsl/code/capture-user-input/buildSrc/src/main/java/BinaryRepositoryExtension.java[]
 
 ----
 
@@ -148,7 +148,7 @@ The task property also defines the `serverUrl` with type `Property`. It allows f
 .LatestArtifactVersion.java
 [source,java]
 ----
-include::{groovy-example-dir}/code/capture-user-input/buildSrc/src/main/java/LatestArtifactVersion.java[]
+include::{samples-dir}/groovy-dsl/code/capture-user-input/buildSrc/src/main/java/LatestArtifactVersion.java[]
 
 ----
 
@@ -170,7 +170,7 @@ Obviously, each of these environments needs to have a data representation in cod
 .ServerEnvironment.java
 [source,java]
 ----
-include::{groovy-example-dir}/code/named-domain-object-container/buildSrc/src/main/java/ServerEnvironment.java[]
+include::{samples-dir}/groovy-dsl/code/named-domain-object-container/buildSrc/src/main/java/ServerEnvironment.java[]
 ----
 
 Gradle exposes the convenience method `{api-reference}org/gradle/api/Project.html#container(java.lang.Class)[Project#container(java.lang.Class)]` to create a container of data objects. The parameter the method takes is the class representing the data. The created instance of type {api-reference}org/gradle/api/NamedDomainObjectContainer.html[NamedDomainObjectContainer] can be exposed to the end user by adding it to the extension container with a specific name.
@@ -178,7 +178,7 @@ Gradle exposes the convenience method `{api-reference}org/gradle/api/Project.htm
 .ServerEnvironmentPlugin.java
 [source,java]
 ----
-include::{groovy-example-dir}/code/named-domain-object-container/buildSrc/src/main/java/ServerEnvironmentPlugin.java[]
+include::{samples-dir}/groovy-dsl/code/named-domain-object-container/buildSrc/src/main/java/ServerEnvironmentPlugin.java[]
 ----
 
 It's very common for a plugin to post-process the captured values within the plugin implementation e.g. to configure tasks. In the example above, a deployment task is created dynamically for every environment that was configured by the user.
@@ -219,13 +219,13 @@ Let’s have a look at an example. You wrote a plugin that downloads files conta
 .DataProcessingPlugin.java
 [source,java]
 ----
-include::{groovy-example-dir}/code/default-dependency/buildSrc/src/main/java/DataProcessingPlugin.java[]
+include::{samples-dir}/groovy-dsl/code/default-dependency/buildSrc/src/main/java/DataProcessingPlugin.java[]
 ----
 
 .DataProcessing.java
 [source,java]
 ----
-include::{groovy-example-dir}/code/default-dependency/buildSrc/src/main/java/DataProcessing.java[]
+include::{samples-dir}/groovy-dsl/code/default-dependency/buildSrc/src/main/java/DataProcessing.java[]
 ----
 
 Now, this approach is very convenient for the end user as there’s no need to actively declare a dependency. The plugin already provides all the knowledge about this implementation detail. But what if the user would like to redefine the default dependency. No problem...the plugin also exposes the custom configuration that can be used to assign a different dependency. Effectively, the default dependency is overwritten.

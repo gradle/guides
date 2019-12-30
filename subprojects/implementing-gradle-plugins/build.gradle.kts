@@ -20,20 +20,3 @@ dependencies {
     testImplementation("org.gradle:sample-check:0.6.1")
     testImplementation(gradleTestKit())
 }
-
-tasks {
-    getByName<AsciidoctorTask>("asciidoctor") {
-        inputs.dir("samples")
-        attributes(
-            mapOf("groovy-example-dir" to file("samples/groovy-dsl"),
-                  "kotlin-example-dir" to file("samples/kotlin-dsl"))
-        )
-    }
-    getByName<AsciidoctorTask>("guidesMultiPage") {
-        inputs.dir("samples")
-        attributes(
-                mapOf("groovy-example-dir" to file("samples/groovy-dsl"),
-                        "kotlin-example-dir" to file("samples/kotlin-dsl"))
-        )
-    }
-}
