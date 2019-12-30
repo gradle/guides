@@ -24,8 +24,3 @@ guidesMultiPage {
     attributes appdir: file('src/3-application')
     attributes plugindir: file('src/4-plugin')
 }
-
-// Add in any generation steps.
-gradleRunner {
-
-}
