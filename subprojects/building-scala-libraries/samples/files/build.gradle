@@ -1,0 +1,19 @@
+
+plugins {
+    id 'scala'
+
+    id 'java-library'
+}
+
+repositories {
+    jcenter() // <1>
+}
+
+dependencies {
+    implementation 'org.scala-lang:scala-library:2.12.9' // <2>
+
+    testImplementation 'junit:junit:4.12' // <3>
+    testImplementation 'org.scalatest:scalatest_2.12:3.0.8' // <4>
+
+    testRuntimeOnly 'org.scala-lang.modules:scala-xml_2.12:1.2.0' // <5>
+}

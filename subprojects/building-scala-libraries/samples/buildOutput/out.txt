@@ -1,0 +1,16 @@
+> Task :compileJava NO-SOURCE
+> Task :compileScala
+> Task :processResources NO-SOURCE
+> Task :classes
+> Task :jar
+> Task :assemble
+> Task :compileTestJava NO-SOURCE
+> Task :compileTestScala
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+> Task :test
+> Task :check
+> Task :build
+
+BUILD SUCCESSFUL in 37s
+4 actionable tasks: 4 executed
