@@ -20,7 +20,7 @@ This task will also execute the link:{language-reference}org.gradle.api.tasks.wr
 
 The first step is to create a folder for the new project and change directory into it.
 
-[listing.terminal]
+[listing.terminal.testable-sample.sample-command]
 ----
 $ mkdir building-cpp-applications
 $ cd building-cpp-applications
@@ -30,9 +30,10 @@ $ cd building-cpp-applications
 
 From inside the new project directory, run the `init` task and select the `libraries` project type and the `{cpp}` language when prompted. For the other questions, press enter to use the default values.
 
-[listing.terminal]
+[listing.terminal.testable-sample.sample-command]
 ----
 $ gradle init
+> Task :wrapper
 
 Select type of project to generate:
   1: basic
@@ -54,10 +55,11 @@ Select build script DSL:
   2: Kotlin
 Enter selection (default: Groovy) [1..2]
 
-Project name (default: building-swift-applications):
+Project name (default: building-cpp-applications):
+
 
 > Task :init
-Get more help with your project: https://docs.gradle.org/{gradle-version}/userguide/building_swift_projects.html
+Get more help with your project: https://docs.gradle.org/5.5.1/userguide/building_cpp_projects.html
 
 BUILD SUCCESSFUL
 2 actionable tasks: 2 executed
@@ -148,7 +150,7 @@ NOTE: The `cpp-unit-test` plugin can also be used to test your application binar
 
 == Execute the build
 
-[listing.terminal]
+[listing.terminal.testable-sample.sample-command]
 ----
 $ ./gradlew build
 include::{samplesoutputdir}/build.txt[]
@@ -170,8 +172,10 @@ As part of the the build process, Gradle packages the main and test applications
 The `installDebug` and `installTest` task copies the executable and generates a shell script for executing the application.
 The following shows the content of the `build/install` folder:
 
-[listing]
+[listing.terminal.testable-sample.sample-command]
 ----
+$ tree ./build/install
+./build/install
 ├── main
 │   └── debug
 │       ├── building-cpp-applications      // <1>
@@ -181,6 +185,8 @@ The following shows the content of the `build/install` folder:
     ├── building-cpp-applicationsTest      // <1>
     └── lib
         └── building-cpp-applicationsTest  // <3>
+
+5 directories, 4 files
 ----
 <1> The script for executing the application variant
 <2> The main executable binary (debug variant)
@@ -200,7 +206,7 @@ In this case, you will find your assembled executable in `build/exe/main/debug` 
 
 Now run your newly built executable.
 
-[listing]
+[listing.testable-sample.sample-command]
 ----
 $ ./build/exe/main/debug/building-cpp-applications
 Hello, World!

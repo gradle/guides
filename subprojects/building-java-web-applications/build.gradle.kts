@@ -12,3 +12,7 @@ guide {
 tasks.named("docsTest") {
     enabled = false
 }
+
+tasks.named("asciidoctorContentDocsTest") {
+    enabled = false
+}

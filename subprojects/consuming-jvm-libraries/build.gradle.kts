@@ -8,3 +8,7 @@ guide {
     displayName.set("Consuming JVM Libraries")
     category.set("Getting Started")
 }
+
+tasks.named("asciidoctorContentDocsTest") {
+    enabled = false
+}

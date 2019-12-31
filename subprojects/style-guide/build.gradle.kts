@@ -8,3 +8,7 @@ guide {
     displayName.set("Style Guide for Gradle Guide Authors")
     category.set("Topical")
 }
+
+tasks.named("asciidoctorContentDocsTest") {
+    enabled = false
+}

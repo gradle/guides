@@ -8,3 +8,7 @@ guide {
     displayName.set("Creating new Gradle builds")
     category.set("Getting Started")
 }
+
+tasks.named("asciidoctorContentDocsTest") {
+    enabled = false
+}

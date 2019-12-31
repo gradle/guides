@@ -16,3 +16,7 @@ guidesMultiPage {
     attributes appdir: file('src/3-application')
     attributes plugindir: file('src/4-plugin')
 }
+
+tasks.named("asciidoctorContentDocsTest") {
+    enabled = false
+}

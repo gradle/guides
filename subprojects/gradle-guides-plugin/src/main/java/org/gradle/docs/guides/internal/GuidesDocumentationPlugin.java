@@ -1,11 +1,14 @@
 package org.gradle.docs.guides.internal;
 
 import org.asciidoctor.gradle.AsciidoctorTask;
+import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
+import org.gradle.api.artifacts.DependencyConstraint;
+import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.attributes.Attribute;
 import org.gradle.api.attributes.Usage;
 import org.gradle.api.file.ProjectLayout;
@@ -19,6 +22,7 @@ import org.gradle.api.tasks.TaskProvider;
 import org.gradle.docs.guides.internal.tasks.GenerateGuidePageAsciidoc;
 import org.gradle.docs.internal.DocumentationBasePlugin;
 import org.gradle.docs.internal.DocumentationExtensionInternal;
+import org.gradle.docs.internal.exemplar.AsciidoctorContentTest;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
 
 import java.io.File;
@@ -71,8 +75,32 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         // Publish the guides to consumers
         createPublishGuidesElements(project.getConfigurations(), objects, renderTask, extension);
 
+        // Testing
+        configureContentExemplarTesting(project, tasks, extension, check, asciidoctorConfiguration);
+
         // Trigger everything by realizing guide container
         project.afterEvaluate(p -> realizeGuides(extension, objects, projectOnlyForCopySpecMethod));
+    }
+
+    private void configureContentExemplarTesting(Project project, TaskContainer tasks, GuidesInternal extension, TaskProvider<Task> check, Configuration asciidoctorClasspath) {
+        Configuration configuration = project.getConfigurations().create("asciidoctorContentDocsTest", it -> it.extendsFrom(asciidoctorClasspath));
+        DependencyHandler dependencies = project.getDependencies();
+        dependencies.add(configuration.getName(), "org.gradle:gradle-tooling-api:6.0.1");
+        dependencies.add(configuration.getName(), "org.apache.commons:commons-lang3:3.9");
+        dependencies.add(configuration.getName(), "org.gradle:sample-check:0.11.0");
+        dependencies.add(configuration.getName(), "junit:junit:4.12");
+
+        TaskProvider<AsciidoctorContentTest> asciidoctorContentDocsTest = tasks.register("asciidoctorContentDocsTest", AsciidoctorContentTest.class, task -> {
+            task.setGroup(LifecycleBasePlugin.VERIFICATION_GROUP);
+            task.setDescription("Check guides steps commands.");
+            task.getClasspath().from(configuration);
+            task.getGradleUserHomeDirectoryForTesting().convention(project.getRootProject().getLayout().getBuildDirectory().dir("working/guides/content-testing-gradle-user-home"));
+            extension.getBinaries().withType(GuideContentBinary.class).forEach(it -> {
+                task.getContentFiles().from(it.getIndexPageFile());
+            });
+        });
+
+        check.configure(it -> it.dependsOn(asciidoctorContentDocsTest));
     }
 
     private Configuration createPublishGuidesElements(ConfigurationContainer configurations, ObjectFactory objects, TaskProvider<? extends Task> renderTask, GuidesInternal extension) {
@@ -144,6 +172,8 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             });
             task.into(extension.getDocumentationInstallRoot());
         });
+
+
 
         TaskProvider<AsciidoctorTask> guidesMultiPage = tasks.register("guidesMultiPage", AsciidoctorTask.class, task -> {
             task.getInputs().files("samples").withPropertyName("samplesDir").withPathSensitivity(PathSensitivity.RELATIVE).optional();

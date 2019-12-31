@@ -25,7 +25,7 @@ repositories {
 }
 
 dependencies {
-    docsTestImplementation("org.gradle:sample-check:0.7.0")
+    docsTestImplementation("org.gradle:sample-check:0.11.0")
     docsTestImplementation(gradleTestKit())
 }
 
@@ -55,4 +55,8 @@ tasks {
         dependsOn(preProcessSamples)
         systemProperty("samplesDir", "$buildDir/samples")
     }
+}
+
+tasks.named("asciidoctorContentDocsTest") {
+    enabled = false
 }

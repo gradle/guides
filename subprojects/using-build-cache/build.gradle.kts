@@ -22,3 +22,7 @@ tasks {
         })
     }
 }
+
+tasks.named("asciidoctorContentDocsTest") {
+    enabled = false
+}
