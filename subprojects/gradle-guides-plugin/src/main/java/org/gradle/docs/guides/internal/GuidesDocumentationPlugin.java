@@ -63,7 +63,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
 
         // Guide binaries
         // TODO: This could be lazy if we had a way to make the TaskContainer require evaluation
-        extension.getBinaries().all(binary -> createTasksForGuideBinary(tasks, layout, providers, binary));
+        extension.getBinaries().withType(GuideContentBinary.class).all(binary -> createTasksForGuideBinary(tasks, layout, providers, binary));
 
         // Render all the documentation out to HTML
         TaskProvider<? extends Task> renderTask = renderGuidesDocumentation(tasks, assemble, check, extension);
@@ -107,7 +107,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         guide.getPermalink().convention(toSnakeCase(guide.getName()));
     }
 
-    private void createTasksForGuideBinary(TaskContainer tasks, ProjectLayout layout, ProviderFactory providers, GuideBinary binary) {
+    private void createTasksForGuideBinary(TaskContainer tasks, ProjectLayout layout, ProviderFactory providers, GuideContentBinary binary) {
         TaskProvider<GenerateGuidePageAsciidoc> generateGuidePage = tasks.register("generate" + capitalize(binary.getName()) + "Page", GenerateGuidePageAsciidoc.class, task -> {
             task.setDescription("Generates asciidoc page for sample '" + binary.getName() + "'");
 
@@ -132,7 +132,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             task.setGroup("documentation");
             task.setDescription("Assembles all intermediate files needed to generate the samples documentation.");
 
-            extension.getBinaries().forEach(binary -> {
+            extension.getBinaries().withType(GuideContentBinary.class).forEach(binary -> {
                 task.from(binary.getGuideDirectory().dir("contents"), sub -> {
                     sub.into(binary.getPermalink());
                     sub.include("**/*.adoc");
@@ -165,12 +165,12 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
                 }
             });
 
-            task.getInputs().files(extension.getBinaries().stream().map(binary -> binary.getGuideDirectory().dir("contents/images")).collect(Collectors.toList())).withPropertyName("images").optional(true);
+            task.getInputs().files(extension.getBinaries().withType(GuideContentBinary.class).stream().map(binary -> binary.getGuideDirectory().dir("contents/images")).collect(Collectors.toList())).withPropertyName("images").optional(true);
             task.doLast(new Action<Task>() {
                 @Override
                 public void execute(Task t) {
                     task.getProject().copy(spec -> {
-                        extension.getBinaries().forEach(binary -> {
+                        extension.getBinaries().withType(GuideContentBinary.class).forEach(binary -> {
                             spec.from(binary.getGuideDirectory().dir("contents/images"), sub -> {
                                 sub.into(binary.getPermalink().get() + "/images");
                             });
@@ -232,7 +232,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
 
         assemble.configure(t -> t.dependsOn(extension.getDistribution().getRenderedDocumentation()));
 
-        extension.getBinaries().configureEach(binary -> {
+        extension.getBinaries().withType(GuideContentBinary.class).configureEach(binary -> {
             tasks.register("view" + capitalize(binary.getName()) + "Guide", ViewDocumentation.class, task -> {
                 task.setGroup("Documentation");
                 task.setDescription("Generates the guide and open in the browser");
@@ -256,7 +256,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
                 throw new IllegalArgumentException(String.format("Guide '%s' has disallowed characters", guide.getName()));
             }
 
-            GuideBinary binary = objects.newInstance(GuideBinary.class, guide.getName());
+            GuideContentBinary binary = objects.newInstance(GuideContentBinary.class, guide.getName());
             extension.getBinaries().add(binary);
             binary.getGradleVersion().convention(guide.getMinimumGradleVersion());
             binary.getRepositoryPath().convention(guide.getRepositoryPath());

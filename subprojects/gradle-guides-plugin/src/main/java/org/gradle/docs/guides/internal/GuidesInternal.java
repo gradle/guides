@@ -4,11 +4,8 @@ import org.gradle.api.DomainObjectSet;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.model.ObjectFactory;
-import org.gradle.api.provider.MapProperty;
-import org.gradle.docs.guides.Guide;
 import org.gradle.docs.guides.Guides;
 import org.gradle.docs.guides.GuidesDistribution;
-import org.gradle.docs.samples.SamplesDistribution;
 
 import javax.inject.Inject;
 
@@ -29,7 +26,7 @@ public abstract class GuidesInternal implements Guides {
         return publishedGuides;
     }
 
-    public DomainObjectSet<GuideBinary> getBinaries() {
+    public DomainObjectSet<? super GuideBinary> getBinaries() {
         return binaries;
     }
 

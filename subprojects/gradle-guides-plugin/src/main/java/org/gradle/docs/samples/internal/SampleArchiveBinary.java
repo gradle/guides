@@ -13,17 +13,10 @@ import javax.inject.Inject;
 /**
  * Represents a sample tailored for a particular DSL.
  */
-public abstract class SampleArchiveBinary implements SampleBinary {
-    private final String name;
-
+public abstract class SampleArchiveBinary extends SampleBinary {
     @Inject
     public SampleArchiveBinary(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getName() {
-        return name;
+        super(name);
     }
 
     /**
