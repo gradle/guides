@@ -24,13 +24,13 @@ class BasicGuidesDocumentationFunctionalTest extends AbstractGuideFunctionalSpec
         build('verify')
     }
 
-    def "verify guide title default values"() {
+    def "verify guide display name default values"() {
         buildFile << applyDocumentationPlugin() << createGuide('foo') << createGuide('fooBar')
         buildFile << """
             tasks.register('verify') {
                 doLast {
-                    assert ${guideDsl('foo')}.title.get() == 'Foo'
-                    assert ${guideDsl('fooBar')}.title.get() == 'Foo Bar'
+                    assert ${guideDsl('foo')}.displayName.get() == 'Foo'
+                    assert ${guideDsl('fooBar')}.displayName.get() == 'Foo Bar'
                 }
             }
         """
@@ -296,7 +296,7 @@ include::step-2.adoc[]
         buildFile << """
             tasks.register('verifyDisplayName') {
                 doLast {
-                    assert ${guideUnderTestDsl}.title.get() == 'Demo'
+                    assert ${guideUnderTestDsl}.displayName.get() == 'Demo'
                 }
             }
         """

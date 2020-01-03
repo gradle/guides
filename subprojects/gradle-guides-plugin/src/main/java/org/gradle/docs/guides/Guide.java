@@ -54,12 +54,4 @@ public interface Guide extends Named, GuideSummary {
      * @since 0.15.8
      */
     Property<String> getDescription();
-
-    /**
-     * Title of the guide.
-     *
-     * @return Property for configuring the display name.
-     * @since 0.15.8
-     */
-    Property<String> getTitle();
 }

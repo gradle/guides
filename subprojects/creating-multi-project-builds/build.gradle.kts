@@ -5,7 +5,7 @@ plugins {
 guide {
     repositoryPath.set("gradle-guides/creating-multi-project-builds")
     minimumGradleVersion.set("5.0")
-    title.set("Creating Multi-project Builds")
+    displayName.set("Creating Multi-project Builds")
     category.set("Getting Started")
 }
 

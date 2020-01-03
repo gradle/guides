@@ -101,7 +101,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         guide.getGuideDirectory().convention(extension.getGuidesRoot().dir(toKebabCase(name)));
         guide.getRepositoryPath().convention("gradle-guides/" + toKebabCase(name));
         guide.getMinimumGradleVersion().convention(gradle.getGradleVersion());
-        guide.getTitle().convention(toTitleCase(name));
+        guide.getDisplayName().convention(toTitleCase(name));
         guide.getDescription().convention("");
         guide.getCategory().convention("Uncategorized");
         guide.getPermalink().convention(toSnakeCase(guide.getName()));
@@ -259,7 +259,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             GuideBinary binary = extension.getBinaries().create(guide.getName());
             binary.getGradleVersion().convention(guide.getMinimumGradleVersion());
             binary.getRepositoryPath().convention(guide.getRepositoryPath());
-            binary.getDisplayName().convention(guide.getTitle());
+            binary.getDisplayName().convention(guide.getDisplayName());
             binary.getGuideDirectory().convention(guide.getGuideDirectory());
             binary.getPermalink().convention(guide.getPermalink());
         }
