@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.gradle.docs.internal.Asserts.assertNameDoesNotContainsDisallowedCharacters;
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
 import static org.gradle.docs.internal.FileUtils.deleteDirectory;
 import static org.gradle.docs.internal.StringUtils.*;
@@ -260,9 +261,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
     private void realizeGuides(GuidesInternal extension, ObjectFactory objects) {
         // TODO: Disallow changes to published samples container after this point.
         for (GuideInternal guide : extension.getPublishedGuides()) {
-            if (guide.getName().contains("_") || guide.getName().contains("-")) {
-                throw new IllegalArgumentException(String.format("Guide '%s' has disallowed characters", guide.getName()));
-            }
+            assertNameDoesNotContainsDisallowedCharacters(guide, "Guide '%s' has disallowed characters", guide.getName());
 
             GuideContentBinary contentBinary = objects.newInstance(GuideContentBinary.class, guide.getName());
             extension.getBinaries().add(contentBinary);

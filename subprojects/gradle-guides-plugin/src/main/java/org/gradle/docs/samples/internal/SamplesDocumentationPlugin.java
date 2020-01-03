@@ -45,6 +45,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
+import static org.gradle.docs.internal.Asserts.assertNameDoesNotContainsDisallowedCharacters;
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
 import static org.gradle.docs.internal.StringUtils.*;
 
@@ -314,9 +315,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
     private void realizeSamples(SamplesInternal extension, ObjectFactory objects, TaskProvider<Task> assemble, TaskProvider<Task> check, FileTree wrapperFiles) {
         // TODO: Disallow changes to published samples container after this point.
         for (SampleInternal sample : extension.getPublishedSamples()) {
-            if (sample.getName().contains("_") || sample.getName().contains("-")) {
-                throw new IllegalArgumentException(String.format("Sample '%s' has disallowed characters", sample.getName()));
-            }
+            assertNameDoesNotContainsDisallowedCharacters(sample, "Sample '%s' has disallowed characters", sample.getName());
 
             SampleContentBinary contentBinary = objects.newInstance(SampleContentBinary.class, sample.getName());
             extension.getBinaries().add(contentBinary);
