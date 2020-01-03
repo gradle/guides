@@ -125,7 +125,7 @@ Finish building your application by using the `build` task.
 ----
 $ ./gradlew build
 
-include::{samples-dir}/build/out.txt[]
+include::{samples-dir}/output/build.txt[]
 ----
 
 If you inspect the `build/distributions` folder you will notice both `.zip` and `.tar` archives. This is the application ready for distribution. Now it is time to test your application manually. The Application plugin provides a useful `installDist` task to install your application into the `build/install` folder for validation purposes.
