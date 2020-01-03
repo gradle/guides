@@ -1,5 +1,6 @@
 package org.gradle.docs.guides.internal;
 
+import org.gradle.api.DomainObjectSet;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.model.ObjectFactory;
@@ -13,13 +14,13 @@ import javax.inject.Inject;
 
 public abstract class GuidesInternal implements Guides {
     private final NamedDomainObjectContainer<GuideInternal> publishedGuides;
-    private final NamedDomainObjectContainer<GuideBinary> binaries;
+    private final DomainObjectSet<GuideBinary> binaries;
     private final GuidesDistribution guidesDistribution;
 
     @Inject
     public GuidesInternal(ObjectFactory objectFactory) {
         this.publishedGuides = objectFactory.domainObjectContainer(GuideInternal.class, name -> objectFactory.newInstance(GuideInternal.class, name));
-        this.binaries = objectFactory.domainObjectContainer(GuideBinary.class, name -> objectFactory.newInstance(GuideBinary.class, name));
+        this.binaries = objectFactory.domainObjectSet(GuideBinary.class);
         this.guidesDistribution = objectFactory.newInstance(GuidesDistribution.class);
     }
 
@@ -28,7 +29,7 @@ public abstract class GuidesInternal implements Guides {
         return publishedGuides;
     }
 
-    public NamedDomainObjectContainer<GuideBinary> getBinaries() {
+    public DomainObjectSet<GuideBinary> getBinaries() {
         return binaries;
     }
 

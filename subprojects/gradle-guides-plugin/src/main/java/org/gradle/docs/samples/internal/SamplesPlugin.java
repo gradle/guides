@@ -302,29 +302,31 @@ public class SamplesPlugin implements Plugin<Project> {
         });
     }
 
-    private Provider<SampleBinary> registerSampleBinaryForDsl(SamplesInternal extension, SampleInternal sample, Dsl dsl) {
-        return extension.getBinaries().register(sample.getName() + dsl.getDisplayName(), binary -> {
-            binary.getDsl().convention(dsl).disallowChanges();
-            binary.getSampleLinkName().convention(sample.getSampleDocName()).disallowChanges();
-            binary.getWorkingDirectory().convention(sample.getInstallDirectory().dir(dsl.getConventionalDirectory())).disallowChanges();
-            binary.getTestedWorkingDirectory().convention(sample.getTestedInstallDirectory().dir(dsl.getConventionalDirectory())).disallowChanges();
-            switch (dsl) {
-                case GROOVY:
-                    binary.getDslSpecificContent().from(sample.getGroovyContent()).disallowChanges();
-                    break;
-                case KOTLIN:
-                    binary.getDslSpecificContent().from(sample.getKotlinContent()).disallowChanges();
-                    break;
-                default:
-                    throw new GradleException("Unhandled Dsl type " + dsl + " for sample '" + sample.getName() + "'");
-            }
-            binary.getExcludes().convention(extension.getCommonExcludes());
-            binary.getContent().from(sample.getCommonContent());
-            binary.getContent().from(binary.getDslSpecificContent());
-            binary.getContent().disallowChanges();
+    private SampleBinary registerSampleBinaryForDsl(SamplesInternal extension, SampleInternal sample, Dsl dsl, ObjectFactory objects) {
+        SampleBinary binary = objects.newInstance(SampleBinary.class, sample.getName() + dsl.getDisplayName());
+        binary.getDsl().convention(dsl).disallowChanges();
+        binary.getSampleLinkName().convention(sample.getSampleDocName()).disallowChanges();
+        binary.getWorkingDirectory().convention(sample.getInstallDirectory().dir(dsl.getConventionalDirectory())).disallowChanges();
+        binary.getTestedWorkingDirectory().convention(sample.getTestedInstallDirectory().dir(dsl.getConventionalDirectory())).disallowChanges();
+        switch (dsl) {
+            case GROOVY:
+                binary.getDslSpecificContent().from(sample.getGroovyContent()).disallowChanges();
+                break;
+            case KOTLIN:
+                binary.getDslSpecificContent().from(sample.getKotlinContent()).disallowChanges();
+                break;
+            default:
+                throw new GradleException("Unhandled Dsl type " + dsl + " for sample '" + sample.getName() + "'");
+        }
+        binary.getExcludes().convention(extension.getCommonExcludes());
+        binary.getContent().from(sample.getCommonContent());
+        binary.getContent().from(binary.getDslSpecificContent());
+        binary.getContent().disallowChanges();
 
-            binary.getTestsContent().from(sample.getTestsContent());
-        });
+        binary.getTestsContent().from(sample.getTestsContent());
+
+        extension.getBinaries().add(binary);
+        return binary;
     }
 
     private void createTasksForSampleBinary(TaskContainer tasks, ProjectLayout layout, SampleBinary binary) {
@@ -406,9 +408,9 @@ public class SamplesPlugin implements Plugin<Project> {
                 throw new GradleException("Samples must have at least one DSL, sample '" + sample.getName() + "' has none.");
             }
             for (Dsl dsl : dsls) {
-                Provider<SampleBinary> binary = registerSampleBinaryForDsl(extension, sample, dsl);
-                sample.getAssembleTask().configure(task -> task.dependsOn(binary.flatMap(SampleBinary::getZipFile)));
-                sample.getCheckTask().configure(task -> task.dependsOn(binary.flatMap(SampleBinary::getValidationReport)));
+                SampleBinary binary = registerSampleBinaryForDsl(extension, sample, dsl, objects);
+                sample.getAssembleTask().configure(task -> task.dependsOn(binary.getZipFile()));
+                sample.getCheckTask().configure(task -> task.dependsOn(binary.getValidationReport()));
             }
         }
     }

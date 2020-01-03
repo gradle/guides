@@ -72,7 +72,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         createPublishGuidesElements(project.getConfigurations(), objects, renderTask, extension);
 
         // Trigger everything by realizing guide container
-        project.afterEvaluate(p -> realizeGuides(extension));
+        project.afterEvaluate(p -> realizeGuides(extension, objects));
     }
 
     private Configuration createPublishGuidesElements(ConfigurationContainer configurations, ObjectFactory objects, TaskProvider<? extends Task> renderTask, GuidesInternal extension) {
@@ -249,14 +249,15 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         return guidesMultiPage;
     }
 
-    private void realizeGuides(GuidesInternal extension) {
+    private void realizeGuides(GuidesInternal extension, ObjectFactory objects) {
         // TODO: Disallow changes to published samples container after this point.
         for (GuideInternal guide : extension.getPublishedGuides()) {
             if (guide.getName().contains("_") || guide.getName().contains("-")) {
                 throw new IllegalArgumentException(String.format("Guide '%s' has disallowed characters", guide.getName()));
             }
 
-            GuideBinary binary = extension.getBinaries().create(guide.getName());
+            GuideBinary binary = objects.newInstance(GuideBinary.class, guide.getName());
+            extension.getBinaries().add(binary);
             binary.getGradleVersion().convention(guide.getMinimumGradleVersion());
             binary.getRepositoryPath().convention(guide.getRepositoryPath());
             binary.getDisplayName().convention(guide.getDisplayName());
