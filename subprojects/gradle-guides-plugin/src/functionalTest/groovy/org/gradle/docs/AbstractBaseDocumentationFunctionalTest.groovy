@@ -45,6 +45,20 @@ abstract class AbstractBaseDocumentationFunctionalTest extends AbstractFunctiona
         name << ['foo_bar', 'foo-bar']
     }
 
+    def "can detect dead links"() {
+        given:
+        makeSingleProject()
+        writeDocumentationUnderTest()
+        contentFileUnderTest << '''
+            |https://not.existant/url
+            |'''.stripMargin()
+
+        expect:
+        def result = buildAndFail('checkDemoLinks')
+        result.output.contains('''> The following links are broken:
+            |   https://not.existant/url'''.stripMargin())
+    }
+
     protected static String applyDocumentationPlugin() {
         return  """
             plugins {
@@ -52,7 +66,14 @@ abstract class AbstractBaseDocumentationFunctionalTest extends AbstractFunctiona
             }
         """
     }
+
     protected abstract String createDocumentationElement(String name)
 
     protected abstract String documentationDsl(String name)
+
+    protected abstract void makeSingleProject()
+
+    protected abstract void writeDocumentationUnderTest()
+
+    protected abstract TestFile getContentFileUnderTest()
 }

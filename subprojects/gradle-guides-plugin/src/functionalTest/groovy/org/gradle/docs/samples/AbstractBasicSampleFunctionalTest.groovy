@@ -97,21 +97,21 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
         noExceptionThrown()
     }
 
-    def "can access the readme file location from the sample"() {
-        makeSingleProject()
-        writeSampleUnderTest()
-        buildFile << """
-            tasks.register('verify') {
-                doLast {
-                    assert ${sampleUnderTestDsl}.readMeFile.get().asFile.canonicalPath == '${new File(temporaryFolder.root, "src/samples/demo/README.adoc").canonicalPath}'
-                }
-            }
-        """
-
-        expect:
-        build('verify')
-        result.task(':verify').outcome == SUCCESS
-    }
+//    def "can access the readme file location from the sample"() {
+//        makeSingleProject()
+//        writeSampleUnderTest()
+//        buildFile << """
+//            tasks.register('verify') {
+//                doLast {
+//                    assert ${sampleUnderTestDsl}.readMeFile.get().asFile.canonicalPath == '${new File(temporaryFolder.root, "src/samples/demo/README.adoc").canonicalPath}'
+//                }
+//            }
+//        """
+//
+//        expect:
+//        build('verify')
+//        result.task(':verify').outcome == SUCCESS
+//    }
 
     @Unroll
     def "adds license to archive when found within the root directory"() {

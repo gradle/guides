@@ -4,8 +4,8 @@ import org.gradle.api.DomainObjectSet;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.model.ObjectFactory;
-import org.gradle.docs.samples.SamplesDistribution;
 import org.gradle.docs.samples.Samples;
+import org.gradle.docs.samples.SamplesDistribution;
 
 import javax.inject.Inject;
 

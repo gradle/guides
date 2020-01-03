@@ -3,6 +3,8 @@ package org.gradle.docs.samples.internal;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 import org.gradle.api.file.ConfigurableFileCollection;
+import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.docs.samples.Sample;
@@ -45,13 +47,22 @@ public abstract class SampleInternal implements Sample {
         action.execute(getTestsContent());
     }
 
-    @Override
+    /**
+     * @return Lifecycle task for assembling this sample.
+     */
     public TaskProvider<Task> getAssembleTask() {
         return assemble;
     }
 
-    @Override
+    /**
+     * @return Lifecycle task for checking this sample.
+     */
     public TaskProvider<Task> getCheckTask() {
         return check;
     }
+
+    /**
+     * @return Root installation directory for each DSL.
+     */
+    public abstract DirectoryProperty getInstallDirectory();
 }

@@ -137,11 +137,11 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             extension.getBinaries().withType(GuideContentBinary.class).forEach(binary -> {
                 // TODO: This is extra content compared to Samples
                 task.from(binary.getGuideDirectory().dir("contents"), sub -> {
-                    sub.into(binary.getPermalink());
+                    sub.into(binary.getBaseDirectory());
                     sub.include("**/*.adoc");
                     sub.include("**/*.txt");
                 });
-                task.from(binary.getIndexPageFile(), sub -> sub.into(binary.getPermalink()));
+                task.from(binary.getIndexPageFile(), sub -> sub.into(binary.getBaseDirectory()));
             });
             task.into(extension.getDocumentationInstallRoot());
         });
@@ -177,7 +177,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
                     task.getProject().copy(spec -> {
                         extension.getBinaries().withType(GuideContentBinary.class).forEach(binary -> {
                             spec.from(binary.getGuideDirectory().dir("contents/images"), sub -> {
-                                sub.into(binary.getPermalink().get() + "/images");
+                                sub.into(binary.getBaseDirectory().get() + "/images");
                             });
                         });
                         spec.into(extension.getRenderedDocumentationRoot());
@@ -238,14 +238,16 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         assemble.configure(t -> t.dependsOn(extension.getDistribution().getRenderedDocumentation()));
 
         extension.getBinaries().withType(GuideContentBinary.class).configureEach(binary -> {
+            binary.getRenderedIndexPageFile().fileProvider(guidesMultiPage.map(it -> new File(it.getOutputDir(), binary.getPermalink().get())));
+
             tasks.register("view" + capitalize(binary.getName()) + "Guide", ViewDocumentation.class, task -> {
                 task.setGroup("Documentation");
                 task.setDescription("Generates the guide and open in the browser");
-                task.getIndexFile().fileProvider(guidesMultiPage.map(it -> new File(it.getOutputDir(), binary.getPermalink().get() + "/index.html")));
+                task.getIndexFile().convention(binary.getRenderedIndexPageFile());
             });
 
             TaskProvider<CheckLinks> checkLinksTask = tasks.register("check" + capitalize(binary.getName()) + "Links", CheckLinks.class, task -> {
-                task.getIndexDocument().fileProvider(guidesMultiPage.map(it -> new File(it.getOutputDir(), binary.getPermalink().get() + "/index.html")));
+                task.getIndexDocument().convention(binary.getRenderedIndexPageFile());
             });
 
             check.configure(it -> it.dependsOn(checkLinksTask));
@@ -261,13 +263,16 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
                 throw new IllegalArgumentException(String.format("Guide '%s' has disallowed characters", guide.getName()));
             }
 
-            GuideContentBinary binary = objects.newInstance(GuideContentBinary.class, guide.getName());
-            extension.getBinaries().add(binary);
-            binary.getGradleVersion().convention(guide.getMinimumGradleVersion());
-            binary.getRepositoryPath().convention(guide.getRepositoryPath());
-            binary.getDisplayName().convention(guide.getDisplayName());
-            binary.getGuideDirectory().convention(guide.getGuideDirectory());
-            binary.getPermalink().convention(guide.getPermalink());
+            GuideContentBinary contentBinary = objects.newInstance(GuideContentBinary.class, guide.getName());
+            extension.getBinaries().add(contentBinary);
+            contentBinary.getGradleVersion().convention(guide.getMinimumGradleVersion());
+            contentBinary.getRepositoryPath().convention(guide.getRepositoryPath());
+            contentBinary.getDisplayName().convention(guide.getDisplayName());
+            contentBinary.getGuideDirectory().convention(guide.getGuideDirectory());
+            contentBinary.getBaseDirectory().convention(guide.getPermalink());
+            contentBinary.getPermalink().convention(contentBinary.getBaseDirectory().map(baseDirectory -> baseDirectory + "/index.html"));
+            // TODO: Link to the right place
+            contentBinary.getSourceFiles().from(objects.fileTree().from(guide.getGuideDirectory().dir("contents")).include("**/*.adoc", "**/*.txt"));
         }
     }
 }

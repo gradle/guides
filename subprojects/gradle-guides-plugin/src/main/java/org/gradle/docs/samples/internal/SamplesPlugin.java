@@ -65,18 +65,11 @@ public class SamplesPlugin implements Plugin<Project> {
         SamplesInternal extension = configureSamplesExtension(project, layout);
 
         // Samples
-        // Generate wrapper files that can be shared by all samples
-        FileTree wrapperFiles = createWrapperFiles(tasks, objects);
         FileCollection generatedTests = createGeneratedTests(tasks, objects, layout);
-        extension.getPublishedSamples().configureEach(sample -> applyConventionsForSamples(extension, wrapperFiles, generatedTests, sample));
+        extension.getPublishedSamples().configureEach(sample -> applyConventionsForSamples(extension, generatedTests, sample));
 
-        // Sample binaries
-        // Create tasks for each sample binary (a sample for a particular DSL)
-        // TODO: This could be lazy if we had a way to make the TaskContainer require evaluation
+        // Samples binaries
         extension.getBinaries().withType(SampleArchiveBinary.class).all(binary -> createTasksForSampleBinary(tasks, layout, binary));
-
-        // Documentation for sample index
-        registerGenerateSampleIndex(tasks, providers, objects, extension);
 
         // Templates
         extension.getTemplates().configureEach(template -> applyConventionsForTemplates(extension, template));
@@ -84,9 +77,6 @@ public class SamplesPlugin implements Plugin<Project> {
 
         // Testing
         addExemplarTestsForSamples(project, layout, tasks, extension, check);
-
-        // Trigger everything by realizing sample container
-        project.afterEvaluate(p -> realizeSamples(tasks, objects, extension, assemble, check));
     }
 
     private FileCollection createGeneratedTests(TaskContainer tasks, ObjectFactory objects, ProjectLayout layout) {
@@ -139,11 +129,6 @@ public class SamplesPlugin implements Plugin<Project> {
         extension.getTemplatesRoot().convention(layout.getProjectDirectory().dir("src/samples/templates"));
         extension.getCommonExcludes().convention(Arrays.asList("**/build/**", "**/.gradle/**"));
 
-        extension.getInstallRoot().convention(layout.getBuildDirectory().dir("working/samples/install"));
-        extension.getDistribution().getInstalledSamples().from(extension.getInstallRoot());
-        extension.getDistribution().getInstalledSamples().builtBy((Callable<List<DirectoryProperty>>) () -> extension.getBinaries().withType(SampleArchiveBinary.class).stream().map(SampleArchiveBinary::getInstallDirectory).collect(Collectors.toList()));
-        extension.getDistribution().getZippedSamples().from((Callable<List<RegularFileProperty>>) () -> extension.getBinaries().withType(SampleArchiveBinary.class).stream().map(SampleArchiveBinary::getZipFile).collect(Collectors.toList()));
-
         extension.getTestedInstallRoot().convention(layout.getBuildDirectory().dir("working/samples/testing"));
         extension.getDistribution().getTestedInstalledSamples().from(extension.getTestedInstallRoot());
         extension.getDistribution().getTestedInstalledSamples().builtBy(extension.getDistribution().getInstalledSamples().builtBy((Callable<List<DirectoryProperty>>) () -> extension.getBinaries().withType(SampleArchiveBinary.class).stream().map(SampleArchiveBinary::getTestedInstallDirectory).collect(Collectors.toList())));
@@ -151,118 +136,18 @@ public class SamplesPlugin implements Plugin<Project> {
         return extension;
     }
 
-    private void registerGenerateSampleIndex(TaskContainer tasks, ProviderFactory providers, ObjectFactory objects, SamplesInternal extension) {
-        TaskProvider<GenerateSampleIndexAsciidoc> generateSampleIndex = tasks.register("generateSampleIndex", GenerateSampleIndexAsciidoc.class, task -> {
-            task.setGroup("documentation");
-            task.setDescription("Generate index page that contains all published samples.");
-            task.getSamples().convention(providers.provider(() -> extension.getPublishedSamples().stream().map(sample -> toSummary(objects, sample)).collect(Collectors.toSet())));
-            // TODO: This ignores changes to the temporary directory
-            task.getOutputFile().set(new File(task.getTemporaryDir(), "index.adoc"));
-        });
-        extension.getSampleIndexFile().convention(generateSampleIndex.flatMap(GenerateSampleIndexAsciidoc::getOutputFile));
-    }
-
-    private FileTree createWrapperFiles(TaskContainer tasks, ObjectFactory objectFactory) {
-        TaskProvider<Wrapper> wrapper = tasks.register("generateWrapperForSamples", Wrapper.class, task -> {
-            task.setDescription("Generates wrapper for samples.");
-            // TODO: This ignores changes to the temporary directory
-            task.setJarFile(new File(task.getTemporaryDir(), "gradle/wrapper/gradle-wrapper.jar"));
-            task.setScriptFile(new File(task.getTemporaryDir(), "gradlew"));
-        });
-        ConfigurableFileCollection wrapperFiles = objectFactory.fileCollection();
-        wrapperFiles.from(wrapper.map(AbstractTask::getTemporaryDir));
-        wrapperFiles.builtBy(wrapper);
-        return wrapperFiles.getAsFileTree();
-    }
-
-    private void applyConventionsForSamples(SamplesInternal extension, FileTree wrapperFiles, FileCollection generatedTests, SampleInternal sample) {
+    private void applyConventionsForSamples(SamplesInternal extension, FileCollection generatedTests, SampleInternal sample) {
         String name = sample.getName();
         // Converts names like androidApplication to android-application
-        sample.getInstallDirectory().convention(extension.getInstallRoot().dir(toKebabCase(name)));
         sample.getTestedInstallDirectory().convention(extension.getTestedInstallRoot().dir(toKebabCase(name)));
-        sample.getSampleDocName().convention("sample_" + toSnakeCase(name));
-
-        sample.getLicenseFile().convention(sample.getSampleDirectory().file("LICENSE"));
-        sample.getReadMeFile().convention(sample.getSampleDirectory().file("README.adoc"));
-
-        sample.getDsls().convention(sample.getSampleDirectory().map(sampleDirectory -> {
-            List<Dsl> dsls = new ArrayList<>();
-            for (Dsl dsl : Dsl.values()) {
-                if (sampleDirectory.dir(dsl.getConventionalDirectory()).getAsFile().exists()) {
-                    dsls.add(dsl);
-                }
-            }
-            return dsls;
-        }));
 
         sample.tests(content -> {
             content.from(sample.getSampleDirectory().dir("tests"));
             content.from(generatedTests);
         });
-        sample.common(content -> {
-            content.from(sample.getLicenseFile());
-            content.from(sample.getSamplePageFile());
-            content.from(wrapperFiles);
-        });
-        sample.groovy(content -> content.from(sample.getSampleDirectory().dir(Dsl.GROOVY.getConventionalDirectory())));
-        sample.kotlin(content -> content.from(sample.getSampleDirectory().dir(Dsl.KOTLIN.getConventionalDirectory())));
-
-        sample.getAssembleTask().configure(task -> {
-            task.setGroup(LifecycleBasePlugin.BUILD_GROUP);
-            task.setDescription("Assembles '" + sample.getName() + "' sample.");
-        });
-        sample.getCheckTask().configure(task -> {
-            task.setGroup(LifecycleBasePlugin.BUILD_GROUP);
-            task.setDescription("Checks '" + sample.getName() + "' sample.");
-        });
-    }
-
-    private SampleArchiveBinary registerSampleBinaryForDsl(SamplesInternal extension, SampleInternal sample, Dsl dsl, ObjectFactory objects) {
-        SampleArchiveBinary binary = objects.newInstance(SampleArchiveBinary.class, sample.getName() + dsl.getDisplayName());
-        binary.getDsl().convention(dsl).disallowChanges();
-        binary.getSampleLinkName().convention(sample.getSampleDocName()).disallowChanges();
-        binary.getWorkingDirectory().convention(sample.getInstallDirectory().dir(dsl.getConventionalDirectory())).disallowChanges();
-        binary.getTestedWorkingDirectory().convention(sample.getTestedInstallDirectory().dir(dsl.getConventionalDirectory())).disallowChanges();
-        switch (dsl) {
-            case GROOVY:
-                binary.getDslSpecificContent().from(sample.getGroovyContent()).disallowChanges();
-                break;
-            case KOTLIN:
-                binary.getDslSpecificContent().from(sample.getKotlinContent()).disallowChanges();
-                break;
-            default:
-                throw new GradleException("Unhandled Dsl type " + dsl + " for sample '" + sample.getName() + "'");
-        }
-        binary.getExcludes().convention(extension.getCommonExcludes());
-        binary.getContent().from(sample.getCommonContent());
-        binary.getContent().from(binary.getDslSpecificContent());
-        binary.getContent().disallowChanges();
-
-        binary.getTestsContent().from(sample.getTestsContent());
-
-        extension.getBinaries().add(binary);
-        return binary;
     }
 
     private void createTasksForSampleBinary(TaskContainer tasks, ProjectLayout layout, SampleArchiveBinary binary) {
-        TaskProvider<ValidateSampleBinary> validateSample = tasks.register("validateSample" + capitalize(binary.getName()), ValidateSampleBinary.class, task -> {
-            task.setDescription("Checks the sample '" + binary.getName() + "' is valid.");
-            task.getDsl().convention(binary.getDsl());
-            task.getSampleName().convention(binary.getName());
-            task.getZipFile().convention(binary.getZipFile());
-            task.getReportFile().convention(layout.getBuildDirectory().file("reports/sample-validation/" + task.getName() + ".txt"));
-        });
-        binary.getValidationReport().convention(validateSample.flatMap(ValidateSampleBinary::getReportFile));
-
-        TaskProvider<InstallSample> installSampleTask = tasks.register("installSample" + capitalize(binary.getName()), InstallSample.class, task -> {
-            task.setDescription("Installs sample '" + binary.getName() + "' into a local directory.");
-            // TODO: zipTree should be lazy
-            task.dependsOn(binary.getZipFile());
-            task.getSource().from((Callable<FileTree>)() -> task.getProject().zipTree(binary.getZipFile()));
-            task.getInstallDirectory().convention(binary.getWorkingDirectory());
-        });
-        binary.getInstallDirectory().convention(installSampleTask.flatMap(InstallSample::getInstallDirectory));
-
         TaskProvider<InstallSample> installSampleTaskForTesting = tasks.register("installSample" + capitalize(binary.getName()) + "ForTest", InstallSample.class, task -> {
             task.setDescription("Installs sample '" + binary.getName() + "' into a local directory with testing support.");
             // TODO: zipTree should be lazy
@@ -272,17 +157,6 @@ public class SamplesPlugin implements Plugin<Project> {
             task.getInstallDirectory().convention(binary.getTestedWorkingDirectory());
         });
         binary.getTestedInstallDirectory().convention(installSampleTaskForTesting.flatMap(InstallSample::getInstallDirectory));
-
-        TaskProvider<ZipSample> zipTask = tasks.register("zipSample" + capitalize(binary.getName()), ZipSample.class, task -> {
-            task.setDescription("Creates a zip for sample '" + binary.getName() + "'.");
-            task.getSource().from(binary.getContent());
-            task.getMainSource().from(binary.getDslSpecificContent());
-            task.getReadmeName().convention(binary.getSampleLinkName().map(name -> name + ".adoc"));
-            task.getExcludes().convention(binary.getExcludes());
-            // TODO: make this relocatable too?
-            task.getArchiveFile().convention(layout.getBuildDirectory().file(binary.getSampleLinkName().map(name -> String.format("sample-zips/%s-%s.zip", name, binary.getDsl().get().getDslLabel()))));
-        });
-        binary.getZipFile().convention(zipTask.flatMap(ZipSample::getArchiveFile));
     }
 
     private static TaskProvider<GenerateTestSource> createExemplarGeneratorTask(TaskContainer tasks, ProjectLayout layout, SourceSet sourceSet) {
@@ -306,26 +180,5 @@ public class SamplesPlugin implements Plugin<Project> {
             task.systemProperty("integTest.samplesdir", samplesDirectory.get().getAsFile().getAbsolutePath());
             task.dependsOn(extension.getDistribution().getTestedInstalledSamples());
         });
-    }
-
-    private void realizeSamples(TaskContainer tasks, ObjectFactory objects, SamplesInternal extension, TaskProvider<Task> assemble, TaskProvider<Task> check) {
-        // TODO: Disallow changes to published samples container after this point.
-        for (SampleInternal sample : extension.getPublishedSamples()) {
-            // TODO: To make this lazy without afterEvaluate/eagerness, we need to be able to tell the tasks container that the samples container should be consulted
-            assemble.configure(t -> t.dependsOn(sample.getAssembleTask()));
-            check.configure(t -> t.dependsOn(sample.getCheckTask()));
-
-            sample.getDsls().disallowChanges();
-            // TODO: This should only be enforced if we are trying to build the given sample
-            Set<Dsl> dsls = sample.getDsls().get();
-            if (dsls.isEmpty()) {
-                throw new GradleException("Samples must have at least one DSL, sample '" + sample.getName() + "' has none.");
-            }
-            for (Dsl dsl : dsls) {
-                SampleArchiveBinary binary = registerSampleBinaryForDsl(extension, sample, dsl, objects);
-                sample.getAssembleTask().configure(task -> task.dependsOn(binary.getZipFile()));
-                sample.getCheckTask().configure(task -> task.dependsOn(binary.getValidationReport()));
-            }
-        }
     }
 }

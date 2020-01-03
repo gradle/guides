@@ -20,20 +20,6 @@ public interface Sample extends Named, SampleSummary {
     DirectoryProperty getSampleDirectory();
 
     /**
-     * @return The README file for the sample.
-     *
-     * By convention, this is README.adoc in the sample directory.
-     */
-    RegularFileProperty getReadMeFile();
-
-    /**
-     * @return The LICENSE file for the sample.
-     *
-     * By convention, this is LICENSE in the sample directory.
-     */
-    RegularFileProperty getLicenseFile();
-
-    /**
      * @return Sample content that is shared by all DSLs.
      *
      * By convention, this is the wrapper files, README and LICENSE.
@@ -88,29 +74,7 @@ public interface Sample extends Named, SampleSummary {
     void tests(Action<? super ConfigurableFileCollection> action);
 
     /**
-     * @return Root installation directory for each DSL.
-     */
-    DirectoryProperty getInstallDirectory();
-
-    /**
      * @return Root installation directory for each DSL when tested.
      */
     DirectoryProperty getTestedInstallDirectory();
-
-    /**
-     * This is an asciidoc file, not the generated HTML.
-     *
-     * @return The generated sample (asciidoc) page.
-     */
-    RegularFileProperty getSamplePageFile();
-
-    /**
-     * @return Lifecycle task for assembling this sample.
-     */
-    TaskProvider<Task> getAssembleTask();
-
-    /**
-     * @return Lifecycle task for checking this sample.
-     */
-    TaskProvider<Task> getCheckTask();
 }

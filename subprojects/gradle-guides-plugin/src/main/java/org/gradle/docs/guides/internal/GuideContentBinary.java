@@ -1,9 +1,10 @@
 package org.gradle.docs.guides.internal;
 
-import org.gradle.api.Named;
+import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.Property;
+import org.gradle.api.provider.Provider;
 
 import javax.inject.Inject;
 
@@ -23,5 +24,11 @@ public abstract class GuideContentBinary extends GuideBinary {
 
     public abstract DirectoryProperty getGuideDirectory();
 
+    public abstract Property<String> getBaseDirectory();
+
     public abstract Property<String> getPermalink();
+
+    public abstract RegularFileProperty getRenderedIndexPageFile();
+
+    public abstract ConfigurableFileCollection getSourceFiles();
 }
