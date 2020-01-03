@@ -4,6 +4,7 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 
 public class DocumentationBasePlugin implements Plugin<Project> {
+    public static final String DOCUMENTATION_GROUP_NAME = "Documentation";
     public static final String DOCUMENTATION_EXTENSION_NAME = "documentation";
 
     @Override

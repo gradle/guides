@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
 import static org.gradle.docs.internal.FileUtils.deleteDirectory;
 import static org.gradle.docs.internal.StringUtils.*;
 
@@ -131,7 +132,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
 
     private TaskProvider<? extends Task> renderGuidesDocumentation(TaskContainer tasks, TaskProvider<Task> assemble, TaskProvider<Task> check, GuidesInternal extension) {
         TaskProvider<Sync> assembleDocs = tasks.register("assembleGuides", Sync.class, task -> {
-            task.setGroup("documentation");
+            task.setGroup(DOCUMENTATION_GROUP_NAME);
             task.setDescription("Assembles all intermediate files needed to generate the samples documentation.");
 
             extension.getBinaries().withType(GuideContentBinary.class).forEach(binary -> {
@@ -241,7 +242,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             binary.getRenderedIndexPageFile().fileProvider(guidesMultiPage.map(it -> new File(it.getOutputDir(), binary.getPermalink().get())));
 
             tasks.register("view" + capitalize(binary.getName()) + "Guide", ViewDocumentation.class, task -> {
-                task.setGroup("Documentation");
+                task.setGroup(DOCUMENTATION_GROUP_NAME);
                 task.setDescription("Generates the guide and open in the browser");
                 task.getIndexFile().convention(binary.getRenderedIndexPageFile());
             });

@@ -45,6 +45,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
+import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
 import static org.gradle.docs.internal.StringUtils.*;
 
 public class SamplesDocumentationPlugin implements Plugin<Project> {
@@ -157,8 +158,8 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             task.setDescription("Generates asciidoc page for sample '" + binary.getName() + "'");
 
             task.getSampleSummary().convention(binary.getSummary());
-            task.getReadmeFile().convention(binary.getSampleDirectory().file("README.adoc"));
-            // TODO: Here the permalink is used as a baseName
+            // TODO: use the source files as a whole
+            task.getReadmeFile().fileValue(binary.getSourceFiles().getSingleFile());
             task.getOutputFile().fileProvider(binary.getBaseName().map(fileName -> new File(task.getTemporaryDir(), fileName + ".adoc")));
         });
         binary.getIndexPageFile().convention(generateSamplePage.flatMap(GenerateSamplePageAsciidoc::getOutputFile));
@@ -166,7 +167,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
 
     private void registerGenerateSampleIndex(TaskContainer tasks, ProviderFactory providers, ObjectFactory objects, SamplesInternal extension) {
         TaskProvider<GenerateSampleIndexAsciidoc> generateSampleIndex = tasks.register("generateSampleIndex", GenerateSampleIndexAsciidoc.class, task -> {
-            task.setGroup("documentation");
+            task.setGroup(DOCUMENTATION_GROUP_NAME);
             task.setDescription("Generate index page that contains all published samples.");
             task.getSamples().convention(providers.provider(() -> extension.getPublishedSamples().stream().map(sample -> toSummary(objects, sample)).collect(Collectors.toSet())));
             // TODO: This ignores changes to the temporary directory
@@ -177,7 +178,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
 
     private TaskProvider<? extends Task> renderSamplesDocumentation(TaskContainer tasks, TaskProvider<Task> assemble, TaskProvider<Task> check, SamplesInternal extension) {
         TaskProvider<Sync> assembleDocs = tasks.register("assembleSamples", Sync.class, task -> {
-            task.setGroup("documentation");
+            task.setGroup(DOCUMENTATION_GROUP_NAME);
             task.setDescription("Assembles all intermediate files needed to generate the samples documentation.");
 
             task.from(extension.getSampleIndexFile());
