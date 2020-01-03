@@ -165,6 +165,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
                 }
             });
 
+            task.getInputs().files(extension.getBinaries().stream().map(binary -> binary.getGuideDirectory().dir("contents/images")).collect(Collectors.toList())).withPropertyName("images").optional(true);
             task.doLast(new Action<Task>() {
                 @Override
                 public void execute(Task t) {

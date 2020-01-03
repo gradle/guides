@@ -33,24 +33,32 @@ public interface Guide extends Named, GuideSummary {
 
     /**
      * Path of repository relative to {@code https://github.com}.
+     *
+     * @return Property for configuring the guide repository.
      * @since 0.15.8
      */
     Property<String> getRepositoryPath();
 
     /**
      * Minimum Gradle version this guide works on.
+     *
+     * @return Property for configuring the minimum Gradle version for the guide.
      * @since 0.15.7
      */
     Property<String> getMinimumGradleVersion();
 
     /**
      * Short description of the guide.
+     *
+     * @return Property for configuring the description.
      * @since 0.15.8
      */
     Property<String> getDescription();
 
     /**
      * Title of the guide.
+     *
+     * @return Property for configuring the display name.
      * @since 0.15.8
      */
     Property<String> getTitle();

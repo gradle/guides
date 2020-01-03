@@ -305,18 +305,17 @@ include::step-2.adoc[]
         build('verifyDisplayName')
     }
 
-    def "defaults guide repository path to project name under gradle-guides organization"() {
+    def "defaults guide repository path to guide name under gradle-guides organization"() {
         given:
         makeSingleProject()
         writeGuideUnderTest()
         buildFile << """
             tasks.register('verifyGuideRepositoryPath') {
                 doLast {
-                    assert ${guideUnderTestDsl}.repositoryPath.get() == 'gradle-guides/some-project-name'
+                    assert ${guideUnderTestDsl}.repositoryPath.get() == 'gradle-guides/demo'
                 }
             }
         """
-        settingsFile << "rootProject.name = 'some-project-name'"
 
         expect:
         build('verifyGuideRepositoryPath')
@@ -406,7 +405,7 @@ include::{samplescodedir}/helloWorld/build.gradle[]
 Output:
 include::{samplesoutputdir}/helloWorld/build.out[]
 """
-        def samplesCodeFolder = temporaryFolder.newFolder('samples', 'code')
+        def samplesCodeFolder = temporaryFolder.newFolder('src', 'docs', 'guides', 'demo', 'samples', 'code')
         File codeDir = createDir(samplesCodeFolder, 'helloWorld')
         new File(codeDir, 'build.gradle') << """
 task helloWorld {
@@ -415,7 +414,7 @@ task helloWorld {
     }
 }
 """
-        def samplesOutputFolder = temporaryFolder.newFolder('samples', 'output')
+        def samplesOutputFolder = temporaryFolder.newFolder('src', 'docs', 'guides', 'demo', 'samples', 'output')
         File outputDir = createDir(samplesOutputFolder, 'helloWorld')
         new File(outputDir, 'build.out') << """
 > Task :helloWorld
@@ -472,8 +471,8 @@ include::sample[dir="kotlin-dsl/code", files="settings.gradle.kts[]"]
 '''
         temporaryFolder.newFolder('samples', 'groovy-dsl', 'code')
         temporaryFolder.newFolder('samples', 'kotlin-dsl', 'code')
-        file('samples/groovy-dsl/code/settings.gradle') << "rootProject.name = 'demo'"
-        file('samples/kotlin-dsl/code/settings.gradle.kts') << 'rootProject.name = "demo"'
+        file('src/docs/guides/demo/samples/groovy-dsl/code/settings.gradle') << "rootProject.name = 'demo'"
+        file('src/docs/guides/demo/samples/kotlin-dsl/code/settings.gradle.kts') << 'rootProject.name = "demo"'
 
         expect:
         build('assemble')
@@ -491,7 +490,7 @@ https://not.existant/url
         expect:
         def result = buildAndFail('checkDemoLinks')
         result.output.contains('''> The following links are broken:
-    https://not.existant/url''')
+   https://not.existant/url''')
     }
 
     private TestFile image(Object... path) {
