@@ -63,7 +63,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
 
         // Guide binaries
         // TODO: This could be lazy if we had a way to make the TaskContainer require evaluation
-        extension.getBinaries().withType(GuideContentBinary.class).all(binary -> createTasksForGuideBinary(tasks, layout, providers, binary));
+        extension.getBinaries().withType(GuideContentBinary.class).all(binary -> createTasksForGuideContentBinary(tasks, layout, providers, binary));
 
         // Render all the documentation out to HTML
         TaskProvider<? extends Task> renderTask = renderGuidesDocumentation(tasks, assemble, check, extension);
@@ -107,11 +107,13 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         guide.getPermalink().convention(toSnakeCase(guide.getName()));
     }
 
-    private void createTasksForGuideBinary(TaskContainer tasks, ProjectLayout layout, ProviderFactory providers, GuideContentBinary binary) {
+    private void createTasksForGuideContentBinary(TaskContainer tasks, ProjectLayout layout, ProviderFactory providers, GuideContentBinary binary) {
         TaskProvider<GenerateGuidePageAsciidoc> generateGuidePage = tasks.register("generate" + capitalize(binary.getName()) + "Page", GenerateGuidePageAsciidoc.class, task -> {
-            task.setDescription("Generates asciidoc page for sample '" + binary.getName() + "'");
+            task.setDescription("Generates asciidoc page for guide '" + binary.getName() + "'");
 
-            // TODO: Allow multiple guide per project
+            // TODO: Test multiple guide per project
+            // TODO: Attributes is an extra property compared to samples
+            // TODO: Input/output property name differ a bit
             task.getAttributes().empty();
             task.getAttributes().put("samplescodedir", binary.getGuideDirectory().file("samples/code").map(it -> it.getAsFile().getAbsolutePath()));
             task.getAttributes().put("samplesoutputdir", binary.getGuideDirectory().file("samples/output").map(it -> it.getAsFile().getAbsolutePath()));
@@ -133,6 +135,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             task.setDescription("Assembles all intermediate files needed to generate the samples documentation.");
 
             extension.getBinaries().withType(GuideContentBinary.class).forEach(binary -> {
+                // TODO: This is extra content compared to Samples
                 task.from(binary.getGuideDirectory().dir("contents"), sub -> {
                     sub.into(binary.getPermalink());
                     sub.include("**/*.adoc");
@@ -147,7 +150,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             task.getInputs().files("samples").withPropertyName("samplesDir").withPathSensitivity(PathSensitivity.RELATIVE).optional();
 
             task.setGroup("documentation");
-            task.setDescription("Generates multi-page samples index.");
+            task.setDescription("Generates multi-page guides index.");
             task.dependsOn(assembleDocs);
 
             task.sources(new Closure(null) {
@@ -158,6 +161,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
                 }
             });
 
+            // TODO: This is for cleaning stale content from next block
             task.doFirst(new Action<Task>() {
                 @Override
                 public void execute(Task t) {
@@ -165,6 +169,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
                 }
             });
 
+            // TODO: Add images files as content, sample most likely need that as well
             task.getInputs().files(extension.getBinaries().withType(GuideContentBinary.class).stream().map(binary -> binary.getGuideDirectory().dir("contents/images")).collect(Collectors.toList())).withPropertyName("images").optional(true);
             task.doLast(new Action<Task>() {
                 @Override

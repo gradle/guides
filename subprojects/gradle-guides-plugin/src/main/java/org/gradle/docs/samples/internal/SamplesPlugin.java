@@ -1,14 +1,11 @@
 package org.gradle.docs.samples.internal;
 
-import groovy.lang.Closure;
-import org.asciidoctor.gradle.AsciidoctorTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.file.ConfigurableFileCollection;
-import org.gradle.api.file.CopySpec;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.FileTree;
@@ -20,21 +17,16 @@ import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
-import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.testing.Test;
-import org.gradle.api.tasks.util.PatternSet;
 import org.gradle.api.tasks.wrapper.Wrapper;
-import org.gradle.docs.internal.tasks.ViewDocumentation;
 import org.gradle.docs.internal.DocumentationExtensionInternal;
 import org.gradle.docs.samples.Dsl;
-import org.gradle.docs.samples.Sample;
 import org.gradle.docs.samples.SampleSummary;
 import org.gradle.docs.samples.Samples;
 import org.gradle.docs.samples.Template;
 import org.gradle.docs.samples.internal.tasks.GenerateSampleIndexAsciidoc;
-import org.gradle.docs.samples.internal.tasks.GenerateSamplePageAsciidoc;
 import org.gradle.docs.samples.internal.tasks.GenerateSanityCheckTests;
 import org.gradle.docs.samples.internal.tasks.GenerateTestSource;
 import org.gradle.docs.samples.internal.tasks.InstallSample;
@@ -46,14 +38,13 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 import static org.gradle.docs.internal.StringUtils.*;
+import static org.gradle.docs.samples.internal.SamplesDocumentationPlugin.toSummary;
 
 @SuppressWarnings("UnstableApiUsage")
 public class SamplesPlugin implements Plugin<Project> {
@@ -66,10 +57,9 @@ public class SamplesPlugin implements Plugin<Project> {
 
         project.getPluginManager().apply(SamplesDocumentationPlugin.class);
         project.getPluginManager().apply("java-base");
-        project.getPluginManager().apply("org.asciidoctor.convert");
 
         TaskProvider<Task> assemble = tasks.named(LifecycleBasePlugin.ASSEMBLE_TASK_NAME);
-        TaskProvider<Task> check = tasks.register("checkSamples");
+        TaskProvider<Task> check = tasks.named("checkSamples");
 
         // Register a samples extension to configure published samples
         SamplesInternal extension = configureSamplesExtension(project, layout);
@@ -88,9 +78,6 @@ public class SamplesPlugin implements Plugin<Project> {
         // Documentation for sample index
         registerGenerateSampleIndex(tasks, providers, objects, extension);
 
-        // Render all the documentation out to HTML
-        renderSamplesDocumentation(tasks, assemble, extension);
-
         // Templates
         extension.getTemplates().configureEach(template -> applyConventionsForTemplates(extension, template));
         extension.getTemplates().all(template -> createTasksForTemplates(layout, tasks, template));
@@ -100,67 +87,6 @@ public class SamplesPlugin implements Plugin<Project> {
 
         // Trigger everything by realizing sample container
         project.afterEvaluate(p -> realizeSamples(tasks, objects, extension, assemble, check));
-    }
-
-    private void renderSamplesDocumentation(TaskContainer tasks, TaskProvider<Task> assemble, SamplesInternal extension) {
-        TaskProvider<Sync> assembleDocs = tasks.register("assembleSamples", Sync.class, task -> {
-            task.setGroup("documentation");
-            task.setDescription("Assembles all intermediate files needed to generate the samples documentation.");
-            task.from(extension.getSampleIndexFile());
-            // TODO: File collection of the readmes too?
-            task.from((Callable<List<RegularFileProperty>>) () -> extension.getPublishedSamples().stream().map(Sample::getSamplePageFile).collect(Collectors.toList()));
-            task.from(extension.getDistribution().getZippedSamples(), sub -> sub.into("zips"));
-            task.from(extension.getDistribution().getInstalledSamples(), sub -> sub.into("samples"));
-            task.into(extension.getDocumentationInstallRoot());
-        });
-
-        TaskProvider<AsciidoctorTask> samplesMultiPage = tasks.register("samplesMultiPage", AsciidoctorTask.class, task -> {
-            task.setGroup("documentation");
-            task.setDescription("Generates multi-page samples index.");
-            task.dependsOn(assembleDocs);
-
-            task.sources(new Closure(null) {
-                public Object doCall(Object ignore) {
-                    ((PatternSet)this.getDelegate()).include("**/*.adoc");
-                    ((PatternSet)this.getDelegate()).exclude("samples/**/*.adoc");
-                    return null;
-                }
-            });
-            // TODO: This breaks the provider
-            task.setSourceDir(extension.getDocumentationInstallRoot().get().getAsFile());
-            // TODO: This breaks the provider
-            task.setOutputDir(extension.getRenderedDocumentationRoot().get().getAsFile());
-            task.resources(new Closure(task) {
-                public Object doCall(Object ignore) {
-                    ((CopySpec)this.getDelegate()).from(extension.getDistribution().getZippedSamples(), sub -> sub.into("zips"));
-                    return this.getDelegate();
-                }
-            });
-
-            task.setSeparateOutputDirs(false);
-            Map<String, Object> attributes = new HashMap<>();
-            attributes.put("doctype", "book");
-            attributes.put("icons", "font");
-            attributes.put("source-highlighter", "prettify");
-            attributes.put("toc", "auto");
-            attributes.put("toclevels", 1);
-            attributes.put("toc-title", "Contents");
-            // TODO: This is specific to gradle/gradle
-            attributes.put("userManualPath", "../userguide");
-            attributes.put("samples-dir", extension.getDocumentationInstallRoot().get().getAsFile());
-            task.attributes(attributes);
-        });
-        extension.getDistribution().getRenderedDocumentation().from(samplesMultiPage);
-
-        assemble.configure(t -> t.dependsOn(extension.getDistribution().getRenderedDocumentation()));
-
-        extension.getPublishedSamples().configureEach(sample -> {
-            tasks.register("view" + capitalize(sample.getName()) + "Sample", ViewDocumentation.class, task -> {
-                task.setGroup("Documentation");
-                task.setDescription("Generates the guide and open in the browser");
-                task.getIndexFile().fileProvider(samplesMultiPage.map(it -> new File(it.getOutputDir(), sample.getSampleDocName().get() + ".html")));
-            });
-        });
     }
 
     private FileCollection createGeneratedTests(TaskContainer tasks, ObjectFactory objects, ProjectLayout layout) {
@@ -247,16 +173,6 @@ public class SamplesPlugin implements Plugin<Project> {
         wrapperFiles.from(wrapper.map(AbstractTask::getTemporaryDir));
         wrapperFiles.builtBy(wrapper);
         return wrapperFiles.getAsFileTree();
-    }
-
-    private void registerGenerateSamplePage(TaskContainer tasks, ObjectFactory objects, SampleInternal sample) {
-        TaskProvider<GenerateSamplePageAsciidoc> generateSamplePage = tasks.register("generate" + capitalize(sample.getName()) + "Page", GenerateSamplePageAsciidoc.class, task -> {
-            task.setDescription("Generates asciidoc page for sample '" + sample.getName() + "'");
-            task.getSampleSummary().convention(toSummary(objects, sample));
-            task.getReadmeFile().convention(sample.getReadMeFile());
-            task.getOutputFile().fileProvider(sample.getSampleDocName().map(fileName -> new File(task.getTemporaryDir(), fileName + ".adoc")));
-        });
-        sample.getSamplePageFile().convention(generateSamplePage.flatMap(GenerateSamplePageAsciidoc::getOutputFile));
     }
 
     private void applyConventionsForSamples(SamplesInternal extension, FileTree wrapperFiles, FileCollection generatedTests, SampleInternal sample) {
@@ -398,7 +314,6 @@ public class SamplesPlugin implements Plugin<Project> {
             // TODO: To make this lazy without afterEvaluate/eagerness, we need to be able to tell the tasks container that the samples container should be consulted
             assemble.configure(t -> t.dependsOn(sample.getAssembleTask()));
             check.configure(t -> t.dependsOn(sample.getCheckTask()));
-            registerGenerateSamplePage(tasks, objects, sample);
 
             sample.getDsls().disallowChanges();
             // TODO: This should only be enforced if we are trying to build the given sample
@@ -412,15 +327,5 @@ public class SamplesPlugin implements Plugin<Project> {
                 sample.getCheckTask().configure(task -> task.dependsOn(binary.getValidationReport()));
             }
         }
-    }
-
-    private SampleSummary toSummary(ObjectFactory objects, SampleInternal sample) {
-        SampleSummary summary = objects.newInstance(SampleSummary.class);
-        summary.getDisplayName().set(sample.getDisplayName());
-        summary.getDsls().set(sample.getDsls());
-        summary.getCategory().set(sample.getCategory());
-        summary.getDescription().set(sample.getDescription());
-        summary.getSampleDocName().set(sample.getSampleDocName());
-        return summary;
     }
 }
