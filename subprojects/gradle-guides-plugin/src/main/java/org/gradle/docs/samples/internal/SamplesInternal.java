@@ -28,7 +28,7 @@ public abstract class SamplesInternal implements Samples {
         return publishedSamples;
     }
 
-    public DomainObjectSet<SampleBinary> getBinaries() {
+    public DomainObjectSet<? super SampleBinary> getBinaries() {
         return binaries;
     }
 

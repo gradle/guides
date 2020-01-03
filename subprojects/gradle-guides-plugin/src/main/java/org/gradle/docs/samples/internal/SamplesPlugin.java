@@ -16,7 +16,6 @@ import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.internal.AbstractTask;
 import org.gradle.api.model.ObjectFactory;
-import org.gradle.api.provider.Provider;
 import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.SourceSet;
@@ -84,7 +83,7 @@ public class SamplesPlugin implements Plugin<Project> {
         // Sample binaries
         // Create tasks for each sample binary (a sample for a particular DSL)
         // TODO: This could be lazy if we had a way to make the TaskContainer require evaluation
-        extension.getBinaries().all(binary -> createTasksForSampleBinary(tasks, layout, binary));
+        extension.getBinaries().withType(SampleArchiveBinary.class).all(binary -> createTasksForSampleBinary(tasks, layout, binary));
 
         // Documentation for sample index
         registerGenerateSampleIndex(tasks, providers, objects, extension);
@@ -216,12 +215,12 @@ public class SamplesPlugin implements Plugin<Project> {
 
         extension.getInstallRoot().convention(layout.getBuildDirectory().dir("working/samples/install"));
         extension.getDistribution().getInstalledSamples().from(extension.getInstallRoot());
-        extension.getDistribution().getInstalledSamples().builtBy((Callable<List<DirectoryProperty>>) () -> extension.getBinaries().stream().map(SampleBinary::getInstallDirectory).collect(Collectors.toList()));
-        extension.getDistribution().getZippedSamples().from((Callable<List<RegularFileProperty>>) () -> extension.getBinaries().stream().map(SampleBinary::getZipFile).collect(Collectors.toList()));
+        extension.getDistribution().getInstalledSamples().builtBy((Callable<List<DirectoryProperty>>) () -> extension.getBinaries().withType(SampleArchiveBinary.class).stream().map(SampleArchiveBinary::getInstallDirectory).collect(Collectors.toList()));
+        extension.getDistribution().getZippedSamples().from((Callable<List<RegularFileProperty>>) () -> extension.getBinaries().withType(SampleArchiveBinary.class).stream().map(SampleArchiveBinary::getZipFile).collect(Collectors.toList()));
 
         extension.getTestedInstallRoot().convention(layout.getBuildDirectory().dir("working/samples/testing"));
         extension.getDistribution().getTestedInstalledSamples().from(extension.getTestedInstallRoot());
-        extension.getDistribution().getTestedInstalledSamples().builtBy(extension.getDistribution().getInstalledSamples().builtBy((Callable<List<DirectoryProperty>>) () -> extension.getBinaries().stream().map(SampleBinary::getTestedInstallDirectory).collect(Collectors.toList())));
+        extension.getDistribution().getTestedInstalledSamples().builtBy(extension.getDistribution().getInstalledSamples().builtBy((Callable<List<DirectoryProperty>>) () -> extension.getBinaries().withType(SampleArchiveBinary.class).stream().map(SampleArchiveBinary::getTestedInstallDirectory).collect(Collectors.toList())));
 
         return extension;
     }
@@ -302,8 +301,8 @@ public class SamplesPlugin implements Plugin<Project> {
         });
     }
 
-    private SampleBinary registerSampleBinaryForDsl(SamplesInternal extension, SampleInternal sample, Dsl dsl, ObjectFactory objects) {
-        SampleBinary binary = objects.newInstance(SampleBinary.class, sample.getName() + dsl.getDisplayName());
+    private SampleArchiveBinary registerSampleBinaryForDsl(SamplesInternal extension, SampleInternal sample, Dsl dsl, ObjectFactory objects) {
+        SampleArchiveBinary binary = objects.newInstance(SampleArchiveBinary.class, sample.getName() + dsl.getDisplayName());
         binary.getDsl().convention(dsl).disallowChanges();
         binary.getSampleLinkName().convention(sample.getSampleDocName()).disallowChanges();
         binary.getWorkingDirectory().convention(sample.getInstallDirectory().dir(dsl.getConventionalDirectory())).disallowChanges();
@@ -329,7 +328,7 @@ public class SamplesPlugin implements Plugin<Project> {
         return binary;
     }
 
-    private void createTasksForSampleBinary(TaskContainer tasks, ProjectLayout layout, SampleBinary binary) {
+    private void createTasksForSampleBinary(TaskContainer tasks, ProjectLayout layout, SampleArchiveBinary binary) {
         TaskProvider<ValidateSampleBinary> validateSample = tasks.register("validateSample" + capitalize(binary.getName()), ValidateSampleBinary.class, task -> {
             task.setDescription("Checks the sample '" + binary.getName() + "' is valid.");
             task.getDsl().convention(binary.getDsl());
@@ -408,7 +407,7 @@ public class SamplesPlugin implements Plugin<Project> {
                 throw new GradleException("Samples must have at least one DSL, sample '" + sample.getName() + "' has none.");
             }
             for (Dsl dsl : dsls) {
-                SampleBinary binary = registerSampleBinaryForDsl(extension, sample, dsl, objects);
+                SampleArchiveBinary binary = registerSampleBinaryForDsl(extension, sample, dsl, objects);
                 sample.getAssembleTask().configure(task -> task.dependsOn(binary.getZipFile()));
                 sample.getCheckTask().configure(task -> task.dependsOn(binary.getValidationReport()));
             }
