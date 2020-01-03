@@ -9,36 +9,6 @@ import java.awt.image.DataBufferInt
 
 class BasicGuidesDocumentationFunctionalTest extends AbstractGuideFunctionalSpec {
 
-    def "verify guide description default values"() {
-        buildFile << applyDocumentationPlugin() << createGuide('foo') << createGuide('fooBar')
-        buildFile << """
-            tasks.register('verify') {
-                doLast {
-                    assert ${guideDsl('foo')}.description.get() == ''
-                    assert ${guideDsl('fooBar')}.description.get() == ''
-                }
-            }
-        """
-
-        expect:
-        build('verify')
-    }
-
-    def "verify guide display name default values"() {
-        buildFile << applyDocumentationPlugin() << createGuide('foo') << createGuide('fooBar')
-        buildFile << """
-            tasks.register('verify') {
-                doLast {
-                    assert ${guideDsl('foo')}.displayName.get() == 'Foo'
-                    assert ${guideDsl('fooBar')}.displayName.get() == 'Foo Bar'
-                }
-            }
-        """
-
-        expect:
-        build('verify')
-    }
-
     def "verify guide repository path default values"() {
         buildFile << applyDocumentationPlugin() << createGuide('foo') << createGuide('fooBar')
         buildFile << """
@@ -52,19 +22,6 @@ class BasicGuidesDocumentationFunctionalTest extends AbstractGuideFunctionalSpec
 
         expect:
         build('verify')
-    }
-
-    // TODO: Add this test for samples as well
-    @Unroll
-    def "fails if disallowed characters in guide name (#name)"(String name) {
-        buildFile << applyDocumentationPlugin() << createGuide(name)
-
-        expect:
-        def result = buildAndFail('help')
-        result.output.contains("Guide '${name}' has disallowed characters")
-
-        where:
-        name << ['foo_bar', 'foo-bar']
     }
 
     def "can render single page guide"() {
@@ -271,38 +228,6 @@ include::step-2.adoc[]
         indexFile.text.contains("Samples directory: ${file('src/docs/guides/demo/samples')}")
         indexFile.text.contains("Samples code directory: ${file('src/docs/guides/demo/samples/code')}")
         indexFile.text.contains("Samples output directory: ${file('src/docs/guides/demo/samples/output')}")
-    }
-
-    def "defaults description to empty string"() {
-        given:
-        makeSingleProject()
-        writeGuideUnderTest()
-        buildFile << """
-            tasks.register('verifyDescription') {
-                doLast {
-                    assert ${guideUnderTestDsl}.description.get() == ''
-                }
-            }
-        """
-
-        expect:
-        build('verifyDescription')
-    }
-
-    def "defaults display name to name as title case"() {
-        given:
-        makeSingleProject()
-        writeGuideUnderTest()
-        buildFile << """
-            tasks.register('verifyDisplayName') {
-                doLast {
-                    assert ${guideUnderTestDsl}.displayName.get() == 'Demo'
-                }
-            }
-        """
-
-        expect:
-        build('verifyDisplayName')
     }
 
     def "defaults guide repository path to guide name under gradle-guides organization"() {

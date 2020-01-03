@@ -2,7 +2,7 @@ package org.gradle.docs.guides
 
 import org.gradle.docs.AbstractFunctionalTest
 
-class AbstractGuideFunctionalSpec extends AbstractFunctionalTest {
+class AbstractGuideFunctionalSpec extends AbstractFunctionalTest implements GuidesTrait {
     protected void makeSingleProject() {
         buildFile << applyDocumentationPlugin() << createGuide('demo')
     }
@@ -22,17 +22,8 @@ Some guide
             }
         """
     }
-    protected static String createGuide(String name) {
-        return """
-            documentation.guides.publishedGuides.create('${name}')
-        """
-    }
 
     protected String getGuideUnderTestDsl() {
         return guideDsl('demo')
-    }
-
-    protected static String guideDsl(String name) {
-        return "documentation.guides.publishedGuides.${name}"
     }
 }

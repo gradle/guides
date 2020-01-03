@@ -209,9 +209,9 @@ public class SamplesPlugin implements Plugin<Project> {
         SamplesInternal extension = project.getExtensions().getByType(DocumentationExtensionInternal.class).getSamples();
 
         project.getExtensions().add(Samples.class, "samples", extension);
-        extension.getSamplesRoot().convention(layout.getProjectDirectory().dir("src/samples"));
+        extension.getSamplesRoot().set(layout.getProjectDirectory().dir("src/samples"));
+
         extension.getTemplatesRoot().convention(layout.getProjectDirectory().dir("src/samples/templates"));
-        extension.getDocumentationInstallRoot().convention(layout.getBuildDirectory().dir("working/samples/docs/"));
         extension.getCommonExcludes().convention(Arrays.asList("**/build/**", "**/.gradle/**"));
 
         extension.getInstallRoot().convention(layout.getBuildDirectory().dir("working/samples/install"));
@@ -223,7 +223,6 @@ public class SamplesPlugin implements Plugin<Project> {
         extension.getDistribution().getTestedInstalledSamples().from(extension.getTestedInstallRoot());
         extension.getDistribution().getTestedInstalledSamples().builtBy(extension.getDistribution().getInstalledSamples().builtBy((Callable<List<DirectoryProperty>>) () -> extension.getBinaries().stream().map(SampleBinary::getTestedInstallDirectory).collect(Collectors.toList())));
 
-        extension.getRenderedDocumentationRoot().convention(layout.getBuildDirectory().dir("working/samples/render-samples"));
         return extension;
     }
 
@@ -263,14 +262,10 @@ public class SamplesPlugin implements Plugin<Project> {
 
     private void applyConventionsForSamples(SamplesInternal extension, FileTree wrapperFiles, FileCollection generatedTests, SampleInternal sample) {
         String name = sample.getName();
-        sample.getDisplayName().convention(toTitleCase(name));
         // Converts names like androidApplication to android-application
-        sample.getSampleDirectory().convention(extension.getSamplesRoot().dir(toKebabCase(name)));
         sample.getInstallDirectory().convention(extension.getInstallRoot().dir(toKebabCase(name)));
         sample.getTestedInstallDirectory().convention(extension.getTestedInstallRoot().dir(toKebabCase(name)));
         sample.getSampleDocName().convention("sample_" + toSnakeCase(name));
-        sample.getDescription().convention("");
-        sample.getCategory().convention("Uncategorized");
 
         sample.getLicenseFile().convention(sample.getSampleDirectory().file("LICENSE"));
         sample.getReadMeFile().convention(sample.getSampleDirectory().file("README.adoc"));
@@ -399,9 +394,6 @@ public class SamplesPlugin implements Plugin<Project> {
     private void realizeSamples(TaskContainer tasks, ObjectFactory objects, SamplesInternal extension, TaskProvider<Task> assemble, TaskProvider<Task> check) {
         // TODO: Disallow changes to published samples container after this point.
         for (SampleInternal sample : extension.getPublishedSamples()) {
-            if (sample.getName().contains("_") || sample.getName().contains("-")) {
-                throw new IllegalArgumentException(String.format("Sample '%s' has disallowed characters", sample.getName()));
-            }
             // TODO: To make this lazy without afterEvaluate/eagerness, we need to be able to tell the tasks container that the samples container should be consulted
             assemble.configure(t -> t.dependsOn(sample.getAssembleTask()));
             check.configure(t -> t.dependsOn(sample.getCheckTask()));
