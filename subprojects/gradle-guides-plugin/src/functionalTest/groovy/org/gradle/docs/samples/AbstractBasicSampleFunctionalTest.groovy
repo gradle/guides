@@ -133,11 +133,11 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
         writeSampleUnderTest()
         file("src/samples/demo/common/${directory}/foo.txt") << "Exclude"
         buildFile << """
-def sample = ${sampleUnderTestDsl}
-sample.common {
-    from(sample.sampleDirectory.file("common"))
-}
-"""
+            def sample = ${sampleUnderTestDsl}
+            sample.common {
+                from(sample.sampleDirectory.file("common"))
+            }
+        """
         when:
         build('assembleDemoSample')
 

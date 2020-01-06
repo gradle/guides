@@ -24,13 +24,13 @@ class BasicExplicitKotlinDslSampleFunctionalTest extends AbstractKotlinDslSample
         given:
         makeSingleProject()
         buildFile << """
-${sampleUnderTestDsl} {
-    sampleDirectory = file('src')
-    kotlin {
-        setFrom(file('src/kotlin-dsl'))
-    }
-}
-"""
+            ${sampleUnderTestDsl} {
+                sampleDirectory = file('src')
+                kotlin {
+                    setFrom(file('src/kotlin-dsl'))
+                }
+            }
+        """
         writeReadmeTo(file('src'))
         writeKotlinDslSampleToDirectory(file('src/kotlin-dsl'))
         file('src/kotlin/do.not.include') << "should not be included"

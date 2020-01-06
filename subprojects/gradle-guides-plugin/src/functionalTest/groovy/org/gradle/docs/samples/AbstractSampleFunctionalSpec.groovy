@@ -32,10 +32,10 @@ abstract class AbstractSampleFunctionalSpec extends AbstractFunctionalTest {
 
     protected static void writeReadmeTo(TestFile directory) {
         directory.file("README.adoc") << """
-= Demo Sample
-
-Some doc
-"""
+            |= Demo Sample
+            |
+            |Some doc
+            |""".stripMargin()
     }
 
     protected static void writeGroovyDslSample(TestFile sampleDirectory) {
@@ -44,15 +44,15 @@ Some doc
 
     protected static void writeGroovyDslSampleToDirectory(TestFile directory) {
         directory.file("build.gradle") << """
-// tag::println[]
-println "Hello, world!"
-// end:println[]
-"""
-        directory.file("settings.gradle") << """
-// tag::root-project-name[]
-rootProject.name = 'demo'
-// end:root-project-name[]
-"""
+            // tag::println[]
+            println "Hello, world!"
+            // end:println[]
+            """
+                    directory.file("settings.gradle") << """
+            // tag::root-project-name[]
+            rootProject.name = 'demo'
+            // end:root-project-name[]
+        """
     }
 
     protected static void writeKotlinDslSample(TestFile sampleDirectory) {
@@ -61,14 +61,14 @@ rootProject.name = 'demo'
 
     protected static void writeKotlinDslSampleToDirectory(TestFile directory) {
         directory.file("build.gradle.kts") << """
-// tag::println[]
-println("Hello, world!")
-// end:println[]
-        """
-        directory.file("settings.gradle.kts") << """
-// tag::root-project-name[]
-rootProject.name = "demo"
-// end:root-project-name[]
+            // tag::println[]
+            println("Hello, world!")
+            // end:println[]
+                    """
+                    directory.file("settings.gradle.kts") << """
+            // tag::root-project-name[]
+            rootProject.name = "demo"
+            // end:root-project-name[]
         """
     }
 

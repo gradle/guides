@@ -24,13 +24,13 @@ class BasicExplicitGroovyDslSampleFunctionalTest extends AbstractGroovyDslSample
         given:
         makeSingleProject()
         buildFile << """
-${sampleUnderTestDsl} {
-    sampleDirectory = file('src')
-    groovy {
-        setFrom(file('src/groovy-dsl'))
-    }
-}
-"""
+            ${sampleUnderTestDsl} {
+                sampleDirectory = file('src')
+                groovy {
+                    setFrom(file('src/groovy-dsl'))
+                }
+            }
+        """
         writeReadmeTo(file('src'))
         writeGroovyDslSampleToDirectory(file('src/groovy-dsl'))
         file('src/groovy/do.not.include') << "should not be included"

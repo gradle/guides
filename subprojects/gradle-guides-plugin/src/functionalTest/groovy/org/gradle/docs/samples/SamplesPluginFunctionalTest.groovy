@@ -1,6 +1,5 @@
 package org.gradle.docs.samples
 
-
 import spock.lang.Unroll
 
 import java.util.concurrent.TimeUnit
@@ -14,11 +13,11 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
         makeSingleProject()
         writeSampleUnderTest()
         buildFile << """
-tasks.register("publishSamples", Sync) {
-    from(samples.distribution.renderedDocumentation)
-    into("build/published/samples/")
-}
-"""
+            tasks.register("publishSamples", Sync) {
+                from(samples.distribution.renderedDocumentation)
+                into("build/published/samples/")
+            }
+        """
         when:
         build('publishSamples')
 
@@ -33,22 +32,22 @@ tasks.register("publishSamples", Sync) {
         makeSingleProject()
         writeSampleUnderTest()
         buildFile << """
-abstract class GenerateTask extends DefaultTask {
-    @OutputFile
-    abstract RegularFileProperty getOutputFile()
-    
-    @TaskAction
-    void generate() {
-        outputFile.get().asFile.text = "This is generated content"
-    }
-}
-def generatorTask = tasks.register("generate", GenerateTask) {
-    outputFile = new File(temporaryDir, "generated.txt")
-}
-${sampleUnderTestDsl}.common {
-    from(generatorTask)
-}
-"""
+            abstract class GenerateTask extends DefaultTask {
+                @OutputFile
+                abstract RegularFileProperty getOutputFile()
+
+                @TaskAction
+                void generate() {
+                    outputFile.get().asFile.text = "This is generated content"
+                }
+            }
+            def generatorTask = tasks.register("generate", GenerateTask) {
+                outputFile = new File(temporaryDir, "generated.txt")
+            }
+            ${sampleUnderTestDsl}.common {
+                from(generatorTask)
+            }
+        """
 
         when:
         build("assembleDemoSample")
@@ -117,15 +116,15 @@ ${sampleUnderTestDsl}.common {
         // To simulate an invalid zip, replace the generated zip with an empty one
         file("a.file").text = "This is not a sample."
         buildFile << """
-task generateZip(type: Zip) {
-    archiveBaseName = "not-a-sample"
-    from("a.file")
-}
+            task generateZip(type: Zip) {
+                archiveBaseName = "not-a-sample"
+                from("a.file")
+            }
 
-samples.binaries.configureEach {
-    zipFile = tasks.generateZip.archiveFile
-}
-"""
+            samples.binaries.configureEach {
+                zipFile = tasks.generateZip.archiveFile
+            }
+        """
         when:
         buildAndFail("validateSampleDemoGroovy")
 
@@ -145,7 +144,7 @@ samples.binaries.configureEach {
         makeSingleProject()
         writeSampleUnderTest()
         buildFile << """
-${sampleUnderTestDsl}.dsls = [] 
+            ${sampleUnderTestDsl}.dsls = [] 
         """
 
         when:
@@ -164,9 +163,9 @@ ${sampleUnderTestDsl}.dsls = []
         when:
         // Only expect Groovy DSL content
         buildFile << """
-import ${Dsl.canonicalName}
-${sampleUnderTestDsl}.dsls = [ Dsl.GROOVY ]
-"""
+            import ${Dsl.canonicalName}
+            ${sampleUnderTestDsl}.dsls = [ Dsl.GROOVY ]
+        """
         and:
         build('check')
         then:
@@ -254,19 +253,19 @@ ${sampleUnderTestDsl}.dsls = [ Dsl.GROOVY ]
         file("src/samples/templates/template-dir/a.txt") << "aaaa"
         file("src/samples/templates/template-dir/subdir/b.txt") << "bbbb"
         buildFile << """
-samples {
-    templates {
-        templateDir
-    }
-    publishedSamples {
-        demo {
-            common {
-                from(templates.templateDir)
+            samples {
+                templates {
+                    templateDir
+                }
+                publishedSamples {
+                    demo {
+                        common {
+                            from(templates.templateDir)
+                        }
+                    }
+                }
             }
-        }
-    }
-}
-"""
+        """
         when:
         build("assembleDemoSample")
 
@@ -312,18 +311,18 @@ samples {
         and:
         def indexFile = file("build/tmp/generateSampleIndex/index.adoc")
         indexFile.text == """= Sample Index
-
-== Special
-
-- <<sample_zzz#,Zzz>>
-
-== Uncategorized
-
-- <<sample_aaa#,Aaa>>
-- <<sample_demo#,Demo>>
-- <<sample_mmm#,Mmm>>
-
-"""
+            |
+            |== Special
+            |
+            |- <<sample_zzz#,Zzz>>
+            |
+            |== Uncategorized
+            |
+            |- <<sample_aaa#,Aaa>>
+            |- <<sample_demo#,Demo>>
+            |- <<sample_mmm#,Mmm>>
+            |
+            |""".stripMargin()
     }
 
     private void assertCanRunHelpTask(File zipFile) {

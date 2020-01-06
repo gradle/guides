@@ -16,16 +16,16 @@ class BasicExplicitBothDslSampleFunctionalTest extends AbstractBothDslSampleFunc
         given:
         makeSingleProject()
         buildFile << """
-${sampleUnderTestDsl} {
-    sampleDirectory = file('src')
-    groovy {
-        setFrom(file('src/groovy-dsl'))
-    }
-    kotlin {
-        setFrom(file('src/kotlin-dsl'))
-    }
-}
-"""
+            ${sampleUnderTestDsl} {
+                sampleDirectory = file('src')
+                groovy {
+                    setFrom(file('src/groovy-dsl'))
+                }
+                kotlin {
+                    setFrom(file('src/kotlin-dsl'))
+                }
+            }
+        """
         writeReadmeTo(file('src'))
         writeGroovyDslSampleToDirectory(file('src/groovy-dsl'))
         file('src/groovy/do.not.include') << "should not be included"

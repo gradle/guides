@@ -25,15 +25,15 @@ abstract class AbstractKotlinDslSampleFunctionalTest extends AbstractBasicSample
         def groovyReadmeFile = file("build/working/samples/install/demo/groovy/README")
         def kotlinReadmeFile = file("build/working/samples/install/demo/kotlin/README")
         assert kotlinReadmeFile.text == """= Demo Sample
-
-[.download]
-- link:zips/sample_demo-kotlin-dsl.zip[icon:download[] Kotlin DSL]
-
-
-= Demo Sample
-
-Some doc
-"""
+            |
+            |[.download]
+            |- link:zips/sample_demo-kotlin-dsl.zip[icon:download[] Kotlin DSL]
+            |
+            |
+            |= Demo Sample
+            |
+            |Some doc
+            |""".stripMargin()
         groovyReadmeFile.assertDoesNotExist()
     }
 }

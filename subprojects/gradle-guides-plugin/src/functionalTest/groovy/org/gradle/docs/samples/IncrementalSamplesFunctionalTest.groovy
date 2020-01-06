@@ -141,11 +141,11 @@ class IncrementalSamplesFunctionalTest extends AbstractSampleFunctionalSpec {
         when:
         writeSampleUnderTest("src/samples/new-sample")
         buildFile << """
-samples {
-    publishedSamples {
-        newSample
-    }
-}
+            samples {
+                publishedSamples {
+                    newSample
+                }
+            }
         """
         and:
         build("generateSampleIndex")

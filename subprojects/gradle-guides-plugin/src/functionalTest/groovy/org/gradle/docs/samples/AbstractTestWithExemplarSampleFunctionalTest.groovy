@@ -30,24 +30,24 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
         buildFile << expectTestsExecuted(getExpectedTestsFor("demo") + getExpectedTestsFor("demo", "otherTest"))
 
         buildFile << """
-abstract class GenerateTask extends DefaultTask {
-    @OutputDirectory
-    abstract DirectoryProperty getOutputDirectory()
-    
-    @TaskAction
-    void generate() {
-        File outputDir = outputDirectory.get().asFile
-        new File(outputDir, "otherTest.sample.conf").text = '''${getExemplarSampleConfigFileContent("otherTest.sample.out")}'''
-        new File(outputDir, "otherTest.sample.out").text = '''${getExemplarSampleOutFileContent()}'''
-    }
-}
-def generatorTask = tasks.register("generate", GenerateTask) {
-    outputDirectory = temporaryDir
-}
+            abstract class GenerateTask extends DefaultTask {
+                @OutputDirectory
+                abstract DirectoryProperty getOutputDirectory()
 
-${sampleUnderTestDsl}.tests { 
-    from(generatorTask)
-}
+                @TaskAction
+                void generate() {
+                    File outputDir = outputDirectory.get().asFile
+                    new File(outputDir, "otherTest.sample.conf").text = '''${getExemplarSampleConfigFileContent("otherTest.sample.out")}'''
+                    new File(outputDir, "otherTest.sample.out").text = '''${getExemplarSampleOutFileContent()}'''
+                }
+            }
+            def generatorTask = tasks.register("generate", GenerateTask) {
+                outputDirectory = temporaryDir
+            }
+
+            ${sampleUnderTestDsl}.tests {
+                from(generatorTask)
+            }
         """
 
         when:
@@ -121,60 +121,60 @@ ${sampleUnderTestDsl}.tests {
 
     protected static String expectTestsExecuted(List<String> expected) {
         def script = """
-task assertTestsExecuted {
-    ext.tests = []
-    doLast {
-        assert tests.size() == ${expected.size()}
-"""
+            |task assertTestsExecuted {
+            |    ext.tests = []
+            |    doLast {
+            |        assert tests.size() == ${expected.size()}
+            |""".stripMargin()
     expected.each {
         script += "assert tests.contains('${it}')\n"
     }
         script += """
-    }
-}
-
-tasks.withType(Test).configureEach {
-    beforeTest { descriptor ->
-        println("test: " + descriptor)
-        assertTestsExecuted.tests << descriptor.className + "." + descriptor.name
-    }
-    finalizedBy assertTestsExecuted
-}
-"""
+            |    }
+            |}
+            |
+            |tasks.withType(Test).configureEach {
+            |    beforeTest { descriptor ->
+            |        println("test: " + descriptor)
+            |        assertTestsExecuted.tests << descriptor.className + "." + descriptor.name
+            |    }
+            |    finalizedBy assertTestsExecuted
+            |}
+            |""".stripMargin()
         return script
     }
 
     protected static String getExemplarSampleConfigFileContent(String outputFile="handWritten.sample.out") {
         return """
-commands: [{
-    executable: gradle
-    args: help
-    expected-output-file: ${outputFile}
-}]
-"""
+            |commands: [{
+            |    executable: gradle
+            |    args: help
+            |    expected-output-file: ${outputFile}
+            |}]
+            |""".stripMargin()
     }
 
     private static String getExemplarSampleOutFileContent() {
         return """
-> Configure project :
-Hello, world!
-
-> Task :help
-
-Welcome to ${GradleVersion.current()}.
-
-To run a build, run gradle <task> ...
-
-To see a list of available tasks, run gradle tasks
-
-To see a list of command-line options, run gradle --help
-
-To see more detail about a task, run gradle help --task <task>
-
-For troubleshooting, visit https://help.gradle.org
-
-BUILD SUCCESSFUL in 0s
-1 actionable task: 1 executed
-"""
+            |> Configure project :
+            |Hello, world!
+            |
+            |> Task :help
+            |
+            |Welcome to ${GradleVersion.current()}.
+            |
+            |To run a build, run gradle <task> ...
+            |
+            |To see a list of available tasks, run gradle tasks
+            |
+            |To see a list of command-line options, run gradle --help
+            |
+            |To see more detail about a task, run gradle help --task <task>
+            |
+            |For troubleshooting, visit https://help.gradle.org
+            |
+            |BUILD SUCCESSFUL in 0s
+            |1 actionable task: 1 executed
+            |""".stripMargin()
     }
 }
