@@ -390,21 +390,6 @@ include::sample[dir="kotlin-dsl/code", files="settings.gradle.kts[]"]
         build('assemble')
     }
 
-    // TODO: Test the other use case checked by this task
-    def "can detect dead links"() {
-        given:
-        makeSingleProject()
-        writeGuideUnderTest()
-        file('src/docs/guides/demo/contents/index.adoc') << '''
-https://not.existant/url
-'''
-
-        expect:
-        def result = buildAndFail('checkDemoLinks')
-        result.output.contains('''> The following links are broken:
-   https://not.existant/url''')
-    }
-
     private TestFile image(Object... path) {
         def result = file(path)
         result.parentFile.mkdirs()
