@@ -59,6 +59,19 @@ abstract class AbstractBaseDocumentationFunctionalTest extends AbstractFunctiona
             |   https://not.existant/url'''.stripMargin())
     }
 
+    def "fails rendering on error due to missing includes"() {
+        makeSingleProject()
+        writeDocumentationUnderTest()
+        contentFileUnderTest << """
+            |include::step-1.adoc[]
+            |
+            |include::step-2.adoc[]
+            |""".stripMargin()
+
+        expect:
+        buildAndFail('assemble')
+    }
+
     protected static String applyDocumentationPlugin() {
         return  """
             plugins {
