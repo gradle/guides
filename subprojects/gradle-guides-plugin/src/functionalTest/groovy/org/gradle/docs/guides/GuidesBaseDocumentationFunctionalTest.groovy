@@ -28,4 +28,9 @@ class GuidesBaseDocumentationFunctionalTest extends AbstractBaseDocumentationFun
     protected TestFile getContentFileUnderTest() {
         return file('src/docs/guides/demo/contents/index.adoc')
     }
+
+    @Override
+    protected String getCheckTaskNameUnderTest() {
+        return 'checkDemoGuideLinks'
+    }
 }

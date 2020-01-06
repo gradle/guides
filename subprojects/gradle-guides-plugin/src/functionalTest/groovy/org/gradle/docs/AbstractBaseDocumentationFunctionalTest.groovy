@@ -54,7 +54,7 @@ abstract class AbstractBaseDocumentationFunctionalTest extends AbstractFunctiona
             |'''.stripMargin()
 
         expect:
-        def result = buildAndFail('checkDemoLinks')
+        def result = buildAndFail(checkTaskNameUnderTest)
         result.output.contains('''> The following links are broken:
             |   https://not.existant/url'''.stripMargin())
     }
@@ -66,6 +66,8 @@ abstract class AbstractBaseDocumentationFunctionalTest extends AbstractFunctiona
             }
         """
     }
+
+    protected abstract String getCheckTaskNameUnderTest()
 
     protected abstract String createDocumentationElement(String name)
 

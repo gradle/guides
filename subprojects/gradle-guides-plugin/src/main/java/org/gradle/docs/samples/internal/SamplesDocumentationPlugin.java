@@ -49,6 +49,7 @@ import java.util.stream.Collectors;
 import static org.gradle.docs.internal.Asserts.assertNameDoesNotContainsDisallowedCharacters;
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
 import static org.gradle.docs.internal.StringUtils.*;
+import static org.gradle.docs.internal.configure.ContentBinaries.createCheckTasksForContentBinary;
 import static org.gradle.docs.internal.configure.ContentBinaries.createTasksForContentBinary;
 
 public class SamplesDocumentationPlugin implements Plugin<Project> {
@@ -79,6 +80,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         // Samples binaries
         // TODO: This could be lazy if we had a way to make the TaskContainer require evaluation
         extension.getBinaries().withType(SampleContentBinary.class).all(binary -> createTasksForContentBinary(tasks, binary));
+        extension.getBinaries().withType(SampleContentBinary.class).all(binary -> createCheckTasksForContentBinary(tasks, binary, check));
         extension.getBinaries().withType(SampleContentBinary.class).all(binary -> createTasksForSampleContentBinary(tasks, layout, providers, binary));
         extension.getBinaries().withType(SampleArchiveBinary.class).all(binary -> createTasksForSampleArchiveBinary(tasks, layout, binary));
 
@@ -266,14 +268,8 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         assemble.configure(t -> t.dependsOn(extension.getDistribution().getRenderedDocumentation()));
 
         extension.getBinaries().withType(SampleContentBinary.class).configureEach(binary -> {
-            binary.getRenderedIndexPageFile().fileProvider(samplesMultiPage.map(it -> new File(it.getOutputDir(), binary.getPermalink().get())));
+            binary.getRenderedPageFile().fileProvider(samplesMultiPage.map(it -> new File(it.getOutputDir(), binary.getPermalink().get())));
             binary.getViewablePageFile().fileProvider(samplesMultiPage.map(it -> new File(it.getOutputDir(), binary.getPermalink().get())));
-
-            TaskProvider<CheckLinks> checkLinksTask = tasks.register("check" + capitalize(binary.getName()) + "Links", CheckLinks.class, task -> {
-                task.getIndexDocument().convention(binary.getRenderedIndexPageFile());
-            });
-
-            check.configure(it -> it.dependsOn(checkLinksTask));
         });
 
         return samplesMultiPage;

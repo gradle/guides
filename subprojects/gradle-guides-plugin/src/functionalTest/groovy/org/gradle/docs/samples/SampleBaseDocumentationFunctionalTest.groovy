@@ -30,4 +30,9 @@ class SampleBaseDocumentationFunctionalTest extends AbstractBaseDocumentationFun
     protected TestFile getContentFileUnderTest() {
         return file('src/docs/samples/demo/README.adoc')
     }
+
+    @Override
+    protected String getCheckTaskNameUnderTest() {
+        return 'checkDemoSampleLinks'
+    }
 }
