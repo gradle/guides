@@ -38,6 +38,7 @@ import static org.gradle.docs.internal.Asserts.assertNameDoesNotContainsDisallow
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
 import static org.gradle.docs.internal.FileUtils.deleteDirectory;
 import static org.gradle.docs.internal.StringUtils.*;
+import static org.gradle.docs.internal.configure.ContentBinaries.createTasksForContentBinary;
 
 public class GuidesDocumentationPlugin implements Plugin<Project> {
     @Override
@@ -65,6 +66,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
 
         // Guide binaries
         // TODO: This could be lazy if we had a way to make the TaskContainer require evaluation
+        extension.getBinaries().withType(GuideContentBinary.class).all(binary -> createTasksForContentBinary(tasks, binary));
         extension.getBinaries().withType(GuideContentBinary.class).all(binary -> createTasksForGuideContentBinary(tasks, layout, providers, binary));
 
         // Render all the documentation out to HTML
@@ -241,12 +243,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
 
         extension.getBinaries().withType(GuideContentBinary.class).configureEach(binary -> {
             binary.getRenderedIndexPageFile().fileProvider(guidesMultiPage.map(it -> new File(it.getOutputDir(), binary.getPermalink().get())));
-
-            tasks.register("view" + capitalize(binary.getName()) + "Guide", ViewDocumentation.class, task -> {
-                task.setGroup(DOCUMENTATION_GROUP_NAME);
-                task.setDescription("Generates the guide and open in the browser");
-                task.getIndexFile().convention(binary.getRenderedIndexPageFile());
-            });
+            binary.getViewablePageFile().fileProvider(guidesMultiPage.map(it -> new File(it.getOutputDir(), binary.getPermalink().get())));
 
             TaskProvider<CheckLinks> checkLinksTask = tasks.register("check" + capitalize(binary.getName()) + "Links", CheckLinks.class, task -> {
                 task.getIndexDocument().convention(binary.getRenderedIndexPageFile());

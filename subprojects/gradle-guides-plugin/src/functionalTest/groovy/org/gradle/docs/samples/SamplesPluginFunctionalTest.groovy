@@ -93,21 +93,6 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
         buildAndFail("assembleDemoSample")
         then:
         result.task(":generateDemoPage").outcome == FAILED
-
-//        when:
-//        // Instead of generating the readme, point to a non-existent file
-//        buildFile << """
-//${sampleUnderTestDsl}.samplePageFile = file("README.adoc")
-//"""
-//        and:
-//        buildAndFail("validateSampleDemoGroovy")
-//        then:
-//        result.task(":validateSampleDemoGroovy").outcome == FAILED
-//
-//        when:
-//        buildAndFail("validateSampleDemoKotlin")
-//        then:
-//        result.task(":validateSampleDemoKotlin").outcome == FAILED
     }
 
     def "fails when zip looks invalid"() {

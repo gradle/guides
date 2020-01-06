@@ -23,6 +23,7 @@ import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.util.PatternSet;
 import org.gradle.api.tasks.wrapper.Wrapper;
+import org.gradle.docs.guides.internal.GuideContentBinary;
 import org.gradle.docs.internal.DocumentationBasePlugin;
 import org.gradle.docs.internal.DocumentationExtensionInternal;
 import org.gradle.docs.internal.tasks.CheckLinks;
@@ -48,6 +49,7 @@ import java.util.stream.Collectors;
 import static org.gradle.docs.internal.Asserts.assertNameDoesNotContainsDisallowedCharacters;
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
 import static org.gradle.docs.internal.StringUtils.*;
+import static org.gradle.docs.internal.configure.ContentBinaries.createTasksForContentBinary;
 
 public class SamplesDocumentationPlugin implements Plugin<Project> {
     @Override
@@ -76,6 +78,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
 
         // Samples binaries
         // TODO: This could be lazy if we had a way to make the TaskContainer require evaluation
+        extension.getBinaries().withType(SampleContentBinary.class).all(binary -> createTasksForContentBinary(tasks, binary));
         extension.getBinaries().withType(SampleContentBinary.class).all(binary -> createTasksForSampleContentBinary(tasks, layout, providers, binary));
         extension.getBinaries().withType(SampleArchiveBinary.class).all(binary -> createTasksForSampleArchiveBinary(tasks, layout, binary));
 
@@ -264,12 +267,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
 
         extension.getBinaries().withType(SampleContentBinary.class).configureEach(binary -> {
             binary.getRenderedIndexPageFile().fileProvider(samplesMultiPage.map(it -> new File(it.getOutputDir(), binary.getPermalink().get())));
-
-            tasks.register("view" + capitalize(binary.getName()) + "Sample", ViewDocumentation.class, task -> {
-                task.setGroup("Documentation");
-                task.setDescription("Generates the guide and open in the browser");
-                task.getIndexFile().convention(binary.getRenderedIndexPageFile());
-            });
+            binary.getViewablePageFile().fileProvider(samplesMultiPage.map(it -> new File(it.getOutputDir(), binary.getPermalink().get())));
 
             TaskProvider<CheckLinks> checkLinksTask = tasks.register("check" + capitalize(binary.getName()) + "Links", CheckLinks.class, task -> {
                 task.getIndexDocument().convention(binary.getRenderedIndexPageFile());
