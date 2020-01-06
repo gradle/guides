@@ -12,7 +12,6 @@ import org.gradle.api.attributes.Attribute;
 import org.gradle.api.attributes.Usage;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.invocation.Gradle;
-import org.gradle.api.logging.StandardOutputListener;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.tasks.PathSensitivity;
@@ -20,17 +19,13 @@ import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.util.PatternSet;
-import org.gradle.docs.internal.tasks.CheckLinks;
 import org.gradle.docs.guides.internal.tasks.GenerateGuidePageAsciidoc;
-import org.gradle.docs.internal.tasks.ViewDocumentation;
 import org.gradle.docs.internal.DocumentationBasePlugin;
 import org.gradle.docs.internal.DocumentationExtensionInternal;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -38,6 +33,7 @@ import static org.gradle.docs.internal.Asserts.assertNameDoesNotContainsDisallow
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
 import static org.gradle.docs.internal.FileUtils.deleteDirectory;
 import static org.gradle.docs.internal.StringUtils.*;
+import static org.gradle.docs.internal.configure.AsciidoctorTasks.failTaskOnRenderingErrors;
 import static org.gradle.docs.internal.configure.ContentBinaries.createCheckTasksForContentBinary;
 import static org.gradle.docs.internal.configure.ContentBinaries.createTasksForContentBinary;
 
@@ -220,24 +216,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             attributes.put("user-manual-name", "User Manual");
             task.attributes(attributes);
 
-            // Fail on rendering errors
-            List<String> capturedOutput = new ArrayList<>();
-            StandardOutputListener listener = it -> capturedOutput.add(it.toString());
-
-            task.getLogging().addStandardErrorListener(listener);
-            task.getLogging().addStandardOutputListener(listener);
-
-            task.doLast(new Action<Task>() {
-                @Override
-                public void execute(Task t) {
-                    task.getLogging().removeStandardOutputListener(listener);
-                    task.getLogging().removeStandardErrorListener(listener);
-                    String output = capturedOutput.stream().collect(Collectors.joining());
-                    if (output.indexOf("include file not found:") > 0) {
-                        throw new RuntimeException("Include file(s) not found.");
-                    }
-                }
-            });
+            failTaskOnRenderingErrors(task);
         });
         extension.getDistribution().getRenderedDocumentation().from(guidesMultiPage);
 

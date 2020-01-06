@@ -2,7 +2,6 @@ package org.gradle.docs.samples.internal;
 
 import groovy.lang.Closure;
 import org.asciidoctor.gradle.AsciidoctorTask;
-import org.gradle.api.Action;
 import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -14,7 +13,6 @@ import org.gradle.api.file.FileTree;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.internal.AbstractTask;
-import org.gradle.api.logging.StandardOutputListener;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.tasks.PathSensitivity;
@@ -23,11 +21,8 @@ import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.util.PatternSet;
 import org.gradle.api.tasks.wrapper.Wrapper;
-import org.gradle.docs.guides.internal.GuideContentBinary;
 import org.gradle.docs.internal.DocumentationBasePlugin;
 import org.gradle.docs.internal.DocumentationExtensionInternal;
-import org.gradle.docs.internal.tasks.CheckLinks;
-import org.gradle.docs.internal.tasks.ViewDocumentation;
 import org.gradle.docs.samples.Dsl;
 import org.gradle.docs.samples.SampleSummary;
 import org.gradle.docs.samples.internal.tasks.GenerateSampleIndexAsciidoc;
@@ -49,6 +44,7 @@ import java.util.stream.Collectors;
 import static org.gradle.docs.internal.Asserts.assertNameDoesNotContainsDisallowedCharacters;
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
 import static org.gradle.docs.internal.StringUtils.*;
+import static org.gradle.docs.internal.configure.AsciidoctorTasks.failTaskOnRenderingErrors;
 import static org.gradle.docs.internal.configure.ContentBinaries.createCheckTasksForContentBinary;
 import static org.gradle.docs.internal.configure.ContentBinaries.createTasksForContentBinary;
 
@@ -244,24 +240,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             attributes.put("samples-dir", extension.getDocumentationInstallRoot().get().getAsFile());
             task.attributes(attributes);
 
-            // Fail on rendering errors
-            List<String> capturedOutput = new ArrayList<>();
-            StandardOutputListener listener = it -> capturedOutput.add(it.toString());
-
-            task.getLogging().addStandardErrorListener(listener);
-            task.getLogging().addStandardOutputListener(listener);
-
-            task.doLast(new Action<Task>() {
-                @Override
-                public void execute(Task t) {
-                    task.getLogging().removeStandardOutputListener(listener);
-                    task.getLogging().removeStandardErrorListener(listener);
-                    String output = capturedOutput.stream().collect(Collectors.joining());
-                    if (output.indexOf("include file not found:") > 0) {
-                        throw new RuntimeException("Include file(s) not found.");
-                    }
-                }
-            });
+            failTaskOnRenderingErrors(task);
         });
         extension.getDistribution().getRenderedDocumentation().from(samplesMultiPage);
 
