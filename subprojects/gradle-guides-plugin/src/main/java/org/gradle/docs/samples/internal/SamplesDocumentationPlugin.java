@@ -199,7 +199,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         TaskProvider<AsciidoctorTask> samplesMultiPage = tasks.register("samplesMultiPage", AsciidoctorTask.class, task -> {
             task.getInputs().files("samples").withPropertyName("samplesDir").withPathSensitivity(PathSensitivity.RELATIVE).optional();
 
-            task.setGroup("documentation");
+            task.setGroup(DOCUMENTATION_GROUP_NAME);
             task.setDescription("Generates multi-page samples index.");
             task.dependsOn(assembleDocs);
 
