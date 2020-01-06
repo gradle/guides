@@ -5,7 +5,10 @@ import org.gradle.docs.TestFile
 trait SamplesTrait {
     static String createSample(String name) {
         return """
-            documentation.samples.publishedSamples.create('${name}')
+            import ${Dsl.canonicalName}
+            documentation.samples.publishedSamples.create('${name}') {
+                dsls = [Dsl.GROOVY, Dsl.KOTLIN]
+            }
         """
     }
 
