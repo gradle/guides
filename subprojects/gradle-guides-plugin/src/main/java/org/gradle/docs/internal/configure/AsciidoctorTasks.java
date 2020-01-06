@@ -25,6 +25,8 @@ public class AsciidoctorTasks {
                 String output = capturedOutput.stream().collect(Collectors.joining());
                 if (output.indexOf("include file not found:") > 0) {
                     throw new RuntimeException("Include file(s) not found.");
+                } else if (output.indexOf("no callout found for") > 0) {
+                    throw new RuntimeException("Missing callout.");
                 }
             }
         });

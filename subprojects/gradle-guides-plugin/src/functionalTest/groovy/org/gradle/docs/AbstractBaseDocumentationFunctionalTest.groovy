@@ -72,6 +72,21 @@ abstract class AbstractBaseDocumentationFunctionalTest extends AbstractFunctiona
         buildAndFail('assemble')
     }
 
+    def "fails rendering on error due to no callout found"() {
+        makeSingleProject()
+        writeDocumentationUnderTest()
+        contentFileUnderTest << """
+            |[listing]
+            |----
+            |Some listing without callout
+            |----
+            |<1> Generated folder for wrapper files
+            |""".stripMargin()
+
+        expect:
+        buildAndFail('assemble')
+    }
+
     protected static String applyDocumentationPlugin() {
         return  """
             plugins {
