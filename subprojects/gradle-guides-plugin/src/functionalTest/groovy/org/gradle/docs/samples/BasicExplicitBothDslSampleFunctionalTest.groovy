@@ -6,7 +6,7 @@ class BasicExplicitBothDslSampleFunctionalTest extends AbstractBothDslSampleFunc
         super.makeSingleProject()
         buildFile << """
             import ${Dsl.canonicalName}
-            samples.publishedSamples.all {
+            documentation.samples.publishedSamples.all {
                 dsls = [ Dsl.KOTLIN, Dsl.GROOVY ]
             }
         """

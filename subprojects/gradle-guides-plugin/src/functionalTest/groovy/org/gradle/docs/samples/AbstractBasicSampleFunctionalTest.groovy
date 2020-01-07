@@ -79,13 +79,13 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
         assertDslZipsHaveContent()
     }
 
-    def "defaults sample location to `src/samples/<sample-name>`"() {
+    def "defaults sample location to `src/docs/samples/<sample-name>`"() {
         makeSingleProject()
         writeSampleUnderTest()
         buildFile << """
             tasks.register('verify') {
                 doLast {
-                    assert ${sampleUnderTestDsl}.sampleDirectory.get().asFile.absolutePath == '${file('src/samples/demo').canonicalPath}'
+                    assert ${sampleUnderTestDsl}.sampleDirectory.get().asFile.absolutePath == '${file('src/docs/samples/demo').canonicalPath}'
                 }
             }
         """
@@ -101,7 +101,7 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
     def "excludes '#directory' when building the domain language archive"() {
         makeSingleProject()
         writeSampleUnderTest()
-        file("src/samples/demo/common/${directory}/foo.txt") << "Exclude"
+        sampleDirectoryUnderTest.file("common/${directory}/foo.txt") << "Exclude"
         buildFile << """
             def sample = ${sampleUnderTestDsl}
             sample.common {

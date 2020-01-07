@@ -61,7 +61,7 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
     def "fails when settings.gradle.kts is missing from Kotlin DSL sample"() {
         makeSingleProject()
         writeSampleUnderTest()
-        file("src/samples/demo/kotlin/settings.gradle.kts").delete()
+        sampleDirectoryUnderTest.file('kotlin/settings.gradle.kts').delete()
 
         when:
         buildAndFail("validateSampleDemoKotlin")
@@ -74,7 +74,7 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
     def "fails when settings.gradle is missing from Groovy DSL sample"() {
         makeSingleProject()
         writeSampleUnderTest()
-        file("src/samples/demo/groovy/settings.gradle").delete()
+        sampleDirectoryUnderTest.file('groovy/settings.gradle').delete()
 
         when:
         buildAndFail("validateSampleDemoGroovy")
@@ -87,7 +87,7 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
     def "fails when documentation is missing from sample"() {
         makeSingleProject()
         writeSampleUnderTest()
-        file("src/samples/demo/README.adoc").delete()
+        sampleDirectoryUnderTest.file('README.adoc').delete()
         when:
         // If the readme doesn't exist for the sample, we fail to generate the sample page
         buildAndFail("assembleDemoSample")
@@ -141,9 +141,8 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
 
     def "detects DSL based on content available"() {
         makeSingleProject()
-        def sampleDirectory = file("src/samples/demo")
-        writeReadmeTo(sampleDirectory)
-        writeGroovyDslSample(sampleDirectory)
+        writeReadmeTo(sampleDirectoryUnderTest)
+        writeGroovyDslSample(sampleDirectoryUnderTest)
 
         when:
         // Only expect Groovy DSL content
@@ -179,20 +178,8 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
 
     @Unroll
     def "uses '#displayName' instead of '#name' when generating sample index"() {
-        writeSampleUnderTest("src/samples/${name}")
-        buildFile << """
-            plugins {
-                id 'org.gradle.samples'
-            }
-
-            samples {
-                publishedSamples {
-                    ${name} {
-                        sampleDirectory = samplesRoot.dir("${name}")
-                    }
-                }
-            }
-        """
+        writeSampleUnderTest("src/docs/samples/${name}")
+        buildFile << applyDocumentationPlugin() << createSample(name)
 
         when:
         build('generateSampleIndex')
@@ -209,19 +196,9 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
     }
 
     def "can configure sample display name on the generated sample index"() {
-        writeSampleUnderTest('src/samples/demo')
-        buildFile << """
-            plugins {
-                id 'org.gradle.samples'
-            }
-
-            samples {
-                publishedSamples {                
-                    demo {
-                        displayName = "Demo XUnit"
-                    }
-                }
-            }
+        writeSampleUnderTest('src/docs/samples/demo')
+        buildFile << applyDocumentationPlugin() << createSample('demo') << """
+            ${sampleDsl('demo')}.displayName = "Demo XUnit"
         """
 
         when:
@@ -235,17 +212,19 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
     def "can use template for source of common content"() {
         makeSingleProject()
         writeSampleUnderTest()
-        file("src/samples/templates/template-dir/a.txt") << "aaaa"
-        file("src/samples/templates/template-dir/subdir/b.txt") << "bbbb"
+        file("src/docs/samples/templates/template-dir/a.txt") << "aaaa"
+        file("src/docs/samples/templates/template-dir/subdir/b.txt") << "bbbb"
         buildFile << """
-            samples {
-                templates {
-                    templateDir
-                }
-                publishedSamples {
-                    demo {
-                        common {
-                            from(templates.templateDir)
+            documentation {
+                samples {
+                    templates {
+                        templateDir
+                    }
+                    publishedSamples {
+                        demo {
+                            common {
+                                from(templates.templateDir)
+                            }
                         }
                     }
                 }
@@ -278,13 +257,13 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
 
     def "sorts samples by category and display name"() {
         makeSingleProject()
-        buildFile << """
-            samples.publishedSamples.create("zzz") {
+        buildFile << """ 
+            ${createSample('zzz')} {
                 category = "Special"
             }
-            samples.publishedSamples.create("mmm")
-            samples.publishedSamples.create("aaa")
-            samples.publishedSamples.all { dsls = [ ${Dsl.canonicalName}.GROOVY ] }
+            ${createSample('mmm')}
+            ${createSample('aaa')}
+            documentation.samples.publishedSamples.all { dsls = [ ${Dsl.canonicalName}.GROOVY ] }
         """
 
         when:
@@ -323,5 +302,13 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
         assert process.exitValue() == 0
         stdoutThread.join(5000)
         stderrThread.join(5000)
+    }
+
+    private static String applyDocumentationPlugin() {
+        return  """
+            plugins {
+                id 'org.gradle.documentation'
+            }
+        """
     }
 }

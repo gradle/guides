@@ -59,7 +59,7 @@ class IncrementalSamplesFunctionalTest extends AbstractSampleFunctionalSpec {
         assertBothDslSampleTasksSkipped(result)
 
         when:
-        file("src/samples/demo/README.adoc") << "More content\n"
+        sampleDirectoryUnderTest.file('README.adoc') << "More content\n"
         and:
         build("assemble")
 
@@ -91,7 +91,7 @@ class IncrementalSamplesFunctionalTest extends AbstractSampleFunctionalSpec {
         assertBothDslSampleTasksSkipped(result)
 
         when:
-        file("src/samples/demo/groovy/build.gradle") << "// This is a change"
+        sampleDirectoryUnderTest.file('groovy/build.gradle') << "// This is a change"
         and:
         build("assemble")
         then:
@@ -116,7 +116,7 @@ class IncrementalSamplesFunctionalTest extends AbstractSampleFunctionalSpec {
         assertBothDslSampleTasksSkipped(result)
 
         when:
-        file("src/samples/demo/kotlin/build.gradle.kts") << "// This is a change"
+        sampleDirectoryUnderTest.file('kotlin/build.gradle.kts') << "// This is a change"
         and:
         build("assemble")
         then:
@@ -139,14 +139,8 @@ class IncrementalSamplesFunctionalTest extends AbstractSampleFunctionalSpec {
         result.task(':generateSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
 
         when:
-        writeSampleUnderTest("src/samples/new-sample")
-        buildFile << """
-            samples {
-                publishedSamples {
-                    newSample
-                }
-            }
-        """
+        writeSampleUnderTest("src/docs/samples/new-sample")
+        buildFile << createSample('newSample')
         and:
         build("generateSampleIndex")
         then:

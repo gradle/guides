@@ -6,7 +6,7 @@ class TestWithExemplarExplicitGroovyDslSampleFunctionalTest extends AbstractExem
         super.makeSingleProject()
         buildFile << """
             import ${Dsl.canonicalName}
-            samples.publishedSamples.all {
+            documentation.samples.publishedSamples.all {
                 dsls = [ Dsl.GROOVY ]
             }
         """

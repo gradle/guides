@@ -6,7 +6,7 @@ import org.gradle.docs.TestFile
 class SampleBaseDocumentationFunctionalTest extends AbstractBaseDocumentationFunctionalTest implements SamplesTrait {
     @Override
     protected String createDocumentationElement(String name) {
-        return createSample(name)
+        return createSample(name, Dsl.GROOVY, Dsl.KOTLIN)
     }
 
     @Override

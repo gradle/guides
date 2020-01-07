@@ -27,16 +27,8 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 import static org.hamcrest.CoreMatchers.containsString
 
-abstract class AbstractSampleFunctionalSpec extends AbstractFunctionalTest {
+abstract class AbstractSampleFunctionalSpec extends AbstractFunctionalTest implements SamplesTrait {
     protected static final SKIPPED_TASK_OUTCOMES = [FROM_CACHE, UP_TO_DATE, SKIPPED, NO_SOURCE]
-
-    protected static void writeReadmeTo(TestFile directory) {
-        directory.file("README.adoc") << """
-            |= Demo Sample
-            |
-            |Some doc
-            |""".stripMargin()
-    }
 
     protected static void writeGroovyDslSample(TestFile sampleDirectory) {
         writeGroovyDslSampleToDirectory(sampleDirectory.file("groovy"))
@@ -72,6 +64,10 @@ abstract class AbstractSampleFunctionalSpec extends AbstractFunctionalTest {
         """
     }
 
+    protected TestFile getSampleDirectoryUnderTest() {
+        return projectDir.file('src/docs/samples/demo')
+    }
+
     protected TestFile getGroovyDslZipFile() {
         return file("build/sample-zips/sample_demo-groovy-dsl.zip")
     }
@@ -81,7 +77,7 @@ abstract class AbstractSampleFunctionalSpec extends AbstractFunctionalTest {
     }
 
     protected static String getSampleUnderTestDsl() {
-        return "samples.publishedSamples.demo"
+        return sampleDsl('demo')
     }
 
     protected static void assertBothDslSampleTasksSkipped(BuildResult result) {
@@ -137,7 +133,7 @@ abstract class AbstractSampleFunctionalSpec extends AbstractFunctionalTest {
     protected void makeSingleProject() {
         buildFile << """
             plugins {
-                id 'org.gradle.samples'
+                id 'org.gradle.documentation'
             }
             repositories {
                 jcenter()
@@ -146,15 +142,17 @@ abstract class AbstractSampleFunctionalSpec extends AbstractFunctionalTest {
                 }
             }
 
-            samples {
-                publishedSamples {
-                    demo
+            documentation {
+                samples {
+                    publishedSamples {
+                        demo
+                    }
                 }
             }
         """
     }
 
-    protected void writeSampleUnderTest(String directory="src/samples/demo") {
+    protected void writeSampleUnderTest(String directory="src/docs/samples/demo") {
         writeReadmeTo(file(directory))
         writeGroovyDslSample(file(directory))
         writeKotlinDslSample(file(directory))

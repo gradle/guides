@@ -6,7 +6,7 @@ import org.gradle.util.GradleVersion
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static org.gradle.testkit.runner.TaskOutcome.FAILED
 
-abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSampleFunctionalSpec {
+abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSampleFunctionalSpec implements SamplesTrait {
     def "can test sample using exemplar"() {
         given:
         makeSingleProject()
@@ -26,11 +26,9 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
         writeSampleUnderTest()
         writeExemplarConfigurationToDirectory()
 
-        buildFile << '''
-            samples.publishedSamples.create('another')
-        '''
-        writeSampleUnderTest('src/samples/another')
-        writeExemplarConfigurationToDirectory('src/samples/another')
+        buildFile << createSample('another')
+        writeSampleUnderTest('src/docs/samples/another')
+        writeExemplarConfigurationToDirectory('src/docs/samples/another')
 
         buildFile << expectTestsExecuted(getExpectedTestsFor("demo") + getExpectedTestsFor("another"))
 
@@ -45,13 +43,11 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
         writeSampleUnderTest()
         writeExemplarConfigurationToDirectory()
 
-        buildFile << '''
-            samples.publishedSamples.create('another')
-        '''
-        writeSampleUnderTest('src/samples/another')
-        writeExemplarConfigurationToDirectory('src/samples/another')
+        buildFile << createSample('another')
+        writeSampleUnderTest('src/docs/samples/another')
+        writeExemplarConfigurationToDirectory('src/docs/samples/another')
 
-        def anotherDemoConfigFile = file('src/samples/another/tests/handWritten.sample.conf')
+        def anotherDemoConfigFile = file('src/docs/samples/another/tests/handWritten.sample.conf')
         anotherDemoConfigFile.text = anotherDemoConfigFile.text.replaceAll('help', 'belp') // make the test fail
 
         when:
@@ -61,7 +57,7 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
         result.task(':docsTest').outcome == FAILED
 
         when:
-        assert anotherDemoConfigFile.renameTo(file("src/samples/another/tests/handWritten.sample.confz"))
+        assert anotherDemoConfigFile.renameTo(file("src/docs/samples/another/tests/handWritten.sample.confz"))
         build("docsTest")
 
         then:
@@ -76,7 +72,7 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
         assert result.task(':docsTest').outcome == SUCCESS
     }
 
-    protected void writeExemplarConfigurationToDirectory(String directory = 'src/samples/demo') {
+    protected void writeExemplarConfigurationToDirectory(String directory = 'src/docs/samples/demo') {
         def destination = file(directory)
         destination.file("tests/handWritten.sample.conf") << getExemplarSampleConfigFileContent()
         destination.file("tests/handWritten.sample.out") << getExemplarSampleOutFileContent()

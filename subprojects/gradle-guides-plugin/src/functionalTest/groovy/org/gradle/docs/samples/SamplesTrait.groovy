@@ -3,13 +3,19 @@ package org.gradle.docs.samples
 import org.gradle.docs.TestFile
 
 trait SamplesTrait {
-    static String createSample(String name) {
-        return """
-            import ${Dsl.canonicalName}
-            documentation.samples.publishedSamples.create('${name}') {
-                dsls = [Dsl.GROOVY, Dsl.KOTLIN]
-            }
-        """
+    static String createSample(String name, Dsl... dsls = [Dsl.GROOVY, Dsl.KOTLIN]) {
+        def result = new StringBuffer()
+        if (dsls.length > 0) {
+            result.append("import ${Dsl.canonicalName}\n")
+        }
+        result.append("documentation.samples.publishedSamples.create('${name}')")
+        if (dsls.length > 0) {
+            result.append(""" {
+                |    dsls = [${dsls.collect { "Dsl.${it.name()}" }.join(', ')}]
+                |}""".stripMargin())
+        }
+        result.append('\n')
+        return result
     }
 
     static String sampleDsl(String name) {
