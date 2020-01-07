@@ -9,6 +9,6 @@ guide {
 }
 
 // TODO: Test are hanging, disabling for now
-tasks.named("test") {
+tasks.named("docsTest") {
     enabled = false
 }
