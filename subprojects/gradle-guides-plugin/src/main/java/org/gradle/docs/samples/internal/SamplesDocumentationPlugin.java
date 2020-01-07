@@ -30,11 +30,14 @@ import org.gradle.docs.internal.DocumentationBasePlugin;
 import org.gradle.docs.internal.DocumentationExtensionInternal;
 import org.gradle.docs.samples.Dsl;
 import org.gradle.docs.samples.SampleSummary;
+import org.gradle.docs.samples.Samples;
+import org.gradle.docs.samples.Template;
 import org.gradle.docs.samples.internal.tasks.GenerateSampleIndexAsciidoc;
 import org.gradle.docs.samples.internal.tasks.GenerateSamplePageAsciidoc;
 import org.gradle.docs.samples.internal.tasks.GenerateSanityCheckTests;
 import org.gradle.docs.samples.internal.tasks.GenerateTestSource;
 import org.gradle.docs.samples.internal.tasks.InstallSample;
+import org.gradle.docs.samples.internal.tasks.SyncWithProvider;
 import org.gradle.docs.samples.internal.tasks.ValidateSampleBinary;
 import org.gradle.docs.samples.internal.tasks.ZipSample;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
@@ -57,6 +60,7 @@ import static org.gradle.docs.internal.configure.AsciidoctorTasks.failTaskOnRend
 import static org.gradle.docs.internal.configure.ContentBinaries.createCheckTasksForContentBinary;
 import static org.gradle.docs.internal.configure.ContentBinaries.createTasksForContentBinary;
 
+@SuppressWarnings("UnstableApiUsage")
 public class SamplesDocumentationPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
@@ -97,6 +101,10 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         // Render all the documentation out to HTML
         TaskProvider<? extends Task> renderTask = renderSamplesDocumentation(tasks, assemble, check, extension);
 
+        // Templates
+        extension.getTemplates().configureEach(template -> applyConventionsForTemplates(extension, template));
+        extension.getTemplates().all(template -> createTasksForTemplates(layout, tasks, template));
+
         // Testing (and binaries)
         extension.getBinaries().withType(SampleExemplarBinary.class).all(binary -> createTasksForSampleExemplarBinary(tasks, binary));
         configureExemplarTestsForSamples(project, layout, tasks, extension, check);
@@ -124,6 +132,21 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         return generatedFiles;
     }
 
+    private void createTasksForTemplates(ProjectLayout layout, TaskContainer tasks, Template template) {
+        TaskProvider<SyncWithProvider> generateTemplate = tasks.register("generateTemplate" + capitalize(template.getName()), SyncWithProvider.class, task -> {
+            task.setDescription("Generates template into a target directory.");
+            task.from(template.getSourceDirectory(), copySpec -> copySpec.into(template.getTarget()));
+            task.into(layout.getBuildDirectory().dir("tmp/" + task.getName()));
+        });
+
+        template.getTemplateDirectory().convention(generateTemplate.flatMap(SyncWithProvider::getDestinationDirectory));
+    }
+
+    private void applyConventionsForTemplates(Samples extension, Template template) {
+        template.getTarget().convention("");
+        template.getSourceDirectory().convention(extension.getTemplatesRoot().dir(toKebabCase(template.getName())));
+    }
+
     private SamplesInternal configureSamplesExtension(Project project, ProjectLayout layout) {
         SamplesInternal extension = project.getExtensions().getByType(DocumentationExtensionInternal.class).getSamples();
 
@@ -140,6 +163,10 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         extension.getTestedInstallRoot().convention(layout.getBuildDirectory().dir("working/samples/testing"));
         extension.getDistribution().getTestedInstalledSamples().from(extension.getTestedInstallRoot());
         extension.getDistribution().getTestedInstalledSamples().builtBy(extension.getDistribution().getInstalledSamples().builtBy((Callable<List<DirectoryProperty>>) () -> extension.getBinaries().withType(SampleExemplarBinary.class).stream().map(SampleExemplarBinary::getTestedInstallDirectory).collect(Collectors.toList())));
+
+        // Tempates
+        // TODO: The following is only in samples
+        extension.getTemplatesRoot().convention(layout.getProjectDirectory().dir("src/docs/samples/templates"));
 
         extension.getDocumentationInstallRoot().convention(layout.getBuildDirectory().dir("working/samples/docs/"));
         extension.getRenderedDocumentationRoot().convention(layout.getBuildDirectory().dir("working/samples/render-samples"));
