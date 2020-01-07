@@ -20,41 +20,6 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
         then:
         assertExemplarTasksExecutedAndNotSkipped(result)
     }
-    
-    def "can generate exemplar configuration"() {
-        given:
-        makeSingleProject()
-        writeSampleUnderTest()
-        writeExemplarConfigurationToDirectory()
-
-        buildFile << expectTestsExecuted(getExpectedTestsFor("demo") + getExpectedTestsFor("demo", "otherTest"))
-
-        buildFile << """
-            abstract class GenerateTask extends DefaultTask {
-                @OutputDirectory
-                abstract DirectoryProperty getOutputDirectory()
-
-                @TaskAction
-                void generate() {
-                    File outputDir = outputDirectory.get().asFile
-                    new File(outputDir, "otherTest.sample.conf").text = '''${getExemplarSampleConfigFileContent("otherTest.sample.out")}'''
-                    new File(outputDir, "otherTest.sample.out").text = '''${getExemplarSampleOutFileContent()}'''
-                }
-            }
-            def generatorTask = tasks.register("generate", GenerateTask) {
-                outputDirectory = temporaryDir
-            }
-
-            ${sampleUnderTestDsl}.tests {
-                from(generatorTask)
-            }
-        """
-
-        when:
-        build("docsTest")
-        then:
-        assertExemplarTasksExecutedAndNotSkipped(result)
-    }
 
     def "can test multiple samples"() {
         makeSingleProject()

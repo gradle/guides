@@ -35,11 +35,6 @@ public abstract class SampleArchiveBinary extends SampleBinary {
     public abstract ConfigurableFileCollection getDslSpecificContent();
 
     /**
-     * @return Content that is needed to test the sample.
-     */
-    public abstract ConfigurableFileCollection getTestsContent();
-
-    /**
      * @return The documentation page for this sample
      */
     public abstract Property<String> getSampleLinkName();
@@ -48,11 +43,6 @@ public abstract class SampleArchiveBinary extends SampleBinary {
      * @return Working directory used by the plugin to expose an assembled sample to consumers.
      */
     public abstract DirectoryProperty getWorkingDirectory();
-
-    /**
-     * @return Working directory used to expose an assembled sample to tests.
-     */
-    public abstract DirectoryProperty getTestedWorkingDirectory();
 
     /**
      * @return Exclude patterns for files included in this sample
@@ -73,9 +63,4 @@ public abstract class SampleArchiveBinary extends SampleBinary {
      * @return A installation directory containing this sample.  This can be used to get an installed version of the sample.
      */
     public abstract DirectoryProperty getInstallDirectory();
-
-    /**
-     * @return A installation directory containing this sample.  This can be used to get an installed version of the sample.
-     */
-    public abstract DirectoryProperty getTestedInstallDirectory();
 }

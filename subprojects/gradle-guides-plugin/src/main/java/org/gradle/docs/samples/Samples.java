@@ -22,13 +22,6 @@ public interface Samples {
     DirectoryProperty getTemplatesRoot();
 
     /**
-     * By convention, this excludes build and .gradle directories.
-     *
-     * @return List of common exclude patterns when building a zip or install directory for a sample.
-     */
-    ListProperty<String> getCommonExcludes();
-
-    /**
      * This is an asciidoc file, not the generated HTML.
      *
      * By convention, this is documentationRoot/index.adoc

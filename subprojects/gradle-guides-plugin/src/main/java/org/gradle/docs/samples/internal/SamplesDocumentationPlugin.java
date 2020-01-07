@@ -6,9 +6,11 @@ import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.CopySpec;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.FileTree;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.file.RegularFileProperty;
@@ -16,9 +18,12 @@ import org.gradle.api.internal.AbstractTask;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.tasks.PathSensitivity;
+import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
+import org.gradle.api.tasks.testing.Test;
 import org.gradle.api.tasks.util.PatternSet;
 import org.gradle.api.tasks.wrapper.Wrapper;
 import org.gradle.docs.internal.DocumentationBasePlugin;
@@ -27,6 +32,8 @@ import org.gradle.docs.samples.Dsl;
 import org.gradle.docs.samples.SampleSummary;
 import org.gradle.docs.samples.internal.tasks.GenerateSampleIndexAsciidoc;
 import org.gradle.docs.samples.internal.tasks.GenerateSamplePageAsciidoc;
+import org.gradle.docs.samples.internal.tasks.GenerateSanityCheckTests;
+import org.gradle.docs.samples.internal.tasks.GenerateTestSource;
 import org.gradle.docs.samples.internal.tasks.InstallSample;
 import org.gradle.docs.samples.internal.tasks.ValidateSampleBinary;
 import org.gradle.docs.samples.internal.tasks.ZipSample;
@@ -34,6 +41,7 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +50,7 @@ import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
 import static org.gradle.docs.internal.Asserts.assertNameDoesNotContainsDisallowedCharacters;
+import static org.gradle.docs.internal.DocumentationBasePlugin.DOCS_TEST_SOURCE_SET_NAME;
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
 import static org.gradle.docs.internal.StringUtils.*;
 import static org.gradle.docs.internal.configure.AsciidoctorTasks.failTaskOnRenderingErrors;
@@ -75,6 +84,8 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
 
         // Samples binaries
         // TODO: This could be lazy if we had a way to make the TaskContainer require evaluation
+        FileCollection generatedTests = createGeneratedTests(tasks, objects, layout);
+        extension.getBinaries().withType(SampleExemplarBinary.class).all(binary -> binary.getTestsContent().from(generatedTests));
         extension.getBinaries().withType(SampleContentBinary.class).all(binary -> createTasksForContentBinary(tasks, binary));
         extension.getBinaries().withType(SampleContentBinary.class).all(binary -> createCheckTasksForContentBinary(tasks, binary, check));
         extension.getBinaries().withType(SampleContentBinary.class).all(binary -> createTasksForSampleContentBinary(tasks, layout, providers, binary));
@@ -86,8 +97,31 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         // Render all the documentation out to HTML
         TaskProvider<? extends Task> renderTask = renderSamplesDocumentation(tasks, assemble, check, extension);
 
+        // Testing (and binaries)
+        extension.getBinaries().withType(SampleExemplarBinary.class).all(binary -> createTasksForSampleExemplarBinary(tasks, binary));
+        configureExemplarTestsForSamples(project, layout, tasks, extension, check);
+
         // Trigger everything by realizing sample container
-        project.afterEvaluate(p -> realizeSamples(extension, objects, assemble, check, wrapperFiles));
+        project.afterEvaluate(p -> realizeSamples(extension, objects, assemble, check, wrapperFiles, project));
+    }
+
+    private void createTasksForSampleExemplarBinary(TaskContainer tasks, SampleExemplarBinary binary) {
+        TaskProvider<InstallSample> installSampleTaskForTesting = tasks.register("installSample" + capitalize(binary.getName()) + "ForTest", InstallSample.class, task -> {
+            task.setDescription("Installs sample '" + binary.getName() + "' into a local directory with testing support.");
+            task.getSource().from(binary.getTestsContent());
+            task.getInstallDirectory().convention(binary.getTestedWorkingDirectory());
+        });
+        binary.getTestedInstallDirectory().convention(installSampleTaskForTesting.flatMap(InstallSample::getInstallDirectory));
+    }
+
+    private FileCollection createGeneratedTests(TaskContainer tasks, ObjectFactory objects, ProjectLayout layout) {
+        TaskProvider<GenerateSanityCheckTests> generateSanityCheckTests = tasks.register("generateSanityCheckTests", GenerateSanityCheckTests.class, task -> {
+            task.setDescription("Generates exemplar configuration file needed to sanity check the sample (aka, run gradle help).");
+            task.getOutputFile().convention(layout.getBuildDirectory().file("tmp/" + task.getName() + "/sanityCheck.sample.conf"));
+        });
+        ConfigurableFileCollection generatedFiles = objects.fileCollection();
+        generatedFiles.from(generateSanityCheckTests);
+        return generatedFiles;
     }
 
     private SamplesInternal configureSamplesExtension(Project project, ProjectLayout layout) {
@@ -100,6 +134,12 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         extension.getDistribution().getInstalledSamples().from(extension.getInstallRoot());
         extension.getDistribution().getInstalledSamples().builtBy((Callable<List<DirectoryProperty>>) () -> extension.getBinaries().withType(SampleArchiveBinary.class).stream().map(SampleArchiveBinary::getInstallDirectory).collect(Collectors.toList()));
         extension.getDistribution().getZippedSamples().from((Callable<List<RegularFileProperty>>) () -> extension.getBinaries().withType(SampleArchiveBinary.class).stream().map(SampleArchiveBinary::getZipFile).collect(Collectors.toList()));
+
+        // Testing
+        // TODO: The following is only in samples
+        extension.getTestedInstallRoot().convention(layout.getBuildDirectory().dir("working/samples/testing"));
+        extension.getDistribution().getTestedInstalledSamples().from(extension.getTestedInstallRoot());
+        extension.getDistribution().getTestedInstalledSamples().builtBy(extension.getDistribution().getInstalledSamples().builtBy((Callable<List<DirectoryProperty>>) () -> extension.getBinaries().withType(SampleExemplarBinary.class).stream().map(SampleExemplarBinary::getTestedInstallDirectory).collect(Collectors.toList())));
 
         extension.getDocumentationInstallRoot().convention(layout.getBuildDirectory().dir("working/samples/docs/"));
         extension.getRenderedDocumentationRoot().convention(layout.getBuildDirectory().dir("working/samples/render-samples"));
@@ -254,6 +294,33 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         return samplesMultiPage;
     }
 
+    private void configureExemplarTestsForSamples(Project project, ProjectLayout layout, TaskContainer tasks, SamplesInternal extension, TaskProvider<Task> check) {
+        SourceSet sourceSet = project.getExtensions().getByType(SourceSetContainer.class).getByName(DOCS_TEST_SOURCE_SET_NAME);
+        TaskProvider<GenerateTestSource> generatorTask = tasks.register("generateSamplesExemplarFunctionalTestSourceSet", GenerateTestSource.class, task -> {
+            task.setDescription("Generates source file to run exemplar tests for published samples.");
+            task.getOutputDirectory().convention(layout.getBuildDirectory().dir("generated-sources/" + sourceSet.getName()));
+        });
+        sourceSet.getJava().srcDir(generatorTask.flatMap(GenerateTestSource::getOutputDirectory));
+
+        DependencyHandler dependencies = project.getDependencies();
+        dependencies.add(sourceSet.getImplementationConfigurationName(), dependencies.gradleTestKit());
+        dependencies.add(sourceSet.getImplementationConfigurationName(), "org.gradle:sample-check:0.9.0");
+        dependencies.add(sourceSet.getImplementationConfigurationName(), "org.slf4j:slf4j-simple:1.7.16");
+        dependencies.add(sourceSet.getImplementationConfigurationName(), "junit:junit:4.12");
+
+        TaskProvider<Test> exemplarTest = tasks.named(sourceSet.getName(), Test.class);
+        exemplarTest.configure(task -> {
+            DirectoryProperty samplesDirectory = extension.getTestedInstallRoot();
+            task.getInputs().dir(samplesDirectory).withPathSensitivity(PathSensitivity.RELATIVE);
+            // TODO: This isn't lazy.  Need a different API here.
+            task.systemProperty("integTest.samplesdir", samplesDirectory.get().getAsFile().getAbsolutePath());
+            task.dependsOn(extension.getDistribution().getTestedInstalledSamples());
+        });
+
+        // TODO: Make the sample's check task depend on this test?
+        check.configure(task -> task.dependsOn(exemplarTest));
+    }
+
     private void createTasksForSampleArchiveBinary(TaskContainer tasks, ProjectLayout layout, SampleArchiveBinary binary) {
         TaskProvider<ValidateSampleBinary> validateSample = tasks.register("validateSample" + capitalize(binary.getName()), ValidateSampleBinary.class, task -> {
             task.setDescription("Checks the sample '" + binary.getName() + "' is valid.");
@@ -285,7 +352,8 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         binary.getZipFile().convention(zipTask.flatMap(ZipSample::getArchiveFile));
     }
 
-    private void realizeSamples(SamplesInternal extension, ObjectFactory objects, TaskProvider<Task> assemble, TaskProvider<Task> check, FileTree wrapperFiles) {
+    private void realizeSamples(SamplesInternal extension, ObjectFactory objects, TaskProvider<Task> assemble, TaskProvider<Task> check, FileTree wrapperFiles, Project project) {
+        // TODO: Project is passed strictly for zipTree method
         // TODO: Disallow changes to published samples container after this point.
         for (SampleInternal sample : extension.getPublishedSamples()) {
             assertNameDoesNotContainsDisallowedCharacters(sample, "Sample '%s' has disallowed characters", sample.getName());
@@ -314,6 +382,13 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
                 SampleArchiveBinary binary = registerSampleBinaryForDsl(extension, sample, dsl, objects, wrapperFiles, contentBinary);
                 sample.getAssembleTask().configure(task -> task.dependsOn(binary.getZipFile()));
                 sample.getCheckTask().configure(task -> task.dependsOn(binary.getValidationReport()));
+
+                SampleExemplarBinary exemplarBinary = objects.newInstance(SampleExemplarBinary.class, sample.getName() + dsl.getDisplayName());
+                exemplarBinary.getTestedWorkingDirectory().convention(extension.getTestedInstallRoot().dir(toKebabCase(sample.getName()) + "/" + dsl.getConventionalDirectory())).disallowChanges();
+                exemplarBinary.getTestsContent().from(objects.fileCollection().from((Callable<FileTree>)() -> project.zipTree(binary.getZipFile())).builtBy(binary.getZipFile())); // TODO: zipTree should be lazy
+                exemplarBinary.getTestsContent().from(sample.getSampleDirectory().dir("tests"));
+                exemplarBinary.getTestsContent().from(sample.getTestsContent());
+                extension.getBinaries().add(exemplarBinary);
             }
         }
     }
@@ -323,7 +398,6 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         binary.getDsl().convention(dsl).disallowChanges();
         binary.getSampleLinkName().convention(sample.getSampleDocName()).disallowChanges();
         binary.getWorkingDirectory().convention(sample.getInstallDirectory().dir(dsl.getConventionalDirectory())).disallowChanges();
-        binary.getTestedWorkingDirectory().convention(sample.getTestedInstallDirectory().dir(dsl.getConventionalDirectory())).disallowChanges();
         switch (dsl) {
             case GROOVY:
                 binary.getDslSpecificContent().from(sample.getGroovyContent()).disallowChanges();
@@ -334,14 +408,12 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             default:
                 throw new GradleException("Unhandled Dsl type " + dsl + " for sample '" + sample.getName() + "'");
         }
-        binary.getExcludes().convention(extension.getCommonExcludes());
+        binary.getExcludes().convention(Arrays.asList("**/build/**", "**/.gradle/**"));
         binary.getContent().from(wrapperFiles);
         binary.getContent().from(contentBinary.getIndexPageFile());
         binary.getContent().from(sample.getCommonContent());
         binary.getContent().from(binary.getDslSpecificContent());
         binary.getContent().disallowChanges();
-
-        binary.getTestsContent().from(sample.getTestsContent());
 
         extension.getBinaries().add(binary);
         return binary;
