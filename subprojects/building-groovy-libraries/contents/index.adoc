@@ -92,7 +92,6 @@ include::{samplescodedir}/build.gradle[]
 <1> Public Bintray Artifactory repository
 <2> Groovy version that this project will include as dependency
 <3> Spock Framework testing library
-<4> JUnit testing library
 
 The build file adds the `groovy` plugin. This is an extension of the `java` plugins and adds additional tasks for compiling Groovy source code. It also allows for joint compilation of Groovy and Java files if found in the appropriate `groovy` source folders.
 
