@@ -43,6 +43,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
+import static org.gradle.docs.internal.DocumentationBasePlugin.DOCS_TEST_SOURCE_SET_NAME;
 import static org.gradle.docs.internal.StringUtils.*;
 import static org.gradle.docs.samples.internal.SamplesDocumentationPlugin.toSummary;
 
@@ -105,7 +106,7 @@ public class SamplesPlugin implements Plugin<Project> {
     }
 
     private void addExemplarTestsForSamples(Project project, ProjectLayout layout, TaskContainer tasks, SamplesInternal extension, TaskProvider<Task> check) {
-        SourceSet sourceSet = project.getExtensions().getByType(SourceSetContainer.class).create("samplesExemplarFunctionalTest");
+        SourceSet sourceSet = project.getExtensions().getByType(SourceSetContainer.class).getByName(DOCS_TEST_SOURCE_SET_NAME);
         TaskProvider<GenerateTestSource> generatorTask = createExemplarGeneratorTask(tasks, layout, sourceSet);
         sourceSet.getJava().srcDir(generatorTask.flatMap(GenerateTestSource::getOutputDirectory));
 
@@ -115,7 +116,7 @@ public class SamplesPlugin implements Plugin<Project> {
         dependencies.add(sourceSet.getImplementationConfigurationName(), "org.slf4j:slf4j-simple:1.7.16");
         dependencies.add(sourceSet.getImplementationConfigurationName(), "junit:junit:4.12");
 
-        TaskProvider<Test> exemplarTest = createExemplarTestTask(tasks, sourceSet, layout, extension);
+        TaskProvider<Test> exemplarTest = configureExemplarTestTask(tasks, sourceSet, extension);
         // TODO: Make the sample's check task depend on this test?
         check.configure(task -> task.dependsOn(exemplarTest));
     }
@@ -166,19 +167,18 @@ public class SamplesPlugin implements Plugin<Project> {
         });
     }
 
-    private static TaskProvider<Test> createExemplarTestTask(TaskContainer tasks, SourceSet sourceSet, ProjectLayout layout, SamplesInternal extension) {
+    private static TaskProvider<Test> configureExemplarTestTask(TaskContainer tasks, SourceSet sourceSet, SamplesInternal extension) {
         DirectoryProperty samplesDirectory = extension.getTestedInstallRoot();
 
-        return tasks.register(sourceSet.getName(), Test.class, task -> {
-            task.setGroup("verification");
-            task.setDescription("Test samples.");
+        TaskProvider<Test> testTask = tasks.named(sourceSet.getName(), Test.class);
+
+        testTask.configure(task -> {
             task.getInputs().dir(samplesDirectory).withPathSensitivity(PathSensitivity.RELATIVE);
-            task.setTestClassesDirs(sourceSet.getRuntimeClasspath());
-            task.setClasspath(sourceSet.getRuntimeClasspath());
-            task.setWorkingDir(layout.getProjectDirectory().getAsFile());
             // TODO: This isn't lazy.  Need a different API here.
             task.systemProperty("integTest.samplesdir", samplesDirectory.get().getAsFile().getAbsolutePath());
             task.dependsOn(extension.getDistribution().getTestedInstalledSamples());
         });
+
+        return testTask;
     }
 }

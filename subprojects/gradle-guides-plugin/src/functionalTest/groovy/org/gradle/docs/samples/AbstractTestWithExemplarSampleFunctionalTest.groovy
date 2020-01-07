@@ -16,7 +16,7 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
         buildFile << expectTestsExecuted(getExpectedTestsFor("demo"))
 
         when:
-        build('samplesExemplarFunctionalTest')
+        build('docsTest')
         then:
         assertExemplarTasksExecutedAndNotSkipped(result)
     }
@@ -51,7 +51,7 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
         """
 
         when:
-        build("samplesExemplarFunctionalTest")
+        build("docsTest")
         then:
         assertExemplarTasksExecutedAndNotSkipped(result)
     }
@@ -70,7 +70,7 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
         buildFile << expectTestsExecuted(getExpectedTestsFor("demo") + getExpectedTestsFor("another"))
 
         when:
-        build("samplesExemplarFunctionalTest")
+        build("docsTest")
         then:
         assertExemplarTasksExecutedAndNotSkipped(result)
     }
@@ -90,17 +90,17 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
         anotherDemoConfigFile.text = anotherDemoConfigFile.text.replaceAll('help', 'belp') // make the test fail
 
         when:
-        buildAndFail("samplesExemplarFunctionalTest")
+        buildAndFail("docsTest")
 
         then:
-        result.task(':samplesExemplarFunctionalTest').outcome == FAILED
+        result.task(':docsTest').outcome == FAILED
 
         when:
         assert anotherDemoConfigFile.renameTo(file("src/samples/another/tests/handWritten.sample.confz"))
-        build("samplesExemplarFunctionalTest")
+        build("docsTest")
 
         then:
-        result.task(':samplesExemplarFunctionalTest').outcome == SUCCESS
+        result.task(':docsTest').outcome == SUCCESS
     }
 
     protected abstract void assertExemplarTasksExecutedAndNotSkipped(BuildResult result)
@@ -108,7 +108,7 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
     protected static void assertExemplarTasksExecutedAndNotSkipped(BuildResult result, String dsl) {
         assert result.task(":generateSamplesExemplarFunctionalTestSourceSet").outcome == SUCCESS
         assert result.task(":installSampleDemo${dsl}").outcome == SUCCESS
-        assert result.task(':samplesExemplarFunctionalTest').outcome == SUCCESS
+        assert result.task(':docsTest').outcome == SUCCESS
     }
 
     protected void writeExemplarConfigurationToDirectory(String directory = 'src/samples/demo') {
