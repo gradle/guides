@@ -9,7 +9,7 @@ guide {
     category.set("Getting Started")
 }
 
-tasks.named("test") {
+tasks.named("docsTest") {
     inputs.dir("samples/groovy-dsl")
     inputs.dir("samples/kotlin-dsl")
 }

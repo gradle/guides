@@ -9,7 +9,7 @@ guide {
     category.set("Topical")
 }
 
-tasks.test {
+tasks.docsTest {
     inputs.property("androidHome", System.getenv("ANDROID_HOME") ?: "")
 }
 
@@ -19,8 +19,8 @@ repositories {
 
 dependencies {
     constraints {
-        testImplementation("org.codehaus.groovy:groovy-all:2.5.4")
+        docsTestImplementation("org.codehaus.groovy:groovy-all:2.5.4")
     }
-    testImplementation("org.gradle:sample-check:0.6.0")
-    testImplementation(gradleTestKit())
+    docsTestImplementation("org.gradle:sample-check:0.6.0")
+    docsTestImplementation(gradleTestKit())
 }

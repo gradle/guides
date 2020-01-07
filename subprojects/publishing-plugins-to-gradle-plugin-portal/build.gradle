@@ -23,7 +23,7 @@ dependencies {
     pluginClasspath 'com.gradle.publish:plugin-publish-plugin:0.10.1'
 }
 
-test {
+docsTest {
     ext {
         httpServerPort = 65000
     }

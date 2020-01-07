@@ -25,8 +25,8 @@ repositories {
 }
 
 dependencies {
-    testImplementation("org.gradle:sample-check:0.7.0")
-    testImplementation(gradleTestKit())
+    docsTestImplementation("org.gradle:sample-check:0.7.0")
+    docsTestImplementation(gradleTestKit())
 }
 
 fun resolveLatestBuildScanPluginVersion() : String {
@@ -51,7 +51,7 @@ tasks {
         ))
     }
 
-    test {
+    docsTest {
         dependsOn(preProcessSamples)
         systemProperty("samplesDir", "$buildDir/samples")
     }
