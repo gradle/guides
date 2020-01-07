@@ -44,7 +44,7 @@ gradlePlugin {
         }
         samplePlugin {
             id = 'org.gradle.samples'
-            implementationClass = 'org.gradle.docs.samples.internal.LegacySamplesDocumentationPlugin'
+            implementationClass = 'org.gradle.docs.samples.internal.SamplesPlugin'
             displayName = 'Gradle Sample Plugin'
             description = 'Plugin required for authoring new Gradle Samples'
         }
