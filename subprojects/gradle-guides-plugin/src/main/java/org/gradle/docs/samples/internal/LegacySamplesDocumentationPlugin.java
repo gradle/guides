@@ -6,7 +6,7 @@ import org.gradle.docs.internal.DocumentationExtensionInternal;
 import org.gradle.docs.samples.Samples;
 
 @SuppressWarnings("UnstableApiUsage")
-public class SamplesPlugin implements Plugin<Project> {
+public class LegacySamplesDocumentationPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
         project.getPluginManager().apply(SamplesDocumentationPlugin.class);
