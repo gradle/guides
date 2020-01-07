@@ -15,6 +15,8 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin;
 public class DocumentationBasePlugin implements Plugin<Project> {
     public static final String DOCUMENTATION_GROUP_NAME = "Documentation";
     public static final String DOCUMENTATION_EXTENSION_NAME = "documentation";
+    public static final String DOCS_TEST_TASK_NAME = "docsTest";
+    public static final String DOCS_TEST_IMPLEMENTATION_CONFIGURATION_NAME = "docsTestImplementation";
 
     @Override
     public void apply(Project project) {
@@ -31,6 +33,8 @@ public class DocumentationBasePlugin implements Plugin<Project> {
     }
 
     private void configureTesting(Project project, ProjectLayout layout, TaskContainer tasks, TaskProvider<Task> check) {
+        project.getPluginManager().apply("groovy-base");
+
         SourceSet sourceSet = project.getExtensions().getByType(SourceSetContainer.class).create("docsTest");
 
         DependencyHandler dependencies = project.getDependencies();
