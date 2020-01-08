@@ -19,7 +19,7 @@ Gradle comes with a built-in plugin called the Build Init plugin. It is document
 
 The first step is to create a folder for the new project and change directory into it.
 
-[listing]
+[listing.terminal.sample-command]
 ----
 $ mkdir demo
 $ cd demo
@@ -29,38 +29,46 @@ $ cd demo
 
 From inside the new project directory, run the `init` task and select `java-library` project type when prompted. For the other questions, press enter to use the default values.
 
-[listing.terminal]
+[listing.terminal.sample-command]
 ----
 $ gradle init
+> Task :wrapper
 
 Select type of project to generate:
   1: basic
-  2: cpp-application
-  3: cpp-library
-  4: groovy-application
-  5: groovy-library
-  6: java-application
-  7: java-library
-  8: kotlin-application
-  9: kotlin-library
-  10: scala-library
-Enter selection (default: basic) [1..10] 7
+  2: application
+  3: library
+  4: Gradle plugin
+Enter selection (default: basic) [1..4] 3
+
+Select implementation language:
+  1: C++
+  2: Groovy
+  3: Java
+  4: Kotlin
+  5: Scala
+  6: Swift
+Enter selection (default: Java) [1..6] 3
 
 Select build script DSL:
-  1: groovy
-  2: kotlin
-Enter selection (default: groovy) [1..2]
+  1: Groovy
+  2: Kotlin
+Enter selection (default: Groovy) [1..2] 1
 
 Select test framework:
-  1: junit
-  2: testng
-  3: spock
-Enter selection (default: junit) [1..3]
+  1: JUnit 4
+  2: TestNG
+  3: Spock
+  4: JUnit Jupiter
+Enter selection (default: JUnit 4) [1..4]
 
 Project name (default: demo):
 
 Source package (default: demo):
 
+
+> Task :init
+Get more help with your project: https://docs.gradle.org/5.0/userguide/java_library_plugin.html
 
 BUILD SUCCESSFUL
 2 actionable tasks: 2 executed
@@ -118,7 +126,6 @@ include::{samples-dir}/groovy-dsl-files/build.gradle[tags=init]
 ----
 include::{samples-dir}/kotlin-dsl-files/build.gradle.kts[tags=init]
 ----
-
 <1> Public Bintray Artifactory repository
 <2> This is an example of a dependency which is exported to consumers, that is to say found on their compile classpath.
 <3> This is an example of a dependency which is used internally, and not exposed to consumers on their own compile classpath.
@@ -136,7 +143,7 @@ include::{samples-dir}/groovy-dsl-files/src/main/java/demo/Library.java[tags=sou
 
 The generated JUnit specification, `src/test/java/demo/LibraryTest.java` is shown next:
 
-.Generated  src/test/java/demo/LibraryTest.java
+.Generated src/test/java/demo/LibraryTest.java
 [source,java]
 ----
 include::{samples-dir}/groovy-dsl-files/src/test/java/demo/LibraryTest.java[]
@@ -148,7 +155,7 @@ The generated test class has a single https://junit.org/junit4/[JUnit 4] test. T
 
 To build the project, run the `build` task. You can use the regular `gradle` command, but when a project includes a wrapper script, it is considered good form to use it instead.
 
-[listing]
+[listing.terminal.sample-command]
 ----
 $ ./gradlew build
 include::{samples-dir}/groovy-dsl-buildOutput/out.txt[]
@@ -164,14 +171,15 @@ A sample report is shown here:
 
 image::Test-Summary.png[]
 
+You can find your newly packaged JAR file in the `build/libs` directory with the name `demo.jar`. Verify that the archive is valid by running the following command:
 
-You can find your newly packaged JAR file in the `build/libs` directory with the name `building-java-libraries.jar`. Verify that the archive is valid by running the following command:
-
+[listing.terminal.sample-command]
 ----
-$ jar tf build/libs/building-java-libraries.jar
+$ jar tf build/libs/demo.jar
 META-INF/
 META-INF/MANIFEST.MF
-Library.class
+demo/
+demo/Library.class
 ----
 
 You should see the required manifest file —`MANIFEST.MF`— and the compiled `Library` class.
@@ -202,11 +210,19 @@ include::{samples-dir}/kotlin-dsl-files/build.gradle.kts[tags=version]
 
 Now run the `jar` task:
 
+[listing.terminal.sample-command]
 ----
 $ ./gradlew jar
+> Task :compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+
+BUILD SUCCESSFUL
+2 actionable tasks: 2 up-to-date
 ----
 
-and notice that the resulting JAR file at `build/libs/building-java-libraries-0.1.0.jar` contains the version as expected.
+and notice that the resulting JAR file at `build/libs/demo-0.1.0.jar` contains the version as expected.
 
 Another common requirement is customizing the manifest file, typically by adding one or more attributes. Let's include the library name and version in the manifest file by link:{user-manual}more_about_tasks.html#sec:configuring_tasks[configuring the `jar` task]. Add the following to the end of your build script:
 
@@ -224,9 +240,10 @@ include::{samples-dir}/kotlin-dsl-files/build.gradle.kts[tags=jar-manifest]
 
 To confirm that these changes work as expected, run the `jar` task again, and this time also unpack the manifest file from the JAR:
 
+[listing.terminal]
 ----
 $ ./gradlew jar
-$ jar xf build/libs/building-java-libraries-0.1.0.jar META-INF/MANIFEST.MF
+$ jar xf build/libs/demo-0.1.0.jar META-INF/MANIFEST.MF
 ----
 
 Now view the contents of the `META-INF/MANIFEST.MF` file and you should see the following:
@@ -258,10 +275,9 @@ include::{samples-dir}/groovy-dsl-files/src/main/java/demo/Library.java[tags=jav
 ----
 Run the `javadoc` task.
 
-[listing]
+[listing.terminal.sample-command]
 ----
 $ ./gradlew javadoc
-
 include::{samples-dir}/groovy-dsl-docOutput/out.txt[]
 ----
 
