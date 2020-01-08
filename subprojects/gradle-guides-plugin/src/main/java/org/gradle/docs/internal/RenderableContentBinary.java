@@ -8,4 +8,6 @@ public interface RenderableContentBinary {
     Property<CopySpec> getResourceSpec();
 
     ConfigurableFileCollection getResourceFiles();
+
+    Property<String> getSourcePattern();
 }

@@ -159,16 +159,9 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             task.dependsOn(assembleDocs);
             Map<String, Object> attributes = new HashMap<>(genericAttributes());
 
-            task.sources(new Closure(null) {
-                public Object doCall(Object ignore) {
-                    // Render only the index.adoc file
-                    ((PatternSet)this.getDelegate()).include("**/index.adoc");
-                    return null;
-                }
-            });
-
             cleanStaleFiles(task);
             configureResources(task, extension.getBinaries().withType(GuideContentBinary.class));
+            configureSources(task, extension.getBinaries().withType(GuideContentBinary.class));
 
             // TODO: This breaks the provider
             task.setSourceDir(extension.getDocumentationInstallRoot().get().getAsFile());
@@ -223,6 +216,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             contentBinary.getPermalink().convention(contentBinary.getBaseDirectory().map(baseDirectory -> baseDirectory + "/index.html"));
             contentBinary.getResourceFiles().from(guide.getGuideDirectory().dir("contents/images"));
             contentBinary.getResourceSpec().convention(project.copySpec(spec -> spec.from(guide.getGuideDirectory().dir("contents/images"), it -> it.into(contentBinary.getBaseDirectory().get() + "/images"))));
+            contentBinary.getSourcePattern().convention(contentBinary.getBaseDirectory().map(baseDirectory -> baseDirectory + "/index.adoc"));
             // TODO: Link to the right place
             contentBinary.getSourceFiles().from(objects.fileTree().from(guide.getGuideDirectory().dir("contents")).include("**/*.adoc", "**/*.txt"));
         }

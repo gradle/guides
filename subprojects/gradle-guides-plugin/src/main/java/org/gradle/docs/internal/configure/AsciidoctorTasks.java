@@ -6,7 +6,7 @@ import org.gradle.api.Action;
 import org.gradle.api.Task;
 import org.gradle.api.file.CopySpec;
 import org.gradle.api.logging.StandardOutputListener;
-import org.gradle.docs.guides.internal.GuideContentBinary;
+import org.gradle.api.tasks.util.PatternSet;
 import org.gradle.docs.internal.RenderableContentBinary;
 
 import java.util.ArrayList;
@@ -49,6 +49,15 @@ public class AsciidoctorTasks {
         task.resources(new Closure(IGNORED_CLOSURE_OWNER) {
             public Object doCall(Object ignore) {
                 binaries.stream().map(RenderableContentBinary::getResourceSpec).forEach(spec -> ((CopySpec)this.getDelegate()).with(spec.get()));
+                return null;
+            }
+        });
+    }
+
+    public static void configureSources(AsciidoctorTask task, Collection<? extends RenderableContentBinary> binaries) {
+        task.sources(new Closure(IGNORED_CLOSURE_OWNER) {
+            public Object doCall(Object ignore) {
+                ((PatternSet)this.getDelegate()).setIncludes(binaries.stream().map(it -> it.getSourcePattern().get()).collect(Collectors.toList()));
                 return null;
             }
         });

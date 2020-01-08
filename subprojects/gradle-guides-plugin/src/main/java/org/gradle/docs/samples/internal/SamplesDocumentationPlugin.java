@@ -1,6 +1,5 @@
 package org.gradle.docs.samples.internal;
 
-import groovy.lang.Closure;
 import org.asciidoctor.gradle.AsciidoctorTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
@@ -8,7 +7,6 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.file.ConfigurableFileCollection;
-import org.gradle.api.file.CopySpec;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.FileTree;
@@ -24,7 +22,6 @@ import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.testing.Test;
-import org.gradle.api.tasks.util.PatternSet;
 import org.gradle.api.tasks.wrapper.Wrapper;
 import org.gradle.docs.internal.DocumentationBasePlugin;
 import org.gradle.docs.internal.DocumentationExtensionInternal;
@@ -269,19 +266,9 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             task.dependsOn(assembleDocs);
             Map<String, Object> attributes = new HashMap<>(genericAttributes());
 
-            task.sources(new Closure(null) {
-                public Object doCall(Object ignore) {
-                    // TODO: If we model baseName we could include each file one at a time from the binary (for both guide and sample)
-                    ((PatternSet)this.getDelegate()).include("**/*.adoc");
-
-                    // QUESTION: Why this exclude
-                    ((PatternSet)this.getDelegate()).exclude("samples/**/*.adoc");
-                    return null;
-                }
-            });
-
             cleanStaleFiles(task); // TODO: Stale zip files
             configureResources(task, extension.getBinaries().withType(SampleContentBinary.class));
+            configureSources(task, extension.getBinaries().withType(SampleContentBinary.class));
 
             // TODO: This breaks the provider
             task.setSourceDir(extension.getDocumentationInstallRoot().get().getAsFile());
@@ -383,6 +370,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             contentBinary.getPermalink().convention(contentBinary.getBaseName().map(baseName -> baseName + ".html"));
             contentBinary.getResourceFiles().from(extension.getDistribution().getZippedSamples());
             contentBinary.getResourceSpec().convention(project.copySpec(spec -> spec.from(extension.getDistribution().getZippedSamples(), sub -> sub.into("zips"))));
+            contentBinary.getSourcePattern().convention(contentBinary.getBaseName().map(baseName -> baseName + ".adoc"));
             // TODO: Link everywhere
             contentBinary.getSourceFiles().from(sample.getSampleDirectory().file("README.adoc"));
 

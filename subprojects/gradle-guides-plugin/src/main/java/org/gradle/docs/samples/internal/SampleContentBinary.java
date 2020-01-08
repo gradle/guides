@@ -3,6 +3,7 @@ package org.gradle.docs.samples.internal;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.provider.HasMultipleValues;
 import org.gradle.api.provider.Property;
 import org.gradle.docs.internal.RenderableContentBinary;
 import org.gradle.docs.internal.TestableContentBinary;

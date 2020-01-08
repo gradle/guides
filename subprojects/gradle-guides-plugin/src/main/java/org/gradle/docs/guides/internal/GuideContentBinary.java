@@ -1,7 +1,6 @@
 package org.gradle.docs.guides.internal;
 
 import org.gradle.api.file.ConfigurableFileCollection;
-import org.gradle.api.file.CopySpec;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.Property;
