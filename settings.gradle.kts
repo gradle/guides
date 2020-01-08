@@ -33,7 +33,6 @@ val guides = listOf(
         "performance",
         "publishing-plugins-to-gradle-plugin-portal",
         "running-webpack-with-gradle",
-        "style-guide",
         "testing-gradle-plugins",
         "using-build-cache",
         "using-the-worker-api",
