@@ -82,3 +82,10 @@ allprojects {
         }
     }
 }
+
+// Attach checkGuides to check
+allprojects {
+    pluginManager.withPlugin("org.gradle.guides") {
+        tasks.named("check") { dependsOn("checkGuides") }
+    }
+}
