@@ -75,8 +75,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
 
     // TODO: This code need to be consolidated with Exemplar. There is some overlap and duplication.
     private void run(List<Command> commands) throws IOException {
-        File workspace = Files.createTempDirectory("exemplar").toFile();
-        File baseWorkingDir = new File(workspace, "working");
+        File baseWorkingDir = Files.createTempDirectory("exemplar").toFile();
         File gradleUserHomeDir = getParameters().getGradleUserHomeDirectory().get().getAsFile();
 
         baseWorkingDir.mkdirs();
