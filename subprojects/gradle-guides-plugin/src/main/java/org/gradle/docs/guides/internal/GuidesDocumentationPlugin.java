@@ -35,8 +35,7 @@ import static org.gradle.docs.internal.Asserts.assertNameDoesNotContainsDisallow
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
 import static org.gradle.docs.internal.FileUtils.deleteDirectory;
 import static org.gradle.docs.internal.StringUtils.*;
-import static org.gradle.docs.internal.configure.AsciidoctorTasks.configureResources;
-import static org.gradle.docs.internal.configure.AsciidoctorTasks.failTaskOnRenderingErrors;
+import static org.gradle.docs.internal.configure.AsciidoctorTasks.*;
 import static org.gradle.docs.internal.configure.ContentBinaries.createCheckTasksForContentBinary;
 import static org.gradle.docs.internal.configure.ContentBinaries.createTasksForContentBinary;
 
@@ -158,7 +157,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             task.setGroup(DOCUMENTATION_GROUP_NAME);
             task.setDescription("Generates multi-page guides index.");
             task.dependsOn(assembleDocs);
-            Map<String, Object> attributes = new HashMap<>();
+            Map<String, Object> attributes = new HashMap<>(genericAttributes());
 
             task.sources(new Closure(null) {
                 public Object doCall(Object ignore) {
@@ -168,15 +167,8 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
                 }
             });
 
-            // It seems Asciidoctor task is copying the resource as opposed to synching them. Let's delete the output folder first.
-            task.doFirst(new Action<Task>() {
-                @Override
-                public void execute(Task t) {
-                    deleteDirectory(extension.getRenderedDocumentationRoot().get().getAsFile());
-                }
-            });
-
-            configureResources(task, attributes, extension.getBinaries().withType(GuideContentBinary.class));
+            cleanStaleFiles(task);
+            configureResources(task, extension.getBinaries().withType(GuideContentBinary.class));
 
             // TODO: This breaks the provider
             task.setSourceDir(extension.getDocumentationInstallRoot().get().getAsFile());
@@ -185,14 +177,8 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
 
             task.setSeparateOutputDirs(false);
 
-            // Configure generic attributes
-            attributes.put("doctype", "book");
-            attributes.put("icons", "font");
-            attributes.put("source-highlighter", "prettify");
-            attributes.put("toc", "auto");
-            attributes.put("toclevels", 1);
-            attributes.put("toc-title", "Contents");
             // TODO: This is specific to guides
+            attributes.put("imagesdir", "images");
             attributes.put("stylesheet", null);
             attributes.put("linkcss", true);
             attributes.put("docinfodir", ".");
@@ -208,6 +194,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             task.attributes(attributes);
 
             failTaskOnRenderingErrors(task);
+
         });
         extension.getDistribution().getRenderedDocumentation().from(guidesMultiPage);
 

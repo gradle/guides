@@ -56,7 +56,7 @@ import static org.gradle.docs.internal.Asserts.assertNameDoesNotContainsDisallow
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCS_TEST_SOURCE_SET_NAME;
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
 import static org.gradle.docs.internal.StringUtils.*;
-import static org.gradle.docs.internal.configure.AsciidoctorTasks.failTaskOnRenderingErrors;
+import static org.gradle.docs.internal.configure.AsciidoctorTasks.*;
 import static org.gradle.docs.internal.configure.ContentBinaries.createCheckTasksForContentBinary;
 import static org.gradle.docs.internal.configure.ContentBinaries.createTasksForContentBinary;
 
@@ -267,6 +267,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             task.setGroup(DOCUMENTATION_GROUP_NAME);
             task.setDescription("Generates multi-page samples index.");
             task.dependsOn(assembleDocs);
+            Map<String, Object> attributes = new HashMap<>(genericAttributes());
 
             task.sources(new Closure(null) {
                 public Object doCall(Object ignore) {
@@ -279,29 +280,17 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
                 }
             });
 
+            cleanStaleFiles(task); // TODO: Stale zip files
+            configureResources(task, extension.getBinaries().withType(SampleContentBinary.class));
+
             // TODO: This breaks the provider
             task.setSourceDir(extension.getDocumentationInstallRoot().get().getAsFile());
             // TODO: This breaks the provider
             task.setOutputDir(extension.getRenderedDocumentationRoot().get().getAsFile());
 
-            // TODO: Only used by samples
-            task.resources(new Closure(task) {
-                public Object doCall(Object ignore) {
-                    ((CopySpec)this.getDelegate()).from(extension.getDistribution().getZippedSamples(), sub -> sub.into("zips"));
-                    return this.getDelegate();
-                }
-            });
-
             task.setSeparateOutputDirs(false);
 
             // TODO: Figure out why so much difference with guides
-            Map<String, Object> attributes = new HashMap<>();
-            attributes.put("doctype", "book");
-            attributes.put("icons", "font");
-            attributes.put("source-highlighter", "prettify");
-            attributes.put("toc", "auto");
-            attributes.put("toclevels", 1);
-            attributes.put("toc-title", "Contents");
             // TODO: This is specific to gradle/gradle
             attributes.put("userManualPath", "../userguide");
             attributes.put("samples-dir", extension.getDocumentationInstallRoot().get().getAsFile());
@@ -392,6 +381,8 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             contentBinary.getBaseName().convention(sample.getSampleDocName());
             contentBinary.getSummary().convention(toSummary(objects, sample));
             contentBinary.getPermalink().convention(contentBinary.getBaseName().map(baseName -> baseName + ".html"));
+            contentBinary.getResourceFiles().from(extension.getDistribution().getZippedSamples());
+            contentBinary.getResourceSpec().convention(project.copySpec(spec -> spec.from(extension.getDistribution().getZippedSamples(), sub -> sub.into("zips"))));
             // TODO: Link everywhere
             contentBinary.getSourceFiles().from(sample.getSampleDirectory().file("README.adoc"));
 

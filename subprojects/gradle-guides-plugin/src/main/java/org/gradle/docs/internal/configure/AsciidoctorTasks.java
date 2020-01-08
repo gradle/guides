@@ -11,9 +11,13 @@ import org.gradle.docs.internal.RenderableContentBinary;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static org.gradle.docs.internal.FileUtils.deleteDirectory;
 
 public class AsciidoctorTasks {
     private static final Object IGNORED_CLOSURE_OWNER = new Object();
@@ -40,8 +44,7 @@ public class AsciidoctorTasks {
         });
     }
 
-    public static void configureResources(AsciidoctorTask task, Map<String, Object> attributes, Collection<? extends RenderableContentBinary> binaries) {
-        attributes.put("imagesdir", "images");
+    public static void configureResources(AsciidoctorTask task, Collection<? extends RenderableContentBinary> binaries) {
         task.getInputs().files(binaries.stream().map(RenderableContentBinary::getResourceFiles).collect(Collectors.toList())).withPropertyName("resourceFiles").optional(true);
         task.resources(new Closure(IGNORED_CLOSURE_OWNER) {
             public Object doCall(Object ignore) {
@@ -49,5 +52,26 @@ public class AsciidoctorTasks {
                 return null;
             }
         });
+    }
+
+    public static void cleanStaleFiles(AsciidoctorTask task) {
+        // It seems Asciidoctor task is copying the resource as opposed to synching them. Let's delete the output folder first.
+        task.doFirst(new Action<Task>() {
+            @Override
+            public void execute(Task t) {
+                deleteDirectory(task.getOutputDir());
+            }
+        });
+    }
+
+    public static Map<String, Object> genericAttributes() {
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("doctype", "book");
+        attributes.put("icons", "font");
+        attributes.put("source-highlighter", "prettify");
+        attributes.put("toc", "auto");
+        attributes.put("toclevels", 1);
+        attributes.put("toc-title", "Contents");
+        return Collections.unmodifiableMap(attributes);
     }
 }
