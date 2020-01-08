@@ -23,12 +23,12 @@ You should see something like this on the command-line:
 $ ./gradlew clean --quiet <1>
 $ ./gradlew assemble <2>
 
-BUILD SUCCESSFUL in 1s
+BUILD SUCCESSFUL
 4 actionable tasks: 4 executed
 
 $ ./gradlew assemble <3>
 
-BUILD SUCCESSFUL in 1s
+BUILD SUCCESSFUL
 4 actionable tasks: 4 up-to-date
 ----
 <1> Make sure we start without any leftover results by running `clean` first.
@@ -61,13 +61,13 @@ $ rm -rf ~/.gradle/caches/build-cache-1 <1>
 $ ./gradlew clean --quiet <2>
 $ ./gradlew assemble --build-cache <3>
 
-BUILD SUCCESSFUL in 1s
+BUILD SUCCESSFUL
 4 actionable tasks: 4 executed
 
 $ ./gradlew clean --quiet <4>
 $ ./gradlew assemble --build-cache <5>
 
-BUILD SUCCESSFUL in 1s
+BUILD SUCCESSFUL
 4 actionable tasks: 1 executed, 3 from cache
 ----
 <1> We want to start with an empty local cache.
@@ -106,14 +106,14 @@ $ cd ~/checkout-1 <2>
 $ ./gradlew clean --quiet <3>
 $ ./gradlew assemble --build-cache <4>
 
-BUILD SUCCESSFUL in 1s
+BUILD SUCCESSFUL
 4 actionable tasks: 4 executed
 
 $ cd ~/checkout-2 <5>
 $ ./gradlew clean --quiet <6>
 $ ./gradlew clean assemble --build-cache <7>
 
-BUILD SUCCESSFUL in 1s
+BUILD SUCCESSFUL
 4 actionable tasks: 1 executed, 3 from cache
 ----
 <1> Remove all entries in the local cache first.

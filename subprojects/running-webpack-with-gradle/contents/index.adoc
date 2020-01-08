@@ -121,7 +121,7 @@ bundle.js  544 kB       0  [emitted]  [big]  main
    [3] (webpack)/buildin/module.js 517 bytes {0} [built]
 
 
-BUILD SUCCESSFUL in 1s
+BUILD SUCCESSFUL
 1 actionable task: 1 executed
 ----
 
@@ -157,7 +157,7 @@ Now executing `gradle webpack` with no changes to web assets won't unnecessarily
 ----
 $ gradle webpack
 
-BUILD SUCCESSFUL in 0s
+BUILD SUCCESSFUL
 1 actionable task: 1 up-to-date // <1>
 ----
 <1> Gradle recognizes when JS sources haven't been changed. `webpack` bundles are `UP-TO-DATE` and don't need to be generated
@@ -210,7 +210,7 @@ bundle.js  544 kB       0  [emitted]  [big]  main
 ···[3] (webpack)/buildin/module.js 517 bytes {0} [built]
 
 
-BUILD SUCCESSFUL in 2s
+BUILD SUCCESSFUL
 2 actionable tasks: 2 executed
 ----
 <1> Enable Gradle Build Cache. Can also use `org.gradle.cache=true` in `gradle.properties`
@@ -246,7 +246,7 @@ bundle.js  544 kB       0  [emitted]  [big]  main
    [3] (webpack)/buildin/module.js 517 bytes {0} [built]
 
 
-BUILD SUCCESSFUL in 2s
+BUILD SUCCESSFUL
 1 actionable task: 1 executed
 ----
 
@@ -269,7 +269,7 @@ $ gradle --build-cache webpack
 Build cache is an incubating feature.
 Using local directory build cache for the root build (location = ~/.gradle/caches/build-cache-1).
 
-BUILD SUCCESSFUL in 1s
+BUILD SUCCESSFUL
 1 actionable task: 1 from cache // <1>
 ----
 <1> `webpack` was not executed. `build/js/bundle.js` was loaded from the build cache instead.

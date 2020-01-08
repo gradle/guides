@@ -62,7 +62,7 @@ Project name (default: demo):
 Source package (default: demo):
 
 
-BUILD SUCCESSFUL in 1s
+BUILD SUCCESSFUL
 2 actionable tasks: 2 executed
 ----
 

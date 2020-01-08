@@ -102,7 +102,7 @@ Generating MD5 for feynman.txt...
 Generating MD5 for oppenheimer.txt...
 
 
-BUILD SUCCESSFUL in 12s
+BUILD SUCCESSFUL
 ----
 
 In the `build/md5` directory, you should now see corresponding files with an `md5` extension containing MD5 hashes of the
@@ -164,7 +164,7 @@ Generating MD5 for feynman.txt...
 Generating MD5 for oppenheimer.txt...
 
 
-BUILD SUCCESSFUL in 4s
+BUILD SUCCESSFUL
 ----
 
 The results should look the same as before, although the MD5 hash files may be generated in a different order due to
@@ -235,7 +235,7 @@ Generating MD5 for feynman.txt...
 Generating MD5 for oppenheimer.txt...
 
 
-BUILD SUCCESSFUL in 9s
+BUILD SUCCESSFUL
 ----
 
 == Creating a Worker Daemon
@@ -270,7 +270,7 @@ Generating MD5 for feynman.txt...
 Generating MD5 for oppenheimer.txt...
 
 
-BUILD SUCCESSFUL in 10s
+BUILD SUCCESSFUL
 ----
 
 Note that the execution time may be somewhat high.  This is because Gradle has to start a new process for each worker
@@ -288,7 +288,7 @@ Generating MD5 for feynman.txt...
 Generating MD5 for oppenheimer.txt...
 
 
-BUILD SUCCESSFUL in 5s
+BUILD SUCCESSFUL
 ----
 
 == Summary

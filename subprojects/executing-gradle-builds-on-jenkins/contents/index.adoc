@@ -40,7 +40,7 @@ As a developer of a Java project, you'll typical want to compile the source code
 ----
 ./gradlew build
 
-BUILD SUCCESSFUL in 12s
+BUILD SUCCESSFUL
 14 actionable tasks: 14 executed
 ----
 
