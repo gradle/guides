@@ -5,5 +5,5 @@
 > Task :run
 Hello world.
 
-BUILD SUCCESSFUL in 0s
+BUILD SUCCESSFUL
 2 actionable tasks: 1 executed, 1 up-to-date

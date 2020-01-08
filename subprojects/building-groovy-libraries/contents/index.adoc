@@ -60,7 +60,7 @@ Source package (default: demo):
 > Task :init
 Get more help with your project: https://docs.gradle.org/4.10.3/userguide/tutorial_groovy_projects.html
 
-BUILD SUCCESSFUL in 1s
+BUILD SUCCESSFUL
 2 actionable tasks: 2 executed
 ----
 
@@ -139,7 +139,7 @@ $ ./gradlew build
 > Task :check
 > Task :build
 
-BUILD SUCCESSFUL in 12s
+BUILD SUCCESSFUL
 4 actionable tasks: 4 executed
 ----
 
@@ -179,7 +179,7 @@ $ ./gradlew groovydoc
 
 > Task :groovydoc
 
-BUILD SUCCESSFUL in 8s
+BUILD SUCCESSFUL
 2 actionable tasks: 2 executed
 ----
 
