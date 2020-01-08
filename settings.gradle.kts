@@ -21,7 +21,6 @@ val guides = listOf(
         "building-spring-boot-2-projects-with-gradle",
         "building-swift-applications",
         "building-swift-libraries",
-        "consuming-jvm-libraries",
         "creating-build-scans",
         "creating-multi-project-builds",
         "creating-new-gradle-builds",
