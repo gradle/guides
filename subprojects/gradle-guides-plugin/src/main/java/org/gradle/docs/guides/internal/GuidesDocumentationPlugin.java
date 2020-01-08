@@ -1,8 +1,6 @@
 package org.gradle.docs.guides.internal;
 
-import groovy.lang.Closure;
 import org.asciidoctor.gradle.AsciidoctorTask;
-import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -10,7 +8,6 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.attributes.Attribute;
 import org.gradle.api.attributes.Usage;
-import org.gradle.api.file.CopySpec;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.invocation.Gradle;
 import org.gradle.api.model.ObjectFactory;
@@ -19,21 +16,17 @@ import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
-import org.gradle.api.tasks.util.PatternSet;
 import org.gradle.docs.guides.internal.tasks.GenerateGuidePageAsciidoc;
 import org.gradle.docs.internal.DocumentationBasePlugin;
 import org.gradle.docs.internal.DocumentationExtensionInternal;
-import org.gradle.docs.internal.RenderableContentBinary;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.gradle.docs.internal.Asserts.assertNameDoesNotContainsDisallowedCharacters;
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
-import static org.gradle.docs.internal.FileUtils.deleteDirectory;
 import static org.gradle.docs.internal.StringUtils.*;
 import static org.gradle.docs.internal.configure.AsciidoctorTasks.*;
 import static org.gradle.docs.internal.configure.ContentBinaries.createCheckTasksForContentBinary;
@@ -52,8 +45,10 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         project.getPluginManager().apply(DocumentationBasePlugin.class);
         project.getPluginManager().apply("org.asciidoctor.convert"); // For the `asciidoctor` configuration
 
+        Configuration asciidoctorConfiguration = project.getConfigurations().maybeCreate("asciidoctorForDocumentation");
+        asciidoctorConfiguration.extendsFrom(project.getConfigurations().getByName("asciidoctor"));
         project.getRepositories().maven(it -> it.setUrl("https://repo.gradle.org/gradle/libs-releases"));
-        project.getDependencies().add("asciidoctor", "org.gradle:docs-asciidoctor-extensions:0.4.0");
+        project.getDependencies().add(asciidoctorConfiguration.getName(), "org.gradle:docs-asciidoctor-extensions:0.4.0");
 
         TaskProvider<Task> assemble = tasks.named(LifecycleBasePlugin.ASSEMBLE_TASK_NAME);
         TaskProvider<Task> check = tasks.register("checkGuides");
@@ -71,7 +66,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         extension.getBinaries().withType(GuideContentBinary.class).all(binary -> createTasksForGuideContentBinary(tasks, layout, providers, binary));
 
         // Render all the documentation out to HTML
-        TaskProvider<? extends Task> renderTask = renderGuidesDocumentation(tasks, assemble, check, extension);
+        TaskProvider<? extends Task> renderTask = renderGuidesDocumentation(tasks, assemble, check, extension, asciidoctorConfiguration);
 
         // Publish the guides to consumers
         createPublishGuidesElements(project.getConfigurations(), objects, renderTask, extension);
@@ -133,7 +128,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         binary.getIndexPageFile().convention(generateGuidePage.flatMap(GenerateGuidePageAsciidoc::getOutputFile));
     }
 
-    private TaskProvider<? extends Task> renderGuidesDocumentation(TaskContainer tasks, TaskProvider<Task> assemble, TaskProvider<Task> check, GuidesInternal extension) {
+    private TaskProvider<? extends Task> renderGuidesDocumentation(TaskContainer tasks, TaskProvider<Task> assemble, TaskProvider<Task> check, GuidesInternal extension, Configuration classpath) {
         TaskProvider<Sync> assembleDocs = tasks.register("assembleGuides", Sync.class, task -> {
             task.setGroup(DOCUMENTATION_GROUP_NAME);
             task.setDescription("Assembles all intermediate files needed to generate the samples documentation.");
@@ -168,6 +163,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             task.setOutputDir(extension.getRenderedDocumentationRoot().get().getAsFile());
 
             task.setSeparateOutputDirs(false);
+            task.setClasspath(classpath);
 
             // TODO: This is specific to guides
             attributes.put("imagesdir", "images");
