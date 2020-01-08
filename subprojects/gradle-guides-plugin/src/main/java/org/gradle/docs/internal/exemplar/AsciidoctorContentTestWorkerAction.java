@@ -7,9 +7,8 @@ import org.asciidoctor.SafeMode;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.process.ExecOperations;
-import org.gradle.samples.loader.asciidoctor.AsciidoctorSamplesDiscovery;
+import org.gradle.samples.loader.asciidoctor.AsciidoctorCommandsDiscovery;
 import org.gradle.samples.model.Command;
-import org.gradle.samples.model.Sample;
 import org.gradle.samples.test.normalizer.AsciidoctorAnnotationNormalizer;
 import org.gradle.samples.test.normalizer.GradleOutputNormalizer;
 import org.gradle.samples.test.normalizer.OutputNormalizer;
@@ -41,7 +40,6 @@ import java.io.PipedOutputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -59,11 +57,10 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
     public void execute() {
         getParameters().getContentFiles().forEach(f -> {
             try {
-                List<Sample> samples = AsciidoctorSamplesDiscovery.extractFromAsciidoctorFile(f, it -> {
+                List<Command> commands = AsciidoctorCommandsDiscovery.extractFromAsciidoctorFile(f, it -> {
                     it.safe(SafeMode.UNSAFE);
                     it.attributes(AttributesBuilder.attributes().attribute("verbose", 0));
                 });
-                List<Command> commands = samples.stream().map(Sample::getCommands).collect(ArrayList::new, List::addAll, List::addAll);
                 LOGGER.info("Testing " + commands.size() + " commands on " + f.getAbsolutePath());
                 run(commands);
             } catch (IOException e) {
