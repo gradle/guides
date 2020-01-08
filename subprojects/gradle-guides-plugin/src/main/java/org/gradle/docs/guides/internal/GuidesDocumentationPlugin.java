@@ -172,7 +172,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         });
 
         extension.getBinaries().withType(GuideContentBinary.class).configureEach(binary -> {
-            binary.getInstalledIndexPageFile().fileProvider(assembleDocs.map(task -> new File(task.getDestinationDir(), binary.getBaseDirectory().get() + "/index.adoc")));
+            binary.getInstalledIndexPageFile().fileProvider(assembleDocs.map(task -> new File(task.getDestinationDir(), binary.getSourcePermalink().get())));
         });
 
         TaskProvider<AsciidoctorTask> guidesMultiPage = tasks.register("guidesMultiPage", AsciidoctorTask.class, task -> {
@@ -219,8 +219,8 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         assemble.configure(t -> t.dependsOn(extension.getDistribution().getRenderedDocumentation()));
 
         extension.getBinaries().withType(GuideContentBinary.class).configureEach(binary -> {
-            binary.getRenderedPageFile().fileProvider(guidesMultiPage.map(it -> new File(it.getOutputDir(), binary.getPermalink().get())));
-            binary.getViewablePageFile().fileProvider(guidesMultiPage.map(it -> new File(it.getOutputDir(), binary.getPermalink().get())));
+            binary.getRenderedPageFile().fileProvider(guidesMultiPage.map(it -> new File(it.getOutputDir(), binary.getRenderedPermalink().get())));
+            binary.getViewablePageFile().fileProvider(guidesMultiPage.map(it -> new File(it.getOutputDir(), binary.getRenderedPermalink().get())));
         });
 
         return guidesMultiPage;
@@ -239,10 +239,11 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             contentBinary.getGuideDirectory().convention(guide.getGuideDirectory());
             contentBinary.getBaseDirectory().convention(guide.getPermalink());
             // TODO: Maybe have a source permalink and rendered permalink for adoc and html respectively
-            contentBinary.getPermalink().convention(contentBinary.getBaseDirectory().map(baseDirectory -> baseDirectory + "/index.html"));
+            contentBinary.getRenderedPermalink().convention(contentBinary.getBaseDirectory().map(baseDirectory -> baseDirectory + "/index.html"));
+            contentBinary.getSourcePermalink().convention(contentBinary.getBaseDirectory().map(baseDirectory -> baseDirectory + "/index.adoc"));
             contentBinary.getResourceFiles().from(guide.getGuideDirectory().dir("contents/images"));
             contentBinary.getResourceSpec().convention(project.copySpec(spec -> spec.from(guide.getGuideDirectory().dir("contents/images"), it -> it.into(contentBinary.getBaseDirectory().get() + "/images"))));
-            contentBinary.getSourcePattern().convention(contentBinary.getBaseDirectory().map(baseDirectory -> baseDirectory + "/index.adoc"));
+            contentBinary.getSourcePattern().convention(contentBinary.getSourcePermalink());
             contentBinary.getSourcePageFile().convention(guide.getGuideDirectory().file("contents/index.adoc"));
         }
     }

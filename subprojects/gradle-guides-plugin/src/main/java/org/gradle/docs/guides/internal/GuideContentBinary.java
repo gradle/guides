@@ -3,6 +3,7 @@ package org.gradle.docs.guides.internal;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.provider.HasMultipleValues;
 import org.gradle.api.provider.Property;
 import org.gradle.docs.internal.RenderableContentBinary;
 import org.gradle.docs.internal.TestableContentBinary;
@@ -30,9 +31,13 @@ public abstract class GuideContentBinary extends GuideBinary implements Viewable
 
     public abstract Property<String> getBaseDirectory();
 
-    public abstract Property<String> getPermalink();
+    public abstract Property<String> getRenderedPermalink();
+
+    public abstract Property<String> getSourcePermalink();
 
     public abstract RegularFileProperty getRenderedIndexPageFile();
+
+    public abstract RegularFileProperty getInstalledIndexPageFile();
 
     @Override
     public String getViewTaskName() {

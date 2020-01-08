@@ -26,8 +26,4 @@ public abstract class GuideBinary implements Named {
     public abstract RegularFileProperty getIndexPageFile();
 
     public abstract DirectoryProperty getGuideDirectory();
-
-    public abstract Property<String> getPermalink();
-
-    public abstract RegularFileProperty getInstalledIndexPageFile();
 }
