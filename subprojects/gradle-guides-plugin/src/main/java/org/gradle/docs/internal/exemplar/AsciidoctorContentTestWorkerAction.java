@@ -141,7 +141,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                         }
                         resultHandler.assertCompleteSuccessfully();
 
-                        String output = fullOutputStream.toString();
+                        String output = normalizer.normalize(fullOutputStream.toString(), null);
                         OutputVerifier verifier = new StrictOrderLineSegmentedOutputVerifier();
                         verifier.verify(expectedOutput, output, false);
                     } finally {
