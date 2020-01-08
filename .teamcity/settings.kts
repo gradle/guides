@@ -57,9 +57,6 @@ open class AbstractBuildGuideType(init: BuildType.() -> Unit) : AbstractBuildTyp
     }
     triggers {
         vcs {
-            branchFilter = """
-                +:*
-            """.trimIndent()
             groupCheckinsByCommitter = true
         }
     }
