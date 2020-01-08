@@ -1,13 +1,11 @@
 package org.gradle.docs.guides.internal;
 
 import org.asciidoctor.gradle.AsciidoctorTask;
-import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
-import org.gradle.api.artifacts.DependencyConstraint;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.attributes.Attribute;
 import org.gradle.api.attributes.Usage;
@@ -96,7 +94,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             task.getClasspath().from(configuration);
             task.getGradleUserHomeDirectoryForTesting().convention(project.getRootProject().getLayout().getBuildDirectory().dir("working/guides/content-testing-gradle-user-home"));
             extension.getBinaries().withType(GuideContentBinary.class).forEach(it -> {
-                task.getContentFiles().from(it.getIndexPageFile());
+                task.getContentFiles().from(it.getInstalledIndexPageFile());
             });
         });
 
@@ -173,7 +171,9 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             task.into(extension.getDocumentationInstallRoot());
         });
 
-
+        extension.getBinaries().withType(GuideContentBinary.class).configureEach(binary -> {
+            binary.getInstalledIndexPageFile().fileProvider(assembleDocs.map(task -> new File(task.getDestinationDir(), binary.getBaseDirectory().get() + "/index.adoc")));
+        });
 
         TaskProvider<AsciidoctorTask> guidesMultiPage = tasks.register("guidesMultiPage", AsciidoctorTask.class, task -> {
             task.getInputs().files("samples").withPropertyName("samplesDir").withPathSensitivity(PathSensitivity.RELATIVE).optional();
@@ -238,6 +238,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             contentBinary.getDisplayName().convention(guide.getDisplayName());
             contentBinary.getGuideDirectory().convention(guide.getGuideDirectory());
             contentBinary.getBaseDirectory().convention(guide.getPermalink());
+            // TODO: Maybe have a source permalink and rendered permalink for adoc and html respectively
             contentBinary.getPermalink().convention(contentBinary.getBaseDirectory().map(baseDirectory -> baseDirectory + "/index.html"));
             contentBinary.getResourceFiles().from(guide.getGuideDirectory().dir("contents/images"));
             contentBinary.getResourceSpec().convention(project.copySpec(spec -> spec.from(guide.getGuideDirectory().dir("contents/images"), it -> it.into(contentBinary.getBaseDirectory().get() + "/images"))));
