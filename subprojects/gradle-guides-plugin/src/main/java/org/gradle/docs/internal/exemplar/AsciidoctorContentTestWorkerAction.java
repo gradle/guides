@@ -59,7 +59,6 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
             try {
                 List<Command> commands = AsciidoctorCommandsDiscovery.extractFromAsciidoctorFile(f, it -> {
                     it.safe(SafeMode.UNSAFE);
-                    it.attributes(AttributesBuilder.attributes().attribute("verbose", 0));
                 });
                 LOGGER.info("Testing " + commands.size() + " commands on " + f.getAbsolutePath());
                 run(commands);
