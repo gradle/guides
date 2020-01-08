@@ -34,8 +34,6 @@ public abstract class GuideContentBinary extends GuideBinary implements Viewable
 
     public abstract RegularFileProperty getRenderedIndexPageFile();
 
-    public abstract ConfigurableFileCollection getSourceFiles();
-
     @Override
     public String getViewTaskName() {
         return "view" + capitalize(getName()) + "Guide";
@@ -45,4 +43,6 @@ public abstract class GuideContentBinary extends GuideBinary implements Viewable
     public String getCheckLinksTaskName() {
         return "check" + capitalize(getName()) + "GuideLinks";
     }
+
+    public abstract RegularFileProperty getSourcePageFile();
 }

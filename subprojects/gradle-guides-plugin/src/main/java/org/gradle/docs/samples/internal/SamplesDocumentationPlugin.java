@@ -226,8 +226,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             task.getAttributes().put("samples-dir", binary.getSampleInstallDirectory().get().getAsFile().getAbsolutePath());
 
             task.getSampleSummary().convention(binary.getSummary());
-            // TODO: use the source files as a whole
-            task.getReadmeFile().fileValue(binary.getSourceFiles().getSingleFile());
+            task.getReadmeFile().convention(binary.getSourcePageFile());
             task.getOutputFile().fileProvider(binary.getBaseName().map(fileName -> new File(task.getTemporaryDir(), fileName + ".adoc")));
         });
         binary.getIndexPageFile().convention(generateSamplePage.flatMap(GenerateSamplePageAsciidoc::getOutputFile));
@@ -373,8 +372,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             contentBinary.getResourceSpec().convention(project.copySpec(spec -> spec.from(extension.getDistribution().getZippedSamples(), sub -> sub.into("zips"))));
             contentBinary.getSourcePattern().convention(contentBinary.getBaseName().map(baseName -> baseName + ".adoc"));
             contentBinary.getSampleInstallDirectory().convention(sample.getInstallDirectory());
-            // TODO: Link everywhere
-            contentBinary.getSourceFiles().from(sample.getSampleDirectory().file("README.adoc"));
+            contentBinary.getSourcePageFile().convention(sample.getSampleDirectory().file("README.adoc"));
 
             // TODO: To make this lazy without afterEvaluate/eagerness, we need to be able to tell the tasks container that the samples container should be consulted
             assemble.configure(t -> t.dependsOn(sample.getAssembleTask()));

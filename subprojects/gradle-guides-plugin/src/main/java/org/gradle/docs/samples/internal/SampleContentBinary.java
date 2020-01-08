@@ -34,8 +34,6 @@ public abstract class SampleContentBinary extends SampleBinary implements Viewab
 
     public abstract Property<SampleSummary> getSummary();
 
-    public abstract ConfigurableFileCollection getSourceFiles();
-
     public abstract DirectoryProperty getSampleInstallDirectory();
 
     @Override
@@ -47,4 +45,6 @@ public abstract class SampleContentBinary extends SampleBinary implements Viewab
     public String getCheckLinksTaskName() {
         return "check" + capitalize(getName()) + "SampleLinks";
     }
+
+    public abstract RegularFileProperty getSourcePageFile();
 }

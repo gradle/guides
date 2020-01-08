@@ -127,7 +127,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             task.getAttributes().put("language-reference", binary.getGradleVersion().map(v -> "https://docs.gradle.org/" + v + "/dsl/"));
             task.getAttributes().put("api-reference", binary.getGradleVersion().map(v -> "https://docs.gradle.org/" + v + "/javadoc/"));
             task.getAttributes().put("repository-path", binary.getRepositoryPath());
-            task.getIndexFile().convention(binary.getGuideDirectory().file("contents/index.adoc"));
+            task.getIndexFile().convention(binary.getSourcePageFile());
             task.getOutputFile().fileProvider(providers.provider(() -> new File(task.getTemporaryDir(), "index.adoc")));
         });
         binary.getIndexPageFile().convention(generateGuidePage.flatMap(GenerateGuidePageAsciidoc::getOutputFile));
@@ -216,8 +216,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             contentBinary.getResourceFiles().from(guide.getGuideDirectory().dir("contents/images"));
             contentBinary.getResourceSpec().convention(project.copySpec(spec -> spec.from(guide.getGuideDirectory().dir("contents/images"), it -> it.into(contentBinary.getBaseDirectory().get() + "/images"))));
             contentBinary.getSourcePattern().convention(contentBinary.getBaseDirectory().map(baseDirectory -> baseDirectory + "/index.adoc"));
-            // TODO: Link to the right place
-            contentBinary.getSourceFiles().from(objects.fileTree().from(guide.getGuideDirectory().dir("contents")).include("**/*.adoc", "**/*.txt"));
+            contentBinary.getSourcePageFile().convention(guide.getGuideDirectory().file("contents/index.adoc"));
         }
     }
 }
