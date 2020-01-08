@@ -19,7 +19,7 @@ The plugin provides a task, called `init`, that generates the project. The plugi
 
 The first step is to create a folder for the new project and change directory into it.
 
-[listing.terminal.testable-sample.sample-command]
+[listing.terminal.sample-command]
 ----
 $ mkdir demo
 $ cd demo
@@ -29,7 +29,7 @@ $ cd demo
 
 From inside the new project directory, run the `init` task and select `java-application` project type when prompted. For the other questions, press enter to use the default values.
 
-[listing.terminal.testable-sample.sample-command]
+[listing.terminal.sample-command]
 ----
 $ gradle init
 > Task :wrapper
@@ -173,7 +173,7 @@ The generated test class has a single test annotated with JUnit's `@Test` annota
 
 To build the project, run the `build` task. You can use the regular `gradle` command, but when a project includes a wrapper script, it is considered good form to use it instead.
 
-[listing.terminal.testable-sample.sample-command]
+[listing.terminal.sample-command]
 ----
 $ ./gradlew build
 include::{samplesoutputdir}/build.txt[]
@@ -210,7 +210,7 @@ run - Runs this project as a JVM application
 
 The `run` task tells Gradle to execute the `main` method in the class assigned to the `mainClassName` property.
 
-[listing.terminal.testable-sample.sample-command]
+[listing.terminal.sample-command]
 ----
 $ ./gradlew run
 include::{samplesoutputdir}/run.txt[]

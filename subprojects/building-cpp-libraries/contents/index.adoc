@@ -20,7 +20,7 @@ This task will also execute the link:{language-reference}org.gradle.api.tasks.wr
 
 The first step is to create a folder for the new project and change directory into it.
 
-[listing.terminal.testable-sample.sample-command]
+[listing.terminal.sample-command]
 ----
 $ mkdir building-cpp-libraries
 $ cd building-cpp-libraries
@@ -30,7 +30,7 @@ $ cd building-cpp-libraries
 
 From inside the new project directory, run the `init` task and select the `application` project type and the `{cpp}` language when prompted. For the other questions, press enter to use the default values.
 
-[listing.terminal.testable-sample.sample-command]
+[listing.terminal.sample-command]
 ----
 $ gradle init
 > Task :wrapper
@@ -151,7 +151,7 @@ NOTE: The `cpp-unit-test` plugin can also be used to test your library binaries 
 
 == Execute the build
 
-[listing.terminaltestable-sample.sample-command]
+[listing.terminal.sample-command]
 ----
 $ ./gradlew build
 include::{samplesoutputdir}/build.txt[]

@@ -16,7 +16,7 @@ Gradle comes with a built-in plugin called the Build Init plugin. It is document
 
 The first step is to create a folder for the new project and change directory into it.
 
-[listing.terminal.testable-sample.sample-command]
+[listing.terminal.sample-command]
 ----
 $ mkdir demo
 $ cd demo
@@ -26,7 +26,7 @@ $ cd demo
 
 From inside the new project directory, run the `init` task with the `groovy-library` argument.
 
-[listing.terminal.testable-sample.sample-command]
+[listing.terminal.sample-command]
 ----
 $ gradle init
 > Task :wrapper

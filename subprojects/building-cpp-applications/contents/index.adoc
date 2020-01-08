@@ -20,7 +20,7 @@ This task will also execute the link:{language-reference}org.gradle.api.tasks.wr
 
 The first step is to create a folder for the new project and change directory into it.
 
-[listing.terminal.testable-sample.sample-command]
+[listing.terminal.sample-command]
 ----
 $ mkdir building-cpp-applications
 $ cd building-cpp-applications
@@ -30,7 +30,7 @@ $ cd building-cpp-applications
 
 From inside the new project directory, run the `init` task and select the `libraries` project type and the `{cpp}` language when prompted. For the other questions, press enter to use the default values.
 
-[listing.terminal.testable-sample.sample-command]
+[listing.terminal.sample-command]
 ----
 $ gradle init
 > Task :wrapper
@@ -150,7 +150,7 @@ NOTE: The `cpp-unit-test` plugin can also be used to test your application binar
 
 == Execute the build
 
-[listing.terminal.testable-sample.sample-command]
+[listing.terminal.sample-command]
 ----
 $ ./gradlew build
 include::{samplesoutputdir}/build.txt[]
@@ -172,7 +172,7 @@ As part of the the build process, Gradle packages the main and test applications
 The `installDebug` and `installTest` task copies the executable and generates a shell script for executing the application.
 The following shows the content of the `build/install` folder:
 
-[listing.terminal.testable-sample.sample-command]
+[listing.terminal.sample-command]
 ----
 $ tree ./build/install
 ./build/install
@@ -206,7 +206,7 @@ In this case, you will find your assembled executable in `build/exe/main/debug` 
 
 Now run your newly built executable.
 
-[listing.testable-sample.sample-command]
+[listing.sample-command]
 ----
 $ ./build/exe/main/debug/building-cpp-applications
 Hello, World!
