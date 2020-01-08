@@ -8,3 +8,7 @@ guide {
     displayName.set("Migrating from Maven to Gradle")
     category.set("Getting Started")
 }
+
+tasks.named("asciidoctorContentDocsTest") {
+    enabled = false
+}

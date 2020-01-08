@@ -26,8 +26,13 @@ public class AsciidoctorTasks {
         List<String> capturedOutput = new ArrayList<>();
         StandardOutputListener listener = it -> capturedOutput.add(it.toString());
 
-        task.getLogging().addStandardErrorListener(listener);
-        task.getLogging().addStandardOutputListener(listener);
+        task.doFirst(new Action<Task>() {
+            @Override
+            public void execute(Task task) {
+                task.getLogging().addStandardErrorListener(listener);
+                task.getLogging().addStandardOutputListener(listener);
+            }
+        });
 
         task.doLast(new Action<Task>() {
             @Override

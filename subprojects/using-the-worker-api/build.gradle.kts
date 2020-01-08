@@ -8,3 +8,7 @@ guide {
     displayName.set("Using the Worker API")
     category.set("Getting Started")
 }
+
+tasks.named("asciidoctorContentDocsTest") {
+    enabled = false
+}

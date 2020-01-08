@@ -8,3 +8,7 @@ guide {
     displayName.set("Building Kotlin JVM Libraries")
     category.set("Getting Started")
 }
+
+tasks.named("asciidoctorContentDocsTest") {
+    enabled = false
+}

@@ -8,3 +8,7 @@ guide {
     displayName.set("Executing Gradle builds on Jenkins")
     category.set("Getting Started")
 }
+
+tasks.named("asciidoctorContentDocsTest") {
+    enabled = false
+}

@@ -38,3 +38,7 @@ docsTest {
         }
     }
 }
+
+tasks.named("asciidoctorContentDocsTest") {
+    enabled = false
+}

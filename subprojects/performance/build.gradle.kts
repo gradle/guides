@@ -8,3 +8,7 @@ guide {
     displayName.set("Improving the Performance of Gradle Builds")
     category.set("Topical")
 }
+
+tasks.named("asciidoctorContentDocsTest") {
+    enabled = false
+}

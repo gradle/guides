@@ -13,3 +13,7 @@ tasks.named("docsTest") {
     inputs.dir("samples/groovy-dsl")
     inputs.dir("samples/kotlin-dsl")
 }
+
+tasks.named("asciidoctorContentDocsTest") {
+    enabled = false
+}
