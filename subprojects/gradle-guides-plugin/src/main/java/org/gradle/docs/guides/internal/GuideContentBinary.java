@@ -1,9 +1,11 @@
 package org.gradle.docs.guides.internal;
 
 import org.gradle.api.file.ConfigurableFileCollection;
+import org.gradle.api.file.CopySpec;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.Property;
+import org.gradle.docs.internal.RenderableContentBinary;
 import org.gradle.docs.internal.TestableContentBinary;
 import org.gradle.docs.internal.ViewableContentBinary;
 
@@ -11,7 +13,7 @@ import javax.inject.Inject;
 
 import static org.gradle.docs.internal.StringUtils.capitalize;
 
-public abstract class GuideContentBinary extends GuideBinary implements ViewableContentBinary, TestableContentBinary {
+public abstract class GuideContentBinary extends GuideBinary implements ViewableContentBinary, TestableContentBinary, RenderableContentBinary {
     @Inject
     public GuideContentBinary(String name) {
         super(name);

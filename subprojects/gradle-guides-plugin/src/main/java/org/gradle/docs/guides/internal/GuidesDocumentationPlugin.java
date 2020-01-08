@@ -10,6 +10,7 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.attributes.Attribute;
 import org.gradle.api.attributes.Usage;
+import org.gradle.api.file.CopySpec;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.invocation.Gradle;
 import org.gradle.api.model.ObjectFactory;
@@ -22,6 +23,7 @@ import org.gradle.api.tasks.util.PatternSet;
 import org.gradle.docs.guides.internal.tasks.GenerateGuidePageAsciidoc;
 import org.gradle.docs.internal.DocumentationBasePlugin;
 import org.gradle.docs.internal.DocumentationExtensionInternal;
+import org.gradle.docs.internal.RenderableContentBinary;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
 
 import java.io.File;
@@ -33,6 +35,7 @@ import static org.gradle.docs.internal.Asserts.assertNameDoesNotContainsDisallow
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
 import static org.gradle.docs.internal.FileUtils.deleteDirectory;
 import static org.gradle.docs.internal.StringUtils.*;
+import static org.gradle.docs.internal.configure.AsciidoctorTasks.configureResources;
 import static org.gradle.docs.internal.configure.AsciidoctorTasks.failTaskOnRenderingErrors;
 import static org.gradle.docs.internal.configure.ContentBinaries.createCheckTasksForContentBinary;
 import static org.gradle.docs.internal.configure.ContentBinaries.createTasksForContentBinary;
@@ -45,6 +48,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         ProviderFactory providers = project.getProviders();
         ObjectFactory objects = project.getObjects();
         Gradle gradle = project.getGradle();
+        Project projectOnlyForCopySpecMethod = project;
 
         project.getPluginManager().apply(DocumentationBasePlugin.class);
         project.getPluginManager().apply("org.asciidoctor.convert"); // For the `asciidoctor` configuration
@@ -74,7 +78,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         createPublishGuidesElements(project.getConfigurations(), objects, renderTask, extension);
 
         // Trigger everything by realizing guide container
-        project.afterEvaluate(p -> realizeGuides(extension, objects));
+        project.afterEvaluate(p -> realizeGuides(extension, objects, projectOnlyForCopySpecMethod));
     }
 
     private Configuration createPublishGuidesElements(ConfigurationContainer configurations, ObjectFactory objects, TaskProvider<? extends Task> renderTask, GuidesInternal extension) {
@@ -151,9 +155,10 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         TaskProvider<AsciidoctorTask> guidesMultiPage = tasks.register("guidesMultiPage", AsciidoctorTask.class, task -> {
             task.getInputs().files("samples").withPropertyName("samplesDir").withPathSensitivity(PathSensitivity.RELATIVE).optional();
 
-            task.setGroup("documentation");
+            task.setGroup(DOCUMENTATION_GROUP_NAME);
             task.setDescription("Generates multi-page guides index.");
             task.dependsOn(assembleDocs);
+            Map<String, Object> attributes = new HashMap<>();
 
             task.sources(new Closure(null) {
                 public Object doCall(Object ignore) {
@@ -163,7 +168,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
                 }
             });
 
-            // TODO: This is for cleaning stale content from next block
+            // It seems Asciidoctor task is copying the resource as opposed to synching them. Let's delete the output folder first.
             task.doFirst(new Action<Task>() {
                 @Override
                 public void execute(Task t) {
@@ -171,21 +176,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
                 }
             });
 
-            // TODO: Add images files as content, sample most likely need that as well
-            task.getInputs().files(extension.getBinaries().withType(GuideContentBinary.class).stream().map(binary -> binary.getGuideDirectory().dir("contents/images")).collect(Collectors.toList())).withPropertyName("images").optional(true);
-            task.doLast(new Action<Task>() {
-                @Override
-                public void execute(Task t) {
-                    task.getProject().copy(spec -> {
-                        extension.getBinaries().withType(GuideContentBinary.class).forEach(binary -> {
-                            spec.from(binary.getGuideDirectory().dir("contents/images"), sub -> {
-                                sub.into(binary.getBaseDirectory().get() + "/images");
-                            });
-                        });
-                        spec.into(extension.getRenderedDocumentationRoot());
-                    });
-                }
-            });
+            configureResources(task, attributes, extension.getBinaries().withType(GuideContentBinary.class));
 
             // TODO: This breaks the provider
             task.setSourceDir(extension.getDocumentationInstallRoot().get().getAsFile());
@@ -193,7 +184,8 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             task.setOutputDir(extension.getRenderedDocumentationRoot().get().getAsFile());
 
             task.setSeparateOutputDirs(false);
-            Map<String, Object> attributes = new HashMap<>();
+
+            // Configure generic attributes
             attributes.put("doctype", "book");
             attributes.put("icons", "font");
             attributes.put("source-highlighter", "prettify");
@@ -201,7 +193,6 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             attributes.put("toclevels", 1);
             attributes.put("toc-title", "Contents");
             // TODO: This is specific to guides
-            attributes.put("imagesdir", "images");
             attributes.put("stylesheet", null);
             attributes.put("linkcss", true);
             attributes.put("docinfodir", ".");
@@ -230,7 +221,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         return guidesMultiPage;
     }
 
-    private void realizeGuides(GuidesInternal extension, ObjectFactory objects) {
+    private void realizeGuides(GuidesInternal extension, ObjectFactory objects, Project project) {
         // TODO: Disallow changes to published samples container after this point.
         for (GuideInternal guide : extension.getPublishedGuides()) {
             assertNameDoesNotContainsDisallowedCharacters(guide, "Guide '%s' has disallowed characters", guide.getName());
@@ -243,6 +234,8 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             contentBinary.getGuideDirectory().convention(guide.getGuideDirectory());
             contentBinary.getBaseDirectory().convention(guide.getPermalink());
             contentBinary.getPermalink().convention(contentBinary.getBaseDirectory().map(baseDirectory -> baseDirectory + "/index.html"));
+            contentBinary.getResourceFiles().from(guide.getGuideDirectory().dir("contents/images"));
+            contentBinary.getResourceSpec().convention(project.copySpec(spec -> spec.from(guide.getGuideDirectory().dir("contents/images"), it -> it.into(contentBinary.getBaseDirectory().get() + "/images"))));
             // TODO: Link to the right place
             contentBinary.getSourceFiles().from(objects.fileTree().from(guide.getGuideDirectory().dir("contents")).include("**/*.adoc", "**/*.txt"));
         }
