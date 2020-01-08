@@ -34,7 +34,11 @@ val guides = listOf(
         "migrating-from-maven",
         "performance",
         "publishing-plugins-to-gradle-plugin-portal",
+<<<<<<< HEAD
         "running-webpack-with-gradle",
+=======
+        "style-guide",
+>>>>>>> Remove running-webpack-with-gradle guide
         "testing-gradle-plugins",
         "using-build-cache",
         "using-the-worker-api",
