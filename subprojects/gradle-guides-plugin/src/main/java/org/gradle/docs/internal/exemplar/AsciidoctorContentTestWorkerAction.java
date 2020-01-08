@@ -15,6 +15,9 @@ import org.gradle.samples.test.normalizer.GradleOutputNormalizer;
 import org.gradle.samples.test.normalizer.OutputNormalizer;
 import org.gradle.samples.test.normalizer.StripTrailingOutputNormalizer;
 import org.gradle.samples.test.normalizer.TrailingNewLineOutputNormalizer;
+import org.gradle.samples.test.verifier.AnyOrderLineSegmentedOutputVerifier;
+import org.gradle.samples.test.verifier.OutputVerifier;
+import org.gradle.samples.test.verifier.StrictOrderLineSegmentedOutputVerifier;
 import org.gradle.tooling.CancellationTokenSource;
 import org.gradle.tooling.GradleConnectionException;
 import org.gradle.tooling.GradleConnector;
@@ -139,7 +142,8 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                         resultHandler.assertCompleteSuccessfully();
 
                         String output = fullOutputStream.toString();
-                        Assert.assertEquals("Output not equals", expectedOutput, normalizer.normalize(output, null));
+                        OutputVerifier verifier = new StrictOrderLineSegmentedOutputVerifier();
+                        verifier.verify(expectedOutput, output, false);
                     } finally {
                         connection.close();
                     }
@@ -158,7 +162,9 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                     expectedOutput = normalizer.normalize(expectedOutput, null);
                     String output = outStream.toString();
                     output = normalizer.normalize(output, null);
-                    Assert.assertEquals("Output not equals", expectedOutput, output);
+
+                    OutputVerifier verifier = new AnyOrderLineSegmentedOutputVerifier();
+                    verifier.verify(expectedOutput, output, false);
                 }
             } else {
                 final File workDir = workingDir;
