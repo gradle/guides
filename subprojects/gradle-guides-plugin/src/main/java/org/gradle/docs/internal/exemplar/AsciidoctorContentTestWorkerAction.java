@@ -148,7 +148,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                     getExecOperations().exec(spec -> {
                         spec.executable(command.getExecutable());
                         spec.args(command.getArgs());
-                        spec.args("--gradle-user-home=" + gradleUserHomeDir.getAbsolutePath());
+                        spec.environment("GRADLE_USER_HOME", gradleUserHomeDir.getAbsolutePath());
                         spec.setWorkingDir(workDir);
                         spec.setStandardOutput(outStream);
                     });
