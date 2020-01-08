@@ -119,6 +119,16 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
         directory << ['.gradle', 'build']
     }
 
+    def "can include sample"() {
+        given:
+        makeSingleProject()
+        writeSampleUnderTest()
+        sampleDirectoryUnderTest.file('README.adoc') << configureAsciidoctorIncludeSample()
+
+        expect:
+        build('assemble')
+    }
+
     protected abstract List<TestFile> getDslZipFiles()
 
     protected abstract void assertSampleTasksExecutedAndNotSkipped(BuildResult result)
@@ -128,4 +138,6 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
     protected abstract void assertDslZipsHaveContent()
 
     protected abstract void assertDslZipFilesExists()
+
+    protected abstract String configureAsciidoctorIncludeSample()
 }

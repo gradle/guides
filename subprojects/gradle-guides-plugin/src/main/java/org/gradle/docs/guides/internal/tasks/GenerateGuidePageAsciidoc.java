@@ -41,13 +41,17 @@ public abstract class GenerateGuidePageAsciidoc extends DefaultTask {
     }
 
     private byte[] generateHeaderForGuidePage() {
+        StringBuilder sb = new StringBuilder();
+        writeAttributes(sb);
+        return sb.toString().getBytes();
+    }
+
+    private void writeAttributes(StringBuilder sb) {
         Map<String, String> attributes = getAttributes().get();
 
-        StringBuilder sb = new StringBuilder();
         attributes.entrySet().forEach(it -> {
             sb.append(":").append(it.getKey()).append(": ").append(it.getValue()).append("\n");
         });
         sb.append('\n');
-        return sb.toString().getBytes();
     }
 }

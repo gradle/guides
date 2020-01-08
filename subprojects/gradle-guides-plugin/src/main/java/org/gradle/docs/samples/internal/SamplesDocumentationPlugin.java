@@ -223,6 +223,8 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         TaskProvider<GenerateSamplePageAsciidoc> generateSamplePage = tasks.register("generate" + capitalize(binary.getName()) + "Page", GenerateSamplePageAsciidoc.class, task -> {
             task.setDescription("Generates asciidoc page for sample '" + binary.getName() + "'");
 
+            task.getAttributes().put("samples-dir", binary.getSampleInstallDirectory().get().getAsFile().getAbsolutePath());
+
             task.getSampleSummary().convention(binary.getSummary());
             // TODO: use the source files as a whole
             task.getReadmeFile().fileValue(binary.getSourceFiles().getSingleFile());
@@ -280,7 +282,6 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             // TODO: Figure out why so much difference with guides
             // TODO: This is specific to gradle/gradle
             attributes.put("userManualPath", "../userguide");
-            attributes.put("samples-dir", extension.getDocumentationInstallRoot().get().getAsFile());
             task.attributes(attributes);
 
             failTaskOnRenderingErrors(task);
@@ -371,6 +372,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             contentBinary.getResourceFiles().from(extension.getDistribution().getZippedSamples());
             contentBinary.getResourceSpec().convention(project.copySpec(spec -> spec.from(extension.getDistribution().getZippedSamples(), sub -> sub.into("zips"))));
             contentBinary.getSourcePattern().convention(contentBinary.getBaseName().map(baseName -> baseName + ".adoc"));
+            contentBinary.getSampleInstallDirectory().convention(sample.getInstallDirectory());
             // TODO: Link everywhere
             contentBinary.getSourceFiles().from(sample.getSampleDirectory().file("README.adoc"));
 

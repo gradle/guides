@@ -36,4 +36,13 @@ abstract class AbstractKotlinDslSampleFunctionalTest extends AbstractBasicSample
             |""".stripMargin()
         groovyReadmeFile.assertDoesNotExist()
     }
+
+    @Override
+    protected String configureAsciidoctorIncludeSample() {
+        return '''
+            |====
+            |include::sample[dir="kotlin", files="settings.gradle.kts[]"]
+            |====
+            |'''.stripMargin()
+    }
 }

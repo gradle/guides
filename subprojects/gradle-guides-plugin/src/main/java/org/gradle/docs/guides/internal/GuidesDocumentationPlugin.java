@@ -116,7 +116,6 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         TaskProvider<GenerateGuidePageAsciidoc> generateGuidePage = tasks.register("generate" + capitalize(binary.getName()) + "Page", GenerateGuidePageAsciidoc.class, task -> {
             task.setDescription("Generates asciidoc page for guide '" + binary.getName() + "'");
 
-            // TODO: Test multiple guide per project
             // TODO: Attributes is an extra property compared to samples
             // TODO: Input/output property name differ a bit
             task.getAttributes().empty();

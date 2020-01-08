@@ -36,6 +36,8 @@ public abstract class SampleContentBinary extends SampleBinary implements Viewab
 
     public abstract ConfigurableFileCollection getSourceFiles();
 
+    public abstract DirectoryProperty getSampleInstallDirectory();
+
     @Override
     public String getViewTaskName() {
         return "view" + capitalize(getName()) + "Sample";

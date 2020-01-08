@@ -49,4 +49,14 @@ abstract class AbstractBothDslSampleFunctionalTest extends AbstractBasicSampleFu
         groovyDslZipFile.assertExists()
         kotlinDslZipFile.assertExists()
     }
+
+    @Override
+    protected String configureAsciidoctorIncludeSample() {
+        return '''
+            |====
+            |include::sample[dir="groovy", files="settings.gradle[]"]
+            |include::sample[dir="kotlin", files="settings.gradle.kts[]"]
+            |====
+            |'''.stripMargin()
+    }
 }
