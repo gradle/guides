@@ -14,4 +14,4 @@
 > Task :build
 
 BUILD SUCCESSFUL
-8 actionable tasks: 8 executed
+7 actionable tasks: 7 executed

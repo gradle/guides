@@ -19,7 +19,7 @@ The plugin provides a task, called `init`, that generates the project. The plugi
 
 The first step is to create a folder for the new project and change directory into it.
 
-[listing.terminal]
+[listing.terminal.testable-sample.sample-command]
 ----
 $ mkdir demo
 $ cd demo
@@ -29,40 +29,47 @@ $ cd demo
 
 From inside the new project directory, run the `init` task and select `java-application` project type when prompted. For the other questions, press enter to use the default values.
 
-[listing.terminal]
+[listing.terminal.testable-sample.sample-command]
 ----
 $ gradle init
+> Task :wrapper
 
 Select type of project to generate:
   1: basic
-  2: cpp-application
-  3: cpp-library
-  4: groovy-application
-  5: groovy-library
-  6: java-application
-  7: java-library
-  8: kotlin-application
-  9: kotlin-library
-  10: scala-library
-Enter selection (default: basic) [1..10] 6
+  2: application
+  3: library
+  4: Gradle plugin
+Enter selection (default: basic) [1..4] 2
+
+Select implementation language:
+  1: C++
+  2: Groovy
+  3: Java
+  4: Kotlin
+  5: Swift
+Enter selection (default: Java) [1..5] 3
 
 Select build script DSL:
-  1: groovy
-  2: kotlin
-Enter selection (default: groovy) [1..2]
+  1: Groovy
+  2: Kotlin
+Enter selection (default: Groovy) [1..2] 1
 
 Select test framework:
-  1: junit
-  2: testng
-  3: spock
-Enter selection (default: junit) [1..3]
+  1: JUnit 4
+  2: TestNG
+  3: Spock
+  4: JUnit Jupiter
+Enter selection (default: JUnit 4) [1..4]
 
 Project name (default: demo):
 
 Source package (default: demo):
 
 
-BUILD SUCCESSFUL in 1s
+> Task :init
+Get more help with your project: https://docs.gradle.org/5.4.1/userguide/tutorial_java_projects.html
+
+BUILD SUCCESSFUL
 2 actionable tasks: 2 executed
 ----
 
@@ -166,7 +173,7 @@ The generated test class has a single test annotated with JUnit's `@Test` annota
 
 To build the project, run the `build` task. You can use the regular `gradle` command, but when a project includes a wrapper script, it is considered good form to use it instead.
 
-[listing.terminal]
+[listing.terminal.testable-sample.sample-command]
 ----
 $ ./gradlew build
 include::{samplesoutputdir}/build.txt[]
@@ -203,12 +210,10 @@ run - Runs this project as a JVM application
 
 The `run` task tells Gradle to execute the `main` method in the class assigned to the `mainClassName` property.
 
+[listing.terminal.testable-sample.sample-command]
 ----
 $ ./gradlew run
 include::{samplesoutputdir}/run.txt[]
-
-
-BUILD SUCCESSFUL
 ----
 
 
