@@ -8,6 +8,7 @@ guide {
     category.set("Topical")
 }
 
+// TODO: Doesn't seems like there are any commands to test
 tasks.named("asciidoctorContentDocsTest") {
     enabled = false
 }
