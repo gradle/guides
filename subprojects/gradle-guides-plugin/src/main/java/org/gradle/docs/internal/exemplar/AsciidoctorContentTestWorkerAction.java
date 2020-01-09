@@ -25,7 +25,6 @@ import org.gradle.tooling.ProjectConnection;
 import org.gradle.tooling.ResultHandler;
 import org.gradle.workers.WorkAction;
 import org.hamcrest.BaseMatcher;
-import org.hamcrest.CoreMatchers;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Assert;
@@ -103,8 +102,8 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
 
             if (command.getExecutable().contains("gradle")) {
                 disableWelcomeMessage(gradleUserHomeDir);
-                if (command.getArgs().get(0).equals("init")) {
-                    ProjectConnection connection = GradleConnector.newConnector().forProjectDirectory(workingDir).useGradleUserHomeDir(gradleUserHomeDir).connect();
+                if (command.getArgs().get(0).equals("init") || command.getArgs().contains("--scan")) {
+                    ProjectConnection connection = GradleConnector.newConnector().forProjectDirectory(workingDir).useGradleUserHomeDir(gradleUserHomeDir).useGradleVersion("6.0.1").connect();
                     CancellationTokenSource cancel = GradleConnector.newCancellationTokenSource();
                     OutputNormalizer normalizer = composite(new GradleOutputNormalizer(), new StripTrailingOutputNormalizer());
                     String expectedOutput = normalizer.normalize(command.getExpectedOutput(), null);
@@ -121,7 +120,12 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                     try {
                         AssertingResultHandler resultHandler = new AssertingResultHandler();
                         // TODO: Configure environment variables
-                        connection.newBuild().forTasks(command.getArgs().toArray(new String[0])).setStandardInput(stdinForToolingApi).setStandardOutput(stdoutForToolingApi).withCancellationToken(cancel.token()).run(resultHandler);
+                        // TODO: The following won't work for flags with arguments
+                        connection.newBuild()
+                                .forTasks(command.getArgs().stream().filter(it -> !it.startsWith("--")).collect(Collectors.toList()).toArray(new String[0]))
+                                .addArguments(command.getArgs().stream().filter(it -> it.startsWith("--")).collect(Collectors.toList()))
+                                .setStandardInput(stdinForToolingApi)
+                                .setStandardOutput(stdoutForToolingApi).setStandardError(stdoutForToolingApi).withCancellationToken(cancel.token()).run(resultHandler);
 
                         OutputConsumer c = new OutputConsumer(expectedOutput);
                         try {
@@ -178,6 +182,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                     spec.setWorkingDir(workDir);
                     spec.environment("HOME", homeDirectory.getAbsolutePath());
                     spec.setStandardOutput(outStream);
+                    spec.setErrorOutput(outStream);
                 });
 
                 if (!command.getExpectedOutput().isEmpty()) {
@@ -205,6 +210,12 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
     private static UnaryOperator<String> userInputFromExpectedOutput(OutputConsumer output) {
         return incoming -> {
             output.consumeOutput(incoming);
+
+            // Publishing takes a bit of time and it mess up with the debouncing.
+            // We know there is no user input required, so let's add a special case.
+            if (incoming.contains("Publishing build scan...")) {
+                return "";
+            }
 
             String input = output.consumeNextInput();
             return input;
@@ -261,7 +272,6 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
             Assert.assertThat("Consuming the received output from the expected output", output, startsWith(outputSnippet));
 
             output = output.substring(outputSnippet.length());
-
         }
 
         public String consumeNextInput() {
@@ -290,12 +300,12 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
             return new BaseMatcher<String>() {
                 @Override
                 public void describeTo(Description description) {
-                    description.appendText("String longer than 3 characters.");
+                    description.appendText("String longer than 4 characters (including newline).");
                 }
 
                 @Override
                 public boolean matches(Object item) {
-                    return ((String)item).length() <= 3;
+                    return ((String)item).length() <= 4; // so it works with numbers input form build-init and `yes` for build-scan.
                 }
             };
         }
