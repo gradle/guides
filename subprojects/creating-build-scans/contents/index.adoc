@@ -15,16 +15,45 @@ This guide shows you how to publish build scans ad-hoc without any build script 
 
 == Select a sample project
 
-Gradle makes available a simple Java project that you can use to demonstrate build scan capabilities. If you wish to use it, https://github.com/gradle/gradle-build-scan-quickstart[clone or download the repository]. If you prefer to use your own project, you can skip this step.
+Gradle makes available a simple Java project that you can use to demonstrate build scan capabilities. If you wish to use it, https://github.com/gradle/gradle-build-scan-quickstart[clone or download the repository].
+
+[listing.terminal.sample-command]
+----
+$ git clone https://github.com/gradle/gradle-build-scan-quickstart
+Cloning into 'gradle-build-scan-quickstart'...
+$ cd gradle-build-scan-quickstart
+----
+
+If you prefer to use your own project, you can skip this step.
 
 == Auto-apply the build scan plugin
 
 Starting with Gradle 4.3, you can enable build scans without any additional configuration in your build script. When using the command line option `--scan` to publish a build scan, the required build scan plugin is applied automatically. Before the end of the build, you are asked to accept the license agreement on the command line. The following console output demonstrates the behavior.
 
+[listing.terminal.sample-command]
 ----
 $ ./gradlew build --scan
+> Task :compileJava
+> Task :processResources NO-SOURCE
+> Task :classes
+> Task :jar
+> Task :assemble
+> Task :compileTestJava
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+> Task :test
+> Task :check
+> Task :build
 
-include::{samples-dir}/auto-applied-build-scan-plugin.sample.out[]
+BUILD SUCCESSFUL
+4 actionable tasks: 4 executed
+
+Publishing a build scan to scans.gradle.com requires accepting the Gradle Terms of Service defined at https://gradle.com/terms-of-service. Do you accept these terms? [yes, no] yes
+
+Gradle Terms of Service accepted.
+
+Publishing build scan...
+https://gradle.com/s/czajmbyg73t62
 ----
 
 This mechanism makes it very easy to generate ad-hoc, one-off build scans without having to configure the build scan plugin in your build. If you need finer grained configuration, you can configure the build scan plugin in a build or init script as described in the following sections.

@@ -57,6 +57,4 @@ tasks {
     }
 }
 
-tasks.named("asciidoctorContentDocsTest") {
-    enabled = false
-}
+// TODO: Need code edit to fully test the project
