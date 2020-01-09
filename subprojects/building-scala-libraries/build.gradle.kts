@@ -7,7 +7,3 @@ guide {
     minimumGradleVersion.set("4.10.3")
     category.set("Getting Started")
 }
-
-tasks.named("asciidoctorContentDocsTest") {
-    enabled = false
-}
