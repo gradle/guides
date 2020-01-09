@@ -21,7 +21,7 @@ dependencies {
     constraints {
         docsTestImplementation("org.codehaus.groovy:groovy-all:2.5.4")
     }
-    docsTestImplementation("org.gradle:sample-check:0.12.0")
+    docsTestImplementation("org.gradle:sample-check:0.12.1")
     docsTestImplementation(gradleTestKit())
 }
 
