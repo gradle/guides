@@ -21,6 +21,7 @@ dependencies {
     docsTestImplementation(gradleTestKit())
 }
 
+// TODO: doesn't seems to have any command to run
 tasks.named("asciidoctorContentDocsTest") {
     enabled = false
 }

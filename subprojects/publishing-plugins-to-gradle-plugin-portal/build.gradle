@@ -39,6 +39,7 @@ docsTest {
     }
 }
 
+// TODO: Require a seed sample
 tasks.named("asciidoctorContentDocsTest") {
     enabled = false
 }

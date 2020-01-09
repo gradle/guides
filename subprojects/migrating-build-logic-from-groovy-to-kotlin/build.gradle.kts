@@ -25,6 +25,7 @@ dependencies {
     docsTestImplementation(gradleTestKit())
 }
 
+// TODO: Requires more investiguating on how to test this project
 tasks.named("asciidoctorContentDocsTest") {
     enabled = false
 }
