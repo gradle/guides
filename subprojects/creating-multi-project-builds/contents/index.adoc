@@ -18,32 +18,38 @@ You'll build a greeting app which also includes documentation. In the process yo
 
 The first step is to create a folder for the new project and add a link:{user-manual}gradle_wrapper.html#sec:wrapper_generation[Gradle Wrapper] to the project. If you use the link:{user-manual}build_init_plugin.html[Build Init plugin] then the necessary settings and build scripts will also be added.
 
-[source.multi-language-sample,groovy]
-.Groovy DSL
+[listing.terminal.sample-command]
 ----
 $ mkdir creating-multi-project-builds
 $ cd creating-multi-project-builds
-$ gradle init // <1> <2>
+$ gradle init
+> Task :wrapper
 
-:wrapper
-:init
+Select type of project to generate:
+  1: basic
+  2: application
+  3: library
+  4: Gradle plugin
+Enter selection (default: basic) [1..4]
+
+Select build script DSL:
+  1: Groovy
+  2: Kotlin
+Enter selection (default: Groovy) [1..2]
+
+Project name (default: creating-multi-project-builds):
+
+
+> Task :init
+Get more help with your project: https://guides.gradle.org/creating-new-gradle-builds
 
 BUILD SUCCESSFUL
+2 actionable tasks: 2 executed
 ----
-[source.multi-language-sample,kotlin]
-.Kotlin DSL
-----
-$ mkdir creating-multi-project-builds
-$ cd creating-multi-project-builds
-$ gradle init --dsl kotlin // <1> <2>
 
-:wrapper
-:init
+If you prefer the Kotlin DSL, you can select `kotlin` for the build script DSL.
 
-BUILD SUCCESSFUL
-----
-<1> Use of `init` will create skeleton build and settings files which can be customized.
-<2> This allows a version of Gradle to be locked to a project, and afterwards you can use `./gradlew` (or `gradlew.bat` on Windows) instead of `gradle`.
+The `init` task runs the `wrapper` task first, which generates the `gradlew` and `gradlew.bat` wrapper scripts.
 
 Open the settings script. There will be a number of auto-generated comments which you can remove, leaving only:
 
@@ -97,7 +103,7 @@ include::{samples-dir}/kotlin-dsl/build.gradle.kts[tags=subproject-versions]
 
 Create the directory for your library subproject.
 
-[listing]
+[listing.terminal.sample-command]
 ----
 $ mkdir greeting-library
 ----
@@ -132,8 +138,9 @@ include::{samples-dir}/kotlin-dsl/settings.gradle.kts[tags=greeting-library]
 
 Finally, create the `src/main/groovy` folder under `greeting-library` and add the package folder `greeter`.
 
-[listing]
+[listing.terminal.sample-command]
 ----
+$ cd greeting-library
 $ mkdir -p src/main/groovy/greeter
 $ mkdir -p src/test/groovy/greeter
 ----
@@ -156,8 +163,9 @@ include::{samples-dir}/groovy-dsl/greeting-library/src/test/groovy/greeter/Greet
 
 Run `./gradlew build` from the top-level project directory.
 
-[listing]
+[listing.terminal]
 ----
+$ cd ..
 $ ./gradlew build
 
 include::{samples-dir}/groovy-dsl-clean-output-build-greeting-library/out.txt[]
@@ -171,7 +179,7 @@ A single subproject does not truly make a multi-project build, however. Therefor
 
 Create a folder in the root project for the sub-project which will contain the application.
 
-[listing]
+[listing.terminal.sample-command]
 ----
 $ mkdir greeter
 ----
@@ -206,7 +214,7 @@ include::{samples-dir}/kotlin-dsl/settings.gradle.kts[tags=application]
 
 Now create a Java class file with a main function, which will consume the `Greeter` library from the `greeting-library` subproject.
 
-[listing]
+[listing.terminal.sample-command]
 ----
 $ mkdir -p greeter/src/main/java/greeter
 ----
