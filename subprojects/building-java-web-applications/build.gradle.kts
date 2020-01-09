@@ -13,6 +13,7 @@ tasks.named("docsTest") {
     enabled = false
 }
 
+// TODO: Require seed sample
 tasks.named("asciidoctorContentDocsTest") {
     enabled = false
 }
