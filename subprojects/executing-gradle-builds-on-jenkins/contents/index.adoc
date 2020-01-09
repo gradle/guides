@@ -26,19 +26,20 @@ Just follow these steps:
 
 === Clone https://github.com/gradle-guides/gradle-site-plugin[Gradle Site Plugin] repository
 
-[listing]
+[listing.terminal.sample-command]
 ----
-git clone https://github.com/gradle-guides/gradle-site-plugin.git
-cd gradle-site-plugin
+$ git clone https://github.com/gradle-guides/gradle-site-plugin.git
+Cloning into 'gradle-site-plugin'...
+$ cd gradle-site-plugin
 ----
 
 === Build the project
 
 As a developer of a Java project, you'll typical want to compile the source code, run the tests and assemble the JAR artifact. That's no different for Gradle plugins. The following command achieves exactly that:
 
-[listing]
+[listing.terminal.sample-command]
 ----
-./gradlew build
+$ ./gradlew build
 
 BUILD SUCCESSFUL
 14 actionable tasks: 14 executed
@@ -52,8 +53,10 @@ It is a recommended practice for any Gradle project as it enables your project t
 The sample project is equipped with support for generating https://scans.gradle.com/[build scans].
 Running the build with the command line option `--scan` renders a link in the console.
 
-[listing]
+[listing.terminal.sample-command]
 ----
+$ ./gradlew build --scan
+
 Publishing build scan...
 https://gradle.com/s/7mtynxxmesdio
 ----
@@ -71,9 +74,11 @@ On the https://jenkins.io/download/[Jenkins website] you can pick from a variety
 This post uses the runnable WAR file.
 A simple Java command brings up the Jenkins server.
 
-[listing]
+// TODO: this block will start a background process not handled by the content testing
+[listing.terminal]
 ----
-java -jar jenkins.war
+$ wget http://mirrors.jenkins.io/war-stable/latest/jenkins.war
+$ java -jar jenkins.war
 ----
 
 In the browser, navigate to `localhost` with port `8080` to render the Jenkins dashboard.
