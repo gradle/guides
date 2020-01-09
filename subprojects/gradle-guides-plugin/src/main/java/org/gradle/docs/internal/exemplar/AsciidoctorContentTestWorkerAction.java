@@ -25,6 +25,7 @@ import org.gradle.tooling.ProjectConnection;
 import org.gradle.tooling.ResultHandler;
 import org.gradle.workers.WorkAction;
 import org.hamcrest.BaseMatcher;
+import org.hamcrest.CoreMatchers;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Assert;
@@ -50,6 +51,7 @@ import java.util.stream.Collectors;
 
 import static org.gradle.docs.internal.exemplar.OutputNormalizers.composite;
 import static org.gradle.docs.internal.exemplar.OutputNormalizers.toFunctional;
+import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.core.StringStartsWith.startsWith;
 
 public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<AsciidoctorContentTestParameters> {
@@ -78,7 +80,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
     // TODO: This code need to be consolidated with Exemplar. There is some overlap and duplication.
     private void run(List<Command> commands) throws IOException {
         File baseWorkingDir = Files.createTempDirectory("exemplar").toFile();
-        File baseDirectoryToNormalizeAgainst = baseWorkingDir;
+        File homeDirectory = baseWorkingDir;
         File gradleUserHomeDir = getParameters().getGradleUserHomeDirectory().get().getAsFile();
 
         baseWorkingDir.mkdirs();
@@ -118,6 +120,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
 
                     try {
                         AssertingResultHandler resultHandler = new AssertingResultHandler();
+                        // TODO: Configure environment variables
                         connection.newBuild().forTasks(command.getArgs().toArray(new String[0])).setStandardInput(stdinForToolingApi).setStandardOutput(stdoutForToolingApi).withCancellationToken(cancel.token()).run(resultHandler);
 
                         OutputConsumer c = new OutputConsumer(expectedOutput);
@@ -152,12 +155,13 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                         spec.executable(command.getExecutable());
                         spec.args(command.getArgs());
                         spec.environment("GRADLE_USER_HOME", gradleUserHomeDir.getAbsolutePath());
+                        spec.environment("HOME", homeDirectory.getAbsolutePath());
                         spec.setWorkingDir(workDir);
                         spec.setStandardOutput(outStream);
                     });
                     String expectedOutput = command.getExpectedOutput();
                     OutputNormalizer normalizer = composite(new GradleOutputNormalizer(), new WorkingDirectoryOutputNormalizer());
-                    ExecutionMetadata executionMetadata = new ExecutionMetadata(baseDirectoryToNormalizeAgainst, Collections.emptyMap());
+                    ExecutionMetadata executionMetadata = new ExecutionMetadata(homeDirectory, Collections.emptyMap());
                     expectedOutput = normalizer.normalize(expectedOutput, executionMetadata);
                     String output = outStream.toString();
                     output = normalizer.normalize(output, executionMetadata);
@@ -172,6 +176,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                     spec.executable(command.getExecutable());
                     spec.args(command.getArgs());
                     spec.setWorkingDir(workDir);
+                    spec.environment("HOME", homeDirectory.getAbsolutePath());
                     spec.setStandardOutput(outStream);
                 });
 
@@ -269,6 +274,10 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
             Assert.assertThat("Consumed user input is too large to make sense", input, isSensibleSize());
 
             output = output.substring(idx + 1);
+
+            if (input.length() > 0) {
+                Assert.assertThat("Input isn't sending output down the pipe", input, endsWith("\n"));
+            }
 
             return input;
         }
