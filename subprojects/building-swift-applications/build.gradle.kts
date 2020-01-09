@@ -8,6 +8,7 @@ guide {
     category.set("Getting Started")
 }
 
+// TODO: Swift seems to be broken
 tasks.named("asciidoctorContentDocsTest") {
     enabled = false
 }
