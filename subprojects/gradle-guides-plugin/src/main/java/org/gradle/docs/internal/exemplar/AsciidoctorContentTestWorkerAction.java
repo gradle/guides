@@ -2,18 +2,19 @@ package org.gradle.docs.internal.exemplar;
 
 import org.apache.commons.io.input.TeeInputStream;
 import org.apache.commons.io.output.TeeOutputStream;
-import org.asciidoctor.AttributesBuilder;
 import org.asciidoctor.SafeMode;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.process.ExecOperations;
+import org.gradle.samples.executor.ExecutionMetadata;
 import org.gradle.samples.loader.asciidoctor.AsciidoctorCommandsDiscovery;
 import org.gradle.samples.model.Command;
-import org.gradle.samples.test.normalizer.AsciidoctorAnnotationNormalizer;
+import org.gradle.samples.test.normalizer.AsciidoctorAnnotationOutputNormalizer;
 import org.gradle.samples.test.normalizer.GradleOutputNormalizer;
 import org.gradle.samples.test.normalizer.OutputNormalizer;
 import org.gradle.samples.test.normalizer.StripTrailingOutputNormalizer;
 import org.gradle.samples.test.normalizer.TrailingNewLineOutputNormalizer;
+import org.gradle.samples.test.normalizer.WorkingDirectoryOutputNormalizer;
 import org.gradle.samples.test.verifier.AnyOrderLineSegmentedOutputVerifier;
 import org.gradle.samples.test.verifier.OutputVerifier;
 import org.gradle.samples.test.verifier.StrictOrderLineSegmentedOutputVerifier;
@@ -40,6 +41,7 @@ import java.io.PipedOutputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -76,6 +78,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
     // TODO: This code need to be consolidated with Exemplar. There is some overlap and duplication.
     private void run(List<Command> commands) throws IOException {
         File baseWorkingDir = Files.createTempDirectory("exemplar").toFile();
+        File baseDirectoryToNormalizeAgainst = baseWorkingDir;
         File gradleUserHomeDir = getParameters().getGradleUserHomeDirectory().get().getAsFile();
 
         baseWorkingDir.mkdirs();
@@ -153,10 +156,11 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                         spec.setStandardOutput(outStream);
                     });
                     String expectedOutput = command.getExpectedOutput();
-                    OutputNormalizer normalizer = new GradleOutputNormalizer();
-                    expectedOutput = normalizer.normalize(expectedOutput, null);
+                    OutputNormalizer normalizer = composite(new GradleOutputNormalizer(), new WorkingDirectoryOutputNormalizer());
+                    ExecutionMetadata executionMetadata = new ExecutionMetadata(baseDirectoryToNormalizeAgainst, Collections.emptyMap());
+                    expectedOutput = normalizer.normalize(expectedOutput, executionMetadata);
                     String output = outStream.toString();
-                    output = normalizer.normalize(output, null);
+                    output = normalizer.normalize(output, executionMetadata);
 
                     OutputVerifier verifier = new AnyOrderLineSegmentedOutputVerifier();
                     verifier.verify(expectedOutput, output, false);
@@ -173,7 +177,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
 
                 if (!command.getExpectedOutput().isEmpty()) {
                     String expectedOutput = command.getExpectedOutput();
-                    OutputNormalizer normalizer = composite(new AsciidoctorAnnotationNormalizer(), new TrailingNewLineOutputNormalizer());
+                    OutputNormalizer normalizer = composite(new AsciidoctorAnnotationOutputNormalizer(), new TrailingNewLineOutputNormalizer());
                     expectedOutput = normalizer.normalize(expectedOutput, null);
                     String output = outStream.toString();
                     output = normalizer.normalize(output, null);

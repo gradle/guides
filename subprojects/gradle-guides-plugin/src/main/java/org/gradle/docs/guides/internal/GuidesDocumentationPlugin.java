@@ -85,7 +85,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         DependencyHandler dependencies = project.getDependencies();
         dependencies.add(configuration.getName(), "org.gradle:gradle-tooling-api:6.0.1");
         dependencies.add(configuration.getName(), "org.apache.commons:commons-lang3:3.9");
-        dependencies.add(configuration.getName(), "org.gradle:sample-check:0.11.1");
+        dependencies.add(configuration.getName(), "org.gradle:sample-check:0.12.0");
         dependencies.add(configuration.getName(), "junit:junit:4.12");
 
         TaskProvider<AsciidoctorContentTest> asciidoctorContentDocsTest = tasks.register("asciidoctorContentDocsTest", AsciidoctorContentTest.class, task -> {
