@@ -23,6 +23,6 @@ dependencies {
     docsTestImplementation(gradleTestKit())
 }
 
-tasks.named("asciidoctorContentDocsTest") {
-    enabled = false
-}
+// TODO: Requires real-time content modification
+// TODO: Requires CTRL-C handling
+// TODO: Requires background running
