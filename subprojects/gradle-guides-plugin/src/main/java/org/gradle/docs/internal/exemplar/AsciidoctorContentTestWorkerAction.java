@@ -252,23 +252,32 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
     }
 
     private static Function<InputStream, String> debounceStdOut(Duration debounce) {
+        // NOTE: When supporting rich console, we will have to deal with the fact that Gradle is continuously updating the progress section.
         return stdout -> {
             try {
                 int lastAvailable = 0;
                 long quietPeriod = Long.MAX_VALUE;
+                int retry = 0;
                 for (; ; ) {
                     int a = stdout.available();
                     if (a > 0 && a > lastAvailable) {
                         lastAvailable = a;
+                        retry = 0;
                         quietPeriod = System.nanoTime() + debounce.toNanos();
                     }
 
                     long d = System.nanoTime() - quietPeriod;
-                    if (d > 0 && lastAvailable > 0) {
-                        byte[] incomingBytes = new byte[lastAvailable];
-                        stdout.read(incomingBytes);
-                        String incoming = new String(incomingBytes);
-                        return incoming;
+                    if (d > 0) {
+                        if (lastAvailable > 0) {
+                            byte[] incomingBytes = new byte[lastAvailable];
+                            stdout.read(incomingBytes);
+                            String incoming = new String(incomingBytes);
+                            return incoming;
+                        } else {
+                            Assert.assertTrue("No output received in reasonable time, something is wrong. Most likely waiting for user input", retry < 3);
+                            retry++;
+                            quietPeriod = System.nanoTime() + debounce.toNanos();
+                        }
                     }
                 }
             } catch (IOException e) {
