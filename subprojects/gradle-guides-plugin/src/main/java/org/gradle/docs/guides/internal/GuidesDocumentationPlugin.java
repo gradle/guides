@@ -81,7 +81,8 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
     }
 
     private void configureContentExemplarTesting(Project project, TaskContainer tasks, GuidesInternal extension, TaskProvider<Task> check, Configuration asciidoctorClasspath) {
-        Configuration configuration = project.getConfigurations().create("asciidoctorContentDocsTest", it -> it.extendsFrom(asciidoctorClasspath));
+        Configuration configuration = project.getConfigurations().maybeCreate("asciidoctorContentDocsTest");
+        configuration.extendsFrom(asciidoctorClasspath);
         DependencyHandler dependencies = project.getDependencies();
         dependencies.add(configuration.getName(), "org.gradle:gradle-tooling-api:6.0.1");
         dependencies.add(configuration.getName(), "org.apache.commons:commons-lang3:3.9");
@@ -93,8 +94,8 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             task.setDescription("Check guides steps commands.");
             task.getClasspath().from(configuration);
             task.getGradleUserHomeDirectoryForTesting().convention(project.getRootProject().getLayout().getBuildDirectory().dir("working/guides/content-testing-gradle-user-home"));
-            extension.getBinaries().withType(GuideContentBinary.class).forEach(it -> {
-                task.testCase(testCase -> testCase.getContentFile().set(it.getInstalledIndexPageFile()));
+            extension.getBinaries().withType(GuideContentBinary.class).forEach(contentBinary -> {
+                task.testCase(testCase -> testCase.getContentFile().set(contentBinary.getInstalledIndexPageFile()));
             });
         });
 
