@@ -294,8 +294,8 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         assemble.configure(t -> t.dependsOn(extension.getDistribution().getRenderedDocumentation()));
 
         extension.getBinaries().withType(SampleContentBinary.class).configureEach(binary -> {
-            binary.getRenderedPageFile().fileProvider(samplesMultiPage.map(it -> new File(it.getOutputDir(), binary.getPermalink().get())));
-            binary.getViewablePageFile().fileProvider(samplesMultiPage.map(it -> new File(it.getOutputDir(), binary.getPermalink().get())));
+            binary.getRenderedPageFile().fileProvider(samplesMultiPage.map(it -> new File(it.getOutputDir(), binary.getRenderedPermalink().get())));
+            binary.getViewablePageFile().fileProvider(samplesMultiPage.map(it -> new File(it.getOutputDir(), binary.getRenderedPermalink().get())));
         });
 
         return samplesMultiPage;
@@ -371,7 +371,8 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             contentBinary.getSampleDirectory().convention(sample.getSampleDirectory());
             contentBinary.getBaseName().convention(sample.getSampleDocName());
             contentBinary.getSummary().convention(toSummary(objects, sample));
-            contentBinary.getPermalink().convention(contentBinary.getBaseName().map(baseName -> baseName + ".html"));
+            contentBinary.getRenderedPermalink().convention(contentBinary.getBaseName().map(baseName -> baseName + ".html"));
+            contentBinary.getSourcePermalink().convention(contentBinary.getBaseName().map(baseName -> baseName + ".adoc"));
             contentBinary.getResourceFiles().from(extension.getDistribution().getZippedSamples());
             contentBinary.getResourceSpec().convention(project.copySpec(spec -> spec.from(extension.getDistribution().getZippedSamples(), sub -> sub.into("zips"))));
             contentBinary.getSourcePattern().convention(contentBinary.getBaseName().map(baseName -> baseName + ".adoc"));
