@@ -94,7 +94,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             task.getClasspath().from(configuration);
             task.getGradleUserHomeDirectoryForTesting().convention(project.getRootProject().getLayout().getBuildDirectory().dir("working/guides/content-testing-gradle-user-home"));
             extension.getBinaries().withType(GuideContentBinary.class).forEach(it -> {
-                task.getContentFiles().from(it.getInstalledIndexPageFile());
+                task.testCase(testCase -> testCase.getContentFile().set(it.getInstalledIndexPageFile()));
             });
         });
 

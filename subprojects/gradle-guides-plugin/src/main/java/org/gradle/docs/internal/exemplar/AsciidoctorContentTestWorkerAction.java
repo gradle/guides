@@ -1,5 +1,6 @@
 package org.gradle.docs.internal.exemplar;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.input.TeeInputStream;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.asciidoctor.SafeMode;
@@ -58,13 +59,21 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
 
     @Override
     public void execute() {
-        getParameters().getContentFiles().forEach(f -> {
+        getParameters().getTestCases().get().forEach(testCase -> {
             try {
+                File f = testCase.getContentFile().get().getAsFile();
                 List<Command> commands = AsciidoctorCommandsDiscovery.extractFromAsciidoctorFile(f, it -> {
                     it.safe(SafeMode.UNSAFE);
                 });
-                LOGGER.info("Testing " + commands.size() + " commands on " + f.getAbsolutePath());
-                run(commands);
+
+                if (testCase.getStartingSample().isPresent()) {
+                    File sampleSeedDirectory = testCase.getStartingSample().get().getAsFile();
+                    LOGGER.info("Testing " + commands.size() + " commands on " + f.getAbsolutePath() + " with sample from " + sampleSeedDirectory.getAbsolutePath());
+                    run(commands, seedSample(sampleSeedDirectory));
+                } else {
+                    LOGGER.info("Testing " + commands.size() + " commands on " + f.getAbsolutePath() + " without initial sample");
+                    run(commands, seedEmptySample());
+                }
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             } catch (ComparisonFailure e) {
@@ -73,12 +82,21 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
         });
     }
 
+    private File seedSample(File source) throws IOException {
+        File result = seedEmptySample();
+        FileUtils.copyDirectory(source, result);
+        return result;
+    }
+
+    private File seedEmptySample() throws IOException {
+        return Files.createTempDirectory("exemplar").toFile();
+    }
+
     @Inject
     protected abstract ExecOperations getExecOperations();
 
     // TODO: This code need to be consolidated with Exemplar. There is some overlap and duplication.
-    private void run(List<Command> commands) throws IOException {
-        File baseWorkingDir = Files.createTempDirectory("exemplar").toFile();
+    private void run(List<Command> commands, File baseWorkingDir) throws IOException {
         File homeDirectory = baseWorkingDir;
         File gradleUserHomeDir = getParameters().getGradleUserHomeDirectory().get().getAsFile();
 
