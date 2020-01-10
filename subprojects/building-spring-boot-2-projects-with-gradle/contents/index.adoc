@@ -124,7 +124,7 @@ If using a Gradle version before 5.0, we need to enable this by adding the follo
 .settings.gradle
 [source,groovy]
 ----
-include::{samplescodedir}/sample-project/settings.gradle[]
+enableFeaturePreview('IMPROVED_POM_SUPPORT') 
 ----
 
 If you would like to explore the versions of the dependencies used, which transitive dependencies are included or see where you have conflicts you can find this information in a https://gradle.com/build-scans[build scan].
