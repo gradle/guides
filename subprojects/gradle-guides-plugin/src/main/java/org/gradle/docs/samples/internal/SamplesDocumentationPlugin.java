@@ -158,6 +158,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             task.setDescription("Check guides steps commands.");
             task.getClasspath().from(configuration);
             task.getGradleUserHomeDirectoryForTesting().convention(project.getRootProject().getLayout().getBuildDirectory().dir("working/guides/content-testing-gradle-user-home"));
+            task.getGradleVersion().convention(project.getGradle().getGradleVersion());
             extension.getBinaries().withType(SampleContentBinary.class).forEach(contentBinary -> {
                 extension.getBinaries().withType(SampleArchiveBinary.class).forEach(archiveBinary -> {
                     task.testCase(testCase -> {
@@ -256,6 +257,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             task.setDescription("Generates asciidoc page for sample '" + binary.getName() + "'");
 
             task.getAttributes().put("samples-dir", binary.getSampleInstallDirectory().get().getAsFile().getAbsolutePath());
+            task.getAttributes().put("gradle-version", binary.getGradleVersion());
 
             task.getSampleSummary().convention(binary.getSummary());
             task.getReadmeFile().convention(binary.getSourcePageFile());
@@ -411,6 +413,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             contentBinary.getSourcePattern().convention(contentBinary.getBaseName().map(baseName -> baseName + ".adoc"));
             contentBinary.getSampleInstallDirectory().convention(sample.getInstallDirectory());
             contentBinary.getSourcePageFile().convention(sample.getSampleDirectory().file("README.adoc"));
+            contentBinary.getGradleVersion().convention(project.getGradle().getGradleVersion());
 
             // TODO: To make this lazy without afterEvaluate/eagerness, we need to be able to tell the tasks container that the samples container should be consulted
             assemble.configure(t -> t.dependsOn(sample.getAssembleTask()));

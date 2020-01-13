@@ -4,10 +4,9 @@ import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
-import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.model.ObjectFactory;
+import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Classpath;
-import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.TaskAction;
@@ -42,6 +41,9 @@ public abstract class AsciidoctorContentTest extends DefaultTask {
     public abstract ConfigurableFileCollection getClasspath();
 
     @Internal
+    public abstract Property<String> getGradleVersion();
+
+    @Internal
     public abstract DirectoryProperty getGradleUserHomeDirectoryForTesting();
 
     @Inject
@@ -57,6 +59,7 @@ public abstract class AsciidoctorContentTest extends DefaultTask {
             parameter.getTestCases().set(testCases);
             parameter.getWorkspaceDirectory().set(getTemporaryDir());
             parameter.getGradleUserHomeDirectory().set(getGradleUserHomeDirectoryForTesting());
+            parameter.getGradleVersion().set(getGradleVersion());
         });
     }
 }

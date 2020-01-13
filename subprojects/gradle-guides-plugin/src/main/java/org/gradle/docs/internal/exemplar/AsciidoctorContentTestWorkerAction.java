@@ -216,7 +216,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
     }
 
     private void disableWelcomeMessage(File gradleUserHomeDirectory) {
-        File welcomeMessageRenderedFile = new File(gradleUserHomeDirectory, "notifications/6.0.1/release-features.rendered");
+        File welcomeMessageRenderedFile = new File(gradleUserHomeDirectory, "notifications/" + getParameters().getGradleVersion().get() + "/release-features.rendered");
         welcomeMessageRenderedFile.getParentFile().mkdirs();
         try {
             welcomeMessageRenderedFile.createNewFile();
