@@ -7,8 +7,10 @@ import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Classpath;
+import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Nested;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.workers.WorkQueue;
 import org.gradle.workers.WorkerExecutor;
@@ -40,6 +42,12 @@ public abstract class AsciidoctorContentTest extends DefaultTask {
     @Classpath
     public abstract ConfigurableFileCollection getClasspath();
 
+    /**
+     * @implNote The default console type doesn't affect the console choice requireing user interaction like `init` task or `--scan` flag
+     */
+    @Input @Optional
+    public abstract Property<AsciidoctorContentTestConsoleType> getDefaultConsoleType();
+
     @Internal
     public abstract Property<String> getGradleVersion();
 
@@ -60,6 +68,7 @@ public abstract class AsciidoctorContentTest extends DefaultTask {
             parameter.getWorkspaceDirectory().set(getTemporaryDir());
             parameter.getGradleUserHomeDirectory().set(getGradleUserHomeDirectoryForTesting());
             parameter.getGradleVersion().set(getGradleVersion());
+            parameter.getDefaultConsoleType().set(getDefaultConsoleType());
         });
     }
 }

@@ -13,4 +13,6 @@ public interface AsciidoctorContentTestParameters extends WorkParameters {
     DirectoryProperty getGradleUserHomeDirectory();
 
     Property<String> getGradleVersion();
+
+    Property<AsciidoctorContentTestConsoleType> getDefaultConsoleType();
 }

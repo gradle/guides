@@ -21,6 +21,7 @@ import org.gradle.docs.guides.internal.tasks.GenerateGuidePageAsciidoc;
 import org.gradle.docs.internal.DocumentationBasePlugin;
 import org.gradle.docs.internal.DocumentationExtensionInternal;
 import org.gradle.docs.internal.exemplar.AsciidoctorContentTest;
+import org.gradle.docs.internal.exemplar.AsciidoctorContentTestConsoleType;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
 
 import java.io.File;
@@ -95,6 +96,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             task.getClasspath().from(configuration);
             task.getGradleUserHomeDirectoryForTesting().convention(project.getRootProject().getLayout().getBuildDirectory().dir("working/guides/content-testing-gradle-user-home"));
             task.getGradleVersion().convention(project.getGradle().getGradleVersion());
+            task.getDefaultConsoleType().convention(AsciidoctorContentTestConsoleType.PLAIN); // For now, we need to discuss this choice
             extension.getBinaries().withType(GuideContentBinary.class).forEach(contentBinary -> {
                 task.testCase(testCase -> testCase.getContentFile().set(contentBinary.getInstalledIndexPageFile()));
             });

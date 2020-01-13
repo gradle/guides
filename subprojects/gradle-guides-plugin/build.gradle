@@ -37,6 +37,9 @@ dependencies {
     compileOnly("org.gradle:sample-check:0.12.2")
     compileOnly("commons-io:commons-io:2.6")
 
+    // For rich and verbose console support
+    implementation("net.rubygrapefruit:ansi-control-sequence-util:0.2")
+
     testImplementation "org.spockframework:spock-core:1.2-groovy-2.5", {
         exclude module : 'groovy-all'
     }

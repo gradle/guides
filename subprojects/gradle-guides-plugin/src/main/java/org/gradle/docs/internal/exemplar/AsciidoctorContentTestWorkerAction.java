@@ -179,10 +179,18 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                     }
                 } else {
                     final File workDir = workingDir;
-                    final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+                    AsciidoctorContentTestConsoleType consoleType = consoleTypeOf(command);
+                    OutputStream outStream = newOutputCapturingStream(consoleType);
                     getExecOperations().exec(spec -> {
                         spec.executable(command.getExecutable());
                         spec.args(command.getArgs());
+                        if (command.getArgs().stream().noneMatch(it -> it.startsWith("--console="))) {
+                            if (consoleType == AsciidoctorContentTestConsoleType.VERBOSE) {
+                                spec.args("--console=verbose");
+                            } else if (consoleType == AsciidoctorContentTestConsoleType.RICH) {
+                                spec.args("--console=rich");
+                            }
+                        }
                         spec.environment("GRADLE_USER_HOME", gradleUserHomeDir.getAbsolutePath());
                         spec.environment("HOME", homeDirectory.getAbsolutePath());
                         spec.setWorkingDir(workDir);
@@ -221,6 +229,24 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                 }
             }
         }
+    }
+
+    private AsciidoctorContentTestConsoleType consoleTypeOf(Command command) {
+        AsciidoctorContentTestConsoleType consoleType = getParameters().getDefaultConsoleType().getOrElse(AsciidoctorContentTestConsoleType.RICH);
+        if (command.getArgs().stream().anyMatch(it -> it.startsWith("--console=verbose"))) {
+            consoleType = AsciidoctorContentTestConsoleType.VERBOSE;
+        } else if (command.getArgs().stream().anyMatch(it -> it.startsWith("--console=plain"))) {
+            consoleType = AsciidoctorContentTestConsoleType.PLAIN;
+        }
+
+        return consoleType;
+    }
+
+    public OutputStream newOutputCapturingStream(AsciidoctorContentTestConsoleType consoleType) {
+        if (consoleType == AsciidoctorContentTestConsoleType.PLAIN) {
+            return new ByteArrayOutputStream();
+        }
+        return new AnsiCharactersToPlainTextOutputStream();
     }
 
     private void disableWelcomeMessage(File gradleUserHomeDirectory) {
