@@ -206,7 +206,7 @@ In this case, you will find your assembled executable in `build/exe/main/debug` 
 
 Now run your newly built executable.
 
-[listing.sample-command]
+[listing.terminal.sample-command]
 ----
 $ ./build/exe/main/debug/building-cpp-applications
 Hello, World!
