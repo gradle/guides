@@ -1,9 +1,9 @@
 package org.gradle.docs.internal.exemplar;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.input.TeeInputStream;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.asciidoctor.SafeMode;
+import org.gradle.api.file.FileSystemOperations;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.process.ExecOperations;
@@ -84,13 +84,19 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
 
     private File seedSample(File source) throws IOException {
         File result = seedEmptySample();
-        FileUtils.copyDirectory(source, result);
+        getFileOperations().copy(spec -> {
+            spec.from(source);
+            spec.into(result);
+        });
         return result;
     }
 
     private File seedEmptySample() throws IOException {
         return Files.createTempDirectory("exemplar").toFile();
     }
+
+    @Inject
+    protected abstract FileSystemOperations getFileOperations();
 
     @Inject
     protected abstract ExecOperations getExecOperations();
