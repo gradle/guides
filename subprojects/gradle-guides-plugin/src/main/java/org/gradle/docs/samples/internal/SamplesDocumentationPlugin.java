@@ -150,7 +150,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         DependencyHandler dependencies = project.getDependencies();
         dependencies.add(configuration.getName(), "org.gradle:gradle-tooling-api:6.0.1");
         dependencies.add(configuration.getName(), "org.apache.commons:commons-lang3:3.9");
-        dependencies.add(configuration.getName(), "org.gradle:sample-check:0.12.2");
+        dependencies.add(configuration.getName(), "org.gradle:sample-check:0.12.3");
         dependencies.add(configuration.getName(), "junit:junit:4.12");
 
         TaskProvider<AsciidoctorContentTest> asciidoctorContentDocsTest = tasks.register("asciidoctorContentDocsTest", AsciidoctorContentTest.class, task -> {
@@ -346,7 +346,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
 
         DependencyHandler dependencies = project.getDependencies();
         dependencies.add(sourceSet.getImplementationConfigurationName(), dependencies.gradleTestKit());
-        dependencies.add(sourceSet.getImplementationConfigurationName(), "org.gradle:sample-check:0.12.2");
+        dependencies.add(sourceSet.getImplementationConfigurationName(), "org.gradle:sample-check:0.12.3");
         dependencies.add(sourceSet.getImplementationConfigurationName(), "org.slf4j:slf4j-simple:1.7.16");
         dependencies.add(sourceSet.getImplementationConfigurationName(), "junit:junit:4.12");
 
