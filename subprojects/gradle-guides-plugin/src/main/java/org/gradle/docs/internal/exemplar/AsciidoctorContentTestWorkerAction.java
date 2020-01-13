@@ -186,6 +186,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                         spec.environment("HOME", homeDirectory.getAbsolutePath());
                         spec.setWorkingDir(workDir);
                         spec.setStandardOutput(outStream);
+                        spec.setErrorOutput(outStream);
                     });
                     String expectedOutput = command.getExpectedOutput();
                     OutputNormalizer normalizer = composite(new GradleOutputNormalizer(), new WorkingDirectoryOutputNormalizer());
