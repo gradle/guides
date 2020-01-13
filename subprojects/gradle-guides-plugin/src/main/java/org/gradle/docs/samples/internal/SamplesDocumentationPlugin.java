@@ -159,12 +159,10 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             task.getClasspath().from(configuration);
             task.getGradleUserHomeDirectoryForTesting().convention(project.getRootProject().getLayout().getBuildDirectory().dir("working/samples/content-testing-gradle-user-home"));
             task.getGradleVersion().convention(project.getGradle().getGradleVersion());
-            extension.getBinaries().withType(SampleContentBinary.class).forEach(contentBinary -> {
-                extension.getBinaries().withType(SampleArchiveBinary.class).forEach(archiveBinary -> {
-                    task.testCase(testCase -> {
-                        testCase.getContentFile().set(contentBinary.getInstalledIndexPageFile());
-                        testCase.getStartingSample().set(archiveBinary.getInstallDirectory());
-                    });
+            extension.getBinaries().withType(TestableSampleContentBinary.class).forEach(binary -> {
+                task.testCase(testCase -> {
+                    testCase.getContentFile().set(binary.getContentBinary().get().getInstalledIndexPageFile());
+                    testCase.getStartingSample().set(binary.getArchiveBinary().get().getInstallDirectory());
                 });
             });
         });
@@ -436,6 +434,11 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
                 exemplarBinary.getTestsContent().from(sample.getSampleDirectory().dir("tests"));
                 exemplarBinary.getTestsContent().from(sample.getTestsContent());
                 extension.getBinaries().add(exemplarBinary);
+
+                TestableSampleContentBinary testableContentBinary = objects.newInstance(TestableSampleContentBinary.class, sample.getName() + dsl.getDisplayName());
+                testableContentBinary.getArchiveBinary().convention(binary);
+                testableContentBinary.getContentBinary().convention(contentBinary);
+                extension.getBinaries().add(testableContentBinary);
             }
         }
     }
