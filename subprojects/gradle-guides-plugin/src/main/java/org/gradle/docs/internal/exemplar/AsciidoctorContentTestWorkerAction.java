@@ -141,81 +141,87 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                     ByteArrayOutputStream fullOutputStream = new ByteArrayOutputStream();
                     PipedOutputStream inBackend = new PipedOutputStream();
                     PipedInputStream stdinInputToOutputStreamAdapter = new PipedInputStream(inBackend);
-                    TeeInputStream stdinForToolingApi = new TeeInputStream(stdinInputToOutputStreamAdapter, fullOutputStream);
+                    try (TeeInputStream stdinForToolingApi = new TeeInputStream(stdinInputToOutputStreamAdapter, fullOutputStream)) {
 
-                    PipedInputStream outBackend = new PipedInputStream();
-                    PipedOutputStream stdoutOutputToInputStreamAdapter = new PipedOutputStream(outBackend);
-                    TeeOutputStream stdoutForToolingApi = new TeeOutputStream(stdoutOutputToInputStreamAdapter, fullOutputStream);
+                        PipedInputStream outBackend = new PipedInputStream();
+                        PipedOutputStream stdoutOutputToInputStreamAdapter = new PipedOutputStream(outBackend);
+                        try (TeeOutputStream stdoutForToolingApi = new TeeOutputStream(stdoutOutputToInputStreamAdapter, fullOutputStream)) {
 
-                    try {
-                        AssertingResultHandler resultHandler = new AssertingResultHandler();
-                        // TODO: Configure environment variables
-                        // TODO: The following won't work for flags with arguments
-                        connection.newBuild()
-                                .forTasks(command.getArgs().stream().filter(it -> !it.startsWith("--")).collect(Collectors.toList()).toArray(new String[0]))
-                                .addArguments(command.getArgs().stream().filter(it -> it.startsWith("--")).collect(Collectors.toList()))
-                                .setStandardInput(stdinForToolingApi)
-                                .setStandardOutput(stdoutForToolingApi).setStandardError(stdoutForToolingApi).withCancellationToken(cancel.token()).run(resultHandler);
+                            try {
+                                AssertingResultHandler resultHandler = new AssertingResultHandler();
+                                // TODO: Configure environment variables
+                                // TODO: The following won't work for flags with arguments
+                                connection.newBuild()
+                                        .forTasks(command.getArgs().stream().filter(it -> !it.startsWith("--scan")).collect(Collectors.toList()).toArray(new String[0]))
+                                        .withArguments(command.getArgs().stream().filter(it -> it.startsWith("--scan")).collect(Collectors.toList()))
+                                        .setStandardInput(stdinForToolingApi)
+                                        .setStandardOutput(stdoutForToolingApi)
+                                        .setStandardError(stdoutForToolingApi)
+                                        .withCancellationToken(cancel.token())
+                                        .run(resultHandler);
 
-                        OutputConsumer c = new OutputConsumer(expectedOutput);
-                        try {
-                            Function<InputStream, Void> interactiveChain = debounceStdOut(Duration.ofMillis(1500)).andThen(toFunctional(normalizer)).andThen(userInputFromExpectedOutput(c)).andThen(writeToStdIn(inBackend));
+                                OutputConsumer c = new OutputConsumer(expectedOutput);
+                                try {
+                                    Function<InputStream, Void> interactiveChain = debounceStdOut(Duration.ofMillis(1500)).andThen(toFunctional(normalizer)).andThen(userInputFromExpectedOutput(c)).andThen(writeToStdIn(inBackend));
 
-                            while (c.hasMoreOutput()) {
-                                interactiveChain.apply(outBackend);
+                                    while (c.hasMoreOutput()) {
+                                        interactiveChain.apply(outBackend);
+                                    }
+                                } catch (Throwable e) {
+                                    cancel.cancel();
+                                    throw e;
+                                }
+
+                                try {
+                                    resultHandler.waitFor(5, TimeUnit.SECONDS);
+                                } catch (InterruptedException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                resultHandler.assertCompleteSuccessfully();
+
+                                String output = normalizer.normalize(fullOutputStream.toString(), null);
+                                OutputVerifier verifier = new StrictOrderLineSegmentedOutputVerifier();
+                                verifier.verify(expectedOutput, output, false);
+                            } finally {
+                                connection.close();
                             }
-                        } catch (Throwable e) {
-                            cancel.cancel();
-                            throw e;
                         }
-
-                        try {
-                            resultHandler.waitFor(5, TimeUnit.SECONDS);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                        resultHandler.assertCompleteSuccessfully();
-
-                        String output = normalizer.normalize(fullOutputStream.toString(), null);
-                        OutputVerifier verifier = new StrictOrderLineSegmentedOutputVerifier();
-                        verifier.verify(expectedOutput, output, false);
-                    } finally {
-                        connection.close();
                     }
                 } else {
                     final File workDir = workingDir;
                     AsciidoctorContentTestConsoleType consoleType = consoleTypeOf(command);
-                    OutputStream outStream = newOutputCapturingStream(consoleType);
-                    ExecResult execResult = getExecOperations().exec(spec -> {
-                        spec.executable(command.getExecutable());
-                        spec.args(command.getArgs());
-                        if (command.getArgs().stream().noneMatch(it -> it.startsWith("--console="))) {
-                            if (consoleType == AsciidoctorContentTestConsoleType.VERBOSE) {
-                                spec.args("--console=verbose");
-                            } else if (consoleType == AsciidoctorContentTestConsoleType.RICH) {
-                                spec.args("--console=rich");
+                    try (OutputStream outStream = newOutputCapturingStream(consoleType)) {
+                        ExecResult execResult = getExecOperations().exec(spec -> {
+                            spec.executable(command.getExecutable());
+                            spec.args(command.getArgs());
+                            if (command.getArgs().stream().noneMatch(it -> it.startsWith("--console="))) {
+                                if (consoleType == AsciidoctorContentTestConsoleType.VERBOSE) {
+                                    spec.args("--console=verbose");
+                                } else if (consoleType == AsciidoctorContentTestConsoleType.RICH) {
+                                    spec.args("--console=rich");
+                                }
                             }
-                        }
-                        spec.environment("GRADLE_USER_HOME", gradleUserHomeDir.getAbsolutePath());
-                        spec.environment("HOME", homeDirectory.getAbsolutePath());
-                        spec.setWorkingDir(workDir);
-                        spec.setStandardOutput(outStream);
-                        spec.setErrorOutput(outStream);
-                        spec.setIgnoreExitValue(true);
-                    });
+                            spec.environment("GRADLE_USER_HOME", gradleUserHomeDir.getAbsolutePath());
+                            spec.environment("HOME", homeDirectory.getAbsolutePath());
+                            spec.setWorkingDir(workDir);
+                            spec.setStandardOutput(outStream);
+                            spec.setErrorOutput(outStream);
+                            spec.setIgnoreExitValue(true);
+                        });
 
 
-                    String expectedOutput = command.getExpectedOutput();
-                    OutputNormalizer normalizer = composite(new GradleOutputNormalizer(), new WorkingDirectoryOutputNormalizer(), new GradleUserHomePathOutputNormalizer(gradleUserHomeDir));
-                    ExecutionMetadata executionMetadata = new ExecutionMetadata(homeDirectory, Collections.emptyMap());
-                    expectedOutput = normalizer.normalize(expectedOutput, executionMetadata);
-                    String output = outStream.toString();
-                    output = normalizer.normalize(output, executionMetadata);
+                        String expectedOutput = command.getExpectedOutput();
+                        OutputNormalizer normalizer = composite(new GradleOutputNormalizer(), new WorkingDirectoryOutputNormalizer(), new GradleUserHomePathOutputNormalizer(gradleUserHomeDir));
+                        ExecutionMetadata executionMetadata = new ExecutionMetadata(homeDirectory, Collections.emptyMap());
+                        expectedOutput = normalizer.normalize(expectedOutput, executionMetadata);
+                        String output = outStream.toString();
+                        output = normalizer.normalize(output, executionMetadata);
 
-                    Assert.assertEquals("The gradle command exited with an error:\n" + output, 0, execResult.getExitValue());
+                        Assert.assertEquals("The gradle command exited with an error:\n" + output, 0, execResult.getExitValue());
 
-                    OutputVerifier verifier = new AnyOrderLineSegmentedOutputVerifier();
-                    verifier.verify(expectedOutput, output, false);
+                        OutputVerifier verifier = new AnyOrderLineSegmentedOutputVerifier();
+                        verifier.verify(expectedOutput, output, false);
+                    }
                 }
             } else {
                 final File workDir = workingDir;
@@ -289,7 +295,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
             try {
                 stdin.write(incoming.getBytes());
             } catch (IOException e) {
-                throw new UncheckedIOException(e);
+                throw new UncheckedIOException("Failing to write the user input", e);
             }
             return null;
         };
@@ -300,32 +306,32 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
         return stdout -> {
             try {
                 int lastAvailable = 0;
-                long quietPeriod = Long.MAX_VALUE;
+                long startTime = System.nanoTime();
                 int retry = 0;
                 for (; ; ) {
                     int a = stdout.available();
                     if (a > 0 && a > lastAvailable) {
                         lastAvailable = a;
                         retry = 0;
-                        quietPeriod = System.nanoTime() + debounce.toNanos();
+                        startTime = System.nanoTime();
                     }
 
-                    long d = System.nanoTime() - quietPeriod;
-                    if (d > 0) {
+                    long d = System.nanoTime() - startTime;
+                    if (d > debounce.toNanos()) {
                         if (lastAvailable > 0) {
                             byte[] incomingBytes = new byte[lastAvailable];
                             stdout.read(incomingBytes);
                             String incoming = new String(incomingBytes);
                             return incoming;
                         } else {
-                            Assert.assertTrue("No output received in reasonable time, something is wrong. Most likely waiting for user input", retry < 3);
+                            Assert.assertTrue("No output received in reasonable time, something is wrong. Most likely waiting for user input", retry < 10);
                             retry++;
-                            quietPeriod = System.nanoTime() + debounce.toNanos();
+                            startTime = System.nanoTime();
                         }
                     }
                 }
             } catch (IOException e) {
-                throw new UncheckedIOException(e);
+                throw new UncheckedIOException("Failing to acquire the output", e);
             }
         };
     }
