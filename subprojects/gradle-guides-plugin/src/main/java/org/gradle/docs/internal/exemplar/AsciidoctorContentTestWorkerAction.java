@@ -124,6 +124,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                 continue;
             }
 
+            // TODO: For better rendering, we should allow code block to resolve attributes using `subs=attributes`. However, exemplar doesn't resolve the attributes according to this configuration. The value returned by `Command.#getExpectedOutput()` will contain the attribute syntax which will fail the output verification. For now, we will leave this as a manual steps that will need to be executed when we want to change this value. We should honor this configuration.
             if (command.getExecutable().contains("gradle")) {
                 disableWelcomeMessage(gradleUserHomeDir);
                 if (command.getArgs().get(0).equals("init") || command.getArgs().contains("--scan")) {
