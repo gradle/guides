@@ -157,7 +157,6 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             task.setGroup(LifecycleBasePlugin.VERIFICATION_GROUP);
             task.setDescription("Check guides steps commands.");
             task.getClasspath().from(configuration);
-            task.getGradleUserHomeDirectoryForTesting().convention(project.getRootProject().getLayout().getBuildDirectory().dir("working/samples/content-testing-gradle-user-home"));
             task.getGradleVersion().convention(project.getGradle().getGradleVersion());
             extension.getBinaries().withType(TestableSampleContentBinary.class).forEach(binary -> {
                 task.testCase(testCase -> {

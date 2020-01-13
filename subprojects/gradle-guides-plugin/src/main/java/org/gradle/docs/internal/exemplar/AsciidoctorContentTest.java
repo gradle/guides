@@ -16,6 +16,7 @@ import org.gradle.workers.WorkQueue;
 import org.gradle.workers.WorkerExecutor;
 
 import javax.inject.Inject;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +52,6 @@ public abstract class AsciidoctorContentTest extends DefaultTask {
     @Internal
     public abstract Property<String> getGradleVersion();
 
-    @Internal
-    public abstract DirectoryProperty getGradleUserHomeDirectoryForTesting();
-
     @Inject
     protected abstract WorkerExecutor getWorkerExecutor();
 
@@ -66,7 +64,7 @@ public abstract class AsciidoctorContentTest extends DefaultTask {
         workQueue.submit(AsciidoctorContentTestWorkerAction.class, parameter -> {
             parameter.getTestCases().set(getTestCases());
             parameter.getWorkspaceDirectory().set(getTemporaryDir());
-            parameter.getGradleUserHomeDirectory().set(getGradleUserHomeDirectoryForTesting());
+            parameter.getGradleUserHomeDirectory().set(new File(getTemporaryDir(), "gradle-user-home"));
             parameter.getGradleVersion().set(getGradleVersion());
             parameter.getDefaultConsoleType().set(getDefaultConsoleType());
         });
