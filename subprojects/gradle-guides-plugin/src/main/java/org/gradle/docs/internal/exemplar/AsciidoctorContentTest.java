@@ -64,7 +64,7 @@ public abstract class AsciidoctorContentTest extends DefaultTask {
         });
 
         workQueue.submit(AsciidoctorContentTestWorkerAction.class, parameter -> {
-            parameter.getTestCases().set(testCases);
+            parameter.getTestCases().set(getTestCases());
             parameter.getWorkspaceDirectory().set(getTemporaryDir());
             parameter.getGradleUserHomeDirectory().set(getGradleUserHomeDirectoryForTesting());
             parameter.getGradleVersion().set(getGradleVersion());
