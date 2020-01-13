@@ -66,13 +66,17 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                     it.safe(SafeMode.UNSAFE);
                 });
 
-                if (testCase.getStartingSample().isPresent()) {
-                    File sampleSeedDirectory = testCase.getStartingSample().get().getAsFile();
-                    LOGGER.info("Testing " + commands.size() + " commands on " + f.getAbsolutePath() + " with sample from " + sampleSeedDirectory.getAbsolutePath());
-                    run(commands, seedSample(sampleSeedDirectory));
+                if (commands.isEmpty()) {
+                    LOGGER.info("No commands to test on " + f.getAbsolutePath());
                 } else {
-                    LOGGER.info("Testing " + commands.size() + " commands on " + f.getAbsolutePath() + " without initial sample");
-                    run(commands, seedEmptySample());
+                    if (testCase.getStartingSample().isPresent()) {
+                        File sampleSeedDirectory = testCase.getStartingSample().get().getAsFile();
+                        LOGGER.info("Testing " + commands.size() + " commands on " + f.getAbsolutePath() + " with sample from " + sampleSeedDirectory.getAbsolutePath());
+                        run(commands, seedSample(sampleSeedDirectory));
+                    } else {
+                        LOGGER.info("Testing " + commands.size() + " commands on " + f.getAbsolutePath() + " without initial sample");
+                        run(commands, seedEmptySample());
+                    }
                 }
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
