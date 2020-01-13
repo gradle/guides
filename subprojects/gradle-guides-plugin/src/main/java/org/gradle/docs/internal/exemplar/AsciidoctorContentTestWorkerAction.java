@@ -202,7 +202,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                         spec.setErrorOutput(outStream);
                     });
                     String expectedOutput = command.getExpectedOutput();
-                    OutputNormalizer normalizer = composite(new GradleOutputNormalizer(), new WorkingDirectoryOutputNormalizer());
+                    OutputNormalizer normalizer = composite(new GradleOutputNormalizer(), new WorkingDirectoryOutputNormalizer(), new GradleUserHomePathOutputNormalizer(gradleUserHomeDir));
                     ExecutionMetadata executionMetadata = new ExecutionMetadata(homeDirectory, Collections.emptyMap());
                     expectedOutput = normalizer.normalize(expectedOutput, executionMetadata);
                     String output = outStream.toString();
