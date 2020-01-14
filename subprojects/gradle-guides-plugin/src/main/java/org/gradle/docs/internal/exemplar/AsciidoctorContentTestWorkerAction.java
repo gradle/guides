@@ -334,7 +334,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                             String incoming = new String(incomingBytes);
                             return incoming;
                         } else {
-                            Assert.assertTrue("No output received in reasonable time, something is wrong. Most likely waiting for user input", retry < 10);
+                            Assert.assertTrue("No output received in reasonable time, something is wrong. Most likely waiting for user input", retry < 30);
                             retry++;
                             startTime = System.nanoTime();
                         }
