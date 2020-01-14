@@ -21,6 +21,7 @@ import org.gradle.docs.guides.internal.tasks.GenerateGuidePageAsciidoc;
 import org.gradle.docs.internal.DocumentationBasePlugin;
 import org.gradle.docs.internal.DocumentationExtensionInternal;
 import org.gradle.docs.internal.exemplar.AsciidoctorContentTest;
+import org.gradle.docs.internal.exemplar.AsciidoctorContentTestConsoleType;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
 
 import java.io.File;
@@ -86,14 +87,15 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         DependencyHandler dependencies = project.getDependencies();
         dependencies.add(configuration.getName(), "org.gradle:gradle-tooling-api:6.0.1");
         dependencies.add(configuration.getName(), "org.apache.commons:commons-lang3:3.9");
-        dependencies.add(configuration.getName(), "org.gradle:sample-check:0.12.1");
+        dependencies.add(configuration.getName(), "org.gradle:sample-check:0.12.4");
         dependencies.add(configuration.getName(), "junit:junit:4.12");
 
         TaskProvider<AsciidoctorContentTest> asciidoctorContentDocsTest = tasks.register("asciidoctorContentDocsTest", AsciidoctorContentTest.class, task -> {
             task.setGroup(LifecycleBasePlugin.VERIFICATION_GROUP);
             task.setDescription("Check guides steps commands.");
             task.getClasspath().from(configuration);
-            task.getGradleUserHomeDirectoryForTesting().convention(project.getRootProject().getLayout().getBuildDirectory().dir("working/guides/content-testing-gradle-user-home"));
+            task.getGradleVersion().convention(project.getGradle().getGradleVersion());
+            task.getDefaultConsoleType().convention(AsciidoctorContentTestConsoleType.PLAIN); // For now, we need to discuss this choice
             extension.getBinaries().withType(GuideContentBinary.class).forEach(contentBinary -> {
                 task.testCase(testCase -> testCase.getContentFile().set(contentBinary.getInstalledIndexPageFile()));
             });

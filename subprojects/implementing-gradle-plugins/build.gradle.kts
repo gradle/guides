@@ -17,7 +17,7 @@ repositories {
 }
 
 dependencies {
-    docsTestImplementation("org.gradle:sample-check:0.12.1")
+    docsTestImplementation("org.gradle:sample-check:0.12.4")
     docsTestImplementation(gradleTestKit())
 }
 

@@ -1,12 +1,13 @@
 package org.gradle.docs.internal.exemplar;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.input.TeeInputStream;
 import org.apache.commons.io.output.TeeOutputStream;
 import org.asciidoctor.SafeMode;
+import org.gradle.api.file.FileSystemOperations;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
 import org.gradle.process.ExecOperations;
+import org.gradle.process.ExecResult;
 import org.gradle.samples.executor.ExecutionMetadata;
 import org.gradle.samples.loader.asciidoctor.AsciidoctorCommandsDiscovery;
 import org.gradle.samples.model.Command;
@@ -42,6 +43,7 @@ import java.io.PipedOutputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -66,13 +68,17 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                     it.safe(SafeMode.UNSAFE);
                 });
 
-                if (testCase.getStartingSample().isPresent()) {
-                    File sampleSeedDirectory = testCase.getStartingSample().get().getAsFile();
-                    LOGGER.info("Testing " + commands.size() + " commands on " + f.getAbsolutePath() + " with sample from " + sampleSeedDirectory.getAbsolutePath());
-                    run(commands, seedSample(sampleSeedDirectory));
+                if (commands.isEmpty()) {
+                    LOGGER.info("No commands to test on " + f.getAbsolutePath());
                 } else {
-                    LOGGER.info("Testing " + commands.size() + " commands on " + f.getAbsolutePath() + " without initial sample");
-                    run(commands, seedEmptySample());
+                    if (testCase.getStartingSample().isPresent()) {
+                        File sampleSeedDirectory = testCase.getStartingSample().get().getAsFile();
+                        LOGGER.info("Testing " + commands.size() + " commands on " + f.getAbsolutePath() + " with sample from " + sampleSeedDirectory.getAbsolutePath());
+                        run(commands, seedSample(sampleSeedDirectory));
+                    } else {
+                        LOGGER.info("Testing " + commands.size() + " commands on " + f.getAbsolutePath() + " without initial sample");
+                        run(commands, seedEmptySample());
+                    }
                 }
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
@@ -84,13 +90,19 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
 
     private File seedSample(File source) throws IOException {
         File result = seedEmptySample();
-        FileUtils.copyDirectory(source, result);
+        getFileOperations().copy(spec -> {
+            spec.from(source);
+            spec.into(result);
+        });
         return result;
     }
 
     private File seedEmptySample() throws IOException {
         return Files.createTempDirectory("exemplar").toFile();
     }
+
+    @Inject
+    protected abstract FileSystemOperations getFileOperations();
 
     @Inject
     protected abstract ExecOperations getExecOperations();
@@ -118,78 +130,108 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                 continue;
             }
 
+            // TODO: For better rendering, we should allow code block to resolve attributes using `subs=attributes`. However, exemplar doesn't resolve the attributes according to this configuration. The value returned by `Command.#getExpectedOutput()` will contain the attribute syntax which will fail the output verification. For now, we will leave this as a manual steps that will need to be executed when we want to change this value. We should honor this configuration.
             if (command.getExecutable().contains("gradle")) {
                 disableWelcomeMessage(gradleUserHomeDir);
-                if (command.getArgs().get(0).equals("init") || command.getArgs().contains("--scan")) {
-                    ProjectConnection connection = GradleConnector.newConnector().forProjectDirectory(workingDir).useGradleUserHomeDir(gradleUserHomeDir).useGradleVersion("6.0.1").connect();
-                    CancellationTokenSource cancel = GradleConnector.newCancellationTokenSource();
-                    OutputNormalizer normalizer = composite(new GradleOutputNormalizer(), new StripTrailingOutputNormalizer());
-                    String expectedOutput = normalizer.normalize(command.getExpectedOutput(), null);
+                primeGradleUserHome();
+                try (ProjectConnection connection = GradleConnector.newConnector().forProjectDirectory(workingDir).useGradleUserHomeDir(gradleUserHomeDir).useGradleVersion(getParameters().getGradleVersion().get()).connect()) {
+                    if (command.getArgs().get(0).equals("init") || command.getArgs().contains("--scan")) {
+                        CancellationTokenSource cancel = GradleConnector.newCancellationTokenSource();
+                        OutputNormalizer normalizer = composite(new GradleOutputNormalizer(), new StripTrailingOutputNormalizer());
+                        String expectedOutput = normalizer.normalize(command.getExpectedOutput(), null);
+                        expectedOutput += "\n\n"; // Adding new lines because Asciidoctor strip trailing new lines (we can have more but not less for the interactive process to work)
 
-                    ByteArrayOutputStream fullOutputStream = new ByteArrayOutputStream();
-                    PipedOutputStream inBackend = new PipedOutputStream();
-                    PipedInputStream stdinInputToOutputStreamAdapter = new PipedInputStream(inBackend);
-                    TeeInputStream stdinForToolingApi = new TeeInputStream(stdinInputToOutputStreamAdapter, fullOutputStream);
+                        ByteArrayOutputStream fullOutputStream = new ByteArrayOutputStream();
+                        PipedOutputStream inBackend = new PipedOutputStream();
+                        PipedInputStream stdinInputToOutputStreamAdapter = new PipedInputStream(inBackend);
+                        try (TeeInputStream stdinForToolingApi = new TeeInputStream(stdinInputToOutputStreamAdapter, fullOutputStream)) {
 
-                    PipedInputStream outBackend = new PipedInputStream();
-                    PipedOutputStream stdoutOutputToInputStreamAdapter = new PipedOutputStream(outBackend);
-                    TeeOutputStream stdoutForToolingApi = new TeeOutputStream(stdoutOutputToInputStreamAdapter, fullOutputStream);
+                            PipedInputStream outBackend = new PipedInputStream();
+                            PipedOutputStream stdoutOutputToInputStreamAdapter = new PipedOutputStream(outBackend);
+                            try (TeeOutputStream stdoutForToolingApi = new TeeOutputStream(stdoutOutputToInputStreamAdapter, fullOutputStream)) {
 
-                    try {
-                        AssertingResultHandler resultHandler = new AssertingResultHandler();
-                        // TODO: Configure environment variables
-                        // TODO: The following won't work for flags with arguments
-                        connection.newBuild()
-                                .forTasks(command.getArgs().stream().filter(it -> !it.startsWith("--")).collect(Collectors.toList()).toArray(new String[0]))
-                                .addArguments(command.getArgs().stream().filter(it -> it.startsWith("--")).collect(Collectors.toList()))
-                                .setStandardInput(stdinForToolingApi)
-                                .setStandardOutput(stdoutForToolingApi).setStandardError(stdoutForToolingApi).withCancellationToken(cancel.token()).run(resultHandler);
+                                AssertingResultHandler resultHandler = new AssertingResultHandler();
+                                // TODO: Configure environment variables
+                                // TODO: The following won't work for flags with arguments
+                                connection.newBuild()
+                                        .forTasks(command.getArgs().stream().filter(it -> !it.startsWith("--scan")).collect(Collectors.toList()).toArray(new String[0]))
+                                        .withArguments(command.getArgs().stream().filter(it -> it.startsWith("--scan")).collect(Collectors.toList()))
+                                        .setStandardInput(stdinForToolingApi)
+                                        .setStandardOutput(stdoutForToolingApi)
+                                        .setStandardError(stdoutForToolingApi)
+                                        .withCancellationToken(cancel.token())
+                                        .run(resultHandler);
 
-                        OutputConsumer c = new OutputConsumer(expectedOutput);
-                        try {
-                            Function<InputStream, Void> interactiveChain = debounceStdOut(Duration.ofMillis(1500)).andThen(toFunctional(normalizer)).andThen(userInputFromExpectedOutput(c)).andThen(writeToStdIn(inBackend));
+                                OutputConsumer c = new OutputConsumer(expectedOutput);
+                                try {
+                                    Function<InputStream, Void> interactiveChain = debounceStdOut(Duration.ofMillis(1500)).andThen(toFunctional(normalizer)).andThen(userInputFromExpectedOutput(c)).andThen(writeToStdIn(inBackend));
 
-                            while (c.hasMoreOutput()) {
-                                interactiveChain.apply(outBackend);
+                                    while (c.hasMoreOutput()) {
+                                        interactiveChain.apply(outBackend);
+                                    }
+                                } catch (Throwable e) {
+                                    cancel.cancel();
+                                    throw e;
+                                }
+
+                                try {
+                                    resultHandler.waitFor(5, TimeUnit.SECONDS);
+                                } catch (InterruptedException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                resultHandler.assertCompleteSuccessfully();
+
+                                String output = normalizer.normalize(fullOutputStream.toString(), null);
+
+                                OutputVerifier verifier = new StrictOrderLineSegmentedOutputVerifier();
+                                verifier.verify(expectedOutput, output, command.isAllowAdditionalOutput());
                             }
-                        } catch (Throwable e) {
-                            cancel.cancel();
-                            throw e;
                         }
+                    } else {
+                        final File workDir = workingDir;
+                        AsciidoctorContentTestConsoleType consoleType = consoleTypeOf(command);
+                        try (OutputStream outStream = newOutputCapturingStream(consoleType)) {
+                            List<String> arguments = new ArrayList<>();
+                            if (command.getArgs().stream().noneMatch(it -> it.startsWith("--console="))) {
+                                if (consoleType == AsciidoctorContentTestConsoleType.VERBOSE) {
+                                    arguments.add("--console=verbose");
+                                } else if (consoleType == AsciidoctorContentTestConsoleType.RICH) {
+                                    arguments.add("--console=rich");
+                                }
+                            }
 
-                        try {
-                            resultHandler.waitFor(5, TimeUnit.SECONDS);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
+                            connection.newBuild()
+                                    .forTasks(command.getArgs().toArray(new String[0]))
+                                    .withArguments(arguments)
+                                    .setStandardOutput(outStream)
+                                    .setStandardError(outStream)
+                                    .run();
+//                            ExecResult execResult = getExecOperations().exec(spec -> {
+//                                spec.executable(command.getExecutable());
+//                                spec.args(command.getArgs());
+//
+//                                spec.environment("GRADLE_USER_HOME", gradleUserHomeDir.getAbsolutePath());
+//                                spec.environment("HOME", homeDirectory.getAbsolutePath());
+//                                spec.setWorkingDir(workDir);
+//                                spec.setStandardOutput(outStream);
+//                                spec.setErrorOutput(outStream);
+//                                spec.setIgnoreExitValue(true);
+//                            });
+
+
+                            String expectedOutput = command.getExpectedOutput();
+                            OutputNormalizer normalizer = composite(new GradleOutputNormalizer(), new WorkingDirectoryOutputNormalizer(), new GradleUserHomePathOutputNormalizer(gradleUserHomeDir));
+                            ExecutionMetadata executionMetadata = new ExecutionMetadata(homeDirectory, Collections.emptyMap());
+                            expectedOutput = normalizer.normalize(expectedOutput, executionMetadata);
+                            String output = outStream.toString();
+                            output = normalizer.normalize(output, executionMetadata);
+
+//                            Assert.assertEquals("The gradle command exited with an error:\n" + output, 0, execResult.getExitValue());
+
+                            OutputVerifier verifier = new AnyOrderLineSegmentedOutputVerifier();
+                            verifier.verify(expectedOutput, output, command.isAllowAdditionalOutput());
                         }
-                        resultHandler.assertCompleteSuccessfully();
-
-                        String output = normalizer.normalize(fullOutputStream.toString(), null);
-                        OutputVerifier verifier = new StrictOrderLineSegmentedOutputVerifier();
-                        verifier.verify(expectedOutput, output, false);
-                    } finally {
-                        connection.close();
                     }
-                } else {
-                    final File workDir = workingDir;
-                    final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-                    getExecOperations().exec(spec -> {
-                        spec.executable(command.getExecutable());
-                        spec.args(command.getArgs());
-                        spec.environment("GRADLE_USER_HOME", gradleUserHomeDir.getAbsolutePath());
-                        spec.environment("HOME", homeDirectory.getAbsolutePath());
-                        spec.setWorkingDir(workDir);
-                        spec.setStandardOutput(outStream);
-                    });
-                    String expectedOutput = command.getExpectedOutput();
-                    OutputNormalizer normalizer = composite(new GradleOutputNormalizer(), new WorkingDirectoryOutputNormalizer());
-                    ExecutionMetadata executionMetadata = new ExecutionMetadata(homeDirectory, Collections.emptyMap());
-                    expectedOutput = normalizer.normalize(expectedOutput, executionMetadata);
-                    String output = outStream.toString();
-                    output = normalizer.normalize(output, executionMetadata);
-
-                    OutputVerifier verifier = new AnyOrderLineSegmentedOutputVerifier();
-                    verifier.verify(expectedOutput, output, false);
                 }
             } else {
                 final File workDir = workingDir;
@@ -209,19 +251,46 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                     expectedOutput = normalizer.normalize(expectedOutput, null);
                     String output = outStream.toString();
                     output = normalizer.normalize(output, null);
-                    Assert.assertEquals("Output no equals", expectedOutput, output);
+
+                    OutputVerifier verifier = new StrictOrderLineSegmentedOutputVerifier();
+                    verifier.verify(expectedOutput, output, command.isAllowAdditionalOutput());
                 }
             }
         }
     }
 
+    private AsciidoctorContentTestConsoleType consoleTypeOf(Command command) {
+        AsciidoctorContentTestConsoleType consoleType = getParameters().getDefaultConsoleType().getOrElse(AsciidoctorContentTestConsoleType.RICH);
+        if (command.getArgs().stream().anyMatch(it -> it.startsWith("--console=verbose"))) {
+            consoleType = AsciidoctorContentTestConsoleType.VERBOSE;
+        } else if (command.getArgs().stream().anyMatch(it -> it.startsWith("--console=plain"))) {
+            consoleType = AsciidoctorContentTestConsoleType.PLAIN;
+        }
+
+        return consoleType;
+    }
+
+    public OutputStream newOutputCapturingStream(AsciidoctorContentTestConsoleType consoleType) {
+        if (consoleType == AsciidoctorContentTestConsoleType.PLAIN) {
+            return new ByteArrayOutputStream();
+        }
+        return new AnsiCharactersToPlainTextOutputStream();
+    }
+
     private void disableWelcomeMessage(File gradleUserHomeDirectory) {
-        File welcomeMessageRenderedFile = new File(gradleUserHomeDirectory, "notifications/6.0.1/release-features.rendered");
+        File welcomeMessageRenderedFile = new File(gradleUserHomeDirectory, "notifications/" + getParameters().getGradleVersion().get() + "/release-features.rendered");
         welcomeMessageRenderedFile.getParentFile().mkdirs();
         try {
             welcomeMessageRenderedFile.createNewFile();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
+        }
+    }
+
+    private void primeGradleUserHome() throws IOException {
+        File workingDir = Files.createTempDirectory("exemplar").toFile();
+        try (ProjectConnection connection = GradleConnector.newConnector().forProjectDirectory(workingDir).useGradleUserHomeDir(getParameters().getGradleUserHomeDirectory().get().getAsFile()).useGradleVersion(getParameters().getGradleVersion().get()).connect()) {
+            connection.newBuild().forTasks("help").run();
         }
     }
 
@@ -245,7 +314,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
             try {
                 stdin.write(incoming.getBytes());
             } catch (IOException e) {
-                throw new UncheckedIOException(e);
+                throw new UncheckedIOException("Failing to write the user input", e);
             }
             return null;
         };
@@ -256,32 +325,32 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
         return stdout -> {
             try {
                 int lastAvailable = 0;
-                long quietPeriod = Long.MAX_VALUE;
+                long startTime = System.nanoTime();
                 int retry = 0;
                 for (; ; ) {
                     int a = stdout.available();
                     if (a > 0 && a > lastAvailable) {
                         lastAvailable = a;
                         retry = 0;
-                        quietPeriod = System.nanoTime() + debounce.toNanos();
+                        startTime = System.nanoTime();
                     }
 
-                    long d = System.nanoTime() - quietPeriod;
-                    if (d > 0) {
+                    long d = System.nanoTime() - startTime;
+                    if (d > debounce.toNanos()) {
                         if (lastAvailable > 0) {
                             byte[] incomingBytes = new byte[lastAvailable];
                             stdout.read(incomingBytes);
                             String incoming = new String(incomingBytes);
                             return incoming;
                         } else {
-                            Assert.assertTrue("No output received in reasonable time, something is wrong. Most likely waiting for user input", retry < 3);
+                            Assert.assertTrue("No output received in reasonable time, something is wrong. Most likely waiting for user input", retry < 30);
                             retry++;
-                            quietPeriod = System.nanoTime() + debounce.toNanos();
+                            startTime = System.nanoTime();
                         }
                     }
                 }
             } catch (IOException e) {
-                throw new UncheckedIOException(e);
+                throw new UncheckedIOException("Failing to acquire the output", e);
             }
         };
     }
@@ -308,7 +377,11 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
             // We strip leading whitespace as we are stripping the tailing whitespace from the received output
             input = stripLeading(input);
             LOGGER.info("---- USING INPUT ----\n" + input + "\n----");
-            Assert.assertThat("Consumed user input is too large to make sense", input, isSensibleSize());
+
+            // The length check guards against non-interactive strings that aren't inputs for build-init or the `yes` for build-scan.
+            if (input.length() > 4) {
+                return ""; // Assuming non-input
+            }
 
             output = output.substring(idx + 1);
 
@@ -320,7 +393,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
         }
 
         public boolean hasMoreOutput() {
-            return !output.isEmpty();
+            return !output.replace("\n", "").isEmpty();
         }
 
         private static Matcher<String> isSensibleSize() {

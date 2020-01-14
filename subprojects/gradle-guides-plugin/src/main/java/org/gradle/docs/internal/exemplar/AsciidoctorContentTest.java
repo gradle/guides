@@ -4,17 +4,19 @@ import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
-import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.model.ObjectFactory;
+import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Classpath;
-import org.gradle.api.tasks.InputFile;
+import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Nested;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.workers.WorkQueue;
 import org.gradle.workers.WorkerExecutor;
 
 import javax.inject.Inject;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +43,14 @@ public abstract class AsciidoctorContentTest extends DefaultTask {
     @Classpath
     public abstract ConfigurableFileCollection getClasspath();
 
+    /**
+     * @implNote The default console type doesn't affect the console choice requireing user interaction like `init` task or `--scan` flag
+     */
+    @Input @Optional
+    public abstract Property<AsciidoctorContentTestConsoleType> getDefaultConsoleType();
+
     @Internal
-    public abstract DirectoryProperty getGradleUserHomeDirectoryForTesting();
+    public abstract Property<String> getGradleVersion();
 
     @Inject
     protected abstract WorkerExecutor getWorkerExecutor();
@@ -54,9 +62,11 @@ public abstract class AsciidoctorContentTest extends DefaultTask {
         });
 
         workQueue.submit(AsciidoctorContentTestWorkerAction.class, parameter -> {
-            parameter.getTestCases().set(testCases);
+            parameter.getTestCases().set(getTestCases());
             parameter.getWorkspaceDirectory().set(getTemporaryDir());
-            parameter.getGradleUserHomeDirectory().set(getGradleUserHomeDirectoryForTesting());
+            parameter.getGradleUserHomeDirectory().set(new File(getTemporaryDir(), "gradle-user-home"));
+            parameter.getGradleVersion().set(getGradleVersion());
+            parameter.getDefaultConsoleType().set(getDefaultConsoleType());
         });
     }
 }
