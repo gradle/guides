@@ -38,7 +38,6 @@ val guides = listOf(
         "testing-gradle-plugins",
         "using-build-cache",
         "using-the-worker-api",
-        "writing-getting-started-guides",
         "writing-gradle-plugins",
         "writing-gradle-tasks"
 )
