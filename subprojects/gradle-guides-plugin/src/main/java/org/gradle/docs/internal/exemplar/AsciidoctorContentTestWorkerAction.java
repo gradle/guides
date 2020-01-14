@@ -368,7 +368,11 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
             // We strip leading whitespace as we are stripping the tailing whitespace from the received output
             input = stripLeading(input);
             LOGGER.info("---- USING INPUT ----\n" + input + "\n----");
-            Assert.assertThat("Consumed user input is too large to make sense", input, isSensibleSize());
+
+            // The length check guards against non-interactive strings that aren't inputs for build-init or the `yes` for build-scan.
+            if (input.length() > 4) {
+                return ""; // Assuming non-input
+            }
 
             output = output.substring(idx + 1);
 
