@@ -132,6 +132,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
             // TODO: For better rendering, we should allow code block to resolve attributes using `subs=attributes`. However, exemplar doesn't resolve the attributes according to this configuration. The value returned by `Command.#getExpectedOutput()` will contain the attribute syntax which will fail the output verification. For now, we will leave this as a manual steps that will need to be executed when we want to change this value. We should honor this configuration.
             if (command.getExecutable().contains("gradle")) {
                 disableWelcomeMessage(gradleUserHomeDir);
+                primeGradleUserHome();
                 if (command.getArgs().get(0).equals("init") || command.getArgs().contains("--scan")) {
 
                     try (ProjectConnection connection = GradleConnector.newConnector().forProjectDirectory(workingDir).useGradleUserHomeDir(gradleUserHomeDir).useGradleVersion(getParameters().getGradleVersion().get()).connect()) {
@@ -270,6 +271,13 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
             welcomeMessageRenderedFile.createNewFile();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
+        }
+    }
+
+    private void primeGradleUserHome() throws IOException {
+        File workingDir = Files.createTempDirectory("exemplar").toFile();
+        try (ProjectConnection connection = GradleConnector.newConnector().forProjectDirectory(workingDir).useGradleUserHomeDir(getParameters().getGradleUserHomeDirectory().get().getAsFile()).useGradleVersion(getParameters().getGradleVersion().get()).connect()) {
+            connection.newBuild().forTasks("help").run();
         }
     }
 
