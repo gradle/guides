@@ -190,18 +190,18 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                     } else {
                         AsciidoctorContentTestConsoleType consoleType = consoleTypeOf(command);
                         try (OutputStream outStream = newOutputCapturingStream(consoleType)) {
-                            List<String> arguments = new ArrayList<>();
+                            boolean richOutput = false;
                             if (command.getArgs().stream().noneMatch(it -> it.startsWith("--console="))) {
                                 if (consoleType == AsciidoctorContentTestConsoleType.VERBOSE) {
-                                    arguments.add("--console=verbose");
+                                    throw new RuntimeException("--console=verbose is no supported");
                                 } else if (consoleType == AsciidoctorContentTestConsoleType.RICH) {
-                                    arguments.add("--console=rich");
+                                    richOutput = true;
                                 }
                             }
 
                             connection.newBuild()
                                     .forTasks(command.getArgs().toArray(new String[0]))
-                                    .withArguments(arguments)
+                                    .setColorOutput(richOutput)
                                     .setStandardOutput(outStream)
                                     .setStandardError(outStream)
                                     .run();
