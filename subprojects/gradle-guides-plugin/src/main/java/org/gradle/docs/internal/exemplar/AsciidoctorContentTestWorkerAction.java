@@ -139,6 +139,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                         CancellationTokenSource cancel = GradleConnector.newCancellationTokenSource();
                         OutputNormalizer normalizer = composite(new GradleOutputNormalizer(), new StripTrailingOutputNormalizer());
                         String expectedOutput = normalizer.normalize(command.getExpectedOutput(), null);
+                        expectedOutput += "\n"; // Adding new line because Asciidoctor strip trailing new lines TODO: Check if it's exemplar that do that
 
                         ByteArrayOutputStream fullOutputStream = new ByteArrayOutputStream();
                         PipedOutputStream inBackend = new PipedOutputStream();
@@ -376,7 +377,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
         }
 
         public boolean hasMoreOutput() {
-            return !output.isEmpty();
+            return !output.replace("\n", "").isEmpty();
         }
 
         private static Matcher<String> isSensibleSize() {
