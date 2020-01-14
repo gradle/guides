@@ -59,7 +59,7 @@ configure<org.ajoberstar.gradle.git.publish.GitPublishExtension> {
 
 // Test JVM codes
 allprojects {
-    pluginManager.withPlugin("org.gradle.guides") {
+    pluginManager.withPlugin("org.gradle.guide") {
         repositories {
             maven {
                 url = uri("https://repo.gradle.org/gradle/libs-releases")
@@ -85,7 +85,7 @@ allprojects {
 
 // Attach checkGuides to check
 allprojects {
-    pluginManager.withPlugin("org.gradle.guides") {
+    pluginManager.withPlugin("org.gradle.guide") {
         tasks.named("check") { dependsOn("checkGuides") }
     }
 }

@@ -1,5 +1,5 @@
 plugins {
-    id("org.gradle.guides")
+    id("org.gradle.guide")
     kotlin("kapt") version "1.3.61" apply false
 }
 

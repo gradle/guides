@@ -9,7 +9,7 @@ import javax.xml.xpath.XPathConstants
 import javax.xml.xpath.XPathFactory
 
 plugins {
-    id("org.gradle.guides")
+    id("org.gradle.guide")
 }
 
 guide {

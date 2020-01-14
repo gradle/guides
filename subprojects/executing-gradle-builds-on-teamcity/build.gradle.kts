@@ -1,5 +1,5 @@
 plugins {
-    id("org.gradle.guides")
+    id("org.gradle.guide")
 }
 
 guide {

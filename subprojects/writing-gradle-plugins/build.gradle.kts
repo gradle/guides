@@ -3,9 +3,8 @@ plugins {
 }
 
 guide {
-    repositoryPath.set("gradle-guides/creating-new-gradle-builds")
+    repositoryPath.set("gradle-guides/writing-gradle-plugins")
     minimumGradleVersion.set("4.10.3")
-    displayName.set("Creating new Gradle builds")
     category.set("Getting Started")
 }
 

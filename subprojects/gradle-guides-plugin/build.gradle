@@ -55,7 +55,7 @@ pluginBundle {
 gradlePlugin {
     plugins {
         guidePlugin {
-            id = 'org.gradle.guides'
+            id = 'org.gradle.guide'
             implementationClass = 'org.gradle.docs.guides.internal.LegacyGuideDocumentationPlugin'
             displayName = 'Gradle Guides Plugin'
             description = 'Plugin for authoring Gradle guides'
