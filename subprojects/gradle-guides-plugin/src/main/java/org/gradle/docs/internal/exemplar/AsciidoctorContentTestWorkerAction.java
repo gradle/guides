@@ -221,7 +221,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                         Assert.assertEquals("The gradle command exited with an error:\n" + output, 0, execResult.getExitValue());
 
                         OutputVerifier verifier = new AnyOrderLineSegmentedOutputVerifier();
-                        verifier.verify(expectedOutput, output, false);
+                        verifier.verify(expectedOutput, output, command.isAllowAdditionalOutput());
                     }
                 }
             } else {
@@ -242,7 +242,9 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                     expectedOutput = normalizer.normalize(expectedOutput, null);
                     String output = outStream.toString();
                     output = normalizer.normalize(output, null);
-                    Assert.assertEquals("Output no equals", expectedOutput, output);
+
+                    OutputVerifier verifier = new StrictOrderLineSegmentedOutputVerifier();
+                    verifier.verify(expectedOutput, output, command.isAllowAdditionalOutput());
                 }
             }
         }
