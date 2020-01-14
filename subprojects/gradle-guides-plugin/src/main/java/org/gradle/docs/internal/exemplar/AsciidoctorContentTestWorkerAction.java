@@ -133,21 +133,21 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
             if (command.getExecutable().contains("gradle")) {
                 disableWelcomeMessage(gradleUserHomeDir);
                 if (command.getArgs().get(0).equals("init") || command.getArgs().contains("--scan")) {
-                    ProjectConnection connection = GradleConnector.newConnector().forProjectDirectory(workingDir).useGradleUserHomeDir(gradleUserHomeDir).useGradleVersion("6.0.1").connect();
-                    CancellationTokenSource cancel = GradleConnector.newCancellationTokenSource();
-                    OutputNormalizer normalizer = composite(new GradleOutputNormalizer(), new StripTrailingOutputNormalizer());
-                    String expectedOutput = normalizer.normalize(command.getExpectedOutput(), null);
 
-                    ByteArrayOutputStream fullOutputStream = new ByteArrayOutputStream();
-                    PipedOutputStream inBackend = new PipedOutputStream();
-                    PipedInputStream stdinInputToOutputStreamAdapter = new PipedInputStream(inBackend);
-                    try (TeeInputStream stdinForToolingApi = new TeeInputStream(stdinInputToOutputStreamAdapter, fullOutputStream)) {
+                    try (ProjectConnection connection = GradleConnector.newConnector().forProjectDirectory(workingDir).useGradleUserHomeDir(gradleUserHomeDir).useGradleVersion(getParameters().getGradleVersion().get()).connect()) {
+                        CancellationTokenSource cancel = GradleConnector.newCancellationTokenSource();
+                        OutputNormalizer normalizer = composite(new GradleOutputNormalizer(), new StripTrailingOutputNormalizer());
+                        String expectedOutput = normalizer.normalize(command.getExpectedOutput(), null);
 
-                        PipedInputStream outBackend = new PipedInputStream();
-                        PipedOutputStream stdoutOutputToInputStreamAdapter = new PipedOutputStream(outBackend);
-                        try (TeeOutputStream stdoutForToolingApi = new TeeOutputStream(stdoutOutputToInputStreamAdapter, fullOutputStream)) {
+                        ByteArrayOutputStream fullOutputStream = new ByteArrayOutputStream();
+                        PipedOutputStream inBackend = new PipedOutputStream();
+                        PipedInputStream stdinInputToOutputStreamAdapter = new PipedInputStream(inBackend);
+                        try (TeeInputStream stdinForToolingApi = new TeeInputStream(stdinInputToOutputStreamAdapter, fullOutputStream)) {
 
-                            try {
+                            PipedInputStream outBackend = new PipedInputStream();
+                            PipedOutputStream stdoutOutputToInputStreamAdapter = new PipedOutputStream(outBackend);
+                            try (TeeOutputStream stdoutForToolingApi = new TeeOutputStream(stdoutOutputToInputStreamAdapter, fullOutputStream)) {
+
                                 AssertingResultHandler resultHandler = new AssertingResultHandler();
                                 // TODO: Configure environment variables
                                 // TODO: The following won't work for flags with arguments
@@ -182,8 +182,6 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                                 String output = normalizer.normalize(fullOutputStream.toString(), null);
                                 OutputVerifier verifier = new StrictOrderLineSegmentedOutputVerifier();
                                 verifier.verify(expectedOutput, output, false);
-                            } finally {
-                                connection.close();
                             }
                         }
                     }
