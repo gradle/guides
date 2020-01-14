@@ -188,7 +188,6 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                             }
                         }
                     } else {
-                        final File workDir = workingDir;
                         AsciidoctorContentTestConsoleType consoleType = consoleTypeOf(command);
                         try (OutputStream outStream = newOutputCapturingStream(consoleType)) {
                             List<String> arguments = new ArrayList<>();
@@ -206,18 +205,6 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                                     .setStandardOutput(outStream)
                                     .setStandardError(outStream)
                                     .run();
-//                            ExecResult execResult = getExecOperations().exec(spec -> {
-//                                spec.executable(command.getExecutable());
-//                                spec.args(command.getArgs());
-//
-//                                spec.environment("GRADLE_USER_HOME", gradleUserHomeDir.getAbsolutePath());
-//                                spec.environment("HOME", homeDirectory.getAbsolutePath());
-//                                spec.setWorkingDir(workDir);
-//                                spec.setStandardOutput(outStream);
-//                                spec.setErrorOutput(outStream);
-//                                spec.setIgnoreExitValue(true);
-//                            });
-
 
                             String expectedOutput = command.getExpectedOutput();
                             OutputNormalizer normalizer = composite(new GradleOutputNormalizer(), new WorkingDirectoryOutputNormalizer(), new GradleUserHomePathOutputNormalizer(gradleUserHomeDir));
@@ -225,8 +212,6 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                             expectedOutput = normalizer.normalize(expectedOutput, executionMetadata);
                             String output = outStream.toString();
                             output = normalizer.normalize(output, executionMetadata);
-
-//                            Assert.assertEquals("The gradle command exited with an error:\n" + output, 0, execResult.getExitValue());
 
                             OutputVerifier verifier = new AnyOrderLineSegmentedOutputVerifier();
                             verifier.verify(expectedOutput, output, command.isAllowAdditionalOutput());
