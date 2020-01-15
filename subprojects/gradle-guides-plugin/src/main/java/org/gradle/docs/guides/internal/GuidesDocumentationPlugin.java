@@ -82,7 +82,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
     }
 
     private void configureContentExemplarTesting(Project project, TaskContainer tasks, GuidesInternal extension, TaskProvider<Task> check, Configuration asciidoctorClasspath) {
-        Configuration configuration = project.getConfigurations().maybeCreate("asciidoctorContentDocsTest");
+        Configuration configuration = project.getConfigurations().create("asciidoctorContentGuidesDocsTest");
         configuration.extendsFrom(asciidoctorClasspath);
         DependencyHandler dependencies = project.getDependencies();
         dependencies.add(configuration.getName(), "org.gradle:gradle-tooling-api:6.0.1");

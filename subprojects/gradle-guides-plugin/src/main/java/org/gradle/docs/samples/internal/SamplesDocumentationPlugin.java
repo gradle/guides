@@ -145,7 +145,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
     }
 
     private void configureContentExemplarTesting(Project project, TaskContainer tasks, SamplesInternal extension, TaskProvider<Task> check, Configuration asciidoctorClasspath) {
-        Configuration configuration = project.getConfigurations().maybeCreate("asciidoctorContentSamplesDocsTest");
+        Configuration configuration = project.getConfigurations().create("asciidoctorContentSamplesDocsTest");
         configuration.extendsFrom(asciidoctorClasspath);
         DependencyHandler dependencies = project.getDependencies();
         dependencies.add(configuration.getName(), "org.gradle:gradle-tooling-api:6.0.1");
@@ -153,7 +153,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         dependencies.add(configuration.getName(), "org.gradle:sample-check:0.12.5");
         dependencies.add(configuration.getName(), "junit:junit:4.12");
 
-        TaskProvider<AsciidoctorContentTest> asciidoctorContentDocsTest = tasks.register("asciidoctorContentDocsTest", AsciidoctorContentTest.class, task -> {
+        TaskProvider<AsciidoctorContentTest> asciidoctorContentDocsTest = tasks.register("asciidoctorContentSamplesDocsTest", AsciidoctorContentTest.class, task -> {
             task.setGroup(LifecycleBasePlugin.VERIFICATION_GROUP);
             task.setDescription("Check guides steps commands.");
             task.getClasspath().from(configuration);

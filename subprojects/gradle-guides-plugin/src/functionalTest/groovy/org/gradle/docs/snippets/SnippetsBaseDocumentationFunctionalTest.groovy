@@ -19,7 +19,6 @@ package org.gradle.docs.snippets
 import org.gradle.docs.AbstractBaseDocumentationFunctionalTest
 
 class SnippetsBaseDocumentationFunctionalTest extends AbstractBaseDocumentationFunctionalTest implements SnippetsTrait {
-
     @Override
     protected String createDocumentationElement(String name) {
         return createSnippet(name)
