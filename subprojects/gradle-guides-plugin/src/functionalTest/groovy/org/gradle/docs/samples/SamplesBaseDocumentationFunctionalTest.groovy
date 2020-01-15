@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.gradle.docs.guides
+package org.gradle.docs.samples
 
 import org.gradle.docs.AbstractBaseDocumentationFunctionalTest
 
-class GuidesBaseDocumentationFunctionalTest extends AbstractBaseDocumentationFunctionalTest implements GuidesTrait {
+class SamplesBaseDocumentationFunctionalTest extends AbstractBaseDocumentationFunctionalTest implements SamplesTrait {
     @Override
     protected String createDocumentationElement(String name) {
-        return createGuide(name)
+        return createSample(name)
     }
 }

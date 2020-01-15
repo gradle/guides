@@ -1,9 +1,9 @@
 package org.gradle.docs.samples
 
-import org.gradle.docs.AbstractBaseDocumentationFunctionalTest
+import org.gradle.docs.AbstractRenderableDocumentationFunctionalTest
 import org.gradle.docs.TestFile
 
-class SampleBaseDocumentationFunctionalTest extends AbstractBaseDocumentationFunctionalTest implements SamplesTrait {
+class SamplesRenderableDocumentationFunctionalTest extends AbstractRenderableDocumentationFunctionalTest implements SamplesTrait {
     @Override
     protected String createDocumentationElement(String name) {
         return createSample(name, Dsl.GROOVY, Dsl.KOTLIN)
