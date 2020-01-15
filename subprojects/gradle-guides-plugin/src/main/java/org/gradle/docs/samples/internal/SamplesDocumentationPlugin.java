@@ -145,7 +145,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
     }
 
     private void configureContentExemplarTesting(Project project, TaskContainer tasks, SamplesInternal extension, TaskProvider<Task> check, Configuration asciidoctorClasspath) {
-        Configuration configuration = project.getConfigurations().maybeCreate("asciidoctorContentDocsTest");
+        Configuration configuration = project.getConfigurations().maybeCreate("asciidoctorContentSamplesDocsTest");
         configuration.extendsFrom(asciidoctorClasspath);
         DependencyHandler dependencies = project.getDependencies();
         dependencies.add(configuration.getName(), "org.gradle:gradle-tooling-api:6.0.1");

@@ -90,7 +90,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         dependencies.add(configuration.getName(), "org.gradle:sample-check:0.12.5");
         dependencies.add(configuration.getName(), "junit:junit:4.12");
 
-        TaskProvider<AsciidoctorContentTest> asciidoctorContentDocsTest = tasks.register("asciidoctorContentDocsTest", AsciidoctorContentTest.class, task -> {
+        TaskProvider<AsciidoctorContentTest> asciidoctorContentDocsTest = tasks.register("asciidoctorContentGuidesDocsTest", AsciidoctorContentTest.class, task -> {
             task.setGroup(LifecycleBasePlugin.VERIFICATION_GROUP);
             task.setDescription("Check guides steps commands.");
             task.getClasspath().from(configuration);
