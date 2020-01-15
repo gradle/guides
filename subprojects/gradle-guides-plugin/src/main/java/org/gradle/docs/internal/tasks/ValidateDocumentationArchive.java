@@ -1,34 +1,41 @@
-package org.gradle.docs.samples.internal.tasks;
+package org.gradle.docs.internal.tasks;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.Property;
+import org.gradle.api.provider.SetProperty;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.docs.samples.Dsl;
+import org.gradle.docs.Dsl;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public abstract class ValidateSampleBinary extends DefaultTask {
+public abstract class ValidateDocumentationArchive extends DefaultTask {
     @InputFile
     public abstract RegularFileProperty getZipFile();
 
     @Input
     public abstract Property<Dsl> getDsl();
 
+    @Input @Optional
+    public abstract SetProperty<String> getRequiredContentPaths();
+
     @Internal
-    public abstract Property<String> getSampleName();
+    public abstract Property<String> getDocumentationComponentName();
 
     @OutputFile
     public abstract RegularFileProperty getReportFile();
@@ -38,8 +45,10 @@ public abstract class ValidateSampleBinary extends DefaultTask {
         // TODO: check for exemplar conf files
         Dsl dsl = getDsl().get();
         String settingsFileName = getSettingsFileName(dsl);
-        String name = getSampleName().get();
-        List<String> requiredContents = Arrays.asList("README", settingsFileName, "gradlew", "gradlew.bat", "gradle/wrapper/gradle-wrapper.jar", "gradle/wrapper/gradle-wrapper.properties");
+        String name = getDocumentationComponentName().get();
+        Set<String> requiredContents = new HashSet<>();
+        requiredContents.addAll(getRequiredContentPaths().getOrElse(Collections.emptySet()));
+        requiredContents.addAll(Arrays.asList(settingsFileName, "gradlew", "gradlew.bat", "gradle/wrapper/gradle-wrapper.jar", "gradle/wrapper/gradle-wrapper.properties"));
 
         // Does the Zip look correct?
         File zipFile = getZipFile().get().getAsFile();
@@ -63,7 +72,7 @@ public abstract class ValidateSampleBinary extends DefaultTask {
     private void assertZipContains(String name, Dsl dsl, ZipFile zip, String file) {
         ZipEntry entry = zip.getEntry(file);
         if (entry == null) {
-            throw new GradleException("Sample '" + name + "' for " + dsl.getDisplayName() + " DSL is invalid due to missing '" + file + "' file.");
+            throw new GradleException("Documentation '" + name + "' for " + dsl.getDisplayName() + " DSL is invalid due to missing '" + file + "' file.");
         }
     }
 

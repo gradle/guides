@@ -14,22 +14,11 @@
  * limitations under the License.
  */
 
-package org.gradle.docs.snippets.internal;
+package org.gradle.docs.internal.components;
 
-import org.gradle.api.Named;
+import org.gradle.api.Task;
+import org.gradle.api.tasks.TaskProvider;
 
-import javax.inject.Inject;
-
-public abstract class SnippetBinary implements Named {
-    private final String name;
-
-    @Inject
-    public SnippetBinary(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
+public interface AssembleDocumentationComponent extends DocumentationComponent {
+    TaskProvider<Task> getAssembleTask();
 }

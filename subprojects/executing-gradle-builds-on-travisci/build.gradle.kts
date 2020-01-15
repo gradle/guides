@@ -10,6 +10,6 @@ guide {
 }
 
 // TODO: requires gradle-site-plugins
-tasks.named("checkAsciidoctorGuideContents") {
+tasks.named("checkAsciidoctorContents") {
     enabled = false
 }

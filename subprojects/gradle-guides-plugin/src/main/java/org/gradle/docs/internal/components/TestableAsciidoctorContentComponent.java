@@ -14,22 +14,28 @@
  * limitations under the License.
  */
 
-package org.gradle.docs.internal;
+package org.gradle.docs.internal.components;
 
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.docs.guides.internal.GuideContentBinary;
-import org.gradle.docs.samples.internal.SampleArchiveBinary;
 import org.gradle.docs.samples.internal.SampleContentBinary;
 
-public interface TestableAsciidoctorContentBinary {
+import javax.inject.Inject;
+
+public abstract class TestableAsciidoctorContentComponent extends NamedDocumentationComponent {
+    @Inject
+    public TestableAsciidoctorContentComponent(String name) {
+        super(name);
+    }
+
     /**
      * Linked to {@link SampleContentBinary#getInstalledIndexPageFile()} or {@link GuideContentBinary#getInstalledIndexPageFile()}
      */
-    RegularFileProperty getContentFile();
+    public abstract RegularFileProperty getContentFile();
 
     /**
-     * Linked to {@link SampleArchiveBinary#getInstallDirectory()} or null if no starting sample should be used
+     * Linked to {@link DocumentationArchiveComponent#getInstallDirectory()} or null if no starting sample should be used
      */
-    DirectoryProperty getStartingSampleDirectory();
+    public abstract DirectoryProperty getStartingSampleDirectory();
 }

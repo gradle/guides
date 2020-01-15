@@ -4,6 +4,7 @@ import org.gradle.api.DomainObjectSet;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.model.ObjectFactory;
+import org.gradle.docs.internal.components.DocumentationComponent;
 import org.gradle.docs.samples.Samples;
 import org.gradle.docs.samples.SamplesDistribution;
 
@@ -11,14 +12,14 @@ import javax.inject.Inject;
 
 public abstract class SamplesInternal implements Samples {
     private final NamedDomainObjectContainer<SampleInternal> publishedSamples;
-    private final DomainObjectSet<SampleBinary> binaries;
+    private final DomainObjectSet<DocumentationComponent> components;
     private final NamedDomainObjectContainer<TemplateInternal> templates;
     private final SamplesDistribution distribution;
 
     @Inject
-    public SamplesInternal(ObjectFactory objectFactory) {
+    public SamplesInternal(ObjectFactory objectFactory, DomainObjectSet<DocumentationComponent> components) {
         this.publishedSamples = objectFactory.domainObjectContainer(SampleInternal.class, name -> objectFactory.newInstance(SampleInternal.class, name));
-        this.binaries = objectFactory.domainObjectSet(SampleBinary.class);
+        this.components = components;
         this.templates = objectFactory.domainObjectContainer(TemplateInternal.class, name -> objectFactory.newInstance(TemplateInternal.class, name));
         this.distribution = objectFactory.newInstance(SamplesDistribution.class);
     }
@@ -28,8 +29,8 @@ public abstract class SamplesInternal implements Samples {
         return publishedSamples;
     }
 
-    public DomainObjectSet<? super SampleBinary> getBinaries() {
-        return binaries;
+    public DomainObjectSet<DocumentationComponent> getBinaries() {
+        return components;
     }
 
     @Override

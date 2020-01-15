@@ -99,7 +99,7 @@ abstract class AbstractFunctionalTest extends Specification {
         }
 
         ExecutionResult assertTasksExecuted(Object... taskPaths) {
-            def expectedTasks = taskPaths.flatten() as Set
+            def expectedTasks = taskPaths.flatten().collect { it.toString() } as Set
             def actualTasks = tasks.collect { it.path } as Set
 
             assert expectedTasks == actualTasks

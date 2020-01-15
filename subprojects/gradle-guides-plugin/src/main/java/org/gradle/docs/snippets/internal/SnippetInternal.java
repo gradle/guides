@@ -16,20 +16,38 @@
 
 package org.gradle.docs.snippets.internal;
 
+import org.gradle.api.Task;
+import org.gradle.api.file.ConfigurableFileCollection;
+import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.tasks.TaskContainer;
+import org.gradle.api.tasks.TaskProvider;
+import org.gradle.docs.internal.components.AssembleDocumentationComponent;
+import org.gradle.docs.internal.components.NamedDocumentationComponent;
 import org.gradle.docs.snippets.Snippet;
 
 import javax.inject.Inject;
 
-public abstract class SnippetInternal implements Snippet {
-    private final String name;
+import static org.gradle.docs.internal.StringUtils.capitalize;
+
+public abstract class SnippetInternal extends NamedDocumentationComponent implements AssembleDocumentationComponent, Snippet {
+    private final TaskProvider<Task> assemble;
 
     @Inject
-    public SnippetInternal(String name) {
-        this.name = name;
+    public SnippetInternal(String name, TaskContainer tasks) {
+        super(name);
+        this.assemble = tasks.register("assemble" + capitalize(name + "Snippet"));
     }
 
     @Override
-    public String getName() {
-        return name;
+    public TaskProvider<Task> getAssembleTask() {
+        return assemble;
     }
+
+    public abstract DirectoryProperty getSnippetDirectory();
+
+    public abstract ConfigurableFileCollection getGroovyContent();
+
+    public abstract ConfigurableFileCollection getKotlinContent();
+
+    public abstract DirectoryProperty getInstallDirectory();
 }

@@ -9,6 +9,6 @@ guide {
 }
 
 // TODO: Swift seems to be broken
-tasks.named("checkAsciidoctorGuideContents") {
+tasks.named("checkAsciidoctorContents") {
     enabled = false
 }

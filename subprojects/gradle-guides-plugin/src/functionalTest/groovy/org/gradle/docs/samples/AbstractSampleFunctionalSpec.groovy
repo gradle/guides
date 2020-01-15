@@ -36,11 +36,11 @@ abstract class AbstractSampleFunctionalSpec extends AbstractFunctionalTest imple
     }
 
     protected TestFile getGroovyDslZipFile() {
-        return file("build/sample-zips/sample_demo-groovy-dsl.zip")
+        return file("build/working/samples/zips/sample_demo-groovy-dsl.zip")
     }
 
     protected TestFile getKotlinDslZipFile() {
-        return file("build/sample-zips/sample_demo-kotlin-dsl.zip")
+        return file("build/working/samples/zips/sample_demo-kotlin-dsl.zip")
     }
 
     protected static String getSampleUnderTestDsl() {

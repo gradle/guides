@@ -3,16 +3,17 @@ package org.gradle.docs.samples.internal;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.provider.Property;
-import org.gradle.docs.internal.RenderableContentBinary;
-import org.gradle.docs.internal.TestableRenderedContentLinksBinary;
-import org.gradle.docs.internal.ViewableContentBinary;
+import org.gradle.docs.internal.components.RenderableContentComponent;
+import org.gradle.docs.internal.components.TestableRenderedContentLinksComponent;
+import org.gradle.docs.internal.components.ViewableContentComponent;
+import org.gradle.docs.internal.components.NamedDocumentationComponent;
 import org.gradle.docs.samples.SampleSummary;
 
 import javax.inject.Inject;
 
 import static org.gradle.docs.internal.StringUtils.capitalize;
 
-public abstract class SampleContentBinary extends SampleBinary implements ViewableContentBinary, TestableRenderedContentLinksBinary, RenderableContentBinary {
+public abstract class SampleContentBinary extends NamedDocumentationComponent implements ViewableContentComponent, TestableRenderedContentLinksComponent, RenderableContentComponent {
     @Inject
     public SampleContentBinary(String name) {
         super(name);

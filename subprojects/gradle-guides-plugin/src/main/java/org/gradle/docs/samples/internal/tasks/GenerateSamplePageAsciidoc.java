@@ -10,7 +10,7 @@ import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.docs.samples.Dsl;
+import org.gradle.docs.Dsl;
 import org.gradle.docs.samples.SampleSummary;
 
 import java.io.BufferedOutputStream;

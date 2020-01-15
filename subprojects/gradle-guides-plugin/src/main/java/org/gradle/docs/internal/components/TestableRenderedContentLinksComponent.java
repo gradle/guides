@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package org.gradle.docs.guides.internal;
+package org.gradle.docs.internal.components;
 
-import org.gradle.docs.internal.TestableAsciidoctorContentBinary;
+import org.gradle.api.file.RegularFileProperty;
+import org.gradle.docs.internal.components.DocumentationComponent;
 
-import javax.inject.Inject;
+public interface TestableRenderedContentLinksComponent extends DocumentationComponent {
+    String getCheckLinksTaskName();
 
-public abstract class TestableAsciidoctorGuideContentBinary extends GuideBinary implements TestableAsciidoctorContentBinary {
-    @Inject
-    public TestableAsciidoctorGuideContentBinary(String name) {
-        super(name);
-    }
+    RegularFileProperty getRenderedPageFile();
 }

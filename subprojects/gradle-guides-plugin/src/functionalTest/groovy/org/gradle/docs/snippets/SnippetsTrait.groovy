@@ -16,17 +16,14 @@
 
 package org.gradle.docs.snippets
 
-import org.gradle.docs.samples.Dsl
+import org.gradle.docs.TestFile
+import org.gradle.docs.Dsl
 
 trait SnippetsTrait {
     static String createSnippet(String name) {
         return """
-            documentation.snippets.publishedSnippets.create('${name}')
+            documentation.snippets.publishedSnippets.create('$name')
         """
-    }
-
-    static String snippetDsl(String name) {
-        return "documentation.snippets.publishedSnippets.${name}"
     }
 
     static String configureSnippetKotlinDsl(String name) {
@@ -39,5 +36,51 @@ trait SnippetsTrait {
         return """
             ${snippetDsl(name)}.dsls.add(${Dsl.canonicalName}.GROOVY)
         """
+    }
+
+    static void writeGroovyDslSnippetTo(TestFile directory) {
+        directory.file('build.gradle') << '''
+            |// tag::println[]
+            |println "Hello, world!"
+            |// end:println[]
+            |'''.stripMargin()
+        directory.file('settings.gradle') << '''
+            |// tag::root-project-name[]
+            |rootProject.name = 'demo'
+            |// end:root-project-name[]
+            |'''.stripMargin()
+    }
+
+    static void writeKotlinDslSnippetTo(TestFile directory) {
+        directory.file('build.gradle.kts') << '''
+            |// tag::println[]
+            |println("Hello, world!")
+            |// end:println[]
+            |'''.stripMargin()
+        directory.file('settings.gradle.kts') << '''
+            |// tag::root-project-name[]
+            |rootProject.name = "demo"
+            |// end:root-project-name[]
+            |'''.stripMargin()
+    }
+
+    static TestFile groovyDslZipFile(TestFile buildDirectory, String name) {
+        return buildDirectory.file("working/snippets/zips/snippet_${name}-groovy-dsl.zip")
+    }
+
+    static TestFile kotlinDslZipFile(TestFile buildDirectory, String name) {
+        return buildDirectory.file("working/snippets/zips/snippet_${name}-kotlin-dsl.zip")
+    }
+
+    static String snippetDsl(String name) {
+        return "documentation.snippets.publishedSnippets.${name}"
+    }
+
+    static List<String> allTaskToAssemble(String name) {
+        return [":${assembleTaskName(name)}", ":generateWrapperForSnippets", ":zipSnippet${name.capitalize()}Groovy", ":zipSnippet${name.capitalize()}Kotlin"]
+    }
+
+    static String assembleTaskName(String name) {
+        return "assemble${name.capitalize()}Snippet"
     }
 }

@@ -1,17 +1,18 @@
 package org.gradle.docs.samples
 
+import org.gradle.docs.Dsl
 import org.gradle.docs.TestFile
 
 trait SamplesTrait {
     static String createSample(String name) {
         return """
-            documentation.samples.publishedSamples.create('${name}')
+            documentation.samples.publishedSamples.create('$name')
         """
     }
 
     static String createSampleWithBothDsl(String name) {
         return """
-            documentation.samples.publishedSamples.create('${name}') {
+            documentation.samples.publishedSamples.create('$name') {
                 dsls = [${Dsl.canonicalName}.KOTLIN, ${Dsl.canonicalName}.GROOVY]
             }
         """
@@ -65,5 +66,21 @@ trait SamplesTrait {
             |rootProject.name = "demo"
             |// end:root-project-name[]
             |'''.stripMargin()
+    }
+
+    static TestFile groovyDslZipFile(TestFile buildDirectory, String name) {
+        return buildDirectory.file("working/samples/zips/sample_${name}-groovy-dsl.zip")
+    }
+
+    static TestFile kotlinDslZipFile(TestFile buildDirectory, String name) {
+        return buildDirectory.file("working/samples/zips/sample_${name}-kotlin-dsl.zip")
+    }
+
+    static List<String> allTaskToAssemble(String name) {
+        return [":${assembleTaskName(name)}", ':generateWrapperForSamples', ":generate${name.capitalize()}Page", ":zipSample${name.capitalize()}Groovy", ":zipSample${name.capitalize()}Kotlin"]
+    }
+
+    static String assembleTaskName(String name) {
+        return "assemble${name.capitalize()}Sample"
     }
 }

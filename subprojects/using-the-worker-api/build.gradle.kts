@@ -10,6 +10,6 @@ guide {
 }
 
 // TODO: Need seed sample
-tasks.named("checkAsciidoctorGuideContents") {
+tasks.named("checkAsciidoctorContents") {
     enabled = false
 }

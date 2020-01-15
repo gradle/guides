@@ -24,6 +24,6 @@ tasks {
 }
 
 // TODO: Seems to need seed sample
-tasks.named("checkAsciidoctorGuideContents") {
+tasks.named("checkAsciidoctorContents") {
     enabled = false
 }

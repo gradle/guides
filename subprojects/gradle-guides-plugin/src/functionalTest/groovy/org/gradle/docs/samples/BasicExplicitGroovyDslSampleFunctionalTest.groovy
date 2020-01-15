@@ -1,6 +1,6 @@
 package org.gradle.docs.samples
 
-
+import org.gradle.docs.Dsl
 import org.gradle.testkit.runner.BuildResult
 
 class BasicExplicitGroovyDslSampleFunctionalTest extends AbstractGroovyDslSampleFunctionalTest {

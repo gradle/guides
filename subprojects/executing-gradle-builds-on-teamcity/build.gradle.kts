@@ -11,6 +11,6 @@ guide {
 
 // TODO: background command required
 // TODO: gradle-site-plugin required
-tasks.named("checkAsciidoctorGuideContents") {
+tasks.named("checkAsciidoctorContents") {
     enabled = false
 }

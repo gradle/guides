@@ -14,6 +14,6 @@ tasks.named("docsTest") {
 }
 
 // TODO: Require seed sample
-tasks.named("checkAsciidoctorGuideContents") {
+tasks.named("checkAsciidoctorContents") {
     enabled = false
 }

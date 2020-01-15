@@ -6,7 +6,6 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
-import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.attributes.Attribute;
 import org.gradle.api.attributes.Usage;
 import org.gradle.api.file.ProjectLayout;
@@ -20,19 +19,19 @@ import org.gradle.api.tasks.TaskProvider;
 import org.gradle.docs.guides.internal.tasks.GenerateGuidePageAsciidoc;
 import org.gradle.docs.internal.DocumentationBasePlugin;
 import org.gradle.docs.internal.DocumentationExtensionInternal;
-import org.gradle.docs.internal.exemplar.AsciidoctorContentTest;
-import org.gradle.docs.internal.exemplar.AsciidoctorContentTestConsoleType;
+import org.gradle.docs.internal.components.TestableAsciidoctorContentComponent;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.gradle.docs.internal.Asserts.assertNameDoesNotContainsDisallowedCharacters;
+import static org.gradle.docs.internal.configure.Asserts.assertNameDoesNotContainsDisallowedCharacters;
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
 import static org.gradle.docs.internal.StringUtils.*;
 import static org.gradle.docs.internal.configure.AsciidoctorTasks.*;
-import static org.gradle.docs.internal.configure.ContentBinaries.*;
+import static org.gradle.docs.internal.configure.ContentBinaries.createCheckTasksForContentBinary;
+import static org.gradle.docs.internal.configure.ContentBinaries.createTasksForContentBinary;
 
 public class GuidesDocumentationPlugin implements Plugin<Project> {
     @Override
@@ -72,9 +71,6 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
 
         // Publish the guides to consumers
         createPublishGuidesElements(project.getConfigurations(), objects, renderTask, extension);
-
-        // Testing
-        createCheckTaskForAsciidoctorContentBinary(project, "checkAsciidoctorGuideContents", extension.getBinaries().withType(TestableAsciidoctorGuideContentBinary.class), check, asciidoctorConfiguration);
 
         // Trigger everything by realizing guide container
         project.afterEvaluate(p -> realizeGuides(extension, objects, projectOnlyForCopySpecMethod));
@@ -224,7 +220,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             contentBinary.getSourcePageFile().convention(guide.getGuideDirectory().file("contents/index.adoc"));
             contentBinary.getGuideName().convention(guide.getGuideName());
 
-            TestableAsciidoctorGuideContentBinary testableAsciidoctorGuideContentBinary = objects.newInstance(TestableAsciidoctorGuideContentBinary.class, guide.getName());
+            TestableAsciidoctorContentComponent testableAsciidoctorGuideContentBinary = objects.newInstance(TestableAsciidoctorContentComponent.class, guide.getName());
             extension.getBinaries().add(testableAsciidoctorGuideContentBinary);
             testableAsciidoctorGuideContentBinary.getContentFile().convention(contentBinary.getInstalledIndexPageFile());
         }

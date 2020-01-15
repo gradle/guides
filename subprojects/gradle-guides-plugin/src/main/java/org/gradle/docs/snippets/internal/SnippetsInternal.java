@@ -18,19 +18,21 @@ package org.gradle.docs.snippets.internal;
 
 import org.gradle.api.DomainObjectSet;
 import org.gradle.api.NamedDomainObjectContainer;
+import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.model.ObjectFactory;
+import org.gradle.docs.internal.components.DocumentationComponent;
 import org.gradle.docs.snippets.Snippets;
 
 import javax.inject.Inject;
 
 public abstract class SnippetsInternal implements Snippets {
     private final NamedDomainObjectContainer<SnippetInternal> publishedSnippets;
-    private final DomainObjectSet<SnippetBinary> binaries;
+    private final DomainObjectSet<DocumentationComponent> components;
 
     @Inject
-    public SnippetsInternal(ObjectFactory objectFactory) {
+    public SnippetsInternal(ObjectFactory objectFactory, DomainObjectSet<DocumentationComponent> components) {
         this.publishedSnippets = objectFactory.domainObjectContainer(SnippetInternal.class, name -> objectFactory.newInstance(SnippetInternal.class, name));
-        this.binaries = objectFactory.domainObjectSet(SnippetBinary.class);
+        this.components = components;
     }
 
     @Override
@@ -38,7 +40,9 @@ public abstract class SnippetsInternal implements Snippets {
         return publishedSnippets;
     }
 
-    public DomainObjectSet<? super SnippetBinary> getBinaries() {
-        return binaries;
+    public DomainObjectSet<DocumentationComponent> getBinaries() {
+        return components;
     }
+
+    public abstract DirectoryProperty getInstallRoot();
 }

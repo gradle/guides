@@ -22,6 +22,6 @@ dependencies {
 }
 
 // TODO: doesn't seems to have any command to run
-tasks.named("checkAsciidoctorGuideContents") {
+tasks.named("checkAsciidoctorContents") {
     enabled = false
 }

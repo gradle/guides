@@ -1,4 +1,4 @@
-package org.gradle.docs.samples;
+package org.gradle.docs;
 
 import java.util.Locale;
 

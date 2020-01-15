@@ -1,0 +1,91 @@
+/*
+ * Copyright 2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.gradle.docs.internal.components;
+
+import org.gradle.api.file.ConfigurableFileCollection;
+import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.provider.ListProperty;
+import org.gradle.api.provider.Property;
+import org.gradle.api.provider.SetProperty;
+import org.gradle.docs.Dsl;
+
+import javax.inject.Inject;
+
+public abstract class DocumentationArchiveComponent extends NamedDocumentationComponent {
+    @Inject
+    public DocumentationArchiveComponent(String name) {
+        super(name);
+    }
+
+    /**
+     * @return Exclude patterns for files included in this sample
+     */
+    public abstract ListProperty<String> getExcludes();
+
+    /**
+     * @return All content to include in the sample.
+     */
+    public abstract ConfigurableFileCollection getContent();
+
+    /**
+     * @return The language this sample is written for
+     */
+    public abstract Property<Dsl> getDsl();
+
+    /**
+     * @return Working directory used by the plugin to expose an assembled sample to consumers.
+     */
+    public abstract DirectoryProperty getWorkingDirectory();
+
+    /**
+     * @return A zip containing this sample.  This is the primary thing produced by a sample for a given language.
+     */
+    public abstract RegularFileProperty getZipFile();
+
+    /**
+     * @return A directory where to install the zip files.
+     */
+    public abstract DirectoryProperty getZipInstallDirectory();
+
+    /**
+     * @return The zip base name.
+     */
+    public abstract Property<String> getBaseName();
+
+    /**
+     * @return A installation directory containing this sample.  This can be used to get an installed version of the sample.
+     */
+    public abstract DirectoryProperty getInstallDirectory();
+
+    /**
+     * @return Gets the validation report for this sample.
+     */
+    public abstract RegularFileProperty getValidationReport();
+
+    /**
+     * @return Content that is specific to the DSL language.
+     */
+    public abstract ConfigurableFileCollection getDslSpecificContent();
+
+    public abstract SetProperty<String> getRequiredContentPaths();
+
+    /**
+     * @return Archive's README file
+     */
+    public abstract RegularFileProperty getReadmeFile();
+}

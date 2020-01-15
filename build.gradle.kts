@@ -16,6 +16,10 @@ var buildTask = tasks.register("build") {
     dependsOn(gradle.includedBuild("gradle-guides-plugin").task(":build"))
 }
 
+tasks.register("checkDocumentationPlugins") {
+    dependsOn(gradle.includedBuild("gradle-guides-plugin").task(":check"))
+}
+
 tasks.register("publishDocumentationPlugins") {
     dependsOn(gradle.includedBuild("gradle-guides-plugin").task(":publishPlugins"))
 }
@@ -86,7 +90,7 @@ allprojects {
         }
 
         // TODO: This is strictly for working around the tooling API bug regarding removing flackiness for build init tests
-        tasks.named("checkAsciidoctorGuideContents", AsciidoctorContentTest::class.java) {
+        tasks.named("checkAsciidoctorContents", AsciidoctorContentTest::class.java) {
             gradleVersion.set("6.3-20200128091954+0000")
         }
     }

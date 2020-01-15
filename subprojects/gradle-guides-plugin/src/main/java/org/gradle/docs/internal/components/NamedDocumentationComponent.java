@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package org.gradle.docs.samples.internal;
+package org.gradle.docs.internal.components;
 
-import org.gradle.docs.internal.TestableAsciidoctorContentBinary;
+import org.gradle.api.Named;
 
-import javax.inject.Inject;
+public abstract class NamedDocumentationComponent implements Named, DocumentationComponent {
+    private final String name;
 
-public abstract class TestableAsciidoctorSampleContentBinary extends SampleBinary implements TestableAsciidoctorContentBinary {
-    @Inject
-    public TestableAsciidoctorSampleContentBinary(String name) {
-        super(name);
+    public NamedDocumentationComponent(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 }

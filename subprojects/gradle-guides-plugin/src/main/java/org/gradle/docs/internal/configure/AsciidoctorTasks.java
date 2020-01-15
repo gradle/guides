@@ -7,7 +7,7 @@ import org.gradle.api.Task;
 import org.gradle.api.file.CopySpec;
 import org.gradle.api.logging.StandardOutputListener;
 import org.gradle.api.tasks.util.PatternSet;
-import org.gradle.docs.internal.RenderableContentBinary;
+import org.gradle.docs.internal.components.RenderableContentComponent;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,17 +22,17 @@ import static org.gradle.docs.internal.FileUtils.deleteDirectory;
 public class AsciidoctorTasks {
     private static final Object IGNORED_CLOSURE_OWNER = new Object();
 
-    public static void configureResources(AsciidoctorTask task, Collection<? extends RenderableContentBinary> binaries) {
-        task.getInputs().files(binaries.stream().map(RenderableContentBinary::getResourceFiles).collect(Collectors.toList())).withPropertyName("resourceFiles").optional(true);
+    public static void configureResources(AsciidoctorTask task, Collection<? extends RenderableContentComponent> binaries) {
+        task.getInputs().files(binaries.stream().map(RenderableContentComponent::getResourceFiles).collect(Collectors.toList())).withPropertyName("resourceFiles").optional(true);
         task.resources(new Closure(IGNORED_CLOSURE_OWNER) {
             public Object doCall(Object ignore) {
-                binaries.stream().map(RenderableContentBinary::getResourceSpec).forEach(spec -> ((CopySpec)this.getDelegate()).with(spec.get()));
+                binaries.stream().map(RenderableContentComponent::getResourceSpec).forEach(spec -> ((CopySpec)this.getDelegate()).with(spec.get()));
                 return null;
             }
         });
     }
 
-    public static void configureSources(AsciidoctorTask task, Collection<? extends RenderableContentBinary> binaries) {
+    public static void configureSources(AsciidoctorTask task, Collection<? extends RenderableContentComponent> binaries) {
         task.sources(new Closure(IGNORED_CLOSURE_OWNER) {
             public Object doCall(Object ignore) {
                 ((PatternSet)this.getDelegate()).setIncludes(binaries.stream().map(it -> it.getSourcePattern().get()).collect(Collectors.toList()));

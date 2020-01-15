@@ -99,7 +99,7 @@ class IncrementalSamplesFunctionalTest extends AbstractSampleFunctionalSpec {
         result.task(":generateWrapperForSamples").outcome in SKIPPED_TASK_OUTCOMES
         assertDslSampleTasksExecutedAndNotSkipped(result, "Groovy")
         assertDslSampleTasksSkipped(result, "Kotlin")
-        file("build/sample-zips/sample_demo-groovy-dsl.zip").asZip().assertDescendantHasContent("build.gradle", containsString("// This is a change"))
+        groovyDslZipFile.asZip().assertDescendantHasContent("build.gradle", containsString("// This is a change"))
     }
 
     def "change to Kotlin content causes only Kotlin to be out-of-date"() {
@@ -124,7 +124,7 @@ class IncrementalSamplesFunctionalTest extends AbstractSampleFunctionalSpec {
         result.task(":generateWrapperForSamples").outcome in SKIPPED_TASK_OUTCOMES
         assertDslSampleTasksExecutedAndNotSkipped(result, "Kotlin")
         assertDslSampleTasksSkipped(result, "Groovy")
-        file("build/sample-zips/sample_demo-kotlin-dsl.zip").asZip().assertDescendantHasContent("build.gradle.kts", containsString("// This is a change"))
+        kotlinDslZipFile.asZip().assertDescendantHasContent("build.gradle.kts", containsString("// This is a change"))
     }
 
     def "index is regenerated when sample is added or removed"() {

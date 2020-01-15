@@ -24,7 +24,7 @@ abstract class AbstractKotlinDslSampleFunctionalTest extends AbstractBasicSample
     protected void assertReadmeHasContent() {
         def groovyReadmeFile = file("build/working/samples/install/demo/groovy/README")
         def kotlinReadmeFile = file("build/working/samples/install/demo/kotlin/README")
-        assert kotlinReadmeFile.text == """:samples-dir: ${file('/build/working/samples/install/demo')}
+        assert kotlinReadmeFile.text == """:samples-dir: ${file('build/working/samples/install/demo')}
             |:gradle-version: 6.0.1
             |
             |= Demo Sample

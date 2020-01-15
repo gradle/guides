@@ -27,40 +27,40 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
         assertDslZipsHaveContent()
     }
 
-    def "can assemble sample using a lifecycle task"() {
-        makeSingleProject()
-        writeSampleUnderTest()
-
-        when:
-        build('assembleDemoSample')
-
-        then:
-        assertSampleTasksExecutedAndNotSkipped(result)
-        assertDslZipFilesExists()
-    }
-
-    def "defaults to Gradle version based on the running distribution"() {
-        makeSingleProject()
-        writeSampleUnderTest()
-
-        when:
-        usingGradleVersion("6.0")
-        build("assembleDemoSample")
-
-        then:
-        dslZipFiles.each {
-            assertGradleWrapperVersion(it, '6.0')
-        }
-
-        when:
-        usingGradleVersion('6.0.1')
-        build("assembleDemoSample")
-
-        then:
-        dslZipFiles.each {
-            assertGradleWrapperVersion(it, '6.0.1')
-        }
-    }
+//    def "can assemble sample using a lifecycle task"() {
+//        makeSingleProject()
+//        writeSampleUnderTest()
+//
+//        when:
+//        build('assembleDemoSample')
+//
+//        then:
+//        assertSampleTasksExecutedAndNotSkipped(result)
+//        assertDslZipFilesExists()
+//    }
+//
+//    def "defaults to Gradle version based on the running distribution"() {
+//        makeSingleProject()
+//        writeSampleUnderTest()
+//
+//        when:
+//        usingGradleVersion("6.0")
+//        build("assembleDemoSample")
+//
+//        then:
+//        dslZipFiles.each {
+//            assertGradleWrapperVersion(it, '6.0')
+//        }
+//
+//        when:
+//        usingGradleVersion('6.0.1')
+//        build("assembleDemoSample")
+//
+//        then:
+//        dslZipFiles.each {
+//            assertGradleWrapperVersion(it, '6.0.1')
+//        }
+//    }
 
     def "can relocate sample"() {
         makeSingleProject()

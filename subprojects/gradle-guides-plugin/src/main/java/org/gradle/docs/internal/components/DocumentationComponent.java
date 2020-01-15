@@ -14,18 +14,8 @@
  * limitations under the License.
  */
 
-package org.gradle.docs.snippets;
+package org.gradle.docs.internal.components;
 
-import org.gradle.api.Named;
-import org.gradle.api.provider.SetProperty;
-import org.gradle.docs.Dsl;
+public interface DocumentationComponent {
 
-public interface Snippet extends Named {
-    /**
-     * By convention, this is both Groovy and Kotlin.
-     * Every sample must have at least one DSL.
-     *
-     * @return DSLs that should be expected for this sample.
-     */
-    SetProperty<Dsl> getDsls();
 }

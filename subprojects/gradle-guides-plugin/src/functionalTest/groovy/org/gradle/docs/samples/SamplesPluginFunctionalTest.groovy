@@ -1,5 +1,6 @@
 package org.gradle.docs.samples
 
+import org.gradle.docs.Dsl
 import spock.lang.Ignore
 import spock.lang.Unroll
 
@@ -55,8 +56,8 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
 
         then:
         result.task(":generate").outcome == SUCCESS
-        file("build/sample-zips/sample_demo-groovy-dsl.zip").asZip().assertContainsDescendants("generated.txt")
-        file("build/sample-zips/sample_demo-groovy-dsl.zip").asZip().assertContainsDescendants("generated.txt")
+        groovyDslZipFile.asZip().assertContainsDescendants("generated.txt")
+        kotlinDslZipFile.asZip().assertContainsDescendants("generated.txt")
     }
 
     def "fails when settings.gradle.kts is missing from Kotlin DSL sample"() {
@@ -69,7 +70,7 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
 
         then:
         result.task(":validateSampleDemoKotlin").outcome == FAILED
-        result.output.contains("Sample 'demoKotlin' for Kotlin DSL is invalid due to missing 'settings.gradle.kts' file.")
+        result.output.contains("Documentation 'sampleDemoKotlin' for Kotlin DSL is invalid due to missing 'settings.gradle.kts' file.")
     }
 
     def "fails when settings.gradle is missing from Groovy DSL sample"() {
@@ -82,7 +83,7 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
 
         then:
         result.task(":validateSampleDemoGroovy").outcome == FAILED
-        result.output.contains("Sample 'demoGroovy' for Groovy DSL is invalid due to missing 'settings.gradle' file.")
+        result.output.contains("Documentation 'sampleDemoGroovy' for Groovy DSL is invalid due to missing 'settings.gradle' file.")
     }
 
     def "fails when documentation is missing from sample"() {
@@ -226,11 +227,11 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
         build("assembleDemoSample")
 
         then:
-        def demoGroovyZip = file("build/sample-zips/sample_demo-groovy-dsl.zip").asZip()
+        def demoGroovyZip = groovyDslZipFile.asZip()
         demoGroovyZip.assertDescendantHasContent("a.txt", equalTo("aaaa"))
         demoGroovyZip.assertDescendantHasContent("subdir/b.txt", equalTo("bbbb"))
 
-        def demoKotlinZip = file("build/sample-zips/sample_demo-groovy-dsl.zip").asZip()
+        def demoKotlinZip = kotlinDslZipFile.asZip()
         demoKotlinZip.assertDescendantHasContent("a.txt", equalTo("aaaa"))
         demoKotlinZip.assertDescendantHasContent("subdir/b.txt", equalTo("bbbb"))
     }

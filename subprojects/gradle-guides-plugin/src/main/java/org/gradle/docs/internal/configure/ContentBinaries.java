@@ -6,9 +6,9 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
-import org.gradle.docs.internal.TestableAsciidoctorContentBinary;
-import org.gradle.docs.internal.TestableRenderedContentLinksBinary;
-import org.gradle.docs.internal.ViewableContentBinary;
+import org.gradle.docs.internal.components.TestableAsciidoctorContentComponent;
+import org.gradle.docs.internal.components.TestableRenderedContentLinksComponent;
+import org.gradle.docs.internal.components.ViewableContentComponent;
 import org.gradle.docs.internal.exemplar.AsciidoctorContentTest;
 import org.gradle.docs.internal.exemplar.AsciidoctorContentTestConsoleType;
 import org.gradle.docs.internal.tasks.CheckLinks;
@@ -20,7 +20,7 @@ import java.util.Collection;
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
 
 public class ContentBinaries {
-    public static void createTasksForContentBinary(TaskContainer tasks, ViewableContentBinary binary) {
+    public static void createTasksForContentBinary(TaskContainer tasks, ViewableContentComponent binary) {
         tasks.register(binary.getViewTaskName(), ViewDocumentation.class, task -> {
             task.setGroup(DOCUMENTATION_GROUP_NAME);
             task.setDescription("Open in the browser the rendered documentation");
@@ -28,7 +28,7 @@ public class ContentBinaries {
         });
     }
 
-    public static void createCheckTasksForContentBinary(TaskContainer tasks, TestableRenderedContentLinksBinary binary, TaskProvider<Task> check) {
+    public static void createCheckTasksForContentBinary(TaskContainer tasks, TestableRenderedContentLinksComponent binary, TaskProvider<Task> check) {
         TaskProvider<CheckLinks> checkLinksTask = tasks.register(binary.getCheckLinksTaskName(), CheckLinks.class, task -> {
             task.setGroup(LifecycleBasePlugin.VERIFICATION_GROUP);
             task.setDescription("Check for any dead link in the rendered documentation");
@@ -38,7 +38,7 @@ public class ContentBinaries {
         check.configure(it -> it.dependsOn(checkLinksTask));
     }
 
-    public static void createCheckTaskForAsciidoctorContentBinary(Project project, String taskName, Collection<? extends TestableAsciidoctorContentBinary> binaries, TaskProvider<Task> check, Configuration asciidoctorClasspath) {
+    public static void createCheckTaskForAsciidoctorContentBinary(Project project, String taskName, Collection<? extends TestableAsciidoctorContentComponent> binaries, TaskProvider<Task> check, Configuration asciidoctorClasspath) {
         Configuration configuration = project.getConfigurations().create(taskName);
         configuration.extendsFrom(asciidoctorClasspath);
         DependencyHandler dependencies = project.getDependencies();

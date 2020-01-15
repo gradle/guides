@@ -1,4 +1,4 @@
-package org.gradle.docs.internal;
+package org.gradle.docs.internal.configure;
 
 import org.gradle.api.Named;
 

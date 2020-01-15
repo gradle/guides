@@ -3,6 +3,7 @@ package org.gradle.docs.samples;
 import org.gradle.api.provider.Property;
 import org.gradle.api.provider.SetProperty;
 import org.gradle.api.tasks.Input;
+import org.gradle.docs.Dsl;
 
 /**
  *

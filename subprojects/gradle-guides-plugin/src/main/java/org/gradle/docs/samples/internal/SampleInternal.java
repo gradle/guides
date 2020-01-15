@@ -4,30 +4,25 @@ import org.gradle.api.Action;
 import org.gradle.api.Task;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
-import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
+import org.gradle.docs.internal.components.AssembleDocumentationComponent;
+import org.gradle.docs.internal.components.NamedDocumentationComponent;
 import org.gradle.docs.samples.Sample;
 
 import javax.inject.Inject;
 
 import static org.gradle.docs.internal.StringUtils.capitalize;
 
-public abstract class SampleInternal implements Sample {
-    private final String name;
+public abstract class SampleInternal extends NamedDocumentationComponent implements AssembleDocumentationComponent, Sample {
     private final TaskProvider<Task> assemble;
     private final TaskProvider<Task> check;
 
     @Inject
     public SampleInternal(String name, TaskContainer tasks) {
-        this.name = name;
+        super(name);
         this.assemble = tasks.register("assemble" + capitalize(name + "Sample"));
         this.check = tasks.register("check" + capitalize(name + "Sample"));
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 
     @Override
@@ -50,6 +45,7 @@ public abstract class SampleInternal implements Sample {
     /**
      * @return Lifecycle task for assembling this sample.
      */
+    @Override
     public TaskProvider<Task> getAssembleTask() {
         return assemble;
     }

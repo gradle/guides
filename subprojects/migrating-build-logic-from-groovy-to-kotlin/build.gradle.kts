@@ -26,6 +26,6 @@ dependencies {
 }
 
 // TODO: Requires more investiguating on how to test this project
-tasks.named("checkAsciidoctorGuideContents") {
+tasks.named("checkAsciidoctorContents") {
     enabled = false
 }
