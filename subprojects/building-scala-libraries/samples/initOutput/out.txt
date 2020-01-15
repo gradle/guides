@@ -1,7 +1,0 @@
-> Task :wrapper
-
-> Task :init
-Get more help with your project: https://docs.gradle.org/6.0.1/userguide/scala_plugin.html
-
-BUILD SUCCESSFUL in 267ms
-2 actionable tasks: 2 executed

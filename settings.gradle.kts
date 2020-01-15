@@ -2,6 +2,8 @@ plugins {
     id("com.gradle.enterprise").version("3.1.1")
 }
 
+apply(from = "gradle/build-cache-configuration.settings.gradle.kts")
+
 rootProject.name = "gradle-guides"
 
 includeBuild("subprojects/gradle-guides-plugin")
@@ -33,11 +35,9 @@ val guides = listOf(
         "performance",
         "publishing-plugins-to-gradle-plugin-portal",
         "running-webpack-with-gradle",
-        "style-guide",
         "testing-gradle-plugins",
         "using-build-cache",
         "using-the-worker-api",
-        "writing-getting-started-guides",
         "writing-gradle-tasks"
 )
 

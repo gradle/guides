@@ -9,6 +9,7 @@ guide {
     category.set("Topical")
 }
 
+// TODO: requires some investiguation for testing
 tasks.named("asciidoctorContentDocsTest") {
     enabled = false
 }

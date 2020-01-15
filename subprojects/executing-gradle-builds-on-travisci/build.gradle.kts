@@ -9,6 +9,7 @@ guide {
     category.set("Getting Started")
 }
 
+// TODO: requires gradle-site-plugins
 tasks.named("asciidoctorContentDocsTest") {
     enabled = false
 }

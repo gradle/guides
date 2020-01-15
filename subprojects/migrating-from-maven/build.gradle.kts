@@ -9,6 +9,7 @@ guide {
     category.set("Getting Started")
 }
 
+// TODO: Requires a maven seed sample
 tasks.named("asciidoctorContentDocsTest") {
     enabled = false
 }

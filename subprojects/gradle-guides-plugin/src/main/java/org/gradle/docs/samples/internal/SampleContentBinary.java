@@ -1,9 +1,7 @@
 package org.gradle.docs.samples.internal;
 
-import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
-import org.gradle.api.provider.HasMultipleValues;
 import org.gradle.api.provider.Property;
 import org.gradle.docs.internal.RenderableContentBinary;
 import org.gradle.docs.internal.TestableContentBinary;
@@ -26,7 +24,9 @@ public abstract class SampleContentBinary extends SampleBinary implements Viewab
 
     public abstract Property<String> getBaseName();
 
-    public abstract Property<String> getPermalink();
+    public abstract Property<String> getRenderedPermalink();
+
+    public abstract Property<String> getSourcePermalink();
 
     public abstract RegularFileProperty getIndexPageFile();
 
@@ -47,4 +47,8 @@ public abstract class SampleContentBinary extends SampleBinary implements Viewab
     }
 
     public abstract RegularFileProperty getSourcePageFile();
+
+    public abstract RegularFileProperty getInstalledIndexPageFile();
+
+    public abstract Property<String> getGradleVersion();
 }

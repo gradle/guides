@@ -26,19 +26,20 @@ Just follow these steps:
 
 === Clone the https://github.com/gradle-guides/gradle-site-plugin[Gradle Site Plugin] repository
 
-[listing]
+[listing.terminal.sample-command]
 ----
-git clone https://github.com/gradle-guides/gradle-site-plugin.git
-cd gradle-site-plugin
+$ git clone https://github.com/gradle-guides/gradle-site-plugin.git
+Cloning into 'gradle-site-plugin'...
+$ cd gradle-site-plugin
 ----
 
 === Build the project
 
 As a developer of a Java project, you'll typical want to compile the source code, run the tests and assemble the JAR artifact. That's no different for Gradle plugins. The following command achieves exactly that:
 
-[listing]
+[listing.terminal.sample-command]
 ----
-./gradlew build
+$ ./gradlew build
 
 BUILD SUCCESSFUL
 14 actionable tasks: 14 executed
@@ -52,8 +53,9 @@ It is a recommended practice for any Gradle project as it enables your project t
 The sample project is equipped with support for generating https://scans.gradle.com/[build scans].
 Running the build with the command line option `--scan` renders a link in the console.
 
-[listing]
+[listing.terminal.sample-command]
 ----
+$ ./gradlew build --scan
 Publishing build scan...
 https://gradle.com/s/7mtynxxmesdio
 ----

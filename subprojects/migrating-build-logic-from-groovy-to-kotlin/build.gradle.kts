@@ -21,10 +21,11 @@ dependencies {
     constraints {
         docsTestImplementation("org.codehaus.groovy:groovy-all:2.5.4")
     }
-    docsTestImplementation("org.gradle:sample-check:0.11.1")
+    docsTestImplementation("org.gradle:sample-check:0.12.5")
     docsTestImplementation(gradleTestKit())
 }
 
+// TODO: Requires more investiguating on how to test this project
 tasks.named("asciidoctorContentDocsTest") {
     enabled = false
 }

@@ -8,6 +8,7 @@ guide {
     category.set("Getting Started")
 }
 
+// TODO: Need seed sample
 tasks.named("asciidoctorContentDocsTest") {
     enabled = false
 }

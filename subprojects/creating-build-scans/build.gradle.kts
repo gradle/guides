@@ -25,7 +25,7 @@ repositories {
 }
 
 dependencies {
-    docsTestImplementation("org.gradle:sample-check:0.11.1")
+    docsTestImplementation("org.gradle:sample-check:0.12.5")
     docsTestImplementation(gradleTestKit())
 }
 
@@ -57,6 +57,4 @@ tasks {
     }
 }
 
-tasks.named("asciidoctorContentDocsTest") {
-    enabled = false
-}
+// TODO: Need code edit to fully test the project

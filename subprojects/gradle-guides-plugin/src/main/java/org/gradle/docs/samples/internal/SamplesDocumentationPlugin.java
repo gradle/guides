@@ -26,6 +26,7 @@ import org.gradle.api.tasks.testing.Test;
 import org.gradle.api.tasks.wrapper.Wrapper;
 import org.gradle.docs.internal.DocumentationBasePlugin;
 import org.gradle.docs.internal.DocumentationExtensionInternal;
+import org.gradle.docs.internal.exemplar.AsciidoctorContentTest;
 import org.gradle.docs.samples.Dsl;
 import org.gradle.docs.samples.SampleSummary;
 import org.gradle.docs.samples.Samples;
@@ -108,6 +109,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         // Testing (and binaries)
         extension.getBinaries().withType(SampleExemplarBinary.class).all(binary -> createTasksForSampleExemplarBinary(tasks, binary));
         configureExemplarTestsForSamples(project, layout, tasks, extension, check);
+        configureContentExemplarTesting(project, tasks, extension, check, asciidoctorConfiguration);
 
         // Trigger everything by realizing sample container
         project.afterEvaluate(p -> realizeSamples(extension, objects, assemble, check, wrapperFiles, project));
@@ -140,6 +142,31 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         });
 
         template.getTemplateDirectory().convention(generateTemplate.flatMap(SyncWithProvider::getDestinationDirectory));
+    }
+
+    private void configureContentExemplarTesting(Project project, TaskContainer tasks, SamplesInternal extension, TaskProvider<Task> check, Configuration asciidoctorClasspath) {
+        Configuration configuration = project.getConfigurations().maybeCreate("asciidoctorContentDocsTest");
+        configuration.extendsFrom(asciidoctorClasspath);
+        DependencyHandler dependencies = project.getDependencies();
+        dependencies.add(configuration.getName(), "org.gradle:gradle-tooling-api:6.0.1");
+        dependencies.add(configuration.getName(), "org.apache.commons:commons-lang3:3.9");
+        dependencies.add(configuration.getName(), "org.gradle:sample-check:0.12.5");
+        dependencies.add(configuration.getName(), "junit:junit:4.12");
+
+        TaskProvider<AsciidoctorContentTest> asciidoctorContentDocsTest = tasks.register("asciidoctorContentDocsTest", AsciidoctorContentTest.class, task -> {
+            task.setGroup(LifecycleBasePlugin.VERIFICATION_GROUP);
+            task.setDescription("Check guides steps commands.");
+            task.getClasspath().from(configuration);
+            task.getGradleVersion().convention(project.getGradle().getGradleVersion());
+            extension.getBinaries().withType(TestableSampleContentBinary.class).forEach(binary -> {
+                task.testCase(testCase -> {
+                    testCase.getContentFile().set(binary.getContentBinary().get().getInstalledIndexPageFile());
+                    testCase.getStartingSample().set(binary.getArchiveBinary().get().getInstallDirectory());
+                });
+            });
+        });
+
+        check.configure(it -> it.dependsOn(asciidoctorContentDocsTest));
     }
 
     private void applyConventionsForTemplates(Samples extension, Template template) {
@@ -227,6 +254,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             task.setDescription("Generates asciidoc page for sample '" + binary.getName() + "'");
 
             task.getAttributes().put("samples-dir", binary.getSampleInstallDirectory().get().getAsFile().getAbsolutePath());
+            task.getAttributes().put("gradle-version", binary.getGradleVersion());
 
             task.getSampleSummary().convention(binary.getSummary());
             task.getReadmeFile().convention(binary.getSourcePageFile());
@@ -262,6 +290,10 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             task.into(extension.getDocumentationInstallRoot());
         });
 
+        extension.getBinaries().withType(SampleContentBinary.class).configureEach(binary -> {
+            binary.getInstalledIndexPageFile().fileProvider(assembleDocs.map(task -> new File(task.getDestinationDir(), binary.getSourcePermalink().get())));
+        });
+
         TaskProvider<AsciidoctorTask> samplesMultiPage = tasks.register("samplesMultiPage", AsciidoctorTask.class, task -> {
             task.getInputs().files("samples").withPropertyName("samplesDir").withPathSensitivity(PathSensitivity.RELATIVE).optional();
 
@@ -294,8 +326,8 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         assemble.configure(t -> t.dependsOn(extension.getDistribution().getRenderedDocumentation()));
 
         extension.getBinaries().withType(SampleContentBinary.class).configureEach(binary -> {
-            binary.getRenderedPageFile().fileProvider(samplesMultiPage.map(it -> new File(it.getOutputDir(), binary.getPermalink().get())));
-            binary.getViewablePageFile().fileProvider(samplesMultiPage.map(it -> new File(it.getOutputDir(), binary.getPermalink().get())));
+            binary.getRenderedPageFile().fileProvider(samplesMultiPage.map(it -> new File(it.getOutputDir(), binary.getRenderedPermalink().get())));
+            binary.getViewablePageFile().fileProvider(samplesMultiPage.map(it -> new File(it.getOutputDir(), binary.getRenderedPermalink().get())));
         });
 
         return samplesMultiPage;
@@ -311,7 +343,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
 
         DependencyHandler dependencies = project.getDependencies();
         dependencies.add(sourceSet.getImplementationConfigurationName(), dependencies.gradleTestKit());
-        dependencies.add(sourceSet.getImplementationConfigurationName(), "org.gradle:sample-check:0.11.1");
+        dependencies.add(sourceSet.getImplementationConfigurationName(), "org.gradle:sample-check:0.12.5");
         dependencies.add(sourceSet.getImplementationConfigurationName(), "org.slf4j:slf4j-simple:1.7.16");
         dependencies.add(sourceSet.getImplementationConfigurationName(), "junit:junit:4.12");
 
@@ -371,12 +403,14 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             contentBinary.getSampleDirectory().convention(sample.getSampleDirectory());
             contentBinary.getBaseName().convention(sample.getSampleDocName());
             contentBinary.getSummary().convention(toSummary(objects, sample));
-            contentBinary.getPermalink().convention(contentBinary.getBaseName().map(baseName -> baseName + ".html"));
+            contentBinary.getRenderedPermalink().convention(contentBinary.getBaseName().map(baseName -> baseName + ".html"));
+            contentBinary.getSourcePermalink().convention(contentBinary.getBaseName().map(baseName -> baseName + ".adoc"));
             contentBinary.getResourceFiles().from(extension.getDistribution().getZippedSamples());
             contentBinary.getResourceSpec().convention(project.copySpec(spec -> spec.from(extension.getDistribution().getZippedSamples(), sub -> sub.into("zips"))));
             contentBinary.getSourcePattern().convention(contentBinary.getBaseName().map(baseName -> baseName + ".adoc"));
             contentBinary.getSampleInstallDirectory().convention(sample.getInstallDirectory());
             contentBinary.getSourcePageFile().convention(sample.getSampleDirectory().file("README.adoc"));
+            contentBinary.getGradleVersion().convention(project.getGradle().getGradleVersion());
 
             // TODO: To make this lazy without afterEvaluate/eagerness, we need to be able to tell the tasks container that the samples container should be consulted
             assemble.configure(t -> t.dependsOn(sample.getAssembleTask()));
@@ -399,6 +433,11 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
                 exemplarBinary.getTestsContent().from(sample.getSampleDirectory().dir("tests"));
                 exemplarBinary.getTestsContent().from(sample.getTestsContent());
                 extension.getBinaries().add(exemplarBinary);
+
+                TestableSampleContentBinary testableContentBinary = objects.newInstance(TestableSampleContentBinary.class, sample.getName() + dsl.getDisplayName());
+                testableContentBinary.getArchiveBinary().convention(binary);
+                testableContentBinary.getContentBinary().convention(contentBinary);
+                extension.getBinaries().add(testableContentBinary);
             }
         }
     }

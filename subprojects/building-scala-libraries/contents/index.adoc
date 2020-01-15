@@ -20,6 +20,7 @@ Gradle comes with a built-in plugin called the Build Init plugin. It is document
 
 The first step is to create a folder for the new project and change directory into it.
 
+[listing.terminal.sample-command]
 ----
 $ mkdir building-scala-libraries
 $ cd building-scala-libraries
@@ -29,10 +30,24 @@ $ cd building-scala-libraries
 
 From inside the new project directory, run the `init` task with the `scala-library` argument.
 
-[listing]
+[listing.terminal.sample-command]
 ----
 $ gradle init --type scala-library --package guidesamples
-include::{samples-dir}/initOutput/out.txt[]
+> Task :wrapper
+
+Select build script DSL:
+  1: Groovy
+  2: Kotlin
+Enter selection (default: Groovy) [1..2]
+
+Project name (default: building-scala-libraries):
+
+
+> Task :init
+Get more help with your project: https://docs.gradle.org/6.0.1/userguide/scala_plugin.html
+
+BUILD SUCCESSFUL
+2 actionable tasks: 2 executed
 ----
 
 The `init` task runs the `wrapper` task first, which generates the `gradlew` and `gradlew.bat` wrapper scripts. Then it creates the new project with the following structure:
@@ -93,7 +108,7 @@ The generated test class consists of a single Scala FunSuite. The test instantia
 
 To build the project, run the `build` task. You can use the regular `gradle` command, but when a project includes a wrapper script, it is considered good form to use it instead.
 
-[listing]
+[listing.terminal.sample-command,allow-additional-output]
 ----
 $ ./gradlew build
 include::{samples-dir}/buildOutput/out.txt[]
@@ -125,10 +140,20 @@ include::{samples-dir}/files/src/main/scala/guidesamples/Library.scala[tags=scal
 
 Run the `scaladoc` task.
 
-[listing]
+[listing.terminal.sample-command]
 ----
 $ ./gradlew scaladoc
-include::{samples-dir}/docOutput/out.txt[]
+> Task :compileJava NO-SOURCE
+> Task :compileScala UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+
+> Task :scaladoc
+[ant:scaladoc] Element '/working-directory/building-scala-libraries/build/classes/java/main' does not exist.
+[ant:scaladoc] Element '/working-directory/building-scala-libraries/build/resources/main' does not exist.
+
+BUILD SUCCESSFUL
+2 actionable tasks: 1 executed, 1 up-to-date
 ----
 
 You can view the generated Scaladoc by opening the HTML file, located at `build/docs/scaladoc/index.html`.

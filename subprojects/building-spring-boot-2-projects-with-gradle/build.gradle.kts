@@ -19,10 +19,10 @@ dependencies {
     constraints {
         docsTestImplementation("org.codehaus.groovy:groovy-all:2.5.6")
     }
-    docsTestImplementation("org.gradle:sample-check:0.11.1")
+    docsTestImplementation("org.gradle:sample-check:0.12.5")
     docsTestImplementation(gradleTestKit())
 }
 
-tasks.named("asciidoctorContentDocsTest") {
-    enabled = false
-}
+// TODO: Requires real-time content modification
+// TODO: Requires CTRL-C handling
+// TODO: Requires background running

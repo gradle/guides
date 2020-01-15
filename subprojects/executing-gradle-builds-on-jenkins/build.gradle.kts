@@ -9,6 +9,7 @@ guide {
     category.set("Getting Started")
 }
 
+// TODO: gradle-site-plugin seems to be broken
 tasks.named("asciidoctorContentDocsTest") {
     enabled = false
 }
