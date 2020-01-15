@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package org.gradle.docs.samples.internal;
+package org.gradle.docs.guides.internal;
 
-import org.gradle.api.provider.Property;
+import org.gradle.docs.internal.TestableAsciidoctorContentBinary;
 
 import javax.inject.Inject;
 
-public abstract class TestableSampleContentBinary extends SampleBinary {
+public abstract class TestableAsciidoctorGuideContentBinary extends GuideBinary implements TestableAsciidoctorContentBinary {
     @Inject
-    public TestableSampleContentBinary(String name) {
+    public TestableAsciidoctorGuideContentBinary(String name) {
         super(name);
     }
-
-    public abstract Property<SampleArchiveBinary> getArchiveBinary();
-    public abstract Property<SampleContentBinary> getContentBinary();
 }

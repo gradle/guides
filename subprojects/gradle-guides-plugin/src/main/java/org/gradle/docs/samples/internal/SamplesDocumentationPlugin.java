@@ -26,6 +26,7 @@ import org.gradle.api.tasks.testing.Test;
 import org.gradle.api.tasks.wrapper.Wrapper;
 import org.gradle.docs.internal.DocumentationBasePlugin;
 import org.gradle.docs.internal.DocumentationExtensionInternal;
+import org.gradle.docs.internal.TestableAsciidoctorContentBinary;
 import org.gradle.docs.internal.exemplar.AsciidoctorContentTest;
 import org.gradle.docs.samples.Dsl;
 import org.gradle.docs.samples.SampleSummary;
@@ -44,6 +45,7 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,8 +58,7 @@ import static org.gradle.docs.internal.DocumentationBasePlugin.DOCS_TEST_SOURCE_
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
 import static org.gradle.docs.internal.StringUtils.*;
 import static org.gradle.docs.internal.configure.AsciidoctorTasks.*;
-import static org.gradle.docs.internal.configure.ContentBinaries.createCheckTasksForContentBinary;
-import static org.gradle.docs.internal.configure.ContentBinaries.createTasksForContentBinary;
+import static org.gradle.docs.internal.configure.ContentBinaries.*;
 
 @SuppressWarnings("UnstableApiUsage")
 public class SamplesDocumentationPlugin implements Plugin<Project> {
@@ -109,7 +110,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         // Testing (and binaries)
         extension.getBinaries().withType(SampleExemplarBinary.class).all(binary -> createTasksForSampleExemplarBinary(tasks, binary));
         configureExemplarTestsForSamples(project, layout, tasks, extension, check);
-        configureContentExemplarTesting(project, tasks, extension, check, asciidoctorConfiguration);
+        createCheckTaskForAsciidoctorContentBinary(project, "checkAsciidoctorSampleContents", extension.getBinaries().withType(TestableAsciidoctorSampleContentBinary.class), check, asciidoctorConfiguration);
 
         // Trigger everything by realizing sample container
         project.afterEvaluate(p -> realizeSamples(extension, objects, assemble, check, wrapperFiles, project));
@@ -142,31 +143,6 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         });
 
         template.getTemplateDirectory().convention(generateTemplate.flatMap(SyncWithProvider::getDestinationDirectory));
-    }
-
-    private void configureContentExemplarTesting(Project project, TaskContainer tasks, SamplesInternal extension, TaskProvider<Task> check, Configuration asciidoctorClasspath) {
-        Configuration configuration = project.getConfigurations().create("asciidoctorContentSamplesDocsTest");
-        configuration.extendsFrom(asciidoctorClasspath);
-        DependencyHandler dependencies = project.getDependencies();
-        dependencies.add(configuration.getName(), "org.gradle:gradle-tooling-api:6.0.1");
-        dependencies.add(configuration.getName(), "org.apache.commons:commons-lang3:3.9");
-        dependencies.add(configuration.getName(), "org.gradle:sample-check:0.12.5");
-        dependencies.add(configuration.getName(), "junit:junit:4.12");
-
-        TaskProvider<AsciidoctorContentTest> asciidoctorContentDocsTest = tasks.register("asciidoctorContentSamplesDocsTest", AsciidoctorContentTest.class, task -> {
-            task.setGroup(LifecycleBasePlugin.VERIFICATION_GROUP);
-            task.setDescription("Check guides steps commands.");
-            task.getClasspath().from(configuration);
-            task.getGradleVersion().convention(project.getGradle().getGradleVersion());
-            extension.getBinaries().withType(TestableSampleContentBinary.class).forEach(binary -> {
-                task.testCase(testCase -> {
-                    testCase.getContentFile().set(binary.getContentBinary().get().getInstalledIndexPageFile());
-                    testCase.getStartingSample().set(binary.getArchiveBinary().get().getInstallDirectory());
-                });
-            });
-        });
-
-        check.configure(it -> it.dependsOn(asciidoctorContentDocsTest));
     }
 
     private void applyConventionsForTemplates(Samples extension, Template template) {
@@ -434,9 +410,9 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
                 exemplarBinary.getTestsContent().from(sample.getTestsContent());
                 extension.getBinaries().add(exemplarBinary);
 
-                TestableSampleContentBinary testableContentBinary = objects.newInstance(TestableSampleContentBinary.class, sample.getName() + dsl.getDisplayName());
-                testableContentBinary.getArchiveBinary().convention(binary);
-                testableContentBinary.getContentBinary().convention(contentBinary);
+                TestableAsciidoctorSampleContentBinary testableContentBinary = objects.newInstance(TestableAsciidoctorSampleContentBinary.class, sample.getName() + dsl.getDisplayName());
+                testableContentBinary.getContentFile().convention(contentBinary.getInstalledIndexPageFile());
+                testableContentBinary.getStartingSampleDirectory().convention(binary.getInstallDirectory());
                 extension.getBinaries().add(testableContentBinary);
             }
         }

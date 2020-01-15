@@ -9,6 +9,6 @@ guide {
 }
 
 // TODO: Doesn't seems like there are any commands to test
-tasks.named("asciidoctorContentDocsTest") {
+tasks.named("checkAsciidoctorGuideContents") {
     enabled = false
 }

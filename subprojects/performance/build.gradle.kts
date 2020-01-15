@@ -10,6 +10,6 @@ guide {
 }
 
 // TODO: requires some investiguation for testing
-tasks.named("asciidoctorContentDocsTest") {
+tasks.named("checkAsciidoctorGuideContents") {
     enabled = false
 }

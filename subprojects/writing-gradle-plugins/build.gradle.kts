@@ -8,6 +8,6 @@ guide {
     category.set("Getting Started")
 }
 
-tasks.named("asciidoctorContentDocsTest") {
+tasks.named("checkAsciidoctorGuideContents") {
     enabled = false
 }

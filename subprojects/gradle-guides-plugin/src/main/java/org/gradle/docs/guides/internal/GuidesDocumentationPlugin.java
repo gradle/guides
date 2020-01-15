@@ -32,8 +32,7 @@ import static org.gradle.docs.internal.Asserts.assertNameDoesNotContainsDisallow
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
 import static org.gradle.docs.internal.StringUtils.*;
 import static org.gradle.docs.internal.configure.AsciidoctorTasks.*;
-import static org.gradle.docs.internal.configure.ContentBinaries.createCheckTasksForContentBinary;
-import static org.gradle.docs.internal.configure.ContentBinaries.createTasksForContentBinary;
+import static org.gradle.docs.internal.configure.ContentBinaries.*;
 
 public class GuidesDocumentationPlugin implements Plugin<Project> {
     @Override
@@ -75,33 +74,10 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         createPublishGuidesElements(project.getConfigurations(), objects, renderTask, extension);
 
         // Testing
-        configureContentExemplarTesting(project, tasks, extension, check, asciidoctorConfiguration);
+        createCheckTaskForAsciidoctorContentBinary(project, "checkAsciidoctorGuideContents", extension.getBinaries().withType(TestableAsciidoctorGuideContentBinary.class), check, asciidoctorConfiguration);
 
         // Trigger everything by realizing guide container
         project.afterEvaluate(p -> realizeGuides(extension, objects, projectOnlyForCopySpecMethod));
-    }
-
-    private void configureContentExemplarTesting(Project project, TaskContainer tasks, GuidesInternal extension, TaskProvider<Task> check, Configuration asciidoctorClasspath) {
-        Configuration configuration = project.getConfigurations().create("asciidoctorContentGuidesDocsTest");
-        configuration.extendsFrom(asciidoctorClasspath);
-        DependencyHandler dependencies = project.getDependencies();
-        dependencies.add(configuration.getName(), "org.gradle:gradle-tooling-api:6.0.1");
-        dependencies.add(configuration.getName(), "org.apache.commons:commons-lang3:3.9");
-        dependencies.add(configuration.getName(), "org.gradle:sample-check:0.12.5");
-        dependencies.add(configuration.getName(), "junit:junit:4.12");
-
-        TaskProvider<AsciidoctorContentTest> asciidoctorContentDocsTest = tasks.register("asciidoctorContentGuidesDocsTest", AsciidoctorContentTest.class, task -> {
-            task.setGroup(LifecycleBasePlugin.VERIFICATION_GROUP);
-            task.setDescription("Check guides steps commands.");
-            task.getClasspath().from(configuration);
-            task.getGradleVersion().convention(project.getGradle().getGradleVersion());
-            task.getDefaultConsoleType().convention(AsciidoctorContentTestConsoleType.PLAIN); // For now, we need to discuss this choice
-            extension.getBinaries().withType(GuideContentBinary.class).forEach(contentBinary -> {
-                task.testCase(testCase -> testCase.getContentFile().set(contentBinary.getInstalledIndexPageFile()));
-            });
-        });
-
-        check.configure(it -> it.dependsOn(asciidoctorContentDocsTest));
     }
 
     private Configuration createPublishGuidesElements(ConfigurationContainer configurations, ObjectFactory objects, TaskProvider<? extends Task> renderTask, GuidesInternal extension) {
@@ -248,6 +224,10 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             contentBinary.getResourceSpec().convention(project.copySpec(spec -> spec.from(guide.getGuideDirectory().dir("contents/images"), it -> it.into(contentBinary.getBaseDirectory().get() + "/images"))));
             contentBinary.getSourcePattern().convention(contentBinary.getSourcePermalink());
             contentBinary.getSourcePageFile().convention(guide.getGuideDirectory().file("contents/index.adoc"));
+
+            TestableAsciidoctorGuideContentBinary testableAsciidoctorGuideContentBinary = objects.newInstance(TestableAsciidoctorGuideContentBinary.class, guide.getName());
+            extension.getBinaries().add(testableAsciidoctorGuideContentBinary);
+            testableAsciidoctorGuideContentBinary.getContentFile().convention(contentBinary.getInstalledIndexPageFile());
         }
     }
 }

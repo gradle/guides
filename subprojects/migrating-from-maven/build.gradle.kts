@@ -10,6 +10,6 @@ guide {
 }
 
 // TODO: Requires a maven seed sample
-tasks.named("asciidoctorContentDocsTest") {
+tasks.named("checkAsciidoctorGuideContents") {
     enabled = false
 }
