@@ -101,7 +101,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         registerGenerateSampleIndex(tasks, providers, objects, extension);
 
         // Render all the documentation out to HTML
-        TaskProvider<? extends Task> renderTask = renderSamplesDocumentation(tasks, assemble, check, extension, asciidoctorConfiguration);
+        TaskProvider<? extends Task> renderTask = renderSamplesDocumentation(tasks, assemble, check, extension);
 
         // Templates
         extension.getTemplates().configureEach(template -> applyConventionsForTemplates(extension, template));
@@ -250,7 +250,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         extension.getSampleIndexFile().convention(generateSampleIndex.flatMap(GenerateSampleIndexAsciidoc::getOutputFile));
     }
 
-    private TaskProvider<? extends Task> renderSamplesDocumentation(TaskContainer tasks, TaskProvider<Task> assemble, TaskProvider<Task> check, SamplesInternal extension, Configuration classpath) {
+    private TaskProvider<? extends Task> renderSamplesDocumentation(TaskContainer tasks, TaskProvider<Task> assemble, TaskProvider<Task> check, SamplesInternal extension) {
         TaskProvider<Sync> assembleDocs = tasks.register("assembleSamples", Sync.class, task -> {
             task.setGroup(DOCUMENTATION_GROUP_NAME);
             task.setDescription("Assembles all intermediate files needed to generate the samples documentation.");
@@ -288,7 +288,6 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             task.setOutputDir(extension.getRenderedDocumentationRoot().get().getAsFile());
 
             task.setSeparateOutputDirs(false);
-            task.setClasspath(classpath);
 
             // TODO: Figure out why so much difference with guides
             // TODO: This is specific to gradle/gradle

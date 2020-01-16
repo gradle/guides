@@ -68,7 +68,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         extension.getBinaries().withType(GuideContentBinary.class).all(binary -> createTasksForGuideContentBinary(tasks, layout, providers, binary));
 
         // Render all the documentation out to HTML
-        TaskProvider<? extends Task> renderTask = renderGuidesDocumentation(tasks, assemble, check, extension, asciidoctorConfiguration);
+        TaskProvider<? extends Task> renderTask = renderGuidesDocumentation(tasks, assemble, check, extension);
 
         // Publish the guides to consumers
         createPublishGuidesElements(project.getConfigurations(), objects, renderTask, extension);
@@ -133,7 +133,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         binary.getIndexPageFile().convention(generateGuidePage.flatMap(GenerateGuidePageAsciidoc::getOutputFile));
     }
 
-    private TaskProvider<? extends Task> renderGuidesDocumentation(TaskContainer tasks, TaskProvider<Task> assemble, TaskProvider<Task> check, GuidesInternal extension, Configuration classpath) {
+    private TaskProvider<? extends Task> renderGuidesDocumentation(TaskContainer tasks, TaskProvider<Task> assemble, TaskProvider<Task> check, GuidesInternal extension) {
         TaskProvider<Sync> assembleDocs = tasks.register("assembleGuides", Sync.class, task -> {
             task.setGroup(DOCUMENTATION_GROUP_NAME);
             task.setDescription("Assembles all intermediate files needed to generate the samples documentation.");
@@ -172,7 +172,6 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             task.setOutputDir(extension.getRenderedDocumentationRoot().get().getAsFile());
 
             task.setSeparateOutputDirs(false);
-            task.setClasspath(classpath);
 
             // TODO: This is specific to guides
             attributes.put("imagesdir", "images");
