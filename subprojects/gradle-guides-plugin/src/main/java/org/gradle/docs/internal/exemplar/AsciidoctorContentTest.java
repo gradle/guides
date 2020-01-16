@@ -44,7 +44,7 @@ public abstract class AsciidoctorContentTest extends DefaultTask {
     public abstract ConfigurableFileCollection getClasspath();
 
     /**
-     * @implNote The default console type doesn't affect the console choice requireing user interaction like `init` task or `--scan` flag
+     * Note: The default console type doesn't affect the console choice requireing user interaction like `init` task or `--scan` flag
      */
     @Input @Optional
     public abstract Property<AsciidoctorContentTestConsoleType> getDefaultConsoleType();
