@@ -10,6 +10,7 @@ tasks.register("clean") {
 
 var buildTask = tasks.register("build") {
     dependsOn(guideProjects.map { ":${it}:build" })
+    dependsOn(gradle.includedBuild("gradle-guides-plugin").task(":build"))
 }
 
 tasks.register("publishDocumentationPlugins") {
