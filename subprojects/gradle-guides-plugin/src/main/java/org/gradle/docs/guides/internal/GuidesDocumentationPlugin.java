@@ -48,7 +48,6 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         project.getPluginManager().apply("org.asciidoctor.convert"); // For the `asciidoctor` configuration
 
         Configuration asciidoctorConfiguration = project.getConfigurations().maybeCreate("asciidoctorForDocumentation");
-        asciidoctorConfiguration.extendsFrom(project.getConfigurations().getByName("asciidoctor"));
         project.getRepositories().maven(it -> it.setUrl("https://repo.gradle.org/gradle/libs-releases"));
         project.getDependencies().add(asciidoctorConfiguration.getName(), "org.gradle:docs-asciidoctor-extensions:0.4.0");
 
