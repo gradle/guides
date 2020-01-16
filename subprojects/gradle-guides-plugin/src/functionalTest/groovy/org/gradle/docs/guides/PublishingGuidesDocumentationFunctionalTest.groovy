@@ -12,7 +12,7 @@ class PublishingGuidesDocumentationFunctionalTest extends AbstractGuideFunctiona
         """
         file('legacy/build.gradle') << """
             plugins {
-                id 'org.gradle.guides'
+                id 'org.gradle.guide'
             }
         """
         writeGuideUnderTest("legacy")
@@ -85,7 +85,7 @@ class PublishingGuidesDocumentationFunctionalTest extends AbstractGuideFunctiona
         """
         file('legacy/build.gradle') << """
             plugins {
-                id 'org.gradle.guides'
+                id 'org.gradle.guide'
             }
         """
         writeGuideUnderTest('legacy')
