@@ -20,8 +20,8 @@ class IncrementalGuidesDocumentationFunctionalTest extends AbstractGuideFunction
 
         when:
         file('src/docs/guides/demo/contents/index.adoc') << """
-More content.
-"""
+            |More content.
+            |""".stripMargin()
         result = build('guidesMultiPage')
         then:
         result.task(':guidesMultiPage').outcome == TaskOutcome.SUCCESS

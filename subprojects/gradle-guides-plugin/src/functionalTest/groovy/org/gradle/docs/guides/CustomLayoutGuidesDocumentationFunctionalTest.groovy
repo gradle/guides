@@ -14,7 +14,7 @@ class CustomLayoutGuidesDocumentationFunctionalTest extends AbstractGuideFunctio
         def result = build("assemble")
 
         then:
-        result.assertTasksExecutedAndNotSkipped(':generateDemoPage', ':assembleGuides', ':guidesMultiPage', ':assemble')
+        result.assertTasksExecutedAndNotSkipped(':generateDemoPage', ':assembleGuides', ':guidesMultiPage', ':generateSampleIndex', ':assembleSamples', ':samplesMultiPage', ':assemble')
     }
 
     def "relocates Asciidoctor attributes for samples code and output directory"() {
@@ -22,10 +22,10 @@ class CustomLayoutGuidesDocumentationFunctionalTest extends AbstractGuideFunctio
         makeSingleProject()
         writeGuideUnderTest('custom-location')
         file('custom-location/contents/index.adoc') << """
-* Samples directory: {samples-dir}
-* Samples code directory: {samplescodedir}
-* Samples output directory: {samplesoutputdir}
-"""
+            |* Samples directory: {samples-dir}
+            |* Samples code directory: {samplescodedir}
+            |* Samples output directory: {samplesoutputdir}
+            |""".stripMargin()
         buildFile << """
             ${guideUnderTestDsl} {
                 guideDirectory = file('custom-location')

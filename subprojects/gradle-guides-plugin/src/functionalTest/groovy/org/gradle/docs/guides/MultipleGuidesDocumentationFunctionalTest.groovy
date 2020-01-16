@@ -6,15 +6,15 @@ class MultipleGuidesDocumentationFunctionalTest extends AbstractGuideFunctionalS
         writeGuideUnderTest('src/docs/guides/foo')
         writeGuideUnderTest('src/docs/guides/bar')
         file('src/docs/guides/foo/contents/index.adoc') << '''
-* Samples directory: {samples-dir}
-* Samples code directory: {samplescodedir}
-* Samples output directory: {samplesoutputdir}
-'''
+            |* Samples directory: {samples-dir}
+            |* Samples code directory: {samplescodedir}
+            |* Samples output directory: {samplesoutputdir}
+            |'''.stripMargin()
         file('src/docs/guides/bar/contents/index.adoc') << '''
-* Samples directory: {samples-dir}
-* Samples code directory: {samplescodedir}
-* Samples output directory: {samplesoutputdir}
-'''
+            |* Samples directory: {samples-dir}
+            |* Samples code directory: {samplescodedir}
+            |* Samples output directory: {samplesoutputdir}
+            |'''.stripMargin()
 
         when:
         build('assemble')

@@ -1,7 +1,6 @@
 package org.gradle.docs.guides
 
 import org.gradle.docs.TestFile
-import spock.lang.Unroll
 
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
@@ -32,7 +31,7 @@ class BasicGuidesDocumentationFunctionalTest extends AbstractGuideFunctionalSpec
         def result = build('assemble')
 
         then:
-        result.assertTasksExecutedAndNotSkipped(':generateDemoPage', ':assembleGuides', ':guidesMultiPage', ':assemble')
+        result.assertTasksExecutedAndNotSkipped(':generateDemoPage', ':assembleGuides', ':guidesMultiPage', ':generateSampleIndex', ':assembleSamples', ':samplesMultiPage', ':assemble')
     }
 
     def "separate each rendered guides to individual workspace with snake case naming"() {
@@ -48,7 +47,7 @@ class BasicGuidesDocumentationFunctionalTest extends AbstractGuideFunctionalSpec
         def result = build('assemble')
 
         then:
-        result.assertTasksExecutedAndNotSkipped(':generateFooPage', ':generateFooBarPage', ':assembleGuides', ':guidesMultiPage', ':assemble')
+        result.assertTasksExecutedAndNotSkipped(':generateFooBarPage', ':generateFooPage', ':assembleGuides', ':guidesMultiPage', ':generateSampleIndex', ':assembleSamples', ':samplesMultiPage', ':assemble')
 
         and:
         file("build/working/guides/docs/foo/index.adoc").exists()
@@ -63,20 +62,20 @@ class BasicGuidesDocumentationFunctionalTest extends AbstractGuideFunctionalSpec
         makeSingleProject()
         writeGuideUnderTest()
         file('src/docs/guides/demo/contents/step-1.adoc') << """
-== Step 1
-
-Some information about step 1.
-"""
+            |== Step 1
+            |
+            |Some information about step 1.
+            |""".stripMargin()
         file('src/docs/guides/demo/contents/step-2.adoc') << """
-== Step 2
-
-Some information about step 2.
-"""
+            |== Step 2
+            |
+            |Some information about step 2.
+            |""".stripMargin()
         file('src/docs/guides/demo/contents/index.adoc') << """
-include::step-1.adoc[]
-
-include::step-2.adoc[]
-"""
+            |include::step-1.adoc[]
+            |
+            |include::step-2.adoc[]
+            |""".stripMargin()
 
         when:
         def result = build('assemble')
@@ -95,20 +94,20 @@ include::step-2.adoc[]
         makeSingleProject()
         writeGuideUnderTest()
         file('src/docs/guides/demo/contents/step-1.adoc') << """
-== Step 1
-
-Some information about step 1.
-"""
+            |== Step 1
+            |
+            |Some information about step 1.
+            |""".stripMargin()
         file('src/docs/guides/demo/contents/step-2.adoc') << """
-== Step 2
-
-Some information about step 2.
-"""
+            |== Step 2
+            |
+            |Some information about step 2.
+            |""".stripMargin()
         file('src/docs/guides/demo/contents/index.adoc') << """
-include::step-1.adoc[]
-
-include::step-2.adoc[]
-"""
+            |include::step-1.adoc[]
+            |
+            |include::step-2.adoc[]
+            |""".stripMargin()
 
         when:
         !file('build/working/guides/render-guides/demo/index.html').exists()
@@ -126,16 +125,16 @@ include::step-2.adoc[]
         makeSingleProject()
         writeGuideUnderTest()
         file('src/docs/guides/demo/contents/command-output-1.txt') << """
-Some command output
-"""
+            |Some command output
+            |""".stripMargin()
         file('src/docs/guides/demo/contents/command-output-2.txt') << """
-Some other command output
-"""
+            |Some other command output
+            |""".stripMargin()
         file('src/docs/guides/demo/contents/index.adoc') << """
-include::command-output-1.txt[]
-
-include::command-output-2.txt[]
-"""
+            |include::command-output-1.txt[]
+            |
+            |include::command-output-2.txt[]
+            |""".stripMargin()
 
         when:
         def result = build('assemble')
@@ -156,8 +155,8 @@ include::command-output-2.txt[]
         def image1 = image('src/docs/guides/demo/contents/images/image-1.png')
         def image2 = image('src/docs/guides/demo/contents/images/image-2.png')
         file('src/docs/guides/demo/contents/index.adoc') << """
-image::image-1.png[]
-"""
+            |image::image-1.png[]
+            |""".stripMargin()
 
         when:
         !file('build/working/guides/render-guides/demo/images/image-1.png').exists()
@@ -201,10 +200,10 @@ image::image-1.png[]
         makeSingleProject()
         writeGuideUnderTest()
         file('src/docs/guides/demo/contents/index.adoc') << """
-* Samples directory: {samples-dir}
-* Samples code directory: {samplescodedir}
-* Samples output directory: {samplesoutputdir}
-"""
+            |* Samples directory: {samples-dir}
+            |* Samples code directory: {samplescodedir}
+            |* Samples output directory: {samplesoutputdir}
+            |""".stripMargin()
 
         when:
         build('assemble')
@@ -238,8 +237,8 @@ image::image-1.png[]
         makeSingleProject()
         writeGuideUnderTest()
         file('src/docs/guides/demo/contents/index.adoc') << """
-* Repository path: {repository-path}
-"""
+            |* Repository path: {repository-path}
+            |""".stripMargin()
         buildFile << """
             ${guideUnderTestDsl} {
                 repositoryPath = "foo/bar"
@@ -260,11 +259,11 @@ image::image-1.png[]
         makeSingleProject()
         writeGuideUnderTest()
         file('src/docs/guides/demo/contents/index.adoc') << """
-* Gradle version: {gradle-version}
-* User manual link: {user-manual}
-* Language reference link: {language-reference}
-* API reference link: {api-reference}
-"""
+            |* Gradle version: {gradle-version}
+            |* User manual link: {user-manual}
+            |* Language reference link: {language-reference}
+            |* API reference link: {api-reference}
+            |""".stripMargin()
 
         when:
         usingGradleVersion('6.0')
@@ -284,11 +283,11 @@ image::image-1.png[]
         makeSingleProject()
         writeGuideUnderTest()
         file('src/docs/guides/demo/contents/index.adoc') << """
-* Gradle version: {gradle-version}
-* User manual link: {user-manual}
-* Language reference link: {language-reference}
-* API reference link: {api-reference}
-"""
+            |* Gradle version: {gradle-version}
+            |* User manual link: {user-manual}
+            |* Language reference link: {language-reference}
+            |* API reference link: {api-reference}
+            |""".stripMargin()
         buildFile << """
             ${guideUnderTestDsl} {
                 minimumGradleVersion = "5.2"
@@ -312,26 +311,26 @@ image::image-1.png[]
         makeSingleProject()
         writeGuideUnderTest()
         file('src/docs/guides/demo/contents/index.adoc') << """
-My build file:
-include::{samplescodedir}/helloWorld/build.gradle[]
-Output:
-include::{samplesoutputdir}/helloWorld/build.out[]
-"""
+            |My build file:
+            |include::{samplescodedir}/helloWorld/build.gradle[]
+            |Output:
+            |include::{samplesoutputdir}/helloWorld/build.out[]
+            |""".stripMargin()
         def samplesCodeFolder = temporaryFolder.newFolder('src', 'docs', 'guides', 'demo', 'samples', 'code')
         File codeDir = createDir(samplesCodeFolder, 'helloWorld')
         new File(codeDir, 'build.gradle') << """
-task helloWorld {
-    doLast {
-        println 'Hello world!'
-    }
-}
-"""
+            task helloWorld {
+                doLast {
+                    println 'Hello world!'
+                }
+            }
+        """
         def samplesOutputFolder = temporaryFolder.newFolder('src', 'docs', 'guides', 'demo', 'samples', 'output')
         File outputDir = createDir(samplesOutputFolder, 'helloWorld')
         new File(outputDir, 'build.out') << """
-> Task :helloWorld
-Hello world!
-"""
+            |> Task :helloWorld
+            |Hello world!
+            |""".stripMargin()
 
         when:
         build('assemble')
@@ -364,8 +363,8 @@ Hello world!
         makeSingleProject()
         writeGuideUnderTest()
         file('src/docs/guides/demo/contents/index.adoc') << """
-include::contribute[repo-path="gradle-guides/demo"]
-"""
+            |include::contribute[repo-path="gradle-guides/demo"]
+            |""".stripMargin()
 
         expect:
         build('assemble')
@@ -376,11 +375,11 @@ include::contribute[repo-path="gradle-guides/demo"]
         makeSingleProject()
         writeGuideUnderTest()
         file('src/docs/guides/demo/contents/index.adoc') << '''
-====
-include::sample[dir="groovy-dsl/code", files="settings.gradle[]"]
-include::sample[dir="kotlin-dsl/code", files="settings.gradle.kts[]"]
-====
-'''
+            |====
+            |include::sample[dir="groovy-dsl/code", files="settings.gradle[]"]
+            |include::sample[dir="kotlin-dsl/code", files="settings.gradle.kts[]"]
+            |====
+            |'''.stripMargin()
         temporaryFolder.newFolder('samples', 'groovy-dsl', 'code')
         temporaryFolder.newFolder('samples', 'kotlin-dsl', 'code')
         file('src/docs/guides/demo/samples/groovy-dsl/code/settings.gradle') << "rootProject.name = 'demo'"
