@@ -32,7 +32,7 @@ class BasicExplicitKotlinDslSampleFunctionalTest extends AbstractKotlinDslSample
             }
         """
         writeReadmeTo(file('src'))
-        writeKotlinDslSampleToDirectory(file('src/kotlin-dsl'))
+        writeKotlinDslSampleTo(file('src/kotlin-dsl'))
         file('src/kotlin/do.not.include') << "should not be included"
 
         when:

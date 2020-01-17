@@ -142,7 +142,7 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
     def "detects DSL based on content available"() {
         makeSingleProject()
         writeReadmeTo(sampleDirectoryUnderTest)
-        writeGroovyDslSample(sampleDirectoryUnderTest)
+        writeGroovyDslSampleTo(sampleDirectoryUnderTest.file('groovy'))
 
         when:
         // Only expect Groovy DSL content
@@ -178,8 +178,8 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
 
     @Unroll
     def "uses '#displayName' instead of '#name' when generating sample index"() {
-        writeSampleUnderTest("src/docs/samples/${name}")
-        buildFile << applyDocumentationPlugin() << createSample(name)
+        writeSampleUnderTest(file("src/docs/samples/${name}"))
+        buildFile << applyDocumentationPlugin() << createSampleWithBothDsl(name)
 
         when:
         build('generateSampleIndex')
@@ -196,8 +196,8 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
     }
 
     def "can configure sample display name on the generated sample index"() {
-        writeSampleUnderTest('src/docs/samples/demo')
-        buildFile << applyDocumentationPlugin() << createSample('demo') << """
+        writeSampleUnderTest()
+        buildFile << applyDocumentationPlugin() << createSampleWithBothDsl('demo') << """
             ${sampleDsl('demo')}.displayName = "Demo XUnit"
         """
 
@@ -258,11 +258,11 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
     def "sorts samples by category and display name"() {
         makeSingleProject()
         buildFile << """ 
-            ${createSample('zzz')} {
+            ${createSampleWithBothDsl('zzz')} {
                 category = "Special"
             }
-            ${createSample('mmm')}
-            ${createSample('aaa')}
+            ${createSampleWithBothDsl('mmm')}
+            ${createSampleWithBothDsl('aaa')}
             documentation.samples.publishedSamples.all { dsls = [ ${Dsl.canonicalName}.GROOVY ] }
         """
 
@@ -302,13 +302,5 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
         assert process.exitValue() == 0
         stdoutThread.join(5000)
         stderrThread.join(5000)
-    }
-
-    private static String applyDocumentationPlugin() {
-        return  """
-            plugins {
-                id 'org.gradle.documentation'
-            }
-        """
     }
 }

@@ -1,12 +1,13 @@
 package org.gradle.docs.samples
 
+import org.gradle.docs.TestFile
 import org.gradle.testkit.runner.BuildResult
 
 class BasicConventionalKotlinDslSampleFunctionalTest extends AbstractKotlinDslSampleFunctionalTest {
     @Override
-    protected void writeSampleUnderTest(String directory) {
-        writeReadmeTo(file(directory))
-        writeKotlinDslSample(file(directory))
+    protected void writeSampleUnderTest(TestFile directory) {
+        writeReadmeTo(directory)
+        writeKotlinDslSampleTo(directory.file('kotlin'))
     }
 
     @Override

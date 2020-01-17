@@ -6,7 +6,7 @@ import org.gradle.docs.TestFile
 class SamplesRenderableDocumentationFunctionalTest extends AbstractRenderableDocumentationFunctionalTest implements SamplesTrait {
     @Override
     protected String createDocumentationElement(String name) {
-        return createSample(name, Dsl.GROOVY, Dsl.KOTLIN)
+        return createSampleWithBothDsl(name)
     }
 
     @Override
@@ -16,7 +16,7 @@ class SamplesRenderableDocumentationFunctionalTest extends AbstractRenderableDoc
 
     @Override
     protected void makeSingleProject() {
-        buildFile << applyDocumentationPlugin() << createSample('demo')
+        buildFile << applyDocumentationPlugin() << createSampleBothDsl('demo')
     }
 
     @Override

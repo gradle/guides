@@ -10,6 +10,6 @@ abstract class AbstractExemplarKotlinDslSampleFunctionalTest extends AbstractTes
 
     @Override
     protected List<String> getExpectedTestsFor(String sampleName, String... testNames) {
-        return testNames.collect { testName -> "org.gradle.samples.ExemplarExternalSamplesFunctionalTest.${sampleName}_kotlin_${testName}.sample" }
+        return testNames.collect { testName -> "org.gradle.samples.ExemplarExternalSamplesFunctionalTest.${sampleName}_kotlin_${testName}.sample".toString() }
     }
 }

@@ -32,7 +32,7 @@ class BasicExplicitGroovyDslSampleFunctionalTest extends AbstractGroovyDslSample
             }
         """
         writeReadmeTo(file('src'))
-        writeGroovyDslSampleToDirectory(file('src/groovy-dsl'))
+        writeGroovyDslSampleTo(file('src/groovy-dsl'))
         file('src/groovy/do.not.include') << "should not be included"
 
         when:

@@ -26,8 +26,8 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
         writeSampleUnderTest()
         writeExemplarConfigurationToDirectory()
 
-        buildFile << createSample('another')
-        writeSampleUnderTest('src/docs/samples/another')
+        buildFile << createSampleWithBothDsl('another')
+        writeSampleUnderTest(file('src/docs/samples/another'))
         writeExemplarConfigurationToDirectory('src/docs/samples/another')
 
         buildFile << expectTestsExecuted(getExpectedTestsFor("demo") + getExpectedTestsFor("another"))
@@ -43,8 +43,8 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
         writeSampleUnderTest()
         writeExemplarConfigurationToDirectory()
 
-        buildFile << createSample('another')
-        writeSampleUnderTest('src/docs/samples/another')
+        buildFile << createSampleWithBothDsl('another')
+        writeSampleUnderTest(file('src/docs/samples/another'))
         writeExemplarConfigurationToDirectory('src/docs/samples/another')
 
         def anotherDemoConfigFile = file('src/docs/samples/another/tests/handWritten.sample.conf')

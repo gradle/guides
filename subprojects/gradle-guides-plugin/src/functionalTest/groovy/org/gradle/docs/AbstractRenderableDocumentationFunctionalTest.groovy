@@ -2,7 +2,7 @@ package org.gradle.docs
 
 import spock.lang.Unroll
 
-abstract class AbstractRenderableDocumentationFunctionalTest extends AbstractFunctionalTest {
+abstract class AbstractRenderableDocumentationFunctionalTest extends AbstractFunctionalTest implements DocumentationTrait {
     def "defaults documentation element display name to title case"() {
         buildFile << applyDocumentationPlugin() << createDocumentationElement('foo') << createDocumentationElement('fooBar')
         buildFile << """
@@ -73,14 +73,6 @@ abstract class AbstractRenderableDocumentationFunctionalTest extends AbstractFun
 
         expect:
         buildAndFail('assemble')
-    }
-
-    protected static String applyDocumentationPlugin() {
-        return  """
-            plugins {
-                id 'org.gradle.documentation'
-            }
-        """
     }
 
     protected abstract String getCheckTaskNameUnderTest()

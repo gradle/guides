@@ -2,7 +2,7 @@ package org.gradle.docs
 
 import spock.lang.Unroll
 
-abstract class AbstractBaseDocumentationFunctionalTest extends AbstractFunctionalTest {
+abstract class AbstractBaseDocumentationFunctionalTest extends AbstractFunctionalTest implements DocumentationTrait {
     @Unroll
     def "fails if disallowed characters in documentation element name (#name)"(String name) {
         buildFile << applyDocumentationPlugin() << createDocumentationElement(name)
@@ -13,14 +13,6 @@ abstract class AbstractBaseDocumentationFunctionalTest extends AbstractFunctiona
 
         where:
         name << ['foo_bar', 'foo-bar']
-    }
-
-    protected static String applyDocumentationPlugin() {
-        return  """
-            plugins {
-                id 'org.gradle.documentation'
-            }
-        """
     }
 
     protected abstract String createDocumentationElement(String name)

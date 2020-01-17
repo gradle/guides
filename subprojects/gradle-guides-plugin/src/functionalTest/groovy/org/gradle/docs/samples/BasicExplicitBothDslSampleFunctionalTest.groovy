@@ -27,10 +27,10 @@ class BasicExplicitBothDslSampleFunctionalTest extends AbstractBothDslSampleFunc
             }
         """
         writeReadmeTo(file('src'))
-        writeGroovyDslSampleToDirectory(file('src/groovy-dsl'))
+        writeGroovyDslSampleTo(file('src/groovy-dsl'))
         file('src/groovy/do.not.include') << "should not be included"
 
-        writeKotlinDslSampleToDirectory(file('src/kotlin-dsl'))
+        writeKotlinDslSampleTo(file('src/kotlin-dsl'))
         file('src/kotlin/do.not.include') << "should not be included"
 
         when:

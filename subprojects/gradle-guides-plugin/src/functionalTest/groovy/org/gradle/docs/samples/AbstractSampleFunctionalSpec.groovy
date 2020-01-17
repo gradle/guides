@@ -17,6 +17,7 @@
 package org.gradle.docs.samples
 
 import org.gradle.docs.AbstractFunctionalTest
+import org.gradle.docs.DocumentationTrait
 import org.gradle.docs.TestFile
 import org.gradle.testkit.runner.BuildResult
 
@@ -27,42 +28,8 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
 import static org.hamcrest.CoreMatchers.containsString
 
-abstract class AbstractSampleFunctionalSpec extends AbstractFunctionalTest implements SamplesTrait {
+abstract class AbstractSampleFunctionalSpec extends AbstractFunctionalTest implements SamplesTrait, DocumentationTrait {
     protected static final SKIPPED_TASK_OUTCOMES = [FROM_CACHE, UP_TO_DATE, SKIPPED, NO_SOURCE]
-
-    protected static void writeGroovyDslSample(TestFile sampleDirectory) {
-        writeGroovyDslSampleToDirectory(sampleDirectory.file("groovy"))
-    }
-
-    protected static void writeGroovyDslSampleToDirectory(TestFile directory) {
-        directory.file("build.gradle") << """
-            // tag::println[]
-            println "Hello, world!"
-            // end:println[]
-            """
-                    directory.file("settings.gradle") << """
-            // tag::root-project-name[]
-            rootProject.name = 'demo'
-            // end:root-project-name[]
-        """
-    }
-
-    protected static void writeKotlinDslSample(TestFile sampleDirectory) {
-        writeKotlinDslSampleToDirectory(sampleDirectory.file("kotlin"))
-    }
-
-    protected static void writeKotlinDslSampleToDirectory(TestFile directory) {
-        directory.file("build.gradle.kts") << """
-            // tag::println[]
-            println("Hello, world!")
-            // end:println[]
-                    """
-                    directory.file("settings.gradle.kts") << """
-            // tag::root-project-name[]
-            rootProject.name = "demo"
-            // end:root-project-name[]
-        """
-    }
 
     protected TestFile getSampleDirectoryUnderTest() {
         return projectDir.file('src/docs/samples/demo')
@@ -131,30 +98,19 @@ abstract class AbstractSampleFunctionalSpec extends AbstractFunctionalTest imple
     }
 
     protected void makeSingleProject() {
-        buildFile << """
-            plugins {
-                id 'org.gradle.documentation'
-            }
+        buildFile << applyDocumentationPlugin() << """
             repositories {
                 jcenter()
                 maven {
                     url = "https://repo.gradle.org/gradle/libs-releases"
                 }
             }
-
-            documentation {
-                samples {
-                    publishedSamples {
-                        demo
-                    }
-                }
-            }
-        """
+        """ << createSample('demo')
     }
 
-    protected void writeSampleUnderTest(String directory="src/docs/samples/demo") {
-        writeReadmeTo(file(directory))
-        writeGroovyDslSample(file(directory))
-        writeKotlinDslSample(file(directory))
+    protected void writeSampleUnderTest(TestFile directory = file('src/docs/samples/demo')) {
+        writeReadmeTo(directory)
+        writeGroovyDslSampleTo(directory.file('groovy'))
+        writeKotlinDslSampleTo(directory.file('kotlin'))
     }
 }

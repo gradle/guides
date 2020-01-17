@@ -19,18 +19,25 @@ package org.gradle.docs.snippets
 import org.gradle.docs.samples.Dsl
 
 trait SnippetsTrait {
-    static String createSnippet(String name, Dsl... dsls = [Dsl.GROOVY, Dsl.KOTLIN]) {
-        def result = new StringBuffer()
-        if (dsls.length > 0) {
-            result.append("import ${Dsl.canonicalName}\n")
-        }
-        result.append("documentation.snippets.publishedSnippets.create('${name}')")
-        if (dsls.length > 0) {
-            result.append(""" {
-                |    dsls = [${dsls.collect { "Dsl.${it.name()}" }.join(', ')}]
-                |}""".stripMargin())
-        }
-        result.append('\n')
-        return result
+    static String createSnippet(String name) {
+        return """
+            documentation.snippets.publishedSnippets.create('${name}')
+        """
+    }
+
+    static String snippetDsl(String name) {
+        return "documentation.snippets.publishedSnippets.${name}"
+    }
+
+    static String configureSnippetKotlinDsl(String name) {
+        return """
+            ${snippetDsl(name)}.dsls.add(${Dsl.canonicalName}.KOTLIN)
+        """
+    }
+
+    static String configureSnippetGroovyDsl(String name) {
+        return """
+            ${snippetDsl(name)}.dsls.add(${Dsl.canonicalName}.GROOVY)
+        """
     }
 }

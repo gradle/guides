@@ -64,7 +64,7 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
 
     def "can relocate sample"() {
         makeSingleProject()
-        writeSampleUnderTest('src')
+        writeSampleUnderTest(file('src'))
         buildFile << """
             ${sampleUnderTestDsl} {
                 sampleDirectory = file('src')

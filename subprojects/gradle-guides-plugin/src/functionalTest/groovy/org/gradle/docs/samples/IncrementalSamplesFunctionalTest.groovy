@@ -139,8 +139,8 @@ class IncrementalSamplesFunctionalTest extends AbstractSampleFunctionalSpec {
         result.task(':generateSampleIndex').outcome in SKIPPED_TASK_OUTCOMES
 
         when:
-        writeSampleUnderTest("src/docs/samples/new-sample")
-        buildFile << createSample('newSample')
+        writeSampleUnderTest(file('src/docs/samples/new-sample'))
+        buildFile << createSampleWithBothDsl('newSample')
         and:
         build("generateSampleIndex")
         then:
