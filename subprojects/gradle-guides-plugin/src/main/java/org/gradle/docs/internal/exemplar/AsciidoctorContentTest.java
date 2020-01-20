@@ -45,6 +45,7 @@ public abstract class AsciidoctorContentTest extends DefaultTask {
 
     /**
      * Note: The default console type doesn't affect the console choice requireing user interaction like `init` task or `--scan` flag
+     * @return a property for configuring the console type to use as defined by {@link AsciidoctorContentTestConsoleType}
      */
     @Input @Optional
     public abstract Property<AsciidoctorContentTestConsoleType> getDefaultConsoleType();

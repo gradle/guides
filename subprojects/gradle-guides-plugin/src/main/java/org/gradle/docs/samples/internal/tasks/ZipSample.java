@@ -66,13 +66,13 @@ public abstract class ZipSample extends DefaultTask {
                 @Override
                 public void visitDir(FileVisitDetails dirDetails) {
                     try {
-                    ZipEntry entry = new ZipEntry(dirDetails.getRelativePath().getPathString() + "/");
-                    entry.setUnixMode(UnixStat.DIR_FLAG | dirDetails.getMode());
-                    zipStream.putNextEntry(entry);
-                    zipStream.closeEntry();
-                } catch (IOException e) {
-                    throw new UncheckedIOException(e);
-                }
+                        ZipEntry entry = new ZipEntry(dirDetails.getRelativePath().getPathString() + "/");
+                        entry.setUnixMode(UnixStat.DIR_FLAG | dirDetails.getMode());
+                        zipStream.putNextEntry(entry);
+                        zipStream.closeEntry();
+                    } catch (IOException e) {
+                        throw new UncheckedIOException(e);
+                    }
                 }
 
                 @Override

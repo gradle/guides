@@ -2,6 +2,7 @@ package org.gradle.docs;
 
 import org.gradle.docs.TestFile;
 import org.hamcrest.Matcher;
+import org.junit.Assert;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -64,9 +65,9 @@ public class ZipFileFixture {
     }
 
     public void assertHasDescendants(String... descendants) {
-        assert entries.size() == descendants.length;
-        Set<String> unexpectedEntries = new HashSet<>(entries.keySet());
-        unexpectedEntries.removeAll(Arrays.asList(descendants));
-        assert unexpectedEntries.isEmpty();
+        Assert.assertEquals(descendants.length, entries.size());
+        Set<String> expectedEntries = new HashSet<>(Arrays.asList(descendants));
+        Set<String> actualEntries = new HashSet<>(entries.keySet());
+        Assert.assertEquals(expectedEntries, actualEntries);
     }
 }

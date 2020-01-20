@@ -1,5 +1,6 @@
 package org.gradle.docs.samples.internal;
 
+import groovy.lang.Closure;
 import org.asciidoctor.gradle.AsciidoctorTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
@@ -23,6 +24,7 @@ import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.testing.Test;
+import org.gradle.api.tasks.util.PatternSet;
 import org.gradle.api.tasks.wrapper.Wrapper;
 import org.gradle.docs.internal.DocumentationBasePlugin;
 import org.gradle.docs.internal.DocumentationExtensionInternal;
@@ -86,7 +88,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         // Samples
         // Generate wrapper files that can be shared by all samples
         FileTree wrapperFiles = createWrapperFiles(tasks, objects);
-        extension.getPublishedSamples().configureEach(sample -> applyConventionsForSamples(extension, wrapperFiles, sample));
+        extension.getPublishedSamples().configureEach(sample -> applyConventionsForSamples(extension, sample));
 
         // Samples binaries
         // TODO: This could be lazy if we had a way to make the TaskContainer require evaluation
@@ -189,7 +191,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         return wrapperFiles.getAsFileTree();
     }
 
-    private void applyConventionsForSamples(SamplesInternal extension, FileTree wrapperFiles, SampleInternal sample) {
+    private void applyConventionsForSamples(SamplesInternal extension, SampleInternal sample) {
         String name = sample.getName();
         sample.getSampleDirectory().convention(extension.getSamplesRoot().dir(toKebabCase(name)));
         sample.getDisplayName().convention(toTitleCase(name));
@@ -210,9 +212,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         }));
 
         sample.getGroovyContent().from(sample.getSampleDirectory().dir(Dsl.GROOVY.getConventionalDirectory()));
-        sample.getGroovyContent().from(wrapperFiles);
         sample.getKotlinContent().from(sample.getSampleDirectory().dir(Dsl.KOTLIN.getConventionalDirectory()));
-        sample.getKotlinContent().from(wrapperFiles);
 
         // TODO: The guides should have the same thing
         sample.getAssembleTask().configure(task -> {
@@ -281,6 +281,12 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             cleanStaleFiles(task); // TODO: Stale zip files
             configureResources(task, extension.getBinaries().withType(SampleContentBinary.class));
             configureSources(task, extension.getBinaries().withType(SampleContentBinary.class));
+            task.sources(new Closure(null) {
+                public Object doCall(Object ignore) {
+                    ((PatternSet)this.getDelegate()).include("index.adoc");
+                    return null;
+                }
+            });
 
             // TODO: This breaks the provider
             task.setSourceDir(extension.getDocumentationInstallRoot().get().getAsFile());

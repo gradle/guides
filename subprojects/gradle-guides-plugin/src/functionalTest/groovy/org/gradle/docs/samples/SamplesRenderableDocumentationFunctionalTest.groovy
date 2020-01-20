@@ -16,7 +16,7 @@ class SamplesRenderableDocumentationFunctionalTest extends AbstractRenderableDoc
 
     @Override
     protected void makeSingleProject() {
-        buildFile << applyDocumentationPlugin() << createSampleBothDsl('demo')
+        buildFile << applyDocumentationPlugin() << createSampleWithBothDsl('demo')
     }
 
     @Override

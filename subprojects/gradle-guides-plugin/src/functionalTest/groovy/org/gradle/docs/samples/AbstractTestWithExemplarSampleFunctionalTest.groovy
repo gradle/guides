@@ -26,7 +26,7 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
         writeSampleUnderTest()
         writeExemplarConfigurationToDirectory()
 
-        buildFile << createSampleWithBothDsl('another')
+        buildFile << createSample('another')
         writeSampleUnderTest(file('src/docs/samples/another'))
         writeExemplarConfigurationToDirectory('src/docs/samples/another')
 
@@ -43,7 +43,7 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
         writeSampleUnderTest()
         writeExemplarConfigurationToDirectory()
 
-        buildFile << createSampleWithBothDsl('another')
+        buildFile << createSample('another')
         writeSampleUnderTest(file('src/docs/samples/another'))
         writeExemplarConfigurationToDirectory('src/docs/samples/another')
 
