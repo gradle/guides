@@ -21,7 +21,7 @@ Each of the plugins generates a guide from Asciidoc source.
 
 === 0.16.1
 
-- Update exemplar to 0.12.6 to properly normalize incubating feature messages
+- Normalize the trailing new lines from Gradle output
 
 === 0.16.0
 
