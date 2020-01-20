@@ -19,6 +19,10 @@ Each of the plugins generates a guide from Asciidoc source.
 
 == Changelog
 
+=== 0.16.1
+
+- Update exemplar to 0.12.6 to properly normalize incubating feature messages
+
 === 0.16.0
 
 - Refactoring of the internal of all plugins to share most of the implementation
