@@ -181,7 +181,9 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                                 }
                                 resultHandler.assertCompleteSuccessfully();
 
+                                normalizer = composite(normalizer, new TrailingNewLineOutputNormalizer());
                                 String output = normalizer.normalize(fullOutputStream.toString(), null);
+                                expectedOutput = normalizer.normalize(expectedOutput, null);
 
                                 OutputVerifier verifier = new StrictOrderLineSegmentedOutputVerifier();
                                 verifier.verify(expectedOutput, output, command.isAllowAdditionalOutput());
@@ -207,7 +209,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                                     .run();
 
                             String expectedOutput = command.getExpectedOutput();
-                            OutputNormalizer normalizer = composite(new GradleOutputNormalizer(), new WorkingDirectoryOutputNormalizer(), new GradleUserHomePathOutputNormalizer(gradleUserHomeDir));
+                            OutputNormalizer normalizer = composite(new GradleOutputNormalizer(), new WorkingDirectoryOutputNormalizer(), new GradleUserHomePathOutputNormalizer(gradleUserHomeDir), new TrailingNewLineOutputNormalizer());
                             ExecutionMetadata executionMetadata = new ExecutionMetadata(homeDirectory, Collections.emptyMap());
                             expectedOutput = normalizer.normalize(expectedOutput, executionMetadata);
                             String output = outStream.toString();
