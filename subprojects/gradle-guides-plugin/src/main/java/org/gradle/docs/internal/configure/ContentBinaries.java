@@ -10,6 +10,7 @@ import org.gradle.docs.internal.TestableAsciidoctorContentBinary;
 import org.gradle.docs.internal.TestableRenderedContentLinksBinary;
 import org.gradle.docs.internal.ViewableContentBinary;
 import org.gradle.docs.internal.exemplar.AsciidoctorContentTest;
+import org.gradle.docs.internal.exemplar.AsciidoctorContentTestConsoleType;
 import org.gradle.docs.internal.tasks.CheckLinks;
 import org.gradle.docs.internal.tasks.ViewDocumentation;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
@@ -51,6 +52,7 @@ public class ContentBinaries {
             task.setDescription("Check Asciidoctor content steps commands.");
             task.getClasspath().from(configuration);
             task.getGradleVersion().convention(project.getGradle().getGradleVersion());
+            task.getDefaultConsoleType().convention(taskName.contains("Sample") ? AsciidoctorContentTestConsoleType.RICH : AsciidoctorContentTestConsoleType.PLAIN);
             binaries.forEach(binary -> {
                 task.testCase(testCase -> {
                     testCase.getContentFile().set(binary.getContentFile());
