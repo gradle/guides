@@ -108,7 +108,7 @@ The generated test class consists of a single Scala FunSuite. The test instantia
 
 To build the project, run the `build` task. You can use the regular `gradle` command, but when a project includes a wrapper script, it is considered good form to use it instead.
 
-[listing.terminal.sample-command,allow-additional-output]
+[listing.terminal.sample-command,allow-additional-output=true]
 ----
 $ ./gradlew build
 include::{samples-dir}/buildOutput/out.txt[]
