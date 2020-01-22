@@ -22,33 +22,6 @@ import static org.gradle.docs.internal.FileUtils.deleteDirectory;
 public class AsciidoctorTasks {
     private static final Object IGNORED_CLOSURE_OWNER = new Object();
 
-    public static void failTaskOnRenderingErrors(AsciidoctorTask task) {
-        List<String> capturedOutput = new ArrayList<>();
-        StandardOutputListener listener = it -> capturedOutput.add(it.toString());
-
-        task.doFirst(new Action<Task>() {
-            @Override
-            public void execute(Task task) {
-                task.getLogging().addStandardErrorListener(listener);
-                task.getLogging().addStandardOutputListener(listener);
-            }
-        });
-
-        task.doLast(new Action<Task>() {
-            @Override
-            public void execute(Task t) {
-                task.getLogging().removeStandardOutputListener(listener);
-                task.getLogging().removeStandardErrorListener(listener);
-                String output = capturedOutput.stream().collect(Collectors.joining());
-                if (output.indexOf("include file not found:") > 0) {
-                    throw new RuntimeException("Include file(s) not found.");
-                } else if (output.indexOf("no callout found for") > 0) {
-                    throw new RuntimeException("Missing callout.");
-                }
-            }
-        });
-    }
-
     public static void configureResources(AsciidoctorTask task, Collection<? extends RenderableContentBinary> binaries) {
         task.getInputs().files(binaries.stream().map(RenderableContentBinary::getResourceFiles).collect(Collectors.toList())).withPropertyName("resourceFiles").optional(true);
         task.resources(new Closure(IGNORED_CLOSURE_OWNER) {

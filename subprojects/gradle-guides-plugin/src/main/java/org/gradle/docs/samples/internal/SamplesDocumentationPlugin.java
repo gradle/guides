@@ -299,8 +299,6 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             // TODO: This is specific to gradle/gradle
             attributes.put("userManualPath", "../userguide");
             task.attributes(attributes);
-
-            failTaskOnRenderingErrors(task);
         });
         extension.getDistribution().getRenderedDocumentation().from(samplesMultiPage);
 

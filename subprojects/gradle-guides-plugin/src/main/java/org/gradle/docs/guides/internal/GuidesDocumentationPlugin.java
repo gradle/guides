@@ -188,9 +188,6 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             attributes.put("guides", "https://guides.gradle.org");
             attributes.put("user-manual-name", "User Manual");
             task.attributes(attributes);
-
-            failTaskOnRenderingErrors(task);
-
         });
         extension.getDistribution().getRenderedDocumentation().from(guidesMultiPage);
 

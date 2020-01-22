@@ -47,34 +47,6 @@ abstract class AbstractRenderableDocumentationFunctionalTest extends AbstractFun
             |   https://not.existant/url'''.stripMargin())
     }
 
-    def "fails rendering on error due to missing includes"() {
-        makeSingleProject()
-        writeDocumentationUnderTest()
-        contentFileUnderTest << """
-            |include::step-1.adoc[]
-            |
-            |include::step-2.adoc[]
-            |""".stripMargin()
-
-        expect:
-        buildAndFail('assemble')
-    }
-
-    def "fails rendering on error due to no callout found"() {
-        makeSingleProject()
-        writeDocumentationUnderTest()
-        contentFileUnderTest << """
-            |[listing]
-            |----
-            |Some listing without callout
-            |----
-            |<1> Generated folder for wrapper files
-            |""".stripMargin()
-
-        expect:
-        buildAndFail('assemble')
-    }
-
     protected abstract String getCheckTaskNameUnderTest()
 
     protected abstract String createDocumentationElement(String name)
