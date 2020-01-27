@@ -30,7 +30,7 @@ If you prefer to use your own project, you can skip this step.
 
 Starting with Gradle 4.3, you can enable build scans without any additional configuration in your build script. When using the command line option `--scan` to publish a build scan, the required build scan plugin is applied automatically. Before the end of the build, you are asked to accept the license agreement on the command line. The following console output demonstrates the behavior.
 
-[listing.terminal.sample-command]
+[listing.terminal.sample-command,user-inputs="yes"]
 ----
 $ ./gradlew build --scan
 > Task :compileJava

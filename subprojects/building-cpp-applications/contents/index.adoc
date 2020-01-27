@@ -30,7 +30,7 @@ $ cd building-cpp-applications
 
 From inside the new project directory, run the `init` task and select the `libraries` project type and the `{cpp}` language when prompted. For the other questions, press enter to use the default values.
 
-[listing.terminal.sample-command]
+[listing.terminal.sample-command,user-inputs="2|1||"]
 ----
 $ gradle init
 > Task :wrapper

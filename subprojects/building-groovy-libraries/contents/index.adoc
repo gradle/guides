@@ -26,7 +26,7 @@ $ cd demo
 
 From inside the new project directory, run the `init` task with the `groovy-library` argument.
 
-[listing.terminal.sample-command]
+[listing.terminal.sample-command,user-inputs="3|2|1||"]
 ----
 $ gradle init
 > Task :wrapper

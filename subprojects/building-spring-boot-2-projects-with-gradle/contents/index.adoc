@@ -35,7 +35,7 @@ Please have a look at its link:{user-manual}build_init_plugin.html[documentation
 
 First we need to create the sample project folder in our home directory and initialize the project:
 
-[listing.terminal.sample-command]
+[listing.terminal.sample-command,user-inputs="|||"]
 ----
 $ mkdir gradle-spring-boot-project
 $ cd gradle-spring-boot-project

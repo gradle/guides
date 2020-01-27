@@ -29,7 +29,7 @@ $ cd building-swift-applications
 
 From inside the new project directory, run the `init` task and select the `application` project type and the `Swift` language when prompted. For the other questions, press enter to use the default values.
 
-[listing.terminal]
+[listing.terminal,user-inputs="2|5||"]
 ----
 $ gradle init
 
