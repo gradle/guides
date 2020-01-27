@@ -130,6 +130,6 @@ object PublishGuides : AbstractBuildType({
     }
     params {
         param("env.JAVA_HOME", "%linux.java8.oracle.64bit%")
-        password("env.GRGIT_USER", "credentialsJSON:c77b23f9-e0bf-4f4b-ba31-c54802542cca", display = ParameterDisplay.HIDDEN)
+        password("env.GRGIT_USER", "%github.ci.oauth.token%", display = ParameterDisplay.HIDDEN)
     }
 })
