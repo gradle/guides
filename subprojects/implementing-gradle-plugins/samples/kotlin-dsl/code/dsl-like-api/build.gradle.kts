@@ -8,6 +8,6 @@ configure<SiteExtension> {
 
     customData {
         websiteUrl = "https://gradle.org"
-        vcsUrl = "https://github.com/gradle-guides/gradle-site-plugin"
+        vcsUrl = "https://github.com/gradle/gradle-site-plugin"
     }
 }

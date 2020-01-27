@@ -23,11 +23,11 @@ First, we'll get the project set up on your local machine before covering the sa
 
 Just follow these steps:
 
-=== Clone https://github.com/gradle-guides/gradle-site-plugin[Gradle Site Plugin] repository
+=== Clone https://github.com/gradle/gradle-site-plugin[Gradle Site Plugin] repository
 
 [listing.terminal.sample-command]
 ----
-$ git clone https://github.com/gradle-guides/gradle-site-plugin.git
+$ git clone https://github.com/gradle/gradle-site-plugin.git
 Cloning into 'gradle-site-plugin'...
 $ cd gradle-site-plugin
 ----

@@ -24,11 +24,11 @@ First, we'll get the project set up on your local machine before covering the sa
 
 Just follow these steps:
 
-=== Clone the https://github.com/gradle-guides/gradle-site-plugin[Gradle Site Plugin] repository
+=== Clone the https://github.com/gradle/gradle-site-plugin[Gradle Site Plugin] repository
 
 [listing.terminal.sample-command]
 ----
-$ git clone https://github.com/gradle-guides/gradle-site-plugin.git
+$ git clone https://github.com/gradle/gradle-site-plugin.git
 Cloning into 'gradle-site-plugin'...
 $ cd gradle-site-plugin
 ----
@@ -103,7 +103,7 @@ Setting up a new Gradle build in TeamCity requires just a few clicks:
 TeamCity comes bundled with a Gradle plugin, so you do not need to install plugins additionally. However, it is recommended that you install the https://plugins.jetbrains.com/plugin/9326-gradle-build-scan-integration[Gradle Build Scan plugin].
 
 On the *Administration | Projects* page click _Create project_,
-use the option _From the repository URL_ and enter the URL of the GitHub repository: `https://github.com/gradle-guides/gradle-site-plugin.git`.
+use the option _From the repository URL_ and enter the URL of the GitHub repository: `https://github.com/gradle/gradle-site-plugin.git`.
 
 image::teamcity-create-project.png[]
 
