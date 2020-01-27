@@ -41,7 +41,7 @@ val guides = listOf(
         "writing-gradle-tasks"
 )
 
-val misc = listOf("gradle-site-plugin", "greeting-plugin-example", "guides-test-fixtures")
+val misc = listOf("gradle-site-plugin", "guides-test-fixtures")
 
 misc.forEach { includeBuild("subprojects/${it}") }
 guides.forEach {
