@@ -57,6 +57,7 @@ public class LegacyGuideDocumentationPlugin implements Plugin<Project> {
     private Guide addGuidesExtension(Project project) {
         Guide result = project.getExtensions().getByType(DocumentationExtension.class).getGuides().getPublishedGuides().create(toLowerCamelCase(project.getName()));
         project.getExtensions().add(Guide.class, GUIDE_EXTENSION_NAME, result);
+        result.getGuideName().set(project.getName());
         result.getDescription().set(result.getDisplayName());
         result.getGuideDirectory().set(project.getProjectDir());
         result.getPermalink().set(project.getName());

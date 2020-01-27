@@ -49,7 +49,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
 
         Configuration asciidoctorConfiguration = project.getConfigurations().maybeCreate("asciidoctorForDocumentation");
         project.getRepositories().maven(it -> it.setUrl("https://repo.gradle.org/gradle/libs-releases"));
-        project.getDependencies().add(asciidoctorConfiguration.getName(), "org.gradle:docs-asciidoctor-extensions:0.4.0");
+        project.getDependencies().add(asciidoctorConfiguration.getName(), "org.gradle:docs-asciidoctor-extensions:0.8.0");
         project.getConfigurations().getByName("asciidoctor").extendsFrom(asciidoctorConfiguration);
 
         TaskProvider<Task> assemble = tasks.named(LifecycleBasePlugin.ASSEMBLE_TASK_NAME);
@@ -110,6 +110,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         guide.getDescription().convention("");
         guide.getCategory().convention("Uncategorized");
         guide.getPermalink().convention(toSnakeCase(guide.getName()));
+        guide.getGuideName().convention(name);
     }
 
     private void createTasksForGuideContentBinary(TaskContainer tasks, ProjectLayout layout, ProviderFactory providers, GuideContentBinary binary) {
@@ -127,6 +128,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             task.getAttributes().put("language-reference", binary.getGradleVersion().map(v -> "https://docs.gradle.org/" + v + "/dsl/"));
             task.getAttributes().put("api-reference", binary.getGradleVersion().map(v -> "https://docs.gradle.org/" + v + "/javadoc/"));
             task.getAttributes().put("repository-path", binary.getRepositoryPath());
+            task.getAttributes().put("guide-name", binary.getGuideName());
             task.getIndexFile().convention(binary.getSourcePageFile());
             task.getOutputFile().fileProvider(providers.provider(() -> new File(task.getTemporaryDir(), "index.adoc")));
         });
@@ -220,6 +222,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             contentBinary.getResourceSpec().convention(project.copySpec(spec -> spec.from(guide.getGuideDirectory().dir("contents/images"), it -> it.into(contentBinary.getBaseDirectory().get() + "/images"))));
             contentBinary.getSourcePattern().convention(contentBinary.getSourcePermalink());
             contentBinary.getSourcePageFile().convention(guide.getGuideDirectory().file("contents/index.adoc"));
+            contentBinary.getGuideName().convention(guide.getGuideName());
 
             TestableAsciidoctorGuideContentBinary testableAsciidoctorGuideContentBinary = objects.newInstance(TestableAsciidoctorGuideContentBinary.class, guide.getName());
             extension.getBinaries().add(testableAsciidoctorGuideContentBinary);

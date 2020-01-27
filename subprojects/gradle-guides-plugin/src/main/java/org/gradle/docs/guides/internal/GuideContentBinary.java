@@ -48,4 +48,6 @@ public abstract class GuideContentBinary extends GuideBinary implements Viewable
     }
 
     public abstract RegularFileProperty getSourcePageFile();
+
+    public abstract Property<String> getGuideName();
 }

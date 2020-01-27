@@ -54,4 +54,12 @@ public interface Guide extends Named, GuideSummary {
      * @since 0.15.8
      */
     Property<String> getDescription();
+
+    /**
+     * Guide name used to locate the project within the repository and tag issues with the right label.
+     *
+     * @return Property for configuring the repository URL and issue label.
+     * @since 0.16.1
+     */
+    Property<String> getGuideName();
 }
