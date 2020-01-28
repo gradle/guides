@@ -29,7 +29,7 @@ $ cd building-swift-libraries
 
 From inside the new project directory, run the `init` task and select the `library` project type and the `Swift` language when prompted. For the other questions, press enter to use the default values.
 
-[listing.terminal]
+[listing.terminal,user-inputs="3|6|1|"]
 ----
 $ gradle init
 

@@ -7,3 +7,7 @@ guide {
     minimumGradleVersion.set("4.10.3")
     category.set("Getting Started")
 }
+
+tasks.named("checkAsciidoctorGuideContents") {
+    enabled = false
+}

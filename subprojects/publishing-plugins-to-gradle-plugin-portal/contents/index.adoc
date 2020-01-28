@@ -22,7 +22,7 @@ You will take an existing plugin project and configure it so that the plugin can
 
 == Start with an existing Gradle plugin project
 
-You will need an existing plugin project for this tutorial. If you don't have your own, then you should download the source code for the example Greeting Plugin project https://github.com/gradle/greeting-plugin-example[from GitHub]. It's based on the Greeting Plugin developed in the {guides}/writing-gradle-plugins[Writing Gradle Plugins] guide.
+You will need an existing plugin project for this tutorial. If you don't have your own, then you should download the source code for the example Greeting Plugin project https://github.com/gradle/greeting-plugin-example[from GitHub].
 
 NOTE: If you have followed the _Writing Gradle Plugins_ guide and want to use its project as the basis for this guide, then you will need to copy the contents of the _buildSrc_ directory into its own project and add a build file. If you're not sure how to do that, just use the example project from GitHub.
 

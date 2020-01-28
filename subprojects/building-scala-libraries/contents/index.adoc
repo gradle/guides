@@ -30,7 +30,7 @@ $ cd building-scala-libraries
 
 From inside the new project directory, run the `init` task with the `scala-library` argument.
 
-[listing.terminal.sample-command]
+[listing.terminal.sample-command,user-inputs="|"]
 ----
 $ gradle init --type scala-library --package guidesamples
 > Task :wrapper
