@@ -1,5 +1,8 @@
+import org.gradle.docs.internal.exemplar.AsciidoctorContentTest
+
 plugins {
     id("org.ajoberstar.git-publish") version("2.1.3")
+    id("org.gradle.documentation") apply(false)
 }
 
 val guideProjects = extra["guideProjects"] as List<String>
@@ -80,6 +83,11 @@ allprojects {
             inputs.files(samplesBaseDir).withPropertyName("samplesDir").withPathSensitivity(PathSensitivity.RELATIVE).optional()
             // This breaks relocatability of the test task. If caching becomes important we should consider redefining the inputs for the test task
             systemProperty("samplesDir", samplesBaseDir.absolutePath)
+        }
+
+        // TODO: This is strictly for working around the tooling API bug regarding removing flackiness for build init tests
+        tasks.named("checkAsciidoctorGuideContents", AsciidoctorContentTest::class.java) {
+            gradleVersion.set("6.3-20200128091954+0000")
         }
     }
 }
