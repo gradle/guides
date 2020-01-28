@@ -136,7 +136,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                         connection.newBuild()
                                 .forTasks(command.getArgs().stream().filter(it -> !it.startsWith("--scan")).collect(Collectors.toList()).toArray(new String[0]))
                                 .withArguments(command.getArgs().stream().filter(it -> it.startsWith("--scan")).collect(Collectors.toList()))
-                                .setStandardInput(new ByteArrayInputStream(command.getUserInputs().stream().collect(Collectors.joining(System.getProperty("line.separator"))).getBytes()))
+                                .setStandardInput(new ByteArrayInputStream((command.getUserInputs().stream().collect(Collectors.joining(System.getProperty("line.separator"))) + System.getProperty("line.separator")).getBytes()))
                                 .setStandardOutput(fullOutputStream)
                                 .setStandardError(fullOutputStream)
                                 .withCancellationToken(cancel.token())
