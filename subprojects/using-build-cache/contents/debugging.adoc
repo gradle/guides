@@ -174,24 +174,26 @@ $ ./gradlew :compileJava --build-cache -Dorg.gradle.caching.debug=true
 .
 .
 .
-Appending taskClass to build cache key: org.gradle.api.tasks.compile.JavaCompile_Decorated
-Appending classLoaderHash to build cache key: da6eca52100422099189290bf68f200a
-Appending actionType to build cache key: org.gradle.api.internal.project.taskfactory.AbstractOutputPropertyAnnotationHandler$2$1
-Appending actionClassLoaderHash to build cache key: 2cdf3f9202925b5befa161030ab43724
-Appending actionType to build cache key: org.gradle.api.internal.project.taskfactory.TaskClassValidator
+Appending implementation to build cache key: org.gradle.api.tasks.compile.JavaCompile_Decorated@470c67ec713775576db4e818e7a4c75d
+Appending additional implementation to build cache key: org.gradle.api.tasks.compile.JavaCompile_Decorated@470c67ec713775576db4e818e7a4c75d
+Appending input value fingerprint for 'options' to build cache key: e4eaee32137a6a587e57eea660d7f85d
+Appending input value fingerprint for 'options.compilerArgs' to build cache key: 8222d82255460164427051d7537fa305
+Appending input value fingerprint for 'options.debug' to build cache key: f6d7ed39fe24031e22d54f3fe65b901c
+Appending input value fingerprint for 'options.debugOptions' to build cache key: a91a8430ae47b11a17f6318b53f5ce9c
+Appending input value fingerprint for 'options.debugOptions.debugLevel' to build cache key: f6bd6b3389b872033d462029172c8612
+Appending input value fingerprint for 'options.encoding' to build cache key: f6bd6b3389b872033d462029172c8612
 .
 .
 .
-Appending inputPropertyHash for 'classpath' to build cache key: 2b6ab53aa11d4a7d4a1f95a8f78f4d7c
-Appending inputPropertyHash for 'effectiveAnnotationProcessorPath' to build cache key: d41d8cd98f00b204e9800998ecf8427e
-Appending inputPropertyHash for 'options.sourcepath' to build cache key: d41d8cd98f00b204e9800998ecf8427e
-Appending inputPropertyHash for 'source' to build cache key: f6ba49b2466f0090272c43ac5f54ec1d
-Appending outputPropertyName to build cache key: destinationDir
-Build cache key for task ':compileJava' is 2b220117efa6710f7ab191a0bbe48c00
+Appending input file fingerprints for 'options.sourcepath' to build cache key: 5fd1e7396e8de4cb5c23dc6aadd7787a - RELATIVE_PATH{EMPTY}
+Appending input file fingerprints for 'stableSources' to build cache key: f305ada95aeae858c233f46fc1ec4d01 - RELATIVE_PATH{.../src/main/java=IGNORED / DIR, .../src/main/java/Hello.java='Hello.java' / 9c306ba203d618dfbe1be83354ec211d}
+Appending output property name to build cache key: destinationDir
+Appending output property name to build cache key: options.annotationProcessorGeneratedSourcesDirectory
+Build cache key for task ':compileJava' is 8ebf682168823f662b9be34d27afdf77
 ----
 
-If you want to go into the details of finding out e.g. which classes and jar files constitute the `classpath` for the `compileJava`
-task you need to resort to comparing those files on disk yourself.
+The log shows e.g. which source files constitute the `stableSources` for the `compileJava` task.
+To find the actual differences between two builds you need to resort to matching up and comparing those hashes yourself.
 
 Luckily, you do not have to capture this data yourself - the build scan plugin already takes care of this for you.
 Gradle Enterprise has the necessary data to diagnose the cache miss when comparing two build scans, and will show you the properties that caused a different cache key to be generated.
