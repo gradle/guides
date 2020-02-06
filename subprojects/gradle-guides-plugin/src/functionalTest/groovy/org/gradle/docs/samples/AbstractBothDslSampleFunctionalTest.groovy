@@ -19,7 +19,7 @@ abstract class AbstractBothDslSampleFunctionalTest extends AbstractBasicSampleFu
         def groovyReadmeFile = file("build/working/samples/install/demo/groovy/README")
         def kotlinReadmeFile = file("build/working/samples/install/demo/kotlin/README")
         assert groovyReadmeFile.text == """:samples-dir: ${file('/build/working/samples/install/demo')}
-            |:gradle-version: 6.0.1
+            |:gradle-version: ${gradleVersion}
             |
             |= Demo Sample
             |
