@@ -4,34 +4,26 @@
 
 This repository contains the source for the Gradle Guides homepage at https://guides.gradle.org.
 
-Each individual Gradle guide can be found in the `subprojects` directory. For example, you can find the source of the _Building Java Libraries_ guide—hosted at [https://guides.gradle.org/building-java-libraries/](https://guides.gradle.org/building-java-libraries/)—in the `subprojects/building-java-libraries` repository.
+Each individual Gradle guide can be found in the `subprojects` directory. For example, you can find the source of the _Building Java Libraries_ guide, hosted at [https://guides.gradle.org/building-java-libraries/](https://guides.gradle.org/building-java-libraries/), in the `subprojects/building-java-libraries` repository.
+
+This repository also contains some Gradle plugins for writing and testing guides and sample builds. These can be found in
+the `subprojects/gradle-guides-plugin` directory.
 
 ### Are you interested in contributing a guide?
 
-We want Gradle Guides to be a community project, so we encourage anyone that is interested in writing a guide to submit a proposal as an [issue](https://github.com/gradle/guides/issues) in this repository. Doing so triggers a discussion and review process with the Gradle Guides team that is designed to help you produce a high-quality guide. You can learn more about that process in [_Getting Started Writing Gradle Guides_](https://guides.gradle.org/writing-getting-started-guides/) and about the style we use in our [_Style Guide_](https://guides.gradle.org/style-guide/).
+We want Gradle Guides to be a community project, so we encourage anyone that is interested in writing a guide to submit a proposal as an [issue](https://github.com/gradle/guides/issues) in this repository. Doing so triggers a discussion and review process with the Gradle Guides team that is designed to help you produce a high-quality guide. You can learn more about that process in the following sections.
 
-The rest of the README is written primarily for the [project team](https://github.com/orgs/gradle-guides/people), but you're welcome to read on if you want to learn what happens behind the scenes.
+## Authoring a guide
 
-## Handling proposals for new guides
+Each guide uses the plugins from the `subprojects/gradle-guides-plugin` project. These plugins add tasks to
+build and test the guide and any associated samples.
+See the [README](subprojects/gradle-guides-plugin/README.adoc) for details.
 
-As mentioned in the previous section, we would like Gradle users to contribute their own guides to the Gradle Guides site. To make the process as simple as possible, we set up the infrastructure needed by each guide and aid in the development of the guide's content. What follows is the process the Gradle Guides team should follow when a user submits a proposal, per the instructions in [_Getting Started Writing Gradle Guides_](https://guides.gradle.org/writing-getting-started-guides/).
+### How do I test a change to a guide?
 
-### Agree on a topic and scope for the guide
+Please run `./gradlew -p subprojects/<guide> build` to test the guide before submitting PR.
 
-The first step in processing a new guide proposal is to work with the submitter to determine whether the proposed guide is appropriate and to decide on the exact topic, what form the guide should take, and how much it should cover. You should initiate and continue this discussion as much as possible on the proposal's GitHub issue. This ensures that the discussion is public.
-
-In the (hopefully rare) case of rejecting a guide proposal, provide your reasoning in an issue comment—keeping it as clear and neutral as possible—and close the issue.
-
-Otherwise, once you have agreed on the title and other details above, move on to the next step of creating a GitHub repository for the new guide.
-
-### Create a new project for the guide
-
-Each guide gets its project under the `subprojects` directory, so you will have to create one for each accepted proposal.
-Once this has been done, _paste the link for this new repository into the guide's GitHub issue_ and let the author know that they have everything they need to begin writing.
-
-TODO - add detail here
-
-The author will then follow the remaining steps laid out in _Getting Started Writing Gradle Guides_, and will ultimately submit a pull request against this repository. When this happens, provide your feedback in the form of a [GitHub Review](https://help.github.com/articles/reviewing-changes-in-pull-requests/) and/or [additional commits on the author's pull request branch](https://help.github.com/articles/committing-changes-to-a-pull-request-branch-created-from-a-fork/)—whichever you deem to be the most efficient use of both your time.
+The guides are also tested on [TeamCity](https://builds.gradle.org/project/DocumentationPortal_Guides?branch=&mode=builds#all-projects).
 
 ### Adding multi-language samples and text
 
@@ -91,22 +83,30 @@ include::{samplesPath}/configureObjectUsingScript/configureObjectUsingScript.out
 ----
 ```
 
+## Handling proposals for new guides
+
+The rest of this README is written primarily for the project team, but you're welcome to read on if you want to learn what happens behind the scenes.
+
+As mentioned in the introduction, we would like Gradle users to contribute their own guides to the Gradle Guides site. To make the process as simple as possible, we set up the infrastructure needed by each guide and aid in the development of the guide's content. What follows is the process the Gradle Guides team should follow when a user submits a proposal.
+
+### Agree on a topic and scope for the guide
+
+The first step in processing a new guide proposal is to work with the submitter to determine whether the proposed guide is appropriate and to decide on the exact topic, what form the guide should take, and how much it should cover. You should initiate and continue this discussion as much as possible on the proposal's GitHub issue. This ensures that the discussion is public.
+
+In the (hopefully rare) case of rejecting a guide proposal, provide your reasoning in an issue comment—keeping it as clear and neutral as possible—and close the issue.
+
+Otherwise, once you have agreed on the title and other details above, move on to the next step of creating a GitHub repository for the new guide.
+
+### Create a new project for the guide
+
+Each guide gets its project under the `subprojects` directory, so you will have to create one for each accepted proposal.
+Once this has been done, _paste the link for this new repository into the guide's GitHub issue_ and let the author know that they have everything they need to begin writing.
+
+TODO - add detail here
+
+The author will then write and test the guide content, and will ultimately submit a pull request against this repository. When this happens, provide your feedback in the form of a [GitHub Review](https://help.github.com/articles/reviewing-changes-in-pull-requests/) and/or [additional commits on the author's pull request branch](https://help.github.com/articles/committing-changes-to-a-pull-request-branch-created-from-a-fork/)—whichever you deem to be the most efficient use of both your time.
+
 ## FAQ
-
-### How do I build and serve all guides locally?
-
-The following commands will check out this repository and all individual guide repositories into a single directory hierarchy. It will then generate HTML for each of the individual guides and start an nginx process to serve them all. This approach closely mirrors how GitHub Pages serves content.
-
-> NOTE: _You will need to install the [`mr`](https://myrepos.branchable.com/) and [`nginx`](https://nginx.org/en/) utilities for the following commands to work. Your favorite package manager should have both._
-
-    git clone https://github.com/gradle/guides.git
-    cd guides
-    mr checkout
-    mr run ./gradlew build
-    ./nginx.sh
-    open http://localhost:8080
-
-When complete, http://localhost:8080 should list directories that you can click to serve guides locally. For example, click on the `building-android-apps` directory to serve the _Building Android Apps_ guide.
 
 ### How is the Gradle Guides site published?
 
@@ -116,15 +116,7 @@ The GitHub repositories where Organization Pages live have naming constraints, a
 
 The mirroring process is managed as a simple Travis CI build; see [.travis.yml](.travis.yml) for details. We set up this mirrored arrangement because "gradle-guides/gradle-guides.github.io" is cumbersome to type and talk about, while "gradle/guides" is a friendlier and more intention-revealing name. The mirroring process should be transparent and hands-free for maintainers. We mention it here for reference and clarity.
 
-### How do I test a change to a guide?
-
-Each guide is tested on Travis. This is triggered when you create a PR for the guide repo.
-
 ### What is `ImgBot` used for?
 
 The `ImgBot` will submit PR to optimized images for all guides.
 Those can be merged without too much discussion as they only optimize the image without loosing any quality.
-
-## Other resources
-
-- Each guide uses the plugins from `subprojects/gradle-guides-plugin`
