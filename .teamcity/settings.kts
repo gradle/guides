@@ -58,6 +58,10 @@ open class AbstractBuildGuideType(init: BuildType.() -> Unit) : AbstractBuildTyp
     triggers {
         vcs {
             groupCheckinsByCommitter = true
+            branchFilter = """
+                +:*
+                -:pull/*
+            """.trimIndent()
         }
     }
 
@@ -85,6 +89,7 @@ object BuildGuidesOnMac : AbstractBuildGuideType({
         param("env.JAVA_HOME", "%macos.java8.oracle.64bit%")
     }
 })
+
 object BuildGuidesOnWindows : AbstractBuildGuideType({
     name = "Build All Guides (Windows)"
 
