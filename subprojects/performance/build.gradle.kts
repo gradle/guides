@@ -9,7 +9,7 @@ guide {
     category.set("Topical")
 }
 
-// TODO: requires some investiguation for testing
+// TODO: requires some investigation for testing
 tasks.named("checkAsciidoctorGuideContents") {
     enabled = false
 }
