@@ -23,10 +23,7 @@ import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 
-import static org.gradle.testkit.runner.TaskOutcome.FROM_CACHE
-import static org.gradle.testkit.runner.TaskOutcome.NO_SOURCE
-import static org.gradle.testkit.runner.TaskOutcome.SKIPPED
-import static org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
+import static org.gradle.testkit.runner.TaskOutcome.*
 
 abstract class AbstractFunctionalTest extends Specification {
     @Rule
@@ -62,6 +59,10 @@ abstract class AbstractFunctionalTest extends Specification {
             gradleVersion = null
         }
         return runner
+    }
+
+    String getGradleVersion() {
+        return gradleVersion ?: System.getProperty("gradle.version")
     }
 
     void usingGradleVersion(String gradleVersion) {
