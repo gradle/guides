@@ -1,6 +1,5 @@
 package org.gradle.docs;
 
-import org.gradle.docs.TestFile;
 import org.hamcrest.Matcher;
 import org.junit.Assert;
 
@@ -8,12 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -22,11 +16,15 @@ public class ZipFileFixture {
 
     ZipFileFixture(TestFile file) {
         this.entries = new HashMap<>();
+        Set<String> seen = new HashSet<>();
 
         try (ZipFile zipFile = new ZipFile(file)) {
             Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
             while (zipEntries.hasMoreElements()) {
                 ZipEntry entry = zipEntries.nextElement();
+                if (!seen.add(entry.getName())) {
+                    throw new RuntimeException(String.format("Duplicate entry '%s' in file %s.", entry.getName(), file));
+                }
                 if (!entry.isDirectory()) {
                     String content = getContentForEntry(zipFile, entry);
                     this.entries.put(entry.getName(), content);
@@ -65,7 +63,7 @@ public class ZipFileFixture {
     }
 
     public void assertHasDescendants(String... descendants) {
-        Assert.assertEquals(descendants.length, entries.size());
+        Assert.assertEquals(descendants.length, entries.keySet().size());
         Set<String> expectedEntries = new HashSet<>(Arrays.asList(descendants));
         Set<String> actualEntries = new HashSet<>(entries.keySet());
         Assert.assertEquals(expectedEntries, actualEntries);
