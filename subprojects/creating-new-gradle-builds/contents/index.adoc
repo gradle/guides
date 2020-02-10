@@ -9,7 +9,7 @@ Following this guide, you'll create a trivial Gradle project, invoke some of the
 * A Java Runtime Environment (JRE) or Java Development Kit (JDK), version 1.8 or later (only necessary to run Gradle)
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 
-NOTE: Shell commands will shown for Unix-based systems. Windows has analogous commands for each.
+NOTE: Shell commands are shown for Unix-based systems. Windows has analogous commands for each.
 
 == Initialize a project
 
