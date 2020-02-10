@@ -22,6 +22,8 @@ import org.apache.tools.zip.ZipOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Zips a sample to the given location.
@@ -33,6 +35,7 @@ public abstract class ZipSample extends DefaultTask {
     protected FileTree getSourceAsTree() {
         return getSource().getAsFileTree();
     }
+
     @InputFiles
     @SkipWhenEmpty
     protected FileTree getMainSourceAsTree() {
@@ -62,10 +65,15 @@ public abstract class ZipSample extends DefaultTask {
         try (FileOutputStream fileStream = new FileOutputStream(zipFile);
              ZipOutputStream zipStream = new ZipOutputStream(fileStream)) {
             zipStream.setMethod(ZipOutputStream.DEFLATED);
+            Set<String> dirs = new HashSet<>();
             getFilteredSourceTree().visit(new FileVisitor() {
                 @Override
                 public void visitDir(FileVisitDetails dirDetails) {
                     try {
+                        String dirPath = dirDetails.getRelativePath().getPathString();
+                        if (!dirs.add(dirPath)) {
+                            return;
+                        }
                         ZipEntry entry = new ZipEntry(dirDetails.getRelativePath().getPathString() + "/");
                         entry.setUnixMode(UnixStat.DIR_FLAG | dirDetails.getMode());
                         zipStream.putNextEntry(entry);

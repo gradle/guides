@@ -121,14 +121,14 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
         makeSingleProject()
         writeSampleUnderTest()
         buildFile << """
-            ${sampleUnderTestDsl}.dsls = [] 
+            ${sampleUnderTestDsl}.dsls = []
         """
 
         when:
         buildAndFail('assembleDemoSample')
 
         then:
-        result.output.contains("Samples must have at least one DSL, sample 'demo' has none.")
+        result.output.contains("Samples must define at least one DSL, sample 'demo' has none.")
     }
 
     def "detects DSL based on content available"() {
@@ -160,7 +160,7 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
 
         when:
         buildFile << """
-            ${sampleUnderTestDsl}.description = "Some description"     
+            ${sampleUnderTestDsl}.description = "Some description"
         """
         and:
         build('assemble')
@@ -204,18 +204,24 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
     def "can use template for source of common content"() {
         makeSingleProject()
         writeSampleUnderTest()
-        file("src/docs/samples/templates/template-dir/a.txt") << "aaaa"
-        file("src/docs/samples/templates/template-dir/subdir/b.txt") << "bbbb"
+        file("src/docs/samples/templates/template-one/a.txt") << "aaaa"
+        file("src/docs/samples/templates/template-one/subdir/b.txt") << "bbbb"
+        file("src/docs/samples/templates/template-two/c.txt") << "cccc"
+        file("src/docs/samples/templates/template-two/subdir/d.txt") << "dddd"
+        file("src/docs/samples/demo/groovy/subdir/e.txt") << "eeee"
+        file("src/docs/samples/demo/kotlin/subdir/e.txt") << "eeee"
         buildFile << """
             documentation {
                 samples {
                     templates {
-                        templateDir
+                        templateOne
+                        templateTwo
                     }
                     publishedSamples {
                         demo {
                             common {
-                                from(templates.templateDir)
+                                from(templates.templateOne)
+                                from(templates.templateTwo)
                             }
                         }
                     }
@@ -229,10 +235,14 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
         def demoGroovyZip = file("build/sample-zips/sample_demo-groovy-dsl.zip").asZip()
         demoGroovyZip.assertDescendantHasContent("a.txt", equalTo("aaaa"))
         demoGroovyZip.assertDescendantHasContent("subdir/b.txt", equalTo("bbbb"))
+        demoGroovyZip.assertDescendantHasContent("c.txt", equalTo("cccc"))
+        demoGroovyZip.assertDescendantHasContent("subdir/d.txt", equalTo("dddd"))
 
         def demoKotlinZip = file("build/sample-zips/sample_demo-groovy-dsl.zip").asZip()
         demoKotlinZip.assertDescendantHasContent("a.txt", equalTo("aaaa"))
         demoKotlinZip.assertDescendantHasContent("subdir/b.txt", equalTo("bbbb"))
+        demoKotlinZip.assertDescendantHasContent("c.txt", equalTo("cccc"))
+        demoKotlinZip.assertDescendantHasContent("subdir/d.txt", equalTo("dddd"))
     }
 
     def "can execute the sample from the zip"() {
@@ -249,7 +259,7 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
 
     def "sorts samples by category and display name"() {
         makeSingleProject()
-        buildFile << """ 
+        buildFile << """
             ${createSample('zzz')} {
                 category = "Special"
             }

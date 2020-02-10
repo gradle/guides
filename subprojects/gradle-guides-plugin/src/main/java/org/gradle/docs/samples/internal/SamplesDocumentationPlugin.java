@@ -399,7 +399,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             // TODO: This should only be enforced if we are trying to build the given sample
             Set<Dsl> dsls = sample.getDsls().get();
             if (dsls.isEmpty()) {
-                throw new GradleException("Samples must have at least one DSL, sample '" + sample.getName() + "' has none.");
+                throw new GradleException("Samples must define at least one DSL, sample '" + sample.getName() + "' has none.");
             }
             for (Dsl dsl : dsls) {
                 SampleArchiveBinary binary = registerSampleBinaryForDsl(extension, sample, dsl, objects, wrapperFiles, contentBinary);
