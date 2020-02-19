@@ -234,7 +234,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
 
             task.getSampleSummary().convention(binary.getSummary());
             task.getReadmeFile().convention(binary.getSourcePageFile());
-            task.getOutputFile().fileProvider(binary.getBaseName().map(fileName -> new File(task.getTemporaryDir(), fileName + ".adoc")));
+            task.getOutputFile().fileProvider(binary.getBaseName().map(fileName -> new File(task.getProject().getBuildDir(), "/tmp/" + fileName + ".adoc")));
         });
         binary.getIndexPageFile().convention(generateSamplePage.flatMap(GenerateSamplePageAsciidoc::getOutputFile));
     }
@@ -283,7 +283,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             configureSources(task, extension.getBinaries().withType(SampleContentBinary.class));
             task.sources(new Closure(null) {
                 public Object doCall(Object ignore) {
-                    ((PatternSet)this.getDelegate()).include("index.adoc");
+                    ((PatternSet) this.getDelegate()).include("index.adoc");
                     return null;
                 }
             });
@@ -353,7 +353,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             task.setDescription("Installs sample '" + binary.getName() + "' into a local directory.");
             // TODO: zipTree should be lazy
             task.dependsOn(binary.getZipFile());
-            task.getSource().from((Callable<FileTree>)() -> task.getProject().zipTree(binary.getZipFile()));
+            task.getSource().from((Callable<FileTree>) () -> task.getProject().zipTree(binary.getZipFile()));
             task.getInstallDirectory().convention(binary.getWorkingDirectory());
         });
         binary.getInstallDirectory().convention(installSampleTask.flatMap(InstallSample::getInstallDirectory));
@@ -408,7 +408,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
 
                 SampleExemplarBinary exemplarBinary = objects.newInstance(SampleExemplarBinary.class, sample.getName() + dsl.getDisplayName());
                 exemplarBinary.getTestedWorkingDirectory().convention(extension.getTestedInstallRoot().dir(toKebabCase(sample.getName()) + "/" + dsl.getConventionalDirectory())).disallowChanges();
-                exemplarBinary.getTestsContent().from(objects.fileCollection().from((Callable<FileTree>)() -> project.zipTree(binary.getZipFile())).builtBy(binary.getZipFile())); // TODO: zipTree should be lazy
+                exemplarBinary.getTestsContent().from(objects.fileCollection().from((Callable<FileTree>) () -> project.zipTree(binary.getZipFile())).builtBy(binary.getZipFile())); // TODO: zipTree should be lazy
                 exemplarBinary.getTestsContent().from(sample.getSampleDirectory().dir("tests"));
                 exemplarBinary.getTestsContent().from(sample.getTestsContent());
                 extension.getBinaries().add(exemplarBinary);
