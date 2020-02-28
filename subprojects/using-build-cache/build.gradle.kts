@@ -5,7 +5,7 @@ plugins {
 
 guide {
     repositoryPath.set("gradle-guides/using-build-cache")
-    minimumGradleVersion.set("5.0")
+    minimumGradleVersion.set("6.0")
     displayName.set("Using the Build Cache")
     category.set("Topical")
 }
