@@ -19,6 +19,10 @@ Each of the plugins generates a guide from Asciidoc source.
 
 == Changelog
 
+=== 0.16.2
+
+- Avoid creating temporary directories during configuration phase
+
 === 0.16.1
 
 - Normalize the trailing new lines from Gradle output
