@@ -77,6 +77,16 @@ object BuildGuidesOnLinux : AbstractBuildGuideType({
     params {
         param("env.JAVA_HOME", "%linux.java8.oracle.64bit%")
     }
+    steps {
+        gradle {
+            useGradleWrapper = true
+            tasks = ":installGuides"
+            buildFile = "" // Let Gradle detect the build script
+        }
+    }
+    artifactRules = """
+        build/published-guides/** => published-guides
+    """.trimIndent()
 })
 
 object BuildGuidesOnMac : AbstractBuildGuideType({
