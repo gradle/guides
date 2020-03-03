@@ -62,8 +62,7 @@ gradle.rootProject {
 
 gradleEnterprise {
     buildScan {
-        setTermsOfServiceUrl("https://gradle.com/terms-of-service")
-        setTermsOfServiceAgree("yes")
+        server = "https://e.grdev.net"
         if (!System.getenv("CI").isNullOrEmpty()) {
             publishAlways()
             tag("CI")
