@@ -409,7 +409,7 @@ include::{samples-dir}/groovy-dsl-clean-output-run-asciidoctor/out.txt[]
 
 NOTE: Did you notice that Gradle knew to only run this task in the `docs` subproject? This is because when you run a task from the level of a root project and this task does not exist in the root, then Gradle will run the task in each of the sub-projects where a task by that name exists.
 
-The documentation artifact will appear in `docs/build/asciidoc/html5`. Feel free to open the the `greeter.html` file and inspect the output.
+The documentation artifact will appear in `docs/build/asciidoc/html5`. Feel free to open the `greeter.html` file and inspect the output.
 
 == Include the documentation in the distribution archive
 

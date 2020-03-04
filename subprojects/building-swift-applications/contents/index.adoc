@@ -13,7 +13,7 @@ This guide demonstrates how to use Gradle's Build Init plugin to produce a Swift
 
 == Check the user manual
 
-Gradle ships with the link:{user-manual}build_init_plugin.html[Build Init plugin], which provides an easy way to generate projects of various types using the the `init` task.  This task will also execute the link:{language-reference}org.gradle.api.tasks.wrapper.Wrapper.html[`wrapper` task] to create a link:{user-manual}gradle_wrapper.html[Gradle wrapper script], `gradlew`.
+Gradle ships with the link:{user-manual}build_init_plugin.html[Build Init plugin], which provides an easy way to generate projects of various types using the `init` task.  This task will also execute the link:{language-reference}org.gradle.api.tasks.wrapper.Wrapper.html[`wrapper` task] to create a link:{user-manual}gradle_wrapper.html[Gradle wrapper script], `gradlew`.
 
 == Setup
 
@@ -158,7 +158,7 @@ NOTE: To learn more about Gradle's Xcode integration and how to configure it, se
 
 === Application package
 
-As part of the the build process, Gradle packages the main and test applications for distribution on other systems.
+As part of the build process, Gradle packages the main and test applications for distribution on other systems.
 The `installDebug` and `installTest` task copies the executable and generates a shell script for executing the application.
 The following shows the content of the `build/install` folder:
 
