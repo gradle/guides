@@ -410,8 +410,8 @@ Want to learn the tips and tricks top engineering teams use to keep builds fast 
 </div>
 <div class="paragraph">
 <p>The best way to do work faster is to not do work that doesn’t need doing.
-Gradle&#8217;s <a href="https://docs.gradle.org/5.0/userguide/more_about_tasks.html#sec:up_to_date_checks">incremental build</a> feature does exactly that by not running a task if its inputs and outputs are equivalent to what they were during its previous execution.
-<a href="https://docs.gradle.org/5.0/userguide/build_cache.html#sec:task_output_caching">Task output caching</a> extends on this by re-using task outputs produced with the same inputs anytime before, on any machine that is connected to the same build cache backend.</p>
+Gradle&#8217;s <a href="https://docs.gradle.org/6.0/userguide/more_about_tasks.html#sec:up_to_date_checks">incremental build</a> feature does exactly that by not running a task if its inputs and outputs are equivalent to what they were during its previous execution.
+<a href="https://docs.gradle.org/6.0/userguide/build_cache.html#sec:task_output_caching">Task output caching</a> extends on this by re-using task outputs produced with the same inputs anytime before, on any machine that is connected to the same build cache backend.</p>
 </div>
 <div class="paragraph">
 <p>This guide covers the different use cases for Gradle’s build cache, from local-only development to caching task outputs across large teams.
@@ -695,7 +695,7 @@ In this section you will see some of the tools that are essential for well-cache
 <div class="sect2">
 <h3 id="build_cache_key"><a class="anchor" href="#build_cache_key"></a><a class="link" href="#build_cache_key">Build cache key</a></h3>
 <div class="paragraph">
-<p>Artifacts in the build cache are uniquely identified by a <em><a href="https://docs.gradle.org/5.0/userguide/build_cache.html#sec:task_output_caching_details">build cache key</a>.</em>
+<p>Artifacts in the build cache are uniquely identified by a <em><a href="https://docs.gradle.org/6.0/userguide/build_cache.html#sec:task_output_caching_details">build cache key</a>.</em>
 A build cache key is assigned to each cacheable task when running with the build cache enabled and is used for both loading and storing task outputs to the build cache.
 The following inputs contribute to the build cache key for a task:</p>
 </div>
@@ -799,7 +799,7 @@ However, achieving byte for byte identical inputs for each task can be challengi
 In some cases sanitizing the output of a task to remove unnecessary information can be a good approach, but this also means that a task&#8217;s output can only be normalized for a single purpose.</p>
 </div>
 <div class="paragraph">
-<p>This is where <a href="https://docs.gradle.org/5.0/userguide/more_about_tasks.html#sec:configure_input_normalization">input normalization</a> comes into play.
+<p>This is where <a href="https://docs.gradle.org/6.0/userguide/more_about_tasks.html#sec:configure_input_normalization">input normalization</a> comes into play.
 Input normalization is used by Gradle to determine if two task inputs are <em>essentially</em> the same.
 Gradle uses normalized inputs when doing up-to-date checks and when determining if a cached result can be re-used instead of executing the task.
 As input normalization is declared by the task <em>consuming</em> the data as input, different tasks can define different ways to normalize the same data.</p>
@@ -814,7 +814,7 @@ As input normalization is declared by the task <em>consuming</em> the data as in
 To allow cached results to be shared even when builds are executed from different root directories, Gradle needs to understand which inputs can be relocated and which cannot.</p>
 </div>
 <div class="paragraph">
-<p>Tasks having files as inputs can declare the parts of a file&#8217;s path what are essential to them: this is called the <a href="https://docs.gradle.org/5.0/javadoc/org/gradle/api/tasks/PathSensitive.html"><em>path sensitivity</em></a> of the input.
+<p>Tasks having files as inputs can declare the parts of a file&#8217;s path what are essential to them: this is called the <a href="https://docs.gradle.org/6.0/javadoc/org/gradle/api/tasks/PathSensitive.html"><em>path sensitivity</em></a> of the input.
 Task properties declared with <code>ABSOLUTE</code> path sensitivity are considered non-relocatable.
 This is the default for properties not declaring path sensitivity, too.</p>
 </div>
@@ -849,7 +849,7 @@ As a consequence, path sensitivity for Java sources is <code>NAME_ONLY</code> an
 Gradle has a deep understanding of what a compile classpath is and uses a sophisticated normalization strategy for it.
 Task outputs can be re-used as long as the ABI of the classes on the compile classpath stays the same.
 This enables Gradle to avoid Java compilation by using incremental builds, or load results from the cache that were produced by different (but ABI-compatible) versions of dependencies.
-For more information on compile avoidance see the corresponding section in the <a href="https://docs.gradle.org/5.0/userguide/java_plugin.html#sec:java_compile_avoidance">user guide</a>.</p>
+For more information on compile avoidance see the corresponding section in the <a href="https://docs.gradle.org/6.0/userguide/java_plugin.html#sec:java_compile_avoidance">user guide</a>.</p>
 </div>
 </div>
 <div class="sect4">
@@ -858,12 +858,12 @@ For more information on compile avoidance see the corresponding section in the <
 <p>Similar to compile avoidance, Gradle also understands the concept of a runtime classpath, and uses tailored input normalization to avoid running e.g. tests.
 For runtime classpaths Gradle inspects the contents of jar files and ignores the timestamps and order of the entries in the jar file.
 This means that a rebuilt jar file would be considered the same runtime classpath input.
-For details on what level of understanding Gradle has for detecting changes to classpaths and what is considered as a classpath see the <a href="https://docs.gradle.org/5.0/userguide/more_about_tasks.html#sec:task_input_using_classpath_annotations">user guide</a>.</p>
+For details on what level of understanding Gradle has for detecting changes to classpaths and what is considered as a classpath see the <a href="https://docs.gradle.org/6.0/userguide/more_about_tasks.html#sec:task_input_using_classpath_annotations">user guide</a>.</p>
 </div>
 <div class="sect5">
 <h6 id="filter_runtime_classpath"><a class="anchor" href="#filter_runtime_classpath"></a><a class="link" href="#filter_runtime_classpath">Filtering runtime classpaths</a></h6>
 <div class="paragraph">
-<p>For a runtime classpath it is possible to provide better insights to Gradle which files are essential to the input by <a href="https://docs.gradle.org/5.0/userguide/more_about_tasks.html#sec:configure_input_normalization">configuring input normalization</a>.</p>
+<p>For a runtime classpath it is possible to provide better insights to Gradle which files are essential to the input by <a href="https://docs.gradle.org/6.0/userguide/more_about_tasks.html#sec:configure_input_normalization">configuring input normalization</a>.</p>
 </div>
 <div class="paragraph">
 <p>Given that you want to add a file <code>build-info.properties</code> to all your produced jar files which contains volatile information about the build, e.g. the timestamp when the build started or some ID to identify the CI job that published the artifact.
@@ -908,7 +908,7 @@ This will not change the runtime behavior of the <code>test</code> task&#8201;&#
 <div class="paragraph">
 <p>When two tasks write to the same output directory or output file, it is difficult for Gradle to determine which output belongs to which task.
 There are many edge cases, and executing the tasks in parallel cannot be done safely.
-For the same reason, Gradle cannot remove <a href="https://docs.gradle.org/5.0/userguide/more_about_tasks.html#sec:stale_task_outputs">stale output files</a> for these tasks.
+For the same reason, Gradle cannot remove <a href="https://docs.gradle.org/6.0/userguide/more_about_tasks.html#sec:stale_task_outputs">stale output files</a> for these tasks.
 Tasks that have discrete, non-overlapping outputs can always be handled in a safe fashion by Gradle.
 For the aforementioned reasons, task output caching is automatically disabled for tasks whose output directories overlap with another task.</p>
 </div>
@@ -985,7 +985,7 @@ If Gradle detects an annotation processor on the compile classpath, the annotati
 <p>For the example above this would mean the ABI extracted from the compile classpath would be unchanged, but the annotation processor classpath (because it&#8217;s not treated with compile avoidance) would be different. Ultimately, the developer would end up having to recompile the application.</p>
 </div>
 <div class="paragraph">
-<p>The easiest way to avoid this performance penalty is to not use annotation processors. However, if you need to use them, make sure you set the annotation processor classpath explicitly to include only the libraries needed for annotation processing. The <a href="https://docs.gradle.org/5.0/userguide/java_plugin.html#sec:java_compile_avoidance">user guide</a> describes how to do this.</p>
+<p>The easiest way to avoid this performance penalty is to not use annotation processors. However, if you need to use them, make sure you set the annotation processor classpath explicitly to include only the libraries needed for annotation processing. The <a href="https://docs.gradle.org/6.0/userguide/java_plugin.html#sec:java_compile_avoidance">user guide</a> describes how to do this.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1097,7 +1097,7 @@ integTest {
 </div>
 <div class="paragraph">
 <p>Instead of adding the absolute path directly as a system property, it is possible to add an
-annotated <code><a href="https://docs.gradle.org/5.0/javadoc/org/gradle/process/CommandLineArgumentProvider.html">CommandLineArgumentProvider</a></code> to the <code>integTest</code> task:</p>
+annotated <code><a href="https://docs.gradle.org/6.0/javadoc/org/gradle/process/CommandLineArgumentProvider.html">CommandLineArgumentProvider</a></code> to the <code>integTest</code> task:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle</div>
@@ -1144,7 +1144,7 @@ tasks.getByName&lt;Test&gt;("integTest") {
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Create a class implementing <code><a href="https://docs.gradle.org/5.0/javadoc/org/gradle/process/CommandLineArgumentProvider.html">CommandLineArgumentProvider</a></code>.</td>
+<td>Create a class implementing <code><a href="https://docs.gradle.org/6.0/javadoc/org/gradle/process/CommandLineArgumentProvider.html">CommandLineArgumentProvider</a></code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -1165,7 +1165,7 @@ tasks.getByName&lt;Test&gt;("integTest") {
 <h4 id="ignoring_system_properties"><a class="anchor" href="#ignoring_system_properties"></a><a class="link" href="#ignoring_system_properties">Ignoring system properties</a></h4>
 <div class="paragraph">
 <p>It may be necessary to ignore some system properties as inputs as they do not influence the outcome of the integration tests.
-In order to do so, add a <code><a href="https://docs.gradle.org/5.0/javadoc/org/gradle/process/CommandLineArgumentProvider.html">CommandLineArgumentProvider</a></code> to the <code>integTest</code> task:</p>
+In order to do so, add a <code><a href="https://docs.gradle.org/6.0/javadoc/org/gradle/process/CommandLineArgumentProvider.html">CommandLineArgumentProvider</a></code> to the <code>integTest</code> task:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle</div>
@@ -1223,15 +1223,6 @@ tasks.getByName&lt;Test&gt;("integTest") {
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="caching_buildsrc"><a class="anchor" href="#caching_buildsrc"></a><a class="link" href="#caching_buildsrc">Caching <code>buildSrc</code></a></h3>
-<div class="paragraph">
-<p>The <a href="https://docs.gradle.org/5.0/userguide/organizing_gradle_projects.html#sec:build_sources"><code>buildSrc</code> project</a> can be used to organize build logic in your Gradle build.
-While <code>buildSrc</code> typically does not change frequently, when it does every developer and CI agent needs to re-build and test it.
-Therefore, it is usually desirable to use task output caching for <code>buildSrc</code>, too.
-To use the same build cache configuration for <code>buildSrc</code> as for your root project, you can apply the same script both in <code>buildSrc/settings.gradle</code> and in <code>settings.gradle</code> as shown in the <a href="https://docs.gradle.org/5.0/userguide/build_cache.html#sec:build_cache_configure_use_cases">user guide</a>.</p>
-</div>
-</div>
 </div>
 </div>
 <div class="sect1">
@@ -1275,7 +1266,7 @@ CI already built this commit&#8201;&#8212;&#8201;why should you re-do that work?
 <h4 id="switching_branches"><a class="anchor" href="#switching_branches"></a><a class="link" href="#switching_branches">Switching branches</a></h4>
 <div class="paragraph">
 <p>During local development, it is not uncommon to switch branches several times per day.
-This defeats <a href="https://docs.gradle.org/5.0/userguide/more_about_tasks.html#sec:up_to_date_checks">incremental build</a> (i.e., <code>UP-TO-DATE</code> checks), but this issue is mitigated via use of the local build cache.
+This defeats <a href="https://docs.gradle.org/6.0/userguide/more_about_tasks.html#sec:up_to_date_checks">incremental build</a> (i.e., <code>UP-TO-DATE</code> checks), but this issue is mitigated via use of the local build cache.
 You might run a build on Branch A, which will populate the local cache.
 You then switch to Branch B to conduct a code review, help a colleague, or address feedback on an open PR.
 You then switch back to Branch A to continue your original work.
@@ -1294,7 +1285,7 @@ Each new version of these tools includes many performance improvements, not leas
 <div class="sect2">
 <h3 id="java_and_kotlin_compilation"><a class="anchor" href="#java_and_kotlin_compilation"></a><a class="link" href="#java_and_kotlin_compilation">Java and Kotlin compilation</a></h3>
 <div class="paragraph">
-<p>The <a href="https://guides.gradle.org/using-build-cache/#java_compilation">discussion</a> above in “Caching Java projects” is equally relevant here, with the caveat that, for projects that include Kotlin source code, the Kotlin compiler does not currently support <a href="https://docs.gradle.org/5.0/userguide/java_plugin.html#sec:java_compile_avoidance">compile avoidance</a> in the way that the Java compiler does.</p>
+<p>The <a href="https://guides.gradle.org/using-build-cache/#java_compilation">discussion</a> above in “Caching Java projects” is equally relevant here, with the caveat that, for projects that include Kotlin source code, the Kotlin compiler does not currently support <a href="https://docs.gradle.org/6.0/userguide/java_plugin.html#sec:java_compile_avoidance">compile avoidance</a> in the way that the Java compiler does.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1360,7 +1351,7 @@ This is another reason to always use the latest version of the Android plugin!</
 <p>The <a href="https://docs.fabric.io/android/fabric/overview.html">Fabric</a> plugin, which is used to integrate the Crashlytics crash-reporting tool (among others), is very popular, yet imposes some hefty performance penalties during the build process.
 This is due to the need for each version of your app to have a unique identifier so that it can be identified in the Crashlytics dashboard.
 In practice, the default behavior of Crashlytics is to treat “each version” as synonymous with “each build”.
-This defeats <a href="https://docs.gradle.org/5.0/userguide/more_about_tasks.html#sec:up_to_date_checks">incremental build</a>, because each build will be unique.
+This defeats <a href="https://docs.gradle.org/6.0/userguide/more_about_tasks.html#sec:up_to_date_checks">incremental build</a>, because each build will be unique.
 It also breaks the cacheability of certain tasks in the build, and for the same reason.
 This can be fixed by simply disabling Crashlytics in “debug” builds.
 You may find instructions for that in the <a href="https://docs.fabric.io/android/crashlytics/build-tools.html">Crashlytics documentation</a>.</p>
@@ -1383,7 +1374,7 @@ You may find instructions for that in the <a href="https://docs.fabric.io/androi
 <h4 id="kotlin_dsl"><a class="anchor" href="#kotlin_dsl"></a><a class="link" href="#kotlin_dsl">Kotlin DSL</a></h4>
 <div class="paragraph">
 <p>The fix described in the referenced documentation does not work directly if you are using the Kotlin DSL; this is due to incompatibilities between that Kotlin DSL and the Fabric plugin.
-There is a simple workaround for this, based on <a href="https://docs.gradle.org/5.0/userguide/kotlin_dsl.html#using_a_groovy_script">this advice</a> from the Kotlin DSL primer.</p>
+There is a simple workaround for this, based on <a href="https://docs.gradle.org/6.0/userguide/kotlin_dsl.html#using_a_groovy_script">this advice</a> from the Kotlin DSL primer.</p>
 </div>
 <div class="paragraph">
 <p>Create a file, <code>fabric.gradle</code>, in the module where you apply the <code>io.fabric</code> plugin. This file (known as a script plugin), should have the following contents:</p>
@@ -1686,7 +1677,7 @@ Techniques for debugging a cache miss are explained in the following section.</p
 <div class="paragraph">
 <p>A cache miss happens when Gradle calculates a build cache key for a task which is different from any existing build cache key in the cache.
 Only comparing the build cache key on its own does not give much information, so we need to look at some finer grained data to be able to diagnose the cache miss.
-A list of all inputs to the computed build cache key can be found in the <a href="https://docs.gradle.org/5.0/userguide/build_cache.html#sec:task_output_caching_details">user guide</a>.</p>
+A list of all inputs to the computed build cache key can be found in the <a href="https://docs.gradle.org/6.0/userguide/build_cache.html#sec:task_output_caching_details">user guide</a>.</p>
 </div>
 <div class="paragraph">
 <p>From most coarse grained to most fine grained, the items we will use to compare two tasks are:</p>
@@ -1721,7 +1712,7 @@ A list of all inputs to the computed build cache key can be found in the <a href
 </ul>
 </div>
 <div class="paragraph">
-<p>If you want information about the build cache key and individual input property hashes, use <a href="https://docs.gradle.org/5.0/userguide/build_environment.html#sec:gradle_configuration_properties"><code>-Dorg.gradle.caching.debug=true</code></a>:</p>
+<p>If you want information about the build cache key and individual input property hashes, use <a href="https://docs.gradle.org/6.0/userguide/build_environment.html#sec:gradle_configuration_properties"><code>-Dorg.gradle.caching.debug=true</code></a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1730,25 +1721,27 @@ A list of all inputs to the computed build cache key can be found in the <a href
 .
 .
 .
-Appending taskClass to build cache key: org.gradle.api.tasks.compile.JavaCompile_Decorated
-Appending classLoaderHash to build cache key: da6eca52100422099189290bf68f200a
-Appending actionType to build cache key: org.gradle.api.internal.project.taskfactory.AbstractOutputPropertyAnnotationHandler$2$1
-Appending actionClassLoaderHash to build cache key: 2cdf3f9202925b5befa161030ab43724
-Appending actionType to build cache key: org.gradle.api.internal.project.taskfactory.TaskClassValidator
+Appending implementation to build cache key: org.gradle.api.tasks.compile.JavaCompile_Decorated@470c67ec713775576db4e818e7a4c75d
+Appending additional implementation to build cache key: org.gradle.api.tasks.compile.JavaCompile_Decorated@470c67ec713775576db4e818e7a4c75d
+Appending input value fingerprint for 'options' to build cache key: e4eaee32137a6a587e57eea660d7f85d
+Appending input value fingerprint for 'options.compilerArgs' to build cache key: 8222d82255460164427051d7537fa305
+Appending input value fingerprint for 'options.debug' to build cache key: f6d7ed39fe24031e22d54f3fe65b901c
+Appending input value fingerprint for 'options.debugOptions' to build cache key: a91a8430ae47b11a17f6318b53f5ce9c
+Appending input value fingerprint for 'options.debugOptions.debugLevel' to build cache key: f6bd6b3389b872033d462029172c8612
+Appending input value fingerprint for 'options.encoding' to build cache key: f6bd6b3389b872033d462029172c8612
 .
 .
 .
-Appending inputPropertyHash for 'classpath' to build cache key: 2b6ab53aa11d4a7d4a1f95a8f78f4d7c
-Appending inputPropertyHash for 'effectiveAnnotationProcessorPath' to build cache key: d41d8cd98f00b204e9800998ecf8427e
-Appending inputPropertyHash for 'options.sourcepath' to build cache key: d41d8cd98f00b204e9800998ecf8427e
-Appending inputPropertyHash for 'source' to build cache key: f6ba49b2466f0090272c43ac5f54ec1d
-Appending outputPropertyName to build cache key: destinationDir
-Build cache key for task ':compileJava' is 2b220117efa6710f7ab191a0bbe48c00</pre>
+Appending input file fingerprints for 'options.sourcepath' to build cache key: 5fd1e7396e8de4cb5c23dc6aadd7787a - RELATIVE_PATH{EMPTY}
+Appending input file fingerprints for 'stableSources' to build cache key: f305ada95aeae858c233f46fc1ec4d01 - RELATIVE_PATH{.../src/main/java=IGNORED / DIR, .../src/main/java/Hello.java='Hello.java' / 9c306ba203d618dfbe1be83354ec211d}
+Appending output property name to build cache key: destinationDir
+Appending output property name to build cache key: options.annotationProcessorGeneratedSourcesDirectory
+Build cache key for task ':compileJava' is 8ebf682168823f662b9be34d27afdf77</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>If you want to go into the details of finding out e.g. which classes and jar files constitute the <code>classpath</code> for the <code>compileJava</code>
-task you need to resort to comparing those files on disk yourself.</p>
+<p>The log shows e.g. which source files constitute the <code>stableSources</code> for the <code>compileJava</code> task.
+To find the actual differences between two builds you need to resort to matching up and comparing those hashes yourself.</p>
 </div>
 <div class="paragraph">
 <p>Luckily, you do not have to capture this data yourself - the build scan plugin already takes care of this for you.
@@ -2129,7 +2122,7 @@ Still, the vendor and the minor version may influence the bytecode produced by c
 </div>
 <div class="paragraph">
 <p>If you use different JVM vendors for compiling or running Java we strongly suggest that you add the vendor as an input to the corresponding tasks.
-This can be achieved by using the <a href="https://docs.gradle.org/5.0/userguide/more_about_tasks.html#sec:task_input_output_runtime_api">runtime API</a> as shown in the following snippet.</p>
+This can be achieved by using the <a href="https://docs.gradle.org/6.0/userguide/more_about_tasks.html#sec:task_input_output_runtime_api">runtime API</a> as shown in the following snippet.</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle</div>
@@ -2177,7 +2170,7 @@ However, the bytecode should still result in the same runtime behavior.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p><a href="https://docs.gradle.org/5.0/userguide/java_plugin.html#sec:java_compile_avoidance">Java compile avoidance</a> will treat this bytecode the same since it extracts the ABI.</p>
+<p><a href="https://docs.gradle.org/6.0/userguide/java_plugin.html#sec:java_compile_avoidance">Java compile avoidance</a> will treat this bytecode the same since it extracts the ABI.</p>
 </div>
 </td>
 </tr>
@@ -2220,7 +2213,7 @@ Any variations across machines will result in cache misses.</p>
 <div class="paragraph">
 <p>Using <code>SNAPSHOT</code>s or other changing dependencies in your build by design violates the <a href="#stable_task_inputs">stable task inputs</a> principle.
 To use the build cache effectively, you should depend on fixed dependencies.
-You may want to look into the <a href="https://github.com/nebula-plugins/gradle-dependency-lock-plugin">dependency lock plugin</a> or switch to using <a href="https://docs.gradle.org/5.0/userguide/composite_builds.html">composite builds</a> instead.</p>
+You may want to look into the <a href="https://github.com/nebula-plugins/gradle-dependency-lock-plugin">dependency lock plugin</a> or switch to using <a href="https://docs.gradle.org/6.0/userguide/composite_builds.html">composite builds</a> instead.</p>
 </div>
 <div class="paragraph">
 <p>The same is true for depending on volatile external resources, for example a list of released versions.
@@ -2379,7 +2372,7 @@ You already learned about the possibilities with <a href="#filter_runtime_classp
 </div>
 <div class="paragraph">
 <p>Gradle includes some support for creating repeatable output for archive tasks.
-For tar and zip files Gradle can be configured to create <a href="https://docs.gradle.org/5.0/userguide/working_with_files.html#sec:reproducible_archives">reproducible archives</a>.
+For tar and zip files Gradle can be configured to create <a href="https://docs.gradle.org/6.0/userguide/working_with_files.html#sec:reproducible_archives">reproducible archives</a>.
 This is done by configuring e.g. the <code>Zip</code> task via the following snippet.</p>
 </div>
 <div class="listingblock multi-language-sample">
