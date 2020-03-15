@@ -220,7 +220,7 @@ The fastest task is one that doesn’t execute. If you can find ways to skip tas
 
 === Different people, different builds
 
-It seems to be very common to treat a build as an all or nothing package. Every user has to learn the same set of tasks that have been defined by the build. In many cases this makes no sense. Imagine you have both front-end and back-end developers: do they want the same things from the build? Of course not, particularly if one side is HTML, CSS and Javascript, while the other is Java and servlets.
+It seems to be very common to treat a build as an all or nothing package. Every user has to learn the same set of tasks that have been defined by the build. In many cases this makes no sense. Imagine you have both front-end and back-end developers: do they want the same things from the build? Of course not, particularly if one side is HTML, CSS and JavaScript, while the other is Java and servlets.
 
 It’s important that a single task graph underpins the build to ensure consistency. But you don’t need to expose the entire task graph to everyone. Instead, think in terms of sets of tasks forming a restricted view upon the task graph, with each view designed for a specific group of users. Do front-end developers need to run the server side unit tests? No, so it would make no sense to force the cost of running the tests on those users.
 
