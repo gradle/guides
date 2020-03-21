@@ -11,7 +11,10 @@ public class StringUtils {
     /**
      * Capitalizes the first letter of the string.
      *
-     * example -> Example
+     * example to Example
+     *
+     * @param s the string
+     * @return transformed string
      */
     public static String capitalize(String s) {
         return Character.toUpperCase(s.charAt(0)) + s.substring(1);
@@ -20,7 +23,10 @@ public class StringUtils {
     /**
      * Makes the first letter of the string lowercase.
      *
-     * Example -> example
+     * Example to example
+     *
+     * @param s the string
+     * @return transformed string
      */
     public static String uncapitalize(String s) {
         return Character.toLowerCase(s.charAt(0)) + s.substring(1);
@@ -29,7 +35,10 @@ public class StringUtils {
     /**
      * Capitalizes every word in a string.
      *
-     * this is an example -> This Is An Example
+     * this is an example to This Is An Example
+     *
+     * @param s the string
+     * @return transformed string
      */
     public static String toTitleCase(String s) {
         return Arrays.stream(GUtil.toWords(s).split(" ")).map(StringUtils::capitalize).collect(Collectors.joining(" "));
@@ -40,7 +49,10 @@ public class StringUtils {
      *
      * This is like a conventional Java identifier.
      *
-     * this is an example -> thisIsAnExample
+     * this is an example to thisIsAnExample
+     *
+     * @param s the string
+     * @return transformed string
      */
     public static String toLowerCamelCase(String s) {
         return uncapitalize(Arrays.stream(toTitleCase(s).split(" ")).collect(Collectors.joining()));
@@ -49,7 +61,10 @@ public class StringUtils {
     /**
      * Splits a string based on uppercase letters and rejoins them with underscores and makes the identifier lowercase.
      *
-     * ThisIsAnExample -> this_is_an_example
+     * ThisIsAnExample to this_is_an_example
+     *
+     * @param s the string
+     * @return transformed string
      */
     public static String toSnakeCase(String s) {
         return s.replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();
@@ -58,10 +73,13 @@ public class StringUtils {
     /**
      * Like {@link #toSnakeCase(String)}, except separated by hyphens.
      *
-     * ThisIsAnExample -> This-is-an-example
+     * ThisIsAnExample to This-is-an-example
+     *
+     * @param s the string
+     * @return transformed string
      */
-    public static String toKebabCase(String text) {
-        Matcher m = Pattern.compile("(?<=[a-z0-9])[A-Z]").matcher(text);
+    public static String toKebabCase(String s) {
+        Matcher m = Pattern.compile("(?<=[a-z0-9])[A-Z]").matcher(s);
         StringBuffer sb = new StringBuffer();
         while (m.find()) {
             m.appendReplacement(sb, "-"+m.group().toLowerCase());

@@ -24,12 +24,12 @@ import org.gradle.docs.samples.internal.SampleContentBinary;
 
 public interface TestableAsciidoctorContentBinary {
     /**
-     * Linked to {@link SampleContentBinary#getInstalledIndexPageFile()} or {@link GuideContentBinary#getInstalledIndexPageFile()}
+     * @return Linked to {@link SampleContentBinary#getInstalledIndexPageFile()} or {@link GuideContentBinary#getInstalledIndexPageFile()}
      */
     RegularFileProperty getContentFile();
 
     /**
-     * Linked to {@link SampleArchiveBinary#getInstallDirectory()} or null if no starting sample should be used
+     * @return Linked to {@link SampleArchiveBinary#getInstallDirectory()} or null if no starting sample should be used
      */
     DirectoryProperty getStartingSampleDirectory();
 }
