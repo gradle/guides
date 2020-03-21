@@ -28,8 +28,6 @@ import org.gradle.api.tasks.util.PatternSet;
 import org.gradle.api.tasks.wrapper.Wrapper;
 import org.gradle.docs.internal.DocumentationBasePlugin;
 import org.gradle.docs.internal.DocumentationExtensionInternal;
-import org.gradle.docs.internal.TestableAsciidoctorContentBinary;
-import org.gradle.docs.internal.exemplar.AsciidoctorContentTest;
 import org.gradle.docs.samples.Dsl;
 import org.gradle.docs.samples.SampleSummary;
 import org.gradle.docs.samples.Samples;
@@ -39,6 +37,7 @@ import org.gradle.docs.samples.internal.tasks.GenerateSamplePageAsciidoc;
 import org.gradle.docs.samples.internal.tasks.GenerateSanityCheckTests;
 import org.gradle.docs.samples.internal.tasks.GenerateTestSource;
 import org.gradle.docs.samples.internal.tasks.InstallSample;
+import org.gradle.docs.samples.internal.tasks.SamplesReport;
 import org.gradle.docs.samples.internal.tasks.SyncWithProvider;
 import org.gradle.docs.samples.internal.tasks.ValidateSampleBinary;
 import org.gradle.docs.samples.internal.tasks.ZipSample;
@@ -47,7 +46,6 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -116,6 +114,12 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
 
         // Trigger everything by realizing sample container
         project.afterEvaluate(p -> realizeSamples(extension, objects, assemble, check, wrapperFiles, project));
+
+        tasks.register("samplesInformation", SamplesReport.class, task -> {
+            task.getSamples().set(extension);
+            task.setGroup("Documentation");
+            task.setDescription("Generates listing for all available samples and templates.");
+        });
     }
 
     private void createTasksForSampleExemplarBinary(TaskContainer tasks, SampleExemplarBinary binary) {
