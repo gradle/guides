@@ -173,5 +173,5 @@ Each of the plugins generates a guide from Asciidoc source.
 . Commit and create tag, e.g. `git tag v0.15.9`.
 . Push changes and tag to master, e.g. `git push && git push origin v0.15.9`
 . Wait for Travis CI to publish the plugins on the https://plugins.gradle.org[plugin portal].
-. Create Github release.
+. Create GitHub release.
 . Edit `build.gradle` and replace version with `-SNAPSHOT` for next version.
