@@ -12,6 +12,6 @@ tasks.create<Zip>("zip") {
     group = "Archive"
 
     from("src")
-    setArchiveName("basic-demo-1.0.zip")
+    archiveFileName.set("basic-demo-1.0.zip")
 }
 // end::zip[]
