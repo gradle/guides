@@ -101,7 +101,7 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
         makeSingleProject()
         buildFile << """
             ${sampleUnderTestDsl} {
-                readme = file('src/docs/samples/demo/CUSTOM_README.adoc')
+                readmeFile = file('src/docs/samples/demo/CUSTOM_README.adoc')
             }
         """
 

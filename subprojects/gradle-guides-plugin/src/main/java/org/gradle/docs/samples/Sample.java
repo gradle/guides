@@ -22,7 +22,7 @@ public interface Sample extends Named, SampleSummary {
      *
      * @return Property for configuring the readme file for the sample in Asciidoctor format.
      */
-    RegularFileProperty getReadme();
+    RegularFileProperty getReadmeFile();
 
     /**
      * @return Sample content that is shared by all DSLs.
