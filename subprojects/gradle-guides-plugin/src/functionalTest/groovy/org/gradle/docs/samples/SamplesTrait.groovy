@@ -33,8 +33,8 @@ trait SamplesTrait {
         return "documentation.samples.publishedSamples.${name}"
     }
 
-    static void writeReadmeTo(TestFile directory) {
-        directory.file('README.adoc') << '''
+    static void writeReadmeTo(TestFile directory, String file = 'README.adoc') {
+        directory.file(file) << '''
             |= Demo Sample
             |
             |Some doc

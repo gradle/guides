@@ -198,6 +198,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
     private void applyConventionsForSamples(SamplesInternal extension, SampleInternal sample) {
         String name = sample.getName();
         sample.getSampleDirectory().convention(extension.getSamplesRoot().dir(toKebabCase(name)));
+        sample.getReadme().convention(sample.getSampleDirectory().file("README.adoc"));
         sample.getDisplayName().convention(toTitleCase(name));
         sample.getDescription().convention("");
         sample.getCategory().convention("Uncategorized");
@@ -392,7 +393,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             contentBinary.getResourceSpec().convention(project.copySpec(spec -> spec.from(extension.getDistribution().getZippedSamples(), sub -> sub.into("zips"))));
             contentBinary.getSourcePattern().convention(contentBinary.getBaseName().map(baseName -> baseName + ".adoc"));
             contentBinary.getSampleInstallDirectory().convention(sample.getInstallDirectory());
-            contentBinary.getSourcePageFile().convention(sample.getSampleDirectory().file("README.adoc"));
+            contentBinary.getSourcePageFile().convention(sample.getReadme());
             contentBinary.getGradleVersion().convention(project.getGradle().getGradleVersion());
 
             // TODO: To make this lazy without afterEvaluate/eagerness, we need to be able to tell the tasks container that the samples container should be consulted
