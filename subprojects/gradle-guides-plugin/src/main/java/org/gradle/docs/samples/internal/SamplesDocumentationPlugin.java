@@ -173,7 +173,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         extension.getDistribution().getTestedInstalledSamples().from(extension.getTestedInstallRoot());
         extension.getDistribution().getTestedInstalledSamples().builtBy(extension.getDistribution().getInstalledSamples().builtBy((Callable<List<DirectoryProperty>>) () -> extension.getBinaries().withType(SampleExemplarBinary.class).stream().map(SampleExemplarBinary::getTestedInstallDirectory).collect(Collectors.toList())));
 
-        // Tempates
+        // Templates
         // TODO: The following is only in samples
         extension.getTemplatesRoot().convention(layout.getProjectDirectory().dir("src/docs/samples/templates"));
 
