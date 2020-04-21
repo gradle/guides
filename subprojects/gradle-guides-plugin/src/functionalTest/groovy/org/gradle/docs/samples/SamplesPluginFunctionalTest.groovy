@@ -311,14 +311,35 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
             |""".stripMargin()
     }
 
+    def "documentation references removed from source code in zip"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+
+        when:
+        build('assembleDemoSample')
+
+        then:
+        assertZipEntryDoesNotContainDocRef(groovyDslZipFile, "build.gradle")
+        assertZipEntryDoesNotContainDocRef(kotlinDslZipFile, "build.gradle.kts")
+    }
+
     private void assertCanRunHelpTask(File zipFile) {
-        def workingDirectory = new File(temporaryFolder.root, zipFile.name)
+        File workingDirectory = extract(zipFile)
+        assert new File(workingDirectory, 'gradlew').canExecute()
+        assertSuccessfulExecution("${workingDirectory}/gradlew help", workingDirectory)
+    }
+
+    private void assertZipEntryDoesNotContainDocRef(File zipFile, String entry) {
+        File workingDirectory = extract(zipFile)
+        File file = new File(workingDirectory, entry)
+        assert !["// tag::", "// end::"].any { file.text.contains(it) }
+    }
+
+    private File extract(File zipFile) {
+        File workingDirectory = new File(temporaryFolder.root, zipFile.name)
         workingDirectory.mkdirs()
         assertSuccessfulExecution("unzip ${zipFile.getCanonicalPath()} -d ${workingDirectory.getCanonicalPath()}")
-
-        assert new File(workingDirectory, 'gradlew').canExecute()
-
-        assertSuccessfulExecution("${workingDirectory}/gradlew help", workingDirectory)
+        workingDirectory
     }
 
     private void assertSuccessfulExecution(String commandLine, File workingDirectory = null) {

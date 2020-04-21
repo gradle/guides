@@ -29,6 +29,7 @@ dependencies {
 
     implementation 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.9.2'
     implementation 'org.apache.ant:ant:1.9.13'
+    implementation 'com.google.guava:guava:29.0-jre'
 
     // For exemplar asciidoctor tests
     compileOnly("org.gradle:gradle-tooling-api:6.0.1")
