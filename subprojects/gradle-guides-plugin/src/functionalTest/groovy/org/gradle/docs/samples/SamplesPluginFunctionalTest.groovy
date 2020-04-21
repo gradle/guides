@@ -1,5 +1,6 @@
 package org.gradle.docs.samples
 
+import org.gradle.docs.TestFile
 import spock.lang.Ignore
 import spock.lang.Unroll
 
@@ -94,6 +95,25 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
         buildAndFail("assembleDemoSample")
         then:
         result.task(":generateDemoPage").outcome == FAILED
+    }
+
+    def "can configure readme location"() {
+        makeSingleProject()
+        buildFile << """
+            ${sampleUnderTestDsl} {
+                readme = file('src/docs/samples/demo/CUSTOM_README.adoc')
+            }
+        """
+
+        TestFile directory = file('src/docs/samples/demo')
+        writeReadmeTo(directory, 'CUSTOM_README.adoc')
+        writeGroovyDslSampleTo(directory.file('groovy'))
+
+        when:
+        // If the readme doesn't exist for the sample, we fail to generate the sample page
+        ExecutionResult result = build("assembleDemoSample")
+        then:
+        result.task(":generateDemoPage").outcome == SUCCESS
     }
 
     // TODO: Generalize test

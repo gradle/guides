@@ -4,6 +4,7 @@ import org.gradle.api.Action;
 import org.gradle.api.Named;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.RegularFileProperty;
 
 /**
  * Represent a sample to be documented. Each sample must contain at least a Groovy or Kotlin DSL sample.
@@ -17,9 +18,16 @@ public interface Sample extends Named, SampleSummary {
     DirectoryProperty getSampleDirectory();
 
     /**
+     * By Convention, this is README.adoc within the sample directory.
+     *
+     * @return Property for configuring the readme file for the sample in Asciidoctor format.
+     */
+    RegularFileProperty getReadme();
+
+    /**
      * @return Sample content that is shared by all DSLs.
      *
-     * By convention, this is the wrapper files, README and LICENSE.
+     * By convention, this is the wrapper files and LICENSE.
      */
     ConfigurableFileCollection getCommonContent();
 
