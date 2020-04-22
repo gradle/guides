@@ -34,7 +34,6 @@ import org.gradle.docs.samples.Samples;
 import org.gradle.docs.samples.Template;
 import org.gradle.docs.samples.internal.tasks.GenerateSampleIndexAsciidoc;
 import org.gradle.docs.samples.internal.tasks.GenerateSamplePageAsciidoc;
-import org.gradle.docs.samples.internal.tasks.GenerateSanityCheckNegativeTests;
 import org.gradle.docs.samples.internal.tasks.GenerateSanityCheckTests;
 import org.gradle.docs.samples.internal.tasks.GenerateTestSource;
 import org.gradle.docs.samples.internal.tasks.InstallSample;
@@ -213,13 +212,13 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         String name = sample.getName();
         sample.getSampleDirectory().convention(extension.getSamplesRoot().dir(toKebabCase(name)));
         sample.getReadmeFile().convention(sample.getSampleDirectory().file("README.adoc"));
+        sample.getPromoted().convention(Boolean.TRUE);
         sample.getDisplayName().convention(toTitleCase(name));
         sample.getDescription().convention("");
         sample.getCategory().convention("Uncategorized");
         sample.getSampleDocName().convention("sample_" + toSnakeCase(name));
 
         sample.getInstallDirectory().convention(extension.getInstallRoot().dir(toKebabCase(name)));
-
         sample.getDsls().convention(sample.getSampleDirectory().map(sampleDirectory -> {
             List<Dsl> dsls = new ArrayList<>();
             for (Dsl dsl : Dsl.values()) {
@@ -477,6 +476,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         summary.getCategory().set(sample.getCategory());
         summary.getDescription().set(sample.getDescription());
         summary.getSampleDocName().set(sample.getSampleDocName());
+        summary.getPromoted().set(sample.getPromoted());
         return summary;
     }
 }
