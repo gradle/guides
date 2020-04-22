@@ -1,8 +1,8 @@
-= Building Java 9 Modules
+= Building Java Modules
 
-One of the most exciting features of Java 9 is its support for developing and
-deploying modular Java software. Gradle doesn't have first-class support for Java 9 modules yet. 
+One of the most exciting features introduced in Java 9 is support for developing and deploying modular Java software.
+As of Gradle 6.4, building Java Modules is supported by Gradle directly.
 
-Some link:https://plugins.gradle.org/search?term=jpms[community plugins], like link:https://github.com/java9-modularity/gradle-modules-plugin[java9-modularity plugin], attempt to add support.  This guide will be updated with more information on how to use built-in Gradle support when it is developed.
+There are a link:https://docs.gradle.org/current/samples/index.html#java_modules[number of sampels] that explain how Java Modules are built, tested and executed with Gradle.
 
 include::contribute[repo-path="gradle-guides/building-java-9-modules"]
