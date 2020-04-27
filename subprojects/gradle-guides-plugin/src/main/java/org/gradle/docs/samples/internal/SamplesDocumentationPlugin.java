@@ -173,7 +173,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         extension.getDistribution().getTestedInstalledSamples().from(extension.getTestedInstallRoot());
         extension.getDistribution().getTestedInstalledSamples().builtBy(extension.getDistribution().getInstalledSamples().builtBy((Callable<List<DirectoryProperty>>) () -> extension.getBinaries().withType(SampleExemplarBinary.class).stream().map(SampleExemplarBinary::getTestedInstallDirectory).collect(Collectors.toList())));
 
-        // Tempates
+        // Templates
         // TODO: The following is only in samples
         extension.getTemplatesRoot().convention(layout.getProjectDirectory().dir("src/docs/samples/templates"));
 
@@ -198,6 +198,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
     private void applyConventionsForSamples(SamplesInternal extension, SampleInternal sample) {
         String name = sample.getName();
         sample.getSampleDirectory().convention(extension.getSamplesRoot().dir(toKebabCase(name)));
+        sample.getReadmeFile().convention(sample.getSampleDirectory().file("README.adoc"));
         sample.getDisplayName().convention(toTitleCase(name));
         sample.getDescription().convention("");
         sample.getCategory().convention("Uncategorized");
@@ -392,7 +393,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             contentBinary.getResourceSpec().convention(project.copySpec(spec -> spec.from(extension.getDistribution().getZippedSamples(), sub -> sub.into("zips"))));
             contentBinary.getSourcePattern().convention(contentBinary.getBaseName().map(baseName -> baseName + ".adoc"));
             contentBinary.getSampleInstallDirectory().convention(sample.getInstallDirectory());
-            contentBinary.getSourcePageFile().convention(sample.getSampleDirectory().file("README.adoc"));
+            contentBinary.getSourcePageFile().convention(sample.getReadmeFile());
             contentBinary.getGradleVersion().convention(project.getGradle().getGradleVersion());
 
             // TODO: To make this lazy without afterEvaluate/eagerness, we need to be able to tell the tasks container that the samples container should be consulted
