@@ -5,19 +5,10 @@ import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipOutputStream;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.UncheckedIOException;
-import org.gradle.api.file.ConfigurableFileCollection;
-import org.gradle.api.file.FileTree;
-import org.gradle.api.file.FileVisitDetails;
-import org.gradle.api.file.FileVisitor;
-import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.file.*;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputFiles;
-import org.gradle.api.tasks.Internal;
-import org.gradle.api.tasks.OutputFile;
-import org.gradle.api.tasks.SkipWhenEmpty;
-import org.gradle.api.tasks.TaskAction;
+import org.gradle.api.tasks.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -136,7 +127,7 @@ public abstract class ZipSample extends DefaultTask {
     }
 
     private byte[] readContent(FileVisitDetails fileDetails) throws IOException {
-        return com.google.common.io.Files.asByteSource(fileDetails.getFile()).read();
+        return Files.readAllBytes(fileDetails.getFile().toPath());
     }
 
     private boolean containsUserGuideRefs(String content) {
