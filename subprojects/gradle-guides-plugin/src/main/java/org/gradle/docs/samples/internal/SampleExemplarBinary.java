@@ -2,6 +2,8 @@ package org.gradle.docs.samples.internal;
 
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.provider.Property;
+import org.gradle.docs.samples.Dsl;
 
 import javax.inject.Inject;
 
@@ -16,4 +18,8 @@ public abstract class SampleExemplarBinary extends SampleBinary {
     public abstract DirectoryProperty getTestedWorkingDirectory();
 
     public abstract ConfigurableFileCollection getTestsContent();
+
+    public abstract Property<Dsl> getDsl();
+
+    public abstract Property<Boolean> getExplicitSanityCheck();
 }

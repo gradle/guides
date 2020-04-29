@@ -5,6 +5,7 @@ import org.gradle.api.Named;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.provider.Property;
 
 /**
  * Represent a sample to be documented. Each sample must contain at least a Groovy or Kotlin DSL sample.

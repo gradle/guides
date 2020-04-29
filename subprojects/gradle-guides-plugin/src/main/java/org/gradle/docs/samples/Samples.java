@@ -8,7 +8,7 @@ import org.gradle.api.provider.ListProperty;
 public interface Samples {
 
     /**
-     * By convention, this is src/docs/samples
+     * By convention, this is src/samples
      *
      * @return The root sample directory.
      */
