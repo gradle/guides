@@ -425,7 +425,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Shell commands will shown for Unix-based systems. Windows has analogous commands for each.
+Shell commands are shown for Unix-based systems. Windows has analogous commands for each.
 </td>
 </tr>
 </table>
@@ -641,7 +641,7 @@ BUILD SUCCESSFUL in 0s
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">task zip(type: Zip, group: "Archive", description: "Archives sources in a zip file") {
     from "src"
-    setArchiveName "basic-demo-1.0.zip"
+    archiveFileName = "basic-demo-1.0.zip"
 }</code></pre>
 </div>
 </div>
@@ -653,7 +653,7 @@ BUILD SUCCESSFUL in 0s
     group = "Archive"
 
     from("src")
-    setArchiveName("basic-demo-1.0.zip")
+    archiveFileName.set("basic-demo-1.0.zip")
 }</code></pre>
 </div>
 </div>

@@ -803,7 +803,7 @@ If your build logic is comprised of plugins written in statically compiled JVM l
 <div class="sect2">
 <h3 id="different_people_different_builds"><a class="anchor" href="#different_people_different_builds"></a><a class="link" href="#different_people_different_builds">Different people, different builds</a></h3>
 <div class="paragraph">
-<p>It seems to be very common to treat a build as an all or nothing package. Every user has to learn the same set of tasks that have been defined by the build. In many cases this makes no sense. Imagine you have both front-end and back-end developers: do they want the same things from the build? Of course not, particularly if one side is HTML, CSS and Javascript, while the other is Java and servlets.</p>
+<p>It seems to be very common to treat a build as an all or nothing package. Every user has to learn the same set of tasks that have been defined by the build. In many cases this makes no sense. Imagine you have both front-end and back-end developers: do they want the same things from the build? Of course not, particularly if one side is HTML, CSS and JavaScript, while the other is Java and servlets.</p>
 </div>
 <div class="paragraph">
 <p>It’s important that a single task graph underpins the build to ensure consistency. But you don’t need to expose the entire task graph to everyone. Instead, think in terms of sets of tasks forming a restricted view upon the task graph, with each view designed for a specific group of users. Do front-end developers need to run the server side unit tests? No, so it would make no sense to force the cost of running the tests on those users.</p>

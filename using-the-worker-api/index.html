@@ -491,11 +491,9 @@ custom classes that should be available for use in your build script.  See
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-java" data-lang="java">import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
-import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFile;
 import org.gradle.api.provider.Provider;
-import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.SourceTask;
 import org.gradle.api.tasks.TaskAction;
@@ -508,23 +506,16 @@ import java.io.InputStream;
 
 public class CreateMD5 extends SourceTask { <i class="conum" data-value="1"></i><b>(1)</b>
     private final DirectoryProperty destinationDirectory; <i class="conum" data-value="2"></i><b>(2)</b>
-    private final ConfigurableFileCollection codecClasspath;
 
     @Inject
     public CreateMD5() {
         super();
         this.destinationDirectory = getProject().getObjects().directoryProperty();
-        this.codecClasspath = getProject().getObjects().fileCollection();
     }
 
     @OutputDirectory
     public DirectoryProperty getDestinationDirectory() {
         return destinationDirectory;
-    }
-
-    @InputFiles
-    public ConfigurableFileCollection getCodecClasspath() {
-        return codecClasspath;
     }
 
     @TaskAction
