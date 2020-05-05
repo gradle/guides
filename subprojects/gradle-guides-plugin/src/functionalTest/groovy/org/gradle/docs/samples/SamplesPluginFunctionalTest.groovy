@@ -341,6 +341,9 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
             |""".stripMargin()
     }
 
+    // TODO (donat) add test coverage for explicit sanity checks
+    // TODO (donat) add test coverage for dsl-specific tests
+
     private void assertCanRunHelpTask(File zipFile) {
         def workingDirectory = new File(temporaryFolder.root, zipFile.name)
         workingDirectory.mkdirs()
