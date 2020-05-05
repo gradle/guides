@@ -139,7 +139,6 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             task.setDescription("Installs sample '" + binary.getName() + "' into a local directory with testing support.");
             task.getSource().from(binary.getTestsContent());
             task.getInstallDirectory().convention(binary.getTestedWorkingDirectory());
-            task.getDsl().value(binary.getDsl());
         });
         binary.getTestedInstallDirectory().convention(installSampleTaskForTesting.flatMap(InstallSample::getInstallDirectory));
     }
@@ -373,7 +372,6 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             task.dependsOn(binary.getZipFile());
             task.getSource().from((Callable<FileTree>) () -> task.getProject().zipTree(binary.getZipFile()));
             task.getInstallDirectory().convention(binary.getWorkingDirectory());
-            task.getDsl().convention(binary.getDsl());
         });
         binary.getInstallDirectory().convention(installSampleTask.flatMap(InstallSample::getInstallDirectory));
 
@@ -428,8 +426,9 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
                 SampleExemplarBinary exemplarBinary = objects.newInstance(SampleExemplarBinary.class, sample.getName() + dsl.getDisplayName());
                 exemplarBinary.getTestedWorkingDirectory().convention(extension.getTestedInstallRoot().dir(toKebabCase(sample.getName()) + "/" + dsl.getConventionalDirectory())).disallowChanges();
                 exemplarBinary.getTestsContent().from(objects.fileCollection().from((Callable<FileTree>) () -> project.zipTree(binary.getZipFile())).builtBy(binary.getZipFile())); // TODO: zipTree should be lazy
-                exemplarBinary.getTestsContent().from(sample.getSampleDirectory().dir("tests"));
-                exemplarBinary.getDsl().value(dsl);
+                exemplarBinary.getTestsContent().from(sample.getSampleDirectory().dir("tests")); // TODO (donat) maybe deprecate with warning
+                exemplarBinary.getTestsContent().from(sample.getSampleDirectory().dir("tests-common"));
+                exemplarBinary.getTestsContent().from(sample.getSampleDirectory().dir("tests-" + dsl.getDisplayName().toLowerCase()));
                 exemplarBinary.getTestsContent().from(sample.getTestsContent());
                 exemplarBinary.getExplicitSanityCheck().value(sample.getSampleDirectory().dir("tests").get().getAsFileTree().getFiles().stream().anyMatch(f -> f.getName().endsWith(".sample.conf") && f.getName().toLowerCase().contains("sanitycheck"))) ;
                 extension.getBinaries().add(exemplarBinary);

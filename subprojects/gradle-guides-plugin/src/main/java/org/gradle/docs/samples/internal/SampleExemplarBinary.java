@@ -19,7 +19,5 @@ public abstract class SampleExemplarBinary extends SampleBinary {
 
     public abstract ConfigurableFileCollection getTestsContent();
 
-    public abstract Property<Dsl> getDsl();
-
     public abstract Property<Boolean> getExplicitSanityCheck();
 }
