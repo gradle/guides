@@ -430,7 +430,9 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
                 exemplarBinary.getTestsContent().from(sample.getSampleDirectory().dir("tests-common"));
                 exemplarBinary.getTestsContent().from(sample.getSampleDirectory().dir("tests-" + dsl.getDisplayName().toLowerCase()));
                 exemplarBinary.getTestsContent().from(sample.getTestsContent());
-                exemplarBinary.getExplicitSanityCheck().value(sample.getSampleDirectory().dir("tests").get().getAsFileTree().getFiles().stream().anyMatch(f -> f.getName().endsWith(".sample.conf") && f.getName().toLowerCase().contains("sanitycheck"))) ;
+                boolean hasSanityCheck = sample.getSampleDirectory().dir("tests").get().getAsFileTree().getFiles().stream().anyMatch(f -> f.getName().endsWith(".sample.conf") && f.getName().toLowerCase().contains("sanitycheck"));
+                hasSanityCheck |= sample.getSampleDirectory().dir("tests-common").get().getAsFileTree().getFiles().stream().anyMatch(f -> f.getName().endsWith(".sample.conf") && f.getName().toLowerCase().contains("sanitycheck"));
+                exemplarBinary.getExplicitSanityCheck().value(hasSanityCheck);
                 extension.getBinaries().add(exemplarBinary);
 
                 TestableAsciidoctorSampleContentBinary testableContentBinary = objects.newInstance(TestableAsciidoctorSampleContentBinary.class, sample.getName() + dsl.getDisplayName());
