@@ -1,5 +1,6 @@
 package org.gradle.docs.samples
 
+import org.gradle.docs.TestFile
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.util.GradleVersion
 
@@ -19,6 +20,28 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
         build('docsTest')
         then:
         assertExemplarTasksExecutedAndNotSkipped(result)
+    }
+
+    def "don't run generated sanity check when test with 'SanityCheck' name already defined"() {
+        given:
+        makeSingleProject()
+        writeSampleUnderTest()
+        def destination = file( 'src/docs/samples/demo')
+        def testFile = destination.file("tests/${explicitSanityCheckName}.sample.conf")
+        testFile.text = """
+            | executable: gradle
+            | args: help
+            |""".stripMargin()
+
+        buildFile << expectTestsExecuted(getExpectedTestsFor("demo", explicitSanityCheckName));
+
+        when:
+        build('docsTest')
+        then:
+        assertExemplarTasksExecutedAndNotSkipped(result)
+
+        where:
+        explicitSanityCheckName << ["MySanityCheck", "mysanitycheck"]
     }
 
     def "can test multiple samples"() {
