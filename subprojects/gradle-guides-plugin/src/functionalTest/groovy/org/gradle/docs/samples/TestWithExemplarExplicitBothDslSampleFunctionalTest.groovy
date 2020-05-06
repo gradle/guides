@@ -1,5 +1,7 @@
 package org.gradle.docs.samples
 
+import spock.lang.Unroll
+
 class TestWithExemplarExplicitBothDslSampleFunctionalTest extends AbstractExemplarBothDslSampleFunctionalTest {
     @Override
     protected void makeSingleProject() {
@@ -10,5 +12,26 @@ class TestWithExemplarExplicitBothDslSampleFunctionalTest extends AbstractExempl
                 dsls = [ Dsl.KOTLIN, Dsl.GROOVY ]
             }
         """
+    }
+
+    @Unroll
+    def "tests from tests-#dsl directory are executed in #dsl tests only"() {
+        given:
+        makeSingleProject()
+        writeSampleUnderTest()
+        def destination = file( 'src/docs/samples/demo')
+        destination.file("tests-${dsl}/mytest.sample.conf").text = """
+            | executable: gradle
+            | args: help
+            |""".stripMargin()
+        buildFile << expectTestsExecuted(["org.gradle.samples.ExemplarExternalSamplesFunctionalTest.demo_${dsl}_mytest.sample"] + getExpectedTestsFor('demo', 'sanityCheck'))
+
+        when:
+        build('docsTest')
+        then:
+        assertExemplarTasksExecutedAndNotSkipped(result)
+
+        where:
+        dsl << Dsl.values().collect { it.displayName.toLowerCase() }
     }
 }
