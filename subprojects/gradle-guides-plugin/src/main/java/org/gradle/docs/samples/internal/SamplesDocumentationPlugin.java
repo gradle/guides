@@ -56,9 +56,17 @@ import java.util.stream.Collectors;
 import static org.gradle.docs.internal.Asserts.assertNameDoesNotContainsDisallowedCharacters;
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCS_TEST_SOURCE_SET_NAME;
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
-import static org.gradle.docs.internal.StringUtils.*;
-import static org.gradle.docs.internal.configure.AsciidoctorTasks.*;
-import static org.gradle.docs.internal.configure.ContentBinaries.*;
+import static org.gradle.docs.internal.StringUtils.capitalize;
+import static org.gradle.docs.internal.StringUtils.toKebabCase;
+import static org.gradle.docs.internal.StringUtils.toSnakeCase;
+import static org.gradle.docs.internal.StringUtils.toTitleCase;
+import static org.gradle.docs.internal.configure.AsciidoctorTasks.cleanStaleFiles;
+import static org.gradle.docs.internal.configure.AsciidoctorTasks.configureResources;
+import static org.gradle.docs.internal.configure.AsciidoctorTasks.configureSources;
+import static org.gradle.docs.internal.configure.AsciidoctorTasks.genericAttributes;
+import static org.gradle.docs.internal.configure.ContentBinaries.createCheckTaskForAsciidoctorContentBinary;
+import static org.gradle.docs.internal.configure.ContentBinaries.createCheckTasksForContentBinary;
+import static org.gradle.docs.internal.configure.ContentBinaries.createTasksForContentBinary;
 
 @SuppressWarnings("UnstableApiUsage")
 public class SamplesDocumentationPlugin implements Plugin<Project> {
@@ -90,8 +98,12 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
 
         // Samples binaries
         // TODO: This could be lazy if we had a way to make the TaskContainer require evaluation
-        FileCollection generatedTests = createGeneratedTests(tasks, objects, layout);
-        extension.getBinaries().withType(SampleExemplarBinary.class).all(binary -> binary.getTestsContent().from(generatedTests));
+        FileCollection generatedSanityCheckTest = createGeneratedTests(tasks, objects, layout);
+        extension.getBinaries().withType(SampleExemplarBinary.class).all(binary ->  {
+            if (!binary.getExplicitSanityCheck().get()) {
+                binary.getTestsContent().from(generatedSanityCheckTest);
+            }
+        });
         extension.getBinaries().withType(SampleContentBinary.class).all(binary -> createTasksForContentBinary(tasks, binary));
         extension.getBinaries().withType(SampleContentBinary.class).all(binary -> createCheckTasksForContentBinary(tasks, binary, check));
         extension.getBinaries().withType(SampleContentBinary.class).all(binary -> createTasksForSampleContentBinary(tasks, layout, providers, binary));
@@ -199,13 +211,13 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         String name = sample.getName();
         sample.getSampleDirectory().convention(extension.getSamplesRoot().dir(toKebabCase(name)));
         sample.getReadmeFile().convention(sample.getSampleDirectory().file("README.adoc"));
+        sample.getPromoted().convention(Boolean.TRUE);
         sample.getDisplayName().convention(toTitleCase(name));
         sample.getDescription().convention("");
         sample.getCategory().convention("Uncategorized");
         sample.getSampleDocName().convention("sample_" + toSnakeCase(name));
 
         sample.getInstallDirectory().convention(extension.getInstallRoot().dir(toKebabCase(name)));
-
         sample.getDsls().convention(sample.getSampleDirectory().map(sampleDirectory -> {
             List<Dsl> dsls = new ArrayList<>();
             for (Dsl dsl : Dsl.values()) {
@@ -414,8 +426,13 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
                 SampleExemplarBinary exemplarBinary = objects.newInstance(SampleExemplarBinary.class, sample.getName() + dsl.getDisplayName());
                 exemplarBinary.getTestedWorkingDirectory().convention(extension.getTestedInstallRoot().dir(toKebabCase(sample.getName()) + "/" + dsl.getConventionalDirectory())).disallowChanges();
                 exemplarBinary.getTestsContent().from(objects.fileCollection().from((Callable<FileTree>) () -> project.zipTree(binary.getZipFile())).builtBy(binary.getZipFile())); // TODO: zipTree should be lazy
-                exemplarBinary.getTestsContent().from(sample.getSampleDirectory().dir("tests"));
+                exemplarBinary.getTestsContent().from(sample.getSampleDirectory().dir("tests")); // TODO (donat) maybe deprecate with warning
+                exemplarBinary.getTestsContent().from(sample.getSampleDirectory().dir("tests-common"));
+                exemplarBinary.getTestsContent().from(sample.getSampleDirectory().dir("tests-" + dsl.getDisplayName().toLowerCase()));
                 exemplarBinary.getTestsContent().from(sample.getTestsContent());
+                boolean hasSanityCheck = sample.getSampleDirectory().dir("tests").get().getAsFileTree().getFiles().stream().anyMatch(f -> f.getName().endsWith(".sample.conf") && f.getName().toLowerCase().contains("sanitycheck"));
+                hasSanityCheck |= sample.getSampleDirectory().dir("tests-common").get().getAsFileTree().getFiles().stream().anyMatch(f -> f.getName().endsWith(".sample.conf") && f.getName().toLowerCase().contains("sanitycheck"));
+                exemplarBinary.getExplicitSanityCheck().value(hasSanityCheck);
                 extension.getBinaries().add(exemplarBinary);
 
                 TestableAsciidoctorSampleContentBinary testableContentBinary = objects.newInstance(TestableAsciidoctorSampleContentBinary.class, sample.getName() + dsl.getDisplayName());
@@ -460,6 +477,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         summary.getCategory().set(sample.getCategory());
         summary.getDescription().set(sample.getDescription());
         summary.getSampleDocName().set(sample.getSampleDocName());
+        summary.getPromoted().set(sample.getPromoted());
         return summary;
     }
 }

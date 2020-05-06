@@ -35,9 +35,11 @@ public abstract class GenerateSampleIndexAsciidoc extends DefaultTask {
             } else {
                 Map<String, List<SampleSummary>> categorizedSamples = new TreeMap<>();
                 getSamples().get().forEach(sample -> {
-                    String category = sample.getCategory().get();
-                    List<SampleSummary> groupedSamples = categorizedSamples.computeIfAbsent(category, k -> new ArrayList<>());
-                    groupedSamples.add(sample);
+                    if (sample.getPromoted().get()) {
+                        String category = sample.getCategory().get();
+                        List<SampleSummary> groupedSamples = categorizedSamples.computeIfAbsent(category, k -> new ArrayList<>());
+                        groupedSamples.add(sample);
+                    }
                 });
 
                 categorizedSamples.forEach((category, samples) -> {

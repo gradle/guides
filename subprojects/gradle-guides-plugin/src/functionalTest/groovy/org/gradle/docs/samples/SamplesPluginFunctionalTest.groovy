@@ -311,6 +311,38 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
             |""".stripMargin()
     }
 
+    def "filters non-promoted sample from samples index"() {
+        makeSingleProject()
+        buildFile << """
+            ${createSample('aaa')}
+            ${createSample('bbb')} {
+                promoted = false
+            }
+            ${createSample('ccc')}
+            documentation.samples.publishedSamples.all { dsls = [ ${Dsl.canonicalName}.GROOVY ] }
+        """
+
+        when:
+        build('generateSampleIndex')
+
+        then:
+        result.task(":generateSampleIndex").outcome == SUCCESS
+
+        and:
+        def indexFile = file("build/tmp/generateSampleIndex/index.adoc")
+        indexFile.text == """= Sample Index
+            |
+            |== Uncategorized
+            |
+            |- <<sample_aaa#,Aaa>>
+            |- <<sample_ccc#,Ccc>>
+            |- <<sample_demo#,Demo>>
+            |
+            |""".stripMargin()
+    }
+
+    // TODO (donat) add test coverage for dsl-specific tests
+
     private void assertCanRunHelpTask(File zipFile) {
         def workingDirectory = new File(temporaryFolder.root, zipFile.name)
         workingDirectory.mkdirs()

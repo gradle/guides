@@ -19,6 +19,12 @@ Each of the plugins generates a guide from Asciidoc source.
 
 == Changelog
 
+== 0.16.4
+
+- Samples can be excluded from the samples index by setting the `sample` property to false.
+- Samples can overwrite generated sanity checks with explicit Exemplar tests
+- Exemplar tests located in the `tests-groovy` and `tests-kotlin` subdirectory are only executed for the target dsl variant.
+
 === 0.16.3
 
 - Add samplesInformation to list information about samples and template

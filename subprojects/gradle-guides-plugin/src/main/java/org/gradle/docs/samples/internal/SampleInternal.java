@@ -65,4 +65,10 @@ public abstract class SampleInternal implements Sample {
      * @return Root installation directory for each DSL.
      */
     public abstract DirectoryProperty getInstallDirectory();
+
+    /**
+     * @return Whether the sample should appear on the samples index page.
+     */
+    @Override
+    public abstract Property<Boolean> getPromoted();
 }

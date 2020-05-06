@@ -40,4 +40,12 @@ public interface SampleSummary {
      */
     @Input
     SetProperty<Dsl> getDsls();
+
+    /**
+     * By Convention this is true.
+     *
+     * @return true if the samples should be listed in the samples index.
+     */
+    @Input
+    Property<Boolean> getPromoted();
 }
