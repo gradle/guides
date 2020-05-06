@@ -9,3 +9,6 @@ build
 .idea
 *.iml
 .DS_Store
+
+# maven
+target/

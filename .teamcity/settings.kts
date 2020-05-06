@@ -1,6 +1,7 @@
-import jetbrains.buildServer.configs.kotlin.v2018_2.*
-import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.gradle
-import jetbrains.buildServer.configs.kotlin.v2018_2.triggers.vcs
+import jetbrains.buildServer.configs.kotlin.v2019_2.*
+import jetbrains.buildServer.configs.kotlin.v2019_2.buildFeatures.commitStatusPublisher
+import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.gradle
+import jetbrains.buildServer.configs.kotlin.v2019_2.triggers.vcs
 
 /*
 The settings script is an entry point for defining a TeamCity
@@ -24,7 +25,7 @@ To debug in IntelliJ Idea, open the 'Maven Projects' tool window (View
 'Debug' option is available in the context menu for the task.
 */
 
-version = "2019.1"
+version = "2019.2"
 
 project {
 //    parentId("DocumentationPortal")
@@ -42,6 +43,18 @@ open class AbstractBuildType(init: BuildType.() -> Unit) : BuildType({
     }
     params {
         param("env.LC_ALL", "en_US.UTF-8")
+    }
+
+    features {
+        commitStatusPublisher {
+            vcsRootExtId = "DocumentationPortal_Guides_HttpsGithubComGradleGuidesRefsHeadsMaster"
+            publisher = github {
+                githubUrl = "https://api.github.com"
+                authType = personalToken {
+                    token = "credentialsJSON:5306bfc7-041e-46e8-8d61-1d49424e7b04"
+                }
+            }
+        }
     }
 
     init()
