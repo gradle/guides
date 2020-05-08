@@ -78,7 +78,7 @@ The following configuration file tells Travis CI to build a Java project with JD
 [listing]
 ----
 language: java
-install: true
+install: skip
 
 os: linux
 dist: trusty
