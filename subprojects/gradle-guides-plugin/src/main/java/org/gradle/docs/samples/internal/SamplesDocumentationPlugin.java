@@ -228,6 +228,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             return dsls;
         }));
 
+        sample.getCommonContent().from(sample.getSampleDirectory().dir("common"));
         sample.getGroovyContent().from(sample.getSampleDirectory().dir(Dsl.GROOVY.getConventionalDirectory()));
         sample.getKotlinContent().from(sample.getSampleDirectory().dir(Dsl.KOTLIN.getConventionalDirectory()));
 
