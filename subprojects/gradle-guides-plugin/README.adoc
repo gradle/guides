@@ -19,6 +19,10 @@ Each of the plugins generates a guide from Asciidoc source.
 
 == Changelog
 
+== 0.16.5
+
+- Skip asciidoctor-related validation tasks for non-promoted samples.
+
 == 0.16.4
 
 - Samples can be excluded from the samples index by setting the `sample` property to false.
