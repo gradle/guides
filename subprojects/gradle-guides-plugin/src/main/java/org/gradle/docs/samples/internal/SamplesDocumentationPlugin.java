@@ -105,7 +105,11 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             }
         });
         extension.getBinaries().withType(SampleContentBinary.class).all(binary -> createTasksForContentBinary(tasks, binary));
-        extension.getBinaries().withType(SampleContentBinary.class).all(binary -> createCheckTasksForContentBinary(tasks, binary, check));
+        extension.getBinaries().withType(SampleContentBinary.class).all(binary -> {
+            if (binary.getPromoted().get()) {
+                createCheckTasksForContentBinary(tasks, binary, check);
+            }
+        });
         extension.getBinaries().withType(SampleContentBinary.class).all(binary -> createTasksForSampleContentBinary(tasks, layout, providers, binary));
         extension.getBinaries().withType(SampleArchiveBinary.class).all(binary -> createTasksForSampleArchiveBinary(tasks, layout, binary));
 
@@ -357,14 +361,16 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
     }
 
     private void createTasksForSampleArchiveBinary(TaskContainer tasks, ProjectLayout layout, SampleArchiveBinary binary) {
-        TaskProvider<ValidateSampleBinary> validateSample = tasks.register("validateSample" + capitalize(binary.getName()), ValidateSampleBinary.class, task -> {
-            task.setDescription("Checks the sample '" + binary.getName() + "' is valid.");
-            task.getDsl().convention(binary.getDsl());
-            task.getSampleName().convention(binary.getName());
-            task.getZipFile().convention(binary.getZipFile());
-            task.getReportFile().convention(layout.getBuildDirectory().file("reports/sample-validation/" + task.getName() + ".txt"));
-        });
-        binary.getValidationReport().convention(validateSample.flatMap(ValidateSampleBinary::getReportFile));
+        if (binary.getPromoted().get()) {
+            TaskProvider<ValidateSampleBinary> validateSample = tasks.register("validateSample" + capitalize(binary.getName()), ValidateSampleBinary.class, task -> {
+                task.setDescription("Checks the sample '" + binary.getName() + "' is valid.");
+                task.getDsl().convention(binary.getDsl());
+                task.getSampleName().convention(binary.getName());
+                task.getZipFile().convention(binary.getZipFile());
+                task.getReportFile().convention(layout.getBuildDirectory().file("reports/sample-validation/" + task.getName() + ".txt"));
+            });
+            binary.getValidationReport().convention(validateSample.flatMap(ValidateSampleBinary::getReportFile));
+        }
 
         TaskProvider<InstallSample> installSampleTask = tasks.register("installSample" + capitalize(binary.getName()), InstallSample.class, task -> {
             task.setDescription("Installs sample '" + binary.getName() + "' into a local directory.");
@@ -394,6 +400,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             assertNameDoesNotContainsDisallowedCharacters(sample, "Sample '%s' has disallowed characters", sample.getName());
 
             SampleContentBinary contentBinary = objects.newInstance(SampleContentBinary.class, sample.getName());
+            contentBinary.getPromoted().convention(sample.getPromoted());
             extension.getBinaries().add(contentBinary);
             contentBinary.getDisplayName().convention(sample.getDisplayName());
             contentBinary.getSampleDirectory().convention(sample.getSampleDirectory());
@@ -421,7 +428,10 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             for (Dsl dsl : dsls) {
                 SampleArchiveBinary binary = registerSampleBinaryForDsl(extension, sample, dsl, objects, wrapperFiles, contentBinary);
                 sample.getAssembleTask().configure(task -> task.dependsOn(binary.getZipFile()));
-                sample.getCheckTask().configure(task -> task.dependsOn(binary.getValidationReport()));
+
+                if (binary.getPromoted().get()) {
+                    sample.getCheckTask().configure(task -> task.dependsOn(binary.getValidationReport()));
+                }
 
                 SampleExemplarBinary exemplarBinary = objects.newInstance(SampleExemplarBinary.class, sample.getName() + dsl.getDisplayName());
                 exemplarBinary.getTestedWorkingDirectory().convention(extension.getTestedInstallRoot().dir(toKebabCase(sample.getName()) + "/" + dsl.getConventionalDirectory())).disallowChanges();
@@ -435,16 +445,19 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
                 exemplarBinary.getExplicitSanityCheck().value(hasSanityCheck);
                 extension.getBinaries().add(exemplarBinary);
 
-                TestableAsciidoctorSampleContentBinary testableContentBinary = objects.newInstance(TestableAsciidoctorSampleContentBinary.class, sample.getName() + dsl.getDisplayName());
-                testableContentBinary.getContentFile().convention(contentBinary.getInstalledIndexPageFile());
-                testableContentBinary.getStartingSampleDirectory().convention(binary.getInstallDirectory());
-                extension.getBinaries().add(testableContentBinary);
+                if (sample.getPromoted().get()) {
+                    TestableAsciidoctorSampleContentBinary testableContentBinary = objects.newInstance(TestableAsciidoctorSampleContentBinary.class, sample.getName() + dsl.getDisplayName());
+                    testableContentBinary.getContentFile().convention(contentBinary.getInstalledIndexPageFile());
+                    testableContentBinary.getStartingSampleDirectory().convention(binary.getInstallDirectory());
+                    extension.getBinaries().add(testableContentBinary);
+                }
             }
         }
     }
 
     private SampleArchiveBinary registerSampleBinaryForDsl(SamplesInternal extension, SampleInternal sample, Dsl dsl, ObjectFactory objects, FileTree wrapperFiles, SampleContentBinary contentBinary) {
         SampleArchiveBinary binary = objects.newInstance(SampleArchiveBinary.class, sample.getName() + dsl.getDisplayName());
+        binary.getPromoted().convention(sample.getPromoted());
         binary.getDsl().convention(dsl).disallowChanges();
         binary.getSampleLinkName().convention(sample.getSampleDocName()).disallowChanges();
         binary.getWorkingDirectory().convention(sample.getInstallDirectory().dir(dsl.getConventionalDirectory())).disallowChanges();

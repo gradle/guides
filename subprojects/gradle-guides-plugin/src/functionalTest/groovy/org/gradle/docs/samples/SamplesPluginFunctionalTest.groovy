@@ -343,6 +343,25 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
 
     // TODO (donat) add test coverage for dsl-specific tests
 
+    def "omits validation tasks for non-promoted samples"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        buildFile << """
+            documentation.samples.publishedSamples.demo {
+               promoted = false
+            }
+        """
+
+        when:
+        build('checkSamples')
+
+        then:
+        result.task(':docsTest').outcome == SUCCESS
+        result.task(':checkDemoSampleLinks') == null
+        result.task(':validateSampleDemoGroovy') == null
+        result.task(':validateSampleDemoKotlin') == null
+    }
+
     private void assertCanRunHelpTask(File zipFile) {
         def workingDirectory = new File(temporaryFolder.root, zipFile.name)
         workingDirectory.mkdirs()

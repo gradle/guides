@@ -62,4 +62,6 @@ public abstract class SampleArchiveBinary extends SampleBinary {
      * @return A installation directory containing this sample.  This can be used to get an installed version of the sample.
      */
     public abstract DirectoryProperty getInstallDirectory();
+
+    public abstract Property<Boolean> getPromoted();
 }
