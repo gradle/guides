@@ -341,8 +341,6 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
             |""".stripMargin()
     }
 
-    // TODO (donat) add test coverage for dsl-specific tests
-
     def "omits validation tasks for non-promoted samples"() {
         makeSingleProject()
         writeSampleUnderTest()
