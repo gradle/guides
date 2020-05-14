@@ -22,6 +22,7 @@ Each of the plugins generates a guide from Asciidoc source.
 == 0.16.5
 
 - Skip asciidoctor-related validation tasks for non-promoted samples.
+- Include a common directory for samples by convention
 
 == 0.16.4
 
