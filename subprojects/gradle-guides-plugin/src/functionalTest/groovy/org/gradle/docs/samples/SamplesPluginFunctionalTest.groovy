@@ -341,7 +341,24 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
             |""".stripMargin()
     }
 
-    // TODO (donat) add test coverage for dsl-specific tests
+    def "omits validation tasks for non-promoted samples"() {
+        makeSingleProject()
+        writeSampleUnderTest()
+        buildFile << """
+            documentation.samples.publishedSamples.demo {
+               promoted = false
+            }
+        """
+
+        when:
+        build('checkSamples')
+
+        then:
+        result.task(':docsTest').outcome == SUCCESS
+        result.task(':checkDemoSampleLinks') == null
+        result.task(':validateSampleDemoGroovy') == null
+        result.task(':validateSampleDemoKotlin') == null
+    }
 
     def "documentation references removed from source code in zip"() {
         makeSingleProject()
