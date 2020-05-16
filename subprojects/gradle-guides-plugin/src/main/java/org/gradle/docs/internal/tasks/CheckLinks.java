@@ -27,8 +27,15 @@ import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.docs.internal.IOUtils;
+import org.gradle.workers.WorkAction;
+import org.gradle.workers.WorkParameters;
+import org.gradle.workers.WorkQueue;
+import org.gradle.workers.WorkerExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -53,60 +60,81 @@ public abstract class CheckLinks extends DefaultTask {
     @InputFile
     public abstract RegularFileProperty getIndexDocument();
 
+    @Inject
+    public abstract WorkerExecutor getWorkerExecuter();
+
     @TaskAction
-    private void exec() throws IOException, SAXException {
-
-        Set<URI> failures = new HashSet<>();
-
-        getAnchors(getIndexDocument().get().getAsFile().toURI()).forEach(anchor -> {
-            if (anchor.isAbsolute()) {
-                if (anchor.getScheme().startsWith("http")) {
-                    if (!Blacklist.isBlacklisted(anchor)) {
-                        HttpBuilder client = HttpBuilder.configure(config -> {
-                            config.getRequest().setUri(anchor.toString());
-
-                            Map<String, String> headers = new HashMap<>();
-                            headers.put("User-Agent", "gradle-guides-plugin/0.0.0.1");
-                            config.getRequest().setHeaders(headers);
-                        });
-                        try {
-                            client.head();
-                            getLogger().info("PASSED: " + anchor);
-                        } catch (java.lang.RuntimeException e) {
-                            failures.add(anchor);
-                            getLogger().info("FAILED: " + anchor);
-                        }
-                    } else {
-                        getLogger().debug("SKIPPED (blacklisted): " + anchor);
-                    }
-                } else {
-                    getLogger().debug("SKIPPED (Not http/s): " + anchor);
-                }
-            } else {
-                getLogger().debug("SKIPPED (relative): " + anchor);
-            }
+    private void exec() {
+        WorkQueue queue = getWorkerExecuter().noIsolation();
+        queue.submit(CheckLinksAction.class, params -> {
+            params.getIndexDocument().set(getIndexDocument());
         });
-
-        if (!failures.isEmpty()) {
-            throw new GradleException("The following links are broken:\n " + failures.stream().map(URI::toString).collect(Collectors.joining("\n")) + "\n");
-        }
     }
 
-    private Set<URI> getAnchors(URI uri) throws IOException, SAXException {
-        SAXParser parser = new SAXParser();
-        URLConnection connection = uri.toURL().openConnection();
-        connection.addRequestProperty("User-Agent", "Non empty");
+    public interface CheckLinksParameters extends WorkParameters {
+        RegularFileProperty getIndexDocument();
+    }
 
-        GPathResult page = new XmlSlurper(parser).parseText(IOUtils.toString(connection.getInputStream(), Charset.defaultCharset()));
+    public static abstract class CheckLinksAction implements WorkAction<CheckLinksParameters> {
+        private static final Logger logger = LoggerFactory.getLogger(CheckLinksAction.class);
 
-        Spliterator<GPathResult> it = Spliterators.spliteratorUnknownSize(page.depthFirst(), Spliterator.NONNULL);
-        return StreamSupport.stream(it, false).filter(e -> e.name().equals("A") && ((NodeChild)e).attributes().get("href") != null).map(NodeChild.class::cast).map(e -> {
+        @Override
+        public void execute() {
             try {
-                return new URI(e.attributes().get("href").toString());
-            } catch (URISyntaxException ex) {
-                throw new RuntimeException(ex);
+                Set<URI> failures = new HashSet<>();
+                getAnchors(getParameters().getIndexDocument().get().getAsFile().toURI()).forEach(anchor -> {
+                    if (anchor.isAbsolute()) {
+                        if (anchor.getScheme().startsWith("http")) {
+                            if (!Blacklist.isBlacklisted(anchor)) {
+                                HttpBuilder client = HttpBuilder.configure(config -> {
+                                    config.getRequest().setUri(anchor.toString());
+
+                                    Map<String, String> headers = new HashMap<>();
+                                    headers.put("User-Agent", "gradle-guides-plugin/0.0.0.1");
+                                    config.getRequest().setHeaders(headers);
+                                });
+                                try {
+                                    client.head();
+                                    logger.info("PASSED: " + anchor);
+                                } catch (RuntimeException e) {
+                                    failures.add(anchor);
+                                    logger.info("FAILED: " + anchor);
+                                }
+                            } else {
+                                logger.debug("SKIPPED (blacklisted): " + anchor);
+                            }
+                        } else {
+                            logger.debug("SKIPPED (Not http/s): " + anchor);
+                        }
+                    } else {
+                        logger.debug("SKIPPED (relative): " + anchor);
+                    }
+                });
+
+                if (!failures.isEmpty()) {
+                    throw new GradleException("The following links are broken:\n " + failures.stream().map(URI::toString).collect(Collectors.joining("\n")) + "\n");
+                }
+            } catch (IOException | SAXException e) {
+                throw new RuntimeException(e);
             }
-        }).collect(Collectors.toSet());
+        }
+
+        private Set<URI> getAnchors(URI uri) throws IOException, SAXException {
+            SAXParser parser = new SAXParser();
+            URLConnection connection = uri.toURL().openConnection();
+            connection.addRequestProperty("User-Agent", "Non empty");
+
+            GPathResult page = new XmlSlurper(parser).parseText(IOUtils.toString(connection.getInputStream(), Charset.defaultCharset()));
+
+            Spliterator<GPathResult> it = Spliterators.spliteratorUnknownSize(page.depthFirst(), Spliterator.NONNULL);
+            return StreamSupport.stream(it, false).filter(e -> e.name().equals("A") && ((NodeChild) e).attributes().get("href") != null).map(NodeChild.class::cast).map(e -> {
+                try {
+                    return new URI(e.attributes().get("href").toString());
+                } catch (URISyntaxException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }).collect(Collectors.toSet());
+        }
     }
 
     private static class Blacklist {

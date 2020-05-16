@@ -37,6 +37,7 @@ import org.gradle.docs.samples.internal.tasks.GenerateSamplePageAsciidoc;
 import org.gradle.docs.samples.internal.tasks.GenerateSanityCheckTests;
 import org.gradle.docs.samples.internal.tasks.GenerateTestSource;
 import org.gradle.docs.samples.internal.tasks.InstallSample;
+import org.gradle.docs.samples.internal.tasks.LockReleasingAsciidoctorTask;
 import org.gradle.docs.samples.internal.tasks.SamplesReport;
 import org.gradle.docs.samples.internal.tasks.SyncWithProvider;
 import org.gradle.docs.samples.internal.tasks.ValidateSampleBinary;
@@ -273,7 +274,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
     }
 
     private TaskProvider<? extends Task> renderSamplesDocumentation(TaskContainer tasks, TaskProvider<Task> assemble, TaskProvider<Task> check, SamplesInternal extension) {
-        TaskProvider<Sync> assembleDocs = tasks.register("assembleSamples", Sync.class, task -> {
+        TaskProvider<SyncWithProvider> assembleDocs = tasks.register("assembleSamples", SyncWithProvider.class, task -> {
             task.setGroup(DOCUMENTATION_GROUP_NAME);
             task.setDescription("Assembles all intermediate files needed to generate the samples documentation.");
 
@@ -292,7 +293,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             binary.getInstalledIndexPageFile().fileProvider(assembleDocs.map(task -> new File(task.getDestinationDir(), binary.getSourcePermalink().get())));
         });
 
-        TaskProvider<AsciidoctorTask> samplesMultiPage = tasks.register("samplesMultiPage", AsciidoctorTask.class, task -> {
+        TaskProvider<LockReleasingAsciidoctorTask> samplesMultiPage = tasks.register("samplesMultiPage", LockReleasingAsciidoctorTask.class, task -> {
             task.getInputs().files("samples").withPropertyName("samplesDir").withPathSensitivity(PathSensitivity.RELATIVE).optional();
 
             task.setGroup(DOCUMENTATION_GROUP_NAME);

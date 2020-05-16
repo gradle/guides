@@ -43,8 +43,8 @@ abstract class AbstractRenderableDocumentationFunctionalTest extends AbstractFun
 
         expect:
         def result = buildAndFail(checkTaskNameUnderTest)
-        result.output.contains('''> The following links are broken:
-            |   https://not.existant/url'''.stripMargin())
+        result.output.contains('''   > The following links are broken:
+      https://not.existant/url''')
     }
 
     protected abstract String getCheckTaskNameUnderTest()

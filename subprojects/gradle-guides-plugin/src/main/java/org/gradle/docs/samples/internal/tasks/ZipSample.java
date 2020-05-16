@@ -9,7 +9,9 @@ import org.gradle.api.file.*;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.*;
+import org.gradle.internal.work.WorkerLeaseService;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -53,68 +55,74 @@ public abstract class ZipSample extends DefaultTask {
     @OutputFile
     public abstract RegularFileProperty getArchiveFile();
 
+    @Inject
+    public abstract WorkerLeaseService getWorkerLeaseService();
+
     @TaskAction
     private void zip() {
-        File zipFile = getArchiveFile().get().getAsFile();
-        zipFile.delete();
+        // TODO: Use the Worker API instead of releasing lock manually
+        getWorkerLeaseService().withoutProjectLock(() -> {
+            File zipFile = getArchiveFile().get().getAsFile();
+            zipFile.delete();
 
-        try (FileOutputStream fileStream = new FileOutputStream(zipFile);
-             ZipOutputStream zipStream = new ZipOutputStream(fileStream)) {
-            zipStream.setMethod(ZipOutputStream.DEFLATED);
-            Set<String> dirs = new HashSet<>();
-            getFilteredSourceTree().visit(new FileVisitor() {
-                @Override
-                public void visitDir(FileVisitDetails dirDetails) {
-                    try {
-                        String dirPath = dirDetails.getRelativePath().getPathString();
-                        if (!dirs.add(dirPath)) {
-                            return;
-                        }
-                        ZipEntry entry = new ZipEntry(dirDetails.getRelativePath().getPathString() + "/");
-                        entry.setUnixMode(UnixStat.DIR_FLAG | dirDetails.getMode());
-                        zipStream.putNextEntry(entry);
-                        zipStream.closeEntry();
-                    } catch (IOException e) {
-                        throw new UncheckedIOException(e);
-                    }
-                }
-
-                @Override
-                public void visitFile(FileVisitDetails fileDetails) {
-                    try {
-                        final ZipEntry entry;
-                        if (fileDetails.getName().equals(getReadmeName().get())) {
-                            entry = new ZipEntry("README");
-                        } else {
-                            entry = new ZipEntry(fileDetails.getRelativePath().getPathString());
-                        }
-
-                        entry.setSize(fileDetails.getSize());
-                        entry.setUnixMode(UnixStat.FILE_FLAG | fileDetails.getMode());
-                        zipStream.putNextEntry(entry);
-
-                        if (isTextFile(fileDetails)) {
-                            byte[] content = readContent(fileDetails);
-                            String contentString = new String(content, StandardCharsets.UTF_8);
-                            if (containsUserGuideRefs(contentString)) {
-                                zipStream.write(filterUserGuideRefs(contentString).getBytes());
+            try (FileOutputStream fileStream = new FileOutputStream(zipFile);
+                 ZipOutputStream zipStream = new ZipOutputStream(fileStream)) {
+                zipStream.setMethod(ZipOutputStream.DEFLATED);
+                Set<String> dirs = new HashSet<>();
+                getFilteredSourceTree().visit(new FileVisitor() {
+                    @Override
+                    public void visitDir(FileVisitDetails dirDetails) {
+                        try {
+                            String dirPath = dirDetails.getRelativePath().getPathString();
+                            if (!dirs.add(dirPath)) {
+                                return;
                             }
-                            else  {
-                                zipStream.write(content);
-                            }
-                        } else {
-                            fileDetails.copyTo(zipStream);
+                            ZipEntry entry = new ZipEntry(dirDetails.getRelativePath().getPathString() + "/");
+                            entry.setUnixMode(UnixStat.DIR_FLAG | dirDetails.getMode());
+                            zipStream.putNextEntry(entry);
+                            zipStream.closeEntry();
+                        } catch (IOException e) {
+                            throw new UncheckedIOException(e);
                         }
-
-                        zipStream.closeEntry();
-                    } catch (IOException e) {
-                        throw new UncheckedIOException(e);
                     }
-                }
-            });
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
+                    @Override
+                    public void visitFile(FileVisitDetails fileDetails) {
+                        try {
+                            final ZipEntry entry;
+                            if (fileDetails.getName().equals(getReadmeName().get())) {
+                                entry = new ZipEntry("README");
+                            } else {
+                                entry = new ZipEntry(fileDetails.getRelativePath().getPathString());
+                            }
+
+                            entry.setSize(fileDetails.getSize());
+                            entry.setUnixMode(UnixStat.FILE_FLAG | fileDetails.getMode());
+                            zipStream.putNextEntry(entry);
+
+                            if (isTextFile(fileDetails)) {
+                                byte[] content = readContent(fileDetails);
+                                String contentString = new String(content, StandardCharsets.UTF_8);
+                                if (containsUserGuideRefs(contentString)) {
+                                    zipStream.write(filterUserGuideRefs(contentString).getBytes());
+                                }
+                                else  {
+                                    zipStream.write(content);
+                                }
+                            } else {
+                                fileDetails.copyTo(zipStream);
+                            }
+
+                            zipStream.closeEntry();
+                        } catch (IOException e) {
+                            throw new UncheckedIOException(e);
+                        }
+                    }
+                });
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private boolean isTextFile(FileVisitDetails fileDetails) throws IOException {

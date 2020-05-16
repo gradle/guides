@@ -19,6 +19,10 @@ Each of the plugins generates a guide from Asciidoc source.
 
 == Changelog
 
+== 0.16.6
+
+- Use Worker API for some sample related tasks so more things can run in parallel
+
 == 0.16.5
 
 - Skip asciidoctor-related validation tasks for non-promoted samples.
