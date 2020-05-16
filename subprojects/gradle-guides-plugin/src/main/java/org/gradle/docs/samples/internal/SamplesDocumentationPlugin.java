@@ -1,7 +1,6 @@
 package org.gradle.docs.samples.internal;
 
 import groovy.lang.Closure;
-import org.asciidoctor.gradle.AsciidoctorTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -20,7 +19,6 @@ import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
-import org.gradle.api.tasks.Sync;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.api.tasks.testing.Test;
@@ -57,17 +55,9 @@ import java.util.stream.Collectors;
 import static org.gradle.docs.internal.Asserts.assertNameDoesNotContainsDisallowedCharacters;
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCS_TEST_SOURCE_SET_NAME;
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
-import static org.gradle.docs.internal.StringUtils.capitalize;
-import static org.gradle.docs.internal.StringUtils.toKebabCase;
-import static org.gradle.docs.internal.StringUtils.toSnakeCase;
-import static org.gradle.docs.internal.StringUtils.toTitleCase;
-import static org.gradle.docs.internal.configure.AsciidoctorTasks.cleanStaleFiles;
-import static org.gradle.docs.internal.configure.AsciidoctorTasks.configureResources;
-import static org.gradle.docs.internal.configure.AsciidoctorTasks.configureSources;
-import static org.gradle.docs.internal.configure.AsciidoctorTasks.genericAttributes;
-import static org.gradle.docs.internal.configure.ContentBinaries.createCheckTaskForAsciidoctorContentBinary;
-import static org.gradle.docs.internal.configure.ContentBinaries.createCheckTasksForContentBinary;
-import static org.gradle.docs.internal.configure.ContentBinaries.createTasksForContentBinary;
+import static org.gradle.docs.internal.StringUtils.*;
+import static org.gradle.docs.internal.configure.AsciidoctorTasks.*;
+import static org.gradle.docs.internal.configure.ContentBinaries.*;
 
 @SuppressWarnings("UnstableApiUsage")
 public class SamplesDocumentationPlugin implements Plugin<Project> {
@@ -337,11 +327,11 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
 
     private void configureExemplarTestsForSamples(Project project, ProjectLayout layout, TaskContainer tasks, SamplesInternal extension, TaskProvider<Task> check) {
         SourceSet sourceSet = project.getExtensions().getByType(SourceSetContainer.class).getByName(DOCS_TEST_SOURCE_SET_NAME);
-        TaskProvider<GenerateTestSource> generatorTask = tasks.register("generateSamplesExemplarFunctionalTestSourceSet", GenerateTestSource.class, task -> {
+        tasks.register("generateSamplesExemplarFunctionalTest", GenerateTestSource.class, task -> {
             task.setDescription("Generates source file to run exemplar tests for published samples.");
-            task.getOutputDirectory().convention(layout.getBuildDirectory().dir("generated-sources/" + sourceSet.getName()));
+            task.setGroup("Build Init");
+            task.getOutputDirectory().convention(layout.getProjectDirectory().dir("src/" + DOCS_TEST_SOURCE_SET_NAME + "/java"));
         });
-        sourceSet.getJava().srcDir(generatorTask.flatMap(GenerateTestSource::getOutputDirectory));
 
         DependencyHandler dependencies = project.getDependencies();
         dependencies.add(sourceSet.getImplementationConfigurationName(), "org.gradle:sample-check:0.12.6");

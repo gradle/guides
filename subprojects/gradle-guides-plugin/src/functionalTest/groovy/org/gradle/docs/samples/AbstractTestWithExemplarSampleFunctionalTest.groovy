@@ -1,11 +1,10 @@
 package org.gradle.docs.samples
 
-import org.gradle.docs.TestFile
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.util.GradleVersion
 
-import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 import static org.gradle.testkit.runner.TaskOutcome.FAILED
+import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSampleFunctionalSpec implements SamplesTrait {
     def "can test sample using exemplar"() {
@@ -16,6 +15,7 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
 
         buildFile << expectTestsExecuted(getExpectedTestsFor("demo"))
 
+        build("generateSamplesExemplarFunctionalTest")
         when:
         build('docsTest')
         then:
@@ -34,6 +34,7 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
             |""".stripMargin()
 
         buildFile << expectTestsExecuted(getExpectedTestsFor("demo", explicitSanityCheckName));
+        build("generateSamplesExemplarFunctionalTest")
 
         when:
         build('docsTest')
@@ -54,6 +55,7 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
         writeExemplarConfigurationToDirectory('src/docs/samples/another')
 
         buildFile << expectTestsExecuted(getExpectedTestsFor("demo") + getExpectedTestsFor("another"))
+        build("generateSamplesExemplarFunctionalTest")
 
         when:
         build("docsTest")
@@ -72,6 +74,7 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
 
         def anotherDemoConfigFile = file('src/docs/samples/another/tests/handWritten.sample.conf')
         anotherDemoConfigFile.text = anotherDemoConfigFile.text.replaceAll('help', 'belp') // make the test fail
+        build("generateSamplesExemplarFunctionalTest")
 
         when:
         buildAndFail("docsTest")
@@ -90,7 +93,6 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
     protected abstract void assertExemplarTasksExecutedAndNotSkipped(BuildResult result)
 
     protected static void assertExemplarTasksExecutedAndNotSkipped(BuildResult result, String dsl) {
-        assert result.task(":generateSamplesExemplarFunctionalTestSourceSet").outcome == SUCCESS
         assert result.task(":installSampleDemo${dsl}").outcome == SUCCESS
         assert result.task(':docsTest').outcome == SUCCESS
     }
