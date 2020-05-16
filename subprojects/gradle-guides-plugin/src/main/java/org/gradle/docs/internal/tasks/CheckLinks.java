@@ -19,7 +19,6 @@ package org.gradle.docs.internal.tasks;
 import groovy.util.XmlSlurper;
 import groovy.util.slurpersupport.GPathResult;
 import groovy.util.slurpersupport.NodeChild;
-import groovyx.net.http.HttpBuilder;
 import org.cyberneko.html.parsers.SAXParser;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
@@ -37,15 +36,14 @@ import org.xml.sax.SAXException;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -85,23 +83,8 @@ public abstract class CheckLinks extends DefaultTask {
                 getAnchors(getParameters().getIndexDocument().get().getAsFile().toURI()).forEach(anchor -> {
                     if (anchor.isAbsolute()) {
                         if (anchor.getScheme().startsWith("http")) {
-                            if (!Blacklist.isBlacklisted(anchor)) {
-                                HttpBuilder client = HttpBuilder.configure(config -> {
-                                    config.getRequest().setUri(anchor.toString());
-
-                                    Map<String, String> headers = new HashMap<>();
-                                    headers.put("User-Agent", "gradle-guides-plugin/0.0.0.1");
-                                    config.getRequest().setHeaders(headers);
-                                });
-                                try {
-                                    client.head();
-                                    logger.info("PASSED: " + anchor);
-                                } catch (RuntimeException e) {
-                                    failures.add(anchor);
-                                    logger.info("FAILED: " + anchor);
-                                }
-                            } else {
-                                logger.debug("SKIPPED (blacklisted): " + anchor);
+                            if (!isValid(anchor)) {
+                                failures.add(anchor);
                             }
                         } else {
                             logger.debug("SKIPPED (Not http/s): " + anchor);
@@ -116,6 +99,22 @@ public abstract class CheckLinks extends DefaultTask {
                 }
             } catch (IOException | SAXException e) {
                 throw new RuntimeException(e);
+            }
+        }
+
+        private boolean isValid(URI anchor) {
+            try {
+                HttpURLConnection con = (HttpURLConnection) anchor.toURL().openConnection();
+                con.setInstanceFollowRedirects(true);
+                con.setRequestMethod("HEAD");
+                // timeout in 5 seconds
+                con.setConnectTimeout(5000);
+                int responseCode = con.getResponseCode();
+                logger.info("RESPONSE: {} = {}", anchor, responseCode);
+                return (responseCode == HttpURLConnection.HTTP_OK);
+            } catch (IOException e) {
+                logger.info("FAILED: {}", anchor, e);
+                return false;
             }
         }
 
@@ -134,15 +133,6 @@ public abstract class CheckLinks extends DefaultTask {
                     throw new RuntimeException(ex);
                 }
             }).collect(Collectors.toSet());
-        }
-    }
-
-    private static class Blacklist {
-        // These hosts are blocking web scrapers.
-        private static final List<String> BLACKLISTED_HOSTS = Arrays.asList("bugs.java.com", "youtrack.jetbrains.com");
-
-        private static boolean isBlacklisted(URI uri) {
-            return BLACKLISTED_HOSTS.contains(uri.getHost());
         }
     }
 }

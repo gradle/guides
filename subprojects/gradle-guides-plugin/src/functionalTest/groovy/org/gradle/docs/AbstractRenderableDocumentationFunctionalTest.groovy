@@ -38,11 +38,13 @@ abstract class AbstractRenderableDocumentationFunctionalTest extends AbstractFun
         makeSingleProject()
         writeDocumentationUnderTest()
         contentFileUnderTest << '''
+            |https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4155278
+            |https://youtrack.jetbrains.com/issue/TW-65268
             |https://not.existant/url
             |'''.stripMargin()
 
         expect:
-        def result = buildAndFail(checkTaskNameUnderTest)
+        def result = buildAndFail(checkTaskNameUnderTest, "-i")
         result.output.contains('''   > The following links are broken:
       https://not.existant/url''')
     }

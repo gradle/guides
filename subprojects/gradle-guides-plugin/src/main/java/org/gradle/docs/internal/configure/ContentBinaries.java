@@ -15,7 +15,11 @@ import org.gradle.docs.internal.tasks.CheckLinks;
 import org.gradle.docs.internal.tasks.ViewDocumentation;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
 
@@ -33,6 +37,7 @@ public class ContentBinaries {
             task.setGroup(LifecycleBasePlugin.VERIFICATION_GROUP);
             task.setDescription("Check for any dead link in the rendered documentation");
             task.getIndexDocument().convention(binary.getRenderedPageFile());
+            task.getTimeout().convention(Duration.ofMinutes(30));
         });
 
         check.configure(it -> it.dependsOn(checkLinksTask));
