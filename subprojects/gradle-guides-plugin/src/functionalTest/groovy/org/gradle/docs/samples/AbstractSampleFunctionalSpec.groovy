@@ -105,6 +105,9 @@ abstract class AbstractSampleFunctionalSpec extends AbstractFunctionalTest imple
                     url = "https://repo.gradle.org/gradle/libs-releases"
                 }
             }
+            dependencies {
+                docsTestImplementation gradleTestKit()
+            }
         """ << createSample('demo')
     }
 
