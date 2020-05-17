@@ -46,11 +46,8 @@ public abstract class ZipSample extends DefaultTask {
     @Internal
     public abstract ConfigurableFileCollection getMainSource();
 
-    @Internal
-    public abstract ListProperty<String> getExcludes();
-
     @Input
-    public abstract Property<String> getReadmeName();
+    public abstract ListProperty<String> getExcludes();
 
     @OutputFile
     public abstract RegularFileProperty getArchiveFile();
@@ -89,13 +86,7 @@ public abstract class ZipSample extends DefaultTask {
                     @Override
                     public void visitFile(FileVisitDetails fileDetails) {
                         try {
-                            final ZipEntry entry;
-                            if (fileDetails.getName().equals(getReadmeName().get())) {
-                                entry = new ZipEntry("README");
-                            } else {
-                                entry = new ZipEntry(fileDetails.getRelativePath().getPathString());
-                            }
-
+                            final ZipEntry entry = new ZipEntry(fileDetails.getRelativePath().getPathString());
                             entry.setSize(fileDetails.getSize());
                             entry.setUnixMode(UnixStat.FILE_FLAG | fileDetails.getMode());
                             zipStream.putNextEntry(entry);

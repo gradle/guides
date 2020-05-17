@@ -51,6 +51,4 @@ public abstract class SampleContentBinary extends SampleBinary implements Viewab
     public abstract RegularFileProperty getInstalledIndexPageFile();
 
     public abstract Property<String> getGradleVersion();
-
-    public abstract Property<Boolean> getPromoted();
 }

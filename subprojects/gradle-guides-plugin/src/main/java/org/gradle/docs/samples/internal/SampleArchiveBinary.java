@@ -12,7 +12,7 @@ import javax.inject.Inject;
 /**
  * Represents a sample tailored for a particular DSL.
  */
-public abstract class SampleArchiveBinary extends SampleBinary {
+public abstract class SampleArchiveBinary extends SampleInstallBinary {
     @Inject
     public SampleArchiveBinary(String name) {
         super(name);
@@ -24,31 +24,6 @@ public abstract class SampleArchiveBinary extends SampleBinary {
     public abstract Property<Dsl> getDsl();
 
     /**
-     * @return All content to include in the sample.
-     */
-    public abstract ConfigurableFileCollection getContent();
-
-    /**
-     * @return Content that is specific to the DSL language.
-     */
-    public abstract ConfigurableFileCollection getDslSpecificContent();
-
-    /**
-     * @return The documentation page for this sample
-     */
-    public abstract Property<String> getSampleLinkName();
-
-    /**
-     * @return Working directory used by the plugin to expose an assembled sample to consumers.
-     */
-    public abstract DirectoryProperty getWorkingDirectory();
-
-    /**
-     * @return Exclude patterns for files included in this sample
-     */
-    public abstract ListProperty<String> getExcludes();
-
-    /**
      * @return Gets the validation report for this sample.
      */
     public abstract RegularFileProperty getValidationReport();
@@ -57,11 +32,4 @@ public abstract class SampleArchiveBinary extends SampleBinary {
      * @return A zip containing this sample.  This is the primary thing produced by a sample for a given language.
      */
     public abstract RegularFileProperty getZipFile();
-
-    /**
-     * @return A installation directory containing this sample.  This can be used to get an installed version of the sample.
-     */
-    public abstract DirectoryProperty getInstallDirectory();
-
-    public abstract Property<Boolean> getPromoted();
 }
