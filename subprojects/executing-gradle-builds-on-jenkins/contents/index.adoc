@@ -77,7 +77,7 @@ A simple Java command brings up the Jenkins server.
 // TODO: this block will start a background process not handled by the content testing
 [listing.terminal]
 ----
-$ wget http://mirrors.jenkins.io/war-stable/latest/jenkins.war
+$ wget https://mirrors.jenkins.io/war-stable/latest/jenkins.war
 $ java -jar jenkins.war
 ----
 

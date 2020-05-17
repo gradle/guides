@@ -114,7 +114,7 @@ The generated Spock specification, `src/test/groovy/demo/LibraryTest.groovy` is 
 include::{samplescodedir}/src/test/groovy/demo/LibraryTest.groovy[]
 ----
 
-The generated test class has a single http://spockframework.org[Spock specification]. The test instantiates the `Library` class, invokes the `someLibraryMethod` method, and checks that the returned value is `true`.
+The generated test class has a single https://spockframework.org[Spock specification]. The test instantiates the `Library` class, invokes the `someLibraryMethod` method, and checks that the returned value is `true`.
 
 == Execute the build
 
