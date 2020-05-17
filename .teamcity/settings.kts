@@ -64,7 +64,7 @@ open class AbstractBuildGuideType(init: BuildType.() -> Unit) : AbstractBuildTyp
     steps {
         gradle {
             useGradleWrapper = true
-            tasks = "build --continue"
+            tasks = "build --continue --build-cache"
             buildFile = "" // Let Gradle detect the build script
         }
     }
