@@ -103,21 +103,23 @@ public abstract class CheckLinks extends DefaultTask {
         }
 
         private boolean isValid(URI anchor) {
-            try {
-                HttpURLConnection con = (HttpURLConnection) anchor.toURL().openConnection();
-                con.setInstanceFollowRedirects(true);
-                con.setRequestMethod("HEAD");
-                // Fake being a browser
-                con.addRequestProperty("User-Agent","Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0");
-                // timeout in 5 seconds
-                con.setConnectTimeout(5000);
-                int responseCode = con.getResponseCode();
-                logger.info("RESPONSE: {} = {}", anchor, responseCode);
-                return (responseCode == HttpURLConnection.HTTP_OK);
-            } catch (IOException e) {
-                logger.info("FAILED: {}", anchor, e);
-                return false;
+            for (int i=0; i<3; i++) {
+                try {
+                    HttpURLConnection con = (HttpURLConnection) anchor.toURL().openConnection();
+                    con.setInstanceFollowRedirects(true);
+                    con.setRequestMethod("HEAD");
+                    // Fake being a browser
+                    con.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0");
+                    // timeout in 5 seconds
+                    con.setConnectTimeout(5000);
+                    int responseCode = con.getResponseCode();
+                    logger.info("RESPONSE: {} = {}", anchor, responseCode);
+                    return true;
+                } catch (IOException e) {
+                    logger.info("FAILED: {}", anchor, e);
+                }
             }
+            return false;
         }
 
         private Set<URI> getAnchors(URI uri) throws IOException, SAXException {
