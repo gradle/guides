@@ -64,7 +64,7 @@ open class AbstractBuildGuideType(init: BuildType.() -> Unit) : AbstractBuildTyp
     steps {
         gradle {
             useGradleWrapper = true
-            tasks = "build --continue --build-cache"
+            tasks = "clean build --continue --build-cache -Dgradle.cache.remote.url=%gradle.cache.remote.url% -Dgradle.cache.remote.username=%gradle.cache.remote.username% -Dgradle.cache.remote.password=%gradle.cache.remote.password% -Dgradle.cache.remote.push=true"
             buildFile = "" // Let Gradle detect the build script
         }
     }
