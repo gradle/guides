@@ -22,6 +22,7 @@ Each of the plugins generates a guide from Asciidoc source.
 == 0.16.6
 
 - Use Worker API for some sample related tasks so more things can run in parallel
+- Introduce new type of sample binary that does not have an associated zip
 
 == 0.16.5
 
