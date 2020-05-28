@@ -27,7 +27,10 @@ $ cd demo
 
 == Run the init task
 
-From inside the new project directory, run the `init` task and select `java-library` project type when prompted. For the other questions, press enter to use the default values.
+From inside the new project directory, run the `init` task and select `library` project type when prompted.
+For the other questions, press enter to use the default values.
+
+The output will look like this, with minimal differences around versions:
 
 [listing.terminal.sample-command,user-inputs="3|3|1|||"]
 ----
@@ -75,8 +78,9 @@ BUILD SUCCESSFUL
 ----
 
 If you prefer the Kotlin DSL, you can select `kotlin` for the build script DSL.
+You can switch between the two DSLs for each build script details below.
 
-The `init` task runs the `wrapper` task first, which generates the `gradlew` and `gradlew.bat` wrapper scripts. Then it creates the new project with the following structure:
+The `init` task generates the new project with the following structure:
 
 .Groovy DSL
 [source.multi-language-sample,groovy]
@@ -113,7 +117,7 @@ include::{samples-dir}/kotlin-dsl-files/settings.gradle.kts[]
 ----
 <1>  This assigns the name of the root project.
 
-The generated `build.gradle` file also has many comments. The active portion is reproduced here (note version numbers for the dependencies may be updated in later versions of Gradle):
+The generated `build.gradle` file also has many comments. The active portion is reproduced here:
 
 .Generated build.gradle
 [source.multi-language-sample,groovy]
@@ -126,12 +130,19 @@ include::{samples-dir}/groovy-dsl-files/build.gradle[tags=init]
 ----
 include::{samples-dir}/kotlin-dsl-files/build.gradle.kts[tags=init]
 ----
-<1> Public Bintray Artifactory repository
-<2> This is an example of a dependency which is exported to consumers, that is to say found on their compile classpath.
-<3> This is an example of a dependency which is used internally, and not exposed to consumers on their own compile classpath.
-<4> JUnit testing library
+<1> Use the `java-library` plugin
+<2> Public Bintray Artifactory repository, used to resolve project dependencies
+<3> This is an example of a dependency which is exported to consumers, that is to say found on their compile classpath.
+<4> This is an example of a dependency which is used internally, and not exposed to consumers on their own compile classpath.
+<5> JUnit testing library
 
-The build script adds the link:{user-manual}java_library_plugin.html[java-library] plugin. This is an extension of the `java-base` plugin and adds additional tasks for compiling Java source code.
+[NOTE]
+====
+Version numbers for the dependency declarations may vary for different Gradle versions.
+====
+
+The build script adds the link:{user-manual}java_library_plugin.html[java-library] plugin.
+It configures the project for compiling and testing Java source code, specialized for code that is to be consumed by other projects.
 
 The file `src/main/java/demo/Library.java` is shown here:
 
@@ -149,7 +160,8 @@ The generated JUnit specification, `src/test/java/demo/LibraryTest.java` is show
 include::{samples-dir}/groovy-dsl-files/src/test/java/demo/LibraryTest.java[]
 ----
 
-The generated test class has a single https://junit.org/junit4/[JUnit 4] test. The test instantiates the `Library` class, invokes the `someLibraryMethod` method, and checks that the returned value is `true.
+The generated test class has a single https://junit.org/junit4/[JUnit 4] test.
+The test instantiates the `Library` class, invokes the `someLibraryMethod` method, and checks that the returned value is `true`.
 
 == Assemble the library JAR
 
@@ -189,8 +201,8 @@ You should see the required manifest file —`MANIFEST.MF`— and the compiled `
 All of this happens without any additional configuration in the build script because Gradle's `java-library` plugin assumes your project sources are arranged in a link:{user-manual}java_plugin.html#sec:java_project_layout[conventional project layout]. You can customize the project layout if you wish {user-manual}java_plugin.html#sec:changing_java_project_layout[as described in the user manual].
 ====
 
-Congratulations, you have just completed the first step of creating a Java library! You
-can now customize this to your own project needs.
+Congratulations, you have just completed the first step of creating a Java library!
+You can now customize this to your own project needs.
 
 == Customize the library JAR
 
@@ -260,8 +272,6 @@ include::{samples-dir}/groovy-dsl-unpackJar/META-INF/MANIFEST.MF[]
 The `manifest` is just one of many properties that can be configured on the `jar` task. For a complete list, see the {language-reference}org.gradle.api.tasks.bundling.Jar.html[Jar section] of the {language-reference}[Gradle Language Reference] as well as the link:{user-manual}java_plugin.html#sec:jar[Jar] and {user-manual}working_with_files.html#sec:archives[Creating Archives] sections of the Gradle {user-manual}userguide.html[User Manual].
 ====
 
-Now you can complete this exercise by trying to compile some Java code that uses the library you just built.
-
 == Adding API documentation
 
 The `java-library` plugin has built-in support for Java's API documentation tool via the `javadoc` task.
@@ -283,23 +293,46 @@ include::{samples-dir}/groovy-dsl-docOutput/out.txt[]
 
 You can view the generated `javadoc` files by opening the HTML file located at `build/docs/javadoc/index.html`.
 
+=== Generating Javadoc and Sources JAR
+
+You can easily generate a Javadoc JAR for your library:
+
+.build.gradle
+[source.multi-language-sample,groovy]
+----
+include::{samples-dir}/groovy-dsl-files/build.gradle[tags=javadoc]
+----
+
+.build.gradle.kts
+[source.multi-language-sample,kotlin]
+----
+include::{samples-dir}/kotlin-dsl-files/build.gradle.kts[tags=javadoc]
+----
+
+Similarly, you can use `withSourcesJar()` to also generate a JAR containing the project source files.
+
+Additional JARs defined that way will be produced by the `assemble` task and will be part of the publication.
+The resulting files will be found in `build/libs`, with a name using the conventional classifier `-javadoc` or `-sources`.
+
 == Summary
 
-That's it! You've now successfully built a Java library project, packaged it as a JAR and consumed it within a separate application. Along the way, you've learned how to:
+That's it! You've now successfully built a Java library project, packaged it as a JAR and configured extra JARs.
+Along the way, you've learned how to:
 
-* Generate a Java library
-* Adapt the generated `build.gradle` and sample Java files are structured
+* Generate a Java library, learn how it is structured
+* Adapt the generated `build.gradle` and sample Java files
 * Run the build and view the test report
-* Customize the name of a JAR file and the content of its manifest
-* Generate API documentation.
+* Customize the name of the JAR file and the content of its manifest
+* Generate API documentation, including making a JAR for it
+
+Now you could complete this exercise by trying to compile some Java code that uses the library you just built.
 
 == Next steps
 
 Building a library is just one aspect of reusing code across project boundaries. From here, you may be interested in:
 
  - link:{user-manual}artifact_dependencies_tutorial.html[Consuming JVM libraries]
- - link:{user-manual}artifact_management.html[Publishing JVM libraries]
- - link:{user-manual}intro_multi_project_builds.html[Working with multi-project builds]
-
+ - link:{user-manual}publishing_setup.html[Publishing JVM libraries]
+ - link:{user-manual}multi_project_builds.html[Working with multi-project builds]
 
 include::contribute[repo-path="gradle-guides/building-java-libraries"]

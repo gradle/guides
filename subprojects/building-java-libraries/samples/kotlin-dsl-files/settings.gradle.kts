@@ -1,1 +1,1 @@
-rootProject.name = "building-java-libraries" // <1>
+rootProject.name = "demo" // <1>

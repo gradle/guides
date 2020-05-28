@@ -4,6 +4,6 @@ plugins {
 
 guide {
     repositoryPath.set("gradle-guides/building-java-libraries")
-    minimumGradleVersion.set("5.0")
+    minimumGradleVersion.set("6.0")
     category.set("Getting Started")
 }
