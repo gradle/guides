@@ -7,7 +7,7 @@ This guide demonstrates how to create a https://groovy-lang.org/[Groovy] library
 * About +++<span class="time-to-complete-text"></span>+++
 * A text editor
 * A command prompt
-* The Java Development Kit (JDK), version 1.7 or higher
+* The Java Development Kit (JDK), version 8 or higher
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 
 == Check the user manual
@@ -24,7 +24,7 @@ $ cd demo
 
 == Run the init task
 
-From inside the new project directory, run the `init` task with the `groovy-library` argument.
+From inside the new project directory, run the `init` task, selecting first the `3: library` type and then `2: Groovy` language.
 
 [listing.terminal.sample-command,user-inputs="3|2|1||"]
 ----
@@ -58,7 +58,7 @@ Source package (default: demo):
 
 
 > Task :init
-Get more help with your project: https://docs.gradle.org/4.10.3/userguide/tutorial_groovy_projects.html
+Get more help with your project: https://docs.gradle.org/6.0/userguide/tutorial_groovy_projects.html
 
 BUILD SUCCESSFUL
 2 actionable tasks: 2 executed
@@ -92,11 +92,16 @@ The generated `build.gradle` file also has many comments. The active portion is 
 ----
 include::{samplescodedir}/build.gradle[]
 ----
-<1> Public Bintray Artifactory repository
-<2> Groovy version that this project will include as dependency
-<3> Spock Framework testing library
+<1> Use the `groovy` plugin
+<2> Use the `java-library` plugin
+<3> Public Bintray Artifactory repository
+<4> Groovy version that this project will include as dependency
+<5> Spock Framework testing library
 
-The build file adds the `groovy` plugin. This is an extension of the `java` plugins and adds additional tasks for compiling Groovy source code. It also allows for joint compilation of Groovy and Java files if found in the appropriate `groovy` source folders.
+The build file adds the `groovy` and `java-library` plugins.
+The `groovy` one is an extension of the `java` plugin and adds additional tasks for compiling Groovy source code.
+It also allows for joint compilation of Groovy and Java files if found in the appropriate `groovy` source folders.
+The `java-library` one configures to project to offer link:{user-manual}java_library_plugin.html#sec:java_library_separation[API / implementation separation].
 
 The file `src/main/groovy/demo/Library.groovy` is shown here:
 
