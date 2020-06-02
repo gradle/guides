@@ -11,7 +11,7 @@ You'll generate a Java application with the standard layout. You will then add a
 * About [.time-to-complete-text]#NN#
 * A text editor
 * A command prompt
-* The Java Development Kit (JDK), version 1.7 or higher
+* A https://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK), version 8 or higher
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 
 == Create project
@@ -80,7 +80,7 @@ You can inspect all of the dependencies you have added on a per-configuration ba
 
 [listing.terminal]
 ----
-./gradlew dependencies --configuration implementation # <1>
+./gradlew dependencies --configuration compileClasspath # <1>
 
 include::{samples-dir}/clean-dependencies/out.txt[]
 ----
@@ -173,9 +173,9 @@ You now have JVM application that consumes an external library. In this process 
 // TODO: If guide about artifact resolution is written, then this guide needs to point to that
 ////
 
-* Read about using your own link:{user-manual}repository_types.html#sub:maven_repo[Maven repository] installations
-* Read about configuring link:{user-manual}repository_types.html#sec:ivy_repositories[Ivy repositories].
-* Read about finding artifacts without metadata in link:{user-manual}repository_types.html#sec:flat_dir_resolver[local folders].
-* Read about link:{user-manual}customizing_dependency_resolution_behavior.html[advanced artifact resolution] and how to deal with version & dependency conflicts.
+* Read about using your own link:{user-manual}declaring_repositories.html#sec:maven_repo[Maven repository] installations
+* Read about configuring link:{user-manual}declaring_repositories.html#sec:ivy_repositories[Ivy repositories].
+* Read about finding artifacts without metadata in link:{user-manual}declaring_repositories.html#sub:flat_dir_resolver[local folders].
+* Read about link:{user-manual}dependency_downgrade_and_exclude.html[advanced dependency resolution] and how to deal with version & dependency conflicts.
 
 include::contribute[repo-path="gradle-guides/consuming-jvm-libraries"]

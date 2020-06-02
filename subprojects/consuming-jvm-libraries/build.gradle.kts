@@ -4,7 +4,7 @@ plugins {
 
 guide {
     repositoryPath.set("gradle-guides/consuming-jvm-libraries")
-    minimumGradleVersion.set("4.10.3")
+    minimumGradleVersion.set("6.0")
     displayName.set("Consuming JVM Libraries")
     category.set("Getting Started")
 }

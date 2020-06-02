@@ -1,7 +1,15 @@
+// tag::application[]
 // tag::java[]
-apply plugin : 'java' // <1>
+plugins {
+    id 'java'
+// end::java[]
+    id 'application' // <1>
+// tag::java[]
+}
 // end::java[]
 
+mainClassName = 'GreeterApp' // <2>
+// end::application[]
 
 // tag::repositories[]
 repositories {
@@ -14,8 +22,3 @@ dependencies {
     implementation 'com.github.lalyos:jfiglet:0.0.8' // <1>
 }
 // end::dependencies[]
-
-// tag::application[]
-apply plugin : 'application' // <1>
-mainClassName = 'GreeterApp' // <2>
-// end::application[]

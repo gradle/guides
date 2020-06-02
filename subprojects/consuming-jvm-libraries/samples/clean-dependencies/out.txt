@@ -5,10 +5,8 @@
 Root project
 ------------------------------------------------------------
 
-implementation - Implementation only dependencies for source set 'main'. (n)
-\--- com.github.lalyos:jfiglet:0.0.8 (n)
-
-(n) - Not resolved (configuration is not meant to be resolved)
+compileClasspath - Compile classpath for source set 'main'.
+\--- com.github.lalyos:jfiglet:0.0.8
 
 A web-based, searchable dependency report is available by adding the --scan option.
 
