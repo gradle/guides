@@ -1,16 +1,15 @@
 plugins {
-    id 'java'
-    id 'application'
+    id 'application' // <1>
 }
 
 repositories {
-    jcenter() // <1>
+    jcenter() // <2>
 }
 
 dependencies {
-    implementation 'com.google.guava:guava:26.0-jre' // <2>
+    implementation 'com.google.guava:guava:26.0-jre' // <3>
 
-    testImplementation 'junit:junit:4.12' // <3>
+    testImplementation 'junit:junit:4.12' // <4>
 }
 
-mainClassName = 'demo.App' // <4>
+mainClassName = 'demo.App' // <5>

@@ -27,9 +27,10 @@ $ cd demo
 
 == Run the init task
 
-From inside the new project directory, run the `init` task and select `java-application` project type when prompted. For the other questions, press enter to use the default values.
+From inside the new project directory, run the `init` task and select the project type `2: application` when prompted.
+For the other questions, press enter to use the default values.
 
-[listing.terminal.sample-command,user-inputs="2|3|1|||"]
+[listing.terminal.sample-command,user-inputs="2|||||"]
 ----
 $ gradle init
 > Task :wrapper
@@ -47,12 +48,12 @@ Select implementation language:
   3: Java
   4: Kotlin
   5: Swift
-Enter selection (default: Java) [1..5] 3
+Enter selection (default: Java) [1..5]
 
 Select build script DSL:
   1: Groovy
   2: Kotlin
-Enter selection (default: Groovy) [1..2] 1
+Enter selection (default: Groovy) [1..2]
 
 Select test framework:
   1: JUnit 4
@@ -74,8 +75,9 @@ BUILD SUCCESSFUL
 ----
 
 If you prefer the Kotlin DSL, you can select `kotlin` for the build script DSL.
+You can switch between the two DSLs for each build script details below.
 
-The `init` task runs the `wrapper` task first, which generates the `gradlew` and `gradlew.bat` wrapper scripts. Then it creates the new project with the following structure:
+The `init` task generates the new project with the following structure:
 
 [source.multi-language-sample,groovy]
 ----
@@ -134,8 +136,7 @@ The `settings.gradle` file is heavily commented, but has only one active line:
 include::sample[dir="groovy-dsl/code", files="settings.gradle[]"]
 include::sample[dir="kotlin-dsl/code", files="settings.gradle.kts[]"]
 ====
-
-This sets the name of the root project to "demo", which overrides the default behavior of naming the project after the directory it's in.
+<1>  This assigns the name of the root project, which overrides the default behavior of naming the project after the directory it's in.
 
 The generated `build.gradle` file also has many comments. The active portion is reproduced here (note version numbers for the dependencies may be updated in later versions of Gradle):
 
@@ -143,12 +144,18 @@ The generated `build.gradle` file also has many comments. The active portion is 
 include::sample[dir="groovy-dsl/code",files="build.gradle[]"]
 include::sample[dir="kotlin-dsl/code",files="build.gradle.kts[]"]
 ====
-<1> public Bintray Artifactory repository
-<2> Google Guava library
-<3> JUnit testing library
-<4> Class with "main" method (used by Application plugin)
+<1> Apply the `application` plugin, which applies the `java` and `distribution` plugins implicitly
+<2> public Bintray Artifactory repository
+<3> Google Guava library
+<4> JUnit testing library
+<5> Class with "main" method (used by Application plugin)
 
-The build file adds the `java` and `application` plugins. The former support Java projects. The latter lets you designate one class as having a `main` method, which can be executed by the build from the command line. In the demo, the name of the `main` class is `App`.
+The link:{user-manual}application_plugin.html[`application` plugin] lets you designate one class as having a `main` method, which can be executed by the build from the command line.
+In this guide, the name of the `main` class is `App`.
+The link:{user-manual}java_plugin.html[`java` plugin] provides all the necessary configuration for building and running Java code.
+Some tasks are further configured by the `application` plugin itself.
+The link:{user-manual}distribution_plugin.html[`distribution` plugin] adds a number of tasks around packaging your application and its dependencies.
+Once again, the `application` plugin applies its conventions to some of these tasks.
 
 The file `src/main/java/demo/App.java` is shown here:
 
@@ -204,6 +211,15 @@ All tasks runnable from root project
 Application tasks
 -----------------
 run - Runs this project as a JVM application
+
+[...]
+
+Distribution tasks
+------------------
+assembleDist - Assembles the main distributions
+distTar - Bundles the project as a distribution.
+distZip - Bundles the project as a distribution.
+installDist - Installs the project as a distribution as-is.
 
 // ... many other tasks ...
 ----
