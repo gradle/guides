@@ -83,7 +83,8 @@ The `settings.gradle` file is heavily commented, but has only one active line:
 ----
 include::{samplescodedir}/settings.gradle[]
 ----
-<1>  This assigns the name of the root project.
+<1>  This assigns the name of the root project, which overrides the default behavior of naming the project after the directory it's in.
+
 
 The generated `build.gradle` file also has many comments. The active portion is reproduced here (note version numbers for the dependencies may be updated in later versions of Gradle):
 
