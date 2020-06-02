@@ -10,7 +10,7 @@ You'll generate a Java library that follows Gradle's conventions.
 
  - About +++<span class="time-to-complete-text"></span>+++
  - A text editor or IDE
- - A https://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK) version 8 or higher
+ - A https://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK), version 8 or higher
  - A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 
 == Create a library project

@@ -7,7 +7,7 @@ This guide demonstrates how to create a https://groovy-lang.org/[Groovy] library
 * About +++<span class="time-to-complete-text"></span>+++
 * A text editor
 * A command prompt
-* The Java Development Kit (JDK), version 8 or higher
+* A https://www.oracle.com/technetwork/java/javase/downloads/index.html[Java Development Kit] (JDK), version 8 or higher
 * A https://gradle.org/install[Gradle distribution], version {gradle-version} or better
 
 == Check the user manual
