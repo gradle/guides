@@ -149,7 +149,7 @@ The generated JUnit specification, `src/test/java/demo/LibraryTest.java` is show
 include::{samples-dir}/groovy-dsl-files/src/test/java/demo/LibraryTest.java[]
 ----
 
-The generated test class has a single https://junit.org/junit4/[JUnit 4] test. The test instantiates the `Library` class, invokes the `someLibraryMethod` method, and checks that the returned value is `true.
+The generated test class has a single https://junit.org/junit4/[JUnit 4] test. The test instantiates the `Library` class, invokes the `someLibraryMethod` method, and checks that the returned value is `true`.
 
 == Assemble the library JAR
 
