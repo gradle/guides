@@ -5,7 +5,7 @@ TIP: Top engineering teams using Jenkins have been able to reduce CI build time 
 Building Gradle projects doesn't stop with the developer's machine.
 https://en.wikipedia.org/wiki/Continuous_integration[Continuous Integration] (CI) has been a long-established practice for running a build for every single change committed to version control to tighten the feedback loop.
 
-In this guide, we'll discuss how to configure link:https://jenkins.io/[Jenkins] for a typical Gradle project.
+In this guide, we'll discuss how to configure link:https://www.jenkins.io/[Jenkins] for a typical Gradle project.
 
 == What you'll need
 
@@ -70,7 +70,7 @@ In the course of this section, you'll learn how to set up Jenkins, configure a j
 
 === Install and start Jenkins
 
-On the https://jenkins.io/download/[Jenkins website] you can pick from a variety of distributions.
+On the https://www.jenkins.io/download/[Jenkins website] you can pick from a variety of distributions.
 This post uses the runnable WAR file.
 A simple Java command brings up the Jenkins server.
 
@@ -123,8 +123,8 @@ There are various options to trigger Jenkins builds continuously: from polling t
 
 You can learn more about advanced Jenkins usage through these resources:
 
-* https://jenkins.io/doc/book/using/using-credentials/[Using credentials with Jenkins]
-* https://jenkins.io/solutions/pipeline/[Pipeline as code with Jenkins]
+* https://www.jenkins.io/doc/book/using/using-credentials/[Using credentials with Jenkins]
+* https://www.jenkins.io/solutions/pipeline/[Pipeline as code with Jenkins]
 * https://bmuschko.com/blog/jenkins-build-pipeline/[Modelling a Continuous Deployment pipeline for a Spring Boot application]
 
 == Summary
