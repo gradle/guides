@@ -78,7 +78,7 @@ include::{samplescodedir}/capabilities-vs-conventions/buildSrc/src/main/java/MyP
 
 For inspiration, here are two open-source plugins that apply the concept:
 
-- link:https://github.com/bmuschko/gradle-docker-plugin#provided-plugins[Docker plugin]
+- link:https://bmuschko.github.io/gradle-docker-plugin/#provided_plugins[Docker plugin]
 - link:https://github.com/bmuschko/gradle-cargo-plugin#provided-plugins[Cargo plugin]
 
 == Technologies
