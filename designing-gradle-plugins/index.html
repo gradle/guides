@@ -459,7 +459,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <p>In practice you will find that most users are comfortable with the default conventions until there’s a good reason to change them e.g. if you have to work with a legacy project. When writing your own plugins, make sure that you pick sensible defaults. You can find out if you did pick sensible conventions for your plugin if you see that the majority of plugin consumers don’t have to reconfigure them.</p>
 </div>
 <div class="paragraph">
-<p>Let’s have a look at an example for conventions introduced by a plugin. The plugin retrieves information from a server by making HTTP calls. The default URL used by the plugin is configured to point to a server within an organization developing the plugin: http://www.myorg.com/server. A good way to make the default URL configurable is to introduce an <a href="https://docs.gradle.org/4.10.3/userguide/custom_plugins.html#sec:getting_input_from_the_build">extension</a>. An extension exposes a custom DSL for capturing user input that influences the runtime behavior. The following example shows such a custom DSL for the discussed example:</p>
+<p>Let’s have a look at an example for conventions introduced by a plugin. The plugin retrieves information from a server by making HTTP calls. The default URL used by the plugin is configured to point to a server within an organization developing the plugin: https://www.myorg.com/server. A good way to make the default URL configurable is to introduce an <a href="https://docs.gradle.org/4.10.3/userguide/custom_plugins.html#sec:getting_input_from_the_build">extension</a>. An extension exposes a custom DSL for capturing user input that influences the runtime behavior. The following example shows such a custom DSL for the discussed example:</p>
 </div>
 <div class="listingblock">
 <div class="title">build.gradle</div>
@@ -538,7 +538,7 @@ public class MyPlugin implements Plugin&lt;Project&gt; {
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://github.com/bmuschko/gradle-docker-plugin#provided-plugins">Docker plugin</a></p>
+<p><a href="https://bmuschko.github.io/gradle-docker-plugin/#provided_plugins">Docker plugin</a></p>
 </li>
 <li>
 <p><a href="https://github.com/bmuschko/gradle-cargo-plugin#provided-plugins">Cargo plugin</a></p>
@@ -560,7 +560,7 @@ public class MyPlugin implements Plugin&lt;Project&gt; {
 <p>It is recommended to use a statically-typed language like Java or Kotlin for implementing plugins to decrease the likelihood of binary incompatibilities. Should you decide on using Groovy for your plugin implementation then it is a good choice to use the annotation <a href="https://docs.groovy-lang.org/latest/html/gapi/groovy/transform/CompileStatic.html">@groovy.transform.CompileStatic</a>.</p>
 </div>
 <div class="paragraph">
-<p>The recommendation to use a statically-typed language is independent from the language choice for writing tests for your plugin code. The use of dynamic Groovy and (its very capable testing and mocking framework) <a href="http://spockframework.org/spock/docs/1.1-rc-3/index.html">Spock</a> is a very viable and common option.</p>
+<p>The recommendation to use a statically-typed language is independent from the language choice for writing tests for your plugin code. The use of dynamic Groovy and (its very capable testing and mocking framework) <a href="http://spockframework.org">Spock</a> is a very viable and common option.</p>
 </div>
 </div>
 <div class="sect2">

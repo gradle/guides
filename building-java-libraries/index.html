@@ -423,10 +423,10 @@ document.addEventListener("DOMContentLoaded", function () {
 <p>A text editor or IDE</p>
 </li>
 <li>
-<p>A <a href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">Java Development Kit</a> (JDK) version 8 or higher</p>
+<p>A <a href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">Java Development Kit</a> (JDK), version 8 or higher</p>
 </li>
 <li>
-<p>A <a href="https://gradle.org/install">Gradle distribution</a>, version 5.0 or better</p>
+<p>A <a href="https://gradle.org/install">Gradle distribution</a>, version 6.0 or better</p>
 </li>
 </ul>
 </div>
@@ -436,7 +436,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <h2 id="create_a_library_project"><a class="anchor" href="#create_a_library_project"></a><a class="link" href="#create_a_library_project">Create a library project</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Gradle comes with a built-in plugin called the Build Init plugin. It is documented in the <a href="https://docs.gradle.org/5.0/userguide/build_init_plugin.html">Gradle User Manual</a>. The plugin provides a task, called <code>init</code>, that generates the project. The <code>init</code> task uses the (also built-in) <code>wrapper</code> task to create a Gradle wrapper script, <code>gradlew</code>.</p>
+<p>Gradle comes with a built-in plugin called the Build Init plugin. It is documented in the <a href="https://docs.gradle.org/6.0/userguide/build_init_plugin.html">Gradle User Manual</a>. The plugin provides a task, called <code>init</code>, that generates the project. The <code>init</code> task uses the (also built-in) <code>wrapper</code> task to create a Gradle wrapper script, <code>gradlew</code>.</p>
 </div>
 <div class="paragraph">
 <p>The first step is to create a folder for the new project and change directory into it.</p>
@@ -453,7 +453,11 @@ $ cd demo</pre>
 <h2 id="run_the_init_task"><a class="anchor" href="#run_the_init_task"></a><a class="link" href="#run_the_init_task">Run the init task</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>From inside the new project directory, run the <code>init</code> task and select <code>java-library</code> project type when prompted. For the other questions, press enter to use the default values.</p>
+<p>From inside the new project directory, run the <code>init</code> task and select <code>library</code> project type when prompted.
+For the other questions, press enter to use the default values.</p>
+</div>
+<div class="paragraph">
+<p>The output will look like this, with minimal differences around versions:</p>
 </div>
 <div class="listingblock terminal sample-command">
 <div class="content">
@@ -501,10 +505,11 @@ BUILD SUCCESSFUL
 </div>
 </div>
 <div class="paragraph">
-<p>If you prefer the Kotlin DSL, you can select <code>kotlin</code> for the build script DSL.</p>
+<p>If you prefer the Kotlin DSL, you can select <code>kotlin</code> for the build script DSL.
+You can switch between the two DSLs for each build script details below.</p>
 </div>
 <div class="paragraph">
-<p>The <code>init</code> task runs the <code>wrapper</code> task first, which generates the <code>gradlew</code> and <code>gradlew.bat</code> wrapper scripts. Then it creates the new project with the following structure:</p>
+<p>The <code>init</code> task generates the new project with the following structure:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">Groovy DSL</div>
@@ -582,43 +587,43 @@ BUILD SUCCESSFUL
 <div class="listingblock multi-language-sample">
 <div class="title">Generated settings.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">rootProject.name = "building-java-libraries" <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">rootProject.name = "demo" <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">Generated settings.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">rootProject.name = "building-java-libraries" <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">rootProject.name = "demo" <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>This assigns the name of the root project.</td>
+<td>This assigns the name of the root project, which overrides the default behavior of naming the project after the directory it&#8217;s in.</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>The generated <code>build.gradle</code> file also has many comments. The active portion is reproduced here (note version numbers for the dependencies may be updated in later versions of Gradle):</p>
+<p>The generated <code>build.gradle</code> file also has many comments. The active portion is reproduced here:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">Generated build.gradle</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">plugins {
-    id 'java-library'
+    id 'java-library' <i class="conum" data-value="1"></i><b>(1)</b>
 }
 
 repositories {
-    jcenter() <i class="conum" data-value="1"></i><b>(1)</b>
+    jcenter() <i class="conum" data-value="2"></i><b>(2)</b>
 }
 
 dependencies {
-    api 'org.apache.commons:commons-math3:3.6.1' <i class="conum" data-value="2"></i><b>(2)</b>
+    api 'org.apache.commons:commons-math3:3.6.1' <i class="conum" data-value="3"></i><b>(3)</b>
 
-    implementation 'com.google.guava:guava:28.0-jre' <i class="conum" data-value="3"></i><b>(3)</b>
+    implementation 'com.google.guava:guava:28.0-jre' <i class="conum" data-value="4"></i><b>(4)</b>
 
-    testImplementation 'junit:junit:4.12' <i class="conum" data-value="4"></i><b>(4)</b>
+    testImplementation 'junit:junit:4.12' <i class="conum" data-value="5"></i><b>(5)</b>
 }</code></pre>
 </div>
 </div>
@@ -626,19 +631,19 @@ dependencies {
 <div class="title">Generated build.gradle.kts</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">plugins {
-    `java-library`
+    `java-library` <i class="conum" data-value="1"></i><b>(1)</b>
 }
 
 repositories {
-    jcenter() <i class="conum" data-value="1"></i><b>(1)</b>
+    jcenter() <i class="conum" data-value="2"></i><b>(2)</b>
 }
 
 dependencies {
-    api("org.apache.commons:commons-math3:3.6.1") <i class="conum" data-value="2"></i><b>(2)</b>
+    api("org.apache.commons:commons-math3:3.6.1") <i class="conum" data-value="3"></i><b>(3)</b>
 
-    implementation("com.google.guava:guava:28.0-jre") <i class="conum" data-value="3"></i><b>(3)</b>
+    implementation("com.google.guava:guava:28.0-jre") <i class="conum" data-value="4"></i><b>(4)</b>
 
-    testImplementation("junit:junit:4.12") <i class="conum" data-value="4"></i><b>(4)</b>
+    testImplementation("junit:junit:4.12") <i class="conum" data-value="5"></i><b>(5)</b>
 }</code></pre>
 </div>
 </div>
@@ -646,24 +651,43 @@ dependencies {
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Public Bintray Artifactory repository</td>
+<td>Use the <code>java-library</code> plugin</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>This is an example of a dependency which is exported to consumers, that is to say found on their compile classpath.</td>
+<td>Public Bintray Artifactory repository, used to resolve project dependencies</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>This is an example of a dependency which is used internally, and not exposed to consumers on their own compile classpath.</td>
+<td>This is an example of a dependency which is exported to consumers, that is to say found on their compile classpath.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>This is an example of a dependency which is used internally, and not exposed to consumers on their own compile classpath.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
 <td>JUnit testing library</td>
 </tr>
 </table>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>The build script adds the <a href="https://docs.gradle.org/5.0/userguide/java_library_plugin.html">java-library</a> plugin. This is an extension of the <code>java-base</code> plugin and adds additional tasks for compiling Java source code.</p>
+<p>Version numbers for the dependency declarations may vary for different Gradle versions.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The build script adds the <a href="https://docs.gradle.org/6.0/userguide/java_library_plugin.html">java-library</a> plugin.
+It configures the project for compiling and testing Java source code, specialized for code that is to be consumed by other projects.</p>
 </div>
 <div class="paragraph">
 <p>The file <code>src/main/java/demo/Library.java</code> is shown here:</p>
@@ -700,7 +724,8 @@ public class LibraryTest {
 </div>
 </div>
 <div class="paragraph">
-<p>The generated test class has a single <a href="https://junit.org/junit4/">JUnit 4</a> test. The test instantiates the <code>Library</code> class, invokes the <code>someLibraryMethod</code> method, and checks that the returned value is `true.</p>
+<p>The generated test class has a single <a href="https://junit.org/junit4/">JUnit 4</a> test.
+The test instantiates the <code>Library</code> class, invokes the <code>someLibraryMethod</code> method, and checks that the returned value is <code>true</code>.</p>
 </div>
 </div>
 </div>
@@ -778,15 +803,15 @@ demo/Library.class</pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>All of this happens without any additional configuration in the build script because Gradle&#8217;s <code>java-library</code> plugin assumes your project sources are arranged in a <a href="https://docs.gradle.org/5.0/userguide/java_plugin.html#sec:java_project_layout">conventional project layout</a>. You can customize the project layout if you wish <a href="https://docs.gradle.org/5.0/userguide/java_plugin.html#sec:changing_java_project_layout">as described in the user manual</a>.</p>
+<p>All of this happens without any additional configuration in the build script because Gradle&#8217;s <code>java-library</code> plugin assumes your project sources are arranged in a <a href="https://docs.gradle.org/6.0/userguide/java_plugin.html#sec:java_project_layout">conventional project layout</a>. You can customize the project layout if you wish <a href="https://docs.gradle.org/6.0/userguide/java_plugin.html#sec:changing_java_project_layout">as described in the user manual</a>.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Congratulations, you have just completed the first step of creating a Java library! You
-can now customize this to your own project needs.</p>
+<p>Congratulations, you have just completed the first step of creating a Java library!
+You can now customize this to your own project needs.</p>
 </div>
 </div>
 </div>
@@ -827,7 +852,7 @@ BUILD SUCCESSFUL
 <p>and notice that the resulting JAR file at <code>build/libs/demo-0.1.0.jar</code> contains the version as expected.</p>
 </div>
 <div class="paragraph">
-<p>Another common requirement is customizing the manifest file, typically by adding one or more attributes. Let&#8217;s include the library name and version in the manifest file by <a href="https://docs.gradle.org/5.0/userguide/more_about_tasks.html#sec:configuring_tasks">configuring the <code>jar</code> task</a>. Add the following to the end of your build script:</p>
+<p>Another common requirement is customizing the manifest file, typically by adding one or more attributes. Let&#8217;s include the library name and version in the manifest file by <a href="https://docs.gradle.org/6.0/userguide/more_about_tasks.html#sec:configuring_tasks">configuring the <code>jar</code> task</a>. Add the following to the end of your build script:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="title">build.gradle</div>
@@ -871,7 +896,7 @@ $ jar xf build/libs/demo-0.1.0.jar META-INF/MANIFEST.MF</pre>
 <div class="title">META-INF/MANIFEST.MF</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-mf" data-lang="mf">Manifest-Version: 1.0
-Implementation-Title: building-java-libraries
+Implementation-Title: demo
 Implementation-Version: 0.1.0</code></pre>
 </div>
 </div>
@@ -884,14 +909,11 @@ Implementation-Version: 0.1.0</code></pre>
 <td class="content">
 <div class="title">Learn more about configuring JARs</div>
 <div class="paragraph">
-<p>The <code>manifest</code> is just one of many properties that can be configured on the <code>jar</code> task. For a complete list, see the <a href="https://docs.gradle.org/5.0/dsl/org.gradle.api.tasks.bundling.Jar.html">Jar section</a> of the <a href="https://docs.gradle.org/5.0/dsl/">Gradle Language Reference</a> as well as the <a href="https://docs.gradle.org/5.0/userguide/java_plugin.html#sec:jar">Jar</a> and <a href="https://docs.gradle.org/5.0/userguide/working_with_files.html#sec:archives">Creating Archives</a> sections of the Gradle <a href="https://docs.gradle.org/5.0/userguide/userguide.html">User Manual</a>.</p>
+<p>The <code>manifest</code> is just one of many properties that can be configured on the <code>jar</code> task. For a complete list, see the <a href="https://docs.gradle.org/6.0/dsl/org.gradle.api.tasks.bundling.Jar.html">Jar section</a> of the <a href="https://docs.gradle.org/6.0/dsl/">Gradle Language Reference</a> as well as the <a href="https://docs.gradle.org/6.0/userguide/java_plugin.html#sec:jar">Jar</a> and <a href="https://docs.gradle.org/6.0/userguide/working_with_files.html#sec:archives">Creating Archives</a> sections of the Gradle <a href="https://docs.gradle.org/6.0/userguide/userguide.html">User Manual</a>.</p>
 </div>
 </td>
 </tr>
 </table>
-</div>
-<div class="paragraph">
-<p>Now you can complete this exercise by trying to compile some Java code that uses the library you just built.</p>
 </div>
 </div>
 </div>
@@ -937,32 +959,65 @@ BUILD SUCCESSFUL
 <div class="paragraph">
 <p>You can view the generated <code>javadoc</code> files by opening the HTML file located at <code>build/docs/javadoc/index.html</code>.</p>
 </div>
+<div class="sect2">
+<h3 id="generating_javadoc_and_sources_jar"><a class="anchor" href="#generating_javadoc_and_sources_jar"></a><a class="link" href="#generating_javadoc_and_sources_jar">Generating Javadoc and Sources JAR</a></h3>
+<div class="paragraph">
+<p>You can easily generate a Javadoc JAR for your library:</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="title">build.gradle</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">java {
+    withJavadocJar()
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="title">build.gradle.kts</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">java {
+    withJavadocJar()
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Similarly, you can use <code>withSourcesJar()</code> to also generate a JAR containing the project source files.</p>
+</div>
+<div class="paragraph">
+<p>Additional JARs defined that way will be produced by the <code>assemble</code> task and will be part of the publication.
+The resulting files will be found in <code>build/libs</code>, with a name using the conventional classifier <code>-javadoc</code> or <code>-sources</code>.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="summary"><a class="anchor" href="#summary"></a><a class="link" href="#summary">Summary</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>That&#8217;s it! You&#8217;ve now successfully built a Java library project, packaged it as a JAR and consumed it within a separate application. Along the way, you&#8217;ve learned how to:</p>
+<p>That&#8217;s it! You&#8217;ve now successfully built a Java library project, packaged it as a JAR and configured extra JARs.
+Along the way, you&#8217;ve learned how to:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Generate a Java library</p>
+<p>Generate a Java library, learn how it is structured</p>
 </li>
 <li>
-<p>Adapt the generated <code>build.gradle</code> and sample Java files are structured</p>
+<p>Adapt the generated <code>build.gradle</code> and sample Java files</p>
 </li>
 <li>
 <p>Run the build and view the test report</p>
 </li>
 <li>
-<p>Customize the name of a JAR file and the content of its manifest</p>
+<p>Customize the name of the JAR file and the content of its manifest</p>
 </li>
 <li>
-<p>Generate API documentation.</p>
+<p>Generate API documentation, including making a JAR for it</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>Now you could complete this exercise by trying to compile some Java code that uses the library you just built.</p>
 </div>
 </div>
 </div>
@@ -975,13 +1030,13 @@ BUILD SUCCESSFUL
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://docs.gradle.org/5.0/userguide/artifact_dependencies_tutorial.html">Consuming JVM libraries</a></p>
+<p><a href="https://docs.gradle.org/6.0/userguide/artifact_dependencies_tutorial.html">Consuming JVM libraries</a></p>
 </li>
 <li>
-<p><a href="https://docs.gradle.org/5.0/userguide/artifact_management.html">Publishing JVM libraries</a></p>
+<p><a href="https://docs.gradle.org/6.0/userguide/publishing_setup.html">Publishing JVM libraries</a></p>
 </li>
 <li>
-<p><a href="https://docs.gradle.org/5.0/userguide/intro_multi_project_builds.html">Working with multi-project builds</a></p>
+<p><a href="https://docs.gradle.org/6.0/userguide/multi_project_builds.html">Working with multi-project builds</a></p>
 </li>
 </ul>
 </div>

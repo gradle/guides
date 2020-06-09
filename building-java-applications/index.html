@@ -416,10 +416,10 @@ document.addEventListener("DOMContentLoaded", function () {
 <p>A command prompt</p>
 </li>
 <li>
-<p>A <a href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">Java Development Kit</a> (JDK) version 8 or higher</p>
+<p>A <a href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">Java Development Kit</a> (JDK), version 8 or higher</p>
 </li>
 <li>
-<p>A <a href="https://gradle.org/install">Gradle distribution</a>, version 5.4.1 or better</p>
+<p>A <a href="https://gradle.org/install">Gradle distribution</a>, version 6.0 or better</p>
 </li>
 </ul>
 </div>
@@ -429,7 +429,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <h2 id="check_the_user_manual"><a class="anchor" href="#check_the_user_manual"></a><a class="link" href="#check_the_user_manual">Check the user manual</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Gradle comes with a built-in plugin called the Build Init plugin. It is documented in the <a href="https://docs.gradle.org/5.4.1/userguide/build_init_plugin.html">Gradle User Manual</a>.
+<p>Gradle comes with a built-in plugin called the Build Init plugin. It is documented in the <a href="https://docs.gradle.org/6.0/userguide/build_init_plugin.html">Gradle User Manual</a>.
 The plugin provides a task, called <code>init</code>, that generates the project. The plugin also uses the (also built-in) <code>wrapper</code> task to create a Gradle wrapper script, <code>gradlew</code>.</p>
 </div>
 </div>
@@ -452,7 +452,8 @@ $ cd demo</pre>
 <h2 id="run_the_init_task"><a class="anchor" href="#run_the_init_task"></a><a class="link" href="#run_the_init_task">Run the init task</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>From inside the new project directory, run the <code>init</code> task and select <code>java-application</code> project type when prompted. For the other questions, press enter to use the default values.</p>
+<p>From inside the new project directory, run the <code>init</code> task and select the project type <code>2: application</code> when prompted.
+For the other questions, press enter to use the default values.</p>
 </div>
 <div class="listingblock terminal sample-command">
 <div class="content">
@@ -472,12 +473,12 @@ Select implementation language:
   3: Java
   4: Kotlin
   5: Swift
-Enter selection (default: Java) [1..5] 3
+Enter selection (default: Java) [1..5]
 
 Select build script DSL:
   1: Groovy
   2: Kotlin
-Enter selection (default: Groovy) [1..2] 1
+Enter selection (default: Groovy) [1..2]
 
 Select test framework:
   1: JUnit 4
@@ -499,10 +500,11 @@ BUILD SUCCESSFUL
 </div>
 </div>
 <div class="paragraph">
-<p>If you prefer the Kotlin DSL, you can select <code>kotlin</code> for the build script DSL.</p>
+<p>If you prefer the Kotlin DSL, you can select <code>kotlin</code> for the build script DSL.
+You can switch between the two DSLs for each build script details below.</p>
 </div>
 <div class="paragraph">
-<p>The <code>init</code> task runs the <code>wrapper</code> task first, which generates the <code>gradlew</code> and <code>gradlew.bat</code> wrapper scripts. Then it creates the new project with the following structure:</p>
+<p>The <code>init</code> task generates the new project with the following structure:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
@@ -581,7 +583,7 @@ BUILD SUCCESSFUL
 <div class="listingblock">
 <div class="title">settings.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">rootProject.name = 'demo'</code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">rootProject.name = 'demo' <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
 </div>
@@ -591,15 +593,20 @@ BUILD SUCCESSFUL
 <div class="listingblock">
 <div class="title">settings.gradle.kts</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">rootProject.name = "demo"</code></pre>
+<pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">rootProject.name = "demo" <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="paragraph">
-<p>This sets the name of the root project to "demo", which overrides the default behavior of naming the project after the directory it&#8217;s in.</p>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This assigns the name of the root project, which overrides the default behavior of naming the project after the directory it&#8217;s in.</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>The generated <code>build.gradle</code> file also has many comments. The active portion is reproduced here (note version numbers for the dependencies may be updated in later versions of Gradle):</p>
@@ -612,21 +619,20 @@ BUILD SUCCESSFUL
 <div class="title">build.gradle</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">plugins {
-    id 'java'
-    id 'application'
+    id 'application' <i class="conum" data-value="1"></i><b>(1)</b>
 }
 
 repositories {
-    jcenter() <i class="conum" data-value="1"></i><b>(1)</b>
+    jcenter() <i class="conum" data-value="2"></i><b>(2)</b>
 }
 
 dependencies {
-    implementation 'com.google.guava:guava:26.0-jre' <i class="conum" data-value="2"></i><b>(2)</b>
+    implementation 'com.google.guava:guava:26.0-jre' <i class="conum" data-value="3"></i><b>(3)</b>
 
-    testImplementation 'junit:junit:4.12' <i class="conum" data-value="3"></i><b>(3)</b>
+    testImplementation 'junit:junit:4.12' <i class="conum" data-value="4"></i><b>(4)</b>
 }
 
-mainClassName = 'demo.App' <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
+mainClassName = 'demo.App' <i class="conum" data-value="5"></i><b>(5)</b></code></pre>
 </div>
 </div>
 </div>
@@ -637,22 +643,21 @@ mainClassName = 'demo.App' <i class="conum" data-value="4"></i><b>(4)</b></code>
 <div class="title">build.gradle.kts</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">plugins {
-    java
-    application
+    application <i class="conum" data-value="1"></i><b>(1)</b>
 }
 
 repositories {
-    jcenter() <i class="conum" data-value="1"></i><b>(1)</b>
+    jcenter() <i class="conum" data-value="2"></i><b>(2)</b>
 }
 
 dependencies {
-    implementation("com.google.guava:guava:26.0-jre") <i class="conum" data-value="2"></i><b>(2)</b>
+    implementation("com.google.guava:guava:26.0-jre") <i class="conum" data-value="3"></i><b>(3)</b>
 
-    testImplementation("junit:junit:4.12") <i class="conum" data-value="3"></i><b>(3)</b>
+    testImplementation("junit:junit:4.12") <i class="conum" data-value="4"></i><b>(4)</b>
 }
 
 application {
-    mainClassName = "demo.App" <i class="conum" data-value="4"></i><b>(4)</b>
+    mainClassName = "demo.App" <i class="conum" data-value="5"></i><b>(5)</b>
 }</code></pre>
 </div>
 </div>
@@ -664,24 +669,33 @@ application {
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>public Bintray Artifactory repository</td>
+<td>Apply the <code>application</code> plugin, which applies the <code>java</code> and <code>distribution</code> plugins implicitly</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Google Guava library</td>
+<td>public Bintray Artifactory repository</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>JUnit testing library</td>
+<td>Google Guava library</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>JUnit testing library</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
 <td>Class with "main" method (used by Application plugin)</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>The build file adds the <code>java</code> and <code>application</code> plugins. The former support Java projects. The latter lets you designate one class as having a <code>main</code> method, which can be executed by the build from the command line. In the demo, the name of the <code>main</code> class is <code>App</code>.</p>
+<p>The <a href="https://docs.gradle.org/6.0/userguide/application_plugin.html"><code>application</code> plugin</a> lets you designate one class as having a <code>main</code> method, which can be executed by the build from the command line.
+In this guide, the name of the <code>main</code> class is <code>App</code>.
+The <a href="https://docs.gradle.org/6.0/userguide/java_plugin.html"><code>java</code> plugin</a> provides all the necessary configuration for building and running Java code.
+Some tasks are further configured by the <code>application</code> plugin itself.
+The <a href="https://docs.gradle.org/6.0/userguide/distribution_plugin.html"><code>distribution</code> plugin</a> adds a number of tasks around packaging your application and its dependencies.
+Once again, the <code>application</code> plugin applies its conventions to some of these tasks.</p>
 </div>
 <div class="paragraph">
 <p>The file <code>src/main/java/demo/App.java</code> is shown here:</p>
@@ -808,6 +822,15 @@ All tasks runnable from root project
 Application tasks
 -----------------
 run - Runs this project as a JVM application
+
+[...]
+
+Distribution tasks
+------------------
+assembleDist - Assembles the main distributions
+distTar - Bundles the project as a distribution.
+distZip - Bundles the project as a distribution.
+installDist - Installs the project as a distribution as-is.
 
 // ... many other tasks ...</pre>
 </div>

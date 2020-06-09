@@ -423,10 +423,10 @@ document.addEventListener("DOMContentLoaded", function () {
 <p>A command prompt</p>
 </li>
 <li>
-<p>The Java Development Kit (JDK), version 1.7 or higher</p>
+<p>A <a href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">Java Development Kit</a> (JDK), version 8 or higher</p>
 </li>
 <li>
-<p>A <a href="https://gradle.org/install">Gradle distribution</a>, version 4.10.3 or better</p>
+<p>A <a href="https://gradle.org/install">Gradle distribution</a>, version 6.0 or better</p>
 </li>
 </ul>
 </div>
@@ -436,7 +436,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <h2 id="create_project"><a class="anchor" href="#create_project"></a><a class="link" href="#create_project">Create project</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The first step is to create a folder for the new project and add a <a href="https://docs.gradle.org/4.10.3/userguide/gradle_wrapper.html#sec:wrapper_generation">Gradle Wrapper</a> to the project.</p>
+<p>The first step is to create a folder for the new project and add a <a href="https://docs.gradle.org/6.0/userguide/gradle_wrapper.html#sec:wrapper_generation">Gradle Wrapper</a> to the project.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -464,7 +464,7 @@ BUILD SUCCESSFUL</pre>
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-Instead of using the built-in wrapper task, you may wish to use the <code>init</code> task from the <a href="https://docs.gradle.org/4.10.3/userguide/build_init_plugin.html">Build Init</a> plugin instead. This will create the initial project structure for you. See the <a href="https://guides.gradle.org/building-java-applications">Building Java Applications guide</a> for a detailed explanation of how to do this.
+Instead of using the built-in wrapper task, you may wish to use the <code>init</code> task from the <a href="https://docs.gradle.org/6.0/userguide/build_init_plugin.html">Build Init</a> plugin instead. This will create the initial project structure for you. See the <a href="https://guides.gradle.org/building-java-applications">Building Java Applications guide</a> for a detailed explanation of how to do this.
 </td>
 </tr>
 </table>
@@ -484,7 +484,9 @@ Instead of using the built-in wrapper task, you may wish to use the <code>init</
 <div class="listingblock">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">apply plugin : 'java' <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">plugins {
+    id 'java'
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -507,7 +509,7 @@ Instead of using the built-in wrapper task, you may wish to use the <code>init</
 </table>
 </div>
 <div class="paragraph">
-<p>In order to find artifacts you have to tell Gradle where to look. Gradle supports two specialized repository types - <a href="https://docs.gradle.org/4.10.3/userguide/repository_types.html#sub:maven_repo">Maven</a> &amp; <a href="https://docs.gradle.org/4.10.3/userguide/repository_types.html#sec:ivy_repositories">Ivy</a>, among others. In addition, Gradle supports simplified configuration for the most popular centralized repositories - JCenter, Maven Central, and Google&#8217;s Android repository. In this guide you are using JCenter as it has access to all of the repositories hosted on Maven Central as well as many more that are published to Bintray.</p>
+<p>In order to find artifacts you have to tell Gradle where to look. Gradle supports two specialized repository types - <a href="https://docs.gradle.org/6.0/userguide/repository_types.html#sub:maven_repo">Maven</a> &amp; <a href="https://docs.gradle.org/6.0/userguide/repository_types.html#sec:ivy_repositories">Ivy</a>, among others. In addition, Gradle supports simplified configuration for the most popular centralized repositories - JCenter, Maven Central, and Google&#8217;s Android repository. In this guide you are using JCenter as it has access to all of the repositories hosted on Maven Central as well as many more that are published to Bintray.</p>
 </div>
 <div class="paragraph">
 <p>The next step is to tell Gradle which external artifacts you need for your projects. As you are doing an Ascii-art application you will be using <a href="https://github.com/lalyos/jfiglet">JFiglet</a>. Add a <code>dependencies</code> block to <code>build.gradle</code> for the <code>JFiglet</code> library.</p>
@@ -529,7 +531,7 @@ Instead of using the built-in wrapper task, you may wish to use the <code>init</
 </table>
 </div>
 <div class="paragraph">
-<p>Gradle supports a variety of <a href="https://docs.gradle.org/4.10.3/userguide/dependency_types.html">notations</a>. The one used above is probably the most popular, which uses what is most commonly known as Maven coordinates.</p>
+<p>Gradle supports a variety of <a href="https://docs.gradle.org/6.0/userguide/dependency_types.html">notations</a>. The one used above is probably the most popular, which uses what is most commonly known as Maven coordinates.</p>
 </div>
 <div class="paragraph">
 <p>Adding a dependency has two parts: one is the dependency itself and the other is the <em>configuration</em> to which it is added. The latter term is used in Gradle to effectively group dependencies together by context. The current build uses the <code>implementation</code> configuration, which is provided by the Java Plugin.</p>
@@ -541,7 +543,7 @@ Instead of using the built-in wrapper task, you may wish to use the <code>init</
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-You can learn more about using configurations for your own custom purposes by studying the <a href="https://docs.gradle.org/4.10.3/dsl/org.gradle.api.artifacts.ConfigurationContainer.html">ConfigurationContainer</a>.
+You can learn more about using configurations for your own custom purposes by studying the <a href="https://docs.gradle.org/6.0/dsl/org.gradle.api.artifacts.ConfigurationContainer.html">ConfigurationContainer</a>.
 </td>
 </tr>
 </table>
@@ -554,7 +556,7 @@ You can learn more about using configurations for your own custom purposes by st
 </div>
 <div class="listingblock terminal">
 <div class="content">
-<pre>./gradlew dependencies --configuration implementation <i class="conum" data-value="1"></i><b>(1)</b>
+<pre>./gradlew dependencies --configuration compileClasspath <i class="conum" data-value="1"></i><b>(1)</b>
 
 
 &gt; Task :dependencies
@@ -563,10 +565,8 @@ You can learn more about using configurations for your own custom purposes by st
 Root project
 ------------------------------------------------------------
 
-implementation - Implementation only dependencies for source set 'main'. (n)
-\--- com.github.lalyos:jfiglet:0.0.8 (n)
-
-(n) - Not resolved (configuration is not meant to be resolved)
+compileClasspath - Compile classpath for source set 'main'.
+\--- com.github.lalyos:jfiglet:0.0.8
 
 A web-based, searchable dependency report is available by adding the --scan option.
 
@@ -650,7 +650,11 @@ BUILD SUCCESSFUL in 280ms
 <div class="listingblock">
 <div class="title">build.gradle</div>
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">apply plugin : 'application' <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">plugins {
+    id 'java'
+    id 'application' <i class="conum" data-value="1"></i><b>(1)</b>
+}
+
 mainClassName = 'GreeterApp' <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 </div>
@@ -658,7 +662,7 @@ mainClassName = 'GreeterApp' <i class="conum" data-value="2"></i><b>(2)</b></cod
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <a href="https://docs.gradle.org/4.10.3/userguide/application_plugin.html">Application plugin</a> is a very useful plugin that allows you to bundle your application along with all of its dependencies.</td>
+<td>The <a href="https://docs.gradle.org/6.0/userguide/application_plugin.html">Application plugin</a> is a very useful plugin that allows you to bundle your application along with all of its dependencies.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -775,16 +779,16 @@ $ ./bin/greeterApp Gradle
 <div class="ulist">
 <ul>
 <li>
-<p>Read about using your own <a href="https://docs.gradle.org/4.10.3/userguide/repository_types.html#sub:maven_repo">Maven repository</a> installations</p>
+<p>Read about using your own <a href="https://docs.gradle.org/6.0/userguide/declaring_repositories.html#sec:maven_repo">Maven repository</a> installations</p>
 </li>
 <li>
-<p>Read about configuring <a href="https://docs.gradle.org/4.10.3/userguide/repository_types.html#sec:ivy_repositories">Ivy repositories</a>.</p>
+<p>Read about configuring <a href="https://docs.gradle.org/6.0/userguide/declaring_repositories.html#sec:ivy_repositories">Ivy repositories</a>.</p>
 </li>
 <li>
-<p>Read about finding artifacts without metadata in <a href="https://docs.gradle.org/4.10.3/userguide/repository_types.html#sec:flat_dir_resolver">local folders</a>.</p>
+<p>Read about finding artifacts without metadata in <a href="https://docs.gradle.org/6.0/userguide/declaring_repositories.html#sub:flat_dir_resolver">local folders</a>.</p>
 </li>
 <li>
-<p>Read about <a href="https://docs.gradle.org/4.10.3/userguide/customizing_dependency_resolution_behavior.html">advanced artifact resolution</a> and how to deal with version &amp; dependency conflicts.</p>
+<p>Read about <a href="https://docs.gradle.org/6.0/userguide/dependency_downgrade_and_exclude.html">advanced dependency resolution</a> and how to deal with version &amp; dependency conflicts.</p>
 </li>
 </ul>
 </div>
