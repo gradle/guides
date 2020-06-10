@@ -23,6 +23,7 @@ import org.cyberneko.html.parsers.SAXParser;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.docs.internal.IOUtils;
@@ -31,7 +32,6 @@ import org.gradle.workers.WorkParameters;
 import org.gradle.workers.WorkQueue;
 import org.gradle.workers.WorkerExecutor;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import javax.inject.Inject;
@@ -41,9 +41,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -74,7 +72,7 @@ public abstract class CheckLinks extends DefaultTask {
     }
 
     public static abstract class CheckLinksAction implements WorkAction<CheckLinksParameters> {
-        private static final Logger logger = LoggerFactory.getLogger(CheckLinksAction.class);
+        private static final Logger logger = Logging.getLogger(CheckLinksAction.class);
 
         @Override
         public void execute() {
@@ -116,7 +114,7 @@ public abstract class CheckLinks extends DefaultTask {
                     logger.info("RESPONSE: {} = {}", anchor, responseCode);
                     return true;
                 } catch (IOException e) {
-                    logger.info("FAILED: {}", anchor, e);
+                    logger.error("FAILED: {}", anchor, e);
                 }
             }
             return false;
