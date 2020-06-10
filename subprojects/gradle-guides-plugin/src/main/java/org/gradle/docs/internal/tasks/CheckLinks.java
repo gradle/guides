@@ -115,6 +115,11 @@ public abstract class CheckLinks extends DefaultTask {
                     return true;
                 } catch (IOException e) {
                     logger.error("FAILED: {}", anchor, e);
+                    // https://github.com/gradle/gradle-private/issues/3109
+                    // Server is accessible, but we don't keep sessions
+                    if(e.getMessage().contains("Server redirected too many")) {
+                        return true;
+                    }
                 }
             }
             return false;
