@@ -110,6 +110,7 @@ public abstract class CheckLinks extends DefaultTask {
                     con.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0");
                     // timeout in 5 seconds
                     con.setConnectTimeout(5000);
+                    con.setReadTimeout(5000);
                     int responseCode = con.getResponseCode();
                     logger.info("RESPONSE: {} = {}", anchor, responseCode);
                     return true;
