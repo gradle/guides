@@ -11,7 +11,7 @@ tasks {
     val configureJar = create("configureJar") {
         doLast {
             jar.get().manifest {
-                val classPath = listOf(":core", ":baseServices").joinToString(" ") {
+                val classPath = listOf(":core", ":base-services").joinToString(" ") {
                     project(it).tasks.getByName<Jar>("jar").archivePath.name
                 }
                 attributes("Class-Path" to classPath)

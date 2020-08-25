@@ -1,1 +1,1 @@
-include 'core', 'baseServices'
+include 'core', 'base-services'

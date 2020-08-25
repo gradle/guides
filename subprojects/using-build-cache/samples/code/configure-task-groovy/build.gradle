@@ -6,7 +6,7 @@ allprojects {
 task configureJar {
     doLast {
         jar.manifest {
-            def classPath = [':core', ':baseServices'].collect { project(it).jar.archivePath.name }.join(" ")
+            def classPath = [':core', ':base-services'].collect { project(it).jar.archivePath.name }.join(" ")
             attributes('Class-Path': classPath)
         }
     }

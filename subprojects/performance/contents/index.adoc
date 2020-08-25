@@ -454,7 +454,7 @@ are not leaked into the compile classpath of downstream projects, which means th
 [source.multi-language-sample,groovy]
 ----
 dependencies {
-   api project('myUtils')
+   api project('my-utils')
    implementation 'com.google.guava:guava:21.0'
 }
 ----
@@ -462,7 +462,7 @@ dependencies {
 [source.multi-language-sample,kotlin]
 ----
 dependencies {
-   api(project("myUtils"))
+   api(project("my-utils"))
    implementation("com.google.guava:guava:21.0")
 }
 ----
