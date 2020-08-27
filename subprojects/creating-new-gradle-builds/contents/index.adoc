@@ -207,16 +207,6 @@ include::{samplescodedir}/gradle-properties.gradle[]
 
 Congratulations! You have created a new Gradle build and learned how to inspect Gradle builds!
 
-Chances are you want to create a library or application for a specific platform, so here are some guides that will teach you more about creating builds in your platform of choice:
-
-* {guides}/building-android-apps[Building Android Apps]
-* {guides}/building-java-libraries[Building Java Libraries]
-* {guides}/building-kotlin-jvm-libraries[Building Kotlin JVM Libraries]
-* {guides}/building-cpp-applications[Building {cpp} Applications]
-* {guides}/building-swift-applications[Building Swift Applications]
-* {guides}/building-groovy-libraries[Building Groovy Libraries]
-* {guides}/building-scala-libraries[Building Scala Libraries]
-
-You can also checkout many link:https://github.com/gradle/gradle/tree/master/subprojects/docs/src/samples[sample Gradle builds on GitHub].
+Samples for different use cases can be found in the link:https://docs.gradle.org/current/samples/index.html[Gradle user manual].
 
 include::contribute[repo-path="gradle-guides/creating-new-gradle-builds"]

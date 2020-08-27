@@ -1,9 +1,0 @@
-plugins {
-    id("org.gradle.guide")
-}
-
-guide {
-    repositoryPath.set("gradle-guides/building-java-9-modules")
-    minimumGradleVersion.set("4.10.3")
-    category.set("Tutorial")
-}

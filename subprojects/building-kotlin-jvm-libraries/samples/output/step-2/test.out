@@ -1,9 +1,0 @@
-> Task :compileKotlin
-Using kotlin incremental compilation
-
-> Task :compileTestKotlin
-Using kotlin incremental compilation
-
-
-BUILD SUCCESSFUL in 5s
-3 actionable tasks: 3 executed
