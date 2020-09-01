@@ -1,5 +1,6 @@
 {
     "asciidoc.preview.attributes": {
-        "samplescodedir": "../samples/code"
+        "samplescodedir": "../samples/code",
+        "imagesdir": "images"
     }
 }
