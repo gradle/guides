@@ -9,7 +9,6 @@ rootProject.name = "gradle-guides"
 includeBuild("subprojects/gradle-guides-plugin")
 
 val guides = listOf(
-        "building-spring-boot-2-projects-with-gradle",
         "consuming-jvm-libraries",
         "creating-new-gradle-builds",
         "designing-gradle-plugins",
