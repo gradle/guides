@@ -9,11 +9,6 @@ rootProject.name = "gradle-guides"
 includeBuild("subprojects/gradle-guides-plugin")
 
 val guides = listOf(
-        // Move to existing tool integration section in user manual (https://github.com/gradle/gradle/pull/14873)
-        "executing-gradle-builds-on-jenkins",
-        "executing-gradle-builds-on-teamcity",
-        "executing-gradle-builds-on-travisci",
-
         // Move to section about plugin development in user manual (and update the content later)
         "designing-gradle-plugins",
         "implementing-gradle-plugins",
