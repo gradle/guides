@@ -2240,7 +2240,7 @@ E.g., instead of doing</p>
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">jar {
     doFirst {
         manifest {
-            def classPath = [':core', ':baseServices'].collect { project(it).jar.archivePath.name }.join(" ")
+            def classPath = [':core', ':base-services'].collect { project(it).jar.archivePath.name }.join(" ")
             attributes('Class-Path': classPath)
         }
     }
@@ -2253,7 +2253,7 @@ E.g., instead of doing</p>
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">tasks.jar {
     doFirst {
         manifest {
-            val classPath = listOf(":core", ":baseServices").joinToString(" ") {
+            val classPath = listOf(":core", ":base-services").joinToString(" ") {
                 project(it).tasks.getByName&lt;Jar&gt;("jar").archivePath.name
             }
             attributes("Class-Path" to classPath)
@@ -2271,7 +2271,7 @@ E.g., instead of doing</p>
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">task configureJar {
     doLast {
         jar.manifest {
-            def classPath = [':core', ':baseServices'].collect { project(it).jar.archivePath.name }.join(" ")
+            def classPath = [':core', ':base-services'].collect { project(it).jar.archivePath.name }.join(" ")
             attributes('Class-Path': classPath)
         }
     }
@@ -2287,7 +2287,7 @@ jar.dependsOn(configureJar)</code></pre>
     val configureJar = create("configureJar") {
         doLast {
             jar.get().manifest {
-                val classPath = listOf(":core", ":baseServices").joinToString(" ") {
+                val classPath = listOf(":core", ":base-services").joinToString(" ") {
                     project(it).tasks.getByName&lt;Jar&gt;("jar").archivePath.name
                 }
                 attributes("Class-Path" to classPath)

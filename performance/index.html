@@ -1172,7 +1172,7 @@ are not leaked into the compile classpath of downstream projects, which means th
 <div class="title">build.gradle</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-groovy" data-lang="groovy">dependencies {
-   api project('myUtils')
+   api project('my-utils')
    implementation 'com.google.guava:guava:21.0'
 }</code></pre>
 </div>
@@ -1181,7 +1181,7 @@ are not leaked into the compile classpath of downstream projects, which means th
 <div class="title">build.gradle.kts</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-kotlin" data-lang="kotlin">dependencies {
-   api(project("myUtils"))
+   api(project("my-utils"))
    implementation("com.google.guava:guava:21.0")
 }</code></pre>
 </div>
