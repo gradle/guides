@@ -515,6 +515,28 @@ Parallel builds require projects to be decoupled at execution time, i.e. tasks i
 <p>That’s the end of the quick wins. From here on out, improving your build performance will require some elbow grease. First, perhaps the most important step: finding out which bits of your build are slow and why.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="enable_file_system_watching"><a class="anchor" href="#enable_file_system_watching"></a><a class="link" href="#enable_file_system_watching">Enable file system watching</a></h3>
+<div class="paragraph">
+<p>Gradle talks a lot to the file system, especially when trying to resolve the state of the inputs and outputs of the build.
+To avoid unnecessary I/O an in-memory <em>virtual file system</em> is maintained throughout the build.
+The <em>file system watching</em> feature allows Gradle to keep this in-memory data between builds, further reducing I/O in a significant way.
+The impact depends on a number of factors, but is proportional to how much of the build is up-to-date.
+Thus it is most useful for building small changes incrementally.</p>
+</div>
+<div class="paragraph">
+<p>The typical way to enable the feature is to add the by adding the following setting to the project&#8217;s <code>gradle.properties</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="title">gradle.properties</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-properties" data-lang="properties">org.gradle.vfs.watch=true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Read more about this feature in <a href="https://docs.gradle.org/4.10.3/userguide/gradle_daemon.html#sec:daemon_watch_fs">the User Manual</a>.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
