@@ -5,6 +5,26 @@ plugins {
     id("org.gradle.documentation") apply(false)
 }
 
+// When removing a guide that has been linked from elsewhere before, please add a redirect here
+val redirects = mapOf(
+    "building-cpp-applications" to "https://docs.gradle.org/current/samples/sample_building_cpp_applications.html",
+    "building-cpp-libraries" to "https://docs.gradle.org/current/samples/sample_building_cpp_libraries.html",
+    "building-groovy-libraries" to " https://docs.gradle.org/current/samples/sample_building_groovy_libraries.html",
+    "building-java-9-modules" to "https://docs.gradle.org/current/samples/sample_java_modules_multi_project.html",
+    "building-java-applications" to "https://docs.gradle.org/current/samples/sample_building_java_applications.html",
+    "building-java-libraries" to "https://docs.gradle.org/current/samples/sample_building_java_libraries.html",
+    "building-java-web-applications" to "https://gretty-gradle-plugin.github.io/gretty-doc",
+    "building-kotlin-jvm-libraries" to "https://docs.gradle.org/current/samples/sample_building_kotlin_libraries.html",
+    "building-scala-libraries" to "https://docs.gradle.org/current/samples/sample_building_scala_libraries.html",
+    "building-spring-boot-2-projects-with-gradle" to "https://spring.io/guides/gs/spring-boot",
+    "building-swift-applications" to "https://docs.gradle.org/current/samples/sample_building_swift_applications.html",
+    "building-swift-libraries" to "https://docs.gradle.org/current/samples/sample_building_swift_libraries.html",
+    "creating-build-scans" to "https://scans.gradle.com",
+    "creating-multi-project-builds" to "https://docs.gradle.org/current/samples/sample_building_java_applications_multi_project.html" +
+    "creating-new-gradle-builds" to "https://docs.gradle.org/current/samples",
+    "writing-gradle-tasks" to "https://docs.gradle.org/current/userguide/custom_tasks.html"
+)
+
 val guideProjects = extra["guideProjects"] as List<String>
 
 tasks.register("clean") {
@@ -40,6 +60,18 @@ val installGuides = tasks.register("installGuides", Sync::class.java) {
 
     doLast {
         file("$buildDir/published-guides/.nojekyll")
+
+        redirects.forEach { (from, to) ->
+            val indexHtml = file("$buildDir/published-guides/$from/index.html").apply { parentFile.mkdirs() }
+            indexHtml.writeText("""
+                    <!DOCTYPE html>
+                    <meta charset="utf-8">
+                    <title>Redirecting to $to</title>
+                    <meta http-equiv="refresh" content="0; URL=$to">
+                    <link rel="canonical" href="$to">
+                """.trimIndent()
+            )
+        }
     }
 }
 dependencies {
