@@ -9,18 +9,27 @@ rootProject.name = "gradle-guides"
 includeBuild("subprojects/gradle-guides-plugin")
 
 val guides = listOf(
-        "consuming-jvm-libraries",
-        "designing-gradle-plugins",
+        // Move to existing tool integration section in user manual (https://github.com/gradle/gradle/pull/14873)
         "executing-gradle-builds-on-jenkins",
         "executing-gradle-builds-on-teamcity",
         "executing-gradle-builds-on-travisci",
+
+        // Move to section about plugin development in user manual (and update the content later)
+        "designing-gradle-plugins",
         "implementing-gradle-plugins",
-        "migrating-build-logic-from-groovy-to-kotlin",
-        "performance",
-        "publishing-plugins-to-gradle-plugin-portal",
         "testing-gradle-plugins",
+        "publishing-plugins-to-gradle-plugin-portal",
+
+        // Move to corresponding places in user manual
         "using-build-cache",
-        "using-the-worker-api"
+        "using-the-worker-api",
+        "performance",
+
+        // Turn into a sample (or delete)
+        "consuming-jvm-libraries",
+
+        // Move to user manual (or delete if outdated)
+        "migrating-build-logic-from-groovy-to-kotlin"
 )
 
 val misc = listOf("guides-test-fixtures")
