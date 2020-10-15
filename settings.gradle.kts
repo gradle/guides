@@ -22,8 +22,7 @@ val guides = listOf(
         "publishing-plugins-to-gradle-plugin-portal",
         "testing-gradle-plugins",
         "using-build-cache",
-        "using-the-worker-api",
-        "writing-gradle-tasks"
+        "using-the-worker-api"
 )
 
 val misc = listOf("guides-test-fixtures")
