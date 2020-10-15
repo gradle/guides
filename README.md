@@ -1,10 +1,10 @@
-# Gradle Guides [![Build Status](https://travis-ci.org/gradle/guides.svg?branch=master)](https://travis-ci.org/gradle/guides)
+# Gradle Guides 
 
 ## Introduction
 
 This repository contains the source for the Gradle Guides homepage at https://guides.gradle.org.
 
-Each individual Gradle guide can be found in the `subprojects` directory. For example, you can find the source of the _Building Java Libraries_ guide, hosted at [https://guides.gradle.org/building-java-libraries/](https://guides.gradle.org/building-java-libraries/), in the `subprojects/building-java-libraries` repository.
+Each individual Gradle guide can be found in the `subprojects` directory. 
 
 This repository also contains some Gradle plugins for writing and testing guides and sample builds. These can be found in
 the `subprojects/gradle-guides-plugin` directory.
@@ -105,18 +105,3 @@ Once this has been done, _paste the link for this new repository into the guide'
 TODO - add detail here
 
 The author will then write and test the guide content, and will ultimately submit a pull request against this repository. When this happens, provide your feedback in the form of a [GitHub Review](https://help.github.com/articles/reviewing-changes-in-pull-requests/) and/or [additional commits on the author's pull request branch](https://help.github.com/articles/committing-changes-to-a-pull-request-branch-created-from-a-fork/)—whichever you deem to be the most efficient use of both your time.
-
-## FAQ
-
-### How is the Gradle Guides site published?
-
-The Gradle Guides homepage at guides.gradle.org is hosted on [GitHub Pages](https://pages.github.com/) via what's known as an [Organization Page](https://help.github.com/articles/user-organization-and-project-pages/).
-
-The GitHub repositories where Organization Pages live have naming constraints, and in our case the repository where the guides.gradle.org Organization Page lives is [gradle-guides/gradle-guides.github.io](https://github.com/gradle-guides/gradle-guides.github.io). That repository is a _mirror_ of this one—gradle/guides—meaning that every commit here is also pushed to gradle-guides/gradle-guides.github.io, which in turn triggers publication to GitHub Pages.
-
-The mirroring process is managed as a simple Travis CI build; see [.travis.yml](.travis.yml) for details. We set up this mirrored arrangement because "gradle-guides/gradle-guides.github.io" is cumbersome to type and talk about, while "gradle/guides" is a friendlier and more intention-revealing name. The mirroring process should be transparent and hands-free for maintainers. We mention it here for reference and clarity.
-
-### What is `ImgBot` used for?
-
-The `ImgBot` will submit PR to optimized images for all guides.
-Those can be merged without too much discussion as they only optimize the image without loosing any quality.
