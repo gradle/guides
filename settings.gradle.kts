@@ -9,7 +9,6 @@ rootProject.name = "gradle-guides"
 includeBuild("subprojects/gradle-guides-plugin")
 
 val guides = listOf(
-        "building-java-web-applications",
         "building-spring-boot-2-projects-with-gradle",
         "consuming-jvm-libraries",
         "creating-new-gradle-builds",
@@ -21,7 +20,6 @@ val guides = listOf(
         "migrating-build-logic-from-groovy-to-kotlin",
         "performance",
         "publishing-plugins-to-gradle-plugin-portal",
-        "running-webpack-with-gradle",
         "testing-gradle-plugins",
         "using-build-cache",
         "using-the-worker-api",
