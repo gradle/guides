@@ -12,7 +12,6 @@ val guides = listOf(
         "building-java-web-applications",
         "building-spring-boot-2-projects-with-gradle",
         "consuming-jvm-libraries",
-        "creating-build-scans",
         "creating-new-gradle-builds",
         "designing-gradle-plugins",
         "executing-gradle-builds-on-jenkins",
