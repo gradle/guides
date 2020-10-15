@@ -1,3 +1,0 @@
-Archive tasks
--------------
-zip - Archives sources in a zip file
