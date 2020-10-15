@@ -20,7 +20,7 @@ val redirects = mapOf(
     "building-swift-applications" to "https://docs.gradle.org/current/samples/sample_building_swift_applications.html",
     "building-swift-libraries" to "https://docs.gradle.org/current/samples/sample_building_swift_libraries.html",
     "creating-build-scans" to "https://scans.gradle.com",
-    "creating-multi-project-builds" to "https://docs.gradle.org/current/samples/sample_building_java_applications_multi_project.html" +
+    "creating-multi-project-builds" to "https://docs.gradle.org/current/samples/sample_building_java_applications_multi_project.html",
     "creating-new-gradle-builds" to "https://docs.gradle.org/current/samples",
     "writing-gradle-tasks" to "https://docs.gradle.org/current/userguide/custom_tasks.html"
 )
