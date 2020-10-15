@@ -1,2 +1,0 @@
-checkstyleMain - Run Checkstyle analysis for main classes
-checkstyleTest - Run Checkstyle analysis for test classes

@@ -20,7 +20,6 @@ val guides = listOf(
         "executing-gradle-builds-on-travisci",
         "implementing-gradle-plugins",
         "migrating-build-logic-from-groovy-to-kotlin",
-        "migrating-from-maven",
         "performance",
         "publishing-plugins-to-gradle-plugin-portal",
         "running-webpack-with-gradle",
