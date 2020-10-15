@@ -1,7 +1,0 @@
-= Building Spring Boot 2 Applications with Gradle
-
-The Spring Boot team provides a great https://spring.io/guides/gs/spring-boot/[getting started guide], which includes instructions for using Gradle as the build tool.
-In addition, you can find the most up-to-date information for using the https://docs.spring.io/spring-boot/docs/2.2.2.RELEASE/reference/htmlsingle/#build-tool-plugins-gradle-plugin[Spring Boot Gradle plugin] in their documentation.
-
-The guide that used to exist here was not up-to-date with the latest Spring Boot version and Gradle plugin features.
-This is why it now references the guide provided by the Spring Boot team.
