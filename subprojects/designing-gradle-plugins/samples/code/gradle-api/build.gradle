@@ -1,7 +1,0 @@
-apply plugin: 'java'
-
-// tag::dependencies[]
-dependencies {
-    implementation gradleApi()
-}
-// end::dependencies[]

@@ -9,12 +9,6 @@ rootProject.name = "gradle-guides"
 includeBuild("subprojects/gradle-guides-plugin")
 
 val guides = listOf(
-        // Move to section about plugin development in user manual (and update the content later)
-        "designing-gradle-plugins",
-        "implementing-gradle-plugins",
-        "testing-gradle-plugins",
-        "publishing-plugins-to-gradle-plugin-portal",
-
         // Move to corresponding places in user manual
         "using-build-cache",
         "using-the-worker-api",

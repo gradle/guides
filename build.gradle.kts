@@ -22,7 +22,12 @@ val redirects = mapOf(
     "creating-build-scans" to "https://scans.gradle.com",
     "creating-multi-project-builds" to "https://docs.gradle.org/current/samples/sample_building_java_applications_multi_project.html",
     "creating-new-gradle-builds" to "https://docs.gradle.org/current/samples",
-    "writing-gradle-tasks" to "https://docs.gradle.org/current/userguide/custom_tasks.html"
+    "writing-gradle-tasks" to "https://docs.gradle.org/current/userguide/custom_tasks.html",
+
+    "designing-gradle-plugins" to "https://docs.gradle.org/nightly/userguide/designing_gradle_plugins.html",
+    "implementing-gradle-plugins" to "https://docs.gradle.org/nightly/userguide/implementing_gradle_plugins.html",
+    "testing-gradle-plugins" to "https://docs.gradle.org/nightly/userguide/testing_gradle_plugins.html",
+    "publishing-plugins-to-gradle-plugin-portal" to "https://docs.gradle.org/nightly/userguide/publishing_gradle_plugins.html",
 )
 
 val guideProjects = extra["guideProjects"] as List<String>
