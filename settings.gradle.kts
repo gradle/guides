@@ -11,7 +11,6 @@ includeBuild("subprojects/gradle-guides-plugin")
 val guides = listOf(
         // Move to corresponding places in user manual
         "using-build-cache",
-        "using-the-worker-api",
         "performance",
 
         // Turn into a sample (or delete)
