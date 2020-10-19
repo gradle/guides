@@ -24,6 +24,7 @@ val redirects = mapOf(
     "creating-new-gradle-builds" to "https://docs.gradle.org/current/samples",
     "writing-gradle-tasks" to "https://docs.gradle.org/current/userguide/custom_tasks.html",
 
+    "performance" to "https://docs.gradle.org/nightly/userguide/performance.html",
     "designing-gradle-plugins" to "https://docs.gradle.org/nightly/userguide/designing_gradle_plugins.html",
     "implementing-gradle-plugins" to "https://docs.gradle.org/nightly/userguide/implementing_gradle_plugins.html",
     "testing-gradle-plugins" to "https://docs.gradle.org/nightly/userguide/testing_gradle_plugins.html",
