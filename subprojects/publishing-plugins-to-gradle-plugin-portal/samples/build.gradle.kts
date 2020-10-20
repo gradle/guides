@@ -1,7 +1,7 @@
 // tag::plugins_block[]
 plugins {
     `java-gradle-plugin` // <1>
-    id("com.gradle.plugin-publish") version "0.10.1"  // <2>
+    id("com.gradle.plugin-publish") version "0.12.0"  // <2>
 }
 // end::plugins_block[]
 

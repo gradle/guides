@@ -20,7 +20,7 @@ configurations {
 }
 
 dependencies {
-    pluginClasspath 'com.gradle.publish:plugin-publish-plugin:0.10.1'
+    pluginClasspath 'com.gradle.publish:plugin-publish-plugin:0.12.0'
 }
 
 docsTest {
