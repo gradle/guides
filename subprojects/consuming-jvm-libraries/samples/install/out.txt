@@ -1,9 +1,0 @@
-> Task :compileJava UP-TO-DATE
-> Task :processResources NO-SOURCE
-> Task :classes UP-TO-DATE
-> Task :jar UP-TO-DATE
-> Task :startScripts UP-TO-DATE
-> Task :installDist
-
-BUILD SUCCESSFUL in 120ms
-4 actionable tasks: 1 executed, 3 up-to-date

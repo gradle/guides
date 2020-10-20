@@ -22,9 +22,11 @@ val redirects = mapOf(
     "creating-build-scans" to "https://scans.gradle.com",
     "creating-multi-project-builds" to "https://docs.gradle.org/current/samples/sample_building_java_applications_multi_project.html",
     "creating-new-gradle-builds" to "https://docs.gradle.org/current/samples",
+    "consuming-jvm-libraries" to "https://docs.gradle.org/current/samples/sample_building_java_applications.html",
     "writing-gradle-tasks" to "https://docs.gradle.org/current/userguide/custom_tasks.html",
 
     "performance" to "https://docs.gradle.org/nightly/userguide/performance.html",
+    "using-build-cache" to "https://docs.gradle.org/nightly/userguide/build_cache_use_cases.html",
     "designing-gradle-plugins" to "https://docs.gradle.org/nightly/userguide/designing_gradle_plugins.html",
     "implementing-gradle-plugins" to "https://docs.gradle.org/nightly/userguide/implementing_gradle_plugins.html",
     "testing-gradle-plugins" to "https://docs.gradle.org/nightly/userguide/testing_gradle_plugins.html",
@@ -32,15 +34,8 @@ val redirects = mapOf(
     "using-the-worker-api" to "https://docs.gradle.org/nightly/userguide/worker_api.html"
 )
 
-val guideProjects = extra["guideProjects"] as List<String>
-
 tasks.register("clean") {
     dependsOn(gradle.includedBuilds.map { it.task(":clean") })
-}
-
-var buildTask = tasks.register("build") {
-    dependsOn(guideProjects.map { ":${it}:build" })
-    dependsOn(gradle.includedBuild("gradle-guides-plugin").task(":build"))
 }
 
 tasks.register("publishDocumentationPlugins") {
@@ -79,11 +74,6 @@ val installGuides = tasks.register("installGuides", Sync::class.java) {
                 """.trimIndent()
             )
         }
-    }
-}
-dependencies {
-    guideProjects.forEach {
-        add(guides.name, project(":${it}"))
     }
 }
 

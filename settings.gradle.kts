@@ -8,29 +8,16 @@ rootProject.name = "gradle-guides"
 
 includeBuild("subprojects/gradle-guides-plugin")
 
-val guides = listOf(
-        // Move to corresponding places in user manual
-        "using-build-cache",
-
-        // Turn into a sample (or delete)
-        "consuming-jvm-libraries",
-
-        // Move to user manual (or delete if outdated)
-        "migrating-build-logic-from-groovy-to-kotlin"
-)
-
+val guides = listOf<String>()
 val misc = listOf("guides-test-fixtures")
 
 misc.forEach { includeBuild("subprojects/${it}") }
 guides.forEach {
     include(it)
     project(":${it}").projectDir = file("subprojects/${it}")
-
-    if (it == "using-build-cache") {
-        include("${it}:screenshots")
-        project(":${it}:screenshots").projectDir = file("subprojects/${it}/screenshots")
-    }
 }
+include("using-build-cache:screenshots")
+project(":using-build-cache:screenshots").projectDir = file("subprojects/using-build-cache/screenshots")
 
 gradle.rootProject {
     val guideProjects by extra {
