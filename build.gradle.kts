@@ -25,6 +25,9 @@ val redirects = mapOf(
     "consuming-jvm-libraries" to "https://docs.gradle.org/current/samples/sample_building_java_applications.html",
     "writing-gradle-tasks" to "https://docs.gradle.org/current/userguide/custom_tasks.html",
 
+    "executing-gradle-builds-on-jenkins" to "https://docs.gradle.org/nightly/userguide/jenkins.html",
+    "executing-gradle-builds-on-teamcity" to "https://docs.gradle.org/nightly/userguide/teamcity.html",
+    "executing-gradle-builds-on-travisci" to "https://docs.gradle.org/nightly/userguide/travis-ci.html",
     "performance" to "https://docs.gradle.org/nightly/userguide/performance.html",
     "using-build-cache" to "https://docs.gradle.org/nightly/userguide/build_cache_use_cases.html",
     "designing-gradle-plugins" to "https://docs.gradle.org/nightly/userguide/designing_gradle_plugins.html",
