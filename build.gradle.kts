@@ -34,6 +34,7 @@ val redirects = mapOf(
     "implementing-gradle-plugins" to "https://docs.gradle.org/nightly/userguide/implementing_gradle_plugins.html",
     "testing-gradle-plugins" to "https://docs.gradle.org/nightly/userguide/testing_gradle_plugins.html",
     "publishing-plugins-to-gradle-plugin-portal" to "https://docs.gradle.org/nightly/userguide/publishing_gradle_plugins.html",
+    "migrating-build-logic-from-groovy-to-kotlin" to "https://docs.gradle.org/nightly/userguide/migrating_from_groovy_to_kotlin_dsl.html",
     "using-the-worker-api" to "https://docs.gradle.org/nightly/userguide/worker_api.html"
 )
 
