@@ -25,17 +25,17 @@ val redirects = mapOf(
     "consuming-jvm-libraries" to "https://docs.gradle.org/current/samples/sample_building_java_applications.html",
     "writing-gradle-tasks" to "https://docs.gradle.org/current/userguide/custom_tasks.html",
 
-    "executing-gradle-builds-on-jenkins" to "https://docs.gradle.org/nightly/userguide/jenkins.html",
-    "executing-gradle-builds-on-teamcity" to "https://docs.gradle.org/nightly/userguide/teamcity.html",
-    "executing-gradle-builds-on-travisci" to "https://docs.gradle.org/nightly/userguide/travis-ci.html",
-    "performance" to "https://docs.gradle.org/nightly/userguide/performance.html",
-    "using-build-cache" to "https://docs.gradle.org/nightly/userguide/build_cache_use_cases.html",
-    "designing-gradle-plugins" to "https://docs.gradle.org/nightly/userguide/designing_gradle_plugins.html",
-    "implementing-gradle-plugins" to "https://docs.gradle.org/nightly/userguide/implementing_gradle_plugins.html",
-    "testing-gradle-plugins" to "https://docs.gradle.org/nightly/userguide/testing_gradle_plugins.html",
-    "publishing-plugins-to-gradle-plugin-portal" to "https://docs.gradle.org/nightly/userguide/publishing_gradle_plugins.html",
-    "migrating-build-logic-from-groovy-to-kotlin" to "https://docs.gradle.org/nightly/userguide/migrating_from_groovy_to_kotlin_dsl.html",
-    "using-the-worker-api" to "https://docs.gradle.org/nightly/userguide/worker_api.html"
+    "executing-gradle-builds-on-jenkins" to "https://docs.gradle.org/current/userguide/jenkins.html",
+    "executing-gradle-builds-on-teamcity" to "https://docs.gradle.org/current/userguide/teamcity.html",
+    "executing-gradle-builds-on-travisci" to "https://docs.gradle.org/current/userguide/travis-ci.html",
+    "performance" to "https://docs.gradle.org/current/userguide/performance.html",
+    "using-build-cache" to "https://docs.gradle.org/current/userguide/build_cache_use_cases.html",
+    "designing-gradle-plugins" to "https://docs.gradle.org/current/userguide/designing_gradle_plugins.html",
+    "implementing-gradle-plugins" to "https://docs.gradle.org/current/userguide/implementing_gradle_plugins.html",
+    "testing-gradle-plugins" to "https://docs.gradle.org/current/userguide/testing_gradle_plugins.html",
+    "publishing-plugins-to-gradle-plugin-portal" to "https://docs.gradle.org/current/userguide/publishing_gradle_plugins.html",
+    "migrating-build-logic-from-groovy-to-kotlin" to "https://docs.gradle.org/current/userguide/migrating_from_groovy_to_kotlin_dsl.html",
+    "using-the-worker-api" to "https://docs.gradle.org/current/userguide/worker_api.html"
 )
 
 tasks.register("clean") {
