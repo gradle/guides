@@ -1,9 +1,0 @@
-plugins {
-    id 'java'
-}
-
-// tag::namespace[]
-jar {
-    archiveName = "foo.jar"
-}
-// end::namespace[]
