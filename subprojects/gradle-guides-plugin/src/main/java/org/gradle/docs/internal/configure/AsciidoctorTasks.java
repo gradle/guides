@@ -1,7 +1,7 @@
 package org.gradle.docs.internal.configure;
 
 import groovy.lang.Closure;
-import org.asciidoctor.gradle.AsciidoctorTask;
+import org.asciidoctor.gradle.jvm.AsciidoctorTask;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 import org.gradle.api.file.CopySpec;
