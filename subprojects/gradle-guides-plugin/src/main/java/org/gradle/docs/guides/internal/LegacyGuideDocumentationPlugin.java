@@ -39,7 +39,7 @@ import static org.gradle.docs.internal.StringUtils.toLowerCamelCase;
 /**
  * The guides base plugin provides conventions for all Gradle guides.
  * <p>
- * Adds the custom attributes to {@link org.asciidoctor.gradle.AsciidoctorTask} for reference in Asciidoc files:
+ * Adds the custom attributes to {@link org.asciidoctor.gradle.jvm.AsciidoctorTask} for reference in Asciidoc files:
  * <ul>
  *     <li>{@literal samplescodedir}: The directory containing samples code defined as {@literal "$projectDir/samples/code"}</li>
  *     <li>{@literal samplesoutputdir}: The directory containing expected samples output defined as {@literal "$projectDir/samples/output"}</li>
