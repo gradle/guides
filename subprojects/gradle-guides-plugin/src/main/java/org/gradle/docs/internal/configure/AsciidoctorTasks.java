@@ -5,15 +5,12 @@ import org.asciidoctor.gradle.AsciidoctorTask;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 import org.gradle.api.file.CopySpec;
-import org.gradle.api.logging.StandardOutputListener;
 import org.gradle.api.tasks.util.PatternSet;
 import org.gradle.docs.internal.RenderableContentBinary;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -26,7 +23,11 @@ public class AsciidoctorTasks {
         task.getInputs().files(binaries.stream().map(RenderableContentBinary::getResourceFiles).collect(Collectors.toList())).withPropertyName("resourceFiles").optional(true);
         task.resources(new Closure(IGNORED_CLOSURE_OWNER) {
             public Object doCall(Object ignore) {
-                binaries.stream().map(RenderableContentBinary::getResourceSpec).forEach(spec -> ((CopySpec)this.getDelegate()).with(spec.get()));
+                CopySpec copySpec = (CopySpec) this.getDelegate();
+                binaries.stream()
+                    .map(RenderableContentBinary::getResourceSpec)
+                    .distinct() // samples content all use the same resources by default, so if we don't filter there will be duplicates
+                    .forEach(spec -> copySpec.with(spec.get()));
                 return null;
             }
         });
