@@ -89,19 +89,19 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         // Samples binaries
         // TODO: This could be lazy if we had a way to make the TaskContainer require evaluation
         FileCollection generatedSanityCheckTest = createGeneratedTests(tasks, objects, layout);
-        extension.getBinaries().withType(SampleExemplarBinary.class).all(binary -> {
+        extension.getBinaries().withType(SampleExemplarBinary.class).configureEach(binary -> {
             if (!binary.getExplicitSanityCheck().get()) {
                 binary.getTestsContent().from(generatedSanityCheckTest);
             }
         });
 
-        extension.getBinaries().withType(SampleContentBinary.class).all(binary -> {
+        extension.getBinaries().withType(SampleContentBinary.class).configureEach(binary -> {
             createTasksForContentBinary(tasks, binary);
             createCheckTasksForContentBinary(tasks, binary, check);
             createTasksForSampleContentBinary(tasks, binary);
         });
-        extension.getBinaries().withType(SampleInstallBinary.class).all(binary -> createTasksForSampleInstallBinary(tasks, binary));
-        extension.getBinaries().withType(SampleArchiveBinary.class).all(binary -> createTasksForSampleArchiveBinary(tasks, layout, binary));
+        extension.getBinaries().withType(SampleInstallBinary.class).configureEach(binary -> createTasksForSampleInstallBinary(tasks, binary));
+        extension.getBinaries().withType(SampleArchiveBinary.class).configureEach(binary -> createTasksForSampleArchiveBinary(tasks, layout, binary));
 
         // Documentation for sample index
         registerGenerateSampleIndex(tasks, providers, objects, extension);
@@ -111,10 +111,10 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
 
         // Templates
         extension.getTemplates().configureEach(template -> applyConventionsForTemplates(extension, template));
-        extension.getTemplates().all(template -> createTasksForTemplates(layout, tasks, template));
+        extension.getTemplates().configureEach(template -> createTasksForTemplates(layout, tasks, template));
 
         // Testing (and binaries)
-        extension.getBinaries().withType(SampleExemplarBinary.class).all(binary -> createTasksForSampleExemplarBinary(tasks, binary));
+        extension.getBinaries().withType(SampleExemplarBinary.class).configureEach(binary -> createTasksForSampleExemplarBinary(tasks, binary));
         configureExemplarTestsForSamples(project, layout, tasks, extension, check);
         createCheckTaskForAsciidoctorContentBinary(project, "checkAsciidoctorSampleContents", extension.getBinaries().withType(TestableAsciidoctorSampleContentBinary.class), check, asciidoctorConfiguration);
 
@@ -257,7 +257,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             task.from(extension.getDistribution().getZippedSamples(), sub -> sub.into("zips"));
             task.from(extension.getDistribution().getInstalledSamples(), sub -> sub.into("samples"));
 
-            extension.getBinaries().withType(SampleContentBinary.class).all(binary -> {
+            extension.getBinaries().withType(SampleContentBinary.class).configureEach(binary -> {
                 // TODO: Minor difference with guide (copy the file) maybe we should have a file collection from the root
                 task.from(binary.getIndexPageFile());
             });

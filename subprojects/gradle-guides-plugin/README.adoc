@@ -19,6 +19,11 @@ Each of the plugins generates a guide from Asciidoc source.
 
 == Changelog
 
+== 0.16.9
+
+- Update to support Gradle 7
+- Fix resources being included several times
+
 == 0.16.6
 
 - Use Worker API for some sample related tasks so more things can run in parallel

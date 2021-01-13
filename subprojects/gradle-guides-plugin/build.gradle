@@ -8,7 +8,13 @@ plugins {
 apply from: "$rootDir/gradle/functional-test.gradle"
 
 group = 'org.gradle.guides'
-version = '0.16.8'
+version = '0.16.9-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
 
 repositories {
     jcenter()
