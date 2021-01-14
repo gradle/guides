@@ -19,6 +19,10 @@ Each of the plugins generates a guide from Asciidoc source.
 
 == Changelog
 
+== 0.17.0
+
+- Allow duplicate entries for zipped samples
+
 == 0.16.9
 
 - Update to support Gradle 7

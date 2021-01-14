@@ -5,6 +5,7 @@ import org.asciidoctor.gradle.AsciidoctorTask;
 import org.gradle.api.Action;
 import org.gradle.api.Task;
 import org.gradle.api.file.CopySpec;
+import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.api.tasks.util.PatternSet;
 import org.gradle.docs.internal.RenderableContentBinary;
 
@@ -24,9 +25,9 @@ public class AsciidoctorTasks {
         task.resources(new Closure(IGNORED_CLOSURE_OWNER) {
             public Object doCall(Object ignore) {
                 CopySpec copySpec = (CopySpec) this.getDelegate();
+                copySpec.setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE);
                 binaries.stream()
                     .map(RenderableContentBinary::getResourceSpec)
-                    .distinct() // samples content all use the same resources by default, so if we don't filter there will be duplicates
                     .forEach(spec -> copySpec.with(spec.get()));
                 return null;
             }
