@@ -1,5 +1,6 @@
 plugins {
     id("com.gradle.enterprise").version("3.4.1")
+    id("com.gradle.enterprise.gradle-enterprise-conventions-plugin").version("0.7.2")
 }
 
 apply(from = "gradle/build-cache-configuration.settings.gradle.kts")

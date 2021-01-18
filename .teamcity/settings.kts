@@ -61,10 +61,16 @@ open class AbstractBuildType(init: BuildType.() -> Unit) : BuildType({
 })
 
 open class AbstractBuildGuideType(init: BuildType.() -> Unit) : AbstractBuildType({
+    params {
+        param("env.GRADLE_CACHE_REMOTE_URL", "%gradle.cache.remote.url%")
+        param("env.GRADLE_CACHE_REMOTE_USERNAME", "%gradle.cache.remote.username%")
+        param("env.GRADLE_CACHE_REMOTE_PASSWORD", "%gradle.cache.remote.password%")
+    }
+
     steps {
         gradle {
             useGradleWrapper = true
-            tasks = "build --continue --build-cache -Dgradle.cache.remote.url=%gradle.cache.remote.url% -Dgradle.cache.remote.username=%gradle.cache.remote.username% -Dgradle.cache.remote.password=%gradle.cache.remote.password% -Dgradle.cache.remote.push=true"
+            tasks = "build --continue --build-cache"
             buildFile = "" // Let Gradle detect the build script
         }
     }
@@ -129,7 +135,7 @@ object PublishPlugins : AbstractBuildType({
     steps {
         gradle {
             useGradleWrapper = true
-            gradleParams = "-Dgradle.publish.skip.namespace.check=true -Pgradle.publish.key=%GRADLE_PUBLISH_KEY% -Pgradle.publish.secret=%GRADLE_PUBLISH_SECRET%"
+            gradleParams = "-Dgradle.publish.skip.namespace.check=true"
             tasks = "publishDocumentationPlugins"
             buildFile = "" // Let Gradle detect the build script
         }
@@ -139,6 +145,8 @@ object PublishPlugins : AbstractBuildType({
     }
     params {
         param("env.JAVA_HOME", "%linux.java8.oracle.64bit%")
+        param("env.ORG_GRADLE_PROJECT_gradlePublishKey", "%GRADLE_PUBLISH_KEY%")
+        param("env.ORG_GRADLE_PROJECT_gradlePublishSecret", "%GRADLE_PUBLISH_SECRET%")
         password("GRADLE_PUBLISH_KEY", "credentialsJSON:8b35ff9d-0de0-4266-8850-9162aa31b4bf", display = ParameterDisplay.HIDDEN)
         password("GRADLE_PUBLISH_SECRET", "credentialsJSON:6934a5f0-e002-4067-884e-5090de3c9ec3", display = ParameterDisplay.HIDDEN)
     }
