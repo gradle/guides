@@ -1,10 +1,10 @@
 package org.gradle.docs
 
-trait DocumentationTrait {
-    static String applyDocumentationPlugin() {
+trait LegacyPluginTrait {
+    static String applyLegacyPlugin() {
         return  """
             plugins {
-                id 'org.gradle.documentation'
+                id 'org.gradle.guide'
             }
 
             repositories {

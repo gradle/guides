@@ -4,7 +4,7 @@ import org.gradle.docs.guides.GuidesTrait
 import org.gradle.docs.samples.SamplesTrait
 import spock.lang.Ignore
 
-class MixedDocumentationFunctionalTest extends AbstractFunctionalTest implements SamplesTrait, GuidesTrait {
+class MixedDocumentationFunctionalTest extends AbstractFunctionalTest implements SamplesTrait, GuidesTrait, DocumentationTrait {
     def "can assemble multiple documentation element type"() {
         buildFile << applyDocumentationPlugin() << createGuide('demoGuide') << createSampleWithBothDsl('demoSample')
         writeReadmeTo(file('src/docs/samples/demo-sample'))
@@ -32,13 +32,5 @@ class MixedDocumentationFunctionalTest extends AbstractFunctionalTest implements
 
         then:
         result.assertTasksExecutedAndNotSkipped(':assemble')
-    }
-
-    protected static String applyDocumentationPlugin() {
-        return """
-            plugins {
-                id 'org.gradle.documentation'
-            }
-        """
     }
 }

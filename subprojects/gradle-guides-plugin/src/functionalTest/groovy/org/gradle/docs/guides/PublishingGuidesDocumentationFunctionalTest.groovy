@@ -1,6 +1,8 @@
 package org.gradle.docs.guides
 
-class PublishingGuidesDocumentationFunctionalTest extends AbstractGuideFunctionalSpec {
+import org.gradle.docs.LegacyPluginTrait
+
+class PublishingGuidesDocumentationFunctionalTest extends AbstractGuideFunctionalSpec implements LegacyPluginTrait {
     def "can resolve rendered guides from legacy plugins"() {
         settingsFile << """
             include 'legacy'
@@ -10,11 +12,7 @@ class PublishingGuidesDocumentationFunctionalTest extends AbstractGuideFunctiona
                 guides project('legacy')
             }
         """
-        file('legacy/build.gradle') << """
-            plugins {
-                id 'org.gradle.guide'
-            }
-        """
+        file('legacy/build.gradle') << applyLegacyPlugin()
         writeGuideUnderTest("legacy")
 
         when:
@@ -83,11 +81,7 @@ class PublishingGuidesDocumentationFunctionalTest extends AbstractGuideFunctiona
                 guides project('foo')
             }
         """
-        file('legacy/build.gradle') << """
-            plugins {
-                id 'org.gradle.guide'
-            }
-        """
+        file('legacy/build.gradle') << applyLegacyPlugin()
         writeGuideUnderTest('legacy')
         file('foo/build.gradle') << applyDocumentationPlugin() << createGuide('foo')
         writeGuideUnderTest('foo/src/docs/guides/foo')
