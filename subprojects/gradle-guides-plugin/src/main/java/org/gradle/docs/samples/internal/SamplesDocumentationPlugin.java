@@ -1,6 +1,7 @@
 package org.gradle.docs.samples.internal;
 
 import groovy.lang.Closure;
+import org.asciidoctor.gradle.jvm.AsciidoctorJExtension;
 import org.asciidoctor.gradle.jvm.AsciidoctorTask;
 import org.gradle.api.*;
 import org.gradle.api.artifacts.Configuration;
@@ -68,10 +69,20 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         project.getPluginManager().apply("org.asciidoctor.jvm.convert"); // For the `asciidoctor` configuration
 
         Configuration asciidoctorConfiguration = project.getConfigurations().maybeCreate("asciidoctorForDocumentation");
-        project.getRepositories().maven(it -> it.setUrl("https://repo.gradle.org/gradle/libs-releases"));
         project.getDependencies().add(asciidoctorConfiguration.getName(), "org.gradle:docs-asciidoctor-extensions:0.8.0");
+        project.getExtensions().getByType(AsciidoctorJExtension.class).docExtensions(
+            project.getDependencies().create("org.gradle:docs-asciidoctor-extensions:0.8.0")
+        );
+        project.getExtensions().getByType(AsciidoctorJExtension.class).onConfiguration(config -> {
+            config.extendsFrom(asciidoctorConfiguration);
+            System.out.println("=============================================");
+            System.out.println(config.getName());
+            System.out.println("=============================================");
+        });
+
         tasks.withType(AsciidoctorTask.class).configureEach((AsciidoctorTask task) -> {
-            task.configurations(asciidoctorConfiguration);
+            task.baseDirFollowsSourceDir();
+            // task.configurations(asciidoctorConfiguration.getName());
         });
 
         TaskProvider<Task> assemble = tasks.named(LifecycleBasePlugin.ASSEMBLE_TASK_NAME);
