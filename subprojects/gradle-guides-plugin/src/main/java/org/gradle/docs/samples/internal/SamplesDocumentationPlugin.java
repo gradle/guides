@@ -69,21 +69,13 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         project.getPluginManager().apply("org.asciidoctor.jvm.convert"); // For the `asciidoctor` configuration
 
         Configuration asciidoctorConfiguration = project.getConfigurations().maybeCreate("asciidoctorForDocumentation");
-        project.getDependencies().add(asciidoctorConfiguration.getName(), "org.gradle:docs-asciidoctor-extensions:0.8.0");
-        project.getExtensions().getByType(AsciidoctorJExtension.class).docExtensions(
-            project.getDependencies().create("org.gradle:docs-asciidoctor-extensions:0.8.0")
+        project.getDependencies().add(asciidoctorConfiguration.getName(), "org.gradle:docs-asciidoctor-extensions:0.9.0");
+        project.getExtensions().getByType(AsciidoctorJExtension.class).onConfiguration(config ->
+            config.extendsFrom(asciidoctorConfiguration)
         );
-        project.getExtensions().getByType(AsciidoctorJExtension.class).onConfiguration(config -> {
-            config.extendsFrom(asciidoctorConfiguration);
-            System.out.println("=============================================");
-            System.out.println(config.getName());
-            System.out.println("=============================================");
-        });
-
-        tasks.withType(AsciidoctorTask.class).configureEach((AsciidoctorTask task) -> {
-            task.baseDirFollowsSourceDir();
-            // task.configurations(asciidoctorConfiguration.getName());
-        });
+        tasks.withType(AsciidoctorTask.class).configureEach((AsciidoctorTask task) ->
+            task.baseDirFollowsSourceFile()
+        );
 
         TaskProvider<Task> assemble = tasks.named(LifecycleBasePlugin.ASSEMBLE_TASK_NAME);
         TaskProvider<Task> check = tasks.register("checkSamples");

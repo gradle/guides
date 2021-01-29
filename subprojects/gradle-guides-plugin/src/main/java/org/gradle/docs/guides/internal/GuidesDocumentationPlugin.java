@@ -7,7 +7,6 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
-import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.attributes.Attribute;
 import org.gradle.api.attributes.Usage;
 import org.gradle.api.file.ProjectLayout;
@@ -21,8 +20,6 @@ import org.gradle.api.tasks.TaskProvider;
 import org.gradle.docs.guides.internal.tasks.GenerateGuidePageAsciidoc;
 import org.gradle.docs.internal.DocumentationBasePlugin;
 import org.gradle.docs.internal.DocumentationExtensionInternal;
-import org.gradle.docs.internal.exemplar.AsciidoctorContentTest;
-import org.gradle.docs.internal.exemplar.AsciidoctorContentTestConsoleType;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
 
 import java.io.File;
@@ -49,15 +46,13 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         project.getPluginManager().apply("org.asciidoctor.jvm.convert"); // For the `asciidoctor` configuration
 
         Configuration asciidoctorConfiguration = project.getConfigurations().maybeCreate("asciidoctorForDocumentation");
-        project.getDependencies().add(asciidoctorConfiguration.getName(), "org.gradle:docs-asciidoctor-extensions:0.8.0");
-        project.getExtensions().getByType(AsciidoctorJExtension.class).onConfiguration(config -> {
-            config.extendsFrom(asciidoctorConfiguration);
-        });
-
-        tasks.withType(AsciidoctorTask.class).configureEach((AsciidoctorTask task) -> {
-            task.baseDirFollowsSourceDir();
-            // task.configurations(asciidoctorConfiguration.getName());
-        });
+        project.getDependencies().add(asciidoctorConfiguration.getName(), "org.gradle:docs-asciidoctor-extensions:0.9.0");
+        project.getExtensions().getByType(AsciidoctorJExtension.class).onConfiguration(config ->
+            config.extendsFrom(asciidoctorConfiguration)
+        );
+        tasks.withType(AsciidoctorTask.class).configureEach((AsciidoctorTask task) ->
+            task.baseDirFollowsSourceFile()
+        );
 
         TaskProvider<Task> assemble = tasks.named(LifecycleBasePlugin.ASSEMBLE_TASK_NAME);
         TaskProvider<Task> check = tasks.register("checkGuides");
