@@ -1,6 +1,7 @@
 package org.gradle.docs.guides
 
 import org.gradle.docs.TestFile
+import spock.lang.Ignore
 
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
@@ -342,6 +343,7 @@ class BasicGuidesDocumentationFunctionalTest extends AbstractGuideFunctionalSpec
         indexFile.text.contains('Task :helloWorld')
     }
 
+    @Ignore("Unsupported loading resources from the plugins classpath with Asciidoctor Gradle Plugin 3.x")
     def "header and footer is injected during asciidoctor postprocessing"() {
         given:
         makeSingleProject()
