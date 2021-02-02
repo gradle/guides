@@ -43,16 +43,14 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         Project projectOnlyForCopySpecMethod = project;
 
         project.getPluginManager().apply(DocumentationBasePlugin.class);
-        project.getPluginManager().apply("org.asciidoctor.jvm.convert"); // For the `asciidoctor` configuration
+        project.getPluginManager().apply("org.asciidoctor.jvm.convert");
 
-        Configuration asciidoctorConfiguration = project.getConfigurations().maybeCreate("asciidoctorForDocumentation");
-        project.getDependencies().add(asciidoctorConfiguration.getName(), "org.gradle:docs-asciidoctor-extensions:0.9.0");
-        project.getExtensions().getByType(AsciidoctorJExtension.class).onConfiguration(config ->
-            config.extendsFrom(asciidoctorConfiguration)
-        );
-        tasks.withType(AsciidoctorTask.class).configureEach((AsciidoctorTask task) ->
-            task.baseDirFollowsSourceFile()
-        );
+        tasks.withType(AsciidoctorTask.class).configureEach((AsciidoctorTask task) -> {
+            task.baseDirFollowsSourceFile();
+            task.getExtensions().getByType(AsciidoctorJExtension.class).docExtensions(
+                project.getDependencies().create("org.gradle:docs-asciidoctor-extensions-base:0.10.0")
+            );
+        });
 
         TaskProvider<Task> assemble = tasks.named(LifecycleBasePlugin.ASSEMBLE_TASK_NAME);
         TaskProvider<Task> check = tasks.register("checkGuides");
@@ -76,7 +74,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         createPublishGuidesElements(project.getConfigurations(), objects, renderTask, extension);
 
         // Testing
-        createCheckTaskForAsciidoctorContentBinary(project, "checkAsciidoctorGuideContents", extension.getBinaries().withType(TestableAsciidoctorGuideContentBinary.class), check, asciidoctorConfiguration);
+        createCheckTaskForAsciidoctorContentBinary(project, "checkAsciidoctorGuideContents", extension.getBinaries().withType(TestableAsciidoctorGuideContentBinary.class), check);
 
         // Trigger everything by realizing guide container
         project.afterEvaluate(p -> realizeGuides(extension, objects, projectOnlyForCopySpecMethod));

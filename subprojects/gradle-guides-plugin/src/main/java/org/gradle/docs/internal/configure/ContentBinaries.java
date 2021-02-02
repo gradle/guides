@@ -4,8 +4,6 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
-import org.gradle.api.file.ProjectLayout;
-import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.docs.internal.TestableAsciidoctorContentBinary;
@@ -21,10 +19,7 @@ import org.gradle.language.base.plugins.LifecycleBasePlugin;
 
 import java.io.File;
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.Collection;
-import java.util.concurrent.TimeUnit;
 
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
 import static org.gradle.docs.internal.StringUtils.capitalize;
@@ -63,9 +58,8 @@ public class ContentBinaries {
         check.configure(it -> it.dependsOn(checkLinksTask));
     }
 
-    public static void createCheckTaskForAsciidoctorContentBinary(Project project, String taskName, Collection<? extends TestableAsciidoctorContentBinary> binaries, TaskProvider<Task> check, Configuration asciidoctorClasspath) {
+    public static void createCheckTaskForAsciidoctorContentBinary(Project project, String taskName, Collection<? extends TestableAsciidoctorContentBinary> binaries, TaskProvider<Task> check) {
         Configuration configuration = project.getConfigurations().create(taskName);
-        configuration.extendsFrom(asciidoctorClasspath);
         DependencyHandler dependencies = project.getDependencies();
         dependencies.add(configuration.getName(), "org.gradle:gradle-tooling-api:6.0.1");
         dependencies.add(configuration.getName(), "org.apache.commons:commons-lang3:3.9");

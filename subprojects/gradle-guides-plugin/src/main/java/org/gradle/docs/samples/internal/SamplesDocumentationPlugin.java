@@ -66,16 +66,14 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         ObjectFactory objects = project.getObjects();
 
         project.getPluginManager().apply(DocumentationBasePlugin.class);
-        project.getPluginManager().apply("org.asciidoctor.jvm.convert"); // For the `asciidoctor` configuration
+        project.getPluginManager().apply("org.asciidoctor.jvm.convert");
 
-        Configuration asciidoctorConfiguration = project.getConfigurations().maybeCreate("asciidoctorForDocumentation");
-        project.getDependencies().add(asciidoctorConfiguration.getName(), "org.gradle:docs-asciidoctor-extensions:0.9.0");
-        project.getExtensions().getByType(AsciidoctorJExtension.class).onConfiguration(config ->
-            config.extendsFrom(asciidoctorConfiguration)
-        );
-        tasks.withType(AsciidoctorTask.class).configureEach((AsciidoctorTask task) ->
-            task.baseDirFollowsSourceFile()
-        );
+        tasks.withType(AsciidoctorTask.class).configureEach((AsciidoctorTask task) -> {
+            task.baseDirFollowsSourceFile();
+            task.getExtensions().getByType(AsciidoctorJExtension.class).docExtensions(
+                project.getDependencies().create("org.gradle:docs-asciidoctor-extensions-base:0.10.0")
+            );
+        });
 
         TaskProvider<Task> assemble = tasks.named(LifecycleBasePlugin.ASSEMBLE_TASK_NAME);
         TaskProvider<Task> check = tasks.register("checkSamples");
@@ -118,7 +116,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         // Testing (and binaries)
         extension.getBinaries().withType(SampleExemplarBinary.class).configureEach(binary -> createTasksForSampleExemplarBinary(tasks, binary));
         configureExemplarTestsForSamples(project, layout, tasks, extension, check);
-        createCheckTaskForAsciidoctorContentBinary(project, "checkAsciidoctorSampleContents", extension.getBinaries().withType(TestableAsciidoctorSampleContentBinary.class), check, asciidoctorConfiguration);
+        createCheckTaskForAsciidoctorContentBinary(project, "checkAsciidoctorSampleContents", extension.getBinaries().withType(TestableAsciidoctorSampleContentBinary.class), check);
 
         // Trigger everything by realizing sample container
         project.afterEvaluate(p -> realizeSamples(extension, objects, assemble, check, wrapperFiles, project));
