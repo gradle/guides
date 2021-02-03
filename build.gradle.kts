@@ -43,11 +43,9 @@ tasks.register("clean") {
 }
 
 // Workaround for https://github.com/gradle/dev-infrastructure/issues/505#issuecomment-762060878
-allprojects {
-    ext.apply {
-        set("gradle.publish.key", project.findProperty("gradlePublishKey"))
-        set("gradle.publish.secret", project.findProperty("gradlePublishSecret"))
-    }
+project.ext.apply {
+    set("gradle.publish.key", project.findProperty("gradlePublishKey"))
+    set("gradle.publish.secret", project.findProperty("gradlePublishSecret"))
 }
 tasks.register("publishDocumentationPlugins") {
     dependsOn(gradle.includedBuild("gradle-guides-plugin").task(":publishPlugins"))
