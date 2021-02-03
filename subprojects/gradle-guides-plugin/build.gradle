@@ -58,6 +58,11 @@ pluginBundle {
     tags = ['gradle', 'guides', 'documentation']
 }
 
+project.ext["gradle.publish.key"] = project.findProperty("gradlePublishKey")
+project.ext["gradle.publish.secret"] = project.findProperty("gradlePublishSecret")
+
+println(project.findProperty('gradle.publish.key'))
+
 gradlePlugin {
     plugins {
         guidePlugin {
