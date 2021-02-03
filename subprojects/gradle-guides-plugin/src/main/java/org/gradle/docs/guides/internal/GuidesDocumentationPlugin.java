@@ -1,12 +1,12 @@
 package org.gradle.docs.guides.internal;
 
-import org.asciidoctor.gradle.AsciidoctorTask;
+import org.asciidoctor.gradle.jvm.AsciidoctorJExtension;
+import org.asciidoctor.gradle.jvm.AsciidoctorTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
-import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.attributes.Attribute;
 import org.gradle.api.attributes.Usage;
 import org.gradle.api.file.ProjectLayout;
@@ -20,8 +20,6 @@ import org.gradle.api.tasks.TaskProvider;
 import org.gradle.docs.guides.internal.tasks.GenerateGuidePageAsciidoc;
 import org.gradle.docs.internal.DocumentationBasePlugin;
 import org.gradle.docs.internal.DocumentationExtensionInternal;
-import org.gradle.docs.internal.exemplar.AsciidoctorContentTest;
-import org.gradle.docs.internal.exemplar.AsciidoctorContentTestConsoleType;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
 
 import java.io.File;
@@ -45,12 +43,14 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         Project projectOnlyForCopySpecMethod = project;
 
         project.getPluginManager().apply(DocumentationBasePlugin.class);
-        project.getPluginManager().apply("org.asciidoctor.convert"); // For the `asciidoctor` configuration
+        project.getPluginManager().apply("org.asciidoctor.jvm.convert");
 
-        Configuration asciidoctorConfiguration = project.getConfigurations().maybeCreate("asciidoctorForDocumentation");
-        project.getRepositories().maven(it -> it.setUrl("https://repo.gradle.org/gradle/libs-releases"));
-        project.getDependencies().add(asciidoctorConfiguration.getName(), "org.gradle:docs-asciidoctor-extensions:0.8.0");
-        project.getConfigurations().getByName("asciidoctor").extendsFrom(asciidoctorConfiguration);
+        tasks.withType(AsciidoctorTask.class).configureEach((AsciidoctorTask task) -> {
+            task.baseDirFollowsSourceFile();
+            task.getExtensions().getByType(AsciidoctorJExtension.class).docExtensions(
+                project.getDependencies().create("org.gradle:docs-asciidoctor-extensions-base:0.10.0")
+            );
+        });
 
         TaskProvider<Task> assemble = tasks.named(LifecycleBasePlugin.ASSEMBLE_TASK_NAME);
         TaskProvider<Task> check = tasks.register("checkGuides");
@@ -74,7 +74,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         createPublishGuidesElements(project.getConfigurations(), objects, renderTask, extension);
 
         // Testing
-        createCheckTaskForAsciidoctorContentBinary(project, "checkAsciidoctorGuideContents", extension.getBinaries().withType(TestableAsciidoctorGuideContentBinary.class), check, asciidoctorConfiguration);
+        createCheckTaskForAsciidoctorContentBinary(project, "checkAsciidoctorGuideContents", extension.getBinaries().withType(TestableAsciidoctorGuideContentBinary.class), check);
 
         // Trigger everything by realizing guide container
         project.afterEvaluate(p -> realizeGuides(extension, objects, projectOnlyForCopySpecMethod));
@@ -173,7 +173,9 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             // TODO: This breaks the provider
             task.setOutputDir(extension.getRenderedDocumentationRoot().get().getAsFile());
 
-            task.setSeparateOutputDirs(false);
+            task.outputOptions(outputOptions -> {
+                outputOptions.setSeparateOutputDirs(false);
+            });
 
             // TODO: This is specific to guides
             attributes.put("imagesdir", "images");

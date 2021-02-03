@@ -16,7 +16,6 @@
 
 package org.gradle.docs
 
-import org.gradle.docs.TestFile
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.Rule

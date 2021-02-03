@@ -1,8 +1,9 @@
 package org.gradle.docs.guides
 
 import org.gradle.docs.AbstractFunctionalTest
+import org.gradle.docs.DocumentationTrait
 
-class AbstractGuideFunctionalSpec extends AbstractFunctionalTest implements GuidesTrait {
+class AbstractGuideFunctionalSpec extends AbstractFunctionalTest implements GuidesTrait, DocumentationTrait {
     protected void makeSingleProject() {
         buildFile << applyDocumentationPlugin() << createGuide('demo')
     }
@@ -13,14 +14,6 @@ class AbstractGuideFunctionalSpec extends AbstractFunctionalTest implements Guid
 
 Some guide
 """
-    }
-
-    protected static String applyDocumentationPlugin() {
-        return  """
-            plugins {
-                id 'org.gradle.documentation'
-            }
-        """
     }
 
     protected String getGuideUnderTestDsl() {

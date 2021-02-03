@@ -1,10 +1,9 @@
 package org.gradle.docs.samples.internal;
 
 import groovy.lang.Closure;
-import org.gradle.api.GradleException;
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
-import org.gradle.api.Task;
+import org.asciidoctor.gradle.jvm.AsciidoctorJExtension;
+import org.asciidoctor.gradle.jvm.AsciidoctorTask;
+import org.gradle.api.*;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.file.ConfigurableFileCollection;
@@ -13,7 +12,6 @@ import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.FileTree;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.file.RegularFileProperty;
-import org.gradle.api.internal.AbstractTask;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.tasks.PathSensitivity;
@@ -68,12 +66,14 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         ObjectFactory objects = project.getObjects();
 
         project.getPluginManager().apply(DocumentationBasePlugin.class);
-        project.getPluginManager().apply("org.asciidoctor.convert"); // For the `asciidoctor` configuration
+        project.getPluginManager().apply("org.asciidoctor.jvm.convert");
 
-        Configuration asciidoctorConfiguration = project.getConfigurations().maybeCreate("asciidoctorForDocumentation");
-        project.getRepositories().maven(it -> it.setUrl("https://repo.gradle.org/gradle/libs-releases"));
-        project.getDependencies().add(asciidoctorConfiguration.getName(), "org.gradle:docs-asciidoctor-extensions:0.8.0");
-        project.getConfigurations().getByName("asciidoctor").extendsFrom(asciidoctorConfiguration);
+        tasks.withType(AsciidoctorTask.class).configureEach((AsciidoctorTask task) -> {
+            task.baseDirFollowsSourceFile();
+            task.getExtensions().getByType(AsciidoctorJExtension.class).docExtensions(
+                project.getDependencies().create("org.gradle:docs-asciidoctor-extensions-base:0.10.0")
+            );
+        });
 
         TaskProvider<Task> assemble = tasks.named(LifecycleBasePlugin.ASSEMBLE_TASK_NAME);
         TaskProvider<Task> check = tasks.register("checkSamples");
@@ -116,7 +116,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         // Testing (and binaries)
         extension.getBinaries().withType(SampleExemplarBinary.class).configureEach(binary -> createTasksForSampleExemplarBinary(tasks, binary));
         configureExemplarTestsForSamples(project, layout, tasks, extension, check);
-        createCheckTaskForAsciidoctorContentBinary(project, "checkAsciidoctorSampleContents", extension.getBinaries().withType(TestableAsciidoctorSampleContentBinary.class), check, asciidoctorConfiguration);
+        createCheckTaskForAsciidoctorContentBinary(project, "checkAsciidoctorSampleContents", extension.getBinaries().withType(TestableAsciidoctorSampleContentBinary.class), check);
 
         // Trigger everything by realizing sample container
         project.afterEvaluate(p -> realizeSamples(extension, objects, assemble, check, wrapperFiles, project));
@@ -196,7 +196,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             task.setScriptFile(new File(task.getTemporaryDir(), "gradlew"));
         });
         ConfigurableFileCollection wrapperFiles = objectFactory.fileCollection();
-        wrapperFiles.from(wrapper.map(AbstractTask::getTemporaryDir));
+        wrapperFiles.from(wrapper.map(DefaultTask::getTemporaryDir));
         wrapperFiles.builtBy(wrapper);
         return wrapperFiles.getAsFileTree();
     }
@@ -291,7 +291,9 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             // TODO: This breaks the provider
             task.setOutputDir(extension.getRenderedDocumentationRoot().get().getAsFile());
 
-            task.setSeparateOutputDirs(false);
+            task.outputOptions(outputOptions -> {
+                outputOptions.setSeparateOutputDirs(false);
+            });
 
             // TODO: Figure out why so much difference with guides
             // TODO: This is specific to gradle/gradle

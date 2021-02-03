@@ -342,22 +342,6 @@ class BasicGuidesDocumentationFunctionalTest extends AbstractGuideFunctionalSpec
         indexFile.text.contains('Task :helloWorld')
     }
 
-    def "header and footer is injected during asciidoctor postprocessing"() {
-        given:
-        makeSingleProject()
-        writeGuideUnderTest()
-
-        when:
-        build('assemble')
-
-        then:
-        def indexFile = file('build/working/guides/render-guides/demo/index.html')
-        indexFile.exists()
-        indexFile.text.contains('<script defer src="https://guides.gradle.org/js/guides')
-        indexFile.text.contains('<header class="site-layout__header site-header js-site-header" itemscope="itemscope" itemtype="https://schema.org/WPHeader">')
-        indexFile.text.contains('<footer class="site-layout__footer site-footer" itemscope="itemscope" itemtype="https://schema.org/WPFooter">')
-    }
-
     def "can include contribution"() {
         given:
         makeSingleProject()

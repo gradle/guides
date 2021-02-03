@@ -19,6 +19,11 @@ Each of the plugins generates a guide from Asciidoc source.
 
 == Changelog
 
+== 0.18.0
+
+- Make compatible with Asciidoctor Gradle Plugin 3.x and AsciidoctorJ 2.x
+- Use exemplar 0.10.0
+
 == 0.17.0
 
 - Allow duplicate entries for zipped samples
