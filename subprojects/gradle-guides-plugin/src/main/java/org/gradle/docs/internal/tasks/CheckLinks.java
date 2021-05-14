@@ -101,7 +101,10 @@ public abstract class CheckLinks extends DefaultTask {
         }
 
         private boolean isValid(URI anchor) {
-            for (int i=0; i<3; i++) {
+            if (anchor.toString().contains("scans.gradle.com")) {
+                return true;
+            }
+            for (int i = 0; i < 3; i++) {
                 try {
                     HttpURLConnection con = (HttpURLConnection) anchor.toURL().openConnection();
                     con.setInstanceFollowRedirects(true);
@@ -118,7 +121,7 @@ public abstract class CheckLinks extends DefaultTask {
                     logger.error("FAILED: {}", anchor, e);
                     // https://github.com/gradle/gradle-private/issues/3109
                     // Server is accessible, but we don't keep sessions
-                    if(e.getMessage().contains("Server redirected too many")) {
+                    if (e.getMessage().contains("Server redirected too many")) {
                         return true;
                     }
                 }
