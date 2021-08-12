@@ -1,6 +1,6 @@
 package org.gradle.docs.internal.exemplar;
 
-import org.gradle.samples.test.normalizer.OutputNormalizer;
+import org.gradle.exemplar.test.normalizer.OutputNormalizer;
 
 import java.util.function.UnaryOperator;
 

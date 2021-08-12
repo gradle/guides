@@ -1,6 +1,6 @@
 package org.gradle.docs.internal.exemplar;
 
-import org.gradle.samples.test.verifier.OutputVerifier;
+import org.gradle.exemplar.test.verifier.OutputVerifier;
 
 import java.util.Arrays;
 import java.util.List;
