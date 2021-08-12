@@ -17,16 +17,16 @@ java {
 }
 
 repositories {
-    jcenter()
-    gradlePluginPortal()
-}
-
-repositories {
     maven {
-        url = uri("https://repo.gradle.org/gradle/libs")
+        name = "Gradle public repository"
+        url = "https://repo.gradle.org/gradle/public"
+        content {
+            includeModule("org.gradle", "gradle-tooling-api")
+            includeModuleByRegex("org.gradle", "sample-(check|discovery)")
+        }
     }
-    jcenter()
     mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {

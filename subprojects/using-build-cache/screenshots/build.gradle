@@ -3,7 +3,7 @@ import org.apache.commons.io.FileUtils
 
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath "commons-io:commons-io:2.5"
@@ -15,14 +15,14 @@ apply plugin: 'groovy'
 ext.chromeDriverVersion = '2.33'
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
     testImplementation "org.gebish:geb-core:1.1.1"
     testImplementation 'org.seleniumhq.selenium:selenium-chrome-driver:3.4.0'
     testImplementation "org.seleniumhq.selenium:selenium-support:2.52.0"
-    testImplementation "io.ratpack:ratpack-groovy-test:1.5.0-rc-2"
+    testImplementation "io.ratpack:ratpack-groovy-test:1.5.4"
     testImplementation "org.gebish:geb-junit4:1.1.1"
     testRuntimeOnly 'org.slf4j:slf4j-simple:1.7.25'
 }
