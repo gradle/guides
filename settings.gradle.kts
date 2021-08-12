@@ -11,9 +11,3 @@ includeBuild("subprojects/gradle-guides-plugin")
 includeBuild("subprojects/guides-test-fixtures")
 include("using-build-cache:screenshots")
 project(":using-build-cache:screenshots").projectDir = file("subprojects/using-build-cache/screenshots")
-
-gradleEnterprise {
-    buildScan {
-        server = "https://e.grdev.net"
-    }
-}
