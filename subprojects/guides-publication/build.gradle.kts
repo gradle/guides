@@ -44,13 +44,13 @@ val guides by configurations.creating {
 
 val installGuides = tasks.register("installGuides", Sync::class.java) {
     from(guides)
-    from("js") { into("js") }
-    from("icon") { into("icon") }
-    from("css") { into("css") }
-    from("CNAME")
-    from("rebots.txt")
-    from("google0c2dba1d0e25f4f9.html")
-    from("gradle-guides.svg")
+    from("src/js") { into("js") }
+    from("src/icon") { into("icon") }
+    from("src/css") { into("css") }
+    from("src/CNAME")
+    from("src/robots.txt")
+    from("src/google0c2dba1d0e25f4f9.html")
+    from("src/gradle-guides.svg")
     into("$buildDir/published-guides")
 
     doLast {
