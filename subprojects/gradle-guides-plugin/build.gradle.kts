@@ -40,7 +40,7 @@ dependencies {
     compileOnly("org.gradle:gradle-tooling-api:6.0.1")
     compileOnly("org.apache.commons:commons-lang3:3.9")
     compileOnly("org.asciidoctor:asciidoctorj:2.4.2")
-    compileOnly("org.gradle:sample-check:0.12.6")
+    compileOnly("org.gradle.exemplar:samples-check:1.0.0")
     compileOnly("commons-io:commons-io:2.6")
 
     // For rich and verbose console support

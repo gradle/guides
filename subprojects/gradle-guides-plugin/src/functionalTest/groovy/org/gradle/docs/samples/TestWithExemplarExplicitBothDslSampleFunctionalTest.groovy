@@ -24,7 +24,7 @@ class TestWithExemplarExplicitBothDslSampleFunctionalTest extends AbstractExempl
             | executable: gradle
             | args: help
             |""".stripMargin()
-        buildFile << expectTestsExecuted(["org.gradle.samples.ExemplarExternalSamplesFunctionalTest.demo_${dsl}_mytest.sample"] + getExpectedTestsFor('demo', 'sanityCheck'))
+        buildFile << expectTestsExecuted(["org.gradle.exemplar.ExemplarExternalSamplesFunctionalTest.demo_${dsl}_mytest.sample"] + getExpectedTestsFor('demo', 'sanityCheck'))
         build("generateSamplesExemplarFunctionalTest")
         when:
         build('docsTest')

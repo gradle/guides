@@ -321,7 +321,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         });
 
         DependencyHandler dependencies = project.getDependencies();
-        dependencies.add(sourceSet.getImplementationConfigurationName(), "org.gradle:sample-check:0.12.6");
+        dependencies.add(sourceSet.getImplementationConfigurationName(), "org.gradle.exemplar:samples-check:1.0.0");
         dependencies.add(sourceSet.getImplementationConfigurationName(), "org.slf4j:slf4j-simple:1.7.16");
         dependencies.add(sourceSet.getImplementationConfigurationName(), "junit:junit:4.12");
 

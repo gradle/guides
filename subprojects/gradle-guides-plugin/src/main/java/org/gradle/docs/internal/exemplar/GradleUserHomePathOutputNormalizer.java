@@ -16,8 +16,8 @@
 
 package org.gradle.docs.internal.exemplar;
 
-import org.gradle.samples.executor.ExecutionMetadata;
-import org.gradle.samples.test.normalizer.OutputNormalizer;
+import org.gradle.exemplar.executor.ExecutionMetadata;
+import org.gradle.exemplar.test.normalizer.OutputNormalizer;
 
 import java.io.File;
 
