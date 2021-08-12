@@ -198,10 +198,10 @@ Each of the plugins generates a guide from Asciidoc source.
 
 === Releasing the plugins
 
-. Edit `build.gradle` and replace `-SNAPSHOT` version with the version to release.
+. Edit `build.gradle.kts` and replace `-SNAPSHOT` version with the version to release.
 . Edit this README to update the changes section.
 . Commit and create tag, e.g. `git tag v0.15.9`.
 . Push changes and tag to master, e.g. `git push && git push origin v0.15.9`
 . Run the https://builds.gradle.org/viewType.html?buildTypeId=DocumentationPortal_Guides_PublishPlugins[Publish Documentation Plugins build on TeamCity].
 . Create GitHub release.
-. Edit `build.gradle` and replace version with `-SNAPSHOT` for next version.
+. Edit `build.gradle.kts` and replace version with `-SNAPSHOT` for next version.
