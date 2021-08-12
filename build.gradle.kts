@@ -119,8 +119,7 @@ allprojects {
         tasks.named("docsTest", Test::class.java) {
             val samplesBaseDir = project.file("samples")
             inputs.files(samplesBaseDir).withPropertyName("samplesDir").withPathSensitivity(PathSensitivity.RELATIVE).optional()
-            // This breaks relocatability of the test task. If caching becomes important we should consider redefining the inputs for the test task
-            systemProperty("samplesDir", samplesBaseDir.absolutePath)
+            jvmArgumentProviders += CommandLineArgumentProvider { listOf("-DsamplesDir=${samplesBaseDir.absolutePath}") }
         }
 
         // TODO: This is strictly for working around the tooling API bug regarding removing flackiness for build init tests
