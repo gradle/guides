@@ -8,23 +8,9 @@ apply(from = "gradle/build-cache-configuration.settings.gradle.kts")
 rootProject.name = "gradle-guides"
 
 includeBuild("subprojects/gradle-guides-plugin")
-
-val guides = listOf<String>()
-val misc = listOf("guides-test-fixtures")
-
-misc.forEach { includeBuild("subprojects/${it}") }
-guides.forEach {
-    include(it)
-    project(":${it}").projectDir = file("subprojects/${it}")
-}
+includeBuild("subprojects/guides-test-fixtures")
 include("using-build-cache:screenshots")
 project(":using-build-cache:screenshots").projectDir = file("subprojects/using-build-cache/screenshots")
-
-gradle.rootProject {
-    val guideProjects by extra {
-        guides
-    }
-}
 
 gradleEnterprise {
     buildScan {
