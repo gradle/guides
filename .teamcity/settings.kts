@@ -100,7 +100,7 @@ object BuildGuidesOnLinux : AbstractBuildGuideType({
     steps {
         gradle {
             useGradleWrapper = true
-            tasks = ":installGuides"
+            tasks = ":guides-publication:installGuides"
             buildFile = "" // Let Gradle detect the build script
         }
     }
@@ -156,7 +156,7 @@ object PublishGuides : AbstractBuildType({
     steps {
         gradle {
             useGradleWrapper = true
-            tasks = ":gitPublishPush"
+            tasks = ":guides-publication:gitPublishPush"
             buildFile = "" // Let Gradle detect the build script
         }
     }

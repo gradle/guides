@@ -7,5 +7,7 @@ rootProject.name = "gradle-guides"
 
 include("gradle-guides-plugin")
 project(":gradle-guides-plugin").projectDir = file("subprojects/gradle-guides-plugin")
+include("guides-publication")
+project(":guides-publication").projectDir = file("subprojects/guides-publication")
 include("using-build-cache:screenshots")
 project(":using-build-cache:screenshots").projectDir = file("subprojects/using-build-cache/screenshots")
