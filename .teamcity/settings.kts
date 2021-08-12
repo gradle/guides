@@ -145,10 +145,8 @@ object PublishPlugins : AbstractBuildType({
     }
     params {
         param("env.JAVA_HOME", "%linux.java8.oracle.64bit%")
-        param("env.ORG_GRADLE_PROJECT_gradlePublishKey", "%GRADLE_PUBLISH_KEY%")
-        param("env.ORG_GRADLE_PROJECT_gradlePublishSecret", "%GRADLE_PUBLISH_SECRET%")
-        password("GRADLE_PUBLISH_KEY", "credentialsJSON:8b35ff9d-0de0-4266-8850-9162aa31b4bf", display = ParameterDisplay.HIDDEN)
-        password("GRADLE_PUBLISH_SECRET", "credentialsJSON:6934a5f0-e002-4067-884e-5090de3c9ec3", display = ParameterDisplay.HIDDEN)
+        password("env.GRADLE_PUBLISH_KEY", "credentialsJSON:8b35ff9d-0de0-4266-8850-9162aa31b4bf", display = ParameterDisplay.HIDDEN)
+        password("env.GRADLE_PUBLISH_SECRET", "credentialsJSON:6934a5f0-e002-4067-884e-5090de3c9ec3", display = ParameterDisplay.HIDDEN)
     }
 })
 

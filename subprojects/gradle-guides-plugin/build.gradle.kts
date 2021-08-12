@@ -1,7 +1,7 @@
 plugins {
     id("groovy")
     id("java-gradle-plugin")
-    id("com.gradle.plugin-publish") version "0.11.0"
+    id("com.gradle.plugin-publish") version "0.15.0"
     id("maven-publish")
 }
 
@@ -57,9 +57,6 @@ pluginBundle {
     vcsUrl = "https://github.com/gradle/guides"
     tags = listOf("gradle", "guides", "documentation")
 }
-
-project.ext["gradle.publish.key"] = project.findProperty("gradlePublishKey")
-project.ext["gradle.publish.secret"] = project.findProperty("gradlePublishSecret")
 
 gradlePlugin {
     plugins {
