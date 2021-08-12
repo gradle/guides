@@ -100,9 +100,9 @@ abstract class AbstractSampleFunctionalSpec extends AbstractFunctionalTest imple
     protected void makeSingleProject() {
         buildFile << applyDocumentationPlugin() << """
             repositories {
-                jcenter()
+                mavenCentral()
                 maven {
-                    url = "https://repo.gradle.org/gradle/libs-releases"
+                    url = "https://repo.gradle.org/gradle/public"
                 }
             }
             dependencies {

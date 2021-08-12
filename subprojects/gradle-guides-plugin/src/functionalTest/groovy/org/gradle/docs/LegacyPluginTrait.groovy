@@ -8,8 +8,8 @@ trait LegacyPluginTrait {
             }
 
             repositories {
-                jcenter()
-                maven { url = uri("https://repo.gradle.org/gradle/libs-releases") }
+                mavenCentral()
+                maven { url = uri("https://repo.gradle.org/gradle/public") }
             }
         """
     }

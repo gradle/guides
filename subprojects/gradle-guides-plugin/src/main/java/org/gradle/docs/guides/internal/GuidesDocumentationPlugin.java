@@ -47,9 +47,12 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
 
         tasks.withType(AsciidoctorTask.class).configureEach((AsciidoctorTask task) -> {
             task.baseDirFollowsSourceFile();
-            task.getExtensions().getByType(AsciidoctorJExtension.class).docExtensions(
+            final AsciidoctorJExtension extension = task.getExtensions().getByType(AsciidoctorJExtension.class);
+            extension.docExtensions(
                 project.getDependencies().create("org.gradle:docs-asciidoctor-extensions-base:0.10.0")
             );
+            // override default version of asciidoctor-groovy-dsl (2.0.0) to a version that's available on Maven Central (2.0.2)
+            extension.getModules().getGroovyDsl().setVersion("2.0.2");
         });
 
         TaskProvider<Task> assemble = tasks.named(LifecycleBasePlugin.ASSEMBLE_TASK_NAME);
