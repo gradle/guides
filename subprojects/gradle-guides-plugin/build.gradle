@@ -44,7 +44,7 @@ dependencies {
     compileOnly("commons-io:commons-io:2.6")
 
     // For rich and verbose console support
-    implementation("net.rubygrapefruit:ansi-control-sequence-util:0.2")
+    implementation("net.rubygrapefruit:ansi-control-sequence-util:0.3")
 
     testImplementation "org.spockframework:spock-core:1.2-groovy-2.5", {
         exclude module : 'groovy-all'
