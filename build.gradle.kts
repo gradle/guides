@@ -1,5 +1,3 @@
-import org.gradle.docs.internal.exemplar.AsciidoctorContentTest
-
 plugins {
     id("org.ajoberstar.git-publish") version("2.1.3")
     id("org.gradle.documentation") apply(false)
