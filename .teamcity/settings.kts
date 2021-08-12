@@ -25,14 +25,14 @@ To debug in IntelliJ Idea, open the 'Maven Projects' tool window (View
 'Debug' option is available in the context menu for the task.
 */
 
-version = "2019.2"
+version = "2021.1"
 
 project {
-//    parentId("DocumentationPortal")
+    // parentId("DocumentationPortal")
     buildType(BuildGuidesOnLinux)
     buildType(BuildGuidesOnMac)
     // TODO: Obviously, it fails on Windows
-    //buildType(BuildGuidesOnWindows)
+    // buildType(BuildGuidesOnWindows)
     buildType(BuildPluginsOnLinux)
     buildType(BuildPluginsOnMac)
     buildType(BuildPluginsOnWindows)
