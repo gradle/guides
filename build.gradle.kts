@@ -81,8 +81,7 @@ val installGuides = tasks.register("installGuides", Sync::class.java) {
     }
 }
 
-// Configure publishing
-configure<org.ajoberstar.gradle.git.publish.GitPublishExtension> {
+gitPublish {
     val ghToken = System.getenv("GRGIT_USER")
     branch.set("gh-pages")
     commitMessage.set("Publish to GitHub Pages")
