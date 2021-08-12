@@ -137,7 +137,7 @@ object PublishPlugins : AbstractBuildType({
         gradle {
             useGradleWrapper = true
             gradleParams = "-Dgradle.publish.skip.namespace.check=true"
-            tasks = "publishDocumentationPlugins"
+            tasks = ":gradle-guides-plugin:publishPlugins"
             buildFile = "" // Let Gradle detect the build script
         }
     }

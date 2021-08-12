@@ -1,6 +1,5 @@
 plugins {
     id("org.ajoberstar.git-publish") version("2.1.3")
-    id("org.gradle.documentation") apply(false)
 }
 
 // When removing a guide that has been linked from elsewhere before, please add a redirect here
@@ -36,21 +35,13 @@ val redirects = mapOf(
     "using-the-worker-api" to "https://docs.gradle.org/current/userguide/worker_api.html"
 )
 
-tasks.register("clean") {
-    dependsOn(gradle.includedBuilds.map { it.task(":clean") })
-}
-
-tasks.register("publishDocumentationPlugins") {
-    dependsOn(gradle.includedBuild("gradle-guides-plugin").task(":publishPlugins"))
-}
-
-// Install guides into a single repository
 val guides by configurations.creating {
     isCanBeResolved = true
     isCanBeConsumed = false
     attributes.attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage::class.java, "docs"))
     attributes.attribute(Attribute.of("type", String::class.java), "guide-docs")
 }
+
 val installGuides = tasks.register("installGuides", Sync::class.java) {
     from(guides)
     from("js") { into("js") }

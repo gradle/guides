@@ -5,7 +5,7 @@ plugins {
     id("maven-publish")
 }
 
-apply(from = "$rootDir/gradle/functional-test.gradle")
+apply(from = "$projectDir/gradle/functional-test.gradle")
 
 group = "org.gradle.guides"
 version = "0.18.1-SNAPSHOT"
@@ -82,13 +82,9 @@ gradlePlugin {
 }
 
 tasks {
-    val publishPlugins by getting {
+    named("publishPlugins") {
         dependsOn("build")
 
         onlyIf { !"$version".endsWith("-SNAPSHOT")}
-    }
-
-    register("release") {
-        dependsOn("build", publishPlugins)
     }
 }

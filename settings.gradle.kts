@@ -5,6 +5,7 @@ plugins {
 
 rootProject.name = "gradle-guides"
 
-includeBuild("subprojects/gradle-guides-plugin")
+include("gradle-guides-plugin")
+project(":gradle-guides-plugin").projectDir = file("subprojects/gradle-guides-plugin")
 include("using-build-cache:screenshots")
 project(":using-build-cache:screenshots").projectDir = file("subprojects/using-build-cache/screenshots")
