@@ -3,11 +3,11 @@ plugins {
     id("com.gradle.enterprise.gradle-enterprise-conventions-plugin").version("0.7.2")
 }
 
-apply(from = "gradle/build-cache-configuration.settings.gradle.kts")
-
 rootProject.name = "gradle-guides"
 
-includeBuild("subprojects/gradle-guides-plugin")
-includeBuild("subprojects/guides-test-fixtures")
+include("gradle-guides-plugin")
+project(":gradle-guides-plugin").projectDir = file("subprojects/gradle-guides-plugin")
+include("guides-publication")
+project(":guides-publication").projectDir = file("subprojects/guides-publication")
 include("using-build-cache:screenshots")
 project(":using-build-cache:screenshots").projectDir = file("subprojects/using-build-cache/screenshots")

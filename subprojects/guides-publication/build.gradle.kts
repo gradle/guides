@@ -1,8 +1,5 @@
-import org.gradle.docs.internal.exemplar.AsciidoctorContentTest
-
 plugins {
     id("org.ajoberstar.git-publish") version("2.1.3")
-    id("org.gradle.documentation") apply(false)
 }
 
 // When removing a guide that has been linked from elsewhere before, please add a redirect here
@@ -38,21 +35,13 @@ val redirects = mapOf(
     "using-the-worker-api" to "https://docs.gradle.org/current/userguide/worker_api.html"
 )
 
-tasks.register("clean") {
-    dependsOn(gradle.includedBuilds.map { it.task(":clean") })
-}
-
-tasks.register("publishDocumentationPlugins") {
-    dependsOn(gradle.includedBuild("gradle-guides-plugin").task(":publishPlugins"))
-}
-
-// Install guides into a single repository
 val guides by configurations.creating {
     isCanBeResolved = true
     isCanBeConsumed = false
     attributes.attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage::class.java, "docs"))
     attributes.attribute(Attribute.of("type", String::class.java), "guide-docs")
 }
+
 val installGuides = tasks.register("installGuides", Sync::class.java) {
     from(guides)
     from("js") { into("js") }
@@ -81,8 +70,7 @@ val installGuides = tasks.register("installGuides", Sync::class.java) {
     }
 }
 
-// Configure publishing
-configure<org.ajoberstar.gradle.git.publish.GitPublishExtension> {
+gitPublish {
     val ghToken = System.getenv("GRGIT_USER")
     branch.set("gh-pages")
     commitMessage.set("Publish to GitHub Pages")
@@ -94,39 +82,3 @@ configure<org.ajoberstar.gradle.git.publish.GitPublishExtension> {
     }
 }
 
-// Test JVM codes
-allprojects {
-    pluginManager.withPlugin("org.gradle.guide") {
-        repositories {
-            maven {
-                url = uri("https://repo.gradle.org/gradle/libs-releases")
-            }
-        }
-
-        dependencies {
-            add("docsTestImplementation", gradleTestKit())
-            add("docsTestImplementation", "org.spockframework:spock-core:1.2-groovy-2.5")
-            add("docsTestImplementation", "commons-io:commons-io:2.5")
-            add("docsTestImplementation", "org.gradle.guides:test-fixtures:0.4")
-        }
-
-        // Passes the system property {@literal "samplesDir"} with the value {@literal "$projectDir/samples"} to {@code "test"} task.
-        tasks.named("docsTest", Test::class.java) {
-            val samplesBaseDir = project.file("samples")
-            inputs.files(samplesBaseDir).withPropertyName("samplesDir").withPathSensitivity(PathSensitivity.RELATIVE).optional()
-            jvmArgumentProviders += CommandLineArgumentProvider { listOf("-DsamplesDir=${samplesBaseDir.absolutePath}") }
-        }
-
-        // TODO: This is strictly for working around the tooling API bug regarding removing flackiness for build init tests
-        tasks.named("checkAsciidoctorGuideContents", AsciidoctorContentTest::class.java) {
-            gradleVersion.set("6.4")
-        }
-    }
-}
-
-// Attach checkGuides to check
-allprojects {
-    pluginManager.withPlugin("org.gradle.guide") {
-        tasks.named("check") { dependsOn("checkGuides") }
-    }
-}

@@ -5,7 +5,7 @@ plugins {
     id("maven-publish")
 }
 
-apply(from = "$rootDir/gradle/functional-test.gradle")
+apply(from = "$projectDir/gradle/functional-test.gradle")
 
 group = "org.gradle.guides"
 version = "0.18.1-SNAPSHOT"
@@ -33,7 +33,7 @@ dependencies {
     implementation("net.sourceforge.nekohtml:nekohtml:1.9.21")
     implementation("org.codehaus.groovy.modules:http-builder-ng-core:0.11.1")
 
-    implementation("org.asciidoctor:asciidoctor-gradle-jvm:3.3.0")
+    implementation("org.asciidoctor:asciidoctor-gradle-jvm:3.3.2")
     implementation("org.apache.ant:ant:1.9.13")
 
     // For exemplar asciidoctor tests
@@ -82,13 +82,9 @@ gradlePlugin {
 }
 
 tasks {
-    val publishPlugins by getting {
+    named("publishPlugins") {
         dependsOn("build")
 
         onlyIf { !"$version".endsWith("-SNAPSHOT")}
-    }
-
-    register("release") {
-        dependsOn("build", publishPlugins)
     }
 }
