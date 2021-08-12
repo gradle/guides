@@ -81,10 +81,6 @@ gradlePlugin {
     }
 }
 
-tasks {
-    named("publishPlugins") {
-        dependsOn("build")
-
-        onlyIf { !"$version".endsWith("-SNAPSHOT")}
-    }
+tasks.named("publishPlugins") {
+    onlyIf { !"$version".endsWith("-SNAPSHOT") }
 }

@@ -33,6 +33,9 @@ project {
     buildType(BuildGuidesOnMac)
     // TODO: Obviously, it fails on Windows
     //buildType(BuildGuidesOnWindows)
+    buildType(BuildPluginsOnLinux)
+    buildType(BuildPluginsOnMac)
+    buildType(BuildPluginsOnWindows)
     buildType(PublishPlugins)
     buildType(PublishGuides)
 }
@@ -43,6 +46,10 @@ open class AbstractBuildType(init: BuildType.() -> Unit) : BuildType({
     }
     params {
         param("env.LC_ALL", "en_US.UTF-8")
+        param("env.GRADLE_CACHE_REMOTE_URL", "%gradle.cache.remote.url%")
+        param("env.GRADLE_CACHE_REMOTE_USERNAME", "%gradle.cache.remote.username%")
+        param("env.GRADLE_CACHE_REMOTE_PASSWORD", "%gradle.cache.remote.password%")
+        param("env.GRADLE_ENTERPRISE_ACCESS_KEY", "%ge.gradle.org.access.key%")
     }
 
     features {
@@ -61,17 +68,10 @@ open class AbstractBuildType(init: BuildType.() -> Unit) : BuildType({
 })
 
 open class AbstractBuildGuideType(init: BuildType.() -> Unit) : AbstractBuildType({
-    params {
-        param("env.GRADLE_CACHE_REMOTE_URL", "%gradle.cache.remote.url%")
-        param("env.GRADLE_CACHE_REMOTE_USERNAME", "%gradle.cache.remote.username%")
-        param("env.GRADLE_CACHE_REMOTE_PASSWORD", "%gradle.cache.remote.password%")
-        param("env.GRADLE_ENTERPRISE_ACCESS_KEY", "%ge.gradle.org.access.key%")
-    }
-
     steps {
         gradle {
             useGradleWrapper = true
-            tasks = "build --continue --build-cache"
+            tasks = ":guides-publication:installGuides"
             buildFile = "" // Let Gradle detect the build script
         }
     }
@@ -97,13 +97,6 @@ object BuildGuidesOnLinux : AbstractBuildGuideType({
     params {
         param("env.JAVA_HOME", "%linux.java8.oracle.64bit%")
     }
-    steps {
-        gradle {
-            useGradleWrapper = true
-            tasks = ":guides-publication:installGuides"
-            buildFile = "" // Let Gradle detect the build script
-        }
-    }
     artifactRules = """
         build/published-guides/** => published-guides
     """.trimIndent()
@@ -122,6 +115,63 @@ object BuildGuidesOnMac : AbstractBuildGuideType({
 
 object BuildGuidesOnWindows : AbstractBuildGuideType({
     name = "Build All Guides (Windows)"
+
+    requirements {
+        startsWith("teamcity.agent.jvm.os.name", "Windows")
+    }
+    params {
+        param("env.JAVA_HOME", "%windows.java8.oracle.64bit%")
+    }
+})
+
+open class AbstractBuildPluginType(init: BuildType.() -> Unit) : AbstractBuildType({
+    steps {
+        gradle {
+            useGradleWrapper = true
+            tasks = ":gradle-guides-plugin:check"
+            buildFile = "" // Let Gradle detect the build script
+        }
+    }
+    triggers {
+        vcs {
+            groupCheckinsByCommitter = true
+            branchFilter = """
+                +:*
+                -:pull/*
+            """.trimIndent()
+        }
+    }
+
+    init()
+})
+
+object BuildPluginsOnLinux : AbstractBuildPluginType({
+    name = "Build All Plugins (Linux)"
+
+    requirements {
+        contains("teamcity.agent.jvm.os.name", "Linux")
+    }
+    params {
+        param("env.JAVA_HOME", "%linux.java8.oracle.64bit%")
+    }
+    artifactRules = """
+        build/published-guides/** => published-guides
+    """.trimIndent()
+})
+
+object BuildPluginsOnMac : AbstractBuildPluginType({
+    name = "Build All Plugins (macOS)"
+
+    requirements {
+        startsWith("teamcity.agent.jvm.os.name", "Mac")
+    }
+    params {
+        param("env.JAVA_HOME", "%macos.java8.oracle.64bit%")
+    }
+})
+
+object BuildPluginsOnWindows : AbstractBuildPluginType({
+    name = "Build All Plugins (Windows)"
 
     requirements {
         startsWith("teamcity.agent.jvm.os.name", "Windows")
