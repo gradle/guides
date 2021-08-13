@@ -8,7 +8,7 @@ plugins {
 apply(from = "$projectDir/gradle/functional-test.gradle")
 
 group = "org.gradle.guides"
-version = "0.18.1-SNAPSHOT"
+version = "0.19.0"
 
 java {
     toolchain {
