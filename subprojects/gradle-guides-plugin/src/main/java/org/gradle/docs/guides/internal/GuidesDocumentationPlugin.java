@@ -49,7 +49,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             task.baseDirFollowsSourceFile();
             final AsciidoctorJExtension extension = task.getExtensions().getByType(AsciidoctorJExtension.class);
             extension.docExtensions(
-                project.getDependencies().create("org.gradle:docs-asciidoctor-extensions-base:0.10.0")
+                project.getDependencies().create("org.gradle:docs-asciidoctor-extensions-base:0.11.0")
             );
             // override default version of asciidoctor-groovy-dsl (2.0.0) to a version that's available on Maven Central (2.0.2)
             extension.getModules().getGroovyDsl().setVersion("2.0.2");
