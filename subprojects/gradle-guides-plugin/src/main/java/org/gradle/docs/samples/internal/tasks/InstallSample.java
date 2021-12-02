@@ -1,9 +1,9 @@
 package org.gradle.docs.samples.internal.tasks;
 
-import groovy.cli.Option;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
+import org.gradle.api.file.FileSystemOperations;
 import org.gradle.api.file.FileTree;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
@@ -46,11 +46,14 @@ public abstract class InstallSample extends DefaultTask {
     @Inject
     public abstract WorkerLeaseService getWorkerLeaseService();
 
+    @Inject
+    protected abstract FileSystemOperations getFs();
+
     @TaskAction
     private void doInstall() {
         // TODO: Use the Worker API instead of releasing lock manually
         getWorkerLeaseService().withoutProjectLock(() -> {
-            getProject().sync(spec -> {
+            getFs().sync(spec -> {
                 spec.from(getSource());
                 spec.into(getInstallDirectory());
                 spec.exclude(getExcludes().getOrElse(Collections.emptyList()));
