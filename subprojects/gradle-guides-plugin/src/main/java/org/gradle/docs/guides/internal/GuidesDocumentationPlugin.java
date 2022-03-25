@@ -9,6 +9,7 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.attributes.Attribute;
 import org.gradle.api.attributes.Usage;
+import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.invocation.Gradle;
 import org.gradle.api.model.ObjectFactory;
@@ -142,6 +143,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
         TaskProvider<Sync> assembleDocs = tasks.register("assembleGuides", Sync.class, task -> {
             task.setGroup(DOCUMENTATION_GROUP_NAME);
             task.setDescription("Assembles all intermediate files needed to generate the samples documentation.");
+            task.setDuplicatesStrategy(DuplicatesStrategy.INCLUDE);
 
             extension.getBinaries().withType(GuideContentBinary.class).forEach(binary -> {
                 // TODO: This is extra content compared to Samples

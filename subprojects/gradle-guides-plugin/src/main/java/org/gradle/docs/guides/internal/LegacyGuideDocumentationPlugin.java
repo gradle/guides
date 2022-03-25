@@ -18,22 +18,9 @@ package org.gradle.docs.guides.internal;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.artifacts.ModuleDependency;
-import org.gradle.api.artifacts.dsl.DependencyHandler;
-import org.gradle.api.artifacts.dsl.RepositoryHandler;
-import org.gradle.api.provider.ProviderFactory;
-import org.gradle.api.tasks.PathSensitivity;
-import org.gradle.api.tasks.testing.Test;
 import org.gradle.docs.DocumentationExtension;
 import org.gradle.docs.guides.Guide;
 
-import javax.inject.Inject;
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.gradle.docs.internal.DocumentationBasePlugin.DOCS_TEST_IMPLEMENTATION_CONFIGURATION_NAME;
-import static org.gradle.docs.internal.DocumentationBasePlugin.DOCS_TEST_TASK_NAME;
 import static org.gradle.docs.internal.StringUtils.toLowerCamelCase;
 
 /**

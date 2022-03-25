@@ -21,7 +21,7 @@ public abstract class SyncWithProvider extends Sync {
 
     @Override
     protected void copy() {
-        getWorkerLeaseService().withoutProjectLock(() -> super.copy());
+        getWorkerLeaseService().runAsIsolatedTask(() -> super.copy());
     }
 
     @OutputDirectory

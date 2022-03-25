@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // TODO: Make this not dependent on Groovy methods
 public class TestFile extends File {
@@ -54,22 +54,22 @@ public class TestFile extends File {
     }
 
     public TestFile assertExists() {
-        assertTrue(String.format("%s does not exist", this), exists());
+        assertTrue(exists(), () -> String.format("%s does not exist", this));
         return this;
     }
 
     public TestFile assertIsFile() {
-        assertTrue(String.format("%s is not a file", this), isFile());
+        assertTrue(isFile(), () -> String.format("%s is not a file", this));
         return this;
     }
 
     public TestFile assertIsDir() {
-        assertTrue(String.format("%s is not a directory.", this), isDirectory());
+        assertTrue(isDirectory(), () -> String.format("%s is not a directory.", this));
         return this;
     }
 
     public TestFile assertDoesNotExist() {
-        assertFalse(String.format("%s should not exist", this), exists());
+        assertFalse(exists(), () -> String.format("%s should not exist", this));
         return this;
     }
 

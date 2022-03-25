@@ -58,7 +58,7 @@ public abstract class ZipSample extends DefaultTask {
     @TaskAction
     private void zip() {
         // TODO: Use the Worker API instead of releasing lock manually
-        getWorkerLeaseService().withoutProjectLock(() -> {
+        getWorkerLeaseService().runAsIsolatedTask(() -> {
             File zipFile = getArchiveFile().get().getAsFile();
             zipFile.delete();
 

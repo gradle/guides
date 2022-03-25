@@ -52,7 +52,7 @@ public abstract class InstallSample extends DefaultTask {
     @TaskAction
     private void doInstall() {
         // TODO: Use the Worker API instead of releasing lock manually
-        getWorkerLeaseService().withoutProjectLock(() -> {
+        getWorkerLeaseService().runAsIsolatedTask(() -> {
             getFs().sync(spec -> {
                 spec.from(getSource());
                 spec.into(getInstallDirectory());

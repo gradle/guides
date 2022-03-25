@@ -8,7 +8,7 @@ plugins {
 apply(from = "$projectDir/gradle/functional-test.gradle")
 
 group = "org.gradle.guides"
-version = "0.19.2-SNAPSHOT"
+version = "0.20.0-SNAPSHOT"
 
 java {
     toolchain {
@@ -46,7 +46,8 @@ dependencies {
     // For rich and verbose console support
     implementation("net.rubygrapefruit:ansi-control-sequence-util:0.3")
 
-    testImplementation("org.spockframework:spock-core:1.2-groovy-2.5") {
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
+    testImplementation("org.spockframework:spock-core:2.1-groovy-3.0") {
         exclude(module = "groovy-all")
     }
     testImplementation("org.yaml:snakeyaml:1.21")
@@ -83,4 +84,8 @@ gradlePlugin {
 
 tasks.named("publishPlugins") {
     onlyIf { !"$version".endsWith("-SNAPSHOT") }
+}
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
 }

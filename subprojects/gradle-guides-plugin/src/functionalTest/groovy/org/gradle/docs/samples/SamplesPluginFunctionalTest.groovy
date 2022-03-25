@@ -385,7 +385,7 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
     }
 
     private File extract(File zipFile) {
-        File workingDirectory = new File(temporaryFolder.root, zipFile.name)
+        File workingDirectory = new File(temporaryFolder, zipFile.name)
         workingDirectory.mkdirs()
         assertSuccessfulExecution("unzip ${zipFile.getCanonicalPath()} -d ${workingDirectory.getCanonicalPath()}")
         workingDirectory
