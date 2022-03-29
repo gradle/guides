@@ -1,7 +1,7 @@
 plugins {
     id("groovy")
     id("java-gradle-plugin")
-    id("com.gradle.plugin-publish") version "0.15.0"
+    id("com.gradle.plugin-publish") version "0.20.0"
     id("maven-publish")
 }
 

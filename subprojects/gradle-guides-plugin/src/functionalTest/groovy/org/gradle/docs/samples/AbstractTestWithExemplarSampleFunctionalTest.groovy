@@ -153,9 +153,11 @@ abstract class AbstractTestWithExemplarSampleFunctionalTest extends AbstractSamp
             |
             |To see a list of available tasks, run gradle tasks
             |
+            |To see more detail about a task, run gradle help --task <task>
+            |
             |To see a list of command-line options, run gradle --help
             |
-            |To see more detail about a task, run gradle help --task <task>
+            |For more detail on using Gradle, see https://docs.gradle.org/0.0.0/userguide/command_line_interface.html
             |
             |For troubleshooting, visit https://help.gradle.org
             |

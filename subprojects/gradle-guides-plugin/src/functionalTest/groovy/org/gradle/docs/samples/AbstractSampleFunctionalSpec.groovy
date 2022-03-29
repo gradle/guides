@@ -108,6 +108,10 @@ abstract class AbstractSampleFunctionalSpec extends AbstractFunctionalTest imple
             dependencies {
                 docsTestImplementation gradleTestKit()
             }
+
+            tasks.named('docsTest').configure {
+                modularity.getInferModulePath().set(false)
+            }
         """ << createSample('demo')
     }
 

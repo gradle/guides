@@ -34,7 +34,7 @@ abstract class AbstractFunctionalTest extends Specification {
 
     def setup() {
         projectDir = new TestFile(temporaryFolder)
-        buildFile = new TestFile(projectDir,'build.gradle')
+        buildFile = new TestFile(projectDir, 'build.gradle')
         settingsFile = new TestFile(projectDir, 'settings.gradle')
         file("gradle.properties").text = "org.gradle.jvmargs=-XX:MaxMetaspaceSize=500m -Xmx500m"
     }
@@ -51,7 +51,7 @@ abstract class AbstractFunctionalTest extends Specification {
 
     private GradleRunner createAndConfigureGradleRunner(String... arguments) {
         def allArgs = (arguments as List) + ["-S"]
-        def runner = GradleRunner.create().withProjectDir(projectDir).withArguments(allArgs).withPluginClasspath().forwardOutput().withDebug(true)
+        def runner = GradleRunner.create().withProjectDir(projectDir).withArguments(allArgs).withPluginClasspath().forwardOutput()
         if (gradleVersion != null) {
             runner.withGradleVersion(gradleVersion)
             gradleVersion = null
