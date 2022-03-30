@@ -18,6 +18,6 @@ public abstract class LockReleasingAsciidoctorTask extends AsciidoctorTask {
 
     @Override
     public void processAsciidocSources() {
-        getWorkerLeaseService().withoutProjectLock(super::processAsciidocSources);
+        getWorkerLeaseService().runAsIsolatedTask(super::processAsciidocSources);
     }
 }

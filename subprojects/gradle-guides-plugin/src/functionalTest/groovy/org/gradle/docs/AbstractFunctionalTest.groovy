@@ -18,15 +18,14 @@ package org.gradle.docs
 
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
-import org.junit.Rule
-import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
+import spock.lang.TempDir
 
 import static org.gradle.testkit.runner.TaskOutcome.*
 
 abstract class AbstractFunctionalTest extends Specification {
-    @Rule
-    TemporaryFolder temporaryFolder = new TemporaryFolder()
+    @TempDir
+    File temporaryFolder
     TestFile projectDir
     TestFile buildFile
     TestFile settingsFile
@@ -34,9 +33,9 @@ abstract class AbstractFunctionalTest extends Specification {
     private String gradleVersion
 
     def setup() {
-        projectDir = new TestFile(temporaryFolder.root)
-        buildFile = new TestFile(temporaryFolder.newFile('build.gradle'))
-        settingsFile = new TestFile(temporaryFolder.newFile('settings.gradle'))
+        projectDir = new TestFile(temporaryFolder)
+        buildFile = new TestFile(projectDir, 'build.gradle')
+        settingsFile = new TestFile(projectDir, 'settings.gradle')
         file("gradle.properties").text = "org.gradle.jvmargs=-XX:MaxMetaspaceSize=500m -Xmx500m"
     }
 
@@ -52,7 +51,7 @@ abstract class AbstractFunctionalTest extends Specification {
 
     private GradleRunner createAndConfigureGradleRunner(String... arguments) {
         def allArgs = (arguments as List) + ["-S"]
-        def runner = GradleRunner.create().withProjectDir(projectDir).withArguments(allArgs).withPluginClasspath().forwardOutput().withDebug(true)
+        def runner = GradleRunner.create().withProjectDir(projectDir).withArguments(allArgs).withPluginClasspath().forwardOutput()
         if (gradleVersion != null) {
             runner.withGradleVersion(gradleVersion)
             gradleVersion = null

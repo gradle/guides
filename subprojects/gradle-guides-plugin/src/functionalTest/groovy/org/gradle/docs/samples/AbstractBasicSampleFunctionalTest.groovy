@@ -3,6 +3,7 @@ package org.gradle.docs.samples
 
 import org.gradle.docs.TestFile
 import org.gradle.testkit.runner.BuildResult
+import spock.lang.Ignore
 import spock.lang.Unroll
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
@@ -39,6 +40,7 @@ abstract class AbstractBasicSampleFunctionalTest extends AbstractSampleFunctiona
         assertDslZipFilesExists()
     }
 
+    @Ignore('Wait for next version with `WorkerLeaseService.runAsIsolatedTask` to be released')
     def "defaults to Gradle version based on the running distribution"() {
         makeSingleProject()
         writeSampleUnderTest()

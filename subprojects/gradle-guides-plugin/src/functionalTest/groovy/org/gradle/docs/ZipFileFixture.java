@@ -1,7 +1,6 @@
 package org.gradle.docs;
 
 import org.hamcrest.Matcher;
-import org.junit.Assert;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -10,6 +9,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ZipFileFixture {
     private final Map<String, String> entries;
@@ -63,9 +64,9 @@ public class ZipFileFixture {
     }
 
     public void assertHasDescendants(String... descendants) {
-        Assert.assertEquals(descendants.length, entries.keySet().size());
+        assertEquals(descendants.length, entries.keySet().size());
         Set<String> expectedEntries = new HashSet<>(Arrays.asList(descendants));
         Set<String> actualEntries = new HashSet<>(entries.keySet());
-        Assert.assertEquals(expectedEntries, actualEntries);
+        assertEquals(expectedEntries, actualEntries);
     }
 }

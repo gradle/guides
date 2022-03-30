@@ -1,6 +1,7 @@
 package org.gradle.docs.guides
 
 import org.gradle.docs.TestFile
+import spock.lang.Ignore
 
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
@@ -254,6 +255,7 @@ class BasicGuidesDocumentationFunctionalTest extends AbstractGuideFunctionalSpec
         indexFile.text.contains('Repository path: foo/bar')
     }
 
+    @Ignore('Wait for next version with `WorkerLeaseService.runAsIsolatedTask` to be released')
     def "defaults to current Gradle version for minimum Gradle version of the guide"() {
         given:
         makeSingleProject()
@@ -316,7 +318,7 @@ class BasicGuidesDocumentationFunctionalTest extends AbstractGuideFunctionalSpec
             |Output:
             |include::{samplesoutputdir}/helloWorld/build.out[]
             |""".stripMargin()
-        def samplesCodeFolder = temporaryFolder.newFolder('src', 'docs', 'guides', 'demo', 'samples', 'code')
+        def samplesCodeFolder = new File(temporaryFolder, 'src/docs/guides/demo/samples/code')
         File codeDir = createDir(samplesCodeFolder, 'helloWorld')
         new File(codeDir, 'build.gradle') << """
             task helloWorld {
@@ -325,7 +327,7 @@ class BasicGuidesDocumentationFunctionalTest extends AbstractGuideFunctionalSpec
                 }
             }
         """
-        def samplesOutputFolder = temporaryFolder.newFolder('src', 'docs', 'guides', 'demo', 'samples', 'output')
+        def samplesOutputFolder = new File(temporaryFolder, 'src/docs/guides/demo/samples/output')
         File outputDir = createDir(samplesOutputFolder, 'helloWorld')
         new File(outputDir, 'build.out') << """
             |> Task :helloWorld
@@ -364,8 +366,8 @@ class BasicGuidesDocumentationFunctionalTest extends AbstractGuideFunctionalSpec
             |include::sample[dir="kotlin-dsl/code", files="settings.gradle.kts[]"]
             |====
             |'''.stripMargin()
-        temporaryFolder.newFolder('samples', 'groovy-dsl', 'code')
-        temporaryFolder.newFolder('samples', 'kotlin-dsl', 'code')
+        new File(temporaryFolder, 'samples/groovy-dsl/code').mkdirs()
+        new File(temporaryFolder, 'samples/kotlin-dsl/code').mkdirs()
         file('src/docs/guides/demo/samples/groovy-dsl/code/settings.gradle') << "rootProject.name = 'demo'"
         file('src/docs/guides/demo/samples/kotlin-dsl/code/settings.gradle.kts') << 'rootProject.name = "demo"'
 

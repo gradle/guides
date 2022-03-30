@@ -31,8 +31,10 @@ class IncrementalGuidesDocumentationFunctionalTest extends AbstractGuideFunction
         given:
         makeSingleProject()
         writeGuideUnderTest()
-        def samplesCodeDir = temporaryFolder.newFolder('samples', 'code')
-        def samplesOutputDir = temporaryFolder.newFolder('samples', 'output')
+        def samplesCodeDir = new File(temporaryFolder, 'samples/code')
+        def samplesOutputDir = new File(temporaryFolder, 'samples/output')
+        samplesCodeDir.mkdirs()
+        samplesOutputDir.mkdirs()
 
         when:
         def result = build('guidesMultiPage')
