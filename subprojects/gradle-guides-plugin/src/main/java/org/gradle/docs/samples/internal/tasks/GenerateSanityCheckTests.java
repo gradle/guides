@@ -19,7 +19,7 @@ public abstract class GenerateSanityCheckTests extends DefaultTask {
         StringBuilder sb = new StringBuilder();
         sb.append("commands: [{\n");
         sb.append("    executable: gradle\n");
-        sb.append("    args: help -q\n");
+        sb.append("    args: tasks -q\n");
         sb.append("}]\n");
         try (FileWriter fw = new FileWriter(outputFile)) {
             fw.write(sb.toString());

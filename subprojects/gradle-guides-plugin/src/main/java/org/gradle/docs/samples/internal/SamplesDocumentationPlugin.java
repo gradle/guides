@@ -142,7 +142,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
 
     private FileCollection createGeneratedTests(TaskContainer tasks, ObjectFactory objects, ProjectLayout layout) {
         TaskProvider<GenerateSanityCheckTests> generateSanityCheckTests = tasks.register("generateSanityCheckTests", GenerateSanityCheckTests.class, task -> {
-            task.setDescription("Generates exemplar configuration file needed to sanity check the sample (aka, run gradle help).");
+            task.setDescription("Generates exemplar configuration file needed to sanity check the sample (aka, run gradle tasks).");
             task.getOutputFile().convention(layout.getBuildDirectory().file("tmp/" + task.getName() + "/sanityCheck.sample.conf"));
         });
         ConfigurableFileCollection generatedFiles = objects.fileCollection();
