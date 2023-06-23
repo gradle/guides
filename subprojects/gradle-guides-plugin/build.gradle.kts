@@ -31,7 +31,6 @@ repositories {
 
 dependencies {
     implementation("net.sourceforge.nekohtml:nekohtml:1.9.21")
-    implementation("org.codehaus.groovy.modules:http-builder-ng-core:0.11.1")
 
     implementation("org.asciidoctor:asciidoctor-gradle-jvm:3.3.2")
     implementation("org.apache.ant:ant:1.9.13")
