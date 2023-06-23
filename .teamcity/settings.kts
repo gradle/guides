@@ -29,16 +29,9 @@ version = "2021.1"
 
 project {
     // parentId("DocumentationPortal")
-    buildType(BuildGuidesOnLinux)
-    buildType(BuildGuidesOnMac)
-    // TODO: Obviously, it fails on Windows
-    // buildType(BuildGuidesOnWindows)
     buildType(BuildPluginsOnLinux)
     buildType(BuildPluginsOnMac)
-    // TODO: Obviously, it fails on Windows
-    // buildType(BuildPluginsOnWindows)
     buildType(PublishPlugins)
-    buildType(PublishGuides)
 }
 
 open class AbstractBuildType(init: BuildType.() -> Unit) : BuildType({
@@ -66,63 +59,6 @@ open class AbstractBuildType(init: BuildType.() -> Unit) : BuildType({
     }
 
     init()
-})
-
-open class AbstractBuildGuideType(init: BuildType.() -> Unit) : AbstractBuildType({
-    steps {
-        gradle {
-            useGradleWrapper = true
-            tasks = ":guides-publication:installGuides"
-            buildFile = "" // Let Gradle detect the build script
-        }
-    }
-    triggers {
-        vcs {
-            groupCheckinsByCommitter = true
-            branchFilter = """
-                +:*
-                -:pull/*
-            """.trimIndent()
-        }
-    }
-
-    init()
-})
-
-object BuildGuidesOnLinux : AbstractBuildGuideType({
-    name = "Build All Guides (Linux)"
-
-    requirements {
-        contains("teamcity.agent.jvm.os.name", "Linux")
-    }
-    params {
-        param("env.JAVA_HOME", "%linux.java11.oracle.64bit%")
-    }
-    artifactRules = """
-        build/published-guides/** => published-guides
-    """.trimIndent()
-})
-
-object BuildGuidesOnMac : AbstractBuildGuideType({
-    name = "Build All Guides (macOS)"
-
-    requirements {
-        startsWith("teamcity.agent.jvm.os.name", "Mac")
-    }
-    params {
-        param("env.JAVA_HOME", "%macos.java11.oracle.64bit%")
-    }
-})
-
-object BuildGuidesOnWindows : AbstractBuildGuideType({
-    name = "Build All Guides (Windows)"
-
-    requirements {
-        startsWith("teamcity.agent.jvm.os.name", "Windows")
-    }
-    params {
-        param("env.JAVA_HOME", "%windows.java11.oracle.64bit%")
-    }
 })
 
 open class AbstractBuildPluginType(init: BuildType.() -> Unit) : AbstractBuildType({
@@ -202,20 +138,3 @@ object PublishPlugins : AbstractBuildType({
     }
 })
 
-object PublishGuides : AbstractBuildType({
-    name = "Publish All Guides"
-    steps {
-        gradle {
-            useGradleWrapper = true
-            tasks = ":guides-publication:gitPublishPush"
-            buildFile = "" // Let Gradle detect the build script
-        }
-    }
-    requirements {
-        contains("teamcity.agent.jvm.os.name", "Linux")
-    }
-    params {
-        param("env.JAVA_HOME", "%linux.java11.oracle.64bit%")
-        password("env.GRGIT_USER", "credentialsJSON:57b9c337-4279-44d6-b9db-58fcdb006249", display = ParameterDisplay.HIDDEN)
-    }
-})
