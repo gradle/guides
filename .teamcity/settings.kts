@@ -96,7 +96,7 @@ object BuildGuidesOnLinux : AbstractBuildGuideType({
         contains("teamcity.agent.jvm.os.name", "Linux")
     }
     params {
-        param("env.JAVA_HOME", "%linux.java8.oracle.64bit%")
+        param("env.JAVA_HOME", "%linux.java11.oracle.64bit%")
     }
     artifactRules = """
         build/published-guides/** => published-guides
@@ -110,7 +110,7 @@ object BuildGuidesOnMac : AbstractBuildGuideType({
         startsWith("teamcity.agent.jvm.os.name", "Mac")
     }
     params {
-        param("env.JAVA_HOME", "%macos.java8.oracle.64bit%")
+        param("env.JAVA_HOME", "%macos.java11.oracle.64bit%")
     }
 })
 
@@ -121,7 +121,7 @@ object BuildGuidesOnWindows : AbstractBuildGuideType({
         startsWith("teamcity.agent.jvm.os.name", "Windows")
     }
     params {
-        param("env.JAVA_HOME", "%windows.java8.oracle.64bit%")
+        param("env.JAVA_HOME", "%windows.java11.oracle.64bit%")
     }
 })
 
@@ -153,7 +153,7 @@ object BuildPluginsOnLinux : AbstractBuildPluginType({
         contains("teamcity.agent.jvm.os.name", "Linux")
     }
     params {
-        param("env.JAVA_HOME", "%linux.java8.oracle.64bit%")
+        param("env.JAVA_HOME", "%linux.java11.oracle.64bit%")
     }
     artifactRules = """
         build/published-guides/** => published-guides
@@ -167,7 +167,7 @@ object BuildPluginsOnMac : AbstractBuildPluginType({
         startsWith("teamcity.agent.jvm.os.name", "Mac")
     }
     params {
-        param("env.JAVA_HOME", "%macos.java8.oracle.64bit%")
+        param("env.JAVA_HOME", "%macos.java11.oracle.64bit%")
     }
 })
 
@@ -178,7 +178,7 @@ object BuildPluginsOnWindows : AbstractBuildPluginType({
         startsWith("teamcity.agent.jvm.os.name", "Windows")
     }
     params {
-        param("env.JAVA_HOME", "%windows.java8.oracle.64bit%")
+        param("env.JAVA_HOME", "%windows.java11.oracle.64bit%")
     }
 })
 
@@ -196,7 +196,7 @@ object PublishPlugins : AbstractBuildType({
         contains("teamcity.agent.jvm.os.name", "Linux")
     }
     params {
-        param("env.JAVA_HOME", "%linux.java8.oracle.64bit%")
+        param("env.JAVA_HOME", "%linux.java11.oracle.64bit%")
         password("env.GRADLE_PUBLISH_KEY", "credentialsJSON:8b35ff9d-0de0-4266-8850-9162aa31b4bf", display = ParameterDisplay.HIDDEN)
         password("env.GRADLE_PUBLISH_SECRET", "credentialsJSON:6934a5f0-e002-4067-884e-5090de3c9ec3", display = ParameterDisplay.HIDDEN)
     }
@@ -215,7 +215,7 @@ object PublishGuides : AbstractBuildType({
         contains("teamcity.agent.jvm.os.name", "Linux")
     }
     params {
-        param("env.JAVA_HOME", "%linux.java8.oracle.64bit%")
+        param("env.JAVA_HOME", "%linux.java11.oracle.64bit%")
         password("env.GRGIT_USER", "credentialsJSON:57b9c337-4279-44d6-b9db-58fcdb006249", display = ParameterDisplay.HIDDEN)
     }
 })
