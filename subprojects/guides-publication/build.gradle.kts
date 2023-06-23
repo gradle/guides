@@ -1,5 +1,5 @@
 plugins {
-    id("org.ajoberstar.git-publish") version("2.1.3")
+    id("org.ajoberstar.git-publish") version("4.2.0")
 }
 
 // When removing a guide that has been linked from elsewhere before, please add a redirect here
