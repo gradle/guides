@@ -19,6 +19,10 @@ Each of the plugins generates a guide from Asciidoc source.
 
 == Changelog
 
+== 0.22
+
+- Remove unnecessary dependencies
+
 == 0.21
 
 - Use `tasks` as the sanity check task instead of `help`
