@@ -103,7 +103,7 @@ object BuildPluginsOnMac : AbstractBuildPluginType({
         startsWith("teamcity.agent.jvm.os.name", "Mac")
     }
     params {
-        param("env.JAVA_HOME", "%macos.java11.oracle.64bit%")
+        param("env.JAVA_HOME", "%macos.java11.openjdk.64bit%")
     }
 })
 
