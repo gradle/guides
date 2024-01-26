@@ -40,7 +40,6 @@ import org.gradle.docs.samples.internal.tasks.SyncWithProvider;
 import org.gradle.docs.samples.internal.tasks.ValidateSampleBinary;
 import org.gradle.docs.samples.internal.tasks.ZipSample;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
-import org.ysb33r.grolifant.api.core.jvm.ExecutionMode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -84,7 +83,8 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             task.baseDirFollowsSourceFile();
             final AsciidoctorJExtension extension = task.getExtensions().getByType(AsciidoctorJExtension.class);
             extension.docExtensions(
-                project.getDependencies().create("org.gradle:docs-asciidoctor-extensions-base:0.11.0")
+                project.getDependencies().create("org.gradle:docs-asciidoctor-extensions-base:0.14.0"),
+                project.getDependencies().create("org.jruby:jruby:9.3.8.0")
             );
             // override default version of asciidoctor-groovy-dsl (2.0.0) to a version that's available on Maven Central (2.0.2)
             extension.getModules().getGroovyDsl().setVersion("2.0.2");
@@ -284,7 +284,6 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
         });
 
         TaskProvider<AsciidoctorTask> samplesMultiPage = tasks.register("samplesMultiPage", AsciidoctorTask.class, task -> {
-            task.setExecutionMode(ExecutionMode.OUT_OF_PROCESS);
             task.getInputs().files("samples").withPropertyName("samplesDir").withPathSensitivity(PathSensitivity.RELATIVE).optional();
 
             task.setGroup(DOCUMENTATION_GROUP_NAME);
