@@ -193,7 +193,8 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
 
             // TODO: This is specific to guides
             attributes.put("imagesdir", "images");
-            attributes.put("stylesheet", null);
+// FIXME: null value for attributes seems to be broken right now.
+//            attributes.put("stylesheet", null);
             attributes.put("linkcss", true);
             attributes.put("docinfodir", ".");
             attributes.put("docinfo1", "");
