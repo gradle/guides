@@ -15,11 +15,6 @@ task functionalTest(type: Test) {
     shouldRunAfter test
     maxParallelForks = 2
     systemProperty("gradle.version", gradle.gradleVersion)
-
-    reports {
-        html.outputLocation = project.file("${html.outputLocation.get().asFile}/functional")
-        junitXml.outputLocation = project.file("${junitXml.outputLocation.get().asFile}/functional")
-    }
 }
 
 check.dependsOn functionalTest
