@@ -12,7 +12,7 @@ version = "0.22"
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
+        languageVersion.set(JavaLanguageVersion.of(11))
     }
 }
 
@@ -32,13 +32,13 @@ repositories {
 dependencies {
     implementation("net.sourceforge.nekohtml:nekohtml:1.9.21")
 
-    implementation("org.asciidoctor:asciidoctor-gradle-jvm:3.3.2")
+    implementation("org.asciidoctor:asciidoctor-gradle-jvm:4.0.1")
     implementation("org.apache.ant:ant:1.9.13")
 
     // For exemplar asciidoctor tests
     compileOnly("org.gradle:gradle-tooling-api:6.0.1")
     compileOnly("org.apache.commons:commons-lang3:3.9")
-    compileOnly("org.asciidoctor:asciidoctorj:2.4.2")
+    compileOnly("org.asciidoctor:asciidoctorj:2.4.3")
     compileOnly("org.gradle.exemplar:samples-check:1.0.0")
     compileOnly("commons-io:commons-io:2.6")
 

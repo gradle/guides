@@ -17,7 +17,6 @@ import org.gradle.docs.samples.internal.SampleContentBinary;
 import org.gradle.docs.samples.internal.tasks.GenerateSamplePageAsciidoc;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
 
-import java.io.File;
 import java.time.Duration;
 import java.util.Collection;
 
@@ -34,7 +33,9 @@ public class ContentBinaries {
 
             task.getSampleSummary().convention(binary.getSummary());
             task.getReadmeFile().convention(binary.getSourcePageFile());
-            task.getOutputFile().fileProvider(binary.getBaseName().map(fileName -> new File(task.getProject().getBuildDir(), "/tmp/" + fileName + ".adoc")));
+            task.getOutputFile().set(
+                task.getProject().getLayout().getBuildDirectory()
+                    .file(binary.getBaseName().map(fileName -> "tmp/" + fileName + ".adoc")));
         });
         binary.getIndexPageFile().convention(generateSamplePage.flatMap(GenerateSamplePageAsciidoc::getOutputFile));
     }

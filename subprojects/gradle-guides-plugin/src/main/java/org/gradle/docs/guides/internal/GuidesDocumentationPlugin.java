@@ -29,9 +29,17 @@ import java.util.Map;
 
 import static org.gradle.docs.internal.Asserts.assertNameDoesNotContainsDisallowedCharacters;
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
-import static org.gradle.docs.internal.StringUtils.*;
-import static org.gradle.docs.internal.configure.AsciidoctorTasks.*;
-import static org.gradle.docs.internal.configure.ContentBinaries.*;
+import static org.gradle.docs.internal.StringUtils.capitalize;
+import static org.gradle.docs.internal.StringUtils.toKebabCase;
+import static org.gradle.docs.internal.StringUtils.toSnakeCase;
+import static org.gradle.docs.internal.StringUtils.toTitleCase;
+import static org.gradle.docs.internal.configure.AsciidoctorTasks.cleanStaleFiles;
+import static org.gradle.docs.internal.configure.AsciidoctorTasks.configureResources;
+import static org.gradle.docs.internal.configure.AsciidoctorTasks.configureSources;
+import static org.gradle.docs.internal.configure.AsciidoctorTasks.genericAttributes;
+import static org.gradle.docs.internal.configure.ContentBinaries.createCheckTaskForAsciidoctorContentBinary;
+import static org.gradle.docs.internal.configure.ContentBinaries.createCheckTasksForContentBinary;
+import static org.gradle.docs.internal.configure.ContentBinaries.createTasksForContentBinary;
 
 public class GuidesDocumentationPlugin implements Plugin<Project> {
     @Override
@@ -50,7 +58,8 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             task.baseDirFollowsSourceFile();
             final AsciidoctorJExtension extension = task.getExtensions().getByType(AsciidoctorJExtension.class);
             extension.docExtensions(
-                project.getDependencies().create("org.gradle:docs-asciidoctor-extensions-base:0.11.0")
+                project.getDependencies().create("org.gradle:docs-asciidoctor-extensions-base:0.14.0"),
+                project.getDependencies().create("org.jruby:jruby:9.3.8.0")
             );
             // override default version of asciidoctor-groovy-dsl (2.0.0) to a version that's available on Maven Central (2.0.2)
             extension.getModules().getGroovyDsl().setVersion("2.0.2");
@@ -184,7 +193,8 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
 
             // TODO: This is specific to guides
             attributes.put("imagesdir", "images");
-            attributes.put("stylesheet", null);
+// FIXME: null value for attributes seems to be broken right now.
+//            attributes.put("stylesheet", null);
             attributes.put("linkcss", true);
             attributes.put("docinfodir", ".");
             attributes.put("docinfo1", "");
