@@ -17,8 +17,8 @@ task functionalTest(type: Test) {
     systemProperty("gradle.version", gradle.gradleVersion)
 
     reports {
-        html.destination = project.file("$html.destination/functional")
-        junitXml.destination = project.file("$junitXml.destination/functional")
+        html.outputLocation = project.file("${html.outputLocation.get().asFile}/functional")
+        junitXml.outputLocation = project.file("${junitXml.outputLocation.get().asFile}/functional")
     }
 }
 
