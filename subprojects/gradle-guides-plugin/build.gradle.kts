@@ -32,7 +32,7 @@ repositories {
 dependencies {
     implementation("net.sourceforge.nekohtml:nekohtml:1.9.21")
 
-    implementation("org.asciidoctor:asciidoctor-gradle-jvm:3.3.2")
+    implementation("org.asciidoctor:asciidoctor-gradle-jvm:4.0.1")
     implementation("org.apache.ant:ant:1.9.13")
 
     // For exemplar asciidoctor tests

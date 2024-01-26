@@ -3,8 +3,11 @@ package org.gradle.docs.samples.internal;
 import groovy.lang.Closure;
 import org.asciidoctor.gradle.jvm.AsciidoctorJExtension;
 import org.asciidoctor.gradle.jvm.AsciidoctorTask;
-import org.gradle.api.*;
-import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.DefaultTask;
+import org.gradle.api.GradleException;
+import org.gradle.api.Plugin;
+import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
@@ -32,12 +35,12 @@ import org.gradle.docs.samples.internal.tasks.GenerateSampleIndexAsciidoc;
 import org.gradle.docs.samples.internal.tasks.GenerateSanityCheckTests;
 import org.gradle.docs.samples.internal.tasks.GenerateTestSource;
 import org.gradle.docs.samples.internal.tasks.InstallSample;
-import org.gradle.docs.samples.internal.tasks.LockReleasingAsciidoctorTask;
 import org.gradle.docs.samples.internal.tasks.SamplesReport;
 import org.gradle.docs.samples.internal.tasks.SyncWithProvider;
 import org.gradle.docs.samples.internal.tasks.ValidateSampleBinary;
 import org.gradle.docs.samples.internal.tasks.ZipSample;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
+import org.ysb33r.grolifant.api.core.jvm.ExecutionMode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,9 +55,18 @@ import java.util.stream.Collectors;
 import static org.gradle.docs.internal.Asserts.assertNameDoesNotContainsDisallowedCharacters;
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCS_TEST_SOURCE_SET_NAME;
 import static org.gradle.docs.internal.DocumentationBasePlugin.DOCUMENTATION_GROUP_NAME;
-import static org.gradle.docs.internal.StringUtils.*;
-import static org.gradle.docs.internal.configure.AsciidoctorTasks.*;
-import static org.gradle.docs.internal.configure.ContentBinaries.*;
+import static org.gradle.docs.internal.StringUtils.capitalize;
+import static org.gradle.docs.internal.StringUtils.toKebabCase;
+import static org.gradle.docs.internal.StringUtils.toSnakeCase;
+import static org.gradle.docs.internal.StringUtils.toTitleCase;
+import static org.gradle.docs.internal.configure.AsciidoctorTasks.cleanStaleFiles;
+import static org.gradle.docs.internal.configure.AsciidoctorTasks.configureResources;
+import static org.gradle.docs.internal.configure.AsciidoctorTasks.configureSources;
+import static org.gradle.docs.internal.configure.AsciidoctorTasks.genericAttributes;
+import static org.gradle.docs.internal.configure.ContentBinaries.createCheckTaskForAsciidoctorContentBinary;
+import static org.gradle.docs.internal.configure.ContentBinaries.createCheckTasksForContentBinary;
+import static org.gradle.docs.internal.configure.ContentBinaries.createTasksForContentBinary;
+import static org.gradle.docs.internal.configure.ContentBinaries.createTasksForSampleContentBinary;
 
 @SuppressWarnings("UnstableApiUsage")
 public class SamplesDocumentationPlugin implements Plugin<Project> {
@@ -271,7 +283,8 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             binary.getInstalledIndexPageFile().fileProvider(assembleDocs.map(task -> new File(task.getDestinationDir(), binary.getSourcePermalink().get())));
         });
 
-        TaskProvider<LockReleasingAsciidoctorTask> samplesMultiPage = tasks.register("samplesMultiPage", LockReleasingAsciidoctorTask.class, task -> {
+        TaskProvider<AsciidoctorTask> samplesMultiPage = tasks.register("samplesMultiPage", AsciidoctorTask.class, task -> {
+            task.setExecutionMode(ExecutionMode.OUT_OF_PROCESS);
             task.getInputs().files("samples").withPropertyName("samplesDir").withPathSensitivity(PathSensitivity.RELATIVE).optional();
 
             task.setGroup(DOCUMENTATION_GROUP_NAME);
