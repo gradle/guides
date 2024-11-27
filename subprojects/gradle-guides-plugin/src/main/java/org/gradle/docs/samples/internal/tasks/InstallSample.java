@@ -50,7 +50,7 @@ public abstract class InstallSample extends DefaultTask {
     protected abstract FileSystemOperations getFs();
 
     @TaskAction
-    private void doInstall() {
+    public void doInstall() {
         // TODO: Use the Worker API instead of releasing lock manually
         getWorkerLeaseService().runAsIsolatedTask(() -> {
             getFs().sync(spec -> {

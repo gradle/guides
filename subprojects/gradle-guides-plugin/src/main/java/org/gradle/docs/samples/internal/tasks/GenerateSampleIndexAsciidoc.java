@@ -25,7 +25,7 @@ public abstract class GenerateSampleIndexAsciidoc extends DefaultTask {
     public abstract RegularFileProperty getOutputFile();
 
     @TaskAction
-    private void doGenerate() throws FileNotFoundException {
+    public void doGenerate() throws FileNotFoundException {
         try (PrintWriter out = new PrintWriter(getOutputFile().get().getAsFile())) {
             out.println("= Sample Index");
             out.println();

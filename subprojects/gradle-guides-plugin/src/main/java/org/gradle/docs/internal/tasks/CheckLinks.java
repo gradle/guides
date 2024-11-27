@@ -60,7 +60,7 @@ public abstract class CheckLinks extends DefaultTask {
     public abstract WorkerExecutor getWorkerExecuter();
 
     @TaskAction
-    private void exec() {
+    public void exec() {
         WorkQueue queue = getWorkerExecuter().noIsolation();
         queue.submit(CheckLinksAction.class, params -> {
             params.getIndexDocument().set(getIndexDocument());

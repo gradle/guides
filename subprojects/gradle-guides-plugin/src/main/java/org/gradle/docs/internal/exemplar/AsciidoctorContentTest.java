@@ -57,7 +57,7 @@ public abstract class AsciidoctorContentTest extends DefaultTask {
     protected abstract WorkerExecutor getWorkerExecutor();
 
     @TaskAction
-    private void doTest() throws IOException {
+    public void doTest() throws IOException {
         WorkQueue workQueue = getWorkerExecutor().classLoaderIsolation(spec -> {
             spec.getClasspath().from(getClasspath());
         });
