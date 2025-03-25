@@ -45,6 +45,10 @@ public class StringUtils {
         return Arrays.stream(toWords(s).split(" ")).map(StringUtils::capitalize).collect(Collectors.joining(" "));
     }
 
+    /**
+     * Converts an arbitrary string to space-separated words.
+     * Eg, camelCase -&gt; camel case, with_underscores -&gt; with underscores
+     */
     private static String toWords(CharSequence string) {
         if (string == null) {
             return null;
