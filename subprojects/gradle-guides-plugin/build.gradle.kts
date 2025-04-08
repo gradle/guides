@@ -49,7 +49,7 @@ dependencies {
     testImplementation("org.spockframework:spock-core:2.1-groovy-3.0") {
         exclude(module = "groovy-all")
     }
-    testImplementation("org.yaml:snakeyaml:1.21")
+    testImplementation("org.yaml:snakeyaml:2.0")
 }
 
 pluginBundle {
