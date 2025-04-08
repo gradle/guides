@@ -19,6 +19,18 @@ Each of the plugins generates a guide from Asciidoc source.
 
 == Changelog
 
+== 0.23.3
+
+- Fix compatibility with Gradle 9.0 (File Permission API)
+
+== 0.23.2
+
+- Remove deprecated GUtil
+
+== 0.23.1
+
+- Make all private `@TaskAction` methods public
+
 == 0.23
 
 - Upgrade to the Asciidoctor plugin 4.0.1
