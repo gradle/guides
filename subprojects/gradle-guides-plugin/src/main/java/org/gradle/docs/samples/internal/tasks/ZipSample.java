@@ -75,7 +75,7 @@ public abstract class ZipSample extends DefaultTask {
                                 return;
                             }
                             ZipEntry entry = new ZipEntry(dirDetails.getRelativePath().getPathString() + "/");
-                            entry.setUnixMode(UnixStat.DIR_FLAG | dirDetails.getMode());
+                            entry.setUnixMode(UnixStat.DIR_FLAG | dirDetails.getPermissions().toUnixNumeric());
                             zipStream.putNextEntry(entry);
                             zipStream.closeEntry();
                         } catch (IOException e) {
@@ -88,7 +88,7 @@ public abstract class ZipSample extends DefaultTask {
                         try {
                             final ZipEntry entry = new ZipEntry(fileDetails.getRelativePath().getPathString());
                             entry.setSize(fileDetails.getSize());
-                            entry.setUnixMode(UnixStat.FILE_FLAG | fileDetails.getMode());
+                            entry.setUnixMode(UnixStat.FILE_FLAG | fileDetails.getPermissions().toUnixNumeric());
                             zipStream.putNextEntry(entry);
 
                             if (isTextFile(fileDetails)) {
