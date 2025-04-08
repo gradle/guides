@@ -33,7 +33,7 @@ dependencies {
     implementation("net.sourceforge.nekohtml:nekohtml:1.9.21")
 
     implementation("org.asciidoctor:asciidoctor-gradle-jvm:4.0.1")
-    implementation("org.apache.ant:ant:1.9.13")
+    implementation("org.apache.ant:ant:1.9.16")
 
     // For exemplar asciidoctor tests
     compileOnly("org.gradle:gradle-tooling-api:6.0.1")
