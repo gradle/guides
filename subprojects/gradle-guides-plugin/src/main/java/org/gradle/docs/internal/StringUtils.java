@@ -1,7 +1,5 @@
 package org.gradle.docs.internal;
 
-import org.gradle.util.GUtil;
-
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
