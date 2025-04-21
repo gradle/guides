@@ -64,7 +64,7 @@ public class ContentBinaries {
         DependencyHandler dependencies = project.getDependencies();
         dependencies.add(configuration.getName(), "org.gradle:gradle-tooling-api:6.0.1");
         dependencies.add(configuration.getName(), "org.apache.commons:commons-lang3:3.9");
-        dependencies.add(configuration.getName(), "org.gradle.exemplar:samples-check:1.0.0");
+        dependencies.add(configuration.getName(), "org.gradle.exemplar:samples-check:1.0.3");
         dependencies.add(configuration.getName(), "junit:junit:4.12");
 
         TaskProvider<AsciidoctorContentTest> asciidoctorContentDocsTest = project.getTasks().register(taskName, AsciidoctorContentTest.class, task -> {

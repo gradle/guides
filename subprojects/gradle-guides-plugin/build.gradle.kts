@@ -8,7 +8,7 @@ plugins {
 apply(from = "$projectDir/gradle/functional-test.gradle")
 
 group = "org.gradle.guides"
-version = "0.23.3"
+version = "0.23.4"
 
 java {
     toolchain {
@@ -39,7 +39,7 @@ dependencies {
     compileOnly("org.gradle:gradle-tooling-api:6.0.1")
     compileOnly("org.apache.commons:commons-lang3:3.9")
     compileOnly("org.asciidoctor:asciidoctorj:2.4.3")
-    compileOnly("org.gradle.exemplar:samples-check:1.0.0")
+    compileOnly("org.gradle.exemplar:samples-check:1.0.3")
     compileOnly("commons-io:commons-io:2.6")
 
     // For rich and verbose console support
