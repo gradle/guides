@@ -40,7 +40,7 @@ dependencies {
     compileOnly("org.apache.commons:commons-lang3:3.9")
     compileOnly("org.asciidoctor:asciidoctorj:2.4.3")
     compileOnly("org.gradle.exemplar:samples-check:1.0.3")
-    compileOnly("commons-io:commons-io:2.6")
+    compileOnly("commons-io:commons-io:2.14.0")
 
     // For rich and verbose console support
     implementation("net.rubygrapefruit:ansi-control-sequence-util:0.3")
