@@ -52,7 +52,7 @@ repositories {
 
 dependencies {
     api("org.asciidoctor:asciidoctor-gradle-jvm:4.0.1")
-    implementation("org.apache.ant:ant:1.9.16")
+    implementation("org.apache.ant:ant:1.10.15")
     implementation("org.jsoup:jsoup:1.20.1")
 
     // For exemplar asciidoctor tests
