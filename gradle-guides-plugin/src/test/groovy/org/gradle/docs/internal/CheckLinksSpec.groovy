@@ -1,5 +1,6 @@
 package org.gradle.docs.internal
 
+import org.gradle.docs.internal.tasks.CheckLinks
 import spock.lang.Specification
 import spock.lang.TempDir
 
@@ -86,4 +87,4 @@ class CheckLinksSpec extends Specification {
         Files.writeString(filePath, content)
         return filePath.toFile()
     }
-} 
+}

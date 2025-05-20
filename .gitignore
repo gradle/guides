@@ -1,14 +1,11 @@
-# nginx
-nginx.pid
-
 # Vim
 *.sw?
 
-.gradle
+/.gradle
 build
 .idea
 *.iml
 .DS_Store
 
 # maven
-target/
+/.teamcity/target/
