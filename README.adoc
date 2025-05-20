@@ -1,5 +1,8 @@
 = Gradle Documentation Plugins
 
+NOTE: All Gradle documentation content from this repository has been moved to the
+https://docs.gradle.org/current/[Gradle User Manual].
+
 This is a collection of very opinionated plugins that support the authoring of documentations for Gradle.
 
 * `org.gradle.guides`: The single guide project plugin.
