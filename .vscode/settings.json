@@ -1,7 +1,0 @@
-{
-    "asciidoc.preview.attributes": {
-        "samplescodedir": "../samples/code",
-        "imagesdir": "images",
-        "user-manual": "https://docs.gradle.org/nightly/userguide/"
-    }
-}
