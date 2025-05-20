@@ -43,7 +43,7 @@ public abstract class GenerateSampleIndexAsciidoc extends DefaultTask {
                 });
 
                 categorizedSamples.forEach((category, samples) -> {
-                    Collections.sort(samples, Comparator.comparing(sample -> sample.getDisplayName().get()));
+                    samples.sort(Comparator.comparing(sample -> sample.getDisplayName().get()));
                     out.println("== " + category);
                     out.println();
                     samples.forEach(sample -> {

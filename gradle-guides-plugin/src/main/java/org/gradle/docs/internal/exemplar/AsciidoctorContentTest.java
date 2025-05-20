@@ -3,7 +3,6 @@ package org.gradle.docs.internal.exemplar;
 import org.gradle.api.Action;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ConfigurableFileCollection;
-import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Classpath;
@@ -58,9 +57,7 @@ public abstract class AsciidoctorContentTest extends DefaultTask {
 
     @TaskAction
     public void doTest() throws IOException {
-        WorkQueue workQueue = getWorkerExecutor().classLoaderIsolation(spec -> {
-            spec.getClasspath().from(getClasspath());
-        });
+        WorkQueue workQueue = getWorkerExecutor().classLoaderIsolation(spec -> spec.getClasspath().from(getClasspath()));
 
         workQueue.submit(AsciidoctorContentTestWorkerAction.class, parameter -> {
             parameter.getTestCases().set(getTestCases());

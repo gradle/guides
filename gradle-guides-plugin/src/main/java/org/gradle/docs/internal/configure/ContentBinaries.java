@@ -73,12 +73,10 @@ public class ContentBinaries {
             task.getClasspath().from(configuration);
             task.getGradleVersion().convention(project.getGradle().getGradleVersion());
             task.getDefaultConsoleType().convention(taskName.contains("Sample") ? AsciidoctorContentTestConsoleType.RICH : AsciidoctorContentTestConsoleType.PLAIN);
-            binaries.forEach(binary -> {
-                task.testCase(testCase -> {
-                    testCase.getContentFile().set(binary.getContentFile());
-                    testCase.getStartingSample().set(binary.getStartingSampleDirectory());
-                });
-            });
+            binaries.forEach(binary -> task.testCase(testCase -> {
+                testCase.getContentFile().set(binary.getContentFile());
+                testCase.getStartingSample().set(binary.getStartingSampleDirectory());
+            }));
         });
 
         check.configure(it -> it.dependsOn(asciidoctorContentDocsTest));

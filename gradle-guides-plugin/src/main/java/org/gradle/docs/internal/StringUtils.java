@@ -62,7 +62,7 @@ public class StringUtils {
                 pos++;
                 continue;
             }
-            if (builder.length() > 0) {
+            if (!builder.isEmpty()) {
                 builder.append(separator);
             }
             String group1 = matcher.group(1).toLowerCase();
@@ -96,7 +96,7 @@ public class StringUtils {
      * @return transformed string
      */
     public static String toLowerCamelCase(String s) {
-        return uncapitalize(Arrays.stream(toTitleCase(s).split(" ")).collect(Collectors.joining()));
+        return uncapitalize(String.join("", toTitleCase(s).split(" ")));
     }
 
     /**
@@ -121,7 +121,7 @@ public class StringUtils {
      */
     public static String toKebabCase(String s) {
         Matcher m = Pattern.compile("(?<=[a-z0-9])[A-Z]").matcher(s);
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         while (m.find()) {
             m.appendReplacement(sb, "-"+m.group().toLowerCase());
         }

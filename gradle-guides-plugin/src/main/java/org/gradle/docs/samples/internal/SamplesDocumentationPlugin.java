@@ -279,9 +279,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             task.into(extension.getDocumentationInstallRoot());
         });
 
-        extension.getBinaries().withType(SampleContentBinary.class).configureEach(binary -> {
-            binary.getInstalledIndexPageFile().fileProvider(assembleDocs.map(task -> new File(task.getDestinationDir(), binary.getSourcePermalink().get())));
-        });
+        extension.getBinaries().withType(SampleContentBinary.class).configureEach(binary -> binary.getInstalledIndexPageFile().fileProvider(assembleDocs.map(task -> new File(task.getDestinationDir(), binary.getSourcePermalink().get()))));
 
         TaskProvider<AsciidoctorTask> samplesMultiPage = tasks.register("samplesMultiPage", AsciidoctorTask.class, task -> {
             task.getInputs().files("samples").withPropertyName("samplesDir").withPathSensitivity(PathSensitivity.RELATIVE).optional();
@@ -306,9 +304,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             // TODO: This breaks the provider
             task.setOutputDir(extension.getRenderedDocumentationRoot().get().getAsFile());
 
-            task.outputOptions(outputOptions -> {
-                outputOptions.setSeparateOutputDirs(false);
-            });
+            task.outputOptions(outputOptions -> outputOptions.setSeparateOutputDirs(false));
 
             // TODO: Figure out why so much difference with guides
             // TODO: This is specific to gradle/gradle

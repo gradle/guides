@@ -70,9 +70,7 @@ public abstract class GenerateSamplePageAsciidoc extends DefaultTask {
     private void writeAttributes(StringBuilder sb) {
         Map<String, String> attributes = getAttributes().get();
 
-        attributes.entrySet().forEach(it -> {
-            sb.append(":").append(it.getKey()).append(": ").append(it.getValue()).append("\n");
-        });
+        attributes.forEach((key, value) -> sb.append(":").append(key).append(": ").append(value).append("\n"));
         sb.append('\n');
     }
 }

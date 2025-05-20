@@ -3,7 +3,6 @@ package org.gradle.docs.samples;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFileProperty;
-import org.gradle.api.provider.ListProperty;
 
 public interface Samples {
 

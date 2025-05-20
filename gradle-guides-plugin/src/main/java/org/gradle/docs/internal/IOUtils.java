@@ -13,6 +13,6 @@ public class IOUtils {
             outStream.write(d);
         }
 
-        return outStream.toString(encoding.name());
+        return outStream.toString(encoding);
     }
 }

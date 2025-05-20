@@ -166,9 +166,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             task.into(extension.getDocumentationInstallRoot());
         });
 
-        extension.getBinaries().withType(GuideContentBinary.class).configureEach(binary -> {
-            binary.getInstalledIndexPageFile().fileProvider(assembleDocs.map(task -> new File(task.getDestinationDir(), binary.getSourcePermalink().get())));
-        });
+        extension.getBinaries().withType(GuideContentBinary.class).configureEach(binary -> binary.getInstalledIndexPageFile().fileProvider(assembleDocs.map(task -> new File(task.getDestinationDir(), binary.getSourcePermalink().get()))));
 
         TaskProvider<AsciidoctorTask> guidesMultiPage = tasks.register("guidesMultiPage", AsciidoctorTask.class, task -> {
             task.getInputs().files("samples").withPropertyName("samplesDir").withPathSensitivity(PathSensitivity.RELATIVE).optional();
@@ -187,9 +185,7 @@ public class GuidesDocumentationPlugin implements Plugin<Project> {
             // TODO: This breaks the provider
             task.setOutputDir(extension.getRenderedDocumentationRoot().get().getAsFile());
 
-            task.outputOptions(outputOptions -> {
-                outputOptions.setSeparateOutputDirs(false);
-            });
+            task.outputOptions(outputOptions -> outputOptions.setSeparateOutputDirs(false));
 
             // TODO: This is specific to guides
             attributes.put("imagesdir", "images");

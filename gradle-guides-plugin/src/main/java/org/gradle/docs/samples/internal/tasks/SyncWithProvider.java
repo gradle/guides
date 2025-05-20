@@ -13,7 +13,7 @@ import javax.inject.Inject;
 public abstract class SyncWithProvider extends Sync {
     @Inject
     public SyncWithProvider(ProjectLayout layout, ProviderFactory providers) {
-        getDestinationDirectory().set(layout.dir(providers.provider(() -> getDestinationDir())));
+        getDestinationDirectory().set(layout.dir(providers.provider(this::getDestinationDir)));
     }
 
     @Inject
@@ -21,7 +21,7 @@ public abstract class SyncWithProvider extends Sync {
 
     @Override
     protected void copy() {
-        getWorkerLeaseService().runAsIsolatedTask(() -> super.copy());
+        getWorkerLeaseService().runAsIsolatedTask(super::copy);
     }
 
     @OutputDirectory

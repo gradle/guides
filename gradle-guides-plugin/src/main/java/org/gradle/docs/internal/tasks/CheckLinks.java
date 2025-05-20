@@ -54,9 +54,7 @@ public abstract class CheckLinks extends DefaultTask {
     @TaskAction
     public void exec() {
         WorkQueue queue = getWorkerExecuter().noIsolation();
-        queue.submit(CheckLinksAction.class, params -> {
-            params.getIndexDocument().set(getIndexDocument());
-        });
+        queue.submit(CheckLinksAction.class, params -> params.getIndexDocument().set(getIndexDocument()));
     }
 
     public interface CheckLinksParameters extends WorkParameters {
@@ -73,7 +71,7 @@ public abstract class CheckLinks extends DefaultTask {
                 URI documentUri = getParameters().getIndexDocument().get().getAsFile().toURI();
                 URLConnection connection = documentUri.toURL().openConnection();
                 connection.addRequestProperty("User-Agent", "Non empty");
-                
+
                 String html = new String(connection.getInputStream().readAllBytes());
                 getAnchors(html).forEach(anchor -> {
                     if (anchor.isAbsolute()) {
@@ -82,10 +80,10 @@ public abstract class CheckLinks extends DefaultTask {
                                 failures.add(anchor);
                             }
                         } else {
-                            logger.debug("SKIPPED (Not http/s): " + anchor);
+                            logger.debug("SKIPPED (Not http/s): {}", anchor);
                         }
                     } else {
-                        logger.debug("SKIPPED (relative): " + anchor);
+                        logger.debug("SKIPPED (relative): {}", anchor);
                     }
                 });
 
@@ -132,7 +130,7 @@ public abstract class CheckLinks extends DefaultTask {
      */
     public static Set<URI> getAnchors(String html) {
         Document doc = Jsoup.parse(html);
-        
+
         return doc.select("a[href]").stream()
             .map(element -> {
                 try {

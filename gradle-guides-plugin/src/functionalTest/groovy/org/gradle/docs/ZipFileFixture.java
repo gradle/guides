@@ -47,8 +47,7 @@ public class ZipFileFixture {
                 buffer.write(data, 0, nRead);
             }
             buffer.flush();
-            byte[] byteArray = buffer.toByteArray();
-            return new String(byteArray, StandardCharsets.UTF_8);
+            return buffer.toString(StandardCharsets.UTF_8);
         }
         return "File too long";
     }
@@ -64,7 +63,7 @@ public class ZipFileFixture {
     }
 
     public void assertHasDescendants(String... descendants) {
-        assertEquals(descendants.length, entries.keySet().size());
+        assertEquals(descendants.length, entries.size());
         Set<String> expectedEntries = new HashSet<>(Arrays.asList(descendants));
         Set<String> actualEntries = new HashSet<>(entries.keySet());
         assertEquals(expectedEntries, actualEntries);

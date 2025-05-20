@@ -1,7 +1,6 @@
 package org.gradle.docs.guides;
 
 import org.gradle.api.provider.Property;
-import org.gradle.api.tasks.Input;
 
 public interface GuideSummary {
     /**

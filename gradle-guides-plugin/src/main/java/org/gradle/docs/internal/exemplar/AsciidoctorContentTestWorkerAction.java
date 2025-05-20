@@ -50,19 +50,17 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
         getParameters().getTestCases().get().forEach(testCase -> {
             try {
                 File f = testCase.getContentFile().get().getAsFile();
-                List<Command> commands = AsciidoctorCommandsDiscovery.extractFromAsciidoctorFile(f, it -> {
-                    it.safe(SafeMode.UNSAFE);
-                });
+                List<Command> commands = AsciidoctorCommandsDiscovery.extractFromAsciidoctorFile(f, it -> it.safe(SafeMode.UNSAFE));
 
                 if (commands.isEmpty()) {
-                    LOGGER.info("No commands to test on " + f.getAbsolutePath());
+                    LOGGER.info("No commands to test on {}", f.getAbsolutePath());
                 } else {
                     if (testCase.getStartingSample().isPresent()) {
                         File sampleSeedDirectory = testCase.getStartingSample().get().getAsFile();
-                        LOGGER.info("Testing " + commands.size() + " commands on " + f.getAbsolutePath() + " with sample from " + sampleSeedDirectory.getAbsolutePath());
+                        LOGGER.info("Testing {} commands on {} with sample from {}", commands.size(), f.getAbsolutePath(), sampleSeedDirectory.getAbsolutePath());
                         run(commands, seedSample(sampleSeedDirectory));
                     } else {
-                        LOGGER.info("Testing " + commands.size() + " commands on " + f.getAbsolutePath() + " without initial sample");
+                        LOGGER.info("Testing {} commands on {} without initial sample", commands.size(), f.getAbsolutePath());
                         run(commands, seedEmptySample());
                     }
                 }
@@ -108,7 +106,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                 workingDir = new File(workingDir, command.getExecutionSubdirectory());
             }
 
-            LOGGER.info("Executing  command '" + command.getExecutable() + " " + command.getArgs().stream().collect(Collectors.joining(" ")) + "' inside '" + workingDir.getAbsolutePath() + "'");
+            LOGGER.info("Executing  command '{} {}' inside '{}'", command.getExecutable(), command.getArgs().stream().collect(Collectors.joining(" ")), workingDir.getAbsolutePath());
 
             // This should be some kind of plugable executor rather than hard-coded here
             if (command.getExecutable().equals("cd")) {
@@ -134,7 +132,7 @@ public abstract class AsciidoctorContentTestWorkerAction implements WorkAction<A
                         // TODO: Configure environment variables
                         // TODO: The following won't work for flags with arguments
                         connection.newBuild()
-                                .forTasks(command.getArgs().stream().filter(it -> !it.startsWith("--scan")).collect(Collectors.toList()).toArray(new String[0]))
+                                .forTasks(command.getArgs().stream().filter(it -> !it.startsWith("--scan")).toArray(String[]::new))
                                 .withArguments(command.getArgs().stream().filter(it -> it.startsWith("--scan")).collect(Collectors.toList()))
                                 .setStandardInput(new ByteArrayInputStream((command.getUserInputs().stream().collect(Collectors.joining(System.getProperty("line.separator"))) + System.getProperty("line.separator")).getBytes()))
                                 .setStandardOutput(fullOutputStream)

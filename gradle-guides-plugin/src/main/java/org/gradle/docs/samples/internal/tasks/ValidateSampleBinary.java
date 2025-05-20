@@ -68,17 +68,9 @@ public abstract class ValidateSampleBinary extends DefaultTask {
     }
 
     private String getSettingsFileName(Dsl dsl) {
-        String settingsFileName;
-        switch (dsl) {
-            case GROOVY:
-                settingsFileName = "settings.gradle";
-                break;
-            case KOTLIN:
-                settingsFileName = "settings.gradle.kts";
-                break;
-            default:
-                throw new GradleException("Unsupported DSL type");
-        }
-        return settingsFileName;
+        return switch (dsl) {
+            case GROOVY -> "settings.gradle";
+            case KOTLIN -> "settings.gradle.kts";
+        };
     }
 }

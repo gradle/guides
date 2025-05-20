@@ -3,7 +3,6 @@ package org.gradle.docs.samples.internal;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.provider.Property;
-import org.gradle.docs.samples.Dsl;
 
 import javax.inject.Inject;
 

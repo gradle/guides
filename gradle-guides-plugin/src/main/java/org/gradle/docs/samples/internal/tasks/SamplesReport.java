@@ -105,7 +105,7 @@ public abstract class SamplesReport extends DefaultTask {
                     pw.append("template '").append(((Template)content).getName()).append("' from ");
                     pw.append(String.valueOf(((Template) content).getSourceDirectory().getOrNull()));
                 } else if (content instanceof Provider) {
-                    pw.append(String.valueOf(((Provider) content).getOrNull()));
+                    pw.append(String.valueOf(((Provider<?>) content).getOrNull()));
                 } else {
                     pw.append(String.valueOf(content));
                 }

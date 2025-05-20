@@ -7,7 +7,6 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.UncheckedIOException;
 import org.gradle.api.file.*;
 import org.gradle.api.provider.ListProperty;
-import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.*;
 import org.gradle.internal.work.WorkerLeaseService;
 
@@ -118,7 +117,7 @@ public abstract class ZipSample extends DefaultTask {
 
     private boolean isTextFile(FileVisitDetails fileDetails) throws IOException {
         String fileName = fileDetails.getName();
-        if (Stream.of(".java", ".groovy", ".kt", ".kts", ".gradle", ".out", ".conf").anyMatch(s -> fileName.endsWith(s))) {
+        if (Stream.of(".java", ".groovy", ".kt", ".kts", ".gradle", ".out", ".conf").anyMatch(fileName::endsWith)) {
             return true;
         }
         String type = Files.probeContentType(fileDetails.getFile().toPath());

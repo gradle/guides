@@ -15,24 +15,26 @@ public abstract class GenerateTestSource extends DefaultTask {
 
     @TaskAction
     public void generate() {
-        String content = "//CHECKSTYLE:OFF\n"
-                + "package org.gradle.exemplar;\n"
-                + "\n"
-                + "import org.gradle.exemplar.test.normalizer.FileSeparatorOutputNormalizer;\n"
-                + "import org.gradle.exemplar.test.normalizer.JavaObjectSerializationOutputNormalizer;\n"
-                + "import org.gradle.exemplar.test.normalizer.GradleOutputNormalizer;\n"
-                + "import org.gradle.exemplar.test.runner.GradleSamplesRunner;\n"
-                + "import org.gradle.exemplar.test.runner.SamplesOutputNormalizers;\n"
-                + "import org.gradle.exemplar.test.runner.SamplesRoot;\n"
-                + "import org.junit.runner.RunWith;\n"
-                + "\n"
-                + "@RunWith(GradleSamplesRunner.class)\n"
-                + "@SamplesOutputNormalizers({\n"
-                + "    JavaObjectSerializationOutputNormalizer.class,\n"
-                + "    FileSeparatorOutputNormalizer.class,\n"
-                + "    GradleOutputNormalizer.class\n"
-                + "})\n"
-                + "public class ExemplarExternalSamplesFunctionalTest {}\n";
+        String content = """
+            //CHECKSTYLE:OFF
+            package org.gradle.exemplar;
+
+            import org.gradle.exemplar.test.normalizer.FileSeparatorOutputNormalizer;
+            import org.gradle.exemplar.test.normalizer.JavaObjectSerializationOutputNormalizer;
+            import org.gradle.exemplar.test.normalizer.GradleOutputNormalizer;
+            import org.gradle.exemplar.test.runner.GradleSamplesRunner;
+            import org.gradle.exemplar.test.runner.SamplesOutputNormalizers;
+            import org.gradle.exemplar.test.runner.SamplesRoot;
+            import org.junit.runner.RunWith;
+
+            @RunWith(GradleSamplesRunner.class)
+            @SamplesOutputNormalizers({
+                JavaObjectSerializationOutputNormalizer.class,
+                FileSeparatorOutputNormalizer.class,
+                GradleOutputNormalizer.class
+            })
+            public class ExemplarExternalSamplesFunctionalTest {}
+            """;
         try {
             Directory sourceDirectory = getOutputDirectory().dir("org/gradle/docs/samples/").get();
             sourceDirectory.getAsFile().mkdirs();

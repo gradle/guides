@@ -45,12 +45,7 @@ public class AsciidoctorTasks {
 
     public static void cleanStaleFiles(AsciidoctorTask task) {
         // It seems Asciidoctor task is copying the resource as opposed to synching them. Let's delete the output folder first.
-        task.doFirst(new Action<Task>() {
-            @Override
-            public void execute(Task t) {
-                deleteDirectory(task.getOutputDir());
-            }
-        });
+        task.doFirst(t -> deleteDirectory(task.getOutputDir()));
     }
 
     public static Map<String, Object> genericAttributes() {
