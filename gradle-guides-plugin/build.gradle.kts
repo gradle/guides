@@ -56,7 +56,7 @@ dependencies {
     implementation("org.jsoup:jsoup:1.20.1")
 
     // For exemplar asciidoctor tests
-    compileOnly("commons-io:commons-io:2.14.0")
+    compileOnly("commons-io:commons-io:2.19.0")
     compileOnly("org.apache.commons:commons-lang3:3.9")
     compileOnly("org.asciidoctor:asciidoctorj:2.4.3")
     compileOnly("org.gradle.exemplar:samples-check:1.0.3")
