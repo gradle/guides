@@ -8,7 +8,7 @@ plugins {
 apply(from = "$projectDir/gradle/functional-test.gradle")
 
 group = "org.gradle.guides"
-version = "0.23.4"
+version = "0.24.0"
 
 java {
     toolchain {
@@ -30,10 +30,9 @@ repositories {
 }
 
 dependencies {
-    implementation("net.sourceforge.nekohtml:nekohtml:1.9.21")
-
     implementation("org.asciidoctor:asciidoctor-gradle-jvm:4.0.1")
     implementation("org.apache.ant:ant:1.9.16")
+    implementation("org.jsoup:jsoup:1.20.1")
 
     // For exemplar asciidoctor tests
     compileOnly("org.gradle:gradle-tooling-api:6.0.1")

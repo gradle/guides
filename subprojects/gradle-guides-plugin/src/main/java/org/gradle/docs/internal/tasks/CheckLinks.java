@@ -16,23 +16,19 @@
 
 package org.gradle.docs.internal.tasks;
 
-import groovy.util.XmlSlurper;
-import groovy.util.slurpersupport.GPathResult;
-import groovy.util.slurpersupport.NodeChild;
-import org.cyberneko.html.parsers.SAXParser;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.docs.internal.IOUtils;
 import org.gradle.workers.WorkAction;
 import org.gradle.workers.WorkParameters;
 import org.gradle.workers.WorkQueue;
 import org.gradle.workers.WorkerExecutor;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
-import org.xml.sax.SAXException;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -40,13 +36,9 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLConnection;
-import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Spliterator;
-import java.util.Spliterators;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  *
@@ -78,7 +70,12 @@ public abstract class CheckLinks extends DefaultTask {
         public void execute() {
             try {
                 Set<URI> failures = new HashSet<>();
-                getAnchors(getParameters().getIndexDocument().get().getAsFile().toURI()).forEach(anchor -> {
+                URI documentUri = getParameters().getIndexDocument().get().getAsFile().toURI();
+                URLConnection connection = documentUri.toURL().openConnection();
+                connection.addRequestProperty("User-Agent", "Non empty");
+                
+                String html = new String(connection.getInputStream().readAllBytes());
+                getAnchors(html).forEach(anchor -> {
                     if (anchor.isAbsolute()) {
                         if (anchor.getScheme().startsWith("http")) {
                             if (!isValid(anchor)) {
@@ -95,7 +92,7 @@ public abstract class CheckLinks extends DefaultTask {
                 if (!failures.isEmpty()) {
                     throw new GradleException("The following links are broken:\n " + failures.stream().map(URI::toString).collect(Collectors.joining("\n")) + "\n");
                 }
-            } catch (IOException | SAXException e) {
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -125,22 +122,25 @@ public abstract class CheckLinks extends DefaultTask {
             }
             return false;
         }
+    }
 
-        private Set<URI> getAnchors(URI uri) throws IOException, SAXException {
-            SAXParser parser = new SAXParser();
-            URLConnection connection = uri.toURL().openConnection();
-            connection.addRequestProperty("User-Agent", "Non empty");
-
-            GPathResult page = new XmlSlurper(parser).parseText(IOUtils.toString(connection.getInputStream(), Charset.defaultCharset()));
-
-            Spliterator<GPathResult> it = Spliterators.spliteratorUnknownSize(page.depthFirst(), Spliterator.NONNULL);
-            return StreamSupport.stream(it, false).filter(e -> e.name().equals("A") && ((NodeChild) e).attributes().get("href") != null).map(NodeChild.class::cast).map(e -> {
+    /**
+     * Extracts all anchor href URIs from an HTML document.
+     *
+     * @param html The HTML content to parse
+     * @return A set of URIs found in anchor tags
+     */
+    public static Set<URI> getAnchors(String html) {
+        Document doc = Jsoup.parse(html);
+        
+        return doc.select("a[href]").stream()
+            .map(element -> {
                 try {
-                    return new URI(e.attributes().get("href").toString());
+                    return new URI(element.attr("href"));
                 } catch (URISyntaxException ex) {
                     throw new RuntimeException(ex);
                 }
-            }).collect(Collectors.toSet());
-        }
+            })
+            .collect(Collectors.toSet());
     }
 }
