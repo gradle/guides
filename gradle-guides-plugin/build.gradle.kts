@@ -68,7 +68,7 @@ dependencies {
     implementation("org.asciidoctor:asciidoctorj-api:2.4.3")
     implementation("org.gradle.exemplar:samples-discovery:1.0.3")
 
-    testImplementation("org.codehaus.groovy:groovy:3.0.9")
+    testImplementation("org.codehaus.groovy:groovy:3.0.24")
     testImplementation("org.spockframework:spock-core:2.1-groovy-3.0") {
         exclude(module = "groovy-all")
     }
