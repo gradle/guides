@@ -58,7 +58,7 @@ dependencies {
     // For exemplar asciidoctor tests
     compileOnly("commons-io:commons-io:2.19.0")
     compileOnly("org.apache.commons:commons-lang3:3.17.0")
-    compileOnly("org.asciidoctor:asciidoctorj:2.4.3")
+    compileOnly("org.asciidoctor:asciidoctorj:3.0.0")
     compileOnly("org.gradle.exemplar:samples-check:1.0.3")
     compileOnly("org.gradle:gradle-tooling-api:6.0.1")
 
