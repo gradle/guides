@@ -73,7 +73,7 @@ dependencies {
         exclude(module = "groovy-all")
     }
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.13.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.13.3")
 }
 
 pluginBundle {
