@@ -58,14 +58,14 @@ dependencies {
     // For exemplar asciidoctor tests
     compileOnly("commons-io:commons-io:2.20.0")
     compileOnly("org.apache.commons:commons-lang3:3.19.0")
-    compileOnly("org.asciidoctor:asciidoctorj:3.0.0")
+    compileOnly("org.asciidoctor:asciidoctorj:3.0.1")
     compileOnly("org.gradle.exemplar:samples-check:1.0.3")
     compileOnly("org.gradle:gradle-tooling-api:6.0.1")
 
     implementation("junit:junit:4.13.2")
     implementation("net.rubygrapefruit:ansi-control-sequence-util:0.4") // For rich and verbose console support
     implementation("org.asciidoctor:asciidoctor-gradle-base:4.0.1")
-    implementation("org.asciidoctor:asciidoctorj-api:3.0.0")
+    implementation("org.asciidoctor:asciidoctorj-api:3.0.1")
     implementation("org.gradle.exemplar:samples-discovery:1.0.3")
 
     testImplementation("org.codehaus.groovy:groovy:3.0.25")
