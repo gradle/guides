@@ -69,7 +69,7 @@ dependencies {
     implementation("org.gradle.exemplar:samples-discovery:1.0.3")
 
     testImplementation("org.codehaus.groovy:groovy:3.0.25")
-    testImplementation("org.spockframework:spock-core:2.1-groovy-3.0") {
+    testImplementation("org.spockframework:spock-core:2.3-groovy-4.0") {
         exclude(module = "groovy-all")
     }
 
