@@ -40,7 +40,10 @@ public class DocumentationBasePlugin implements Plugin<Project> {
         TaskProvider<Test> docsTestTask = tasks.register(sourceSet.getName(), Test.class, task -> {
             task.setGroup(LifecycleBasePlugin.VERIFICATION_GROUP);
             task.setDescription("Test documentation");
-            task.setTestClassesDirs(sourceSet.getRuntimeClasspath());
+            // testClassesDirs must point at compiled test classes, not the runtime classpath.
+            // Using the runtime classpath here can lead to "no discovered tests" failures (Gradle 9+)
+            // because dependency jars are treated as candidate test classes.
+            task.setTestClassesDirs(sourceSet.getOutput().getClassesDirs());
             task.setClasspath(sourceSet.getRuntimeClasspath());
             task.setWorkingDir(layout.getProjectDirectory().getAsFile());
         });

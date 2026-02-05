@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit
 
 import static org.gradle.testkit.runner.TaskOutcome.FAILED
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
+import static org.gradle.testkit.runner.TaskOutcome.NO_SOURCE
 import static org.hamcrest.CoreMatchers.equalTo
 
 class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
@@ -354,7 +355,9 @@ class SamplesPluginFunctionalTest extends AbstractSampleFunctionalSpec {
         build('checkSamples')
 
         then:
-        result.task(':docsTest').outcome == SUCCESS
+        // If there are no documentation tests in the project, `docsTest` is expected to be NO_SOURCE.
+        // (Gradle 9+ distinguishes between "no sources" and "success".)
+        result.task(':docsTest').outcome in [SUCCESS, NO_SOURCE]
         result.task(':checkDemoSampleLinks') == null
         result.task(':validateSampleDemoGroovy') == null
         result.task(':validateSampleDemoKotlin') == null
