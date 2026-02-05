@@ -50,7 +50,7 @@ abstract class AbstractFunctionalTest extends Specification {
     }
 
     private GradleRunner createAndConfigureGradleRunner(String... arguments) {
-        def allArgs = (arguments as List) + ["-S"]
+        def allArgs = (arguments as List) 
         def runner = GradleRunner.create().withProjectDir(projectDir).withArguments(allArgs).withPluginClasspath().forwardOutput()
         if (gradleVersion != null) {
             runner.withGradleVersion(gradleVersion)

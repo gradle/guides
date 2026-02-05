@@ -1,7 +1,7 @@
 plugins {
     id("groovy")
     id("java-gradle-plugin")
-    id("com.gradle.plugin-publish").version("0.20.0")
+    id("com.gradle.plugin-publish").version("2.0.0")
     id("maven-publish")
 }
 
@@ -68,40 +68,38 @@ dependencies {
     implementation("org.asciidoctor:asciidoctorj-api:3.0.1")
     implementation("org.gradle.exemplar:samples-discovery:1.0.3")
 
-    testImplementation("org.codehaus.groovy:groovy:3.0.25")
-    testImplementation("org.spockframework:spock-core:2.4-groovy-3.0") {
-        exclude(module = "groovy-all")
-    }
+    testImplementation(localGroovy())
+    testImplementation("org.spockframework:spock-core:2.4-M6-groovy-4.0")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:6.0.2")
-}
-
-pluginBundle {
-    website = "https://guides.gradle.org"
-    vcsUrl = "https://github.com/gradle/guides"
-    tags = listOf("gradle", "guides", "documentation")
+    testImplementation("org.junit.platform:junit-platform-launcher:6.0.2")
 }
 
 gradlePlugin {
     testSourceSets += sourceSets["functionalTest"]
+    website.set("https://guides.gradle.org")
+    vcsUrl.set("https://github.com/gradle/guides")
     plugins {
         create("guidePlugin") {
             id = "org.gradle.guide"
             implementationClass = "org.gradle.docs.guides.internal.LegacyGuideDocumentationPlugin"
             displayName = "Gradle Guides Plugin"
             description = "Plugin for authoring Gradle guides"
+            tags.set(listOf("gradle", "guides", "documentation"))
         }
         create("samplePlugin") {
             id = "org.gradle.samples"
             implementationClass = "org.gradle.docs.samples.internal.LegacySamplesDocumentationPlugin"
             displayName = "Gradle Sample Plugin"
             description = "Plugin required for authoring new Gradle Samples"
+            tags.set(listOf("gradle", "guides", "documentation"))
         }
         create("documentationPlugin") {
             id = "org.gradle.documentation"
             implementationClass = "org.gradle.docs.internal.BuildDocumentationPlugin"
             displayName = "Gradle Documentation Plugin"
             description = "Plugin for authoring Gradle documentation"
+            tags.set(listOf("gradle", "guides", "documentation"))
         }
     }
 }

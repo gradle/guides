@@ -4,6 +4,7 @@ import org.gradle.exemplar.test.verifier.OutputVerifier;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -18,6 +19,7 @@ public class UserInputOutputVerifier implements OutputVerifier {
     public void verify(String expected, String actual, boolean allowAdditionalOutput) {
         List<String> expectedLines = Arrays.asList(expected.split("\\r?\\n"));
         List<String> actualLines = Arrays.asList(actual.split("\\r?\\n"));
+//            .filter(line -> !line.startsWith("Consider enabling configuration cache to speed up this build")).collect(Collectors.toList());
         int expectedIndex = 0;
         int actualIndex = 0;
         int userInputIndex = 0;
