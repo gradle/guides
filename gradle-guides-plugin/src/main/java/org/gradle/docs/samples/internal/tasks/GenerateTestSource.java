@@ -19,21 +19,35 @@ public abstract class GenerateTestSource extends DefaultTask {
             //CHECKSTYLE:OFF
             package org.gradle.exemplar;
 
+            import org.gradle.exemplar.executor.ExecutionMetadata;
             import org.gradle.exemplar.test.normalizer.FileSeparatorOutputNormalizer;
             import org.gradle.exemplar.test.normalizer.JavaObjectSerializationOutputNormalizer;
             import org.gradle.exemplar.test.normalizer.GradleOutputNormalizer;
+            import org.gradle.exemplar.test.normalizer.OutputNormalizer;
             import org.gradle.exemplar.test.runner.GradleSamplesRunner;
             import org.gradle.exemplar.test.runner.SamplesOutputNormalizers;
-            import org.gradle.exemplar.test.runner.SamplesRoot;
             import org.junit.runner.RunWith;
 
             @RunWith(GradleSamplesRunner.class)
             @SamplesOutputNormalizers({
                 JavaObjectSerializationOutputNormalizer.class,
                 FileSeparatorOutputNormalizer.class,
-                GradleOutputNormalizer.class
+                GradleOutputNormalizer.class,
+                ExemplarExternalSamplesFunctionalTest.FunctionalTestOutputNormalizer.class
             })
-            public class ExemplarExternalSamplesFunctionalTest {}
+            public class ExemplarExternalSamplesFunctionalTest {
+                public static class FunctionalTestOutputNormalizer implements OutputNormalizer {
+                    @Override
+                    public String normalize(final String commandOutput, final ExecutionMetadata executionMetadata) {
+                        if (commandOutput == null || commandOutput.isEmpty()) {
+                            return commandOutput;
+                        }
+                        // Remove non-deterministic advice printed by some Gradle versions/configurations.
+                        // Example: "Consider enabling configuration cache to speed up this build"
+                        return commandOutput.replaceAll("(?m)^[\\t ]*Consider enabling configuration cache.*(?:\\\\R|$)", "");
+                    }
+                }
+            }
             """;
         try {
             Directory sourceDirectory = getOutputDirectory().dir("org/gradle/docs/samples/").get();
