@@ -71,7 +71,7 @@ dependencies {
     testImplementation(localGroovy())
     testImplementation("org.spockframework:spock-core:2.4-M6-groovy-4.0")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:6.0.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:6.0.3")
     testImplementation("org.junit.platform:junit-platform-launcher:6.0.2")
 }
 
