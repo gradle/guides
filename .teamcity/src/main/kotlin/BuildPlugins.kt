@@ -21,10 +21,6 @@ object BuildPlugins : AbstractBuildPluginType({
         contains("teamcity.agent.jvm.os.name", "Linux")
     }
 
-    params {
-        param("env.JAVA_HOME", "%linux.java17.openjdk.64bit%")
-    }
-
     artifactRules = """
         build/published-guides/** => published-guides
     """.trimIndent()
