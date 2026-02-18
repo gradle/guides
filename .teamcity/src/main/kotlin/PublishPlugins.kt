@@ -26,7 +26,6 @@ object PublishPlugins : AbstractBuildType({
     }
 
     params {
-        param("env.JAVA_HOME", "%linux.java17.openjdk.64bit%")
         password("env.GRADLE_PUBLISH_KEY", "%plugin.portal.publish.key%", display = ParameterDisplay.HIDDEN)
         password("env.GRADLE_PUBLISH_SECRET", "%plugin.portal.publish.secret%", display = ParameterDisplay.HIDDEN)
     }

@@ -20,6 +20,7 @@ import jetbrains.buildServer.configs.kotlin.buildFeatures.PullRequests
 import jetbrains.buildServer.configs.kotlin.buildFeatures.commitStatusPublisher
 import jetbrains.buildServer.configs.kotlin.buildFeatures.pullRequests
 import jetbrains.buildServer.configs.kotlin.buildSteps.gradle
+import jetbrains.buildServer.configs.kotlin.triggers.VcsTrigger
 import jetbrains.buildServer.configs.kotlin.triggers.vcs
 
 open class AbstractBuildPluginType(init: BuildType.() -> Unit) : AbstractBuildType({
@@ -54,10 +55,7 @@ open class AbstractBuildPluginType(init: BuildType.() -> Unit) : AbstractBuildTy
             triggerRules = """
                 +:.
             """.trimIndent()
-
-            perCheckinTriggering = true
-            enableQueueOptimization = false
-            enabled = true
+            quietPeriodMode = VcsTrigger.QuietPeriodMode.DO_NOT_USE
         }
     }
 

@@ -17,7 +17,6 @@
 import jetbrains.buildServer.configs.kotlin.BuildType
 import jetbrains.buildServer.configs.kotlin.CheckoutMode
 import jetbrains.buildServer.configs.kotlin.DslContext
-import jetbrains.buildServer.configs.kotlin.buildFeatures.commitStatusPublisher
 
 open class AbstractBuildType(init: BuildType.() -> Unit) : BuildType({
     vcs {

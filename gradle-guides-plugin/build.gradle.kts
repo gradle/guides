@@ -1,7 +1,7 @@
 plugins {
     id("groovy")
     id("java-gradle-plugin")
-    id("com.gradle.plugin-publish").version("2.0.0")
+    alias(libs.plugins.publish)
     id("maven-publish")
 }
 
@@ -51,28 +51,28 @@ repositories {
 }
 
 dependencies {
-    api("org.asciidoctor:asciidoctor-gradle-jvm:4.0.1")
-    implementation("org.apache.ant:ant:1.10.15")
-    implementation("org.jsoup:jsoup:1.22.1")
+    api(libs.asciidoctor.jvm.convert)
+    implementation(libs.ant)
+    implementation(libs.jsoup)
 
     // For exemplar asciidoctor tests
-    compileOnly("commons-io:commons-io:2.21.0")
-    compileOnly("org.apache.commons:commons-lang3:3.20.0")
-    compileOnly("org.asciidoctor:asciidoctorj:3.0.1")
-    compileOnly("org.gradle.exemplar:samples-check:1.0.3")
-    compileOnly("org.gradle:gradle-tooling-api:6.0.1")
+    compileOnly(libs.commons.io)
+    compileOnly(libs.commons.lang3)
+    compileOnly(libs.asciidoctorj)
+    compileOnly(libs.exemplar.samples.check)
+    compileOnly(libs.tapi)
 
-    implementation("junit:junit:4.13.2")
-    implementation("net.rubygrapefruit:ansi-control-sequence-util:0.4") // For rich and verbose console support
-    implementation("org.asciidoctor:asciidoctor-gradle-base:4.0.1")
-    implementation("org.asciidoctor:asciidoctorj-api:3.0.1")
-    implementation("org.gradle.exemplar:samples-discovery:1.0.3")
+    implementation(libs.junit4)
+    implementation(libs.ansi.control.sequence.util) // For rich and verbose console support
+    implementation(libs.asciidoctor.gradle.base)
+    implementation(libs.asciidoctorj.api)
+    implementation(libs.exemplar.samples.discovery)
 
     testImplementation(localGroovy())
-    testImplementation("org.spockframework:spock-core:2.4-M6-groovy-4.0")
+    testImplementation(libs.spock.core)
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:6.0.3")
-    testImplementation("org.junit.platform:junit-platform-launcher:6.0.3")
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.jupiter.platform.launcher)
 }
 
 gradlePlugin {
