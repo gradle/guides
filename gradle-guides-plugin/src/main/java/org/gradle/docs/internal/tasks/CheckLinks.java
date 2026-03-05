@@ -21,7 +21,10 @@ import org.gradle.api.GradleException;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.logging.Logging;
 import org.gradle.api.tasks.InputFile;
+import org.gradle.api.tasks.PathSensitive;
+import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.work.DisableCachingByDefault;
 import org.gradle.workers.WorkAction;
 import org.gradle.workers.WorkParameters;
 import org.gradle.workers.WorkQueue;
@@ -43,9 +46,11 @@ import java.util.stream.Collectors;
 /**
  *
  */
+@DisableCachingByDefault(because = "Performs external network link checks with non-reproducible results.")
 public abstract class CheckLinks extends DefaultTask {
 
     @InputFile
+    @PathSensitive(PathSensitivity.RELATIVE)
     public abstract RegularFileProperty getIndexDocument();
 
     @Inject

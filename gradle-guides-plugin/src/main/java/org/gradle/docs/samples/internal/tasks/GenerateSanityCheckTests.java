@@ -4,11 +4,13 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.work.DisableCachingByDefault;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+@DisableCachingByDefault(because = "Generates sanity-check test descriptors and currently has no explicit caching contract.")
 public abstract class GenerateSanityCheckTests extends DefaultTask {
     @OutputFile
     public abstract RegularFileProperty getOutputFile();

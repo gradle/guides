@@ -7,7 +7,10 @@ import org.gradle.api.provider.MapProperty;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.OutputFile;
+import org.gradle.api.tasks.PathSensitive;
+import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.work.DisableCachingByDefault;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -17,11 +20,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
+@DisableCachingByDefault(because = "Produces generated documentation from source inputs and currently has no defined caching contract.")
 public abstract class GenerateGuidePageAsciidoc extends DefaultTask {
     @Input
     public abstract MapProperty<String, String> getAttributes();
 
     @InputFile
+    @PathSensitive(PathSensitivity.RELATIVE)
     public abstract RegularFileProperty getIndexFile();
 
     @OutputFile

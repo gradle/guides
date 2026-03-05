@@ -20,15 +20,20 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.specs.Specs;
 import org.gradle.api.tasks.InputFile;
+import org.gradle.api.tasks.PathSensitive;
+import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.work.DisableCachingByDefault;
 
 import javax.inject.Inject;
 import java.awt.*;
 import java.io.IOException;
 
+@DisableCachingByDefault(because = "Opens local documentation in a desktop app and is not meaningful to cache.")
 public abstract class ViewDocumentation extends DefaultTask {
 
     @InputFile
+    @PathSensitive(PathSensitivity.RELATIVE)
     public abstract RegularFileProperty getIndexFile();
 
     @Inject
