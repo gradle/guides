@@ -12,9 +12,12 @@ import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
+import org.gradle.api.tasks.PathSensitive;
+import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.SkipWhenEmpty;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.internal.work.WorkerLeaseService;
+import org.gradle.work.DisableCachingByDefault;
 
 import javax.inject.Inject;
 import java.util.Collections;
@@ -22,8 +25,10 @@ import java.util.Collections;
 /**
  * Installs the sample's zip to the given directory.
  */
+@DisableCachingByDefault(because = "Copies sample files into a target directory and currently has no explicit caching contract.")
 public abstract class InstallSample extends DefaultTask {
     @InputFiles
+    @PathSensitive(PathSensitivity.RELATIVE)
     @SkipWhenEmpty
     protected FileTree getSourceAsTree() {
         return getSource().getAsFileTree();

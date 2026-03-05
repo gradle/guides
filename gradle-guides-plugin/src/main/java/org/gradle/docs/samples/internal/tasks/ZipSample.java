@@ -9,6 +9,7 @@ import org.gradle.api.file.*;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.tasks.*;
 import org.gradle.internal.work.WorkerLeaseService;
+import org.gradle.work.DisableCachingByDefault;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -27,13 +28,16 @@ import java.util.stream.Stream;
  * <p>
  * Removes references to the documentation (e.g. the lines starting with {@code // tag::}) and {@code // end::})
  */
+@DisableCachingByDefault(because = "Creates zip archives from file trees and currently has no explicit caching contract.")
 public abstract class ZipSample extends DefaultTask {
     @InputFiles
+    @PathSensitive(PathSensitivity.RELATIVE)
     protected FileTree getSourceAsTree() {
         return getSource().getAsFileTree();
     }
 
     @InputFiles
+    @PathSensitive(PathSensitivity.RELATIVE)
     @SkipWhenEmpty
     protected FileTree getMainSourceAsTree() {
         return getMainSource().getAsFileTree();

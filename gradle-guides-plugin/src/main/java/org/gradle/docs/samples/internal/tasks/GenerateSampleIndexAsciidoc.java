@@ -7,6 +7,7 @@ import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.docs.samples.SampleSummary;
+import org.gradle.work.DisableCachingByDefault;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+@DisableCachingByDefault(because = "Generates documentation content and currently has no explicit caching contract.")
 public abstract class GenerateSampleIndexAsciidoc extends DefaultTask {
     @Nested
     public abstract ListProperty<SampleSummary> getSamples();

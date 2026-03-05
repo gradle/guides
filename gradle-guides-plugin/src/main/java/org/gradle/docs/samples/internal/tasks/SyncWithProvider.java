@@ -6,10 +6,12 @@ import org.gradle.api.provider.ProviderFactory;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.Sync;
 import org.gradle.internal.work.WorkerLeaseService;
+import org.gradle.work.DisableCachingByDefault;
 
 import javax.inject.Inject;
 
 // TODO: Upstream this
+@DisableCachingByDefault(because = "Custom Sync variant with worker-lease behavior and no explicit caching contract.")
 public abstract class SyncWithProvider extends Sync {
     @Inject
     public SyncWithProvider(ProjectLayout layout, ProviderFactory providers) {

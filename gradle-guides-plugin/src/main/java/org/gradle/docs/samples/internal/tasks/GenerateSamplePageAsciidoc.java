@@ -9,9 +9,12 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.OutputFile;
+import org.gradle.api.tasks.PathSensitive;
+import org.gradle.api.tasks.PathSensitivity;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.docs.samples.Dsl;
 import org.gradle.docs.samples.SampleSummary;
+import org.gradle.work.DisableCachingByDefault;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -23,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+@DisableCachingByDefault(because = "Generates sample page documentation and currently has no explicit caching contract.")
 public abstract class GenerateSamplePageAsciidoc extends DefaultTask {
     @Input
     public abstract MapProperty<String, String> getAttributes();
@@ -31,6 +35,7 @@ public abstract class GenerateSamplePageAsciidoc extends DefaultTask {
     public abstract Property<SampleSummary> getSampleSummary();
 
     @InputFile
+    @PathSensitive(PathSensitivity.RELATIVE)
     public abstract RegularFileProperty getReadmeFile();
 
     @OutputFile

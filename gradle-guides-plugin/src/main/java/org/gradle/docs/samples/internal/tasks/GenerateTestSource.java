@@ -5,10 +5,12 @@ import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.work.DisableCachingByDefault;
 
 import java.io.IOException;
 import java.nio.file.Files;
 
+@DisableCachingByDefault(because = "Generates test source files and currently has no explicit caching contract.")
 public abstract class GenerateTestSource extends DefaultTask {
     @OutputDirectory
     public abstract DirectoryProperty getOutputDirectory();

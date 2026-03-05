@@ -11,6 +11,7 @@ import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.work.DisableCachingByDefault;
 import org.gradle.workers.WorkQueue;
 import org.gradle.workers.WorkerExecutor;
 
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@DisableCachingByDefault(because = "Runs integration-style content checks through worker actions with no defined caching contract.")
 public abstract class AsciidoctorContentTest extends DefaultTask {
     private final List<AsciidoctorContentTestCase> testCases = new ArrayList<>();
 

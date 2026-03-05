@@ -10,6 +10,7 @@ import org.gradle.docs.samples.Sample;
 import org.gradle.docs.samples.Samples;
 import org.gradle.docs.samples.Template;
 import org.gradle.internal.UncheckedException;
+import org.gradle.work.DisableCachingByDefault;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -21,6 +22,7 @@ import java.util.Set;
 /**
  * Generates report with list of samples and the resolved attributes of the sample.
  */
+@DisableCachingByDefault(because = "Logs a diagnostic report and does not produce cacheable outputs.")
 public abstract class SamplesReport extends DefaultTask {
     @Internal
     public abstract Property<Samples> getSamples();
