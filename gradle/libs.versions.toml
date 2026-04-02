@@ -1,6 +1,6 @@
 [versions]
 ansi-control-sequence-util = "0.4"
-ant = "1.10.15"
+ant = "1.10.16"
 asciidoctor = "4.0.4"
 asciidoctorj = "3.0.1"
 commons-io = "2.21.0"
