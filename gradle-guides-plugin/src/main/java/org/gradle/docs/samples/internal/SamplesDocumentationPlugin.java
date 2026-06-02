@@ -169,7 +169,7 @@ public class SamplesDocumentationPlugin implements Plugin<Project> {
             task.into(layout.getBuildDirectory().dir("tmp/" + task.getName()));
         });
 
-        template.getTemplateDirectory().convention(generateTemplate.flatMap(SyncWithProvider::getDestinationDirectory));
+        template.getTemplateDirectory().convention(generateTemplate.flatMap(SyncWithProvider::getLazyDestinationDir));
     }
 
     private void applyConventionsForTemplates(Samples extension, Template template) {

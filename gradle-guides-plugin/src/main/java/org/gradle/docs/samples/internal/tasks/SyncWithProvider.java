@@ -15,7 +15,7 @@ import javax.inject.Inject;
 public abstract class SyncWithProvider extends Sync {
     @Inject
     public SyncWithProvider(ProjectLayout layout, ProviderFactory providers) {
-        getDestinationDirectory().set(layout.dir(providers.provider(this::getDestinationDir)));
+        getLazyDestinationDir().set(layout.dir(providers.provider(this::getDestinationDir)));
     }
 
     @Inject
@@ -27,5 +27,5 @@ public abstract class SyncWithProvider extends Sync {
     }
 
     @OutputDirectory
-    public abstract DirectoryProperty getDestinationDirectory();
+    public abstract DirectoryProperty getLazyDestinationDir();
 }
