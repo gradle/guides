@@ -29,7 +29,7 @@ tasks.check {
 }
 
 group = "org.gradle.guides"
-version = "0.24.0"
+version = "0.25.0"
 
 java {
     toolchain {
