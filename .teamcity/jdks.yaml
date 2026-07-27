@@ -1,9 +1,9 @@
-version: "v1"
+version: 'v1'
 jdks:
   - params:
-      - "env.JAVA_HOME"
-    os: "linux"
-    arch: "amd64"
-    vendor: "temurin"
-    version: "jdk-17.0.19+10"
-    sha256: "d8afc263758141a66e0e3aafc321e783f7016696f4eaea067d340a269037d331"
+      - 'env.JAVA_HOME'
+    os: 'linux'
+    arch: 'amd64'
+    vendor: 'temurin'
+    version: 'jdk-17.0.20+8'
+    sha256: 'be7668bc030d578b83d6d5ef9221d6d6729bbbca8cf94a7d52e16ac68b5a5a35'
