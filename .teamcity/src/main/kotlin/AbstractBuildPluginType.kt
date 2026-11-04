@@ -28,9 +28,8 @@ open class AbstractBuildPluginType(init: BuildType.() -> Unit) : AbstractBuildTy
         pullRequests {
             provider = github {
                 authType = vcsRoot()
-                filterTargetBranch = "main"
-                filterAuthorRole = PullRequests.GitHubRoleFilter.MEMBER_OR_COLLABORATOR
-                ignoreDrafts = true
+                filterAuthorRole = PullRequests.GitHubRoleFilter.EVERYBODY
+                ignoreDrafts = false
             }
         }
 
@@ -48,8 +47,11 @@ open class AbstractBuildPluginType(init: BuildType.() -> Unit) : AbstractBuildTy
     triggers {
         vcs {
             branchFilter = """
-                +:*
-                -:pull/*
+                +:<default>
+                +:devprod/*
+                -:dependabot/*
+                +pr: github_role=MEMBER
+                -pr: source=dependabot/*
             """.trimIndent()
 
             triggerRules = """
